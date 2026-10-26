@@ -30,6 +30,12 @@ const FREE_TRIES = 5;
 const LOCK_MS = 30e3;
 const MAX_LOCK_MS = 15 * 60e3;
 /**
+ * Every wrong code too, whichever code it was checked against: ten in a row lock them all, so a caller naming each code
+ * in turn (and Any code) gets no more tries than one code would allow. Any right code starts it again.
+ */
+const ALL = 'all';
+const FREE_ALL = 10;
+/**
  * Codes added or changed in a row, which may tell whether digits are taken (no two codes share theirs, so Any code
  * knows whose was typed): ten, then locked as wrong codes are; forgotten after an hour without one.
  */
@@ -149,7 +155,7 @@ export function checkCapabilityValue(cap: CapabilityDescription, value: unknown)
 export default class KeypadService {
 
   private secrets: Secrets;
-  /** Wrong tries in a row per code (Any code and the edits have their own), until when it's locked, and the last. */
+  /** Wrong tries in a row per code (Any code, all codes and the edits have their own), until when it's locked, and the last. */
   private counted = new Map<string, { failures: number, lockedUntil: number, at: number }>();
   private pressed = 0;
   private wrongCodes = 0;
@@ -292,14 +298,20 @@ export default class KeypadService {
     return this.stored().map(({ id, name, digits }) => ({ id, name, digits })).sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  /** A new code: a name of its own and 3–6 digits no other code has. */
-  addCode(name: unknown, code: unknown): CodesResult {
+  /**
+   * A new code: a name of its own and 3–6 digits no other code has. While there are codes, `current` must be one of
+   * them (wrong ones count as Any code's): the settings page can't tell the owner from anyone whose key may call the
+   * app, and a new code would let them in wherever a Keypad or a web dashboard takes Any code.
+   */
+  addCode(name: unknown, code: unknown, current?: unknown): CodesResult {
     const codes = this.stored();
     const n = typeof name === 'string' ? name.trim() : '';
     if (!n || n.length > MAX_NAME) return { ok: false, reason: 'name' };
     if (codes.some(c => c.name.toLowerCase() === n.toLowerCase())) return { ok: false, reason: 'nameTaken' };
     if (typeof code !== 'string' || !CODE.test(code)) return { ok: false, reason: 'digits' };
     if (codes.length >= MAX_CODES) return { ok: false, reason: 'full' };
+    const refused = codes.length ? this.checkCode(ANY_CODE, current) : null;
+    if (refused) return refused.result === 'locked' ? { ok: false, reason: 'locked', retryAfter: refused.retryAfter } : { ok: false, reason: 'wrongCode' };
     const busy = this.countEdit();
     if (busy) return busy;
     if (this.find(codes, code)) return { ok: false, reason: 'codeTaken' };
@@ -359,7 +371,8 @@ export default class KeypadService {
 
   /**
    * Checks a typed code: null when it's right (or there's no code to check), else why not. Wrong ones count per code,
-   * Any code's together; the fifth in a row locks it. A code that was removed is `codeMissing`.
+   * Any code's together; the fifth in a row locks it, and the tenth of all of them every code. A code that was removed
+   * is `codeMissing`.
    */
   checkCode(codeId: unknown, code: unknown): CodeRefusal | null {
     const checked = this.check(codeId, code);
@@ -374,17 +387,24 @@ export default class KeypadService {
     const candidates = any ? codes : codes.filter(c => c.id === codeId);
     if (!candidates.length) return { result: 'codeMissing' };
     const bucket = any ? ANY_CODE : candidates[0].id;
-    const locked = this.lockedFor(bucket);
+    const locked = this.lockedFor(bucket) ?? this.lockedFor(ALL);
     if (locked) return locked;
     const entry = typeof code === 'string' && CODE.test(code) ? this.find(candidates, code) : null;
     if (entry) {
       this.counted.delete(bucket);
+      this.counted.delete(ALL);
       return { result: 'right', entry };
     }
     this.wrongCodes++;
-    const refused = this.count(bucket, FREE_TRIES);
-    if (refused.result === 'locked') this.log(`Keypad: ${this.counted.get(bucket)!.failures} wrong codes in a row, locked for ${refused.retryAfter} s`);
-    return refused;
+    const own = this.count(bucket, FREE_TRIES);
+    const all = this.count(ALL, FREE_ALL);
+    if (own.result === 'wrongCode' && all.result === 'wrongCode') return { result: 'wrongCode', left: Math.min(own.left, all.left) };
+    // Locked: the longer of the two, as both have to pass.
+    const [lock] = ([[own, bucket], [all, ALL]] as const)
+      .flatMap(([r, which]) => (r.result === 'locked' ? [{ retryAfter: r.retryAfter, which }] : []))
+      .sort((a, b) => b.retryAfter - a.retryAfter);
+    this.log(`Keypad: ${this.counted.get(lock.which)!.failures} wrong codes in a row${lock.which === ALL ? ' of all codes' : ''}, locked for ${lock.retryAfter} s`);
+    return { result: 'locked', retryAfter: lock.retryAfter };
   }
 
   /** The code these digits are, of those given; every one of their length is compared, so the time tells no more. */
@@ -485,7 +505,10 @@ export default class KeypadService {
   }
 
   private async act(body: PressBody): Promise<PressResult> {
-    if (typeof body.flow === 'string' && parseFlowId(body.flow)) {
+    // Any `flow` is a Flow to start, never a fall-through to the source: `routeKeyUse()` holds a web dashboard's key to
+    // Start Flows for a press with one, not to the variable or device its source would change.
+    if (body.flow) {
+      if (typeof body.flow !== 'string' || !parseFlowId(body.flow)) throw new Error(`Not a flow: ${tokenText(String(body.flow))}`);
       await this.deps.flows.trigger(body.flow);
       return { result: 'done' };
     }

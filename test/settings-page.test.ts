@@ -78,6 +78,38 @@ it('Keypad codes: adds, changes with the current code, and removes with a second
   expect($('kpStatus').textContent).toBe('kpRemoved');
 });
 
+it('Keypad codes: adding another takes one of the codes already made', () => {
+  let codes: any[] = [{ id: 'a1', name: 'Alarm', digits: 4 }];
+  const { calls, $, typeIn, click } = loadPage((method, path, body) => {
+    if (path === '/keypad-codes' && method === 'GET') return { codes };
+    if (path === '/keypad-codes' && method === 'POST') {
+      if (body.current !== '4711') return { ok: false, reason: 'wrongCode' };
+      codes = [...codes, { id: 'b2', name: body.name, digits: body.code.length }]; return { ok: true, codes };
+    }
+    if (path.startsWith('/keypad-codes/') && method === 'DELETE') { codes = []; return { ok: true, codes }; }
+  });
+  click('kpNew');
+  expect([$('kpCurrentGroup').hidden, $('kpCurrent').placeholder]).toEqual([false, 'kpExisting']);
+  typeIn('kpName', 'Kids'); typeIn('kpCode', '2580'); typeIn('kpAgain', '2580');
+  expect($('kpSave').disabled).toBe(true); // not without a code
+  typeIn('kpCurrent', '1111');
+  click('kpSave');
+  expect($('kpStatus').textContent).toBe('kpNotACode');
+  typeIn('kpCurrent', '4711');
+  click('kpSave');
+  expect(calls.at(-1)).toEqual(['POST', '/keypad-codes', { name: 'Kids', code: '2580', current: '4711' }]);
+  expect($('kpLine').textContent).toBe('Alarm, Kids');
+  // A row's Change asks for its current one, by that name.
+  (document.querySelectorAll('#kpList button')[0] as HTMLButtonElement).click();
+  expect([$('kpCurrentGroup').hidden, $('kpCurrent').placeholder]).toEqual([false, 'kpCurrent']);
+  // With every code removed, the next is the first again and takes none.
+  $('kpCancel').click();
+  const remove = () => document.querySelectorAll('#kpList button')[1] as HTMLButtonElement;
+  remove().click(); remove().click();
+  click('kpNew');
+  expect($('kpCurrentGroup').hidden).toBe(true);
+});
+
 it('API key: the field without a key, Replace key and Remove with one; the line says which', () => {
   let set = false;
   const { calls, $, typeIn, click } = loadPage((method, path, body) => {

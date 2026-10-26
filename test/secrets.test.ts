@@ -76,6 +76,56 @@ describe('secrets', () => {
     expect(secrets.get('__proto__')).toBeNull();
   });
 
+  // A passing read error at start (the file busy, a disk hiccup) used to start the secrets empty, and the next change
+  // wrote that over the key, the password and the Keypad's codes.
+  it("never writes over a file it couldn't read, and reads it again on a later use", () => {
+    vi.useFakeTimers();
+    try {
+      const homey = fakeHomey(fakeApi({}));
+      homey.settings.set('variablesApiKey', 'planted');
+      const stored = JSON.stringify({ [MOVED_MARK]: true, variablesApiKey: 'the-key', keypadCodes: [{ id: 'a' }] });
+      let failing = true;
+      const writes: string[] = [];
+      const log = vi.fn();
+      const secrets = new Secrets(homey, log, {
+        read: () => { if (failing) throw Object.assign(new Error('EBUSY'), { code: 'EBUSY' }); return stored; },
+        write: (t) => { writes.push(t); },
+      });
+      expect(secrets.get('variablesApiKey')).toBeNull(); // missing meanwhile, not planted
+      expect(() => secrets.set('webSessions', [])).toThrow(/can't be read just now.*EBUSY/);
+      expect(() => secrets.unset('keypadCodes')).toThrow(/can't be read just now/);
+      expect(writes).toEqual([]);
+      expect(homey.settings.get('variablesApiKey')).toBe('planted'); // left until the file is read
+      expect(log).toHaveBeenCalledTimes(1);
+      failing = false;
+      expect(secrets.get('variablesApiKey')).toBeNull(); // not tried again within 5 s
+      vi.advanceTimersByTime(5e3);
+      expect(secrets.get('variablesApiKey')).toBe('the-key');
+      expect(secrets.get('keypadCodes')).toEqual([{ id: 'a' }]);
+      expect(homey.settings.get('variablesApiKey')).toBeNull(); // written after the move: unset, never taken
+      secrets.set('webSessions', []);
+      expect(JSON.parse(writes.at(-1)!)).toEqual({ [MOVED_MARK]: true, variablesApiKey: 'the-key', keypadCodes: [{ id: 'a' }], webSessions: [] });
+      expect(log).toHaveBeenCalledWith('The secrets file can be read again');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('puts a damaged file aside, and takes no setting for a secret after it', () => {
+    const homey = fakeHomey(fakeApi({}));
+    homey.settings.set('webPassword', { salt: 'aa', hash: 'bb' });
+    const kept: string[] = [];
+    const storage = { ...memoryStorage('{"variablesApiKey": "the-k'), keep: (t: string) => { kept.push(t); } };
+    const secrets = new Secrets(homey, vi.fn(), storage);
+    expect(kept).toEqual(['{"variablesApiKey": "the-k']);
+    expect(secrets.get('webPassword')).toBeNull();
+    expect(homey.settings.get('webPassword')).toBeNull();
+    for (const text of ['[]', '"x"', 'null']) {
+      new Secrets(homey, vi.fn(), { ...memoryStorage(text), keep: (t: string) => { kept.push(t); } });
+    }
+    expect(kept.slice(1)).toEqual(['[]', '"x"', 'null']);
+  });
+
   it('after a broken file, the first save keeps the mark, so a setting written later is never taken', () => {
     const homey = fakeHomey(fakeApi({}));
     const storage = memoryStorage('{not json');
@@ -102,6 +152,9 @@ describe('secrets', () => {
       expect(readFileSync(file, 'utf8')).toBe('{"a":1}');
       expect(storage.read()).toBe('{"a":1}');
       expect(readdirSync(dir)).toEqual(['secrets.json']);
+      storage.keep!('{broken');
+      expect(readFileSync(`${file}.damaged`, 'utf8')).toBe('{broken');
+      expect(storage.read()).toBe('{"a":1}');
     });
   });
 });

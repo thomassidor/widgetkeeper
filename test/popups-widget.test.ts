@@ -21,7 +21,11 @@ describe('Popups widget', () => {
     const storage = memoryStorage();
     const open = vi.fn();
     const widget = win.createPopupsWidget(document.createElement('div'), { name: ' Hall ', page: PAGE, open, storage });
-    widget.setState({ now: Date.now(), popups: [popup('a', 'name:hall'), popup('b', 'name:kitchen'), popup('c', 'all'), popup('d', 'web:x')] });
+    const all = [popup('a', 'name:hall'), popup('b', 'name:kitchen'), popup('c', 'all'), popup('d', 'web:x')];
+    widget.setState({ now: Date.now(), popups: all });
+    expect(open.mock.calls.map(c => c[0])).toEqual([`${PAGE}#id=a&t=tok-a`]); // one at a time
+    expect([widget.opened('a'), widget.opened('c')]).toEqual([true, false]);
+    widget.setState({ now: Date.now(), popups: all }); // a refresh, or once a closed
     expect(open.mock.calls.map(c => c[0])).toEqual([`${PAGE}#id=a&t=tok-a`, `${PAGE}#id=c&t=tok-c`]);
     // Again (a refresh, or a second Popups widget on the same device): nothing new opens.
     widget.setState({ now: Date.now(), popups: [popup('a', 'name:hall'), popup('c', 'all')] });
@@ -43,6 +47,21 @@ describe('Popups widget', () => {
     const manifest = JSON.parse(readFileSync('widgets/popups/widget.compose.json', 'utf8'));
     expect(manifest.settings.find((s: any) => s.id === 'countdown')).toMatchObject({ type: 'checkbox', value: false });
     expect(readFileSync('widgets/popups/public/mount.js', 'utf8')).toContain('countdown: settings.countdown === true,');
+  });
+
+  // The in-app browser shows one page: a second popup() straight after the first hid it, and both were marked opened.
+  it('opens one popup at a time, a question before a message, else the oldest', () => {
+    const win = loadWidget('popups');
+    const open = vi.fn();
+    const widget = win.createPopupsWidget(document.createElement('div'), { name: '', page: PAGE, open, storage: memoryStorage() });
+    const message = (id: string) => ({ ...popup(id, 'all'), kind: 'message' });
+    const state = { now: Date.now(), popups: [message('m1'), message('m2'), popup('q1', 'all'), popup('q2', 'all')] };
+    const order: string[] = [];
+    for (let i = 0; i < 5; i++) {
+      widget.setState(state);
+      order.push(open.mock.calls.length > order.length ? /#id=(\w+)/.exec(open.mock.calls.at(-1)![0])![1] : '-');
+    }
+    expect(order).toEqual(['q1', 'q2', 'm1', 'm2', '-']);
   });
 
   it("skips a popup whose time is up, by Homey's clock", () => {
@@ -94,6 +113,18 @@ describe('Popups widget', () => {
     expect(Homey.api).toHaveBeenCalledTimes(2);
     expect(Homey.popup).toHaveBeenCalledTimes(2);
     expect(Homey.popup).toHaveBeenLastCalledWith(expect.stringMatching(/#id=b&t=tok-b$/));
+    // Two at once: one opens, the other once that one closes (not on another's close).
+    popups.push(popup('c', 'all'), popup('d', 'all'));
+    Homey.handlers['popups:show'](shown(popup('c', 'all')));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(Homey.popup).toHaveBeenLastCalledWith(expect.stringMatching(/#id=c&t=tok-c$/));
+    Homey.handlers['popups:close']({ id: 'elsewhere', answer: true, reason: 'answered' });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(Homey.api).toHaveBeenCalledTimes(3);
+    Homey.handlers['popups:close']({ id: 'c', answer: true, reason: 'answered' });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(Homey.api).toHaveBeenCalledTimes(4);
+    expect(Homey.popup).toHaveBeenLastCalledWith(expect.stringMatching(/#id=d&t=tok-d$/));
   });
 
   it('is blank, but has a real height (iOS kept its loading placeholder over 0 or 1 px)', () => {

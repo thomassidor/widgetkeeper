@@ -75,10 +75,22 @@
 
     return {
       key,
-      /** `/state`'s answer: Homey's clock (`now`) gives the skew between it and this device's. */
+      /**
+       * `/state`'s answer: Homey's clock (`now`) gives the skew between it and this device's. It opens one popup: the
+       * in-app browser shows one page, so a second `popup()` straight after would hide the first (or be dropped), and
+       * both were marked opened. A question goes first (it waits for an answer, and not for long), else the oldest; the
+       * next opens on a later answer, once the one opened here closes (the mount's `popups:close`), a new one, the frame
+       * shown again or the 5-min refresh.
+       */
       setState(state) {
         const skew = state && typeof state.now === 'number' ? state.now - now() : 0;
-        for (const p of (state && Array.isArray(state.popups) ? state.popups : [])) offer(p, skew);
+        const ready = (state && Array.isArray(state.popups) ? state.popups : []).filter(p => wanted(p, skew) && p && typeof p.token === 'string');
+        const next = ready.find(p => p.kind === 'ask') || ready[0];
+        if (next) offer(next, skew);
+      },
+      /** Whether a popup was opened on this device: when it closes, the next may open. */
+      opened(id) {
+        return typeof id === 'string' && opened().includes(id);
       },
       show(p) {
         offer(p, skewOf(p));

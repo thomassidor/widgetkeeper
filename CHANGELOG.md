@@ -24,7 +24,7 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 
 ### New: Keypad
 - Up to three buttons behind a code, each starting a Flow or setting the device or variable the widget shows: arm the alarm, unlock a door, allow TV time. The state shows beside the buttons; a list or yes/no state with no buttons set up gets a button per value.
-- **Codes** of 3 to 6 digits are made on the app settings page, under *Keypad codes*, and never stored as typed; changing one asks for the current code. Five wrong codes in a row lock it for 30 seconds, doubling up to 15 minutes. With *Any code*, every code works and its name comes along to your Flows.
+- **Codes** of 3 to 6 digits are made on the app settings page, under *Keypad codes*, and never stored as typed; changing one asks for the current code, and adding another one of the codes already made. Five wrong codes in a row lock it for 30 seconds, doubling up to 15 minutes; ten in a row of any codes lock them all. With *Any code*, every code works and its name comes along to your Flows.
 - **Show the keypad** only when a button needs it, or always, as on a phone's lock screen.
 - **Flow cards:** *A Keypad button was tapped by [code]*, with the code's name, the button and the keypad as tags, and *A wrong code was typed on a Keypad*.
 - **Web dashboards:** a dashboard can ask for a Keypad code before its editor opens or the page leaves it, so a wall tablet stays on its dashboard.

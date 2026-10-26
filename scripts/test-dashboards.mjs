@@ -520,11 +520,23 @@ const BUILD = {
     // The state from a speaker's repeat mode, a list like an alarm's state that's harmless to change (never an alarm's
     // or a lock's: a tap sets it for real), a yes/no variable (a tap sets it, as on the Variables dashboard), and flows
     // that look harmless to start by hand. The codes are made on the app's side as on its settings page, once: Test 1234
-    // and Test 123456, their digits in their names.
+    // and Test 123456, their digits in their names. Adding one takes a code already made: a Test one, else KEYPAD_CODE.
     const codes = `/api/app/${APP_ID}/keypad-codes`;
     const have = (await homeyApi('GET', codes)).codes.map(c => c.name);
+    let current = ['1234', '123456'].find(d => have.includes(`Test ${d}`)) ?? process.env.KEYPAD_CODE;
     for (const digits of ['1234', '123456']) {
-      if (!have.includes(`Test ${digits}`)) await homeyApi('POST', codes, { name: `Test ${digits}`, code: digits });
+      if (have.includes(`Test ${digits}`)) continue;
+      if (have.length && !current) {
+        console.warn('Keypad: adding a code takes one already made; run with KEYPAD_CODE=<one of your codes> to add the test codes');
+        break;
+      }
+      const res = await homeyApi('POST', codes, { name: `Test ${digits}`, code: digits, current });
+      if (!res.ok) {
+        console.warn(`Keypad: Test ${digits} not added (${res.reason})`);
+        break;
+      }
+      have.push(`Test ${digits}`);
+      current ??= digits;
     }
     const codeItem = async name => pick(await autocomplete('keypad', 'code', {}, name), i => i.name === name)[0] ?? null;
     const [code, code6] = await Promise.all([codeItem('Test 1234'), codeItem('Test 123456')]);

@@ -1059,6 +1059,11 @@ describe("web dashboards: a device change needs the page's own key to control de
     expect(pageKeyUse('timers', 'POST', '/start', {})).toBe(null);
     expect(pageKeyUse('stack', 'POST', '/call', { type: 'locks', method: 'POST', path: '/open' })).toBe('devices');
     expect(pageKeyUse('stack', 'POST', '/call', { type: 'media', method: 'POST', path: '/button', body: { id: 'card:x' } })).toBe('cards');
+    // A Keypad press: its Flow, else its source's (a capability is a device change).
+    expect(pageKeyUse('keypad', 'POST', '/press', { flow: 'flow:f1', source: 'var:v1' })).toBe('flows');
+    expect(pageKeyUse('keypad', 'POST', '/press', { source: 'var:v1', value: 1 })).toBe('variables');
+    expect(pageKeyUse('keypad', 'POST', '/press', { flow: '', source: 'cap:d:locked', value: false })).toBe('devices');
+    expect(pageKeyUse('keypad', 'POST', '/press', {})).toBe('flows');
   });
 
   it("refuses a device change unless the page's own key may control devices", async () => {

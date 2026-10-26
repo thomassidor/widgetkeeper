@@ -47,7 +47,8 @@ export function routeKeyUse(type: string, method: string, path: string, body: un
     case 'flows POST /trigger': return 'flows';
     case 'keypad POST /press': {
       // A Keypad button starts a Flow, or sets its state: a variable through the key, a capability with the app's own
-      // token (`DEVICE_WRITES`).
+      // token (`DEVICE_WRITES`). Any `flow` is only ever started (`KeypadService.act()` refuses one that isn't a Flow's
+      // id), so its source can't be set under the Start Flows check.
       const source = b.flow ? '' : String(b.source ?? '');
       return source.startsWith('cap:') ? null : source.startsWith('var:') ? 'variables' : 'flows';
     }

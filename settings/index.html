@@ -126,7 +126,8 @@
         <div class="homey-form-group" id="kpNameGroup">
           <input class="homey-form-input" id="kpName" type="text" maxlength="40" autocomplete="off" spellcheck="false" data-i18n-label="kpName">
         </div>
-        <!-- Changing a code takes its current one: anyone whose key may call the app reaches the route. -->
+        <!-- Changing a code takes its current one, adding one any code already made: anyone whose key may call the app
+             reaches the routes. -->
         <div class="homey-form-group" id="kpCurrentGroup" hidden>
           <input class="homey-form-input" id="kpCurrent" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" data-i18n-label="kpCurrent">
         </div>
@@ -359,10 +360,20 @@
       const kpChanging = $('kpChanging');
       let kpEditing = null; // the code whose digits are being changed
       let kpBusy = false;
+      let kpCount = 0; // the codes made: adding another takes one of them
       const isCode = v => /^\d{3,6}$/.test(v);
+      /** Whether the form asks for a code already made: the current one to change it, any one to add another. */
+      const asksCurrent = () => !!kpEditing || kpCount > 0;
       function syncCodeButtons() {
         kpSave.disabled = kpBusy || !isCode(kpCode.value) || kpAgain.value.length < 3
-          || (kpEditing ? !kpCurrent.value : !kpName.value.trim());
+          || (asksCurrent() && !kpCurrent.value) || (!kpEditing && !kpName.value.trim());
+      }
+      /** The field for a code already made, labelled for a change or an add. */
+      function showCurrentField() {
+        const key = kpEditing ? 'kpCurrent' : 'kpExisting';
+        kpCurrent.setAttribute('aria-label', t(key));
+        kpCurrent.placeholder = t(key);
+        $('kpCurrentGroup').hidden = !asksCurrent();
       }
       // Digits only, at most six, as they're typed.
       for (const field of [kpCurrent, kpCode, kpAgain]) {
@@ -376,15 +387,15 @@
       for (const field of [kpName, kpCurrent, kpCode, kpAgain]) {
         field.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !kpSave.disabled) kpSave.click(); });
       }
-      /** Why the app didn't take it. */
-      function codeRefused(res) {
+      /** Why the app didn't take it (`changing` a code, or adding one). */
+      function codeRefused(res, changing) {
         switch (res && res.reason) {
           case 'name': return t('kpNeedName');
           case 'nameTaken': return t('kpNameTaken');
           case 'codeTaken': return t('kpCodeTaken');
           case 'full': return t('kpFull');
           case 'missing': return t('kpGone');
-          case 'wrongCode': return t('kpWrong');
+          case 'wrongCode': return t(changing ? 'kpWrong' : 'kpNotACode');
           case 'locked': return t('kpLocked', { seconds: res.retryAfter || 30 });
           default: return t('kpBadCode');
         }
@@ -397,6 +408,7 @@
         return button;
       }
       function showCodes(codes) {
+        kpCount = codes.length;
         kpList.replaceChildren();
         setLine('kpLine', codes.length ? codes.map(c => c.name).join(', ') : t('kpNone'));
         for (const c of codes) {
@@ -411,6 +423,8 @@
           row.append(name, digits, codeButton('kpChange', () => startChange(c)), remove);
           kpList.append(row);
         }
+        showCurrentField(); // the first code takes none; another, one of these
+        syncCodeButtons();
       }
       function loadCodes() {
         Homey.api('GET', '/keypad-codes', null, (err, res) => { if (!err && res) showCodes(res.codes || []); });
@@ -419,7 +433,7 @@
         kpEditing = null;
         kpName.value = kpCurrent.value = kpCode.value = kpAgain.value = '';
         $('kpNameGroup').hidden = false;
-        $('kpCurrentGroup').hidden = true;
+        showCurrentField();
         kpChanging.hidden = true;
         kpSave.textContent = t('kpAdd');
         syncCodeButtons();
@@ -429,7 +443,7 @@
         resetCodeForm();
         kpEditing = c;
         $('kpNameGroup').hidden = true;
-        $('kpCurrentGroup').hidden = false;
+        showCurrentField();
         kpChanging.textContent = t('kpChanging', { name: c.name });
         kpChanging.hidden = false;
         kpSave.textContent = t('kpSave');
@@ -453,11 +467,11 @@
             showCodes(res.codes || []);
             kpStatus.textContent = t(changing ? 'kpChanged' : 'kpAdded');
           } else {
-            kpStatus.textContent = codeRefused(res);
+            kpStatus.textContent = codeRefused(res, changing);
           }
         };
         if (changing) Homey.api('PUT', `/keypad-codes/${encodeURIComponent(kpEditing.id)}`, { current: kpCurrent.value, code: kpCode.value }, done);
-        else Homey.api('POST', '/keypad-codes', { name: kpName.value.trim(), code: kpCode.value }, done);
+        else Homey.api('POST', '/keypad-codes', { name: kpName.value.trim(), code: kpCode.value, ...(kpCount ? { current: kpCurrent.value } : {}) }, done);
       }
       // A second tap within 4 s removes it (no browser dialogs).
       function removeCode(c, button) {

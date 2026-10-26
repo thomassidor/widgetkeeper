@@ -239,10 +239,13 @@ export default {
     return { codes: app.keypad.listCodes() };
   },
 
-  /** The app settings page: a new Keypad code, `{name, code}` → `{ok, codes}` or `{ok: false, reason}`. */
-  async postKeypadCode({ homey, body }: { homey: Homey, body: { name?: unknown, code?: unknown } }) {
+  /**
+   * The app settings page: a new Keypad code, `{name, code, current}` → `{ok, codes}` or `{ok: false, reason}`. While
+   * there are codes, `current` must be one of them: anyone whose API key may call the app reaches this route.
+   */
+  async postKeypadCode({ homey, body }: { homey: Homey, body: { name?: unknown, code?: unknown, current?: unknown } }) {
     const app = homey.app as WidgetkeeperApp;
-    return app.keypad.addCode(body?.name, body?.code);
+    return app.keypad.addCode(body?.name, body?.code, body?.current);
   },
 
   /**

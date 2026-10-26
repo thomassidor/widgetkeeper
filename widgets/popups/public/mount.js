@@ -37,6 +37,8 @@ window.mountPopupsWidget = function (Homey, { root, frame }) {
     }
     // The event has no token: `/state` has it for this screen's popups.
     Homey.on('popups:show', (popup) => { if (widget.wants(popup)) load(); });
+    // One opens at a time: once the one opened here closes, the next one waiting may open.
+    Homey.on('popups:close', (data) => { if (data && widget.opened(data.id)) load(); });
     load();
     setInterval(load, REFRESH_MS);
     document.addEventListener('visibilitychange', () => {
