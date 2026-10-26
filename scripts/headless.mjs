@@ -1,8 +1,10 @@
-// Shared by the render scripts: headless Edge, and the Homey library icons the mock devices use.
-import { execFileSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+// Shared by the render scripts: headless Edge, the repo served over HTTP, and the Homey library icons the mock devices use.
+import { execFileSync, spawn } from 'node:child_process';
+import { createReadStream, mkdirSync, mkdtempSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { extname, join, resolve, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 /** The browser: Edge's default install path, or `EDGE` from the environment. */
 export const EDGE = process.env.EDGE || 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
@@ -27,6 +29,41 @@ export function edge(args, { virtualTime = 4000 } = {}) {
   } finally {
     rmSync(profile, { recursive: true, force: true });
   }
+}
+
+const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json',
+  '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg' };
+
+/**
+ * Runs `fn(origin)` while the repo root is served on 127.0.0.1 (`origin` is `http://127.0.0.1:<port>`), for pages that
+ * fetch files (the locales, a camera's picture) or show a page in the Web Page widget, which a file:// page can't. The
+ * server is a child process (this file with `--serve`), since edge() blocks this one.
+ */
+export async function withServer(fn) {
+  const child = spawn(process.execPath, [fileURLToPath(import.meta.url), '--serve'], { stdio: ['ignore', 'pipe', 'inherit'] });
+  const port = await new Promise((done, fail) => {
+    child.stdout.on('data', (b) => { const m = /PORT (\d+)/.exec(String(b)); if (m) done(Number(m[1])); });
+    child.on('exit', () => fail(new Error('The server stopped')));
+  });
+  try {
+    return await fn(`http://127.0.0.1:${port}`);
+  } finally {
+    child.kill();
+  }
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url) && process.argv[2] === '--serve') {
+  // The child: serve the repo root on a free port and print it.
+  const root = resolve('.');
+  const server = createServer((req, res) => {
+    const path = resolve(join(root, decodeURIComponent(new URL(req.url, 'http://x').pathname)));
+    if (path !== root && !path.startsWith(root + sep)) { res.writeHead(403).end(); return; }
+    let file = path;
+    try { if (statSync(file).isDirectory()) file = join(file, 'index.html'); statSync(file); } catch { res.writeHead(404).end(); return; }
+    res.writeHead(200, { 'Content-Type': TYPES[extname(file)] || 'application/octet-stream' });
+    createReadStream(file).pipe(res);
+  });
+  server.listen(0, '127.0.0.1', () => console.log(`PORT ${server.address().port}`));
 }
 
 // Homey's icon library, as the Homey app shows device icons. Not committed: fetched into temp/ (gitignored).

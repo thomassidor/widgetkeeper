@@ -1,7 +1,8 @@
 // The widgets of dev/screenshots.html: the real widget code with the made-up home of showcase-data.js ("Solbakken",
 // the showcase dashboards' data, so no real home's names or readings end up in the README), mounted into the elements
 // with the ids w-elec, w-thermo, w-qa, w-sa, w-roomhealth, w-valuematrix, w-weather, w-heatmap, w-cameras, w-values, w-sparklines, w-charts, w-variables,
-// w-varpresets, w-keypad, w-flows, w-price, w-locks, w-clock, w-textline(-note), w-dayssince and w-shortcuts. Most go through showcase-mount.js's MOUNT with a
+// w-varpresets, w-keypad, w-flows, w-price, w-locks, w-clock, w-textline(-note), w-dayssince, w-shortcuts, w-lightrooms,
+// w-pollen and w-webpage, and the Popups prompt page into the frame w-popup. Most go through showcase-mount.js's MOUNT with a
 // showcase entry (`findWidget()`); only the README's own changes are here. Needs the widget scripts,
 // temp/screenshot-icons.js, showcase-data.js and showcase-mount.js loaded first, and the showcase's fixed clock
 // (fixed-clock.js), so every render is the same.
@@ -14,7 +15,7 @@
   MOUNT.thermostat(el('w-thermo'), findWidget('thermostat'));
 
   // Home's lock, coffee machine and TV, then the security dashboard's garage door, doorbell and router.
-  MOUNT.quickactions(el('w-qa'), { devices: [...findWidget('quickactions', 0).devices, ...findWidget('quickactions', 3).devices] });
+  MOUNT.quickactions(el('w-qa'), { devices: [...findWidget('quickactions', 0).devices, ...findWidget('quickactions', 2).devices] });
 
   MOUNT.sensoralarms(el('w-sa'), findWidget('sensoralarms', 1)); // security: with the door contacts
 
@@ -125,5 +126,40 @@
   MOUNT.shortcuts(el('w-shortcuts'), {
     current: 'home', opts: { tiles: menu.map(([, color, icon]) => ({ color, icon })) },
     dashboards: menu.map(([id]) => ({ id, name: SHOWCASE[id].title })),
+  });
+
+  // The Evening dashboard's lights by room, the living room open with its Moods; the Climate dashboard's rain radar.
+  MOUNT.lightrooms(el('w-lightrooms'), findWidget('lightrooms'));
+  MOUNT.webpage(el('w-webpage'), findWidget('webpage'));
+
+  // Pollen and UV: the Garden dashboard's October has only the seasons' last grains, so the README has a June day of
+  // its own: grass high, the birch season's tail, the UV peak at 13.
+  const june = (values, uv) => ({
+    date: '2026-06-16', uv: { max: uv, level: 3, at: new Date('2026-06-16T13:00:00').getTime() },
+    pollen: Object.fromEntries(Object.entries(values).map(([type, [value, level]]) => [type, { value, level }])),
+  });
+  MOUNT.pollen(el('w-pollen'), { data: { outside: false, uvNow: 3, days: [june({ birch: [34, 2], grass: [64, 3], mugwort: [4, 1] }, 6.1)] } });
+
+  // Popups: the real prompt page (settings/popup.html's script) in dark mode against a simulated app, as on the 1.1.0
+  // teaser (whats-next.html): someone at the front door, the hallway camera's made-up picture, Unlock highlighted.
+  const picture = fetch('cameras/door.webp').then(r => r.arrayBuffer()).then((buf) => {
+    let bin = '';
+    for (const b of new Uint8Array(buf)) bin += String.fromCharCode(b);
+    return { type: 'image/webp', data: btoa(bin) };
+  });
+  const frame = el('w-popup');
+  frame.srcdoc = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+    + '<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">'
+    + '<link rel="stylesheet" href="../settings/popup.css"><script src="../widgets/spacer/public/kit.js"><\/script><script src="../settings/popup.js"><\/script>'
+    + '<style>.pp { --pp-bg: #111217; --pp-card: #1F2029; --pp-raised: #2B2C36; --pp-text: #E4E4E7; --pp-muted: #999AA3; --pp-accent: #339BFB; }</style>'
+    + '</head><body><main id="app" class="pp"></main></body></html>';
+  frame.addEventListener('load', () => {
+    const json = body => new Response(JSON.stringify(body));
+    const popup = { kind: 'ask', text: 'Someone is at the front door. Unlock it?', buttons: ['Unlock', 'Not now'], picture: { source: 'camera' } };
+    frame.contentWindow.mountPopupPage(frame.contentWindow.document.getElementById('app'), {
+      hash: '#id=p1&t=readme',
+      fetch: async url => (url.endsWith('/image') ? json(await picture)
+        : json({ closed: false, ...popup, now: Date.now(), until: Date.now() + 60e3, language: 'en' })),
+    });
   });
 })();

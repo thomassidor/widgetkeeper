@@ -49,6 +49,28 @@ const MOUNT = {
   // clock; a tap resets at once (so a page can show Undo), as the app would answer.
   // Dashboard Shortcuts (web dashboards only): `w.dashboards` the tiles' `{id, name}`, `w.current` the one it's on.
   shortcuts: (el, w) => createShortcutsWidget(el, w.opts || {}).setState({ current: w.current || null, tiles: w.dashboards }),
+  // Pollen and UV: `w.data` the widget's `/state` (`{days, uvNow, outside}`).
+  pollen: (el, w) => createPollenWidget(el, { timeFormat: '24', ...w.opts }).setData({ language: 'en', ...w.data }),
+  // Lights by Room: `w.devices` the lights with their rooms, `w.zoneIcons` the rooms' icons, `w.moods` their Moods.
+  lightrooms: (el, w) => {
+    const x = createLightRoomsWidget(el, { onSet: async () => {}, onMood: async () => {}, ...w.opts });
+    x.setState(w.devices, w.zoneIcons);
+    x.setMoods(w.moods || []);
+  },
+  // Web Page: `w.buttons`' made-up pages in dev/ (`page`), opened on the first; the widget wants an http(s) address,
+  // so the page is served (the render scripts serve the repo root).
+  webpage: (el, w) => {
+    const buttons = w.buttons.map(b => ({ name: b.name, url: new URL(b.page, location.href).href }));
+    createWebPageWidget(el, { ...w.opts, url: buttons[0].url, buttons });
+  },
+  // Smart Stack: `w.pages` are showcase entries, the first on screen (it doesn't turn, so a render holds still);
+  // a dashboard's colour style reaches them through the stack's `opts`.
+  stack: (el, w) => {
+    const x = createStackWidget(el, w.opts || {});
+    const slides = x.setPages(w.pages.map((p, i) => ({ id: `p${i}`, type: p.type, title: null, settings: {}, deviceIds: [] })));
+    const style = w.opts && w.opts.colorStyle;
+    w.pages.forEach((p, i) => MOUNT[p.type](slides[i].root, style ? { ...p, opts: { colorStyle: style, ...p.opts } } : p));
+  },
   dayssince: (el, w) => {
     const counters = w.counters.map(c => ({ key: daysSinceKey(c.name), name: c.name, icon: c.icon || null, amber: c.amber ?? null, red: c.red ?? null }));
     const x = createDaysSinceWidget(el, {

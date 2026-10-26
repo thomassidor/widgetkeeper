@@ -7,7 +7,7 @@
   <!--
     The web dashboards page (settings/dashboard.js) with the made-up home of showcase-data.js, in a drawn desktop
     browser window: the showcase dashboards as web dashboards, their widgets mounted in place of the iframes (the
-    `mountWidget` hook) with the real widget code. `?v=dashboard|front|editor|settings|light` picks the view (settings: the editor with Flow Buttons' settings dialog open; light: the Kitchen, a light dashboard, in a light browser), `&d=<id>` the
+    `mountWidget` hook) with the real widget code. `?v=dashboard|front|editor|settings|light|wide|popup` picks the view (settings: the editor with Flow Buttons' settings dialog open; light: the Kitchen, a light dashboard, in a light browser; wide: Energy's chart across two columns; popup: Security with a Flow's question over it), `&d=<id>` the
     dashboard (default home). Serve the repo root (the page and mock-web-api.js fetch /app.json and /locales/en.json)
     and open /dev/web-showcase.html; scripts/render-web-showcase.mjs (`npm run web-showcase [-- <view>…]`) renders
     them to docs/web/<view>.png on a transparent background. The clock is fixed (fixed-clock.js), so every render is
@@ -45,6 +45,11 @@
   <link rel="stylesheet" href="../widgets/curtains/public/widget.css">
   <link rel="stylesheet" href="../widgets/clock/public/widget.css">
   <link rel="stylesheet" href="../widgets/textline/public/widget.css">
+  <link rel="stylesheet" href="../widgets/keypad/public/widget.css">
+  <link rel="stylesheet" href="../widgets/pollen/public/widget.css">
+  <link rel="stylesheet" href="../widgets/lightrooms/public/widget.css">
+  <link rel="stylesheet" href="../widgets/webpage/public/widget.css">
+  <link rel="stylesheet" href="../widgets/stack/public/widget.css">
   <script src="../widgets/spacer/public/kit.js"></script>
   <script src="../widgets/electricity/public/chart.js"></script>
   <script src="../widgets/electricity/public/widget.js"></script>
@@ -74,6 +79,11 @@
   <script src="../widgets/curtains/public/widget.js"></script>
   <script src="../widgets/clock/public/widget.js"></script>
   <script src="../widgets/textline/public/widget.js"></script>
+  <script src="../widgets/keypad/public/widget.js"></script>
+  <script src="../widgets/pollen/public/widget.js"></script>
+  <script src="../widgets/lightrooms/public/widget.js"></script>
+  <script src="../widgets/webpage/public/widget.js"></script>
+  <script src="../widgets/stack/public/widget.js"></script>
   <script src="../temp/screenshot-icons.js" onerror="window.ICONS = {}"></script>
   <script src="mock-media.js"></script>
   <script src="mock-util.js"></script>
@@ -116,13 +126,23 @@
     // columns' own widgets show under it.
     const WIDE_BOARD = 'energy';
     if (VIEW === 'wide') Object.assign(BOARDS.find(b => b.id === WIDE_BOARD).columns[1][0], { span: 2, at: [0] });
-    const BOARD = VIEW === 'light' ? LIGHT_BOARD : VIEW === 'wide' ? WIDE_BOARD : params.get('d') || 'home';
+    // The popup view: Security with a Flow's question over it, the hallway camera's made-up picture (cameras/door.webp)
+    // as its picture.
+    const POPUP_BOARD = 'security';
+    const BOARD = VIEW === 'light' ? LIGHT_BOARD : VIEW === 'wide' ? WIDE_BOARD : VIEW === 'popup' ? POPUP_BOARD : params.get('d') || 'home';
     const HASH = VIEW === 'front' ? '#/' : VIEW === 'editor' || VIEW === 'settings' ? `#/d/${BOARD}/edit` : `#/d/${BOARD}`;
 
-    // The settings view: Home's Flow Buttons with four buttons, in its settings and drawn alike behind the dialog (the
-    // showcase's has two), and the dialog drawn inside the window: shown non-modal over a backdrop of its own, since a
-    // modal one sits over the whole render.
+    // The settings and popup views draw their dialog inside the window: shown non-modal over a backdrop of its own,
+    // since a modal one sits over the whole render. The settings view: Home's Flow Buttons with four buttons, in its
+    // settings and drawn alike behind the dialog (the showcase's has two).
     const SETTINGS_WIDGET = 'home-0-2';
+    if (VIEW === 'settings' || VIEW === 'popup') {
+      HTMLDialogElement.prototype.showModal = function () {
+        this.show();
+        const viewport = document.querySelector('.viewport');
+        viewport.append(Object.assign(document.createElement('div'), { className: 'shot-backdrop' }), this);
+      };
+    }
     if (VIEW === 'settings') {
       const flows = BOARDS.find(b => b.id === 'home').columns.flat().find(w => w.id === SETTINGS_WIDGET);
       const buttons = [['Good night', 'purple', 'moon', 'Moon'], ['Good morning', 'yellow', 'sun', 'Sun'], ['Movie time', 'orange', 'tv', 'TV'], ['Leaving home', 'blue', 'leave', 'Leave']];
@@ -136,13 +156,17 @@
         opts: { columns: '2', buttons: buttons.map(([, color, icon], i) => ({ id: `flow:${i + 1}`, color, icon })) },
         flows: buttons.map(([name], i) => ({ id: `flow:${i + 1}`, name, enabled: true, triggerable: true, advanced: false })),
       });
-      HTMLDialogElement.prototype.showModal = function () {
-        this.show();
-        const viewport = document.querySelector('.viewport');
-        viewport.append(Object.assign(document.createElement('div'), { className: 'shot-backdrop' }), this);
-      };
     }
-    mockWebApi({ lang: 'en', dashboards: BOARDS });
+    const popups = VIEW !== 'popup' ? [] : [{
+      id: 'p1', token: 'showcase', target: 'all', createdAt: Date.now(), until: Date.now() + 60e3,
+      kind: 'ask', text: 'Someone is at the front door. Unlock it?', buttons: ['Unlock', 'Not now'], picture: { source: 'camera' },
+      image: fetch('cameras/door.webp').then(r => r.arrayBuffer()).then((buf) => {
+        let bin = '';
+        for (const b of new Uint8Array(buf)) bin += String.fromCharCode(b);
+        return { type: 'image/webp', data: btoa(bin) };
+      }),
+    }];
+    mockWebApi({ lang: 'en', dashboards: BOARDS, popups });
     history.replaceState(null, '', HASH);
   </script>
   <script src="../settings/dashboard-layout.js"></script>
@@ -193,10 +217,14 @@
     .wd-live { display: none !important; }
     /* A non-transparent widget's frame: Homey's widget padding, as the widget's own body has in an iframe. */
     .wd-frame.card > .sc-body { padding: 16px; }
+    .wd-frame.card > .sc-body.wp-body { padding: 0; }
     /* The settings view: the dialog inside the page, over a backdrop like a modal's. */
     .viewport.settings { height: 1040px; }
     .shot-backdrop { position: absolute; inset: 0; z-index: 9998; background: rgba(0, 0, 0, .5); }
     .viewport > .wd-dialog { position: absolute; inset: 40px 0 auto; height: calc(100% - 80px); max-height: none; margin: 0 auto; z-index: 9999; box-shadow: 0 24px 64px rgba(0, 0, 0, .5); }
+    /* The popup view: the popup in the middle, as tall as it is, without the focus ring a script's focus() gives. */
+    .viewport > .wd-dialog.wd-popup { inset: 0; height: fit-content; margin: auto; }
+    .viewport > .wd-popup :focus-visible { outline: none; }
   </style>
 </head>
 <body>
@@ -220,7 +248,8 @@
 
   <script>
     // The widgets drawn on Homey's default widget background get its dark frame, as in showcase.html.
-    const FRAME = { thermostat: 'tw-frame', varpresets: 'tw-frame', media: 'mw-frame', weather: 'wf-frame', heatmap: 'hm-frame' };
+    const FRAME = { thermostat: 'tw-frame', varpresets: 'tw-frame', media: 'mw-frame', weather: 'wf-frame', heatmap: 'hm-frame',
+      keypad: 'kp-frame', pollen: 'pw-frame', webpage: 'wp-body' };
     mountWebDashboards(document.getElementById('app'), {
       mountWidget(w, wrap) {
         const el = document.createElement('div');

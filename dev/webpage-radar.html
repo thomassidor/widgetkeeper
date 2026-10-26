@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rain radar</title>
+  <!--
+    A made-up rain radar for the showcase's Web Page widget (dev/showcase-data.js): a drawn coast that is no real place,
+    the house "Solbakken", and the evening's rain coming in from the south-west, as its weather forecast has it (light
+    rain from 22). Made in 480 × 220. `?t=0|2|4` is now, in 2 hours or in 4: the rain moves on, so a button switch shows.
+  -->
+  <style>
+    html, body { margin: 0; background: #17303F; font-family: Roboto, Arial, sans-serif; }
+    svg { display: block; }
+  </style>
+</head>
+<body>
+  <svg width="480" height="220" viewBox="0 0 480 220">
+    <defs>
+      <radialGradient id="light"><stop offset="0" stop-color="#3FA7F5" stop-opacity=".75"/><stop offset="1" stop-color="#3FA7F5" stop-opacity="0"/></radialGradient>
+      <radialGradient id="mid"><stop offset="0" stop-color="#3FC77A" stop-opacity=".85"/><stop offset=".6" stop-color="#3FC77A" stop-opacity=".45"/><stop offset="1" stop-color="#3FC77A" stop-opacity="0"/></radialGradient>
+      <radialGradient id="heavy"><stop offset="0" stop-color="#F5D547" stop-opacity=".95"/><stop offset="1" stop-color="#F5D547" stop-opacity="0"/></radialGradient>
+      <linearGradient id="legend"><stop offset="0" stop-color="#3FA7F5"/><stop offset=".55" stop-color="#3FC77A"/><stop offset="1" stop-color="#F5D547"/></linearGradient>
+    </defs>
+    <!-- The land: a coast with a bay and an island, and a region's border. -->
+    <path d="M0 96 C34 88 58 104 92 98 C128 92 140 64 178 60 C214 56 232 80 266 74 C300 68 318 42 356 38 C392 34 420 50 446 44 C462 40 472 34 480 32 L480 220 L0 220 Z"
+      fill="#243A2F" stroke="#3A5646" stroke-width="1.5"/>
+    <path d="M196 132 C214 118 240 122 248 136 C256 152 236 166 216 162 C198 158 186 144 196 132 Z" fill="#17303F" stroke="#3A5646" stroke-width="1.5"/>
+    <path d="M60 40 C76 30 104 32 112 44 C118 56 98 64 80 62 C64 60 52 50 60 40 Z" fill="#243A2F" stroke="#3A5646" stroke-width="1.5"/>
+    <path d="M330 220 C326 190 344 168 338 140 C334 120 350 100 372 92" fill="none" stroke="#FFFFFF" stroke-opacity=".14" stroke-width="1.2" stroke-dasharray="5 4"/>
+    <!-- The rain, moved by ?t. -->
+    <g id="rain">
+      <ellipse cx="70" cy="176" rx="92" ry="44" fill="url(#light)"/>
+      <ellipse cx="130" cy="196" rx="70" ry="34" fill="url(#light)"/>
+      <ellipse cx="84" cy="182" rx="50" ry="24" fill="url(#mid)"/>
+      <ellipse cx="128" cy="198" rx="34" ry="16" fill="url(#mid)"/>
+      <ellipse cx="92" cy="184" rx="16" ry="9" fill="url(#heavy)"/>
+      <ellipse cx="10" cy="150" rx="40" ry="22" fill="url(#light)"/>
+    </g>
+    <!-- The house. -->
+    <circle cx="304" cy="118" r="11" fill="none" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="2"/>
+    <circle cx="304" cy="118" r="5" fill="#FFFFFF"/>
+    <text x="320" y="123" fill="#FFFFFF" font-size="14" font-weight="500">Solbakken</text>
+    <!-- When, top left; the legend, bottom right. -->
+    <rect x="12" y="12" width="104" height="26" rx="13" fill="#0E1D27" fill-opacity=".8"/>
+    <text id="when" x="64" y="30" fill="#FFFFFF" font-size="13" font-weight="500" text-anchor="middle"></text>
+    <rect x="348" y="190" width="120" height="20" rx="10" fill="#0E1D27" fill-opacity=".8"/>
+    <text x="358" y="204" fill="#FFFFFF" fill-opacity=".8" font-size="10">Light</text>
+    <rect x="386" y="196" width="40" height="6" rx="3" fill="url(#legend)"/>
+    <text x="432" y="204" fill="#FFFFFF" fill-opacity=".8" font-size="10">Heavy</text>
+  </svg>
+  <script>
+    const t = Number(new URLSearchParams(location.search).get('t')) || 0;
+    document.getElementById('when').textContent = t ? `+${t} h · ${18 + t}:40` : 'Now · 18:40';
+    // The south-west wind brings it up the coast: 2 hours is about 60 px east and 22 px north.
+    document.getElementById('rain').setAttribute('transform', `translate(${30 * t} ${-11 * t})`);
+  </script>
+</body>
+</html>

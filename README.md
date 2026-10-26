@@ -91,7 +91,7 @@ Today's pollen levels and the UV peak, in Europe<br clear="left"></p>
 
 <p><a href="#popups"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/popups-dark.png"><img src="docs/previews/popups-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#popups"><b>Popups</b></a><br>
-A Flow's message or Yes/No question, with a picture if you like, in front of everything on a phone, tablet or web dashboard<br clear="left"></p>
+A Flow's message or question with buttons of your own, with a picture if you like, in front of everything on a phone, tablet or web dashboard<br clear="left"></p>
 
 <p><a href="#room-health"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/roomhealth-dark.png"><img src="docs/previews/roomhealth-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#room-health"><b>Room Health</b></a><br>
@@ -247,7 +247,7 @@ A tap on a button that wants the code opens a phone's keypad beside the state (i
 
 <img src="docs/screenshots/keypad.png" alt="Keypad with Show the keypad: Always: an alarm shown as Armed with Arm ticked, Night, and Disarm behind the code, beside a keypad with two digits typed" width="358">
 
-The codes are made under **Apps → Widgetkeeper → Configure → Keypad codes**: a name, such as *Alarm* or *Kids*, and the digits, typed twice. A widget's **Code** setting picks one by name, so several widgets can share a code and you change it in one place (changing it takes the current code; removing it doesn't, and its widgets then refuse their buttons until another is picked). Or it picks **Any code**: then everyone's code works, and the Flow card tells whose it was, so give each person their own (no two codes can share digits). While the codes have different lengths, the keypad has an OK key. Widgetkeeper checks the code on your Homey and keeps only a fingerprint of it, made with a secret only the app has, so the digits are never stored or shown. Five wrong codes in a row lock that code for 30 s, doubling each time up to 15 min. The code guards the dashboard (a wall tablet, the children, guests), not your Homey: anyone who can open the Homey app can still start the Flow or change the device there.
+The codes are made under **Apps → Widgetkeeper → Configure → Keypad codes**: a name, such as *Alarm* or *Kids*, and the digits, typed twice. A widget's **Code** setting picks one by name, so several widgets can share a code and you change it in one place (changing it takes the current code, and adding another takes one of the codes already made; removing it doesn't, and its widgets then refuse their buttons until another is picked). Or it picks **Any code**: then everyone's code works, and the Flow card tells whose it was, so give each person their own (no two codes can share digits). While the codes have different lengths, the keypad has an OK key. Widgetkeeper checks the code on your Homey and keeps only a fingerprint of it, made with a secret only the app has, so the digits are never stored or shown. Five wrong codes in a row lock that code for 30 s, doubling each time up to 15 min, and ten in a row, whichever codes they were, lock them all. The code guards the dashboard (a wall tablet, the children, guests), not your Homey: anyone who can open the Homey app can still start the Flow or change the device there.
 
 **Flow cards:** *A Keypad button was tapped by [code]* (Anyone, Anyone with a code, or one code by name), once a button ran, with the tags **Code** (the code's name, such as *Anna*; empty without one), **Button** and **Keypad** (the widget's title). A Flow started by the button itself gets no tags, so for *Anna disarmed the alarm* use this card. *A wrong code was typed on a Keypad*, at a Keypad or a [web dashboard's code](#code), with **Button**, **Keypad** (the widget's title or the dashboard's name), **Locked** (this try locked the code) and **Tries left**.
 
@@ -263,6 +263,8 @@ Six lights in the space of three of Homey's light cards. Tap a tile to switch it
 **Settings:** lights, group by room, widen the last tile, what the bar's far left does, colour palette, [colour style](#colour-style), [rename tiles](#tile-names).
 
 ## Lights by Room
+<img src="docs/screenshots/lightrooms.png" alt="Lights by Room on a Homey dashboard: five rooms, the living room open with its Moods and three lights, the bedroom off" width="358">
+
 For many lights in many rooms. The lights you pick are grouped by their Homey room, a card each with the room's icon, how many lights are on and how bright, a switch for the whole room and a bar that dims all of it. Tap a room's name to open it: its Homey Moods as a row of buttons, then a row per light that works as in Light Controls (tap to switch, tap or drag the bar to dim, the colour button for colours and whites). Rooms start closed; open as many as you like. Starting a Mood needs an [API key](#api-key) with **Set Moods**.
 
 **Settings:** lights, show the room's Moods, colour palette, what the bar's far left does, [colour style](#colour-style).
@@ -289,6 +291,8 @@ A short message on the dashboard: a tile with a line of text or more, or a tilte
 **Settings:** style (tile or Post-it), text from (the message typed in the settings, a Flow card or a text variable), message, note name, variable, alignment, text size, long text, icon, colour, [colour style](#colour-style).
 
 ## Pollen and UV
+<img src="docs/screenshots/pollen.png" alt="Pollen and UV on a Homey dashboard: a high UV peak at 13:00, birch moderate, grass high and mugwort low" width="358">
+
 Today's pollen at the Homey's location, a row per type with a bar from low to very high, under the day's UV peak and when it comes. Pollen forecasts cover Europe only; elsewhere the widget says so and shows the UV. Out of season it says there's no pollen in the air.
 
 A level is the day's average in grains per m³, by Astma-Allergi Danmark's bands with a very high band on top. The UV levels are the WHO's.
@@ -303,6 +307,8 @@ A level is the day's average in grains per m³, by Astma-Allergi Danmark's bands
 Pollen and UV data from [Open-Meteo](https://open-meteo.com), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), generated using Copernicus Atmosphere Monitoring Service information.
 
 ## Popups
+<img src="docs/screenshots/popups.png" alt="A popup in the Homey app's browser on a phone: the hallway camera's picture, Someone is at the front door. Unlock it?, and the buttons Unlock and Not now" width="358">
+
 A Flow shows a message, or asks a question with one or two buttons of your own (**Yes** and **No** unless you name them), in front of everything on the screens you choose: a web dashboard, or the phones and tablets showing a Homey dashboard with a Popups widget.
 
 - *Show [text] on [screen] for [duration], picture: [picture], sound: [sound]*: closes after the time, or with a tap on that screen.
@@ -310,6 +316,8 @@ A Flow shows a message, or asks a question with one or two buttons of your own (
 - *Close the popups on [screen]* closes them early; an open question then ends unanswered.
 - **Picture:** a camera (refreshed while the popup is open) or a picture address. The cards *with an image* take an image tag instead, such as a doorbell's snapshot from its own Flow, taken when the Flow runs, or a text tag holding a picture address.
 - **Sound:** a chime, a doorbell or an alert. Browsers only play sound on a page that has been tapped, so a wall tablet plays it once someone has used the web dashboard; on phones it may stay silent.
+
+<img src="docs/web/popup.png" alt="The same popup over a web dashboard in a browser window, the dashboard dimmed behind it" width="100%">
 
 The screen is **Everywhere** or a Popups widget's name. On a [web dashboard](#web-dashboards), the popup covers the page in every browser showing a dashboard with a Popups widget of that name (Everywhere: every web dashboard). Homey's own dashboards don't let a widget draw over them, so there the Popups widget, blank itself, opens the popup in the Homey app's built-in browser; close that window when you're done. Put one at the bottom of each dashboard that should get popups, so it doesn't push other widgets down, with the same name on every screen that should get the same ones: *Hallway* on the phones' dashboard and on the hallway tablet's web dashboard reaches both at once.
 
@@ -413,6 +421,8 @@ The next 36 hours from [MET Norway](https://www.met.no/en) ([yr.no](https://www.
 Weather data from MET Norway, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Icons: [Yr's weather symbols](https://github.com/metno/weathericons) (MIT).
 
 ## Web Page
+<img src="docs/screenshots/webpage.png" alt="Web Page on a Homey dashboard: a rain radar page scaled to fill the widget, with the buttons Now, +2 h and +4 h under it" width="358">
+
 A web page you pick, drawn at the width and height you set and scaled to fill the widget without borders: set them to a fixed-size gadget's size, and it fills the widget on a phone and a tablet alike. Links on the page never open, and unless you let the page be tapped, taps are ignored and a swipe scrolls the dashboard. Two to four buttons in a row under the page switch between their addresses (for a map, the same address with another zoom on each); the widget always opens on the first. `{lat}` and `{lon}` in an address become the Homey's location. Sites that don't allow being shown inside another page stay empty. You're responsible for following the terms of the site you show.
 
 **Settings:** address, page width and height, let the page be tapped, reload every (15 minutes keeps live data current on a screen that's always on), up to four buttons (a name and an address).

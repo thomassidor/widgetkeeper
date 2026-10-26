@@ -55,7 +55,8 @@ function mockSettingSections(settings, lang) {
 }
 
 // `popups`: the open popups (wk-084), as `/web/popups` lists them; their pictures are a drawn front door, never a real
-// camera image, and one with `elsewhere` answers as if another screen had been first.
+// camera image (or a popup's own `image`, `{type, data}` or a promise of it: the web showcase's made-up camera picture),
+// and one with `elsewhere` answers as if another screen had been first.
 /** Made-up Keypad codes for a dashboard's code (the app keeps only fingerprints; the preview knows the digits). */
 const MOCK_CODES = [{ id: '0a1b2c3d4e5f', name: 'Anna', digits: '1234' }, { id: 'f5e4d3c2b1a0', name: 'Kids', digits: '2580' }];
 
@@ -113,6 +114,8 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
     if (p === '/web/popups') return { popups, now: Date.now() };
     const popupImage = p.match(/^\/web\/popups\/([^/]+)\/image$/);
     if (popupImage) {
+      const own = popups.find(x => x.id === popupImage[1])?.image;
+      if (own) return await own;
       // A drawn front door; a camera's lamp changes with every read, so the refresh shows.
       const lamp = popups.find(x => x.id === popupImage[1])?.picture?.source === 'camera' ? (Date.now() / 3000 | 0) % 2 : 0;
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360"><rect width="640" height="360" fill="#2B3A4A"/>`

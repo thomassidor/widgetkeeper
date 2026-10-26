@@ -7,8 +7,10 @@
   <!--
     The README screenshots: the real widget code with mock data, at the width of a widget on Homey's dark dashboard
     on a phone (358 px: a 390 px screen less the dashboard's 16 px margins; colours sampled from an iPhone screenshot).
-    No widget title and a transparent page, so the shots sit flush with the README text in either GitHub theme. `?s=electricity|thermostat|quickactions|sensoralarms|sensordots|roomhealth|valuematrix|weather|heatmap|cameras|values|sparklines|charts|variables|varpresets|keypad|flows|price|timers|locks|curtains|clock|textline|dayssince|shortcuts`
+    No widget title and a transparent page, so the shots sit flush with the README text in either GitHub theme. `?s=electricity|thermostat|quickactions|sensoralarms|sensordots|roomhealth|valuematrix|weather|heatmap|cameras|values|sparklines|charts|variables|varpresets|keypad|flows|price|timers|locks|curtains|clock|textline|dayssince|shortcuts|lightrooms|pollen|webpage|popups`
     shows one, for scripts/render-screenshots.mjs; without it, all of them. The widgets are mounted by mock-dashboard.js with the made-up home of showcase-data.js.
+    `popups` is the prompt page a Popups widget opens, in the Homey app's browser on a drawn phone; it fetches the hallway
+    camera's made-up picture, so serve the repo root (the render script does).
     Device icons come from Homey's icon library. The render script downloads them to temp/screenshot-icons.js;
     without that file the tiles fall back to plain squares.
   -->
@@ -42,6 +44,9 @@
   <link rel="stylesheet" href="../widgets/textline/public/widget.css">
   <link rel="stylesheet" href="../widgets/dayssince/public/widget.css">
   <link rel="stylesheet" href="../widgets/shortcuts/public/widget.css">
+  <link rel="stylesheet" href="../widgets/lightrooms/public/widget.css">
+  <link rel="stylesheet" href="../widgets/pollen/public/widget.css">
+  <link rel="stylesheet" href="../widgets/webpage/public/widget.css">
   <script src="../widgets/spacer/public/kit.js"></script>
   <script src="../widgets/electricity/public/chart.js"></script>
   <script src="../widgets/electricity/public/widget.js"></script>
@@ -70,6 +75,9 @@
   <script src="../widgets/textline/public/widget.js"></script>
   <script src="../widgets/dayssince/public/widget.js"></script>
   <script src="../widgets/shortcuts/public/widget.js"></script>
+  <script src="../widgets/lightrooms/public/widget.js"></script>
+  <script src="../widgets/pollen/public/widget.js"></script>
+  <script src="../widgets/webpage/public/widget.js"></script>
   <script src="../temp/screenshot-icons.js" onerror="window.ICONS = {}"></script>
   <script src="mock-util.js"></script>
   <script src="showcase-data.js"></script>
@@ -84,6 +92,15 @@
     /* A non-transparent widget's frame (default widget background, with Homey's widget padding). */
     .card { background: #1F2029; border-radius: 20px; padding: 16px; box-sizing: border-box; }
     .card.tw-frame, .card.wf-frame, .card.hm-frame { background: #181920; }
+    .wp-dash { border-radius: 10px; overflow: hidden; }
+    /* Popups: the Homey app's browser (Done, the address) on a drawn phone, the prompt page in it. */
+    .pp-phone { padding: 8px; border-radius: 44px; background: #1B1C22; box-shadow: inset 0 0 0 2px #34353F; }
+    .pp-screen { border-radius: 36px; overflow: hidden; background: #111217; }
+    .pp-browser { display: flex; align-items: center; height: 64px; padding: 20px 16px 0; box-sizing: border-box; background: #1F2029; color: #999AA3; font-size: 14px; }
+    .pp-browser b { color: #339BFB; font-weight: 500; width: 56px; }
+    .pp-browser span { flex: 1; text-align: center; }
+    .pp-browser i { width: 56px; }
+    .pp-screen iframe { display: block; width: 342px; height: 456px; border: 0; }
   </style>
 </head>
 <body>
@@ -109,6 +126,12 @@
   <section class="shot" id="textline"><div id="w-textline"></div><div id="w-textline-note" style="margin-top:8px"></div></section>
   <section class="shot" id="dayssince"><div class="card"><div id="w-dayssince"></div></div></section>
   <section class="shot" id="shortcuts"><div id="w-shortcuts"></div></section>
+  <section class="shot" id="lightrooms"><div id="w-lightrooms"></div></section>
+  <section class="shot" id="pollen"><div class="card pw-frame"><div id="w-pollen"></div></div></section>
+  <section class="shot" id="webpage"><div class="wp-dash"><div id="w-webpage"></div></div></section>
+  <section class="shot" id="popups"><div class="pp-phone"><div class="pp-screen">
+    <div class="pp-browser"><b>Done</b><span>192.168.1.20</span><i></i></div><iframe id="w-popup" title="Popup"></iframe>
+  </div></div></section>
 
   <script src="mock-dashboard.js"></script>
   <script>

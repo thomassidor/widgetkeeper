@@ -297,6 +297,76 @@
 
   const mainMeter = sparkSlot('m1', 'measure_power', 'Main meter', { units: 'W', decimals: 0 }, spark((t, r) => (t > NOW - DAY / 120 ? powerNow() : Math.round(houseLoad(t, r) + (t > NOW - 40 * MIN ? 1500 : 0))), 11));
 
+  // ---- 1.1.0's widgets: the alarm's Keypad, Lights by Room, Pollen and UV, a Web Page and a Smart Stack.
+
+  /** A made-up alarm system, disarmed while the family is home: Arm and Night without the code, Disarm behind it. */
+  const alarmValue = (value, name) => ({ id: `string:${JSON.stringify(value)}`, name, value, type: 'string' });
+  const alarmKeypad = {
+    type: 'keypad',
+    settings: {
+      state: { id: 'cap:alarm:homealarm_state' }, title: 'Alarm', code: { id: 'c1', name: 'Alarm' }, layout: 'compact',
+      value1: alarmValue('armed', 'Armed'), label1: 'Arm', icon1: { id: 'shield' }, color1: 'red', code1: false,
+      value2: alarmValue('partially_armed', 'Partially armed'), label2: 'Night', icon2: { id: 'moon' }, color2: 'purple', code2: false,
+      value3: alarmValue('disarmed', 'Disarmed'), label3: 'Disarm', icon3: { id: 'unlock' }, color3: 'green',
+    },
+    state: {
+      source: {
+        kind: 'capability', deviceId: 'alarm', capabilityId: 'homealarm_state', name: 'Alarm system', value: 'disarmed',
+        capability: { title: 'Home Alarm state', type: 'enum', values: [{ id: 'armed', title: 'Armed' }, { id: 'disarmed', title: 'Disarmed' }, { id: 'partially_armed', title: 'Partially armed' }] },
+      },
+      flows: [],
+      code: { id: 'c1', name: 'Alarm', digits: 4 },
+    },
+  };
+
+  /** The rooms' icons for Lights by Room: drawn stand-ins (the app sends Homey's own zone icons), as on its dev page. */
+  const zoneIcon = body => `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`)}`;
+  const ZONE_ICONS = {
+    z1: zoneIcon('<path d="M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><path d="M3 13a2 2 0 0 1 4 0v1h10v-1a2 2 0 0 1 4 0v4H3z"/><path d="M5 17v2M19 17v2"/>'),
+    z2: zoneIcon('<path d="M4 10h16v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 10h20"/><path d="M9 7c0-1 1-1.5 1-2.5M14 7c0-1 1-1.5 1-2.5"/>'),
+    z3: zoneIcon('<path d="M4 12h16M7 12v8M17 12v8"/><path d="M12 3v3M9 9l1-3h4l1 3z"/>'),
+    z6: zoneIcon('<rect x="5" y="3" width="14" height="18" rx="1"/><path d="M12 3v18M5 12h14"/>'),
+    b1: zoneIcon('<path d="M3 19V6M3 15h18v4M21 15v-2a3 3 0 0 0-3-3h-7v5"/><circle cx="7" cy="12" r="1.8"/>'),
+  };
+  /** The evening's lights by room, the living room open with its Moods. */
+  const eveningRooms = {
+    type: 'lightrooms', opts: { open: ['z1'], palette: 'dusk' }, devices: eveningLights, zoneIcons: ZONE_ICONS,
+    moods: [
+      { id: 'm1', name: 'Movie night', zone: 'z1', colors: [{ hue: 0.08, saturation: 1 }, { hue: 0.76, saturation: 1 }] },
+      { id: 'm2', name: 'Cosy', zone: 'z1', colors: [{ temperature: 1 }, { temperature: 1 }, { hue: 0.08, saturation: 1 }] },
+      { id: 'm3', name: 'Reading', zone: 'z1', colors: [{ temperature: 0.5 }] },
+    ],
+  };
+
+  /** Pollen and UV in early October: the grass and mugwort seasons' last grains, a low UV peak at 13. */
+  const pollenDay = (offset, values, uv) => {
+    const date = ymd(new Date(NOW + offset * DAY));
+    const level = (type, v) => (['alder', 'birch', 'olive'].includes(type) ? [1, 30, 101, 1001] : [1, 10, 51, 251]).filter(b => Math.round(v) >= b).length;
+    return {
+      date,
+      pollen: Object.fromEntries(Object.entries(values).map(([type, v]) => [type, { value: v, level: level(type, v) }])),
+      uv: { max: uv, level: uv < 2.5 ? 1 : 2, at: new Date(`${date}T13:00:00`).getTime() },
+    };
+  };
+  const gardenPollen = {
+    type: 'pollen', opts: { types: ['grass', 'mugwort', 'ragweed'] },
+    data: { outside: false, uvNow: 0, days: [
+      pollenDay(0, { grass: 7, mugwort: 2, ragweed: 1 }, 1.6),
+      pollenDay(1, { grass: 4, mugwort: 1, ragweed: 0 }, 1.2),
+      pollenDay(2, { grass: 9, mugwort: 2, ragweed: 1 }, 1.8),
+      pollenDay(3, { grass: 3, mugwort: 0, ragweed: 0 }, 1.1),
+    ] },
+  };
+
+  // The garden's values, cameras and daylight: on the Garden dashboard, and the values also in its Smart Stack.
+  const gardenValues = { type: 'values', opts: { columns: '3', percentFill: true }, slots: [
+    value('gv1', 'measure_humidity', 'Lawn soil', { units: '%', decimals: 0 }, 38),
+    value('gv2', 'measure_humidity', 'Greenhouse', { units: '%', decimals: 0 }, 71),
+    value('gv3', 'measure_battery', 'Mower', { units: '%', decimals: 0 }, 100),
+  ] };
+  const gardenCameras = { type: 'cameras', cameras: [cam('garden', 'Terrace'), cam('shed', 'Shed'), cam('side', 'Side path'), cam('drive', 'Driveway')] };
+  const gardenHeatmap = { type: 'heatmap', opts: { period: 'rolling', step: 2, color: 'yellow' }, data: heatLux() };
+
   window.SHOWCASE = {
     home: {
       title: 'Home',
@@ -400,11 +470,7 @@
           ] },
         ],
         [
-          { type: 'quickactions', devices: [
-            { id: 'k1', name: 'Front door', icon: icon('lock'), quickAction: qa('locked', true) },
-            { id: 'k2', name: 'Back door', icon: icon('lock'), quickAction: qa('locked', true) },
-            { id: 'k3', name: 'Shed', icon: icon('lock'), quickAction: qa('locked', false) },
-          ] },
+          alarmKeypad,
           { type: 'heatmap', opts: { period: 'rolling', step: 2 }, data: heatMotion() },
           { type: 'values', opts: { percentFill: true }, slots: [
             value('b1', 'measure_battery', 'Front door', { units: '%', decimals: 0 }, 72),
@@ -471,6 +537,10 @@
             ['flow:c3', 'Warm bathroom', 'orange', 'flame'], ['advanced:c4', 'Frost guard', 'grey', 'snowflake'],
           ]),
           modePresets('Heating', 'flame', ['Comfort', 'Eco', 'Away'], 'Comfort'),
+          // A made-up rain radar (dev/webpage-radar.html): the rain due from 22 is still out in the south-west.
+          { type: 'webpage', opts: { pageWidth: 480, pageHeight: 210 }, buttons: [
+            { name: 'Now', page: 'webpage-radar.html?t=0' }, { name: '+2 h', page: 'webpage-radar.html?t=2' }, { name: '+4 h', page: 'webpage-radar.html?t=4' },
+          ] },
         ],
       ],
     },
@@ -479,17 +549,12 @@
       title: 'Evening',
       columns: [
         [
-          { type: 'lights', opts: { groupByZone: true, palette: 'dusk' }, devices: eveningLights },
-          flowButtons('2', [
-            ['advanced:v1', 'Movie time', 'purple', 'tv'], ['flow:v2', 'Dinner', 'orange', 'bulb'],
-            ['flow:v3', 'Reading light', 'yellow', 'star'], ['flow:v4', 'Good night', 'blue', 'moon'],
-          ]),
+          eveningRooms,
           // Dusk: the living room curtain on its way down, the terrace door's already closed.
           { type: 'curtains', devices: [
             { id: 'ec1', name: 'Living room', kind: 'curtain', caps: { windowcoverings_set: { value: 0.45, setable: true }, windowcoverings_state: { value: 'down', setable: true } } },
             { id: 'ec2', name: 'Terrace door', kind: 'curtain', caps: { windowcoverings_set: { value: 0, setable: true }, windowcoverings_state: { value: 'idle', setable: true } } },
           ] },
-          { type: 'sparklines', slots: indoorSparks.slice(0, 2) },
         ],
         [
           { type: 'quickactions', devices: [
@@ -507,6 +572,10 @@
             value('ew2', 'measure_humidity', 'Living room', { units: '%', decimals: 0 }, 47),
             { ...value('ew3', 'measure_co2', "Emma's room", { units: 'ppm', decimals: 0 }, 783), color: 'green' },
           ] },
+          flowButtons('2', [
+            ['advanced:v1', 'Movie time', 'purple', 'tv'], ['flow:v2', 'Dinner', 'orange', 'bulb'],
+            ['flow:v3', 'Reading light', 'yellow', 'star'], ['flow:v4', 'Good night', 'blue', 'moon'],
+          ]),
         ],
         [
           { type: 'weather', opts: { rows: 2, step: 2 }, hours: weatherHours() },
@@ -530,23 +599,21 @@
       theme: 'light',
       columns: [
         [
-          { type: 'cameras', cameras: [cam('garden', 'Terrace'), cam('shed', 'Shed'), cam('side', 'Side path'), cam('drive', 'Driveway')] },
+          gardenCameras,
           { type: 'lights', devices: outdoorLights },
+          // A Smart Stack of the garden's values, daylight and cameras, on its first page.
+          { type: 'stack', pages: [gardenValues, gardenHeatmap, gardenCameras] },
         ],
         [
           { type: 'weather', opts: { density: 'detailed', rows: 2, theme: 'card' }, hours: weatherHours() },
-          { type: 'heatmap', opts: { period: 'rolling', step: 2, color: 'yellow' }, data: heatLux() },
+          gardenHeatmap,
         ],
         [
           { type: 'sparklines', slots: [
             sparkSlot('g1', 'measure_temperature', 'Outdoor', { units: '°C', decimals: 1 }, spark((t, r) => round(10.4 + 3 * dayCurve(t, 14) + 0.2 * r(), 1), 5)),
             sparkSlot('g2', 'measure_wind_strength', 'Wind', { units: 'm/s', decimals: 1 }, spark((t, r) => round(4.2 + 1.4 * dayCurve(t, 16) + 1.2 * r(), 1), 19)),
           ] },
-          { type: 'values', opts: { columns: '3', percentFill: true }, slots: [
-            value('gv1', 'measure_humidity', 'Lawn soil', { units: '%', decimals: 0 }, 38),
-            value('gv2', 'measure_humidity', 'Greenhouse', { units: '%', decimals: 0 }, 71),
-            value('gv3', 'measure_battery', 'Mower', { units: '%', decimals: 0 }, 100),
-          ] },
+          gardenPollen,
           flowButtons('1', [
             ['flow:gb1', 'Water the vegetable beds', 'blue', 'drop'],
             ['flow:gb2', 'Mow the lawn', 'green', 'play'],
