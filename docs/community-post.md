@@ -20,7 +20,7 @@ I've been building **Widgetkeeper**, an app with dashboard widgets for Homey Pro
 
 > :white_check_mark: **Widgetkeeper 1.0.3 is live in the Homey App Store:** https://homey.app/a/com.thomassidor.widgetkeeper/
 >
-> :test_tube: **Test version:** the next version (1.1.1), with five new widgets, popups from your Flows and wide widgets on web dashboards, is in testing. Widgets marked :soon: are only in the test version for now: https://homey.app/a/com.thomassidor.widgetkeeper/test/
+> :test_tube: **Test version:** the next version (1.1.2), with five new widgets, popups from your Flows and wide widgets on web dashboards, is in testing. Widgets marked :soon: are only in the test version for now: https://homey.app/a/com.thomassidor.widgetkeeper/test/
 
 ## The widgets
 
@@ -38,7 +38,7 @@ Tap a widget for what it does and its settings on GitHub. Every widget follows H
 | [![Value Matrix|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/valuematrix-dark.png)](https://github.com/thomassidor/widgetkeeper#value-matrix)<br>**[Value Matrix](https://github.com/thomassidor/widgetkeeper#value-matrix)** | [![Variable Presets|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/varpresets-dark.png)](https://github.com/thomassidor/widgetkeeper#variable-presets)<br>**[Variable Presets](https://github.com/thomassidor/widgetkeeper#variable-presets)** | [![Variables|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/variables-dark.png)](https://github.com/thomassidor/widgetkeeper#variables)<br>**[Variables](https://github.com/thomassidor/widgetkeeper#variables)** | [![Weather Forecast|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/weather-dark.png)](https://github.com/thomassidor/widgetkeeper#weather-forecast)<br>**[Weather Forecast](https://github.com/thomassidor/widgetkeeper#weather-forecast)** |
 | [![Web Page|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/webpage-dark.png)](https://github.com/thomassidor/widgetkeeper#web-page)<br>**[Web Page](https://github.com/thomassidor/widgetkeeper#web-page)** :soon: |  |  |  |
 
-## :soon: What's new in the next version (1.1.1)
+## :soon: What's new in the next version (1.1.2)
 
 * **Five new widgets:** Pollen and UV, Web Page, Lights by Room, Keypad (buttons behind a code, such as arming the alarm), and Popups.
 * **Popups:** a Flow shows a message or asks a question with buttons of your own, with a camera's picture if you like, in front of everything on a web dashboard or on your phones and tablets. The answer goes back to the Flow.
@@ -46,6 +46,7 @@ Tap a widget for what it does and its settings on GitHub. Every widget follows H
 * **Device Quick Actions:** activate with a double or long press, so a stray tap can't unlock a door (by @stefan-schweiger). **Thermostat Presets:** Flow cards for its buttons. **Charts and Sparklines:** Today and Yesterday.
 * **Days Since:** show only the counters that are due, and as a Smart Stack page. **Media:** eight buttons. **Notes:** long text on more lines.
 * **Charts:** one scale for both values on one chart (by @stefan-schweiger). **Light Controls and Lights by Room:** a room's brightness counts only its lit dimmable lights. **Web Page:** says so when a site can't be shown in it.
+* **Charts and Sparklines:** this and last week, month and year, and averages without stray decimals. **Charts:** today and yesterday (or this and last week) on one chart, and the legend below the chart. **Keypad:** the state's colour across the whole widget. **Lights by Room:** rename rooms and lights.
 
 ![What's new in Widgetkeeper 1.1.0|690x1249](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/whats-next-1.1.0.png)
 
