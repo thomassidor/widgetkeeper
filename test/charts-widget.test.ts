@@ -235,6 +235,66 @@ describe('today and yesterday', () => {
     r.w.render();
     expect(r.header()).toEqual(['30°C | Yesterday · avg']); // the 15th is yesterday now
   });
+
+  describe('on one chart (wk-102)', () => {
+    const PW2 = 368 - L - 34; // with the right scale
+    // One capability twice, as the app answers it: each with its own day's history and the same value now.
+    const today = (style?: string) => [{ span: 'today', style }, { span: 'yesterday', style, color: 'green' }];
+    const days = () => [entry(between(MIDNIGHT, NOW, x => 20 + x * 2)), entry(between(MIDNIGHT - 24 * HOUR, MIDNIGHT, x => 10 + x * 20), { value: 22 })];
+    const rightLabels = (r: ReturnType<typeof widget>) => r.all('.ch-chart svg text[text-anchor="start"]').map(t => t.textContent);
+    const tap = (r: ReturnType<typeof widget>, hour: number) => r.q('.ch-chart svg')!
+      .dispatchEvent(new PointerEvent('pointerdown', { clientX: L + PW2 * hour / 24, pointerType: 'mouse' }));
+    const minutes = (hhmm: string) => +hhmm.slice(0, 2) * 60 + +hhmm.slice(3);
+
+    it('draws today and yesterday, each by its time of day', () => {
+      const r = widget(today(), days(), { overlay: true });
+      const lines = r.all('g[data-color] .series-line');
+      expect(lines.map(p => p.closest('g')!.getAttribute('data-color'))).toEqual(['blue', 'green']);
+      expect(lines[0].getAttribute('d')).not.toBe(lines[1].getAttribute('d'));
+      expect(rightLabels(r)).toContain('30'); // yesterday's own values, not today's again
+      const [a, b] = r.all('g[data-color] .dot-core').map(c => +c.getAttribute('cx')!);
+      expect(a).toBeCloseTo(L + PW2 * (NOW - MIDNIGHT) / (24 * HOUR), 0); // today up to now
+      expect(b).toBeGreaterThan(L + PW2 - 3); // yesterday up to midnight
+      expect(r.header()).toEqual(['22°C | Now', '20°C | Yesterday · avg']);
+      expect(xLabels(r)).toEqual(['6:00', '12:00', '18:00']);
+    });
+
+    it("puts yesterday's bars beside today's, an hour each", () => {
+      const r = widget(today('bars'), days(), { overlay: true });
+      const [a, b] = r.all('g.series-bars').map(g => [...g.querySelectorAll('rect.bar')]);
+      expect([a.length, b.length]).toEqual([11, 24]);
+      const k = 5;
+      const ax = +a[k].getAttribute('x')!, aw = +a[k].getAttribute('width')!, bx = +b[k].getAttribute('x')!;
+      expect(bx).toBeGreaterThan(ax + aw - 0.01);
+      expect(bx).toBeLessThan(ax + 2 * aw + 2);
+    });
+
+    it('keeps live values off yesterday', () => {
+      const r = widget(today(), days(), { overlay: true });
+      r.w.pushChange({ deviceId: 'd1', capabilityId: 'measure_temperature', value: 50 });
+      expect(r.header()).toEqual(['50°C | Now', '20°C | Yesterday · avg']);
+    });
+
+    it('shows both days at the tapped time of day, only yesterday after now', () => {
+      const r = widget(today(), days(), { overlay: true });
+      tap(r, 6);
+      const [a, b] = r.header().map(h => h.split(' | ')[1]);
+      expect(Math.abs(minutes(a) - 360)).toBeLessThan(10);
+      expect(Math.abs(minutes(b) - 360)).toBeLessThan(10);
+      tap(r, 18);
+      const [c, d] = r.header().map(h => h.split(' | ')[1]);
+      expect(c).toBe('Now');
+      expect(Math.abs(minutes(d) - 18 * 60)).toBeLessThan(10);
+    });
+
+    it("gives series 2 chart 1's span unless both are days", () => {
+      const r = widget([{ span: 'today' }, { span: '24h', style: 'bars' }], [entry(between(MIDNIGHT, NOW, () => 20)), entry(series(24 * HOUR, () => 30))], { overlay: true });
+      expect(r.all('rect.bar').length).toBe(11); // today's hours, not 24 h's
+      const r2 = widget([{ span: '24h' }, { span: 'yesterday', style: 'bars' }], [entry(series(24 * HOUR, () => 20)), entry(series(24 * HOUR, () => 30))], { overlay: true });
+      expect(r2.all('rect.bar').length).toBe(25); // the last 24 h, not yesterday
+      expect(r2.header()[1]).toBe('30°C | Now');
+    });
+  });
 });
 
 describe('live and states', () => {

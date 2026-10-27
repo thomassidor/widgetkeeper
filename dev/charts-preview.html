@@ -33,6 +33,7 @@
   <div class="col"><span>358 px · nothing picked</span><div class="card homey-dark-mode" style="width:358px"><div id="w9"></div></div></div>
   <div class="col"><span>358 px · dark · today · area + yesterday · bars</span><div class="card homey-dark-mode" style="width:358px"><div id="w10"></div></div></div>
   <div class="col"><span>300 px · light · yesterday on one chart · area + line</span><div class="card light" style="width:300px"><div id="w11"></div></div></div>
+  <div class="col"><span>358 px · dark · today + yesterday of one meter on one chart · one scale</span><div class="card homey-dark-mode" style="width:358px"><div id="w12"></div></div></div>
 
   <script>
     const HOUR = 3600e3;
@@ -83,6 +84,15 @@
     make('w10', { charts: [{ span: 'today' }, { span: 'yesterday', style: 'bars', color: 'green' }] }).setState([temp(48 * HOUR), power(48 * HOUR)]);
     make('w11', { overlay: true, charts: [{ span: 'yesterday', color: 'purple' }, { style: 'line', smooth: true, color: 'orange' }] })
       .setState([outdoor(48 * HOUR), power(48 * HOUR)]);
+    // One day meter (m³ so far today, back to 0 at midnight) as today and yesterday on one chart (wk-102).
+    const water = () => entry('m', 'meter_water', 'Cold water', cap({ title: 'Water today', units: 'm³', decimals: 3 }),
+      series(48 * HOUR, () => 0).map(([at]) => {
+        const d = new Date(at), h = d.getHours() + d.getMinutes() / 60, f = d.getDate() % 2 ? 1 : 0.75;
+        const ramp = (a, b) => Math.min(1, Math.max(0, (h - a) / (b - a)));
+        return [at, round(f * (0.045 * ramp(6.5, 8) + 0.05 * ramp(17, 20) + 0.003 * h), 3)];
+      }));
+    make('w12', { overlay: true, sharedScale: true, charts: [{ span: 'today' }, { span: 'yesterday', style: 'line', color: 'green' }] })
+      .setState([water(), water()]);
     const empty = make('w9', {});
     empty.setMessage(empty.t('selectChart'));
   </script>

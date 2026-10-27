@@ -6,12 +6,12 @@
 window.mountChartsWidget = function (Homey, { root, frame }) {
   const REFRESH_MS = 5 * 60e3; // keeps the app's device subscriptions alive and resyncs the histories
 
-  const { wireFrame } = window.WidgetkeeperKit;
+  const { wireFrame, isDaySpan } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
   const settings = Homey.getSettings() || {};
-  // '2': stacked; 'overlay': both on one chart, over chart 1's time span.
+  // '2': stacked; 'overlay': both on one chart, over chart 1's time span (or today with yesterday).
   const overlay = settings.charts === 'overlay';
   const count = settings.charts === '2' || overlay ? 2 : 1;
   // Each chart setting is an autocomplete item whose id is `<deviceId>:<capabilityId>`; empty ones are left out.
@@ -25,8 +25,9 @@ window.mountChartsWidget = function (Homey, { root, frame }) {
     smooth: settings[`smooth${n}`] === true,
     title: settings[`title${n}`],
   })).filter(c => typeof c.slot === 'string' && c.slot.indexOf(':') > 0 && !c.slot.endsWith(':')); // as parseSlot()
-  // On one chart, series 2 takes chart 1's span (its scale too, in the widget); a lone chart keeps its own.
-  if (overlay && charts.length === 2) charts[1].span = charts[0].span;
+  // On one chart, series 2 takes chart 1's span (its scale too, in the widget), unless both are days (today with
+  // yesterday: the same 00–24 axis); a lone chart keeps its own.
+  if (overlay && charts.length === 2 && !(isDaySpan(charts[0].span) && isDaySpan(charts[1].span))) charts[1].span = charts[0].span;
   let loaded = false;
 
   const widget = window.createChartsWidget(root, {

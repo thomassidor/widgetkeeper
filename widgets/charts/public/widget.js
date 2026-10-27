@@ -4,7 +4,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { TIGHT_UNITS, COLORS, scaled, formatNumber, applyColors, timeSpan, isTimeSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { TIGHT_UNITS, COLORS, scaled, formatNumber, applyColors, timeSpan, isTimeSpan, isDaySpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart;
@@ -108,9 +108,13 @@
       smooth: c.smooth === true,
       title: typeof c.title === 'string' ? c.title.trim() : '',
     }));
-    // Two series on one chart share chart 1's time axis and kind of scale; with `sharedScale`, the scale itself.
+    // Two series on one chart share chart 1's time axis and kind of scale; with `sharedScale`, the scale itself. Two
+    // days (today with yesterday) keep their own: each runs 00–24, so series 2 is drawn by its time of day.
     const overlay = opts.overlay === true && charts.length === 2;
-    if (overlay) Object.assign(charts[1], { span: charts[0].span, fit: charts[0].fit });
+    if (overlay) {
+      charts[1].fit = charts[0].fit;
+      if (!(isDaySpan(charts[0].span) && isDaySpan(charts[1].span))) charts[1].span = charts[0].span;
+    }
     const sharedScale = overlay && opts.sharedScale === true;
     const showHeader = opts.showHeader !== false;
 
@@ -304,14 +308,17 @@
       const plotH = PLOT_H[1];
       const top = CHIP_H, base = top + plotH;
       const H = base + X_LABEL_GAP + X_LABEL_H;
-      const win = windowOf(0, now());
+      // The axis is chart 1's window. Series 2's is the same, or the other day, laid over it by time of day (each day
+      // spread over the width, so a 23 or 25 h DST day is up to an hour off by its end).
+      const wins = [0, 1].map(i => windowOf(i, now()));
+      const win = wins[0];
 
       clear(u.chips);
       chip(u.chips, 0);
       chip(u.chips, 1);
 
       const missing = [0, 1].map(i => !state.entries[i] || 'missing' in state.entries[i]);
-      const data = [0, 1].map(i => seriesData(i, win));
+      const data = [0, 1].map(i => seriesData(i, wins[i]));
       const any = data[0].drawable || data[1].drawable;
       show(u.svg, any);
       // Missing devices' chips already say Unavailable, unless a chart has a title of its own.
@@ -323,7 +330,7 @@
 
       const svg = u.svg;
       kit.prepareSvg(svg, w, H);
-      const x = ms => L + pw * (ms - win.from) / (win.to - win.from);
+      const xs = wins.map(wi => ms => L + pw * (ms - wi.from) / (wi.to - wi.from));
       let scales;
       if (sharedScale) {
         // One scale over what both draw (a series with nothing to draw leaves it to the other).
@@ -343,7 +350,7 @@
       const drawn = data.map((d, i) => {
         if (!d.drawable) return null;
         const g = el('svg:g', { 'data-color': charts[i].color }, svg);
-        const r = drawSeries(i, g, { data: d, x, scale: scales[i ? 'b' : 'a'], top, base, half: bothBars ? i : null });
+        const r = drawSeries(i, g, { data: d, x: xs[i], scale: scales[i ? 'b' : 'a'], top, base, half: bothBars ? i : null });
         geom[i] = r.geom;
         return r;
       });

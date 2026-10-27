@@ -105,6 +105,12 @@ describe('mount: spans', () => {
     expect(await requested({ charts: 'overlay', chart1: slot('a:x'), span1: '6h', chart2: slot('b:y'), span2: '7d' })).toBe('a:x~6h,b:y~6h');
   });
 
+  it('asks for yesterday under today on one chart (wk-102)', async () => {
+    expect(await requested({ charts: 'overlay', chart1: slot('a:x'), span1: 'today', chart2: slot('a:x'), span2: 'yesterday' })).toBe('a:x~today,a:x~yesterday');
+    expect(await requested({ charts: 'overlay', chart1: slot('a:x'), span1: 'today', chart2: slot('a:x'), span2: '24h' })).toBe('a:x~today,a:x~today');
+    expect(await requested({ charts: 'overlay', chart1: slot('a:x'), span1: 'today', chart2: slot('a:x') })).toBe('a:x~today,a:x~today');
+  });
+
   it('keeps a lone chart 2\'s own span when chart 1 is empty', async () => {
     expect(await requested({ charts: 'overlay', chart1: null, span1: '6h', chart2: slot('b:y'), span2: '7d' })).toBe('b:y~7d');
   });

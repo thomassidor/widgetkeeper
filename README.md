@@ -162,7 +162,7 @@ Your cameras as a grid of snapshots that refresh every few seconds (cameras with
 
 One chart, two stacked, or two values on one chart (each with its own scale, or sharing one), of any value that Homey logs in Insights, drawn like Electricity Overview's charts. The value now sits at the top in the chart's colour. Tap a chart to see the value at that moment.
 
-**Settings:** one chart, two stacked or two on one chart, and on one chart one scale for both; per chart the value, time span (1 hour to 7 days, today or yesterday), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (yesterday shows its average there); [colour style](#colour-style).
+**Settings:** one chart, two stacked or two on one chart (they share chart 1's time span, or compare today with yesterday), and on one chart one scale for both; per chart the value, time span (1 hour to 7 days, today or yesterday), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (yesterday shows its average there); [colour style](#colour-style).
 
 ## Clock
 <img src="docs/screenshots/clock.png" alt="Clock on a Homey dashboard" width="358">

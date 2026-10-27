@@ -4,6 +4,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 
 ## 1.1.2
 
+### Charts
+- **Today and yesterday on one chart:** the two values on one chart can now be today and yesterday, each drawn by its time of day, so a day's use (water, energy) can be compared with the day before. Until now the second one always took the first one's time span, so the same value as today and yesterday showed today twice. Thanks to SunBeech for reporting it.
+
 ### Keypad
 - **The state's colour across the whole widget:** the new Background setting's *State colour* fills the Keypad with the ticked button's colour, so even a small one shows from across the room whether the alarm is armed. A light tint, stronger with Vivid; Plain (as before) is the default. Thanks to Daniel_Fille for the idea.
 

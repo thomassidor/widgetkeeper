@@ -860,19 +860,19 @@
         "ar": "  – الفترة الزمنية"
       },
       "hint": {
-        "en": "On one chart, chart 1's is used.",
-        "nl": "In één grafiek geldt die van grafiek 1.",
-        "de": "In einem Diagramm gilt die von Diagramm 1.",
-        "fr": "Dans un graphique, celle du graphique 1 s’applique.",
-        "it": "In un grafico vale quella del grafico 1.",
-        "sv": "I ett diagram gäller diagram 1:s.",
-        "no": "I ett diagram gjelder diagram 1 sin.",
-        "es": "En un gráfico, se usa la del gráfico 1.",
-        "da": "I én graf gælder graf 1's.",
-        "ru": "На одном графике действует настройка графика 1.",
-        "pl": "Na jednym wykresie obowiązuje ustawienie wykresu 1.",
-        "ko": "차트 1개에서는 차트 1의 설정을 사용합니다.",
-        "ar": "في مخطط واحد، يُستخدم إعداد المخطط 1."
+        "en": "On one chart, chart 1's is used; Today and Yesterday can be combined.",
+        "nl": "In één grafiek geldt die van grafiek 1; Vandaag en Gisteren kunnen samen.",
+        "de": "In einem Diagramm gilt die von Diagramm 1; Heute und Gestern lassen sich kombinieren.",
+        "fr": "Dans un graphique, celle du graphique 1 s’applique ; Aujourd'hui et Hier peuvent être combinés.",
+        "it": "In un grafico vale quella del grafico 1; Oggi e Ieri si possono combinare.",
+        "sv": "I ett diagram gäller diagram 1:s; I dag och I går kan kombineras.",
+        "no": "I ett diagram gjelder diagram 1 sin; I dag og I går kan kombineres.",
+        "es": "En un gráfico, se usa la del gráfico 1; Hoy y Ayer se pueden combinar.",
+        "da": "I én graf gælder graf 1's; I dag og I går kan kombineres.",
+        "ru": "На одном графике действует настройка графика 1; «Сегодня» и «Вчера» можно совместить.",
+        "pl": "Na jednym wykresie obowiązuje ustawienie wykresu 1; Dziś i Wczoraj można połączyć.",
+        "ko": "차트 1개에서는 차트 1의 설정을 사용합니다. 오늘과 어제는 함께 쓸 수 있습니다.",
+        "ar": "في مخطط واحد، يُستخدم إعداد المخطط 1؛ ويمكن الجمع بين اليوم وأمس."
       },
       "value": "24h",
       "values": [

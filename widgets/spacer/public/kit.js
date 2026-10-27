@@ -251,6 +251,11 @@
     return own(SPAN_MS, span) || own(SPAN_DAYS, span);
   }
 
+  /** Whether `span` is a calendar day (today, yesterday), whose axis is the whole day. */
+  function isDaySpan(span) {
+    return own(SPAN_DAYS, span);
+  }
+
   /** Why a write through the personal API key failed (`KeyProblem` in lib/PersonalApiKey.ts): each has its own message. */
   const KEY_PROBLEMS = ['noKey', 'keyScope', 'keyInvalid'];
 
@@ -750,7 +755,7 @@
 
   window.WidgetkeeperKit = {
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, undoTextZoom, el, setMask, tileNames, timeFormatter,
-    formatSince, baseTitle, lowestSlot, timeSpan, isTimeSpan, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
+    formatSince, baseTitle, lowestSlot, timeSpan, isTimeSpan, isDaySpan, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     colorStyle, applyColors, sound,
   };
 })();

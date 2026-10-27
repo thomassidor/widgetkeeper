@@ -456,6 +456,7 @@ const BUILD = {
       w('charts', 'Start at zero · below zero yellow', { chart1: temp, range1: 'zero', negative1: true, color1: 'purple' }),
       w('charts', 'Two · today area + yesterday bars', { charts: '2', chart1: temp, span1: 'today', chart2: power, span2: 'yesterday', style2: 'bars', color2: 'green' }),
       w('charts', 'On one chart · yesterday', { charts: 'overlay', chart1: temp, span1: 'yesterday', color1: 'purple', chart2: power, style2: 'line', color2: 'orange' }),
+      w('charts', 'On one chart · today + yesterday, one scale', { charts: 'overlay', sharedScale: true, chart1: power, span1: 'today', chart2: power, span2: 'yesterday', style2: 'line', color2: 'green' }),
       w('charts', '1 h · no header · own title', { chart1: power, span1: '1h', showHeader: false, title1: 'Power now' }),
       ...other.map((item, i) => w('charts', `Other value ${i + 1} · ${['2d', '3d', '5d'][i]}`, { chart1: item, span1: ['2d', '3d', '5d'][i], color1: ['red', 'yellow', 'green'][i] })),
       w('charts', 'Deleted device + empty', { charts: '2', chart1: missing }),
