@@ -1,6 +1,6 @@
 import type { App } from 'homey';
 import type WidgetkeeperApp from '../../app.js';
-import { logPerf } from '../../lib/widgetApi.js';
+import { logPerf, requireId } from '../../lib/widgetApi.js';
 
 type Homey = App['homey'];
 
@@ -20,5 +20,15 @@ export default {
   }) {
     logPerf(homey.app as WidgetkeeperApp, 'Web Page', query);
     return pageLocation(homey.geolocation.getLatitude(), homey.geolocation.getLongitude());
+  },
+
+  /** Whether the page at `url` refuses to be shown in a frame (`{refused}`, nothing else of it). */
+  async getCheck({ homey, query }: {
+    homey: Homey,
+    query: Record<string, string>,
+  }) {
+    const app = homey.app as WidgetkeeperApp;
+    logPerf(app, 'Web Page', query);
+    return app.frameCheck.check(requireId(query.url, 'address'));
   },
 };

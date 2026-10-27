@@ -172,7 +172,86 @@ describe('Web Page widget', () => {
     expect(frames()[0].style.height).toBe('4000px');
   });
 
-  it('mounts with the settings and asks for the location only when an address uses it', async () => {
+  it("covers a page whose site refuses frames with a note, in the page's own box", async () => {
+    const check = vi.fn(async (url: string) => ({ refused: url.includes('google') }));
+    const { root, frames } = create({ url: 'www.google.com', pageWidth: 550, pageHeight: 512, check });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(check).toHaveBeenCalledWith('https://www.google.com/');
+    expect(root.classList.contains('wp-has-note')).toBe(true);
+    expect(root.querySelector('.wp-note')!.textContent)
+      .toBe("This site doesn't allow being shown inside another page. Look for an embed or widget address on the site.");
+    expect(frames()).toHaveLength(1);
+    expect(root.querySelector<HTMLElement>('.wp-page')!.style.height).toBe('279px');
+
+    const fine = create({ url: 'https://example.com', check });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(fine.root.classList.contains('wp-has-note')).toBe(false);
+    // Without a check (the dev pages), or one that fails, nothing changes.
+    const failing = create({ url: 'https://www.google.com', check: vi.fn(async () => { throw new Error('offline'); }) });
+    const none = create({ url: 'https://www.google.com' });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(failing.root.classList.contains('wp-has-note')).toBe(false);
+    expect(none.root.classList.contains('wp-has-note')).toBe(false);
+  });
+
+  it('checks each address once, clears the note on a switch and ignores a late answer', async () => {
+    let answerSlow!: (r: { refused: boolean }) => void;
+    const check = vi.fn((url: string) => (url.includes('slow')
+      ? new Promise((resolve) => { answerSlow = resolve; })
+      : Promise.resolve({ refused: url.includes('refusing') })));
+    const { root } = create({
+      url: 'https://refusing.example/', refresh: 15, check,
+      buttons: [{ name: 'A', url: 'https://refusing.example/' }, { name: 'B', url: 'https://slow.example/' }, { name: 'C', url: 'https://ok.example/' }],
+    });
+    const noted = () => root.classList.contains('wp-has-note');
+    const btns = [...root.querySelectorAll<HTMLButtonElement>('.wp-btn')];
+    await vi.advanceTimersByTimeAsync(0);
+    expect(noted()).toBe(true);
+    btns[1].click();
+    expect(noted()).toBe(false);
+    await vi.advanceTimersByTimeAsync(0);
+    btns[2].click();
+    answerSlow({ refused: true });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(noted()).toBe(false);
+    // Back to the first: its answer was kept.
+    btns[0].click();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(noted()).toBe(true);
+    // A reload doesn't ask again.
+    await vi.advanceTimersByTimeAsync(15 * 60e3);
+    expect(noted()).toBe(true);
+    expect(check.mock.calls.map(c => c[0])).toEqual(['https://refusing.example/', 'https://slow.example/', 'https://ok.example/']);
+  });
+
+  it('says an http:// page in an https:// frame is blocked, without asking', async () => {
+    const before = window.location.href;
+    (window as any).happyDOM.setURL('https://homey.example/app/x/widgets/webpage/');
+    try {
+      const check = vi.fn(async () => ({ refused: false }));
+      const { root } = create({
+        url: 'http://192.168.1.5:3000/d/x', check,
+        buttons: [{ name: 'Local', url: 'http://192.168.1.5:3000/d/x' }, { name: 'Web', url: 'https://example.com' }],
+      });
+      expect(root.querySelector('.wp-note')!.textContent)
+        .toBe("This http:// page can't be shown while Homey is reached over https://, such as away from home.");
+      expect(check).not.toHaveBeenCalled();
+      root.querySelectorAll<HTMLButtonElement>('.wp-btn')[1].click();
+      expect(root.classList.contains('wp-has-note')).toBe(false);
+      await vi.advanceTimersByTimeAsync(0);
+      expect(check).toHaveBeenCalledWith('https://example.com/');
+    } finally {
+      (window as any).happyDOM.setURL(before);
+    }
+    // Over http:// it's asked as any other.
+    const check = vi.fn(async () => ({ refused: false }));
+    const { root } = create({ url: 'http://192.168.1.5:3000/d/x', check });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(root.classList.contains('wp-has-note')).toBe(false);
+    expect(check).toHaveBeenCalledWith('http://192.168.1.5:3000/d/x');
+  });
+
+  it('mounts with the settings, asks for the location only when an address uses it, and has the app check the page', async () => {
     const root = document.createElement('div');
     document.body.append(root);
     const Homey = {
@@ -181,16 +260,19 @@ describe('Web Page widget', () => {
     };
     win.mountWebPageWidget(Homey, { root, frame: document.body });
     await vi.advanceTimersByTimeAsync(0);
-    expect(Homey.api).toHaveBeenCalledWith('GET', expect.stringMatching(/^\/location\?perf=/));
+    expect(Homey.api).toHaveBeenNthCalledWith(1, 'GET', expect.stringMatching(/^\/location\?perf=/));
+    expect(Homey.api).toHaveBeenNthCalledWith(2, 'GET', `/check?url=${encodeURIComponent('https://x.org/?lat=52.21&lng=5.97')}`);
     expect(root.querySelector('iframe')!.getAttribute('src')).toBe('https://x.org/?lat=52.21&lng=5.97');
     expect(Homey.ready).toHaveBeenCalledTimes(1);
 
-    const plain = { ...Homey, api: vi.fn(), ready: vi.fn(), getSettings: () => ({ url: 'https://example.com' }) };
+    const plain = { ...Homey, api: vi.fn(async () => ({ refused: true })), ready: vi.fn(), getSettings: () => ({ url: 'https://example.com' }) };
     const root2 = document.createElement('div');
     document.body.append(root2);
     win.mountWebPageWidget(plain, { root: root2, frame: document.body });
     await vi.advanceTimersByTimeAsync(0);
-    expect(plain.api).not.toHaveBeenCalled();
+    expect(plain.api).toHaveBeenCalledTimes(1);
+    expect(plain.api).toHaveBeenCalledWith('GET', expect.stringMatching(/^\/check\?url=https%3A%2F%2Fexample\.com%2F&perf=/));
+    expect(root2.classList.contains('wp-has-note')).toBe(true);
     expect(plain.ready).toHaveBeenCalledTimes(1);
   });
 });

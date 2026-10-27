@@ -113,6 +113,7 @@ const ROUTES: Route[] = [
   ['varpresets', 'POST', '/set', {}, { id: 'v1', value: 3 }, [['variables.set', ['v1', 3]]]],
   ['weather', 'GET', '/forecast', {}, {}, [['weather.getForecast', []]]],
   ['webpage', 'GET', '/location', {}, {}, []],
+  ['webpage', 'GET', '/check', { url: 'https://x.example/?a=1' }, {}, [['frameCheck.check', ['https://x.example/?a=1']]]],
 ];
 
 describe('widget routes: from the request to the service', () => {
@@ -162,6 +163,7 @@ describe('widget routes: from the request to the service', () => {
     ['timers', 'POST', '/action', {}, { instance: 'w1', id: 't1', action: 'explode' }, /Unknown action/],
     ['variables', 'POST', '/set', {}, { value: true }, /Missing id/],
     ['varpresets', 'GET', '/state', {}, {}, /Missing id/],
+    ['webpage', 'GET', '/check', {}, {}, /Missing address/],
   ] as const)('%s %s %s refuses a request without what it needs', async (type, method, path, query, body, error) => {
     const { call, calls } = setup();
     await expect(call(type, method, path, query, body)).rejects.toThrow(error);

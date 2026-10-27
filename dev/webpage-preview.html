@@ -23,6 +23,8 @@
   <div class="col"><span>358 px · dark · no address</span><div class="dash homey-dark-mode" style="width:358px"><div id="w6"></div></div></div>
   <div class="col"><span>358 px · dark · a javascript: address</span><div class="dash homey-dark-mode" style="width:358px"><div id="w7"></div></div></div>
   <div class="col"><span>358 px · dark · {lat}, no location</span><div class="dash homey-dark-mode" style="width:358px"><div id="w8"></div></div></div>
+  <div class="col"><span>358 px · dark · a site that refuses frames, four buttons</span><div class="dash homey-dark-mode" style="width:358px"><div id="w9"></div></div></div>
+  <div class="col"><span>358 px · light · the same</span><div class="dash light" style="width:358px"><div id="w10"></div></div></div>
 
   <script>
     // `?lang=de` would need dev/i18n.js; the widget's English fallbacks are used here.
@@ -41,6 +43,10 @@
     mount('w6', {});
     mount('w7', { url: 'javascript:alert(1)' });
     mount('w8', { url: `${SAMPLE}?lat={lat}` }).setLocation({ noLocation: true });
+    // The app's check says the site refuses frames (the sample page itself would load).
+    const refusing = async () => ({ refused: true });
+    mount('w9', { url: at(8), ...SIZE, buttons: BUTTONS, check: refusing });
+    mount('w10', { url: at(8), ...SIZE, buttons: BUTTONS, check: refusing });
   </script>
 </body>
 </html>

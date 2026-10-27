@@ -377,6 +377,10 @@
     "getLocation": {
       "method": "GET",
       "path": "/location"
+    },
+    "getCheck": {
+      "method": "GET",
+      "path": "/check"
     }
   }
 }

@@ -2,7 +2,9 @@
  * Web Page: a page the user picks, in a frame, drawn at a set width and scaled to fill the widget (a gadget with
  * fixed pixel sizes, such as a map gadget, then fills it at any size without borders), optionally with a
  * row of buttons that switch between addresses (a map's zoom levels). Links never open (the sandbox has no popups or
- * top navigation), and unless the page may be tapped a layer over it takes the taps. Plain browser JS (served as-is).
+ * top navigation), and unless the page may be tapped a layer over it takes the taps. A page that can't be shown (its
+ * site refuses frames, or an http:// page in an https:// frame) says so over it, rather than staying blank. Plain
+ * browser JS (served as-is).
  */
 (function () {
   const { el, onTap } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
@@ -19,6 +21,8 @@
     noLocation: "Set the Homey's location to use {lat} and {lon}.",
     locationError: "Could not read the Homey's location.",
     button: 'Button __n__',
+    refused: "This site doesn't allow being shown inside another page. Look for an embed or widget address on the site.",
+    insecure: "This http:// page can't be shown while Homey is reached over https://, such as away from home.",
   };
 
   /** Whether an address uses Homey's location. */
@@ -66,8 +70,9 @@
    * @param {HTMLElement} root
    * @param {{ t?: (key: string, tokens?: object) => string, url?: string, pageWidth?: any, pageHeight?: any,
    *   interactive?: boolean, refresh?: any, buttons?: {name?: string, url?: string}[],
-   *   onHeight?: (h: number) => void }} opts `refresh` is in minutes (0: never). With an address that uses
-   *   `{lat}`/`{lon}`, nothing loads until `setLocation()`.
+   *   check?: (url: string) => Promise<{refused?: boolean}>, onHeight?: (h: number) => void }} opts `refresh` is in
+   *   minutes (0: never). With an address that uses `{lat}`/`{lon}`, nothing loads until `setLocation()`. `check`
+   *   asks whether an address's site refuses frames, once per address.
    */
   function createWebPageWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -88,8 +93,10 @@
     const message = el('div', { class: 'wp-message', dir: 'auto' }, root);
     const row = el('div', { class: 'wp-row' }, root);
     if (!opts.interactive) el('div', { class: 'wp-shield' }, box);
+    const note = el('div', { class: 'wp-note', dir: 'auto' }, box);
 
     let current = null; // the address shown
+    const refusals = new Map(); // address → a promise of whether its site refuses frames
     let frame = null; // the iframe shown
     let pending = null; // { frame, timer }: a reload waiting for its page
     let width = -1;
@@ -111,9 +118,35 @@
       f.style.transform = b.scale === 1 ? '' : `scale(${b.scale})`;
     }
 
+    function setNote(key) {
+      note.textContent = key ? t(key) : '';
+      root.classList.toggle('wp-has-note', !!key);
+    }
+
+    /**
+     * The note over a new address: at once for an http:// page in an https:// frame (blocked as mixed content), else
+     * once the app says its site refuses frames. Pages that load aren't held up by the check.
+     */
+    function checkPage(url) {
+      setNote(null);
+      if (window.location.protocol === 'https:' && url.startsWith('http:')) {
+        setNote('insecure');
+        return;
+      }
+      if (!opts.check) return;
+      let refused = refusals.get(url);
+      if (!refused) {
+        refused = Promise.resolve().then(() => opts.check(url)).then(r => !!(r && r.refused), () => false);
+        refusals.set(url, refused);
+      }
+      refused.then((yes) => { if (yes && current === url) setNote('refused'); });
+    }
+
     /** Shows `url`: the first page at once; a later one replaces the shown page once it has loaded. */
     function load(url) {
+      const changed = url !== current;
       current = url;
+      if (changed) checkPage(url);
       buttons.forEach(b => b.node.classList.toggle('active', b.url === url));
       if (!frame) {
         frame = newFrame(url);

@@ -620,7 +620,9 @@
     "badAddress": "Diese Adresse kann nicht angezeigt werden: Sie muss mit https:// oder http:// beginnen.",
     "noLocation": "Lege den Standort des Homey fest, um {lat} und {lon} zu verwenden.",
     "locationError": "Der Standort des Homey konnte nicht gelesen werden.",
-    "button": "Button __n__"
+    "button": "Button __n__",
+    "refused": "Diese Seite lässt sich nicht in einer anderen Seite anzeigen. Such auf der Seite nach einer Einbettungs- oder Widget-Adresse.",
+    "insecure": "Diese http://-Seite kann nicht angezeigt werden, solange Homey über https:// erreicht wird, etwa unterwegs."
   },
   "popups": {
     "everywhere": "Überall",

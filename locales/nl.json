@@ -620,7 +620,9 @@
     "badAddress": "Dit adres kan niet worden getoond: het moet beginnen met https:// of http://.",
     "noLocation": "Stel de locatie van de Homey in om {lat} en {lon} te gebruiken.",
     "locationError": "Kon de locatie van de Homey niet lezen.",
-    "button": "Knop __n__"
+    "button": "Knop __n__",
+    "refused": "Deze site staat niet toe dat hij in een andere pagina wordt getoond. Zoek op de site naar een embed- of widgetadres.",
+    "insecure": "Deze http://-pagina kan niet worden getoond terwijl Homey via https:// wordt bereikt, zoals buitenshuis."
   },
   "popups": {
     "everywhere": "Overal",

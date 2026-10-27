@@ -620,7 +620,9 @@
     "badAddress": "Tego adresu nie można wyświetlić: musi zaczynać się od https:// lub http://.",
     "noLocation": "Ustaw lokalizację Homey, aby używać {lat} i {lon}.",
     "locationError": "Nie udało się odczytać lokalizacji Homey.",
-    "button": "Przycisk __n__"
+    "button": "Przycisk __n__",
+    "refused": "Ta strona nie pozwala na wyświetlanie w innej stronie. Poszukaj na niej adresu do osadzenia lub widżetu.",
+    "insecure": "Strony http:// nie da się wyświetlić, gdy Homey jest otwierany przez https://, np. poza domem."
   },
   "popups": {
     "everywhere": "Wszędzie",

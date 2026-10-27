@@ -620,7 +620,9 @@
     "badAddress": "Denne adressen kan ikke vises: den må starte med https:// eller http://.",
     "noLocation": "Angi Homeys plassering for å bruke {lat} og {lon}.",
     "locationError": "Kunne ikke lese Homeys plassering.",
-    "button": "Knapp __n__"
+    "button": "Knapp __n__",
+    "refused": "Dette nettstedet tillater ikke å bli vist i en annen side. Se etter en innbyggings- eller widgetadresse på nettstedet.",
+    "insecure": "Denne http://-siden kan ikke vises når Homey nås via https://, som når du ikke er hjemme."
   },
   "popups": {
     "everywhere": "Overalt",

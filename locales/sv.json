@@ -620,7 +620,9 @@
     "badAddress": "Adressen kan inte visas: den måste börja med https:// eller http://.",
     "noLocation": "Ange Homeys plats för att använda {lat} och {lon}.",
     "locationError": "Kunde inte läsa Homeys plats.",
-    "button": "Knapp __n__"
+    "button": "Knapp __n__",
+    "refused": "Den här webbplatsen tillåter inte att visas i en annan sida. Leta efter en inbäddnings- eller widgetadress på webbplatsen.",
+    "insecure": "Den här http://-sidan kan inte visas när Homey nås via https://, som när du inte är hemma."
   },
   "popups": {
     "everywhere": "Överallt",

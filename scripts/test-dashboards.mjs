@@ -747,8 +747,8 @@ const BUILD = {
     w('clock', '12-hour', { timeFormat: '12' }),
   ] }),
 
-  // Web Page: a 550 × 512 map gadget at the Homey's location, a page that may be tapped, and
-  // the messages. No page here starts anything: a tap at most follows a link inside the frame.
+  // Web Page: a 550 × 512 map gadget at the Homey's location, a page that may be tapped, a site that refuses frames,
+  // and the messages. No page here starts anything: a tap at most follows a link inside the frame.
   webpage: () => {
     const gadget = zoom => `https://gadgets.buienradar.nl/gadget/zoommap/?lat={lat}&lng={lon}&overname=2&zoom=${zoom}&naam=Home&size=3&voor=1`;
     const size = { pageWidth: 550, pageHeight: 512 };
@@ -761,6 +761,7 @@ const BUILD = {
       }),
       w('webpage', 'Map gadget · unscaled (page width 0)', { url: gadget(8), pageHeight: 512 }),
       w('webpage', 'example.com · may be tapped', { url: 'https://example.com', pageHeight: 240, interactive: true }),
+      w('webpage', 'google.com · refuses frames (a note)', { url: 'https://www.google.com', pageHeight: 240 }),
       w('webpage', 'javascript: address (refused)', { url: 'javascript:alert(1)' }),
     ] };
   },

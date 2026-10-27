@@ -34,6 +34,13 @@ html, body { margin: 0; }
 .wp-frame { position: absolute; top: 0; left: 0; border: 0; display: block; transform-origin: 0 0; background: transparent; }
 /* Over the page while it may not be tapped: taps stop here, and a drag scrolls the dashboard. */
 .wp-shield { position: absolute; inset: 0; z-index: 1; }
+/* Over a page that can't be shown (iOS draws a refused frame plain white), in the page's own box, so nothing moves. */
+.wp-note {
+  display: none; position: absolute; inset: 0; z-index: 2; overflow: hidden;
+  align-items: center; padding: var(--homey-su-4, 16px); background: var(--wp-card);
+  font-size: var(--wp-fs-small); line-height: var(--wp-lh-small); font-weight: var(--wp-regular); color: var(--wp-muted);
+}
+.wp-has-note .wp-note { display: flex; }
 
 .wp-message {
   display: none; padding: var(--homey-su-4, 16px);

@@ -620,7 +620,9 @@
     "badAddress": "이 주소는 표시할 수 없습니다. https:// 또는 http://로 시작해야 합니다.",
     "noLocation": "{lat}와 {lon}을 쓰려면 Homey의 위치를 설정하세요.",
     "locationError": "Homey의 위치를 읽을 수 없습니다.",
-    "button": "버튼 __n__"
+    "button": "버튼 __n__",
+    "refused": "이 사이트는 다른 페이지 안에 표시되는 것을 허용하지 않습니다. 사이트에서 임베드 또는 위젯 주소를 찾아보세요.",
+    "insecure": "Homey에 https://로 연결된 동안(예: 외출 중)에는 이 http:// 페이지를 표시할 수 없습니다."
   },
   "popups": {
     "everywhere": "모든 곳",

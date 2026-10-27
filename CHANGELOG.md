@@ -4,6 +4,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 
 ## 1.1.1
 
+### Web Page
+- **A site that can't be shown says so:** many sites don't allow being shown inside another page, and on an iPhone the widget stayed plain white. It now says the site doesn't allow it, and an http:// page reached over https:// (away from home) says why it can't be shown.
+
 ### Charts
 - **One scale for both:** two values on one chart can share the scale on the left, so they compare directly, such as the temperature inside and out.
 

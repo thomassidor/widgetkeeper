@@ -1,5 +1,6 @@
 /*
- * Wires createWebPageWidget to Homey: the settings, and Homey's location for an address with {lat} or {lon}.
+ * Wires createWebPageWidget to Homey: the settings, Homey's location for an address with {lat} or {lon}, and the
+ * app's check of whether a page's site refuses frames.
  * index.html calls it with the frame's own Homey and body. `frame` is the element whose height Homey gets.
  */
 window.mountWebPageWidget = function (Homey, { root, frame }) {
@@ -18,6 +19,7 @@ window.mountWebPageWidget = function (Homey, { root, frame }) {
     interactive: settings.interactive === true,
     refresh: settings.refresh,
     buttons,
+    check: url => Homey.api('GET', `/check?url=${encodeURIComponent(url)}${link.perfParam('&')}`),
     onHeight: link.setHeight,
   });
 

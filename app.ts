@@ -8,6 +8,7 @@ import DaysSinceService, {
 } from './lib/DaysSinceService.js';
 import ElectricityService from './lib/ElectricityService.js';
 import FlowService from './lib/FlowService.js';
+import FrameCheck from './lib/frameCheck.js';
 import HeatmapService from './lib/HeatmapService.js';
 import KeypadService, { KEYPAD_TAPPED_CARD, KEYPAD_WRONG_CARD, type PressArg, type PressState } from './lib/KeypadService.js';
 import LightService from './lib/LightService.js';
@@ -52,6 +53,8 @@ export default class WidgetkeeperApp extends Homey.App {
   valueMatrix!: ValueMatrixService;
   weather!: WeatherService;
   pollen!: PollenService;
+  /** Whether a Web Page widget's page refuses to be shown in a frame. */
+  frameCheck!: FrameCheck;
   heatmap!: HeatmapService;
   cameras!: CameraService;
   values!: ValueService;
@@ -100,6 +103,7 @@ export default class WidgetkeeperApp extends Homey.App {
     this.weather.start();
     this.pollen = new PollenService(this.homey, log, debug);
     this.pollen.start();
+    this.frameCheck = new FrameCheck(this.homey, log, debug);
     this.heatmap = new HeatmapService(this.homey, log, debug);
     this.heatmap.start();
     this.cameras = new CameraService(this.homey, log, debug);

@@ -620,7 +620,9 @@
     "badAddress": "This address can't be shown: it must start with https:// or http://.",
     "noLocation": "Set the Homey's location to use {lat} and {lon}.",
     "locationError": "Could not read the Homey's location.",
-    "button": "Button __n__"
+    "button": "Button __n__",
+    "refused": "This site doesn't allow being shown inside another page. Look for an embed or widget address on the site.",
+    "insecure": "This http:// page can't be shown while Homey is reached over https://, such as away from home."
   },
   "popups": {
     "everywhere": "Everywhere",
