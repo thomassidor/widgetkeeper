@@ -266,14 +266,17 @@
       return item.end != null ? `${at(item.t)}–${hhmm(item.end)}` : at(item.t);
     }
 
-    /** The value and time a chart shows: the tapped point or bar, else the current value (a last day, week …: its average). */
+    /**
+     * The value and time a chart shows: the tapped point or bar, else the current value (a last day, week …: its
+     * average). `averaged` when Homey didn't report it as it is (a point, a bar, an average), so it's rounded.
+     */
     function shown(i) {
       const s = state.entries[i];
       const g = geom[i];
       const win = windowOf(i, now());
       if (g && g.sel != null && g.items[g.sel]) {
         const item = g.items[g.sel];
-        return { value: item.v, sub: itemLabel(win, item) };
+        return { value: item.v, sub: itemLabel(win, item), averaged: true };
       }
       if (s && !('missing' in s) && !win.live) {
         // The drawn points are evenly spaced and carry the last value over gaps, so their mean is the period's; bars
@@ -285,22 +288,22 @@
           sum += item.v * w;
           weight += w;
         }
-        return { value: weight ? sum / weight : null, sub: t(`${charts[i].span}Avg`) };
+        return { value: weight ? sum / weight : null, sub: t(`${charts[i].span}Avg`), averaged: true };
       }
-      return { value: s && !('missing' in s) ? s.value : null, sub: s && 'missing' in s ? t('unavailable') : t('now') };
+      return { value: s && !('missing' in s) ? s.value : null, sub: s && 'missing' in s ? t('unavailable') : t('now'), averaged: false };
     }
 
     function renderHeader() {
       clear(header);
       header.classList.toggle('one', state.entries.length < 2);
       state.entries.forEach((s, i) => {
-        const { value, sub } = shown(i);
+        const { value, sub, averaged } = shown(i);
         const col = el('div', { class: 'ew-hcol', 'data-color': charts[i].color }, header);
         const ok = s && !('missing' in s) && typeof value === 'number' && isFinite(value);
         const units = ok && s.capability.units ? s.capability.units : '';
         const below = ok && charts[i].negative && scaled(s.capability, value) < 0;
         const hv = el('div', { class: `ew-hval ch-value${below ? ' export' : ''}${TIGHT_UNITS.test(units) ? ' tight' : ''}` }, col);
-        el('span', { class: 'v ew-num', text: ok ? formatNumber(s.capability, value) : '–' }, hv);
+        el('span', { class: 'v ew-num', text: ok ? formatNumber(s.capability, value, averaged) : '–' }, hv);
         if (units) el('span', { class: 'u', text: units }, hv);
         el('div', { class: 'ew-hsub', dir: 'auto', text: sub }, col);
       });

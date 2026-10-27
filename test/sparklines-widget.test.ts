@@ -64,6 +64,15 @@ describe('render', () => {
     expect(tiles()[0].querySelector('.sl-dot')!.getAttribute('cx')).toBe('100');
   });
 
+  it("rounds the high and low (averages) to three digits, not the meter's two decimals; the value on top stays", () => {
+    const meter = temp({ capabilityId: 'measure_power', capability: cap({ units: 'W', decimals: 2 }), value: 1589.25,
+      points: [[NOW - 20 * HOUR, 1304.48], [NOW - 10 * HOUR, 12273.24], [NOW - HOUR, 1589.25]] });
+    const { text } = widget([meter]);
+    expect(text('.sl-value')).toEqual([`${(1589.25).toLocaleString()} W`]);
+    expect(text('.sl-max')).toEqual([`↑${(12273).toLocaleString()}`]);
+    expect(text('.sl-min')).toEqual([`↓${(1304).toLocaleString()}`]);
+  });
+
   it('uses the span: older points are left out', () => {
     const { text } = widget([temp()], { span: '6h' });
     // Only the last point and the current value are in the last 6 hours.

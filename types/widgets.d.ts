@@ -68,7 +68,7 @@ interface Window {
     TIGHT_UNITS: RegExp,
     KEY_PROBLEMS: string[],
     scaled: (cap: any, value: number) => number,
-    formatNumber: (cap: any, value: number) => string,
+    formatNumber: (cap: any, value: number, averaged?: boolean) => string,
     formatValue: (cap: any, value: unknown, t?: (key: string) => string) => string,
     undoTextZoom: () => void,
     el: (tag: string, attrs?: object | null, parent?: Element | null, ns?: string) => any,

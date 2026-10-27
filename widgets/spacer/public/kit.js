@@ -282,13 +282,16 @@
     return cap.units === '%' && cap.max === 1 && (cap.min == null || cap.min === 0) ? value * 100 : value;
   }
 
-  /** A number in the device locale, to the capability's decimals (at most 4; 1 without them, none for a scaled `%`). */
-  function formatNumber(cap, value) {
-    const percent = scaled(cap, value) !== value;
-    const digits = percent ? 0 : cap.decimals != null ? Math.max(0, Math.min(cap.decimals, 4)) : null;
-    return scaled(cap, value).toLocaleString(undefined, digits != null
-      ? { minimumFractionDigits: 0, maximumFractionDigits: digits }
-      : { maximumFractionDigits: 1 });
+  /**
+   * A number in the device locale, to the capability's decimals (at most 4; 1 without them, none for a scaled `%`).
+   * `averaged`: a value Homey didn't report (an average, a chart's point or bar, its high or low) keeps three
+   * significant digits within those, so a 2-decimal meter's average is `1,304`, not `1,304.48`; `22.5`, `0.137` stay.
+   */
+  function formatNumber(cap, value, averaged = false) {
+    const v = scaled(cap, value);
+    let digits = v !== value ? 0 : cap.decimals != null ? Math.max(0, Math.min(cap.decimals, 4)) : 1;
+    if (averaged && v !== 0) digits = Math.min(digits, Math.max(0, 2 - Math.floor(Math.log10(Math.abs(v)))));
+    return v.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: digits });
   }
 
   /**

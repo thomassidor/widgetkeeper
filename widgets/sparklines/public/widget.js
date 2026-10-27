@@ -209,8 +209,9 @@
       tile.area.setAttribute('d', p ? p.area : '');
       tile.dot.style.display = p ? '' : 'none';
       if (p) { tile.dot.setAttribute('cx', String(p.dot.x)); tile.dot.setAttribute('cy', String(p.dot.y)); }
-      tile.max.textContent = p ? `↑${formatNumber(s.capability, p.max)}` : '';
-      tile.min.textContent = p ? `↓${formatNumber(s.capability, p.min)}` : '';
+      // The history's points are averages, so the high and low are rounded (`averaged`); the value on top isn't.
+      tile.max.textContent = p ? `↑${formatNumber(s.capability, p.max, true)}` : '';
+      tile.min.textContent = p ? `↓${formatNumber(s.capability, p.min, true)}` : '';
     }
 
     let lastHeight = 0;

@@ -175,6 +175,20 @@ describe('tap to inspect', () => {
     expect(r.header()[0]).toMatch(/\| \S+ \d\d:\d\d–\d\d:\d\d$/);
     expect(r.q('rect.bar.selected')).not.toBeNull();
   });
+
+  it("rounds a tapped bar and an average to three digits, not the meter's two decimals; the value now stays", () => {
+    // A meter with 2 decimals (the real frient one): its averages came out as 1.304,48 W.
+    const power = cap({ title: 'Power', units: 'W', decimals: 2 });
+    const pts = series(24 * HOUR, x => 1304.4801 + x * 0.01);
+    const r = widget([{ style: 'bars' }], [entry(pts, { capability: power, value: 1589.25 })]);
+    expect(r.header()).toEqual([`${(1589.25).toLocaleString()}W | Now`]);
+    r.q('.ch-chart svg')!.dispatchEvent(new PointerEvent('pointerdown', { clientX: 38 + 100, pointerType: 'mouse' }));
+    expect(r.header()[0]).toMatch(new RegExp(`^${(1304).toLocaleString()}W \\|`));
+    const y0 = new Date('2026-01-14T00:00:00').getTime();
+    const day = Array.from({ length: 96 }, (_, k) => [y0 + (k + 0.5) * 15 * MIN, 1304.48 + (k % 2) * 0.01] as [number, number]);
+    const y = widget([{ span: 'yesterday' }], [entry(day, { capability: power })]);
+    expect(y.header()).toEqual([`${(1304).toLocaleString()}W | Yesterday · avg`]);
+  });
 });
 
 describe('today and yesterday', () => {

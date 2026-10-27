@@ -439,6 +439,28 @@ describe('getDeviceIds() and wireTileNames()', () => {
   });
 });
 
+describe('formatNumber()', () => {
+  // In the system locale, as the kit writes it.
+  const n = (v: number, d: number) => v.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: d });
+  const meter = { units: 'W', decimals: 2, min: null, max: null };
+
+  it("keeps a reported value to the capability's decimals", () => {
+    expect(kit.formatNumber(meter, 1304.48)).toBe(n(1304.48, 2));
+    expect(kit.formatNumber({ units: '°C', decimals: null }, 21.56)).toBe(n(21.6, 1));
+    expect(kit.formatNumber({ units: '%', min: 0, max: 1, decimals: 2 }, 0.456)).toBe('46');
+  });
+
+  it('rounds an averaged one to three significant digits, never past those decimals', () => {
+    expect(kit.formatNumber(meter, 1304.48, true)).toBe(n(1304, 0));
+    expect(kit.formatNumber(meter, 345.67, true)).toBe('346');
+    expect(kit.formatNumber(meter, -12.345, true)).toBe(n(-12.3, 1));
+    expect(kit.formatNumber({ units: '°C', decimals: 1 }, 22.53, true)).toBe(n(22.5, 1));
+    expect(kit.formatNumber({ units: 'm³', decimals: 3 }, 0.1374, true)).toBe(n(0.137, 3));
+    expect(kit.formatNumber({ units: 'm³', decimals: 3 }, 0.01234, true)).toBe(n(0.012, 3));
+    expect(kit.formatNumber(meter, 0, true)).toBe('0');
+  });
+});
+
 describe('formatSince()', () => {
   it('says the time today, the weekday and time this week, else the date', () => {
     const now = new Date(2026, 9, 24, 15, 0).getTime();
