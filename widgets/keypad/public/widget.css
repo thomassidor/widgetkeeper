@@ -38,6 +38,33 @@ html, body { margin: 0; }
 .kp-frame { position: relative; }
 .homey-dark-mode body.kp-frame::after, body.kp-frame.homey-dark-mode::after { position: fixed; }
 
+/*
+ * Background: State colour (wk-101). The frame (the whole card, padding too) takes the lit button's colour
+ * (`data-kp-tint`), mixed into the card: lightly in Muted, more in Vivid, so the state shows from across the room. The
+ * card, the keys and the Muted lit button inside then sit on the tint. kit.css's sets resolve on the frame (`wk`), which
+ * has no `data-wk-color`: the grey buttons would inherit its `--wk-c-*`.
+ */
+.kp-tint-frame { --kp-base: var(--homey-background-color, #1F2029); --kp-mix: 15%; }
+.homey-dark-mode .kp-tint-frame, .kp-tint-frame.homey-dark-mode { --kp-base: #181920; }
+.kp-tint-frame.wk-deep { --kp-mix: 30%; }
+.kp-tint-frame[data-kp-tint="blue"] { --kp-tint: var(--wk-blue-bright); }
+.kp-tint-frame[data-kp-tint="red"] { --kp-tint: var(--wk-red-bright); }
+.kp-tint-frame[data-kp-tint="orange"] { --kp-tint: var(--wk-orange-bright); }
+.kp-tint-frame[data-kp-tint="yellow"] { --kp-tint: var(--wk-yellow-bright); }
+.kp-tint-frame[data-kp-tint="green"] { --kp-tint: var(--wk-green-bright); }
+.kp-tint-frame[data-kp-tint="purple"] { --kp-tint: var(--wk-purple-bright); }
+.kp-tint-frame[data-kp-tint] {
+  --kp-tinted: color-mix(in srgb, var(--kp-tint) var(--kp-mix), var(--kp-base));
+  background-color: var(--kp-tinted);
+  border-radius: 10px;
+}
+/* The muted text a little nearer the text, so it keeps its contrast on the tint (light Vivid's pink took it to 3.2:1). */
+.kp-tint-frame[data-kp-tint] .kp {
+  --kp-card: var(--kp-tinted);
+  --kp-key: color-mix(in srgb, var(--kp-text) 8%, var(--kp-tinted));
+  --kp-muted: color-mix(in srgb, var(--homey-text-color-light, #9C9DA5) 70%, var(--kp-text));
+}
+
 .kp { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); min-width: 0; color: var(--kp-text); }
 .kp * { box-sizing: border-box; }
 /* Text is dir="auto" so RTL names get their punctuation right; the layout itself stays LTR. */

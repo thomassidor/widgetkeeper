@@ -150,8 +150,11 @@
   /**
    * @param {HTMLElement} root
    * @param {{ t?: (key: string, tokens?: object) => string, locale?: string, layout?: string, colorStyle?: string,
-   *   title?: string, sourceId?: string | null, codeId?: string | null, keypad?: string, buttons?: any[],
-   *   onPress?: (body: object) => Promise<any>, onHaptic?: () => void, onHeight?: () => void }} opts
+   *   background?: string, frame?: HTMLElement, title?: string, sourceId?: string | null, codeId?: string | null,
+   *   keypad?: string, buttons?: any[], onPress?: (body: object) => Promise<any>, onHaptic?: () => void,
+   *   onHeight?: () => void }} opts
+   *   `background`: `state` fills the card with the lit button's colour, else plain. `frame`: the element that paints the
+   *   card (the widget's body).
    */
   function createKeypadWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -166,6 +169,8 @@
     const always = opts.keypad === 'always' && !!codeId; // without a code there's nothing to type
     const own = Array.isArray(opts.buttons) ? opts.buttons : [];
     const compact = opts.layout === 'compact';
+    // Background: State colour tints the whole card (padding too), so it's the frame that takes the colour.
+    const frame = opts.background === 'state' ? opts.frame || null : null;
     const guard = touchGuard();
     const doc = root.ownerDocument;
 
@@ -185,6 +190,11 @@
     root.classList.toggle('kp-compact', compact);
     root.classList.toggle('kp-always', always);
     applyColors(root, { style: opts.colorStyle });
+    // The frame gets the palette but no colour of its own: an inherited `--wk-c-*` would colour the grey buttons.
+    if (frame) {
+      applyColors(frame, { style: opts.colorStyle });
+      frame.classList.add('kp-tint-frame');
+    }
 
     const left = el('div', { class: 'kp-left' }, root);
     const stack = el('div', { class: 'kp-stack' }, root);
@@ -270,14 +280,18 @@
     function render() {
       root.classList.toggle('kp-message-only', !!lasting);
       only.textContent = lasting || '';
+      let tint = null;
       if (!lasting) {
         const list = buttons();
         const now = current();
         const lit = now === undefined ? null : list.find(b => b.value && sameValue(now, b.value.value)) || null;
+        if (lit && lit.color !== 'grey') tint = lit.color;
         renderLeft(list, lit, now);
         renderStack(list, lit);
         renderPad(list);
       }
+      if (frame && tint) frame.dataset.kpTint = tint;
+      else if (frame) delete frame.dataset.kpTint;
       root.classList.toggle('pad-open', open && !lasting);
       if (opts.onHeight) opts.onHeight();
     }

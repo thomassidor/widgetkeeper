@@ -24,6 +24,8 @@ window.mountKeypadWidget = function (Homey, { root, frame }) {
     t: (key, tokens) => Homey.__(key, tokens),
     layout: settings.layout, // standard unless compact
     colorStyle: settings.colorStyle,
+    background: settings.background, // plain unless state
+    frame, // State colour tints the whole card
     title: settings.title,
     sourceId,
     codeId,

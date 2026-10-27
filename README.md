@@ -253,7 +253,9 @@ The codes are made under **Apps → Widgetkeeper → Configure → Keypad codes*
 
 Starting a Flow needs an [API key](#api-key) with **Start Flows**, setting a variable one with **Variables**; setting a device needs no key.
 
-**Settings:** a title, the state (a device value or a variable), the code (one, or Any code), show the keypad (when a button needs it, or always), compact layout, [colour style](#colour-style), and per button: a Flow, the state's value it stands for, a label, an icon, a colour and whether it needs the code.
+**Background: State colour** fills the whole widget with the ticked button's colour, so a small Keypad still shows from across the room whether the alarm is armed: red for *Armed*, green for *Disarmed*. It's a light tint, stronger with Vivid. A grey button, or a state no button has, leaves it plain, which is also the default.
+
+**Settings:** a title, the state (a device value or a variable), the code (one, or Any code), show the keypad (when a button needs it, or always), compact layout, [colour style](#colour-style), background (plain or the state's colour), and per button: a Flow, the state's value it stands for, a label, an icon, a colour and whether it needs the code.
 
 ## Light Controls
 <img src="docs/clips/lights.webp" alt="Light Controls on a Homey dashboard: a light turned on, dimmed with the bar, and given a colour and a white" width="358">

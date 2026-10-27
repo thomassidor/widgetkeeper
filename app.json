@@ -11613,6 +11613,79 @@
           ]
         },
         {
+          "id": "background",
+          "type": "dropdown",
+          "title": {
+            "en": "Background",
+            "nl": "Achtergrond",
+            "de": "Hintergrund",
+            "fr": "Arrière-plan",
+            "it": "Sfondo",
+            "sv": "Bakgrund",
+            "no": "Bakgrunn",
+            "es": "Fondo",
+            "da": "Baggrund",
+            "ru": "Фон",
+            "pl": "Tło",
+            "ko": "배경",
+            "ar": "الخلفية"
+          },
+          "hint": {
+            "en": "State colour fills the widget with the ticked button’s colour, so the state shows from across the room (stronger with Vivid). Plain while no button is ticked, or the ticked one is grey.",
+            "nl": "Kleur van de status vult de widget met de kleur van de aangevinkte knop, zodat de status van over de kamer te zien is (sterker met Levendig). Effen zolang geen knop is aangevinkt of de aangevinkte grijs is.",
+            "de": "Farbe des Zustands füllt das Widget mit der Farbe der abgehakten Taste, sodass der Zustand quer durch den Raum zu sehen ist (stärker mit Kräftig). Schlicht, solange keine Taste abgehakt ist oder die abgehakte grau ist.",
+            "fr": "Couleur de l’état remplit le widget de la couleur du bouton coché, pour voir l’état de l’autre bout de la pièce (plus marquée avec Vives). Uni tant qu’aucun bouton n’est coché, ou si le bouton coché est gris.",
+            "it": "Colore dello stato riempie il widget con il colore del pulsante spuntato, così lo stato si vede dall’altra parte della stanza (più intenso con Vivaci). Semplice finché nessun pulsante è spuntato o quello spuntato è grigio.",
+            "sv": "Lägets färg fyller widgeten med den förbockade knappens färg, så att läget syns tvärs över rummet (starkare med Livfulla). Enkel så länge ingen knapp är förbockad eller den förbockade är grå.",
+            "no": "Tilstandens farge fyller widgeten med fargen til den avhakede knappen, så tilstanden synes fra andre siden av rommet (sterkere med Livlige). Enkel så lenge ingen knapp er avhaket, eller den avhakede er grå.",
+            "es": "Color del estado rellena el widget con el color del botón marcado, para ver el estado desde el otro lado de la sala (más intenso con Vivos). Liso mientras ningún botón esté marcado o el marcado sea gris.",
+            "da": "Tilstandens farve fylder widgetten med den afkrydsede knaps farve, så tilstanden kan ses fra den anden ende af rummet (stærkere med Livlige). Enkel, så længe ingen knap er afkrydset, eller den afkrydsede er grå.",
+            "ru": "«Цвет состояния» заливает виджет цветом отмеченной кнопки, чтобы состояние было видно через всю комнату (со стилем «Яркие» сильнее). Фон остаётся обычным, пока ни одна кнопка не отмечена или отмеченная серая.",
+            "pl": "Kolor stanu wypełnia widżet kolorem zaznaczonego przycisku, by stan było widać z drugiego końca pokoju (mocniej przy Żywe). Zwykłe, dopóki żaden przycisk nie jest zaznaczony albo zaznaczony jest szary.",
+            "ko": "상태 색상은 위젯을 체크된 버튼의 색으로 채워 방 건너편에서도 상태를 알아볼 수 있게 합니다(선명하게에서 더 진하게). 체크된 버튼이 없거나 회색이면 기본으로 표시됩니다.",
+            "ar": "«لون الحالة» يملأ الأداة بلون الزر المعلَّم، فتظهر الحالة من أقصى الغرفة (أقوى مع «زاهية»). تبقى «عادية» ما دام لا زر معلَّمًا أو كان المعلَّم رماديًا."
+          },
+          "value": "plain",
+          "values": [
+            {
+              "id": "plain",
+              "title": {
+                "en": "Plain",
+                "nl": "Effen",
+                "de": "Schlicht",
+                "fr": "Uni",
+                "it": "Semplice",
+                "sv": "Enkel",
+                "no": "Enkel",
+                "es": "Liso",
+                "da": "Enkel",
+                "ru": "Обычный",
+                "pl": "Zwykłe",
+                "ko": "기본",
+                "ar": "عادية"
+              }
+            },
+            {
+              "id": "state",
+              "title": {
+                "en": "State colour",
+                "nl": "Kleur van de status",
+                "de": "Farbe des Zustands",
+                "fr": "Couleur de l’état",
+                "it": "Colore dello stato",
+                "sv": "Lägets färg",
+                "no": "Tilstandens farge",
+                "es": "Color del estado",
+                "da": "Tilstandens farve",
+                "ru": "Цвет состояния",
+                "pl": "Kolor stanu",
+                "ko": "상태 색상",
+                "ar": "لون الحالة"
+              }
+            }
+          ]
+        },
+        {
           "id": "flow1",
           "type": "autocomplete",
           "title": {

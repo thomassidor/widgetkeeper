@@ -150,6 +150,55 @@ describe('Keypad: the state and the buttons', () => {
   });
 });
 
+describe('Keypad: Background', () => {
+  // State colour tints the frame (the card), which the mount passes in.
+  function tinted(settings: Record<string, unknown>, state: any, colorStyle?: string) {
+    const frame = document.createElement('div');
+    const w = widget(settings, state, { background: 'state', frame, colorStyle });
+    return { ...w, frame, tint: () => frame.dataset.kpTint ?? null };
+  }
+
+  it("State colour: the frame takes the ticked button's colour and follows the state", () => {
+    const { w, frame, tint } = tinted(ALARM, alarm('armed'));
+    expect(tint()).toBe('red');
+    expect([...frame.classList]).toEqual(['wk', 'kp-tint-frame']);
+    expect(frame.dataset.wkColor).toBeUndefined(); // the grey buttons would inherit its colour
+    w.pushValue('disarmed');
+    expect(tint()).toBe('green');
+    w.pushValue('panic'); // no button has it
+    expect(tint()).toBeNull();
+    expect(tinted({ state: ALARM.state, code: CODE }, alarm('partially_armed')).tint()).toBe('orange'); // no buttons set up
+  });
+
+  it('stays plain for a grey button, a missing state or a message in place of everything', () => {
+    const tv = { source: { kind: 'variable', id: 'v1', name: 'TV time', type: 'boolean', value: true }, flows: [], code: null };
+    expect(tinted({ state: { id: 'var:v1' } }, tv).tint()).toBeNull(); // Yes and No are grey
+    expect(tinted(ALARM, { source: { kind: 'capability', deviceId: 'alarm', capabilityId: 'homealarm_state', missing: true }, flows: [], code: CODE_STATE }).tint()).toBeNull();
+    const failed = tinted(ALARM, alarm('armed'));
+    failed.w.setMessage('Could not load the state.');
+    expect(failed.tint()).toBeNull();
+  });
+
+  it('follows a value just set, as the tick does', async () => {
+    vi.useFakeTimers();
+    const { press, tint } = tinted(ALARM, alarm('disarmed'));
+    press(0); // Arm, without the code
+    await vi.advanceTimersByTimeAsync(400);
+    expect(tint()).toBe('red');
+    await vi.advanceTimersByTimeAsync(10e3 + 100); // never reported
+    expect(tint()).toBe('green');
+  });
+
+  it('Plain (the default) leaves the frame alone; Vivid puts it on the Vivid palette', () => {
+    const frame = document.createElement('div');
+    widget(ALARM, alarm('armed'), { frame });
+    widget(ALARM, alarm('armed'), { background: 'plain', frame });
+    expect([frame.className, frame.dataset.kpTint]).toEqual(['', undefined]);
+    expect(() => widget(ALARM, alarm('armed'), { background: 'state' })).not.toThrow(); // no frame
+    expect([...tinted(ALARM, alarm('armed'), 'deep').frame.classList]).toEqual(['wk', 'wk-deep', 'kp-tint-frame']);
+  });
+});
+
 describe('Keypad: Any code', () => {
   const anyCode = { ...ALARM, code: { id: 'any', name: 'Any code' } };
   const ANY = { id: 'any', name: 'Any code', digits: null }; // the codes' lengths differ
@@ -497,6 +546,17 @@ describe('Keypad: mount', () => {
     root.querySelectorAll<HTMLElement>('.kp-btn')[0].click();
     expect(Homey.hapticFeedback).toHaveBeenCalled();
     expect(api).toHaveBeenCalledWith('POST', '/press', { source: 'cap:alarm:homealarm_state', value: 'armed', button: 'Arm', title: 'Surveillance' });
+  });
+
+  it('passes Background on with the frame, which State colour tints', async () => {
+    const api = vi.fn(async () => alarm('armed'));
+    const Homey = { getSettings: () => ({ ...ALARM, background: 'state' }), __: () => undefined, api, on: () => {}, ready: vi.fn(), setHeight: vi.fn() };
+    const frame = document.createElement('div');
+    const root = document.createElement('div');
+    frame.append(root);
+    document.body.append(frame);
+    win.mountKeypadWidget(Homey, { root, frame });
+    await vi.waitFor(() => expect(frame.dataset.kpTint).toBe('red'));
   });
 
   it("still works where Homey's haptic feedback throws: a mouse click or a key, on a web dashboard", async () => {

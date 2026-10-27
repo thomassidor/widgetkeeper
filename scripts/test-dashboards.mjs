@@ -558,8 +558,8 @@ const BUILD = {
       const [off, track, playlist] = await values(repeat);
       out.push(
         w('keypad', 'Repeat · no buttons set up: one per value, all behind 1234', { state: repeat, code }),
-        w('keypad', 'Repeat · Off without the code · icons · colours', {
-          state: repeat, code, value1: off, label1: 'Off', icon1: icon('power'), color1: 'grey', code1: false,
+        w('keypad', 'Repeat · Off without the code · icons · colours · State colour (Off grey: plain)', {
+          state: repeat, code, background: 'state', value1: off, label1: 'Off', icon1: icon('power'), color1: 'grey', code1: false,
           value2: track, icon2: icon('music'), value3: playlist, icon3: icon('star'), color3: 'purple',
         }),
         w('keypad', 'Repeat · keypad always · Off without the code', {
@@ -574,8 +574,8 @@ const BUILD = {
           state: repeat, code: anyCode, value1: off, icon1: icon('power'), color1: 'grey', code1: false,
           value2: track, icon2: icon('music'), color2: 'green', label3: 'Only the Flow card', icon3: icon('star'), color3: 'purple',
         }),
-        w('keypad', 'Repeat · compact · Vivid · 123456 · title', {
-          state: repeat, code: code6, layout: 'compact', colorStyle: 'deep', title: 'Typed title',
+        w('keypad', 'Repeat · compact · Vivid · State colour · 123456 · title', {
+          state: repeat, code: code6, layout: 'compact', colorStyle: 'deep', background: 'state', title: 'Typed title',
           value1: off, icon1: icon('power'), color1: 'grey', code1: false, value2: track, icon2: icon('music'), color2: 'green', value3: playlist, icon3: icon('star'), color3: 'orange',
         }),
       );

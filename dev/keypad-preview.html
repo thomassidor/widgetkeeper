@@ -20,7 +20,8 @@
     /*
      * Made-up devices, variables and flows. The code ("Alarm", made on the app settings page) is 1234: five wrong ones lock
      * the keypad for 30 s, as the app would. A set value is reported back after a moment; `Needs a key` fails with noKey.
-     * `?open=0,9` opens those cases' keypads with two digits typed (for a headless screenshot).
+     * `?open=0,9` opens those cases' keypads with two digits typed (for a headless screenshot). The State colour cases
+     * (Background) are last.
      */
     const CODE = { id: 'c1', name: 'Alarm', description: 'A 4-digit code' };
     const CODE_STATE = { id: 'c1', name: 'Alarm', digits: 4 };
@@ -65,6 +66,17 @@
       ['Keypad always · 340 px · light · front door', 340, 'light', { title: 'Front door', code: CODE, keypad: 'always', flow1: { id: 'flow:door', name: 'Unlock the front door' }, label1: 'Unlock', icon1: { id: 'unlock' } }, null],
       ['Keypad always · compact · 340 px · alarm', 340, '', { ...alarm, keypad: 'always', layout: 'compact' }, ALARM('armed')],
       ['Keypad always · compact · 300 px · light · Vivid', 300, 'light', { ...alarm, keypad: 'always', layout: 'compact', colorStyle: 'deep' }, ALARM('disarmed')],
+      // Background: State colour, the whole card in the ticked button's colour.
+      ['State colour · 340 px · alarm · armed', 340, '', { ...alarm, background: 'state' }, ALARM('armed')],
+      ['State colour · 340 px · light · alarm · night', 340, 'light', { ...alarm, background: 'state' }, ALARM('partially_armed')],
+      ['State colour · 340 px · Vivid · alarm · disarmed', 340, '', { ...alarm, background: 'state', colorStyle: 'deep' }, ALARM('disarmed')],
+      ['State colour · 340 px · light · Vivid · alarm · armed', 340, 'light', { ...alarm, background: 'state', colorStyle: 'deep' }, ALARM('armed')],
+      ['State colour · compact · 300 px · no buttons set up', 300, '', { state: alarm.state, code: CODE, layout: 'compact', background: 'state' }, ALARM('partially_armed')],
+      ['State colour · compact · 300 px · light · no buttons set up', 300, 'light', { state: alarm.state, code: CODE, layout: 'compact', background: 'state' }, ALARM('disarmed')],
+      ['State colour · keypad always · 340 px · alarm · armed', 340, '', { ...alarm, keypad: 'always', background: 'state' }, ALARM('armed')],
+      ['State colour · keypad always · compact · 300 px · light · Vivid', 300, 'light', { ...alarm, keypad: 'always', layout: 'compact', background: 'state', colorStyle: 'deep' }, ALARM('armed')],
+      ['State colour · 300 px · TV time · Stop is grey: plain', 300, '', { ...tv, background: 'state' }, TV(false)],
+      ['State colour · 340 px · a lock, no buttons set up', 340, '', { state: { id: 'cap:door:locked' }, code: CODE, background: 'state' }, DOOR(true)],
     ];
     const open = (new URLSearchParams(location.search).get('open') || '').split(',').filter(Boolean).map(Number);
 
@@ -98,6 +110,8 @@
         t: devT,
         layout: settings.layout,
         colorStyle: settings.colorStyle,
+        background: settings.background,
+        frame: col.querySelector('.card'),
         title: settings.title,
         ...keypadSettings(settings),
         onPress: body => new Promise(resolve => setTimeout(() => {
