@@ -8,7 +8,7 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **A site that can't be shown says so:** many sites don't allow being shown inside another page, and on an iPhone the widget stayed plain white. It now says the site doesn't allow it, and an http:// page reached over https:// (away from home) says why it can't be shown.
 
 ### Charts
-- **One scale for both:** two values on one chart can share the scale on the left, so they compare directly, such as the temperature inside and out.
+- **One scale for both:** two values on one chart can share the scale on the left, so they compare directly, such as the temperature inside and out. By Stefan Schweiger ([#14](https://github.com/thomassidor/widgetkeeper/pull/14)).
 
 ### Light Controls and Lights by Room
 - A room's brightness counts only its dimmable lights that are on. Lights that only switch on and off used to count as 100 %, so one light at 30 % with three switches on showed 83 %; now it's 30 %. While only switches are on, the room shows no percentage.
