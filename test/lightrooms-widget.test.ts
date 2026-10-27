@@ -127,6 +127,31 @@ describe('the room', () => {
     expect(room('zone:z2').classList.contains('on')).toBe(true);
     expect(room('zone:z2').style.getPropertyValue('--lr-light')).toBe('hsl(220 100% 62%)');
   });
+
+  /** A switch in the Kitchen: on, without `dim`. */
+  const plug = (id: string, on = true) => ({ id, name: `Plug ${id}`, icon: null, zone: kitchen, caps: { onoff: cap(on) } });
+  const level = (room: HTMLElement) => room.querySelector<HTMLElement>(':scope > .lr-bar')!.style.getPropertyValue('--lr-x');
+
+  it('leaves the lights that only switch out of its brightness (wk-096)', () => {
+    // A user's hallway: one light at 30 %, three that dim off, three switches on. It said 83 %.
+    const { state } = widget([
+      lamp('k1', kitchen, true, 0.3), lamp('k2', kitchen, false), lamp('k3', kitchen, false), lamp('k4', kitchen, false),
+      plug('p1'), plug('p2'), plug('p3'),
+    ]);
+    expect(state('zone:z1')).toBe('4 of 7 on · 30%');
+  });
+
+  it('shows its brightest lit light with roomLevel max', () => {
+    const { state } = widget([lamp('k1', kitchen, true, 0.3), lamp('k2', kitchen, true, 0.7), lamp('k3', kitchen, false, 0.9)], { roomLevel: 'max' });
+    expect(state('zone:z1')).toBe('2 of 3 on · 70%');
+  });
+
+  it('shows no percentage and an empty bar while only lights that switch are on', () => {
+    const { state, room } = widget([lamp('k1', kitchen, false, 0.8), plug('p1'), plug('p2'), lamp('k2', kitchen, false)]);
+    expect(state('zone:z1')).toBe('2 of 4 on');
+    expect(level(room('zone:z1'))).toBe('0');
+    expect(room('zone:z1').classList.contains('on')).toBe(true);
+  });
 });
 
 describe('a light', () => {

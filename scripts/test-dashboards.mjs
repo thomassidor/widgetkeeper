@@ -386,6 +386,7 @@ const BUILD = {
     return { cols: 3, widgets: [
       w('lights', 'Colour lights · defaults', {}, colour.slice(0, 6)),
       w('lights', 'Grouped by room', { groupByZone: true }, all.slice(0, 20)),
+      w('lights', 'Grouped by room · brightest light · with on/off lights', { groupByZone: true, roomLevel: 'max' }, [...new Set([...all.slice(0, 20), ...onoffOnly])]),
       w('lights', 'Three lights · last tile widened', { wideLast: true }, all.slice(0, 3)),
       w('lights', 'Warm palette · bar stops at 1 %', { palette: 'warm', barMin: '1' }, colour.slice(6, 10)),
       w('lights', 'Dusk palette', { palette: 'dusk' }, colour.slice(0, 4)),
@@ -410,6 +411,7 @@ const BUILD = {
     return { cols: 3, widgets: [
       w('lightrooms', 'Defaults · many rooms, Moods first', {}, many),
       w('lightrooms', 'Vivid · warm palette · bar stops at 1 %', { colorStyle: 'deep', palette: 'warm', barMin: '1' }, all.slice(0, 12)),
+      w('lightrooms', 'Room brightness: brightest light · with on/off lights', { roomLevel: 'max' }, [...new Set([...all.slice(0, 12), ...onoffOnly])]),
       w('lightrooms', 'Moods off · dusk palette', { showMoods: false, palette: 'dusk' }, inMoodRooms.slice(0, 8)),
       w('lightrooms', 'On/off only · deleted device', {}, [...onoffOnly, MISSING]),
       w('lightrooms', 'One light', {}, all.slice(0, 1)),

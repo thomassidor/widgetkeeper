@@ -21,10 +21,10 @@ const hueGo = (temperature = true) => ({
   },
 });
 
-function widget(devices: any[], onSet: any = vi.fn(async () => {}), groupByZone = false, palette?: string, barMin?: string, wideLast = false) {
+function widget(devices: any[], onSet: any = vi.fn(async () => {}), groupByZone = false, palette?: string, barMin?: string, wideLast = false, roomLevel?: string) {
   const root = document.createElement('div');
   document.body.append(root);
-  const w = win.createLightsWidget(root, { onSet, groupByZone, palette, barMin, wideLast });
+  const w = win.createLightsWidget(root, { onSet, groupByZone, palette, barMin, wideLast, roomLevel });
   w.setState(devices);
   const tile = (id: string) => root.querySelector<HTMLElement>(`.lc-tile[data-device="${id}"]`)!;
   /** The bar's value in percent. */
@@ -389,6 +389,26 @@ describe('group by room', () => {
     const { w, value } = widget(lights(), undefined, true);
     w.pushChange({ deviceId: 'a', capabilityId: 'onoff', value: false });
     expect(value('zone:z1')).toBe('60');
+  });
+
+  /** A switch in Stue: on, without `dim`. */
+  const plug = (id: string, on = true) => ({ id, name: id, icon: null, zone: stue, caps: { onoff: cap(on) } });
+
+  it("leaves the lights that only switch out of a room's brightness (wk-096)", () => {
+    // One light dimmed to 30 % and three switches on: 30 %, not the 83 % it showed before.
+    const { value } = widget([lamp('a', stue, true, 0.3), plug('p1'), plug('p2'), plug('p3')], undefined, true);
+    expect(value('zone:z1')).toBe('30');
+  });
+
+  it('shows the brightest lit light with roomLevel max', () => {
+    const { value } = widget(lights(), undefined, true, undefined, undefined, false, 'max');
+    expect(value('zone:z1')).toBe('60'); // a at 20 % and c at 60 % are on; d (90 %) is off
+  });
+
+  it('shows 0 while only lights that switch are on, the tile still on', () => {
+    const { value, tile } = widget([lamp('a', stue, false, 0.8), plug('p1')], undefined, true);
+    expect(value('zone:z1')).toBe('0');
+    expect(tile('zone:z1').classList.contains('on')).toBe(true);
   });
 
   it('keeps lights without a known room on their own tiles', () => {

@@ -243,18 +243,18 @@
     "ar": "أدوات جديدة: حبوب اللقاح والأشعة فوق البنفسجية، حبوب لقاح اليوم وذروة الأشعة فوق البنفسجية في موقع Homey؛ صفحة ويب، أي صفحة ويب بحجم يملأ الأداة؛ النوافذ المنبثقة، لبطاقات Flow التي تعرض رسالة أو تطرح سؤالًا بأزرار من اختيارك، مع صورة إن أردت، على لوحات الويب وعلى الهواتف والأجهزة اللوحية؛ الإضاءة حسب الغرفة، أضواء كل غرفة في بطاقة تشغّل الغرفة وتخفّتها، وتنفتح للتحكم في سطوع ولون كل مصباح وأجواء الغرفة؛ لوحة الرمز، حتى ثلاثة أزرار خلف رمز تشغّل Flow أو تضبط جهازًا أو متغيرًا، مثل تفعيل الإنذار. لوحات الويب: أدوات عريضة تمتد على عمودين أو أكثر. تغيير كلمة مرور لوحات الويب يطلب الآن الكلمة الحالية. أيام منذ: إعداد عرض، لإظهار العدادات الكهرمانية والحمراء فقط، أو الحمراء فقط. ويمكن الآن أن تكون أيضًا صفحة في المكدس الذكي. إجراءات سريعة للأجهزة: التفعيل بنقرة مزدوجة أو ضغطة مطوّلة، لكل المربعات أو للأقفال وأبواب المرآب فقط. المخططات والمخططات المصغرة: اليوم وأمس كفترة زمنية. إعدادات منظم الحرارة: بطاقات Flow تشغّل زرًا، وتتحقق مما إذا كان نشطًا، وتبدأ عند النقر عليه."
   },
   "1.1.1": {
-    "en": "Charts: two values on one chart can share one scale.",
-    "nl": "Grafieken: twee waarden in één grafiek kunnen één schaal delen.",
-    "de": "Diagramme: zwei Werte in einem Diagramm können eine Skala teilen.",
-    "fr": "Graphiques : deux valeurs dans un graphique peuvent partager une échelle.",
-    "it": "Grafici: due valori in un grafico possono condividere una scala.",
-    "sv": "Diagram: två värden i ett diagram kan dela en skala.",
-    "no": "Diagrammer: to verdier i ett diagram kan dele én skala.",
-    "es": "Gráficos: dos valores en un gráfico pueden compartir una escala.",
-    "da": "Grafer: to værdier i én graf kan dele én skala.",
-    "ru": "Графики: два значения на одном графике могут использовать одну шкалу.",
-    "pl": "Wykresy: dwie wartości na jednym wykresie mogą mieć wspólną skalę.",
-    "ko": "차트: 차트 1개의 두 값에 같은 눈금 사용 가능.",
-    "ar": "المخططات: يمكن لقيمتين في مخطط واحد أن تتشاركا مقياسًا واحدًا."
+    "en": "Charts: two values on one chart can share one scale. Light Controls and Lights by Room: a room's brightness counts only its dimmable lights that are on, as their average or the brightest.",
+    "nl": "Grafieken: twee waarden in één grafiek kunnen één schaal delen. Lichtbediening en Licht per kamer: de helderheid van een kamer telt alleen de dimbare lampen die aan zijn, als gemiddelde of de helderste.",
+    "de": "Diagramme: zwei Werte in einem Diagramm können eine Skala teilen. Lichtsteuerung und Licht nach Raum: Die Helligkeit eines Raums zählt nur seine eingeschalteten dimmbaren Lampen, als Durchschnitt oder die hellste.",
+    "fr": "Graphiques : deux valeurs dans un graphique peuvent partager une échelle. Commandes d'éclairage et Lumières par pièce : la luminosité d'une pièce ne compte que ses lampes à variateur allumées, en moyenne ou la plus lumineuse.",
+    "it": "Grafici: due valori in un grafico possono condividere una scala. Controllo luci e Luci per stanza: la luminosità di una stanza conta solo le luci dimmerabili accese, come media o la più luminosa.",
+    "sv": "Diagram: två värden i ett diagram kan dela en skala. Ljusreglage och Ljus per rum: ett rums ljusstyrka räknar bara de tända dimbara lamporna, som medelvärde eller den ljusaste.",
+    "no": "Diagrammer: to verdier i ett diagram kan dele én skala. Lysstyring og Lys per rom: lysstyrken i et rom teller bare dimbare lys som er på, som gjennomsnitt eller det sterkeste.",
+    "es": "Gráficos: dos valores en un gráfico pueden compartir una escala. Control de luces y Luces por habitación: el brillo de una habitación solo cuenta sus luces regulables encendidas, como media o la más brillante.",
+    "da": "Grafer: to værdier i én graf kan dele én skala. Lysstyring og Lys pr. rum: et rums lysstyrke tæller kun de tændte dæmpbare lys, som gennemsnit eller det klareste.",
+    "ru": "Графики: два значения на одном графике могут использовать одну шкалу. Управление светом и Свет по комнатам: яркость комнаты учитывает только включённые диммируемые светильники — среднее или самый яркий.",
+    "pl": "Wykresy: dwie wartości na jednym wykresie mogą mieć wspólną skalę. Sterowanie światłem i Światło według pokoi: jasność pokoju uwzględnia tylko włączone światła ze ściemnianiem, jako średnią lub najjaśniejsze.",
+    "ko": "차트: 차트 1개의 두 값에 같은 눈금 사용 가능. 조명 제어 및 방별 조명: 방 밝기는 켜진 밝기 조절 조명만 계산하며, 평균 또는 가장 밝은 조명으로 표시합니다.",
+    "ar": "المخططات: يمكن لقيمتين في مخطط واحد أن تتشاركا مقياسًا واحدًا. التحكم بالإضاءة والإضاءة حسب الغرفة: يحتسب سطوع الغرفة الأضواء القابلة للتعتيم المضاءة فقط، كمتوسط أو الأكثر سطوعًا."
   }
 }

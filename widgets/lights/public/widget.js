@@ -45,7 +45,7 @@
    *   onMood?: (moodId: string) => Promise<any>,
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
    *   onHeight?: (h: number) => void, groupByZone?: boolean, wideLast?: boolean, palette?: string,
-   *   barMin?: string }} opts
+   *   barMin?: string, roomLevel?: string }} opts
    */
   function createLightsWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -208,10 +208,15 @@
 
     /** A tile is on while any of its lights is. */
     const itemOn = item => item.members.some(isOn);
-    /** A tile's brightness: its light's, or the average of a room's lights that are on. */
+    /**
+     * A tile's brightness: its light's, or a room's, the average (the highest with `roomLevel: max`) of its lit
+     * lights that dim. A light that only switches counts only where none of them dims (the bar is hidden then).
+     */
     function itemBrightness(item) {
-      const on = item.members.filter(isOn);
-      return on.length ? on.reduce((sum, d) => sum + brightness(d), 0) / on.length : 0;
+      const lit = item.members.filter(isOn);
+      const levels = (item.members.some(d => d.caps.dim) ? lit.filter(d => d.caps.dim) : lit).map(brightness);
+      if (!levels.length) return 0;
+      return opts.roomLevel === 'max' ? Math.max(...levels) : levels.reduce((sum, x) => sum + x, 0) / levels.length;
     }
     /** The light a tile's colour comes from: the first one that is on, else the first. */
     const lead = item => item.members.find(isOn) || item.members[0];

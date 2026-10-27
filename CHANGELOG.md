@@ -7,6 +7,10 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 ### Charts
 - **One scale for both:** two values on one chart can share the scale on the left, so they compare directly, such as the temperature inside and out.
 
+### Light Controls and Lights by Room
+- A room's brightness counts only its dimmable lights that are on. Lights that only switch on and off used to count as 100 %, so one light at 30 % with three switches on showed 83 %; now it's 30 %. While only switches are on, the room shows no percentage.
+- **Room brightness:** the average of those lights, or the brightest one.
+
 ## 1.1.0
 
 ### New: Pollen and UV

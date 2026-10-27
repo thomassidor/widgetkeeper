@@ -36,6 +36,8 @@
       { id: 'a', name: 'Living Room', icon: null, zone: stue, caps: { onoff: cap(true), dim: cap(0.35), light_temperature: cap(0.8), light_mode: cap('temperature') } },
       { id: 'b', name: 'Spots | Dining room', icon: null, zone: kitchen, caps: { onoff: cap(false), dim: cap(0.25), light_temperature: cap(0.5) } },
       { id: 'c', name: 'Kitchen', icon: null, zone: kitchen, caps: { onoff: cap(true), dim: cap(0.2) } },
+      // On/off only: grouped by room, the Kitchen shows its lit dimmable light's 20 %, not (20 + 100) / 2.
+      { id: 'k', name: 'Cooker hood', icon: null, zone: kitchen, caps: { onoff: cap(true) } },
       { id: 'd', name: 'Hue Go', icon: null, zone: stue, caps: { onoff: cap(true), dim: cap(0.6), light_hue: cap(0.75), light_saturation: cap(0.8), light_temperature: cap(0.2), light_mode: cap('color') } },
       { id: 'e', name: 'Office ceiling', icon: null, caps: { onoff: cap(true), dim: cap(1), light_temperature: cap(0.1), light_mode: cap('temperature') } },
       { id: 'f', name: 'Bedroom', icon: null, caps: { dim: cap(0) } },
@@ -87,8 +89,9 @@
         }
         resolve();
       }, 400));
-      // ?palette=warm|dusk|moods
-      w = createLightsWidget(document.getElementById(id), { t: devT, onSet, onMood, groupByZone, palette, wideLast });
+      // ?palette=warm|dusk|moods; ?level=max shows a room's brightest lit light.
+      const roomLevel = new URLSearchParams(location.search).get('level') || undefined;
+      w = createLightsWidget(document.getElementById(id), { t: devT, onSet, onMood, groupByZone, palette, wideLast, roomLevel });
       w.setState(lights().filter(d => !only || only.includes(d.id)));
       if (palette === 'moods') w.setMoods(roomMoods);
     }

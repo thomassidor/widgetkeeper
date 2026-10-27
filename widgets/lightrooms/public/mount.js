@@ -19,6 +19,7 @@ window.mountLightRoomsWidget = function (Homey, { root, frame }) {
     showMoods,
     palette: settings.palette,
     barMin: settings.barMin,
+    roomLevel: settings.roomLevel,
     onSet: (deviceId, change) => Homey.api('POST', '/set', { deviceId, ...change }),
     onMood: async (id) => {
       const res = await Homey.api('POST', '/mood', { id });

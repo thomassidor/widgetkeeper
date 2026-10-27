@@ -96,6 +96,79 @@
       "value": false
     },
     {
+      "id": "roomLevel",
+      "type": "dropdown",
+      "title": {
+        "en": "Room brightness",
+        "nl": "Helderheid van de ruimte",
+        "de": "Helligkeit des Raums",
+        "fr": "Luminosité de la pièce",
+        "it": "Luminosità della stanza",
+        "sv": "Rummets ljusstyrka",
+        "no": "Rommets lysstyrke",
+        "es": "Brillo de la habitación",
+        "da": "Rummets lysstyrke",
+        "ru": "Яркость комнаты",
+        "pl": "Jasność pomieszczenia",
+        "ko": "방 밝기",
+        "ar": "سطوع الغرفة"
+      },
+      "hint": {
+        "en": "With Group lights by room: what a room tile’s bar shows. Only dimmable lights that are on count.",
+        "nl": "Met Lampen per ruimte groeperen: wat de balk van een ruimtetegel toont. Alleen dimbare lampen die aan zijn tellen mee.",
+        "de": "Mit Lampen nach Raum gruppieren: was der Balken einer Raumkachel zeigt. Nur dimmbare Lampen, die an sind, zählen.",
+        "fr": "Avec Grouper les lampes par pièce : ce que montre la barre d'une tuile de pièce. Seules les lampes à variateur allumées comptent.",
+        "it": "Con Raggruppa le luci per stanza: cosa mostra la barra del riquadro di una stanza. Contano solo le luci dimmerabili accese.",
+        "sv": "Med Gruppera lampor per rum: vad en rumsrutas reglage visar. Bara dimbara lampor som är tända räknas.",
+        "no": "Med Grupper lys etter rom: hva linjen på en romflis viser. Bare dimbare lys som er på, teller.",
+        "es": "Con Agrupar luces por habitación: lo que muestra la barra del mosaico de una habitación. Solo cuentan las luces regulables encendidas.",
+        "da": "Med Gruppér lys efter rum: hvad bjælken på et rumfelt viser. Kun dæmpbare lys, der er tændt, tæller med.",
+        "ru": "При «Группировать свет по комнатам»: что показывает ползунок плитки комнаты. Учитываются только включённые диммируемые светильники.",
+        "pl": "Przy Grupuj światła według pomieszczeń: co pokazuje pasek kafelka pomieszczenia. Liczą się tylko włączone światła ze ściemnianiem.",
+        "ko": "방별로 조명 묶기를 켠 경우 방 타일의 막대에 표시되는 값입니다. 켜져 있는 밝기 조절 조명만 계산합니다.",
+        "ar": "مع تجميع الأضواء حسب الغرفة: ما يعرضه شريط بلاطة الغرفة. تُحتسب فقط الأضواء القابلة للتعتيم والمضاءة."
+      },
+      "value": "average",
+      "values": [
+        {
+          "id": "average",
+          "title": {
+            "en": "Average of the lit lights",
+            "nl": "Gemiddelde van de brandende lampen",
+            "de": "Durchschnitt der leuchtenden Lampen",
+            "fr": "Moyenne des lampes allumées",
+            "it": "Media delle luci accese",
+            "sv": "Medelvärde för tända lampor",
+            "no": "Gjennomsnitt av lysene som er på",
+            "es": "Media de las luces encendidas",
+            "da": "Gennemsnit af de tændte lys",
+            "ru": "Среднее по включённым светильникам",
+            "pl": "Średnia z włączonych świateł",
+            "ko": "켜진 조명의 평균",
+            "ar": "متوسط الأضواء المضاءة"
+          }
+        },
+        {
+          "id": "max",
+          "title": {
+            "en": "The brightest light",
+            "nl": "De helderste lamp",
+            "de": "Die hellste Lampe",
+            "fr": "La lampe la plus lumineuse",
+            "it": "La luce più luminosa",
+            "sv": "Den ljusaste lampan",
+            "no": "Det sterkeste lyset",
+            "es": "La luz más brillante",
+            "da": "Det klareste lys",
+            "ru": "Самый яркий светильник",
+            "pl": "Najjaśniejsze światło",
+            "ko": "가장 밝은 조명",
+            "ar": "الضوء الأكثر سطوعًا"
+          }
+        }
+      ]
+    },
+    {
       "id": "wideLast",
       "type": "checkbox",
       "title": {

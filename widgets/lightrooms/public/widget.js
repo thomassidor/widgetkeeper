@@ -52,7 +52,7 @@
    *   onSet?: (deviceId: string, change: {dim?: number, onoff?: boolean, temperature?: number,
    *     hue?: number, saturation?: number}) => Promise<any>,
    *   onMood?: (moodId: string) => Promise<any>, showMoods?: boolean, palette?: string, barMin?: string,
-   *   open?: string[], onHeight?: (h: number) => void }} opts `open`: rooms (zone ids) open from the start, for the
+   *   roomLevel?: string, open?: string[], onHeight?: (h: number) => void }} opts `open`: rooms (zone ids) open from the start, for the
    *   dev pages and renders; on a dashboard every room starts closed.
    */
   function createLightRoomsWidget(root, opts = {}) {
@@ -198,10 +198,15 @@
 
     /** On while any of its lights is. */
     const itemOn = item => item.members.some(isOn);
-    /** Its light's brightness, or the average of a room's lights that are on. */
+    /**
+     * Its light's brightness, or a room's: the average (the highest with `roomLevel: max`) of its lit lights that
+     * dim. A light that only switches counts only where none of them dims (the bar is hidden then).
+     */
     function itemBrightness(item) {
-      const on = item.members.filter(isOn);
-      return on.length ? on.reduce((sum, d) => sum + brightness(d), 0) / on.length : 0;
+      const lit = item.members.filter(isOn);
+      const levels = (item.members.some(d => d.caps.dim) ? lit.filter(d => d.caps.dim) : lit).map(brightness);
+      if (!levels.length) return 0;
+      return opts.roomLevel === 'max' ? Math.max(...levels) : levels.reduce((sum, x) => sum + x, 0) / levels.length;
     }
 
     /** The colour a light shines in, from its shown (optimistic) values. */
@@ -544,13 +549,13 @@
       return out;
     }
 
-    /** The room's state: Off, All on or "2 of 3 on", with the brightness of those on. */
+    /** The room's state: Off, All on or "2 of 3 on", with the brightness while a light that dims is on. */
     function roomState(room, on, x) {
       if (!room.members.length) return t('unavailable');
       const lit = room.members.filter(isOn).length;
       if (!on) return t('off');
       const state = lit === room.members.length ? t('allOn') : t('someOn', { on: lit, all: room.members.length });
-      return room.members.some(d => d.caps.dim) ? t('level', { state, percent: Math.round(x * 100) }) : state;
+      return room.members.some(d => d.caps.dim && isOn(d)) ? t('level', { state, percent: Math.round(x * 100) }) : state;
     }
 
     /** Keeps `node` as the next child after `prev` in `parent` (moving it only when out of place, so a drag goes on). */

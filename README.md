@@ -258,16 +258,16 @@ Starting a Flow needs an [API key](#api-key) with **Start Flows**, setting a var
 ## Light Controls
 <img src="docs/clips/lights.webp" alt="Light Controls on a Homey dashboard: a light turned on, dimmed with the bar, and given a colour and a white" width="358">
 
-Six lights in the space of three of Homey's light cards. Tap a tile to switch it, drag or tap the bar to dim, and tap the colour button for colours and whites. Lights in a room can share one tile. With the *Room's Moods* palette, the colour button starts the room's Homey Moods instead (needs an [API key](#api-key) with **Set Moods**).
+Six lights in the space of three of Homey's light cards. Tap a tile to switch it, drag or tap the bar to dim, and tap the colour button for colours and whites. Lights in a room can share one tile, whose bar shows how bright its dimmable lights that are on are: their average, or the brightest. With the *Room's Moods* palette, the colour button starts the room's Homey Moods instead (needs an [API key](#api-key) with **Set Moods**).
 
-**Settings:** lights, group by room, widen the last tile, what the bar's far left does, colour palette, [colour style](#colour-style), [rename tiles](#tile-names).
+**Settings:** lights, group by room, room brightness (average or brightest), widen the last tile, what the bar's far left does, colour palette, [colour style](#colour-style), [rename tiles](#tile-names).
 
 ## Lights by Room
 <img src="docs/screenshots/lightrooms.png" alt="Lights by Room on a Homey dashboard: five rooms, the living room open with its Moods and three lights, the bedroom off" width="358">
 
-For many lights in many rooms. The lights you pick are grouped by their Homey room, a card each with the room's icon, how many lights are on and how bright, a switch for the whole room and a bar that dims all of it. Tap a room's name to open it: its Homey Moods as a row of buttons, then a row per light that works as in Light Controls (tap to switch, tap or drag the bar to dim, the colour button for colours and whites). Rooms start closed; open as many as you like. Starting a Mood needs an [API key](#api-key) with **Set Moods**.
+For many lights in many rooms. The lights you pick are grouped by their Homey room, a card each with the room's icon, how many lights are on and how bright (the dimmable lights that are on: their average, or the brightest), a switch for the whole room and a bar that dims all of it. Tap a room's name to open it: its Homey Moods as a row of buttons, then a row per light that works as in Light Controls (tap to switch, tap or drag the bar to dim, the colour button for colours and whites). Rooms start closed; open as many as you like. Starting a Mood needs an [API key](#api-key) with **Set Moods**.
 
-**Settings:** lights, show the room's Moods, colour palette, what the bar's far left does, [colour style](#colour-style).
+**Settings:** lights, show the room's Moods, colour palette, room brightness (average or brightest), what the bar's far left does, [colour style](#colour-style).
 
 ## Locks and Doors
 <img src="docs/screenshots/locks.png" alt="Locks and Doors on a Homey dashboard" width="358">
