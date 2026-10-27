@@ -4,7 +4,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { TIGHT_UNITS, COLORS, scaled, formatNumber, applyColors, timeSpan, isTimeSpan, spanUnit } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { TIGHT_UNITS, COLORS, scaled, formatNumber, applyColors, timeSpan, isTimeSpan, spanUnit, sixHourSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart;
@@ -20,8 +20,6 @@
     '1h': 5 * MIN, '6h': 15 * MIN, '24h': HOUR, today: HOUR, yesterday: HOUR, '2d': 2 * HOUR, '3d': 3 * HOUR, '5d': 6 * HOUR, '7d': 6 * HOUR,
     thisWeek: DAY, lastWeek: DAY, thisMonth: DAY, lastMonth: DAY, thisYear: 'month', lastYear: 'month',
   };
-  /** Live values are appended up to this long a span: a month's or year's log is 6-hour averages, which they'd pile up behind. */
-  const LIVE_MAX = 8 * DAY;
   const STYLES = ['area', 'line', 'bars'];
 
   const DEFAULT_STRINGS = {
@@ -129,7 +127,7 @@
     }));
     // Two series on one chart share chart 1's time axis and kind of scale; with `sharedScale`, the scale itself. Two
     // calendar periods of one kind (today with yesterday, this month with last …) keep their own: each runs over the
-    // whole axis, so series 2 is drawn by its place in its period.
+    // whole axis, so series 2 is drawn by its place in its period. The mount asks for these spans (`spans()`).
     const overlay = opts.overlay === true && charts.length === 2;
     if (overlay) {
       charts[1].fit = charts[0].fit;
@@ -182,11 +180,18 @@
       return { ...w, live: w.end === at, unit: w.unit || null };
     }
 
-    /** The chart's logged (and live) points in its window. */
+    /**
+     * The chart's logged (and live) points in its window. A month's or year's log starts with the 6 hours holding the
+     * period's start, so a point of those before the start counts from the start.
+     */
     function loggedPoints(i, win) {
       const s = state.entries[i];
       if (!s || 'missing' in s) return [];
-      return (s.points || []).filter(p => p[0] >= win.from && p[0] <= win.end && typeof p[1] === 'number' && isFinite(p[1]));
+      const ok = p => typeof p[1] === 'number' && isFinite(p[1]);
+      const pts = (s.points || []).filter(p => p[0] >= win.from && p[0] <= win.end && ok(p));
+      if (!sixHourSpan(charts[i].span) || (pts.length && pts[0][0] === win.from)) return pts;
+      const before = (s.points || []).filter(p => p[0] < win.from && p[0] >= win.from - 6 * HOUR && ok(p)).pop();
+      return before ? [[win.from, before[1]], ...pts] : pts;
     }
 
     /** The chart's current value, or null. */
@@ -642,8 +647,8 @@
           if (!s || 'missing' in s || s.deviceId !== deviceId || s.capabilityId !== capabilityId) return;
           s.value = value;
           const win = windowOf(i, at);
-          // Not on a month or a year: the current value still carries the line on to now.
-          if (typeof value === 'number' && isFinite(value) && win.live && win.to - win.from <= LIVE_MAX) {
+          // Not on a month or a year (`sixHourSpan()`): the current value still carries the line on to now.
+          if (typeof value === 'number' && isFinite(value) && win.live && !sixHourSpan(charts[i].span)) {
             s.points.push([at, value]);
             while (s.points.length && s.points[0][0] < win.from) s.points.shift();
           }
@@ -666,6 +671,8 @@
       },
       render,
       t,
+      /** Each chart's span as drawn (on one chart, series 2's may be chart 1's): what the mount asks `/state` for. */
+      spans: () => charts.map(c => c.span),
       /** The Smart Stack: whether this page is the one on screen (the lines only scroll while it is). */
       setVisible(visible) { offScreen = !visible; if (scrolling()) render(); },
       destroy() { clearInterval(scrollTimer); document.removeEventListener('visibilitychange', onVisibility); },

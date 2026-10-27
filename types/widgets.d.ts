@@ -81,6 +81,7 @@ interface Window {
     timeSpan: (span: string, at: number) => { from: number, to: number, end: number, unit?: 'day' | 'week' | 'month' | 'year' },
     isTimeSpan: (span: unknown) => boolean,
     spanUnit: (span: unknown) => 'day' | 'week' | 'month' | 'year' | null,
+    sixHourSpan: (span: unknown) => boolean,
     wireFrame: (Homey: any, frame: HTMLElement) => {
       height: () => number,
       setHeight: () => void,

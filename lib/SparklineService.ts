@@ -27,24 +27,25 @@ const DAY = 24 * HOUR;
  * read the next longer hourly log; `downsample()` cuts it to the span. The rest are the Homey's own calendar
  * days, weeks (from Monday), months and years (`calendar`): their window is the log's (`calendarWindow()`), not
  * `ms` back from now. Months and years are 6-hour averages on UTC's 00, 06, 12 and 18, so their log starts up to
- * 6 h before the local month; this month's and year's end at the last finished 6 hours.
+ * 6 h before the local month; this month's and year's end at the last finished 6 hours. A finished period's log
+ * (`finished`: the shortest the period after it can be, an hour short for DST) stays as it is until that one ends.
  */
 export const SPANS = {
   '1h': { resolution: 'lastHour', ms: HOUR, step: 5 * 1000 },
   '6h': { resolution: 'last6Hours', ms: 6 * HOUR, step: MINUTE },
   '24h': { resolution: 'last24Hours', ms: DAY, step: 5 * MINUTE },
   'today': { resolution: 'today', ms: DAY, step: 5 * MINUTE, calendar: true },
-  'yesterday': { resolution: 'yesterday', ms: DAY, step: 5 * MINUTE, calendar: true },
+  'yesterday': { resolution: 'yesterday', ms: DAY, step: 5 * MINUTE, calendar: true, finished: DAY - HOUR },
   '2d': { resolution: 'last3Days', ms: 2 * DAY, step: HOUR },
   '3d': { resolution: 'last3Days', ms: 3 * DAY, step: HOUR },
   '5d': { resolution: 'last7Days', ms: 5 * DAY, step: HOUR },
   '7d': { resolution: 'last7Days', ms: 7 * DAY, step: HOUR },
   'thisWeek': { resolution: 'thisWeek', ms: 7 * DAY, step: HOUR, calendar: true },
-  'lastWeek': { resolution: 'lastWeek', ms: 7 * DAY, step: HOUR, calendar: true },
+  'lastWeek': { resolution: 'lastWeek', ms: 7 * DAY, step: HOUR, calendar: true, finished: 7 * DAY - HOUR },
   'thisMonth': { resolution: 'thisMonth', ms: 31 * DAY, step: 6 * HOUR, calendar: true },
-  'lastMonth': { resolution: 'lastMonth', ms: 31 * DAY, step: 6 * HOUR, calendar: true },
+  'lastMonth': { resolution: 'lastMonth', ms: 31 * DAY, step: 6 * HOUR, calendar: true, finished: 28 * DAY - HOUR },
   'thisYear': { resolution: 'thisYear', ms: 366 * DAY, step: 6 * HOUR, calendar: true },
-  'lastYear': { resolution: 'lastYear', ms: 366 * DAY, step: 6 * HOUR, calendar: true },
+  'lastYear': { resolution: 'lastYear', ms: 366 * DAY, step: 6 * HOUR, calendar: true, finished: 365 * DAY - HOUR },
 } as const;
 export type SpanId = keyof typeof SPANS;
 
@@ -62,6 +63,19 @@ export function calendarWindow(res: any, now: number, ms: number): { to: number,
   const end = Date.parse(res?.end);
   const to = Math.min(now, Number.isFinite(end) ? end : now);
   return Number.isFinite(from) && from < to ? { to, ms: to - from } : { to: now, ms };
+}
+
+/**
+ * How long a history read now stays cached. A finished period's: until the period after it could end, at the
+ * earliest its log's `end` (a step past the period's end, or the end of the 6 hours holding it) less a step, plus
+ * `finished`; only once a step has passed since `end`, so a log Homey is still completing is read again. Else
+ * `HISTORY_TTL`.
+ */
+export function historyTtl(span: SpanId, res: any, now: number): number {
+  const s = SPANS[span];
+  const end = Date.parse(res?.end);
+  if (!('finished' in s) || !Number.isFinite(end) || now < end + s.step) return HISTORY_TTL;
+  return Math.max(HISTORY_TTL, end - s.step + s.finished - now);
 }
 
 /** A Device Values slot plus its history as `[epoch ms, value]`, oldest first. */
@@ -160,6 +174,7 @@ export default class SparklineService {
           const { ms, step } = SPANS[span];
           const w = 'calendar' in SPANS[span] ? calendarWindow(res, Date.now(), ms) : { to: Date.now(), ms };
           points = downsample(res, w.to, w.ms, step);
+          ttl = historyTtl(span, res, Date.now());
         } catch (err) {
           // Cached all the same, so a capability without a log isn't asked for again on every request; a busy Homey
           // only for a moment, so a dashboard's load burst doesn't leave its charts empty for 5 minutes.

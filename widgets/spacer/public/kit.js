@@ -271,6 +271,15 @@
     return own(SPAN_PERIODS, span) ? SPAN_PERIODS[span][0] : null;
   }
 
+  /**
+   * Whether a span's log is Homey's 6-hour averages (a month or a year; `SPANS` in lib/SparklineService.ts): live
+   * values aren't appended (a meter's would pile up behind it), and its first 6 hours can start before the period.
+   */
+  function sixHourSpan(span) {
+    const unit = spanUnit(span);
+    return unit === 'month' || unit === 'year';
+  }
+
   /** Why a write through the personal API key failed (`KeyProblem` in lib/PersonalApiKey.ts): each has its own message. */
   const KEY_PROBLEMS = ['noKey', 'keyScope', 'keyInvalid'];
 
@@ -773,7 +782,7 @@
 
   window.WidgetkeeperKit = {
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, undoTextZoom, el, setMask, tileNames, timeFormatter,
-    formatSince, baseTitle, lowestSlot, timeSpan, isTimeSpan, spanUnit, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
+    formatSince, baseTitle, lowestSlot, timeSpan, isTimeSpan, spanUnit, sixHourSpan, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     colorStyle, applyColors, sound,
   };
 })();

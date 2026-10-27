@@ -398,6 +398,19 @@ describe('weeks, months and years (wk-104)', () => {
     expect(r.header()).toEqual(['5°C | Last month · avg']);
   });
 
+  it("starts a month's line at its start with the 6 hours holding it, logged before it", () => {
+    const dec = at('2025-12-01T00:00:00');
+    const startX = (before: [number, number][]) => {
+      const r = widget([{ span: 'lastMonth' }], [entry(before.concat(between(dec + 3 * HOUR, at('2026-01-01T00:00:00'), () => 5)))]);
+      return Number(r.q('path.series-line')!.getAttribute('d')!.match(/^M\s*([\d.]+)/)![1]);
+    };
+    expect(startX([[dec - 2 * HOUR, 5]])).toBe(L);
+    expect(startX([])).toBeGreaterThan(L);
+    expect(startX([[dec - 7 * HOUR, 5]])).toBeGreaterThan(L); // older than those 6 hours
+    expect(kit().sixHourSpan('lastMonth') && kit().sixHourSpan('thisYear')).toBe(true);
+    expect(['thisWeek', 'yesterday', '7d', 'x'].some(kit().sixHourSpan)).toBe(false);
+  });
+
   it('makes a bar a day over a month, the last month all of it', () => {
     const dec = at('2025-12-01T00:00:00');
     const r = widget([{ span: 'lastMonth', style: 'bars' }], [entry(between(dec, at('2026-01-01T00:00:00'), x => x, 124))]);

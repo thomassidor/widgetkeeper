@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
-import SparklineService, { calendarWindow, downsample, MAX_POINTS, sparkCaps, spanOf } from '../lib/SparklineService.js';
+import SparklineService, { calendarWindow, downsample, historyTtl, MAX_POINTS, sparkCaps, spanOf } from '../lib/SparklineService.js';
 import ValueService, { VALUES_STATE_EVENT } from '../lib/ValueService.js';
 
 vi.mock('homey-api', () => homeyApiMock);
@@ -77,6 +77,26 @@ describe('calendarWindow', () => {
 
   it('falls back to the last 24 hours without a start', () => {
     expect(calendarWindow({ values: [] }, NOW, 24 * HOUR)).toEqual({ to: NOW, ms: 24 * HOUR });
+  });
+});
+
+describe('historyTtl', () => {
+  const FIVE_MIN = 5 * 60e3;
+
+  it('keeps a finished period until the one after it could end', () => {
+    // `lastMonth` (September) read on 6 October: its log ends with the 6 hours holding the local 1 October.
+    const res = { end: '2026-10-01T00:00:00.000Z' };
+    expect(historyTtl('lastMonth', res, NOW)).toBe(Date.parse('2026-09-30T18:00:00.000Z') + 28 * 24 * HOUR - HOUR - NOW);
+    // `yesterday`, ends a step past midnight: until 23:00, an hour short for a DST day.
+    const midnight = NOW - 14 * HOUR;
+    expect(historyTtl('yesterday', { end: new Date(midnight + FIVE_MIN).toISOString() }, NOW)).toBe(9 * HOUR);
+  });
+
+  it('reads again in 5 minutes while the log may still be completing, or close to the next period', () => {
+    expect(historyTtl('lastMonth', { end: new Date(NOW - HOUR).toISOString() }, NOW)).toBe(FIVE_MIN);
+    expect(historyTtl('yesterday', { end: new Date(NOW - 23 * HOUR + FIVE_MIN).toISOString() }, NOW)).toBe(FIVE_MIN);
+    expect(historyTtl('thisMonth', { end: '2026-10-01T00:00:00.000Z' }, NOW)).toBe(FIVE_MIN);
+    expect(historyTtl('lastWeek', { values: [] }, NOW)).toBe(FIVE_MIN);
   });
 });
 

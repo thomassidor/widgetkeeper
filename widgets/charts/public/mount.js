@@ -6,7 +6,7 @@
 window.mountChartsWidget = function (Homey, { root, frame }) {
   const REFRESH_MS = 5 * 60e3; // keeps the app's device subscriptions alive and resyncs the histories
 
-  const { wireFrame, spanUnit } = window.WidgetkeeperKit;
+  const { wireFrame } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -25,10 +25,6 @@ window.mountChartsWidget = function (Homey, { root, frame }) {
     smooth: settings[`smooth${n}`] === true,
     title: settings[`title${n}`],
   })).filter(c => typeof c.slot === 'string' && c.slot.indexOf(':') > 0 && !c.slot.endsWith(':')); // as parseSlot()
-  // On one chart, series 2 takes chart 1's span (its scale too, in the widget), unless both are calendar periods of
-  // one kind (today with yesterday, this week with last …: each over the whole axis); a lone chart keeps its own.
-  const unit = spanUnit(charts[0] && charts[0].span);
-  if (overlay && charts.length === 2 && !(unit && unit === spanUnit(charts[1].span))) charts[1].span = charts[0].span;
   let loaded = false;
 
   const widget = window.createChartsWidget(root, {
@@ -53,7 +49,9 @@ window.mountChartsWidget = function (Homey, { root, frame }) {
       return;
     }
     try {
-      const list = charts.map(c => `${encodeURIComponent(c.slot)}~${encodeURIComponent(c.span || '24h')}`).join(',');
+      // The spans the widget draws: on one chart, series 2 may take chart 1's (a lone chart keeps its own).
+      const spans = widget.spans();
+      const list = charts.map((c, i) => `${encodeURIComponent(c.slot)}~${encodeURIComponent(spans[i])}`).join(',');
       const res = await Homey.api('GET', `/state?charts=${list}${link.perfParam()}`);
       widget.setState(res && res.charts, res && res.language);
       loaded = true;

@@ -32,9 +32,9 @@ window.mountLightRoomsWidget = function (Homey, { root, frame }) {
     onHeight: link.setHeight,
   });
 
-  /** The Moods of the lights' rooms. A failed read keeps the last ones. */
+  /** The Moods of the lights' rooms (not while renaming, which hides them). A failed read keeps the last ones. */
   async function loadMoods(lights) {
-    if (!showMoods) return;
+    if (!showMoods || settings.renameTiles === true) return;
     const zones = [...new Set(lights.map(d => d.zone && d.zone.id).filter(Boolean))];
     if (!zones.length) return;
     try {
