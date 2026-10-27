@@ -323,7 +323,8 @@
     "keyScope": "La chiave API non può avviare i Mood: serve il permesso Imposta Mood.",
     "keyInvalid": "La chiave API non è stata accettata.",
     "moodFailed": "Impossibile avviare __name__.",
-    "moods": "Mood"
+    "moods": "Mood",
+    "renameFailed": "Impossibile salvare il nome."
   },
   "variables": {
     "selectSlots": "Scegli le variabili nelle impostazioni.",

@@ -3,7 +3,7 @@
  * with the frame's own Homey and body. `frame` is the element whose height Homey gets.
  */
 window.mountLightRoomsWidget = function (Homey, { root, frame }) {
-  const { wireFrame, wireDeviceState } = window.WidgetkeeperKit;
+  const { wireFrame, wireTileNames, wireDeviceState } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -13,9 +13,12 @@ window.mountLightRoomsWidget = function (Homey, { root, frame }) {
   const settings = Homey.getSettings() || {};
   // A widget placed before the setting existed shows its rooms' Moods.
   const showMoods = settings.showMoods !== false;
+  const tileNames = wireTileNames(Homey, names => widget.setNames(names));
   const widget = window.createLightRoomsWidget(root, {
     colorStyle: settings.colorStyle,
     t: (key, tokens) => Homey.__(key, tokens),
+    renameTiles: settings.renameTiles === true,
+    onRename: (key, name) => tileNames.rename(key, name),
     showMoods,
     palette: settings.palette,
     barMin: settings.barMin,
@@ -42,10 +45,12 @@ window.mountLightRoomsWidget = function (Homey, { root, frame }) {
     }
   }
 
-  // The lights' state and their rooms' icons, now and every 5 min (then their rooms' Moods), and their realtime changes.
+  // The lights' state, their rooms' icons and the rooms' typed names, now and every 5 min (then their rooms' Moods),
+  // and their realtime changes.
   const lightsOf = res => (res && Array.isArray(res.lights) ? res.lights : []);
   wireDeviceState(Homey, link, widget, {
     event: 'lights:state',
+    tileNames,
     watches: id => groupLights.has(id),
     setState: res => widget.setState(lightsOf(res), res && res.zoneIcons),
     onState: (res) => {

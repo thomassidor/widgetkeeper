@@ -6,6 +6,7 @@
   <title>Rename tiles preview</title>
   <link rel="stylesheet" href="../widgets/spacer/public/kit.css">
   <link rel="stylesheet" href="../widgets/lights/public/widget.css">
+  <link rel="stylesheet" href="../widgets/lightrooms/public/widget.css">
   <link rel="stylesheet" href="../widgets/curtains/public/widget.css">
   <link rel="stylesheet" href="../widgets/quickactions/public/widget.css">
   <link rel="stylesheet" href="../widgets/sensoralarms/public/widget.css">
@@ -19,6 +20,7 @@
   <link rel="stylesheet" href="../widgets/shortcuts/public/widget.css">
   <script src="../widgets/spacer/public/kit.js"></script>
   <script src="../widgets/lights/public/widget.js"></script>
+  <script src="../widgets/lightrooms/public/widget.js"></script>
   <script src="../widgets/curtains/public/widget.js"></script>
   <script src="../widgets/quickactions/public/widget.js"></script>
   <script src="../widgets/sensoralarms/public/widget.js"></script>
@@ -44,7 +46,7 @@
   <!-- Every widget with device tiles in rename mode (the `renameTiles` setting): a field per tile, the own name as
        its placeholder. Typed names save after 300 ms (a name with "fail" in it fails, to show the shake). -->
   <script>
-    const WIDGETS = ['lights', 'curtains', 'quickactions', 'sensoralarms', 'roomhealth', 'valuematrix', 'values', 'sparklines', 'locks', 'cameras', 'variables', 'shortcuts'];
+    const WIDGETS = ['lights', 'lightrooms', 'curtains', 'quickactions', 'sensoralarms', 'roomhealth', 'valuematrix', 'values', 'sparklines', 'locks', 'cameras', 'variables', 'shortcuts'];
     const cap = (value) => ({ value, setable: true, lastUpdated: Date.now() - 3600e3 });
     const living = { id: 'z1', name: 'Living room' };
     const kitchen = { id: 'z2', name: 'Kitchen' };
@@ -58,6 +60,16 @@
           { id: 'l2', name: 'Floor lamp', icon: null, zone: living, caps: { onoff: cap(true), dim: cap(0.4) } },
           { id: 'l3', name: 'Cabinet lights', icon: null, zone: null, caps: { onoff: cap(false), dim: cap(0.8) } },
           { id: 'l4', missing: true },
+        ],
+      },
+      // The rooms only (Other keeps its name); the lights keep theirs.
+      lightrooms: {
+        create: 'createLightRoomsWidget', names: { 'zone:z1': 'Sofa corner' },
+        state: [
+          { id: 'r1', name: 'Ceiling lamp', icon: null, zone: living, caps: { onoff: cap(true), dim: cap(0.6), light_temperature: cap(0.6) } },
+          { id: 'r2', name: 'Floor lamp', icon: null, zone: living, caps: { onoff: cap(true), dim: cap(0.4) } },
+          { id: 'r3', name: 'Pendant', icon: null, zone: kitchen, caps: { onoff: cap(false), dim: cap(0.8) } },
+          { id: 'r4', missing: true },
         ],
       },
       curtains: {

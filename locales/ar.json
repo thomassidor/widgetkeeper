@@ -323,7 +323,8 @@
     "keyScope": "لا يمكن لمفتاح API تشغيل الأجواء: يحتاج إلى إذن ضبط Moods.",
     "keyInvalid": "لم يُقبل مفتاح API.",
     "moodFailed": "تعذّر تشغيل __name__.",
-    "moods": "الأجواء"
+    "moods": "الأجواء",
+    "renameFailed": "تعذّر حفظ الاسم."
   },
   "variables": {
     "selectSlots": "اختر المتغيرات في إعدادات الأداة.",

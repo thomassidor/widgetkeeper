@@ -323,7 +323,8 @@
     "keyScope": "API-nyckeln får inte starta Moods: den behöver Ställ in Moods.",
     "keyInvalid": "API-nyckeln godkändes inte.",
     "moodFailed": "Kunde inte starta __name__.",
-    "moods": "Moods"
+    "moods": "Moods",
+    "renameFailed": "Kunde inte spara namnet."
   },
   "variables": {
     "selectSlots": "Välj variabler i widgetinställningarna.",

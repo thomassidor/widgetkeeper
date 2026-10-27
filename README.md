@@ -267,7 +267,7 @@ Six lights in the space of three of Homey's light cards. Tap a tile to switch it
 
 For many lights in many rooms. The lights you pick are grouped by their Homey room, a card each with the room's icon, how many lights are on and how bright (the dimmable lights that are on: their average, or the brightest), a switch for the whole room and a bar that dims all of it. Tap a room's name to open it: its Homey Moods as a row of buttons, then a row per light that works as in Light Controls (tap to switch, tap or drag the bar to dim, the colour button for colours and whites). Rooms start closed; open as many as you like. Starting a Mood needs an [API key](#api-key) with **Set Moods**.
 
-**Settings:** lights, show the room's Moods, colour palette, room brightness (average or brightest), what the bar's far left does, [colour style](#colour-style).
+**Settings:** lights, show the room's Moods, colour palette, room brightness (average or brightest), what the bar's far left does, [colour style](#colour-style), [rename tiles](#tile-names) (the rooms).
 
 ## Locks and Doors
 <img src="docs/screenshots/locks.png" alt="Locks and Doors on a Homey dashboard" width="358">
@@ -522,7 +522,7 @@ Every widget with a coloured state has a **Colour style** setting: *Muted* is th
 ## Tile names
 <img src="docs/clips/rename.webp" alt="Rename tiles: the setting turned on, names typed on two Light Controls tiles, and the setting turned off again with the names kept" width="358">
 
-Give any tile a name of your own, such as *Sofa corner* for a room's lights, instead of the device's or room's name. Light Controls, Curtains, Device Quick Actions, Sensor Alarms, Room Health, Value Matrix, Device Values, Sparklines, Locks and Doors, Cameras, Variables and (on web dashboards) Dashboard Shortcuts have it.
+Give any tile a name of your own, such as *Sofa corner* for a room's lights, instead of the device's or room's name. Light Controls, Lights by Room (its rooms), Curtains, Device Quick Actions, Sensor Alarms, Room Health, Value Matrix, Device Values, Sparklines, Locks and Doors, Cameras, Variables and (on web dashboards) Dashboard Shortcuts have it.
 
 1. Edit the dashboard, edit the widget, turn on **Rename tiles** (the first setting) and save the widget.
 2. Leave the dashboard's edit mode. Each tile now shows a text field: type its name, or leave it empty for the device's (or room's) own.

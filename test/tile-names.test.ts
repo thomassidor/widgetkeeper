@@ -118,7 +118,7 @@ describe('TileNameService', () => {
 
   it('is in the api of every widget with device tiles', () => {
     const manifest = JSON.parse(readFileSync('app.json', 'utf8'));
-    for (const id of ['lights', 'curtains', 'quickactions', 'sensoralarms', 'values', 'sparklines', 'locks', 'cameras', 'variables', 'roomhealth', 'valuematrix', 'shortcuts']) {
+    for (const id of ['lights', 'lightrooms', 'curtains', 'quickactions', 'sensoralarms', 'values', 'sparklines', 'locks', 'cameras', 'variables', 'roomhealth', 'valuematrix', 'shortcuts']) {
       expect(manifest.widgets[id].api.setName).toEqual({ method: 'POST', path: '/names' });
       expect(manifest.widgets[id].settings.find((s: any) => s.id === 'renameTiles')).toMatchObject({ type: 'checkbox', value: false });
     }

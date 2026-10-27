@@ -416,6 +416,9 @@ const BUILD = {
       w('lightrooms', 'On/off only · deleted device', {}, [...onoffOnly, MISSING]),
       w('lightrooms', 'One light', {}, all.slice(0, 1)),
       w('lightrooms', 'Nothing picked'),
+      renaming('lightrooms', 'Rename tiles · rooms only', {}, all.slice(0, 12), {
+        [`zone:${devices.find(d => d.id === all[0])?.zone}`]: 'Typed room name',
+      }),
     ] };
   },
 

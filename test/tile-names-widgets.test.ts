@@ -4,7 +4,7 @@ import { loadWidget } from './helpers/loadWidget.js';
 
 let win: any;
 beforeAll(() => {
-  for (const id of ['lights', 'curtains', 'quickactions', 'sensoralarms', 'values', 'sparklines', 'locks', 'cameras', 'variables', 'roomhealth', 'valuematrix', 'shortcuts'] as const) win = loadWidget(id);
+  for (const id of ['lights', 'lightrooms', 'curtains', 'quickactions', 'sensoralarms', 'values', 'sparklines', 'locks', 'cameras', 'variables', 'roomhealth', 'valuematrix', 'shortcuts'] as const) win = loadWidget(id);
 });
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date('2026-10-15T12:00:00Z')); });
 afterEach(() => { vi.useRealTimers(); document.body.innerHTML = ''; });
@@ -22,7 +22,7 @@ const roomSensor = (id: string, zone: string, room: string, measures: object = {
  * Per widget: how it's made, the state it gets (two tiles: `a` and `b`, or a grouped room), the tile keys, the
  * element that shows a tile's name, and what a tap on the tile does: calls `act` (through the spy), changes the tile
  * (`act: ''`: Sensor Alarms' panel, a camera going live, Room Health's next reading) or nothing (`tap: false`).
- * `target` is what's tapped, when it isn't the tile itself (Locks' button).
+ * `target` is what's tapped, when it isn't the tile itself (Locks' button, a room's switch).
  */
 const CASES: Record<string, {
   create: string, state: any, keys: string[], own: string[], name: string, opts?: object, tile: string, act: string, tap?: false, target?: string,
@@ -30,6 +30,11 @@ const CASES: Record<string, {
   lights: {
     create: 'createLightsWidget', state: [light('a', 'Lamp'), light('b', 'Spot')], opts: { groupByZone: true },
     keys: ['zone:z1'], own: ['Living room'], name: '.lc-name', tile: '.lc-tile', act: 'onSet',
+  },
+  lightrooms: {
+    // A card per room: the key is the zone's. Its header opens it; its switch switches the room's lights.
+    create: 'createLightRoomsWidget', state: [light('a', 'Lamp'), { ...light('b', 'Spot'), zone: { id: 'z2', name: 'Kitchen' } }],
+    keys: ['zone:z1', 'zone:z2'], own: ['Living room', 'Kitchen'], name: '.lr-name', tile: '.lr-head', target: '.lr-switch', act: 'onSet',
   },
   curtains: {
     create: 'createCurtainsWidget', act: 'onSet', tile: '.ct-tile', name: '.ct-name',
@@ -193,6 +198,16 @@ describe('tile names in context', () => {
     w.setState([roomSensor('a', 'z1', 'Living room', { co2: { capabilityId: 'measure_co2', value: 1400 } })]);
     w.setNames({ 'zone:z1': 'Lounge' });
     expect(root.querySelector('.rh-room')!.getAttribute('aria-label')).toMatch(/^Lounge: Stuffy, /);
+  });
+
+  it('Lights by Room: the rooms stay closed while renaming, and Other keeps its name without a field', () => {
+    const { w, root, fields } = mount('lightrooms', { renameTiles: true, onRename: vi.fn(async () => {}), open: ['z1'] });
+    w.setState([light('a', 'Lamp'), { ...light('c', 'Garden lamp'), zone: null }]);
+    w.setNames({ 'zone:z1': 'Sofa corner', other: 'Never' });
+    expect(fields().map(f => f.placeholder)).toEqual(['Living room']);
+    expect(root.querySelector('.lr-room.other .lr-name')!.textContent).toBe('Other');
+    expect(root.querySelectorAll('.lr-room.open, .lr-row')).toHaveLength(0);
+    expect(root.querySelector('.lr-switch')!.getAttribute('aria-label')).toBe('Sofa corner');
   });
 
   it('Light Controls: two widgets grouping the same room each keep their own name', () => {

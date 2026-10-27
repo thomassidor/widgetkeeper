@@ -323,7 +323,8 @@
     "keyScope": "API 키로 무드를 시작할 수 없습니다. Mood 설정 권한이 필요합니다.",
     "keyInvalid": "API 키가 승인되지 않았습니다.",
     "moodFailed": "__name__을(를) 시작할 수 없습니다.",
-    "moods": "무드"
+    "moods": "무드",
+    "renameFailed": "이름을 저장하지 못했습니다."
   },
   "variables": {
     "selectSlots": "위젯 설정에서 변수를 선택하세요.",

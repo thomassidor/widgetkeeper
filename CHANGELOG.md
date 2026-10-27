@@ -2,6 +2,11 @@
 
 All notable changes to Widgetkeeper. The version numbers match the Homey app version.
 
+## 1.1.2
+
+### Lights by Room
+- **Rename tiles:** give a room's card a name of your own, as in Light Controls. Turn the setting on, and each room shows a text field: type the name you want, or leave it empty to keep the room's own name, then turn the setting off again. The lights keep their own names. Thanks to ChrisG for the idea.
+
 ## 1.1.1
 
 ### Web Page

@@ -323,7 +323,8 @@
     "keyScope": "The API key may not start Moods: it needs Set Moods.",
     "keyInvalid": "The API key was not accepted.",
     "moodFailed": "Could not start __name__.",
-    "moods": "Moods"
+    "moods": "Moods",
+    "renameFailed": "Could not save the name."
   },
   "variables": {
     "selectSlots": "Pick variables in the widget settings.",

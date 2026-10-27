@@ -323,7 +323,8 @@
     "keyScope": "Klucz API nie może uruchamiać Moods: potrzebuje uprawnienia Ustaw Mood.",
     "keyInvalid": "Klucz API nie został zaakceptowany.",
     "moodFailed": "Nie udało się uruchomić __name__.",
-    "moods": "Nastroje"
+    "moods": "Nastroje",
+    "renameFailed": "Nie udało się zapisać nazwy."
   },
   "variables": {
     "selectSlots": "Wybierz zmienne w ustawieniach widżetu.",

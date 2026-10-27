@@ -6,7 +6,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, applyColors, KEY_PROBLEMS, onTap: kitOnTap, touchGuard, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, applyColors, KEY_PROBLEMS, onTap: kitOnTap, touchGuard, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   const { glyphs, PALETTES, temperatureColor, hueColor, lightColor, moodDot } = window.WidgetkeeperKit.lights;
   'use strict';
 
@@ -36,6 +36,7 @@
     keyInvalid: 'The API key was not accepted.',
     moodFailed: 'Could not start __name__.',
     moods: 'Moods',
+    renameFailed: 'Could not save the name.',
   };
 
   const svg = (viewBox, body) => `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`)}`;
@@ -52,8 +53,10 @@
    *   onSet?: (deviceId: string, change: {dim?: number, onoff?: boolean, temperature?: number,
    *     hue?: number, saturation?: number}) => Promise<any>,
    *   onMood?: (moodId: string) => Promise<any>, showMoods?: boolean, palette?: string, barMin?: string,
+   *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
    *   roomLevel?: string, open?: string[], onHeight?: (h: number) => void }} opts `open`: rooms (zone ids) open from the start, for the
-   *   dev pages and renders; on a dashboard every room starts closed.
+   *   dev pages and renders; on a dashboard every room starts closed. `renameTiles`: each room's name is a text field
+   *   (its key `zone:<zoneId>`; not Other's), the rooms stay closed and their controls do nothing.
    */
   function createLightRoomsWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -82,6 +85,11 @@
 
     root.classList.add('lr');
     applyColors(root, { style: opts.colorStyle });
+    const names = tileNames(opts, () => render(), (key) => {
+      shake(key);
+      setMessage(t('renameFailed'), true);
+    });
+    root.classList.toggle('renaming', names.renaming);
     const list = el('div', { class: 'lr-list' }, root);
     const messageEl = el('div', { class: 'lr-message', dir: 'auto' }, root);
     const palette = PALETTES[opts.palette] || PALETTES.default;
@@ -251,7 +259,7 @@
     /** A tap on a room's switch or a light's row: turns all its lights off when any is on, else all on. */
     function toggle(id) {
       const item = itemOf(id);
-      if (!item) return;
+      if (!item || names.renaming) return;
       const on = !itemOn(item);
       for (const d of item.members) {
         if (d.caps.onoff) hope(d, { onoff: on });
@@ -309,8 +317,9 @@
       }
     }
 
-    /** Opens or closes a room; closing it closes its light's swatches too. */
+    /** Opens or closes a room; closing it closes its light's swatches too. Not while renaming: the rooms stay closed. */
     function toggleOpen(key) {
+      if (names.renaming) return;
       if (open.has(key)) {
         open.delete(key);
         const room = rooms.find(r => r.key === key);
@@ -577,9 +586,10 @@
       const on = itemOn(item);
       const x = drag != null ? level(drag) : itemBrightness(item);
       const colors = colorsOf(room.members);
-      const isOpen = open.has(room.key);
+      const isOpen = !names.renaming && open.has(room.key);
       card.card.classList.toggle('on', on || (drag != null && x > 0));
       card.card.classList.toggle('open', isOpen);
+      card.card.classList.toggle('other', !room.zone);
       card.card.classList.toggle('multi', colors.length > 1);
       card.card.classList.toggle('no-dim', !room.members.some(d => d.caps.dim));
       card.card.style.setProperty('--lr-light', colors[0] || (room.members[0] ? colorOf(room.members[0]) : 'transparent'));
@@ -588,13 +598,19 @@
       const icon = room.zone ? zoneIcons[room.zone] : null;
       setMask(card.icon, icon || null);
       card.icon.classList.toggle('fallback', !icon);
-      card.name.textContent = room.name;
+      // A room's typed name (`renameTiles`); Other keeps its own.
+      const name = room.zone ? names.name(room.key, room.name) : room.name;
+      card.name.textContent = name;
+      if (names.renaming && room.zone) {
+        const field = names.field(room.key, room.name);
+        if (field.previousSibling !== card.name) card.name.after(field);
+      }
       card.state.textContent = roomState(room, on, x);
       card.sw.classList.toggle('on', on);
       card.sw.setAttribute('aria-checked', String(on));
-      card.sw.setAttribute('aria-label', room.name);
+      card.sw.setAttribute('aria-label', name);
       card.sw.style.display = room.members.length ? '' : 'none';
-      renderBar(card.bar, x, room.name);
+      renderBar(card.bar, x, name);
 
       // The room's Moods, while it's open.
       const roomMoods = isOpen && opts.showMoods !== false && room.zone ? moods.filter(m => m.zone === room.zone) : [];
@@ -698,7 +714,7 @@
       if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
     }
 
-    return { setState, setMoods, pushChange, setMessage, render, t };
+    return { setState, setMoods, setNames: names.set, pushChange, setMessage, render, t };
   }
 
   window.createLightRoomsWidget = createLightRoomsWidget;

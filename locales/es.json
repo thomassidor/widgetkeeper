@@ -323,7 +323,8 @@
     "keyScope": "La clave API no puede iniciar Moods: necesita Establecer Moods.",
     "keyInvalid": "La clave API no fue aceptada.",
     "moodFailed": "No se pudo iniciar __name__.",
-    "moods": "Moods"
+    "moods": "Moods",
+    "renameFailed": "No se pudo guardar el nombre."
   },
   "variables": {
     "selectSlots": "Elige variables en los ajustes.",

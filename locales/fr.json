@@ -323,7 +323,8 @@
     "keyScope": "La clé API ne peut pas lancer de Moods : il lui faut le droit Définir les Moods.",
     "keyInvalid": "La clé API n'a pas été acceptée.",
     "moodFailed": "Impossible de lancer __name__.",
-    "moods": "Moods"
+    "moods": "Moods",
+    "renameFailed": "Impossible d'enregistrer le nom."
   },
   "variables": {
     "selectSlots": "Choisissez des variables dans les réglages.",

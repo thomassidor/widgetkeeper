@@ -54,6 +54,7 @@ const ROUTES: Route[] = [
     [['lights.set', ['l1', { dim: 0.5, onoff: true, temperature: undefined, hue: undefined, saturation: undefined }]]]],
   ['lightrooms', 'GET', '/moods', { zones: 'z1,z2' }, {}, [['lights.getMoods', [['z1', 'z2']]]]],
   ['lightrooms', 'POST', '/mood', {}, { id: 'm1' }, [['lights.setMood', ['m1']]]],
+  setName('lightrooms'),
   ['lights', 'GET', '/state', { deviceIds: 'l1,l2' }, {}, [['lights.getState', [['l1', 'l2']]]]],
   ['lights', 'POST', '/set', {}, { deviceId: 'l1', temperature: 0.2, hue: 0.5, saturation: 1 },
     [['lights.set', ['l1', { dim: undefined, onoff: undefined, temperature: 0.2, hue: 0.5, saturation: 1 }]]]],

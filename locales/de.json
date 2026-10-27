@@ -323,7 +323,8 @@
     "keyScope": "Der API-Schlüssel darf keine Moods starten: Er braucht das Recht Moods festlegen.",
     "keyInvalid": "Der API-Schlüssel wurde nicht akzeptiert.",
     "moodFailed": "__name__ konnte nicht gestartet werden.",
-    "moods": "Moods"
+    "moods": "Moods",
+    "renameFailed": "Der Name konnte nicht gespeichert werden."
   },
   "variables": {
     "selectSlots": "Wähle Variablen in den Widget-Einstellungen.",

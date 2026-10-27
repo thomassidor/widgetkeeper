@@ -26,6 +26,41 @@
   },
   "settings": [
     {
+      "id": "renameTiles",
+      "type": "checkbox",
+      "title": {
+        "en": "Rename tiles",
+        "nl": "Tegels hernoemen",
+        "de": "Kacheln umbenennen",
+        "fr": "Renommer les tuiles",
+        "it": "Rinomina riquadri",
+        "sv": "Byt namn på rutor",
+        "no": "Gi nytt navn til fliser",
+        "es": "Renombrar mosaicos",
+        "da": "Omdøb felter",
+        "ru": "Переименовать плитки",
+        "pl": "Zmień nazwy kafelków",
+        "ko": "타일 이름 바꾸기",
+        "ar": "إعادة تسمية المربعات"
+      },
+      "hint": {
+        "en": "To name the rooms: turn this on and save the widget, then leave the dashboard's edit mode. Each room shows a text field: type its name, or leave it empty to keep the room's name. Then edit the widget again and turn this off.",
+        "nl": "Ruimtes een naam geven: zet dit aan en sla de widget op, en verlaat dan de bewerkmodus van het dashboard. Elke ruimte toont een tekstveld: typ de naam, of laat het leeg om de naam van de ruimte te houden. Bewerk daarna de widget opnieuw en zet dit uit.",
+        "de": "Räume benennen: Schalte dies ein, speichere das Widget und verlasse den Bearbeitungsmodus des Dashboards. Jeder Raum zeigt ein Textfeld: Gib den Namen ein oder lass es leer, um den Namen des Raums zu behalten. Bearbeite danach das Widget erneut und schalte dies aus.",
+        "fr": "Pour nommer les pièces : activez ceci, enregistrez le widget, puis quittez le mode édition du tableau de bord. Chaque pièce affiche un champ de texte : tapez son nom, ou laissez-le vide pour garder le nom de la pièce. Modifiez ensuite le widget à nouveau et désactivez ceci.",
+        "it": "Per dare un nome alle stanze: attiva questa opzione e salva il widget, poi esci dalla modalità di modifica della dashboard. Ogni stanza mostra un campo di testo: scrivi il nome, o lascialo vuoto per mantenere il nome della stanza. Poi modifica di nuovo il widget e disattiva questa opzione.",
+        "sv": "Så namnger du rummen: slå på detta och spara widgeten, och lämna sedan instrumentpanelens redigeringsläge. Varje rum visar ett textfält: skriv namnet, eller lämna det tomt för att behålla rummets namn. Redigera sedan widgeten igen och slå av detta.",
+        "no": "Slik gir du rommene navn: slå på dette og lagre widgeten, og gå så ut av dashbordets redigeringsmodus. Hvert rom viser et tekstfelt: skriv navnet, eller la det stå tomt for å beholde rommets navn. Rediger så widgeten igjen og slå av dette.",
+        "es": "Para poner nombre a las habitaciones: activa esto y guarda el widget, luego sal del modo de edición del panel. Cada habitación muestra un campo de texto: escribe su nombre, o déjalo vacío para mantener el nombre de la habitación. Después edita el widget de nuevo y desactiva esto.",
+        "da": "Sådan navngiver du rummene: slå dette til og gem widgetten, og forlad så dashboardets redigeringstilstand. Hvert rum viser et tekstfelt: skriv navnet, eller lad det stå tomt for at beholde rummets navn. Redigér derefter widgetten igen, og slå dette fra.",
+        "ru": "Чтобы назвать комнаты: включите это и сохраните виджет, затем выйдите из режима редактирования панели. В каждой комнате появится текстовое поле: введите название или оставьте его пустым, чтобы оставить имя комнаты. Затем снова откройте настройки виджета и выключите это.",
+        "pl": "Aby nazwać pokoje: włącz to i zapisz widżet, a potem wyjdź z trybu edycji pulpitu. Każdy pokój pokaże pole tekstowe: wpisz nazwę albo zostaw je puste, aby zachować nazwę pokoju. Potem ponownie edytuj widżet i wyłącz to.",
+        "ko": "방 이름을 정하려면: 이 옵션을 켜고 위젯을 저장한 뒤 대시보드 편집 모드를 나가세요. 각 방에 입력란이 나타납니다. 이름을 입력하거나 비워 두면 방 이름이 그대로 쓰입니다. 그런 다음 위젯을 다시 편집해 이 옵션을 끄세요.",
+        "ar": "لتسمية الغرف: شغّل هذا الخيار واحفظ الأداة، ثم اخرج من وضع تحرير لوحة التحكم. تعرض كل غرفة حقلًا نصيًا: اكتب اسمها، أو اتركه فارغًا لإبقاء اسم الغرفة. بعد ذلك حرّر الأداة مجددًا وأوقف هذا الخيار."
+      },
+      "value": false
+    },
+    {
       "id": "showMoods",
       "type": "checkbox",
       "value": true,
@@ -387,6 +422,10 @@
     "setMood": {
       "method": "POST",
       "path": "/mood"
+    },
+    "setName": {
+      "method": "POST",
+      "path": "/names"
     }
   }
 }

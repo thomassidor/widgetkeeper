@@ -323,7 +323,8 @@
     "keyScope": "De API-sleutel mag geen Moods starten: hij heeft het recht Moods zetten nodig.",
     "keyInvalid": "De API-sleutel werd niet geaccepteerd.",
     "moodFailed": "Kon __name__ niet starten.",
-    "moods": "Moods"
+    "moods": "Moods",
+    "renameFailed": "Kon de naam niet opslaan."
   },
   "variables": {
     "selectSlots": "Kies variabelen in de widgetinstellingen.",

@@ -208,3 +208,19 @@ html, body { background: transparent !important; }
   20%, 60% { transform: translateX(-4px); }
   40%, 80% { transform: translateX(4px); }
 }
+
+/* Rename tiles: a room's name becomes a text field (Light Controls' field) up to the card's edge; the state, the
+   chevron and the switch make way, and the bar keeps its place (hidden), so the card keeps its height. Other keeps its name. */
+.lr.renaming .lr-head { cursor: default; }
+.lr.renaming .lr-room:not(.other) .lr-name { display: none; }
+.lr.renaming .lr-state, .lr.renaming .lr-chevron, .lr.renaming .lr-switch { display: none; }
+.lr.renaming .lr-bar { visibility: hidden; }
+.lr .wk-rename {
+  flex: 1 1 auto; min-width: 0; height: 24px; margin: 0; padding: 0 8px;
+  font: inherit; font-size: var(--lr-fs-small); font-weight: var(--lr-bold); color: var(--lr-text);
+  background: color-mix(in srgb, var(--lr-text) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--lr-text) 24%, transparent); border-radius: 8px; outline: none;
+  user-select: text; -webkit-user-select: text;
+}
+.lr .wk-rename::placeholder { color: var(--lr-muted); opacity: 1; }
+.lr .wk-rename:focus { border-color: var(--lr-accent); }
