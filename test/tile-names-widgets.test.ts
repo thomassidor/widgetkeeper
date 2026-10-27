@@ -32,9 +32,11 @@ const CASES: Record<string, {
     keys: ['zone:z1'], own: ['Living room'], name: '.lc-name', tile: '.lc-tile', act: 'onSet',
   },
   lightrooms: {
-    // A card per room: the key is the zone's. Its header opens it; its switch switches the room's lights.
+    // A card per room (the key is the zone's), open here, with a row per light (the device id). Its header opens it;
+    // its switch switches the room's lights.
     create: 'createLightRoomsWidget', state: [light('a', 'Lamp'), { ...light('b', 'Spot'), zone: { id: 'z2', name: 'Kitchen' } }],
-    keys: ['zone:z1', 'zone:z2'], own: ['Living room', 'Kitchen'], name: '.lr-name', tile: '.lr-head', target: '.lr-switch', act: 'onSet',
+    opts: { open: ['z1', 'z2'] }, keys: ['zone:z1', 'a', 'zone:z2', 'b'], own: ['Living room', 'Lamp', 'Kitchen', 'Spot'],
+    name: '.lr-name, .lr-row-name', tile: '.lr-head', target: '.lr-switch', act: 'onSet',
   },
   curtains: {
     create: 'createCurtainsWidget', act: 'onSet', tile: '.ct-tile', name: '.ct-name',
@@ -200,14 +202,35 @@ describe('tile names in context', () => {
     expect(root.querySelector('.rh-room')!.getAttribute('aria-label')).toMatch(/^Lounge: Stuffy, /);
   });
 
-  it('Lights by Room: the rooms stay closed while renaming, and Other keeps its name without a field', () => {
-    const { w, root, fields } = mount('lightrooms', { renameTiles: true, onRename: vi.fn(async () => {}), open: ['z1'] });
-    w.setState([light('a', 'Lamp'), { ...light('c', 'Garden lamp'), zone: null }]);
-    w.setNames({ 'zone:z1': 'Sofa corner', other: 'Never' });
-    expect(fields().map(f => f.placeholder)).toEqual(['Living room']);
+  it('Lights by Room: every room opens while renaming, with a field per light; Other and a missing light have none', () => {
+    const { w, root, fields } = mount('lightrooms', { renameTiles: true, onRename: vi.fn(async () => {}), open: [] });
+    w.setState([light('a', 'Lamp'), { ...light('c', 'Garden lamp'), zone: null }, { id: 'gone', missing: true }]);
+    w.setMoods([{ id: 'm1', name: 'Movie night', zone: 'z1', colors: [] }]);
+    w.setNames({ 'zone:z1': 'Sofa corner', a: 'Reading lamp', other: 'Never' });
+    expect(fields().map(f => f.placeholder)).toEqual(['Living room', 'Lamp', 'Garden lamp']);
+    expect(fields().map(f => f.value)).toEqual(['Sofa corner', 'Reading lamp', '']);
+    expect(root.querySelectorAll('.lr-room.open')).toHaveLength(2);
     expect(root.querySelector('.lr-room.other .lr-name')!.textContent).toBe('Other');
-    expect(root.querySelectorAll('.lr-room.open, .lr-row')).toHaveLength(0);
+    expect(root.querySelector('.lr-row.missing .lr-row-name')!.textContent).toBe('Unavailable');
+    expect(root.querySelectorAll('.lr-mood')).toHaveLength(0);
     expect(root.querySelector('.lr-switch')!.getAttribute('aria-label')).toBe('Sofa corner');
+    // The light's typed name labels its row and bar.
+    const row = root.querySelector<HTMLElement>('.lr-row[data-device="a"]')!;
+    expect(row.getAttribute('aria-label')).toBe('Reading lamp');
+    expect(row.querySelector('.lr-bar')!.getAttribute('aria-label')).toBe('Reading lamp');
+    // Its chip opens no swatches meanwhile.
+    row.querySelector('.lr-chip')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(root.querySelector('.lr-chip.active')).toBeNull();
+  });
+
+  it('Lights by Room: a failed light shows its typed name', async () => {
+    const onSet = vi.fn(async () => { throw new Error('offline'); });
+    const { w, root } = mount('lightrooms', { onSet });
+    w.setNames({ a: 'Reading lamp' });
+    root.querySelector('.lr-row[data-device="a"]')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await vi.runAllTicks();
+    await Promise.resolve();
+    expect(root.querySelector('.lr-message')!.textContent).toContain('Reading lamp');
   });
 
   it('Light Controls: two widgets grouping the same room each keep their own name', () => {

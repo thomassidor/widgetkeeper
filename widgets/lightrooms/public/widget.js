@@ -55,8 +55,9 @@
    *   onMood?: (moodId: string) => Promise<any>, showMoods?: boolean, palette?: string, barMin?: string,
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
    *   roomLevel?: string, open?: string[], onHeight?: (h: number) => void }} opts `open`: rooms (zone ids) open from the start, for the
-   *   dev pages and renders; on a dashboard every room starts closed. `renameTiles`: each room's name is a text field
-   *   (its key `zone:<zoneId>`; not Other's), the rooms stay closed and their controls do nothing.
+   *   dev pages and renders; on a dashboard every room starts closed. `renameTiles`: each room's and each light's name
+   *   is a text field (keys `zone:<zoneId>` and the device id; not Other's or a missing light's), every room is open
+   *   without its Moods, and the controls do nothing.
    */
   function createLightRoomsWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -244,7 +245,7 @@
         console.error(err);
         for (const id of ['onoff', 'dim', 'light_temperature', 'light_mode', 'light_hue', 'light_saturation']) optimistic.delete(`${d.id}:${id}`);
         shake(item.id);
-        setMessage(t('failed', { name: d.name }), true);
+        setMessage(t('failed', { name: names.name(d.id, d.name) }), true);
       }
     }
 
@@ -317,7 +318,7 @@
       }
     }
 
-    /** Opens or closes a room; closing it closes its light's swatches too. Not while renaming: the rooms stay closed. */
+    /** Opens or closes a room; closing it closes its light's swatches too. Not while renaming: every room stays open. */
     function toggleOpen(key) {
       if (names.renaming) return;
       if (open.has(key)) {
@@ -344,6 +345,7 @@
     }
 
     function togglePanel(id) {
+      if (names.renaming) return;
       if (panelFor === id) { closePanel(); return; }
       panelFor = id;
       armPanel();
@@ -586,7 +588,8 @@
       const on = itemOn(item);
       const x = drag != null ? level(drag) : itemBrightness(item);
       const colors = colorsOf(room.members);
-      const isOpen = !names.renaming && open.has(room.key);
+      // Renaming opens every room, so each light's field shows.
+      const isOpen = names.renaming || open.has(room.key);
       card.card.classList.toggle('on', on || (drag != null && x > 0));
       card.card.classList.toggle('open', isOpen);
       card.card.classList.toggle('other', !room.zone);
@@ -612,8 +615,8 @@
       card.sw.style.display = room.members.length ? '' : 'none';
       renderBar(card.bar, x, name);
 
-      // The room's Moods, while it's open.
-      const roomMoods = isOpen && opts.showMoods !== false && room.zone ? moods.filter(m => m.zone === room.zone) : [];
+      // The room's Moods, while it's open (not while renaming).
+      const roomMoods = isOpen && !names.renaming && opts.showMoods !== false && room.zone ? moods.filter(m => m.zone === room.zone) : [];
       const moodKey = JSON.stringify(roomMoods.map(m => [m.id, m.name, m.colors]));
       if (moodKey !== card.moodKey) {
         card.moodKey = moodKey;
@@ -664,8 +667,14 @@
       row.row.classList.toggle('multi', multi);
       row.row.style.setProperty('--lr-light', colors[0] || colorOf(d));
       setBlend(row.row, multi ? colors : null, '135deg');
-      row.row.setAttribute('aria-label', d.name);
-      row.name.textContent = d.name;
+      // A light's typed name (`renameTiles`).
+      const name = names.name(d.id, d.name);
+      row.row.setAttribute('aria-label', name);
+      row.name.textContent = name;
+      if (names.renaming) {
+        const field = names.field(d.id, d.name);
+        if (field.previousSibling !== row.name) row.name.after(field);
+      }
       row.sub.textContent = d.caps.dim ? '' : t(on ? 'on' : 'off');
       // A light without colour or temperature: a plain dot in its colour.
       row.chip.classList.toggle('plain', !chip);
@@ -674,7 +683,7 @@
       row.chip.setAttribute('aria-label', t(color ? 'color' : 'temperature'));
       row.glyph.classList.toggle('hue', color || multi);
       setMask(row.glyph, chip ? (multi ? glyphs.pie : color ? glyphs.hue : glyphs.temp) : null);
-      renderBar(row.bar, x, d.name);
+      renderBar(row.bar, x, name);
     }
 
     let lastHeight = 0;

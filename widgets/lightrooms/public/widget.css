@@ -209,12 +209,17 @@ html, body { background: transparent !important; }
   40%, 80% { transform: translateX(4px); }
 }
 
-/* Rename tiles: a room's name becomes a text field (Light Controls' field) up to the card's edge; the state, the
-   chevron and the switch make way, and the bar keeps its place (hidden), so the card keeps its height. Other keeps its name. */
-.lr.renaming .lr-head { cursor: default; }
+/* Rename tiles: every room is open. A room's name becomes a text field (Light Controls' field) up to the card's edge;
+   the state, the chevron, the switch and the bar make way, so its lights follow the header. Other keeps its name.
+   A light's name becomes a field up to the row's edge, after its chip's place (hidden); its On/Off and bar make way.
+   A missing light keeps its Unavailable. */
+.lr.renaming .lr-head, .lr.renaming .lr-row { cursor: default; }
 .lr.renaming .lr-room:not(.other) .lr-name { display: none; }
-.lr.renaming .lr-state, .lr.renaming .lr-chevron, .lr.renaming .lr-switch { display: none; }
-.lr.renaming .lr-bar { visibility: hidden; }
+.lr.renaming .lr-state, .lr.renaming .lr-chevron, .lr.renaming .lr-switch, .lr.renaming .lr-bar { display: none; }
+.lr.renaming .lr-chip { visibility: hidden; }
+.lr.renaming .lr-row:not(.missing) .lr-row-name, .lr.renaming .lr-row-sub,
+.lr.renaming .lr-row.missing .wk-rename { display: none; }
+.lr .lr-row .wk-rename { grid-column: 2 / -1; font-weight: inherit; }
 .lr .wk-rename {
   flex: 1 1 auto; min-width: 0; height: 24px; margin: 0; padding: 0 8px;
   font: inherit; font-size: var(--lr-fs-small); font-weight: var(--lr-bold); color: var(--lr-text);

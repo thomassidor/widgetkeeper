@@ -62,13 +62,14 @@
           { id: 'l4', missing: true },
         ],
       },
-      // The rooms only (Other keeps its name); the lights keep theirs.
+      // Every room open: a field on each room (not Other) and each light (not the missing one).
       lightrooms: {
-        create: 'createLightRoomsWidget', names: { 'zone:z1': 'Sofa corner' },
+        create: 'createLightRoomsWidget', names: { 'zone:z1': 'Sofa corner', r3: 'Over the table' },
         state: [
           { id: 'r1', name: 'Ceiling lamp', icon: null, zone: living, caps: { onoff: cap(true), dim: cap(0.6), light_temperature: cap(0.6) } },
           { id: 'r2', name: 'Floor lamp', icon: null, zone: living, caps: { onoff: cap(true), dim: cap(0.4) } },
           { id: 'r3', name: 'Pendant', icon: null, zone: kitchen, caps: { onoff: cap(false), dim: cap(0.8) } },
+          { id: 'r5', name: 'Garden lamp', icon: null, zone: null, caps: { onoff: cap(true) } },
           { id: 'r4', missing: true },
         ],
       },
