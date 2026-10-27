@@ -288,7 +288,10 @@
     "error": "Kunne ikke hente grafen.",
     "unavailable": "Utilgængelig",
     "noHistory": "Ingen historik endnu.",
-    "yesterdayAvg": "I går · gns."
+    "yesterdayAvg": "I går · gns.",
+    "lastWeekAvg": "Sidste uge · gns.",
+    "lastMonthAvg": "Sidste måned · gns.",
+    "lastYearAvg": "Sidste år · gns."
   },
   "lights": {
     "selectDevices": "Vælg lys i widgetindstillingerne.",

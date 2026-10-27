@@ -16,6 +16,8 @@
 
   /** The chart's vertical padding, so the line and the dot aren't cut at the top and bottom. */
   const PAD = 3;
+  /** Live values are appended up to this long a span: a month's or year's log is 6-hour averages, which they'd pile up behind. */
+  const LIVE_MAX = 8 * 24 * 36e5;
 
   // The glyphs and glyph() are Device Values', trimmed to numbers: only those have sparklines.
   const svg = (viewBox, body) => `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`)}`;
@@ -102,7 +104,10 @@
     };
     const now = opts.now || (() => Date.now());
     const span = isTimeSpan(opts.span) ? opts.span : '24h';
-    /** The chart's window at `at` (the kit's `timeSpan()`): today's is the whole day, yesterday's ends at midnight. */
+    /**
+     * The chart's window at `at` (the kit's `timeSpan()`): a calendar day, week, month or year is the whole period,
+     * the last one's ends at its end.
+     */
     const windowAt = at => timeSpan(span, at);
 
     let slots = []; // [{ deviceId, capabilityId, name, capability, value, points } | { deviceId, capabilityId, missing }]
@@ -150,7 +155,8 @@
         if (s.deviceId !== deviceId || s.capabilityId !== capabilityId || 'missing' in s) continue;
         s.value = value;
         const w = windowAt(at);
-        if (typeof value === 'number' && isFinite(value) && w.end === at) { // not for yesterday
+        // Not for a last day, week …, nor on a month or a year (the current value still carries the line on to now).
+        if (typeof value === 'number' && isFinite(value) && w.end === at && w.to - w.from <= LIVE_MAX) {
           s.points.push([at, value]);
           while (s.points.length && s.points[0][0] < w.from) s.points.shift();
         }

@@ -78,9 +78,9 @@ interface Window {
     formatSince: (ms: number, now: number, language?: string, locale?: string, timeFormat?: unknown) => string,
     baseTitle: (title: unknown) => string,
     lowestSlot: (slots: any[], from: number, hours: number) => number,
-    timeSpan: (span: string, at: number) => { from: number, to: number, end: number },
+    timeSpan: (span: string, at: number) => { from: number, to: number, end: number, unit?: 'day' | 'week' | 'month' | 'year' },
     isTimeSpan: (span: unknown) => boolean,
-    isDaySpan: (span: unknown) => boolean,
+    spanUnit: (span: unknown) => 'day' | 'week' | 'month' | 'year' | null,
     wireFrame: (Homey: any, frame: HTMLElement) => {
       height: () => number,
       setHeight: () => void,

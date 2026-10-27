@@ -288,7 +288,10 @@
     "error": "Kunne ikke laste diagrammet.",
     "unavailable": "Utilgjengelig",
     "noHistory": "Ingen historikk ennå.",
-    "yesterdayAvg": "I går · snitt"
+    "yesterdayAvg": "I går · snitt",
+    "lastWeekAvg": "Forrige uke · snitt",
+    "lastMonthAvg": "Forrige måned · snitt",
+    "lastYearAvg": "I fjor · snitt"
   },
   "lights": {
     "selectDevices": "Velg lys i widgetinnstillingene.",

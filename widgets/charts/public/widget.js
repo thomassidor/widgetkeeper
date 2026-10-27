@@ -4,17 +4,24 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { TIGHT_UNITS, COLORS, scaled, formatNumber, applyColors, timeSpan, isTimeSpan, isDaySpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { TIGHT_UNITS, COLORS, scaled, formatNumber, applyColors, timeSpan, isTimeSpan, spanUnit } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart;
   const { MIN, HOUR, L, X_LABEL_GAP, X_LABEL_H, el, clear, show, f1, smoothValues } = C;
 
+  const DAY = 24 * HOUR;
   const CHIP_H = 38; // chip row → top grid line, as the Electricity Overview's
+  const TOP_PAD = 10; // the top grid line with the legend below the chart: room for the top scale label
   const PLOT_H = { 1: 122, 2: 83 }; // one chart: the price chart's height; two: the live chart's
   const R = 34; // right gutter for the second scale on one chart, as the Electricity Overview's usage scale
-  /** Each bar's length per span: about 12–28 bars, on the clock. */
-  const BAR_MS = { '1h': 5 * MIN, '6h': 15 * MIN, '24h': HOUR, today: HOUR, yesterday: HOUR, '2d': 2 * HOUR, '3d': 3 * HOUR, '5d': 6 * HOUR, '7d': 6 * HOUR };
+  /** Each bar's length per span: about 12–28 bars, on the clock; a calendar week or month a bar a day, a year a bar a month. */
+  const BAR_MS = {
+    '1h': 5 * MIN, '6h': 15 * MIN, '24h': HOUR, today: HOUR, yesterday: HOUR, '2d': 2 * HOUR, '3d': 3 * HOUR, '5d': 6 * HOUR, '7d': 6 * HOUR,
+    thisWeek: DAY, lastWeek: DAY, thisMonth: DAY, lastMonth: DAY, thisYear: 'month', lastYear: 'month',
+  };
+  /** Live values are appended up to this long a span: a month's or year's log is 6-hour averages, which they'd pile up behind. */
+  const LIVE_MAX = 8 * DAY;
   const STYLES = ['area', 'line', 'bars'];
 
   const DEFAULT_STRINGS = {
@@ -24,30 +31,41 @@
     unavailable: 'Unavailable',
     noHistory: 'No history yet.',
     yesterdayAvg: 'Yesterday · avg',
+    lastWeekAvg: 'Last week · avg',
+    lastMonthAvg: 'Last month · avg',
+    lastYearAvg: 'Last year · avg',
   };
 
 
   /**
-   * Bars of `bucketMs` on the local clock over `[from, to]`: each the average of the points in it, or the last
-   * value before it (Homey doesn't log unchanged values); null before the first value. The first and last
-   * bars are cut to the span. `current` (the value now) only stands in for a last bar without points of its
-   * own, so it doesn't count as a sample and the bar doesn't jump with each live value. `{t, end, v}`, oldest first.
+   * Bars of `bucketMs` (or of a calendar month, `'month'`) on the local clock over `[from, to]`: each the average of
+   * the points in it, or the last value before it (Homey doesn't log unchanged values); null before the first value.
+   * The first and last bars are cut to the span. `current` (the value now) only stands in for a last bar without
+   * points of its own, so it doesn't count as a sample and the bar doesn't jump with each live value. `{t, end, v}`,
+   * oldest first.
    * @param {[number, number][]} points
+   * @param {number | 'month'} bucketMs
    * @param {number | null} [current]
    */
   function chartBuckets(points, from, to, bucketMs, current = null) {
     // Bars of whole hours start on the local clock's hours (00, 06, 12, 18), each counted from its day's midnight, so
-    // they stay there across a DST change (that day's bar is an hour longer or shorter). Shorter bars divide any
-    // hour: stepping by their length from the first stays on the clock.
-    const hours = bucketMs / HOUR;
+    // they stay there across a DST change (that day's bar is an hour longer or shorter); a day's bars on midnight.
+    // Shorter bars divide any hour: stepping by their length from the first stays on the clock. Months start on the 1st.
+    const months = bucketMs === 'month';
+    const ms = typeof bucketMs === 'number' ? bucketMs : 0;
+    const hours = ms / HOUR;
     const byClock = hours >= 1 && hours % 1 === 0;
     const offset = new Date(from).getTimezoneOffset() * MIN;
     const hourStart = (t, add) => {
       const d = new Date(t);
       return new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours() - d.getHours() % hours + add).getTime();
     };
-    const align = t => (byClock ? hourStart(t, 0) : Math.floor((t - offset) / bucketMs) * bucketMs + offset);
-    const next = b => (byClock ? hourStart(b, hours) : b + bucketMs);
+    const monthStart = (t, add) => {
+      const d = new Date(t);
+      return new Date(d.getFullYear(), d.getMonth() + add, 1).getTime();
+    };
+    const align = t => (months ? monthStart(t, 0) : byClock ? hourStart(t, 0) : Math.floor((t - offset) / ms) * ms + offset);
+    const next = b => (months ? monthStart(b, 1) : byClock ? hourStart(b, hours) : b + ms);
     const out = [];
     let j = 0, last = null;
     while (j < points.length && points[j][0] < from) last = points[j++][1];
@@ -75,7 +93,7 @@
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, t?: (key: string, tokens?: object) => string, locale?: string, language?: string, now?: () => number,
    *   charts?: { span?: string, style?: string, color?: string, range?: string, negative?: boolean, smooth?: boolean, title?: string }[],
-   *   overlay?: boolean, sharedScale?: boolean, showHeader?: boolean, onHeight?: (h: number) => void }} opts
+   *   overlay?: boolean, sharedScale?: boolean, showHeader?: boolean, legend?: string, onHeight?: (h: number) => void }} opts
    */
   function createChartsWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -96,7 +114,8 @@
     };
     const pad2 = n => String(n).padStart(2, '0');
     const hhmm = ms => { const d = new Date(ms); return pad2(d.getHours()) + ':' + pad2(d.getMinutes()); };
-    const weekday = ms => new Intl.DateTimeFormat(language || 'en', { weekday: 'short' }).format(new Date(ms));
+    const date = (ms, o) => new Intl.DateTimeFormat(language || 'en', o).format(new Date(ms));
+    const weekday = ms => date(ms, { weekday: 'short' });
 
     /** The charts' settings, with fallbacks for anything missing or unknown. */
     const charts = (opts.charts && opts.charts.length ? opts.charts : [{}]).slice(0, 2).map(c => ({
@@ -109,14 +128,19 @@
       title: typeof c.title === 'string' ? c.title.trim() : '',
     }));
     // Two series on one chart share chart 1's time axis and kind of scale; with `sharedScale`, the scale itself. Two
-    // days (today with yesterday) keep their own: each runs 00–24, so series 2 is drawn by its time of day.
+    // calendar periods of one kind (today with yesterday, this month with last …) keep their own: each runs over the
+    // whole axis, so series 2 is drawn by its place in its period.
     const overlay = opts.overlay === true && charts.length === 2;
     if (overlay) {
       charts[1].fit = charts[0].fit;
-      if (!(isDaySpan(charts[0].span) && isDaySpan(charts[1].span))) charts[1].span = charts[0].span;
+      const unit = spanUnit(charts[0].span);
+      if (!(unit && unit === spanUnit(charts[1].span))) charts[1].span = charts[0].span;
     }
     const sharedScale = overlay && opts.sharedScale === true;
     const showHeader = opts.showHeader !== false;
+    // The legend (each chart's chip) above its plot, or under its time labels.
+    const legendBelow = opts.legend === 'below';
+    const plotTop = legendBelow ? TOP_PAD : CHIP_H;
 
     const state = {
       entries: [], // per chart: Sparklines' slot ({deviceId, capabilityId, name, capability, value, points} | {missing})
@@ -132,13 +156,14 @@
 
     const kit = C.createKit();
     applyColors(root, { style: opts.colorStyle }); // on the root, so the chart markup stays as it was
-    const wrap = el('div', { class: 'ew ch' }, root);
+    const wrap = el('div', { class: `ew ch${legendBelow ? ' legend-below' : ''}` }, root);
     const message = el('div', { class: 'ew-message', dir: 'auto' }, wrap);
     const header = el('div', { class: 'ew-header' }, wrap);
     const ui = charts.map((c) => {
       const box = el('div', { class: 'ew-chart ch-chart', 'data-color': c.color }, wrap);
       const chips = el('div', { class: 'ew-chips' }, box);
       const svg = el('svg:svg', null, box);
+      if (legendBelow) box.appendChild(chips);
       const note = el('div', { class: 'ew-message ch-note', dir: 'auto' }, box);
       return { box, chips, svg, note };
     });
@@ -149,11 +174,12 @@
 
     /**
      * The chart's window at `at` (the kit's `timeSpan()`): the axis `[from, to]` and `end`, where its data stops;
-     * `live` when that's now (not yesterday), `day` for today and yesterday, whose axis is a whole day.
+     * `live` when that's now (not yesterday or a last week, month or year), `unit` for a calendar span (`day`,
+     * `week`, `month`, `year`), whose axis is the whole period.
      */
     function windowOf(i, at) {
       const w = timeSpan(charts[i].span, at);
-      return { ...w, live: w.end === at, day: w.to !== at };
+      return { ...w, live: w.end === at, unit: w.unit || null };
     }
 
     /** The chart's logged (and live) points in its window. */
@@ -225,21 +251,41 @@
       if (h && h !== state.lastHeight) { state.lastHeight = h; opts.onHeight(h); }
     }
 
-    /** The value and time a chart shows: the tapped point or bar, else the current value (yesterday: its average). */
+    /**
+     * A tapped point's or bar's time: `14:00` (a bar `14:00–15:00`) up to a day, `Mon 14:00` up to a week, a month's
+     * points `15 Sep 14:00` and a year's `15 Sep`; a bar of a day `Tue 15 Sep`, of a month `September 2025`.
+     */
+    function itemLabel(win, item) {
+      const { unit } = win;
+      if (item.end != null && unit === 'year') return date(item.t, { month: 'long', year: 'numeric' });
+      if (item.end != null && (unit === 'week' || unit === 'month')) return date(item.t, { weekday: 'short', day: 'numeric', month: 'short' });
+      if (unit === 'year') return date(item.t, { day: 'numeric', month: 'short' });
+      if (unit === 'month') return `${date(item.t, { day: 'numeric', month: 'short' })} ${hhmm(item.t)}`;
+      const long = unit === 'week' || (!unit && win.to - win.from > DAY);
+      const at = ms => (long ? `${weekday(ms)} ${hhmm(ms)}` : hhmm(ms));
+      return item.end != null ? `${at(item.t)}–${hhmm(item.end)}` : at(item.t);
+    }
+
+    /** The value and time a chart shows: the tapped point or bar, else the current value (a last day, week …: its average). */
     function shown(i) {
       const s = state.entries[i];
       const g = geom[i];
       const win = windowOf(i, now());
       if (g && g.sel != null && g.items[g.sel]) {
         const item = g.items[g.sel];
-        const long = win.to - win.from > 24 * HOUR && !win.day;
-        const at = ms => (long ? `${weekday(ms)} ${hhmm(ms)}` : hhmm(ms));
-        return { value: item.v, sub: item.end != null ? `${at(item.t)}–${hhmm(item.end)}` : at(item.t) };
+        return { value: item.v, sub: itemLabel(win, item) };
       }
       if (s && !('missing' in s) && !win.live) {
-        // The drawn points and bars are evenly spaced and carry the last value over gaps, so their mean is the day's.
-        const vs = g ? g.items.map(item => item.v).filter(v => typeof v === 'number' && isFinite(v)) : [];
-        return { value: vs.length ? vs.reduce((a, v) => a + v, 0) / vs.length : null, sub: t('yesterdayAvg') };
+        // The drawn points are evenly spaced and carry the last value over gaps, so their mean is the period's; bars
+        // count by their length (months differ).
+        let sum = 0, weight = 0;
+        for (const item of g ? g.items : []) {
+          if (typeof item.v !== 'number' || !isFinite(item.v)) continue;
+          const w = item.end != null ? item.end - item.t : 1;
+          sum += item.v * w;
+          weight += w;
+        }
+        return { value: weight ? sum / weight : null, sub: t(`${charts[i].span}Avg`) };
       }
       return { value: s && !('missing' in s) ? s.value : null, sub: s && 'missing' in s ? t('unavailable') : t('now') };
     }
@@ -267,7 +313,7 @@
       const w = state.width;
       const pw = Math.max(40, w - L - 4);
       const plotH = PLOT_H[state.entries.length > 1 ? 2 : 1];
-      const top = CHIP_H, base = top + plotH;
+      const top = plotTop, base = top + plotH;
       const H = base + X_LABEL_GAP + X_LABEL_H;
       const win = windowOf(i, now());
       const missing = !s || 'missing' in s;
@@ -306,7 +352,7 @@
       const w = state.width;
       const pw = Math.max(40, w - L - (sharedScale ? 4 : R));
       const plotH = PLOT_H[1];
-      const top = CHIP_H, base = top + plotH;
+      const top = plotTop, base = top + plotH;
       const H = base + X_LABEL_GAP + X_LABEL_H;
       // The axis is chart 1's window. Series 2's is the same, or the other day, laid over it by time of day (each day
       // spread over the width, so a 23 or 25 h DST day is up to an hour off by its end).
@@ -449,41 +495,59 @@
 
     /**
      * Time labels: up to 6 h relative (`1h · 30m · Now`, as the live power chart), 24 h and a day (today, yesterday)
-     * the clock hours every 6 h, longer spans the weekday at each day's noon; Now at the right end, except on a day,
-     * which ends at midnight. Midnights are dashed lines.
+     * the clock hours every 6 h, longer spans and a week the weekday at each day's noon, a month the 7th, 14th, 21st
+     * and 28th, a year the months from their 1st, as many as fit. Now at the right end, except on a calendar span,
+     * which ends at its period's end. Midnights are dashed lines, up to a week.
      */
-    function xLabels(svg, { from, to, day }, pw, top, base) {
+    function xLabels(svg, { from, to, unit }, pw, top, base) {
       const span = to - from;
       const ly = base + X_LABEL_GAP;
-      if (span <= 6 * HOUR) {
+      if (!unit && span <= 6 * HOUR) {
         kit.text(svg, L, ly, C.ago(span, nf), 'start', 'hanging');
         kit.text(svg, L + pw / 2, ly, C.ago(span / 2, nf), 'middle', 'hanging');
         kit.text(svg, L + pw, ly, t('now'), 'end', 'hanging');
         return;
       }
       const x = ms => L + pw * (ms - from) / span;
-      const midnights = [];
-      const d = new Date(from);
-      d.setHours(24, 0, 0, 0);
-      for (; d.getTime() < to; d.setDate(d.getDate() + 1)) midnights.push(d.getTime());
-      kit.midnightLines(svg, midnights.map(x), top, base);
-      const kept = day ? [] : [{ x: L + pw, cx: L + pw - 15, anchor: 'end', label: t('now') }];
+      if (unit !== 'month' && unit !== 'year') {
+        const midnights = [];
+        const m = new Date(from);
+        m.setHours(24, 0, 0, 0);
+        for (; m.getTime() < to; m.setDate(m.getDate() + 1)) midnights.push(m.getTime());
+        kit.midnightLines(svg, midnights.map(x), top, base);
+      }
+      const kept = unit ? [] : [{ x: L + pw, cx: L + pw - 15, anchor: 'end', label: t('now') }];
       const candidates = [];
-      if (span <= 24 * HOUR || day) {
-        const h = new Date(from);
-        h.setMinutes(0, 0, 0);
-        for (h.setHours(h.getHours() + 1); h.getTime() < to; h.setHours(h.getHours() + 1)) {
-          if (h.getHours() % 6 === 0) candidates.push({ at: h.getTime(), label: h.getHours() + ':00' });
+      const d = new Date(from);
+      if (unit === 'day' || (!unit && span <= DAY)) {
+        d.setMinutes(0, 0, 0);
+        for (d.setHours(d.getHours() + 1); d.getTime() < to; d.setHours(d.getHours() + 1)) {
+          if (d.getHours() % 6 === 0) candidates.push({ at: d.getTime(), label: d.getHours() + ':00' });
+        }
+      } else if (unit === 'month') {
+        for (const day of [7, 14, 21, 28]) {
+          d.setDate(day);
+          d.setHours(12, 0, 0, 0);
+          candidates.push({ at: d.getTime(), label: date(d.getTime(), { day: 'numeric', month: 'short' }) });
+        }
+      } else if (unit === 'year') {
+        // From each month's 1st, as on a calendar, so January isn't lost against the scale.
+        for (let k = 0; k < 12; k++) {
+          d.setMonth(k, 1);
+          candidates.push({ at: d.getTime(), label: date(d.getTime(), { month: 'short' }), anchor: 'start' });
         }
       } else {
-        const noon = new Date(from);
-        noon.setHours(12, 0, 0, 0);
-        if (noon.getTime() < from) noon.setDate(noon.getDate() + 1);
-        for (; noon.getTime() < to; noon.setDate(noon.getDate() + 1)) candidates.push({ at: noon.getTime(), label: weekday(noon.getTime()) });
+        d.setHours(12, 0, 0, 0);
+        if (d.getTime() < from) d.setDate(d.getDate() + 1);
+        for (; d.getTime() < to; d.setDate(d.getDate() + 1)) candidates.push({ at: d.getTime(), label: weekday(d.getTime()) });
       }
+      // A centred label keeps clear of the scale: 18 px on a rolling span, half a weekday on a calendar week.
+      const minX = unit ? 12 : 18;
       for (const cnd of candidates) {
-        const cx = x(cnd.at);
-        if (cx - L >= 18 && kept.every(q => Math.abs(q.cx - cx) >= 40)) kept.push({ x: cx, cx, anchor: 'middle', label: cnd.label });
+        const cx = x(cnd.at) + (cnd.anchor ? 3 : 0);
+        if ((cnd.anchor || cx - L >= minX) && kept.every(q => Math.abs(q.cx - cx) >= 40)) {
+          kept.push({ x: cx, cx, anchor: cnd.anchor || 'middle', label: cnd.label });
+        }
       }
       for (const q of kept) kit.text(svg, q.x, ly, q.label, q.anchor, 'hanging');
     }
@@ -575,7 +639,8 @@
           if (!s || 'missing' in s || s.deviceId !== deviceId || s.capabilityId !== capabilityId) return;
           s.value = value;
           const win = windowOf(i, at);
-          if (typeof value === 'number' && isFinite(value) && win.live) {
+          // Not on a month or a year: the current value still carries the line on to now.
+          if (typeof value === 'number' && isFinite(value) && win.live && win.to - win.from <= LIVE_MAX) {
             s.points.push([at, value]);
             while (s.points.length && s.points[0][0] < win.from) s.points.shift();
           }

@@ -161,21 +161,94 @@
         "ar": "عرض القيم في الأعلى"
       },
       "hint": {
-        "en": "The latest value of each chart, in its colour. Tap a chart to see an earlier one. Yesterday shows the day's average.",
-        "nl": "De laatste waarde van elke grafiek, in zijn kleur. Tik op een grafiek voor een eerdere. Gisteren toont het daggemiddelde.",
-        "de": "Der letzte Wert jedes Diagramms, in seiner Farbe. Tippe auf ein Diagramm für einen früheren. Gestern zeigt den Tagesdurchschnitt.",
-        "fr": "La dernière valeur de chaque graphique, dans sa couleur. Touchez un graphique pour une valeur antérieure. Hier affiche la moyenne du jour.",
-        "it": "L'ultimo valore di ogni grafico, nel suo colore. Tocca un grafico per vederne uno precedente. Ieri mostra la media del giorno.",
-        "sv": "Det senaste värdet i varje diagram, i dess färg. Tryck på ett diagram för ett tidigare. I går visar dagens medelvärde.",
-        "no": "Siste verdi i hvert diagram, i sin farge. Trykk på et diagram for en tidligere. I går viser dagens gjennomsnitt.",
-        "es": "El último valor de cada gráfico, en su color. Toca un gráfico para ver uno anterior. Ayer muestra la media del día.",
-        "da": "Den seneste værdi i hver graf, i dens farve. Tryk på en graf for en tidligere. I går viser dagens gennemsnit.",
-        "ru": "Последнее значение каждого графика, его цветом. Коснитесь графика, чтобы увидеть более раннее. «Вчера» показывает среднее за день.",
-        "pl": "Ostatnia wartość każdego wykresu, w jego kolorze. Dotknij wykresu, aby zobaczyć wcześniejszą. Wczoraj pokazuje średnią z dnia.",
-        "ko": "각 차트의 최신 값이 차트 색상으로 표시됩니다. 차트를 탭하면 이전 값을 볼 수 있습니다. 어제는 하루 평균을 표시합니다.",
-        "ar": "آخر قيمة لكل مخطط بلونه. المس المخطط لرؤية قيمة سابقة. يعرض أمس متوسط اليوم."
+        "en": "The latest value of each chart, in its colour. Tap a chart to see an earlier one. Yesterday and last week, month and year show their average.",
+        "nl": "De laatste waarde van elke grafiek, in zijn kleur. Tik op een grafiek voor een eerdere. Gisteren en vorige week, maand en jaar tonen hun gemiddelde.",
+        "de": "Der letzte Wert jedes Diagramms, in seiner Farbe. Tippe auf ein Diagramm für einen früheren. Gestern und die letzte Woche, der letzte Monat und das letzte Jahr zeigen ihren Durchschnitt.",
+        "fr": "La dernière valeur de chaque graphique, dans sa couleur. Touchez un graphique pour une valeur antérieure. Hier et la semaine, le mois et l'année derniers affichent leur moyenne.",
+        "it": "L'ultimo valore di ogni grafico, nel suo colore. Tocca un grafico per vederne uno precedente. Ieri e la settimana, il mese e l'anno scorsi mostrano la loro media.",
+        "sv": "Det senaste värdet i varje diagram, i dess färg. Tryck på ett diagram för ett tidigare. I går och förra veckan, månaden och året visar sitt medelvärde.",
+        "no": "Siste verdi i hvert diagram, i sin farge. Trykk på et diagram for en tidligere. I går og forrige uke, måned og år viser gjennomsnittet.",
+        "es": "El último valor de cada gráfico, en su color. Toca un gráfico para ver uno anterior. Ayer y la semana, el mes y el año pasados muestran su media.",
+        "da": "Den seneste værdi i hver graf, i dens farve. Tryk på en graf for en tidligere. I går og sidste uge, måned og år viser deres gennemsnit.",
+        "ru": "Последнее значение каждого графика, его цветом. Коснитесь графика, чтобы увидеть более раннее. «Вчера» и прошлые неделя, месяц и год показывают среднее.",
+        "pl": "Ostatnia wartość każdego wykresu, w jego kolorze. Dotknij wykresu, aby zobaczyć wcześniejszą. Wczoraj oraz zeszły tydzień, miesiąc i rok pokazują swoją średnią.",
+        "ko": "각 차트의 최신 값이 차트 색상으로 표시됩니다. 차트를 탭하면 이전 값을 볼 수 있습니다. 어제와 지난주, 지난달, 작년은 평균을 표시합니다.",
+        "ar": "آخر قيمة لكل مخطط بلونه. المس المخطط لرؤية قيمة سابقة. يعرض أمس والأسبوع والشهر والعام الماضي متوسطها."
       },
       "value": true
+    },
+    {
+      "id": "legend",
+      "type": "dropdown",
+      "title": {
+        "en": "Legend",
+        "nl": "Legenda",
+        "de": "Legende",
+        "fr": "Légende",
+        "it": "Legenda",
+        "sv": "Teckenförklaring",
+        "no": "Tegnforklaring",
+        "es": "Leyenda",
+        "da": "Forklaring",
+        "ru": "Легенда",
+        "pl": "Legenda",
+        "ko": "범례",
+        "ar": "وسيلة الإيضاح"
+      },
+      "hint": {
+        "en": "Each chart's name and units.",
+        "nl": "De naam en eenheid van elke grafiek.",
+        "de": "Name und Einheit jedes Diagramms.",
+        "fr": "Le nom et l'unité de chaque graphique.",
+        "it": "Il nome e l'unità di ogni grafico.",
+        "sv": "Varje diagrams namn och enhet.",
+        "no": "Navnet og enheten til hvert diagram.",
+        "es": "El nombre y la unidad de cada gráfico.",
+        "da": "Hver grafs navn og enhed.",
+        "ru": "Название и единицы каждого графика.",
+        "pl": "Nazwa i jednostka każdego wykresu.",
+        "ko": "각 차트의 이름과 단위입니다.",
+        "ar": "اسم كل مخطط ووحدته."
+      },
+      "value": "above",
+      "values": [
+        {
+          "id": "above",
+          "title": {
+            "en": "Above the chart",
+            "nl": "Boven de grafiek",
+            "de": "Über dem Diagramm",
+            "fr": "Au-dessus du graphique",
+            "it": "Sopra il grafico",
+            "sv": "Ovanför diagrammet",
+            "no": "Over diagrammet",
+            "es": "Encima del gráfico",
+            "da": "Over grafen",
+            "ru": "Над графиком",
+            "pl": "Nad wykresem",
+            "ko": "차트 위",
+            "ar": "فوق المخطط"
+          }
+        },
+        {
+          "id": "below",
+          "title": {
+            "en": "Below the chart",
+            "nl": "Onder de grafiek",
+            "de": "Unter dem Diagramm",
+            "fr": "Sous le graphique",
+            "it": "Sotto il grafico",
+            "sv": "Under diagrammet",
+            "no": "Under diagrammet",
+            "es": "Debajo del gráfico",
+            "da": "Under grafen",
+            "ru": "Под графиком",
+            "pl": "Pod wykresem",
+            "ko": "차트 아래",
+            "ar": "أسفل المخطط"
+          }
+        }
+      ]
     },
     {
       "id": "colorStyle",
@@ -464,6 +537,114 @@
             "pl": "7 dni",
             "ko": "7일",
             "ar": "7 أيام"
+          }
+        },
+        {
+          "id": "thisWeek",
+          "title": {
+            "en": "This week",
+            "nl": "Deze week",
+            "de": "Diese Woche",
+            "fr": "Cette semaine",
+            "it": "Questa settimana",
+            "sv": "Denna vecka",
+            "no": "Denne uken",
+            "es": "Esta semana",
+            "da": "Denne uge",
+            "ru": "Эта неделя",
+            "pl": "Ten tydzień",
+            "ko": "이번 주",
+            "ar": "هذا الأسبوع"
+          }
+        },
+        {
+          "id": "lastWeek",
+          "title": {
+            "en": "Last week",
+            "nl": "Vorige week",
+            "de": "Letzte Woche",
+            "fr": "La semaine dernière",
+            "it": "La settimana scorsa",
+            "sv": "Förra veckan",
+            "no": "Forrige uke",
+            "es": "La semana pasada",
+            "da": "Sidste uge",
+            "ru": "Прошлая неделя",
+            "pl": "Zeszły tydzień",
+            "ko": "지난주",
+            "ar": "الأسبوع الماضي"
+          }
+        },
+        {
+          "id": "thisMonth",
+          "title": {
+            "en": "This month",
+            "nl": "Deze maand",
+            "de": "Dieser Monat",
+            "fr": "Ce mois-ci",
+            "it": "Questo mese",
+            "sv": "Denna månad",
+            "no": "Denne måneden",
+            "es": "Este mes",
+            "da": "Denne måned",
+            "ru": "Этот месяц",
+            "pl": "Ten miesiąc",
+            "ko": "이번 달",
+            "ar": "هذا الشهر"
+          }
+        },
+        {
+          "id": "lastMonth",
+          "title": {
+            "en": "Last month",
+            "nl": "Vorige maand",
+            "de": "Letzter Monat",
+            "fr": "Le mois dernier",
+            "it": "Il mese scorso",
+            "sv": "Förra månaden",
+            "no": "Forrige måned",
+            "es": "El mes pasado",
+            "da": "Sidste måned",
+            "ru": "Прошлый месяц",
+            "pl": "Zeszły miesiąc",
+            "ko": "지난달",
+            "ar": "الشهر الماضي"
+          }
+        },
+        {
+          "id": "thisYear",
+          "title": {
+            "en": "This year",
+            "nl": "Dit jaar",
+            "de": "Dieses Jahr",
+            "fr": "Cette année",
+            "it": "Quest'anno",
+            "sv": "I år",
+            "no": "I år",
+            "es": "Este año",
+            "da": "I år",
+            "ru": "Этот год",
+            "pl": "Ten rok",
+            "ko": "올해",
+            "ar": "هذا العام"
+          }
+        },
+        {
+          "id": "lastYear",
+          "title": {
+            "en": "Last year",
+            "nl": "Vorig jaar",
+            "de": "Letztes Jahr",
+            "fr": "L'année dernière",
+            "it": "L'anno scorso",
+            "sv": "Förra året",
+            "no": "I fjor",
+            "es": "El año pasado",
+            "da": "Sidste år",
+            "ru": "Прошлый год",
+            "pl": "Zeszły rok",
+            "ko": "작년",
+            "ar": "العام الماضي"
           }
         }
       ]
@@ -860,19 +1041,19 @@
         "ar": "  – الفترة الزمنية"
       },
       "hint": {
-        "en": "On one chart, chart 1's is used; Today and Yesterday can be combined.",
-        "nl": "In één grafiek geldt die van grafiek 1; Vandaag en Gisteren kunnen samen.",
-        "de": "In einem Diagramm gilt die von Diagramm 1; Heute und Gestern lassen sich kombinieren.",
-        "fr": "Dans un graphique, celle du graphique 1 s’applique ; Aujourd'hui et Hier peuvent être combinés.",
-        "it": "In un grafico vale quella del grafico 1; Oggi e Ieri si possono combinare.",
-        "sv": "I ett diagram gäller diagram 1:s; I dag och I går kan kombineras.",
-        "no": "I ett diagram gjelder diagram 1 sin; I dag og I går kan kombineres.",
-        "es": "En un gráfico, se usa la del gráfico 1; Hoy y Ayer se pueden combinar.",
-        "da": "I én graf gælder graf 1's; I dag og I går kan kombineres.",
-        "ru": "На одном графике действует настройка графика 1; «Сегодня» и «Вчера» можно совместить.",
-        "pl": "Na jednym wykresie obowiązuje ustawienie wykresu 1; Dziś i Wczoraj można połączyć.",
-        "ko": "차트 1개에서는 차트 1의 설정을 사용합니다. 오늘과 어제는 함께 쓸 수 있습니다.",
-        "ar": "في مخطط واحد، يُستخدم إعداد المخطط 1؛ ويمكن الجمع بين اليوم وأمس."
+        "en": "On one chart, chart 1's is used; two of a kind can be combined, like Today and Yesterday or This month and Last month.",
+        "nl": "In één grafiek geldt die van grafiek 1; twee van dezelfde soort kunnen samen, zoals Vandaag en Gisteren of Deze maand en Vorige maand.",
+        "de": "In einem Diagramm gilt die von Diagramm 1; zwei gleicher Art lassen sich kombinieren, etwa Heute und Gestern oder Dieser Monat und Letzter Monat.",
+        "fr": "Dans un graphique, celle du graphique 1 s’applique ; deux du même type peuvent être combinées, comme Aujourd'hui et Hier ou Ce mois-ci et Le mois dernier.",
+        "it": "In un grafico vale quella del grafico 1; due dello stesso tipo si possono combinare, come Oggi e Ieri o Questo mese e Il mese scorso.",
+        "sv": "I ett diagram gäller diagram 1:s; två av samma slag kan kombineras, som I dag och I går eller Denna månad och Förra månaden.",
+        "no": "I ett diagram gjelder diagram 1 sin; to av samme slag kan kombineres, som I dag og I går eller Denne måneden og Forrige måned.",
+        "es": "En un gráfico, se usa la del gráfico 1; dos del mismo tipo se pueden combinar, como Hoy y Ayer o Este mes y El mes pasado.",
+        "da": "I én graf gælder graf 1's; to af samme slags kan kombineres, som I dag og I går eller Denne måned og Sidste måned.",
+        "ru": "На одном графике действует настройка графика 1; два периода одного вида можно совместить, например «Сегодня» и «Вчера» или «Этот месяц» и «Прошлый месяц».",
+        "pl": "Na jednym wykresie obowiązuje ustawienie wykresu 1; dwa okresy tego samego rodzaju można połączyć, np. Dziś i Wczoraj albo Ten miesiąc i Zeszły miesiąc.",
+        "ko": "차트 1개에서는 차트 1의 설정을 사용합니다. 오늘과 어제, 이번 달과 지난달처럼 같은 종류의 두 기간은 함께 쓸 수 있습니다.",
+        "ar": "في مخطط واحد، يُستخدم إعداد المخطط 1؛ ويمكن الجمع بين فترتين من النوع نفسه، مثل اليوم وأمس أو هذا الشهر والشهر الماضي."
       },
       "value": "24h",
       "values": [
@@ -1036,6 +1217,114 @@
             "pl": "7 dni",
             "ko": "7일",
             "ar": "7 أيام"
+          }
+        },
+        {
+          "id": "thisWeek",
+          "title": {
+            "en": "This week",
+            "nl": "Deze week",
+            "de": "Diese Woche",
+            "fr": "Cette semaine",
+            "it": "Questa settimana",
+            "sv": "Denna vecka",
+            "no": "Denne uken",
+            "es": "Esta semana",
+            "da": "Denne uge",
+            "ru": "Эта неделя",
+            "pl": "Ten tydzień",
+            "ko": "이번 주",
+            "ar": "هذا الأسبوع"
+          }
+        },
+        {
+          "id": "lastWeek",
+          "title": {
+            "en": "Last week",
+            "nl": "Vorige week",
+            "de": "Letzte Woche",
+            "fr": "La semaine dernière",
+            "it": "La settimana scorsa",
+            "sv": "Förra veckan",
+            "no": "Forrige uke",
+            "es": "La semana pasada",
+            "da": "Sidste uge",
+            "ru": "Прошлая неделя",
+            "pl": "Zeszły tydzień",
+            "ko": "지난주",
+            "ar": "الأسبوع الماضي"
+          }
+        },
+        {
+          "id": "thisMonth",
+          "title": {
+            "en": "This month",
+            "nl": "Deze maand",
+            "de": "Dieser Monat",
+            "fr": "Ce mois-ci",
+            "it": "Questo mese",
+            "sv": "Denna månad",
+            "no": "Denne måneden",
+            "es": "Este mes",
+            "da": "Denne måned",
+            "ru": "Этот месяц",
+            "pl": "Ten miesiąc",
+            "ko": "이번 달",
+            "ar": "هذا الشهر"
+          }
+        },
+        {
+          "id": "lastMonth",
+          "title": {
+            "en": "Last month",
+            "nl": "Vorige maand",
+            "de": "Letzter Monat",
+            "fr": "Le mois dernier",
+            "it": "Il mese scorso",
+            "sv": "Förra månaden",
+            "no": "Forrige måned",
+            "es": "El mes pasado",
+            "da": "Sidste måned",
+            "ru": "Прошлый месяц",
+            "pl": "Zeszły miesiąc",
+            "ko": "지난달",
+            "ar": "الشهر الماضي"
+          }
+        },
+        {
+          "id": "thisYear",
+          "title": {
+            "en": "This year",
+            "nl": "Dit jaar",
+            "de": "Dieses Jahr",
+            "fr": "Cette année",
+            "it": "Quest'anno",
+            "sv": "I år",
+            "no": "I år",
+            "es": "Este año",
+            "da": "I år",
+            "ru": "Этот год",
+            "pl": "Ten rok",
+            "ko": "올해",
+            "ar": "هذا العام"
+          }
+        },
+        {
+          "id": "lastYear",
+          "title": {
+            "en": "Last year",
+            "nl": "Vorig jaar",
+            "de": "Letztes Jahr",
+            "fr": "L'année dernière",
+            "it": "L'anno scorso",
+            "sv": "Förra året",
+            "no": "I fjor",
+            "es": "El año pasado",
+            "da": "Sidste år",
+            "ru": "Прошлый год",
+            "pl": "Zeszły rok",
+            "ko": "작년",
+            "ar": "العام الماضي"
           }
         }
       ]

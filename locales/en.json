@@ -288,7 +288,10 @@
     "error": "Could not load the chart.",
     "unavailable": "Unavailable",
     "noHistory": "No history yet.",
-    "yesterdayAvg": "Yesterday · avg"
+    "yesterdayAvg": "Yesterday · avg",
+    "lastWeekAvg": "Last week · avg",
+    "lastMonthAvg": "Last month · avg",
+    "lastYearAvg": "Last year · avg"
   },
   "lights": {
     "selectDevices": "Select lights in the widget settings.",

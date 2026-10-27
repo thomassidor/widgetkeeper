@@ -426,7 +426,7 @@ const BUILD = {
     const items = await autocomplete('sparklines', 'slot1');
     const cap = c => i => i.id.endsWith(`:${c}`);
     const set = [pick(items, cap('measure_temperature'))[0], pick(items, cap('measure_power'))[0], ...pick(items, cap('measure_temperature'), 3).slice(1), pick(items, cap('measure_battery'))[0]];
-    const out = ['1h', '6h', '24h', 'today', 'yesterday', '2d', '3d', '5d', '7d'].map(span =>
+    const out = ['1h', '6h', '24h', 'today', 'yesterday', '2d', '3d', '5d', '7d', 'thisWeek', 'lastWeek', 'thisMonth', 'lastMonth', 'thisYear', 'lastYear'].map(span =>
       w('sparklines', `${span}${span === '24h' ? ' (default)' : ''}`, { span, ...slots('slot', set.slice(0, 4)) }));
     out.push(
       w('sparklines', '1 column · 7 days · six', { span: '7d', columns: '1', ...slots('slot', set) }),
@@ -457,6 +457,12 @@ const BUILD = {
       w('charts', 'Two · today area + yesterday bars', { charts: '2', chart1: temp, span1: 'today', chart2: power, span2: 'yesterday', style2: 'bars', color2: 'green' }),
       w('charts', 'On one chart · yesterday', { charts: 'overlay', chart1: temp, span1: 'yesterday', color1: 'purple', chart2: power, style2: 'line', color2: 'orange' }),
       w('charts', 'On one chart · today + yesterday, one scale', { charts: 'overlay', sharedScale: true, chart1: power, span1: 'today', chart2: power, span2: 'yesterday', style2: 'line', color2: 'green' }),
+      w('charts', 'Two · this week bars + last week line', { charts: '2', chart1: power, span1: 'thisWeek', style1: 'bars', chart2: temp, span2: 'lastWeek', style2: 'line', color2: 'purple' }),
+      w('charts', 'Last month · legend below', { chart1: power, span1: 'lastMonth', legend: 'below' }),
+      w('charts', 'Last year · bars, a month each', { chart1: power, span1: 'lastYear', style1: 'bars', color1: 'orange' }),
+      w('charts', 'On one chart · this + last month, one scale, legend below', { charts: 'overlay', sharedScale: true, legend: 'below', chart1: power, span1: 'thisMonth', style1: 'bars', chart2: power, span2: 'lastMonth', style2: 'line', color2: 'green' }),
+      w('charts', 'On one chart · this + last year', { charts: 'overlay', chart1: temp, span1: 'thisYear', color1: 'purple', chart2: temp, span2: 'lastYear', style2: 'line', color2: 'orange' }),
+      w('charts', 'Two · legend below · this week + last week, of one value', { charts: '2', legend: 'below', chart1: temp, span1: 'thisWeek', chart2: temp, span2: 'lastWeek', color2: 'green' }),
       w('charts', '1 h · no header · own title', { chart1: power, span1: '1h', showHeader: false, title1: 'Power now' }),
       ...other.map((item, i) => w('charts', `Other value ${i + 1} · ${['2d', '3d', '5d'][i]}`, { chart1: item, span1: ['2d', '3d', '5d'][i], color1: ['red', 'yellow', 'green'][i] })),
       w('charts', 'Deleted device + empty', { charts: '2', chart1: missing }),

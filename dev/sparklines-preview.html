@@ -25,6 +25,8 @@
   <div class="col"><span>358 px · dark · 1 h, live every 2 s</span><div class="dash homey-dark-mode" style="width:358px"><div id="w5"></div></div></div>
   <div class="col"><span>358 px · dark · today</span><div class="dash homey-dark-mode" style="width:358px"><div id="w7"></div></div></div>
   <div class="col"><span>358 px · light · yesterday</span><div class="dash light" style="width:358px"><div id="w8"></div></div></div>
+  <div class="col"><span>358 px · dark · this week</span><div class="dash homey-dark-mode" style="width:358px"><div id="w9"></div></div></div>
+  <div class="col"><span>358 px · light · last year</span><div class="dash light" style="width:358px"><div id="w10"></div></div></div>
   <div class="col"><span>358 px · nothing picked</span><div class="dash homey-dark-mode" style="width:358px"><div id="w6"></div></div></div>
 
   <script>
@@ -62,6 +64,9 @@
     // Today and yesterday: 48 hours of history, which each cuts to its own day.
     createSparklinesWidget(document.getElementById('w7'), { t: devT, span: 'today' }).setState(slots(48 * HOUR).slice(0, 4));
     createSparklinesWidget(document.getElementById('w8'), { t: devT, span: 'yesterday' }).setState(slots(48 * HOUR).slice(0, 4));
+    // A calendar week and a year (wk-104): history back far enough, which each cuts to its own period.
+    createSparklinesWidget(document.getElementById('w9'), { t: devT, span: 'thisWeek' }).setState(slots(8 * 24 * HOUR).slice(0, 4));
+    createSparklinesWidget(document.getElementById('w10'), { t: devT, span: 'lastYear' }).setState(slots(800 * 24 * HOUR).slice(0, 4));
     const empty = createSparklinesWidget(document.getElementById('w6'), { t: devT });
     empty.setMessage(empty.t('selectSlots'));
   </script>

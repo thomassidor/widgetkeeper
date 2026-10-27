@@ -288,7 +288,10 @@
     "error": "تعذّر تحميل المخطط.",
     "unavailable": "غير متاح",
     "noHistory": "لا يوجد سجل بعد.",
-    "yesterdayAvg": "أمس · المتوسط"
+    "yesterdayAvg": "أمس · المتوسط",
+    "lastWeekAvg": "الأسبوع الماضي · المتوسط",
+    "lastMonthAvg": "الشهر الماضي · المتوسط",
+    "lastYearAvg": "العام الماضي · المتوسط"
   },
   "lights": {
     "selectDevices": "اختر الأضواء في إعدادات الأداة.",

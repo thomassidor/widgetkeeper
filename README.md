@@ -162,7 +162,7 @@ Your cameras as a grid of snapshots that refresh every few seconds (cameras with
 
 One chart, two stacked, or two values on one chart (each with its own scale, or sharing one), of any value that Homey logs in Insights, drawn like Electricity Overview's charts. The value now sits at the top in the chart's colour. Tap a chart to see the value at that moment.
 
-**Settings:** one chart, two stacked or two on one chart (they share chart 1's time span, or compare today with yesterday), and on one chart one scale for both; per chart the value, time span (1 hour to 7 days, today or yesterday), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (yesterday shows its average there); [colour style](#colour-style).
+**Settings:** one chart, two stacked or two on one chart (they share chart 1's time span, or compare today with yesterday, this week with last, and so on), and on one chart one scale for both; per chart the value, time span (1 hour to 7 days, today or yesterday, or this or last week, month or year), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (yesterday and the last week, month or year show their average there); the legend above or below the chart; [colour style](#colour-style).
 
 ## Clock
 <img src="docs/screenshots/clock.png" alt="Clock on a Homey dashboard" width="358">
@@ -368,7 +368,7 @@ Transparent empty space of the height you set, in pixels (16 at least), to line 
 
 Device Values' tiles with a small live chart of each value and its highest and lowest.
 
-**Settings:** up to six values, time span (1 hour to 7 days, today or yesterday), 2 or 1 per row, [colour style](#colour-style), [rename tiles](#tile-names).
+**Settings:** up to six values, time span (1 hour to 7 days, today or yesterday, or this or last week, month or year), 2 or 1 per row, [colour style](#colour-style), [rename tiles](#tile-names).
 
 <a name="thermostat-shortcuts"></a>
 

@@ -288,7 +288,10 @@
     "error": "Impossible de charger le graphique.",
     "unavailable": "Indisponible",
     "noHistory": "Pas encore d'historique.",
-    "yesterdayAvg": "Hier · moy."
+    "yesterdayAvg": "Hier · moy.",
+    "lastWeekAvg": "Semaine dernière · moy.",
+    "lastMonthAvg": "Mois dernier · moy.",
+    "lastYearAvg": "Année dernière · moy."
   },
   "lights": {
     "selectDevices": "Choisissez des lampes dans les réglages du widget.",

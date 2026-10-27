@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
-import SparklineService, { dayWindow, downsample, MAX_POINTS, sparkCaps, spanOf } from '../lib/SparklineService.js';
+import SparklineService, { calendarWindow, downsample, MAX_POINTS, sparkCaps, spanOf } from '../lib/SparklineService.js';
 import ValueService, { VALUES_STATE_EVENT } from '../lib/ValueService.js';
 
 vi.mock('homey-api', () => homeyApiMock);
@@ -50,23 +50,33 @@ describe('spanOf', () => {
     expect(spanOf('2y')).toBe('24h');
     expect(spanOf('today')).toBe('today');
     expect(spanOf('yesterday')).toBe('yesterday');
+    for (const span of ['thisWeek', 'lastWeek', 'thisMonth', 'lastMonth', 'thisYear', 'lastYear']) expect(spanOf(span)).toBe(span);
   });
 });
 
-describe('dayWindow', () => {
+describe('calendarWindow', () => {
   it("is the log's own day, up to now at the latest", () => {
     // Homey's `today` (2026-10-23): start at the local midnight, end the next 5-min mark after now.
     const midnight = NOW - 14 * HOUR;
-    expect(dayWindow({ start: new Date(midnight).toISOString(), end: new Date(NOW + 5 * 60e3).toISOString() }, NOW, 24 * HOUR))
+    expect(calendarWindow({ start: new Date(midnight).toISOString(), end: new Date(NOW + 5 * 60e3).toISOString() }, NOW, 24 * HOUR))
       .toEqual({ to: NOW, ms: 14 * HOUR });
     // `yesterday`: ends a step past the next midnight.
     const y = midnight - 24 * HOUR;
-    expect(dayWindow({ start: new Date(y).toISOString(), end: new Date(midnight + 5 * 60e3).toISOString() }, NOW, 24 * HOUR))
+    expect(calendarWindow({ start: new Date(y).toISOString(), end: new Date(midnight + 5 * 60e3).toISOString() }, NOW, 24 * HOUR))
       .toEqual({ to: midnight + 5 * 60e3, ms: 24 * HOUR + 5 * 60e3 });
   });
 
+  it("is the log's own week, month or year", () => {
+    // Homey's `lastMonth` (2026-10-27): 6-hour buckets on UTC's hours, from the one holding the local 1 September.
+    expect(calendarWindow({ start: '2026-08-31T18:00:00.000Z', end: '2026-10-01T00:00:00.000Z' }, NOW, 31 * 24 * HOUR))
+      .toEqual({ to: Date.parse('2026-10-01T00:00:00.000Z'), ms: (30 * 24 + 6) * HOUR });
+    // `thisMonth`: up to now.
+    expect(calendarWindow({ start: '2026-09-30T18:00:00.000Z', end: '2026-10-06T18:00:00.000Z' }, NOW, 31 * 24 * HOUR))
+      .toEqual({ to: NOW, ms: NOW - Date.parse('2026-09-30T18:00:00.000Z') });
+  });
+
   it('falls back to the last 24 hours without a start', () => {
-    expect(dayWindow({ values: [] }, NOW, 24 * HOUR)).toEqual({ to: NOW, ms: 24 * HOUR });
+    expect(calendarWindow({ values: [] }, NOW, 24 * HOUR)).toEqual({ to: NOW, ms: 24 * HOUR });
   });
 });
 
@@ -122,9 +132,12 @@ describe('getState', () => {
 
   it('asks Insights for the resolution of the span', async () => {
     const { service, api } = setup();
-    for (const span of ['1h', '6h', '24h', 'today', 'yesterday', '2d', '3d', '5d', '7d', undefined]) await service.getState(['sensor:measure_humidity'], span);
+    const calendar = ['thisWeek', 'lastWeek', 'thisMonth', 'lastMonth', 'thisYear', 'lastYear'];
+    for (const span of ['1h', '6h', '24h', 'today', 'yesterday', '2d', '3d', '5d', '7d', ...calendar, undefined]) {
+      await service.getState(['sensor:measure_humidity'], span);
+    }
     expect(api.insights.getLogEntries.mock.calls.map((c: any[]) => c[0].resolution))
-      .toEqual(['lastHour', 'last6Hours', 'last24Hours', 'today', 'yesterday', 'last3Days', 'last7Days']); // 2d/3d and 5d/7d share a log
+      .toEqual(['lastHour', 'last6Hours', 'last24Hours', 'today', 'yesterday', 'last3Days', 'last7Days', ...calendar]); // 2d/3d and 5d/7d share a log
     expect(api.insights.getLogEntries.mock.calls[0][0]).toMatchObject({
       uri: 'homey:device:sensor', id: 'homey:device:sensor:measure_humidity',
     });
@@ -138,6 +151,21 @@ describe('getState', () => {
     expect(points).toHaveLength(MAX_POINTS);
     expect(points[0][0]).toBe(midnight + 3.5 * 60e3);
     expect(points[points.length - 1][0]).toBe(NOW - 3.5 * 60e3);
+  });
+
+  it("draws last year over its log's year: Homey's 6-hour averages, 120 points", async () => {
+    // As `lastYear` read on 2026-10-27: 1460 values from the 6 hours holding the local 1 January, a step past the year.
+    const start = Date.parse('2024-12-31T18:00:00.000Z');
+    const end = Date.parse('2026-01-01T00:00:00.000Z');
+    const values = Array.from({ length: 1460 }, (_, i) => ({ t: new Date(start + i * 6 * HOUR).toISOString(), v: i % 4 }));
+    const { service } = setup(() => ({ values, start: new Date(start).toISOString(), end: new Date(end).toISOString(), step: 6 * HOUR }));
+    const points = ((await service.getState(['sensor:measure_temperature'], 'lastYear'))[0] as any).points as [number, number][];
+    expect(points).toHaveLength(MAX_POINTS);
+    const step = (end - start) / MAX_POINTS;
+    expect(points[0][0]).toBe(Math.round(start + step / 2));
+    expect(points[points.length - 1][0]).toBe(Math.round(end - step / 2));
+    // Each about three days of the four 6-hour values (0 1 2 3): their average.
+    expect(points[60][1]).toBeCloseTo(1.5, 0);
   });
 
   it('reuses a history for 5 minutes and shares one fetch between concurrent requests', async () => {

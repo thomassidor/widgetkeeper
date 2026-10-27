@@ -19,22 +19,32 @@ const IDLE_TIMEOUT = 10 * MINUTE;
 /** The most points a sparkline gets: about one per 3 px of a phone's 2-column tile. */
 export const MAX_POINTS = 120;
 
+const DAY = 24 * HOUR;
+
 /**
  * The spans the widget offers, with the Insights resolution behind each and its step (all verified on the
- * Homey, 2026-10-06, 2026-10-09 and 2026-10-23). Insights has no `last2Days` or `last5Days`, so those read the
- * next longer hourly log; `downsample()` cuts it to the span. `today` and `yesterday` are the Homey's own
- * calendar days (`day`): their window is the log's (`dayWindow()`), not `ms` back from now.
+ * Homey, 2026-10-06, 2026-10-09, 2026-10-23 and 2026-10-27). Insights has no `last2Days` or `last5Days`, so those
+ * read the next longer hourly log; `downsample()` cuts it to the span. The rest are the Homey's own calendar
+ * days, weeks (from Monday), months and years (`calendar`): their window is the log's (`calendarWindow()`), not
+ * `ms` back from now. Months and years are 6-hour averages on UTC's 00, 06, 12 and 18, so their log starts up to
+ * 6 h before the local month; this month's and year's end at the last finished 6 hours.
  */
 export const SPANS = {
   '1h': { resolution: 'lastHour', ms: HOUR, step: 5 * 1000 },
   '6h': { resolution: 'last6Hours', ms: 6 * HOUR, step: MINUTE },
-  '24h': { resolution: 'last24Hours', ms: 24 * HOUR, step: 5 * MINUTE },
-  'today': { resolution: 'today', ms: 24 * HOUR, step: 5 * MINUTE, day: true },
-  'yesterday': { resolution: 'yesterday', ms: 24 * HOUR, step: 5 * MINUTE, day: true },
-  '2d': { resolution: 'last3Days', ms: 2 * 24 * HOUR, step: HOUR },
-  '3d': { resolution: 'last3Days', ms: 3 * 24 * HOUR, step: HOUR },
-  '5d': { resolution: 'last7Days', ms: 5 * 24 * HOUR, step: HOUR },
-  '7d': { resolution: 'last7Days', ms: 7 * 24 * HOUR, step: HOUR },
+  '24h': { resolution: 'last24Hours', ms: DAY, step: 5 * MINUTE },
+  'today': { resolution: 'today', ms: DAY, step: 5 * MINUTE, calendar: true },
+  'yesterday': { resolution: 'yesterday', ms: DAY, step: 5 * MINUTE, calendar: true },
+  '2d': { resolution: 'last3Days', ms: 2 * DAY, step: HOUR },
+  '3d': { resolution: 'last3Days', ms: 3 * DAY, step: HOUR },
+  '5d': { resolution: 'last7Days', ms: 5 * DAY, step: HOUR },
+  '7d': { resolution: 'last7Days', ms: 7 * DAY, step: HOUR },
+  'thisWeek': { resolution: 'thisWeek', ms: 7 * DAY, step: HOUR, calendar: true },
+  'lastWeek': { resolution: 'lastWeek', ms: 7 * DAY, step: HOUR, calendar: true },
+  'thisMonth': { resolution: 'thisMonth', ms: 31 * DAY, step: 6 * HOUR, calendar: true },
+  'lastMonth': { resolution: 'lastMonth', ms: 31 * DAY, step: 6 * HOUR, calendar: true },
+  'thisYear': { resolution: 'thisYear', ms: 366 * DAY, step: 6 * HOUR, calendar: true },
+  'lastYear': { resolution: 'lastYear', ms: 366 * DAY, step: 6 * HOUR, calendar: true },
 } as const;
 export type SpanId = keyof typeof SPANS;
 
@@ -43,11 +53,11 @@ export function spanOf(id: string | undefined): SpanId {
 }
 
 /**
- * A calendar day's window from its log: `start` is the day's midnight, `end` the next 5-min mark after now
- * (`today`) or a step past the next midnight (`yesterday`), so it ends at now at the latest. Without a
- * readable `start`, the last `ms` up to now.
+ * A calendar period's window from its log: `start` is the period's start, `end` the next step after now (this
+ * day, week, month or year) or a step past the period's end (the last one), so it ends at now at the latest.
+ * Without a readable `start`, the last `ms` up to now.
  */
-export function dayWindow(res: any, now: number, ms: number): { to: number, ms: number } {
+export function calendarWindow(res: any, now: number, ms: number): { to: number, ms: number } {
   const from = Date.parse(res?.start);
   const end = Date.parse(res?.end);
   const to = Math.min(now, Number.isFinite(end) ? end : now);
@@ -148,7 +158,7 @@ export default class SparklineService {
         try {
           const res = await this.readLog(slot, deviceId, capabilityId, SPANS[span].resolution);
           const { ms, step } = SPANS[span];
-          const w = 'day' in SPANS[span] ? dayWindow(res, Date.now(), ms) : { to: Date.now(), ms };
+          const w = 'calendar' in SPANS[span] ? calendarWindow(res, Date.now(), ms) : { to: Date.now(), ms };
           points = downsample(res, w.to, w.ms, step);
         } catch (err) {
           // Cached all the same, so a capability without a log isn't asked for again on every request; a busy Homey

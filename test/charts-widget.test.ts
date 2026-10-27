@@ -297,6 +297,189 @@ describe('today and yesterday', () => {
   });
 });
 
+describe('weeks, months and years (wk-104)', () => {
+  // NOW is Thursday 15 January 2026, 10:20.
+  const L = 38, PW = 368 - L - 4;
+  const at = (s: string) => new Date(s).getTime();
+  const kit = () => win.WidgetkeeperKit;
+  const between = (from: number, to: number, f: (x: number) => number, n = 120) =>
+    Array.from({ length: n }, (_, i) => [from + (i + 0.5) * (to - from) / n, f(i / (n - 1))] as [number, number]);
+  const xLabels = (r: ReturnType<typeof widget>) => [...r.q('.ch-chart svg')!.querySelectorAll('text')]
+    .filter(t => t.getAttribute('dominant-baseline') === 'hanging').map(t => t.textContent);
+  const da = (ms: number, o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat('da', o).format(new Date(ms));
+  const tap = (r: ReturnType<typeof widget>, x: number) => r.q('.ch-chart svg')!
+    .dispatchEvent(new PointerEvent('pointerdown', { clientX: L + x, pointerType: 'mouse' }));
+  const MON = at('2026-01-12T00:00:00');
+  const DAY = 24 * HOUR;
+
+  describe("the kit's timeSpan()", () => {
+    const span = (s: string, now = NOW) => kit().timeSpan(s, now);
+
+    it('is the whole local week from Monday: this one up to now, the last one to its end', () => {
+      expect(span('thisWeek')).toEqual({ from: MON, to: MON + 7 * DAY, end: NOW, unit: 'week' });
+      expect(span('lastWeek')).toEqual({ from: MON - 7 * DAY, to: MON, end: MON, unit: 'week' });
+      expect(span('thisWeek', at('2026-01-18T23:30:00')).from).toBe(MON); // a Sunday
+      expect(span('thisWeek', at('2026-01-19T00:00:00')).from).toBe(MON + 7 * DAY); // the next Monday
+    });
+
+    it('is 169 hours over the week DST ends', () => {
+      const w = span('lastWeek', at('2026-10-27T12:00:00'));
+      expect([w.from, w.to]).toEqual([at('2026-10-19T00:00:00'), at('2026-10-26T00:00:00')]);
+      expect(w.to - w.from).toBe(169 * HOUR);
+    });
+
+    it('is the whole local month and year', () => {
+      expect(span('thisMonth')).toEqual({ from: at('2026-01-01T00:00:00'), to: at('2026-02-01T00:00:00'), end: NOW, unit: 'month' });
+      expect(span('lastMonth')).toMatchObject({ from: at('2025-12-01T00:00:00'), to: at('2026-01-01T00:00:00'), end: at('2026-01-01T00:00:00') });
+      expect(span('lastMonth', at('2026-03-31T12:00:00'))).toMatchObject({ from: at('2026-02-01T00:00:00'), to: at('2026-03-01T00:00:00') });
+      expect(span('thisMonth', at('2028-02-10T12:00:00')).to - span('thisMonth', at('2028-02-10T12:00:00')).from).toBe(29 * DAY);
+      expect(span('thisYear')).toEqual({ from: at('2026-01-01T00:00:00'), to: at('2027-01-01T00:00:00'), end: NOW, unit: 'year' });
+      expect(span('lastYear')).toMatchObject({ from: at('2025-01-01T00:00:00'), to: at('2026-01-01T00:00:00'), end: at('2026-01-01T00:00:00') });
+    });
+
+    it('names the unit of a calendar span only', () => {
+      expect(['today', 'yesterday', 'thisWeek', 'lastMonth', 'lastYear', '7d', 'x'].map(kit().spanUnit)).toEqual(['day', 'day', 'week', 'month', 'year', null, null]);
+      expect(kit().isTimeSpan('lastYear')).toBe(true);
+      expect(span('7d').unit).toBeUndefined();
+    });
+  });
+
+  describe('chartBuckets', () => {
+    it('makes a bar a day over the week DST ends, each from midnight', () => {
+      const from = at('2026-10-19T00:00:00'), to = at('2026-10-26T00:00:00');
+      const b = win.chartBuckets(between(from, to, () => 5), from, to, DAY);
+      expect(b.map((x: any) => new Date(x.t).getDate())).toEqual([19, 20, 21, 22, 23, 24, 25]);
+      expect(b.map((x: any) => (x.end - x.t) / HOUR)).toEqual([24, 24, 24, 24, 24, 24, 25]);
+    });
+
+    it('makes a bar a calendar month over a year', () => {
+      const from = at('2025-01-01T00:00:00'), to = at('2026-01-01T00:00:00');
+      const b = win.chartBuckets(between(from, to, x => x), from, to, 'month');
+      expect(b.map((x: any) => [new Date(x.t).getMonth(), new Date(x.t).getDate()])).toEqual(Array.from({ length: 12 }, (_, m) => [m, 1]));
+      expect(b.at(-1).end).toBe(to);
+    });
+  });
+
+  it('draws last week Monday to Sunday: a weekday a day, midnights, its average', () => {
+    const r = widget([{ span: 'lastWeek' }], [entry(between(MON - 7 * DAY, MON, x => (x < 0.5 ? 10 : 20)).concat(between(MON, NOW, () => 99)), { value: 99 })]);
+    expect(xLabels(r)).toEqual(Array.from({ length: 7 }, (_, k) => da(MON - 7 * DAY + k * DAY + 12 * HOUR, { weekday: 'short' })));
+    expect(r.q('path.midnight')!.getAttribute('d')!.match(/M/g)).toHaveLength(6);
+    expect(r.header()).toEqual(['15°C | Last week · avg']);
+    expect([...r.yLabels()].map(t => t.textContent)).not.toContain('99');
+  });
+
+  it("puts this week's bars up to today, a day each, and names a tapped one by its date", () => {
+    const r = widget([{ span: 'thisWeek', style: 'bars' }], [entry(between(MON, NOW, x => 20 + x))]);
+    expect(r.all('rect.bar').length).toBe(4); // Monday … Thursday
+    expect(r.header()[0]).toMatch(/\| Now$/);
+    tap(r, PW * 1.5 / 7); // Tuesday
+    expect(r.header()[0].split(' | ')[1]).toBe(da(MON + DAY, { weekday: 'short', day: 'numeric', month: 'short' }));
+  });
+
+  it('labels a month on the 7th, 14th, 21st and 28th, without midnights or Now', () => {
+    const dec = at('2025-12-01T00:00:00');
+    const r = widget([{ span: 'lastMonth' }], [entry(between(dec, at('2026-01-01T00:00:00'), () => 5))]);
+    expect(xLabels(r)).toEqual([7, 14, 21, 28].map(d => da(dec + (d - 1) * DAY + 12 * HOUR, { day: 'numeric', month: 'short' })));
+    expect(r.q('path.midnight')).toBeNull();
+    expect(r.header()).toEqual(['5°C | Last month · avg']);
+  });
+
+  it('makes a bar a day over a month, the last month all of it', () => {
+    const dec = at('2025-12-01T00:00:00');
+    const r = widget([{ span: 'lastMonth', style: 'bars' }], [entry(between(dec, at('2026-01-01T00:00:00'), x => x, 124))]);
+    expect(r.all('rect.bar').length).toBe(31);
+    const t = widget([{ span: 'thisMonth', style: 'bars' }], [entry(between(at('2026-01-01T00:00:00'), NOW, x => x))]);
+    expect(t.all('rect.bar').length).toBe(15);
+  });
+
+  it('labels a year by its months from their 1st, as many as fit, and a tapped month bar by name', () => {
+    const y = at('2025-01-01T00:00:00');
+    const r = widget([{ span: 'lastYear', style: 'bars' }], [entry(between(y, at('2026-01-01T00:00:00'), x => x))]);
+    expect(r.all('rect.bar').length).toBe(12);
+    // 27 px a month at 368 px: every other one.
+    expect(xLabels(r)).toEqual([0, 2, 4, 6, 8, 10].map(m => da(new Date(2025, m, 1).getTime(), { month: 'short' })));
+    tap(r, PW * 2.5 / 12); // March
+    expect(r.header()[0].split(' | ')[1]).toBe(da(at('2025-03-01T00:00:00'), { month: 'long', year: 'numeric' }));
+  });
+
+  it("weighs a year's month bars by their length in its average", () => {
+    const y = at('2025-01-01T00:00:00');
+    // 100 in February, 0 the rest: 28 of 365 days, not 1 of 12 bars.
+    const pts = between(y, at('2026-01-01T00:00:00'), () => 0, 365).map(([t]) => [t, new Date(t).getMonth() === 1 ? 100 : 0] as [number, number]);
+    const r = widget([{ span: 'lastYear', style: 'bars' }], [entry(pts)]);
+    expect(r.header()).toEqual([`${num(2800 / 365)}°C | Last year · avg`]);
+  });
+
+  it("dates a month's and a year's tapped points", () => {
+    const r = widget([{ span: 'thisMonth' }], [entry(between(at('2026-01-01T00:00:00'), NOW, () => 5))]);
+    tap(r, PW * 4.5 / 31);
+    expect(r.header()[0].split(' | ')[1]).toMatch(new RegExp(`^${da(at('2026-01-05T12:00:00'), { day: 'numeric', month: 'short' })} \\d\\d:\\d\\d$`));
+    const y = widget([{ span: 'lastYear' }], [entry(between(at('2025-01-01T00:00:00'), at('2026-01-01T00:00:00'), () => 5))]);
+    tap(y, PW * 0.5);
+    expect(y.header()[0].split(' | ')[1]).toMatch(/^\d+\. \S+$/); // a date, no time
+  });
+
+  it('keeps live values on a week, but only the value now on a month or year', () => {
+    const top = (r: ReturnType<typeof widget>) => Math.max(...[...r.yLabels()].map(t => Number(t.textContent!.replace(',', '.'))).filter(Number.isFinite));
+    const push = (r: ReturnType<typeof widget>) => {
+      r.w.pushChange({ deviceId: 'd1', capabilityId: 'measure_temperature', value: 50 });
+      vi.advanceTimersByTime(MIN);
+      r.w.pushChange({ deviceId: 'd1', capabilityId: 'measure_temperature', value: 20 });
+    };
+    const week = widget([{ span: 'thisWeek' }], [entry(between(MON, NOW - HOUR, () => 20))]);
+    push(week);
+    expect(top(week)).toBeGreaterThanOrEqual(50);
+    const month = widget([{ span: 'thisMonth' }], [entry(between(at('2026-01-01T00:00:00'), NOW - 6 * HOUR, () => 20))]);
+    push(month);
+    expect(top(month)).toBeLessThan(50);
+    expect(month.header()).toEqual(['20°C | Now']);
+  });
+
+  describe('on one chart', () => {
+    it('draws this month with last month, each by its place in the month', () => {
+      const pts = [entry(between(at('2026-01-01T00:00:00'), NOW, () => 20)), entry(between(at('2025-12-01T00:00:00'), at('2026-01-01T00:00:00'), () => 10), { value: 20 })];
+      const r = widget([{ span: 'thisMonth', style: 'bars' }, { span: 'lastMonth', style: 'bars', color: 'green' }], pts, { overlay: true });
+      expect(r.all('g.series-bars').map(g => g.querySelectorAll('rect.bar').length)).toEqual([15, 31]);
+      expect(r.header()).toEqual(['20°C | Now', '10°C | Last month · avg']);
+    });
+
+    it("gives series 2 chart 1's span when they're of different kinds", () => {
+      const r = widget([{ span: 'thisWeek' }, { span: 'lastMonth' }], [entry(between(MON, NOW, () => 20)), entry(between(MON, NOW, () => 30))], { overlay: true });
+      expect(r.header()).toEqual(['20°C | Now', '30°C | Now']);
+    });
+  });
+});
+
+describe('legend', () => {
+  const topLabel = (r: ReturnType<typeof widget>) => Math.min(...[...r.yLabels()].map(t => Number(t.getAttribute('y'))));
+
+  it('is above the chart by default', () => {
+    const r = widget([{}], [entry(series(24 * HOUR, x => 20 + x))]);
+    const box = r.q('.ch-chart')!;
+    expect(box.firstElementChild!.classList.contains('ew-chips')).toBe(true);
+    expect(r.q('.ch')!.classList.contains('legend-below')).toBe(false);
+    expect(topLabel(r)).toBeGreaterThanOrEqual(38);
+  });
+
+  it('goes under each chart with the setting, the plot moving up', () => {
+    const r = widget([{}, { color: 'green' }], [entry(series(24 * HOUR, x => 20 + x)), entry(series(24 * HOUR, x => 30 + x), { deviceId: 'd2' })], { legend: 'below' });
+    expect(r.q('.ch')!.classList.contains('legend-below')).toBe(true);
+    for (const box of r.all('.ch-chart')) {
+      expect([...box.children].map(c => c.tagName.toLowerCase() === 'svg' ? 'svg' : c.className)).toEqual(['svg', 'ew-chips', 'ew-message ch-note']);
+    }
+    expect(topLabel(r)).toBeLessThan(15);
+  });
+
+  it('goes under one chart of two series too, and keeps a chip over an empty chart', () => {
+    const r = widget([{}, { color: 'green' }], [entry(series(24 * HOUR, x => 20 + x)), entry(series(24 * HOUR, x => 30 + x), { deviceId: 'd2' })], { legend: 'below', overlay: true });
+    expect(r.q('.ch-chart')!.querySelectorAll('.ew-chips .ew-chip').length).toBe(2);
+    expect(r.q('.ch-chart svg')!.nextElementSibling!.classList.contains('ew-chips')).toBe(true);
+    const e = widget([{}], [{ ...entry([[NOW, 20]]), points: [] }], { legend: 'below' });
+    expect(e.shown(e.q('.ch-chart .ew-chip'))).toBe(true);
+    expect(e.q('.ch-chart .ew-chips')!.nextElementSibling!.textContent).toBe('No history yet.');
+  });
+});
+
 describe('live and states', () => {
   it('appends live values and keeps them over an older history', () => {
     const r = widget([{ span: '1h' }], [entry(series(HOUR, () => 20))]);

@@ -288,7 +288,10 @@
     "error": "Kon de grafiek niet laden.",
     "unavailable": "Niet beschikbaar",
     "noHistory": "Nog geen geschiedenis.",
-    "yesterdayAvg": "Gisteren · gem."
+    "yesterdayAvg": "Gisteren · gem.",
+    "lastWeekAvg": "Vorige week · gem.",
+    "lastMonthAvg": "Vorige maand · gem.",
+    "lastYearAvg": "Vorig jaar · gem."
   },
   "lights": {
     "selectDevices": "Kies lampen in de widgetinstellingen.",

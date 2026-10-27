@@ -288,7 +288,10 @@
     "error": "No se pudo cargar el gráfico.",
     "unavailable": "No disponible",
     "noHistory": "Aún no hay historial.",
-    "yesterdayAvg": "Ayer · media"
+    "yesterdayAvg": "Ayer · media",
+    "lastWeekAvg": "Semana pasada · media",
+    "lastMonthAvg": "Mes pasado · media",
+    "lastYearAvg": "Año pasado · media"
   },
   "lights": {
     "selectDevices": "Elige luces en los ajustes del widget.",

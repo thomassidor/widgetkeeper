@@ -129,6 +129,40 @@ describe('today and yesterday', () => {
   });
 });
 
+describe('weeks, months and years (wk-104)', () => {
+  // NOW is Tuesday 6 October 2026, 14:00 in Copenhagen.
+  const at = (s: string) => new Date(s).getTime();
+
+  it('draws this month over the whole month, the line up to now', () => {
+    const points = [[at('2026-09-20T12:00:00'), 10], [at('2026-10-02T12:00:00'), 23.1], [NOW - HOUR, 21.5]];
+    const { tiles, text } = widget([temp({ points })], { span: 'thisMonth' });
+    expect(text('.sl-min')).toEqual([`↓${dec(21.5)}`]); // not September's 10
+    const from = at('2026-10-01T00:00:00'), to = at('2026-11-01T00:00:00');
+    expect(Number(tiles()[0].querySelector('.sl-dot')!.getAttribute('cx'))).toBeCloseTo(100 * (NOW - from) / (to - from), 1);
+  });
+
+  it('draws last week Monday to Sunday, without the value now or live values', () => {
+    const points = [[at('2026-09-28T12:00:00'), 18], [at('2026-10-02T12:00:00'), 19.4], [at('2026-10-05T12:00:00'), 30]];
+    const { w, tiles, text, setNow } = widget([temp({ points, value: 40 })], { span: 'lastWeek' });
+    expect(text('.sl-max')).toEqual([`↑${dec(19.4)}`]);
+    expect(Number(tiles()[0].querySelector('.sl-dot')!.getAttribute('cx'))).toBeCloseTo(100 * 4.5 / 7, 1);
+    setNow(NOW + 60e3);
+    w.pushChange({ deviceId: 'a', capabilityId: 'measure_temperature', value: 50 });
+    expect(text('.sl-max')).toEqual([`↑${dec(19.4)}`]);
+  });
+
+  it('keeps live values off a month or year, the line still running on to the value now', () => {
+    const points = [[at('2026-01-20T12:00:00'), 18], [at('2026-09-20T12:00:00'), 21.5]];
+    const { w, text, setNow } = widget([temp({ points })], { span: 'thisYear' });
+    setNow(NOW + 60e3);
+    w.pushChange({ deviceId: 'a', capabilityId: 'measure_temperature', value: 25 });
+    expect(text('.sl-max')).toEqual(['↑25']);
+    setNow(NOW + 120e3);
+    w.pushChange({ deviceId: 'a', capabilityId: 'measure_temperature', value: 20 });
+    expect(text('.sl-max')).toEqual([`↑${dec(21.5)}`]); // the 25 wasn't kept
+  });
+});
+
 describe('live values', () => {
   it('draws nothing while a Smart Stack shows another page, and catches up when back', () => {
     const { w, text, setNow } = widget([temp()]);

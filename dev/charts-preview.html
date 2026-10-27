@@ -34,6 +34,11 @@
   <div class="col"><span>358 px · dark · today · area + yesterday · bars</span><div class="card homey-dark-mode" style="width:358px"><div id="w10"></div></div></div>
   <div class="col"><span>300 px · light · yesterday on one chart · area + line</span><div class="card light" style="width:300px"><div id="w11"></div></div></div>
   <div class="col"><span>358 px · dark · today + yesterday of one meter on one chart · one scale</span><div class="card homey-dark-mode" style="width:358px"><div id="w12"></div></div></div>
+  <div class="col"><span>358 px · dark · this week · bars + last week · line</span><div class="card homey-dark-mode" style="width:358px"><div id="w13"></div></div></div>
+  <div class="col"><span>300 px · light · last month · legend below</span><div class="card light" style="width:300px"><div id="w14"></div></div></div>
+  <div class="col"><span>358 px · dark · last year · bars, a month each</span><div class="card homey-dark-mode" style="width:358px"><div id="w15"></div></div></div>
+  <div class="col"><span>358 px · dark · this + last month on one chart · one scale · legend below</span><div class="card homey-dark-mode" style="width:358px"><div id="w16"></div></div></div>
+  <div class="col"><span>300 px · dark · this + last year on one chart · area + line</span><div class="card homey-dark-mode" style="width:300px"><div id="w17"></div></div></div>
 
   <script>
     const HOUR = 3600e3;
@@ -93,6 +98,27 @@
       }));
     make('w12', { overlay: true, sharedScale: true, charts: [{ span: 'today' }, { span: 'yesterday', style: 'line', color: 'green' }] })
       .setState([water(), water()]);
+    // Calendar weeks, months and years (wk-104): 120 points over each span's own window up to now, from `f(x)` with x
+    // the place in the period (0…1).
+    const over = (span, f) => {
+      const w = WidgetkeeperKit.timeSpan(span, Date.now());
+      return Array.from({ length: 120 }, (_, i) => {
+        const at = w.from + (i + 0.5) * (w.end - w.from) / 120;
+        return [at, f((at - w.from) / (w.to - w.from))];
+      });
+    };
+    const meter = (span, f) => entry('c', 'measure_power', 'Electricity Meter', cap({ title: 'Power', units: 'W', decimals: 0 }), over(span, x => Math.round(f(x))));
+    const room = (span, f) => entry('a', 'measure_temperature', 'Living room', cap({ title: 'Temperature', units: '°C', decimals: 1 }), over(span, x => round(f(x), 1)));
+    /** A house's power over a year: more in winter. */
+    const seasons = x => 520 + 260 * Math.cos(x * 2 * Math.PI) + 50 * Math.sin(x * 97);
+    make('w13', { charts: [{ span: 'thisWeek', style: 'bars' }, { span: 'lastWeek', style: 'line', color: 'purple' }] })
+      .setState([meter('thisWeek', x => 520 + 180 * Math.sin(x * 19) + 60 * Math.sin(x * 61)), room('lastWeek', x => 21.2 + 0.9 * Math.sin((x * 7 - 0.3) * 2 * Math.PI) + 0.3 * Math.sin(x * 5))]);
+    make('w14', { legend: 'below', charts: [{ span: 'lastMonth' }] }).setState([meter('lastMonth', x => 560 + 140 * Math.sin(x * 23) + 70 * Math.sin(x * 71))]);
+    make('w15', { charts: [{ span: 'lastYear', style: 'bars', color: 'orange' }] }).setState([meter('lastYear', seasons)]);
+    make('w16', { overlay: true, sharedScale: true, legend: 'below', charts: [{ span: 'thisMonth', style: 'bars' }, { span: 'lastMonth', style: 'line', color: 'green' }] })
+      .setState([meter('thisMonth', x => 600 + 120 * Math.sin(x * 23)), meter('lastMonth', x => 520 + 140 * Math.sin(x * 29))]);
+    make('w17', { overlay: true, charts: [{ span: 'thisYear', color: 'purple' }, { span: 'lastYear', style: 'line', color: 'orange' }] })
+      .setState([meter('thisYear', x => seasons(x) + 40), meter('lastYear', seasons)]);
     const empty = make('w9', {});
     empty.setMessage(empty.t('selectChart'));
   </script>

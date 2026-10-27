@@ -226,34 +226,49 @@
     return low;
   }
 
-  /** The time spans of Charts and Sparklines (`SPANS` in lib/SparklineService.ts): rolling ones by length, days by offset. */
+  /**
+   * The time spans of Charts and Sparklines (`SPANS` in lib/SparklineService.ts): rolling ones by length, calendar
+   * periods by unit and offset (this one, or the one before).
+   */
   const SPAN_MS = { '1h': 36e5, '6h': 6 * 36e5, '24h': DAY, '2d': 2 * DAY, '3d': 3 * DAY, '5d': 5 * DAY, '7d': 7 * DAY };
-  const SPAN_DAYS = { today: 0, yesterday: -1 };
+  const SPAN_PERIODS = {
+    today: ['day', 0], yesterday: ['day', -1], thisWeek: ['week', 0], lastWeek: ['week', -1],
+    thisMonth: ['month', 0], lastMonth: ['month', -1], thisYear: ['year', 0], lastYear: ['year', -1],
+  };
   const own = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+
+  /** The local start of the `unit` holding `at`, moved by `n` units. Weeks start on Monday, as Homey's do. */
+  function periodStart(at, unit, n) {
+    const d = new Date(at);
+    d.setHours(0, 0, 0, 0);
+    if (unit === 'day') d.setDate(d.getDate() + n);
+    else if (unit === 'week') d.setDate(d.getDate() - (d.getDay() + 6) % 7 + 7 * n);
+    else if (unit === 'month') d.setMonth(d.getMonth() + n, 1);
+    else d.setFullYear(d.getFullYear() + n, 0, 1);
+    return d.getTime();
+  }
 
   /**
    * A span's window at `at`: the axis `[from, to]` and `end`, where its data stops. A rolling span ends at `at`;
-   * `today` is the local day (data up to `at`), `yesterday` the day before (up to midnight). A DST day is 23 or
-   * 25 h. An unknown span is 24 h.
+   * a calendar one (`unit`) is the whole local day, week, month or year: this one with data up to `at`, the last
+   * one up to its end. A DST day is 23 or 25 h. An unknown span is 24 h.
    */
   function timeSpan(span, at) {
-    if (!own(SPAN_DAYS, span)) return { from: at - (own(SPAN_MS, span) ? SPAN_MS[span] : DAY), to: at, end: at };
-    const d = new Date(at);
-    d.setHours(0, 0, 0, 0);
-    d.setDate(d.getDate() + SPAN_DAYS[span]);
-    const from = d.getTime();
-    d.setDate(d.getDate() + 1);
-    return { from, to: d.getTime(), end: Math.min(d.getTime(), at) };
+    if (!own(SPAN_PERIODS, span)) return { from: at - (own(SPAN_MS, span) ? SPAN_MS[span] : DAY), to: at, end: at };
+    const [unit, n] = SPAN_PERIODS[span];
+    const from = periodStart(at, unit, n);
+    const to = periodStart(at, unit, n + 1);
+    return { from, to, end: Math.min(to, at), unit };
   }
 
   /** Whether `span` is one the widgets know. */
   function isTimeSpan(span) {
-    return own(SPAN_MS, span) || own(SPAN_DAYS, span);
+    return own(SPAN_MS, span) || own(SPAN_PERIODS, span);
   }
 
-  /** Whether `span` is a calendar day (today, yesterday), whose axis is the whole day. */
-  function isDaySpan(span) {
-    return own(SPAN_DAYS, span);
+  /** A calendar span's unit (`day`, `week`, `month`, `year`), whose axis is the whole period; null for a rolling one. */
+  function spanUnit(span) {
+    return own(SPAN_PERIODS, span) ? SPAN_PERIODS[span][0] : null;
   }
 
   /** Why a write through the personal API key failed (`KeyProblem` in lib/PersonalApiKey.ts): each has its own message. */
@@ -755,7 +770,7 @@
 
   window.WidgetkeeperKit = {
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, undoTextZoom, el, setMask, tileNames, timeFormatter,
-    formatSince, baseTitle, lowestSlot, timeSpan, isTimeSpan, isDaySpan, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
+    formatSince, baseTitle, lowestSlot, timeSpan, isTimeSpan, spanUnit, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     colorStyle, applyColors, sound,
   };
 })();

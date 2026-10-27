@@ -233,6 +233,114 @@
             "ko": "7일",
             "ar": "7 أيام"
           }
+        },
+        {
+          "id": "thisWeek",
+          "title": {
+            "en": "This week",
+            "nl": "Deze week",
+            "de": "Diese Woche",
+            "fr": "Cette semaine",
+            "it": "Questa settimana",
+            "sv": "Denna vecka",
+            "no": "Denne uken",
+            "es": "Esta semana",
+            "da": "Denne uge",
+            "ru": "Эта неделя",
+            "pl": "Ten tydzień",
+            "ko": "이번 주",
+            "ar": "هذا الأسبوع"
+          }
+        },
+        {
+          "id": "lastWeek",
+          "title": {
+            "en": "Last week",
+            "nl": "Vorige week",
+            "de": "Letzte Woche",
+            "fr": "La semaine dernière",
+            "it": "La settimana scorsa",
+            "sv": "Förra veckan",
+            "no": "Forrige uke",
+            "es": "La semana pasada",
+            "da": "Sidste uge",
+            "ru": "Прошлая неделя",
+            "pl": "Zeszły tydzień",
+            "ko": "지난주",
+            "ar": "الأسبوع الماضي"
+          }
+        },
+        {
+          "id": "thisMonth",
+          "title": {
+            "en": "This month",
+            "nl": "Deze maand",
+            "de": "Dieser Monat",
+            "fr": "Ce mois-ci",
+            "it": "Questo mese",
+            "sv": "Denna månad",
+            "no": "Denne måneden",
+            "es": "Este mes",
+            "da": "Denne måned",
+            "ru": "Этот месяц",
+            "pl": "Ten miesiąc",
+            "ko": "이번 달",
+            "ar": "هذا الشهر"
+          }
+        },
+        {
+          "id": "lastMonth",
+          "title": {
+            "en": "Last month",
+            "nl": "Vorige maand",
+            "de": "Letzter Monat",
+            "fr": "Le mois dernier",
+            "it": "Il mese scorso",
+            "sv": "Förra månaden",
+            "no": "Forrige måned",
+            "es": "El mes pasado",
+            "da": "Sidste måned",
+            "ru": "Прошлый месяц",
+            "pl": "Zeszły miesiąc",
+            "ko": "지난달",
+            "ar": "الشهر الماضي"
+          }
+        },
+        {
+          "id": "thisYear",
+          "title": {
+            "en": "This year",
+            "nl": "Dit jaar",
+            "de": "Dieses Jahr",
+            "fr": "Cette année",
+            "it": "Quest'anno",
+            "sv": "I år",
+            "no": "I år",
+            "es": "Este año",
+            "da": "I år",
+            "ru": "Этот год",
+            "pl": "Ten rok",
+            "ko": "올해",
+            "ar": "هذا العام"
+          }
+        },
+        {
+          "id": "lastYear",
+          "title": {
+            "en": "Last year",
+            "nl": "Vorig jaar",
+            "de": "Letztes Jahr",
+            "fr": "L'année dernière",
+            "it": "L'anno scorso",
+            "sv": "Förra året",
+            "no": "I fjor",
+            "es": "El año pasado",
+            "da": "Sidste år",
+            "ru": "Прошлый год",
+            "pl": "Zeszły rok",
+            "ko": "작년",
+            "ar": "العام الماضي"
+          }
         }
       ]
     },

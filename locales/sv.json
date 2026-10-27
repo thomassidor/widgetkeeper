@@ -288,7 +288,10 @@
     "error": "Kunde inte läsa in diagrammet.",
     "unavailable": "Inte tillgänglig",
     "noHistory": "Ingen historik än.",
-    "yesterdayAvg": "I går · snitt"
+    "yesterdayAvg": "I går · snitt",
+    "lastWeekAvg": "Förra veckan · snitt",
+    "lastMonthAvg": "Förra månaden · snitt",
+    "lastYearAvg": "Förra året · snitt"
   },
   "lights": {
     "selectDevices": "Välj lampor i widgetinställningarna.",

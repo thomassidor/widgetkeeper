@@ -111,6 +111,16 @@ describe('mount: spans', () => {
     expect(await requested({ charts: 'overlay', chart1: slot('a:x'), span1: 'today', chart2: slot('a:x') })).toBe('a:x~today,a:x~today');
   });
 
+  it('asks for last week, month or year under this one on one chart (wk-104)', async () => {
+    for (const unit of ['Week', 'Month', 'Year']) {
+      expect(await requested({ charts: 'overlay', chart1: slot('a:x'), span1: `this${unit}`, chart2: slot('a:x'), span2: `last${unit}` }))
+        .toBe(`a:x~this${unit},a:x~last${unit}`);
+    }
+    // Of different kinds, series 2 takes chart 1's.
+    expect(await requested({ charts: 'overlay', chart1: slot('a:x'), span1: 'thisWeek', chart2: slot('a:x'), span2: 'lastMonth' })).toBe('a:x~thisWeek,a:x~thisWeek');
+    expect(await requested({ charts: 'overlay', chart1: slot('a:x'), span1: 'yesterday', chart2: slot('a:x'), span2: 'lastYear' })).toBe('a:x~yesterday,a:x~yesterday');
+  });
+
   it('keeps a lone chart 2\'s own span when chart 1 is empty', async () => {
     expect(await requested({ charts: 'overlay', chart1: null, span1: '6h', chart2: slot('b:y'), span2: '7d' })).toBe('b:y~7d');
   });

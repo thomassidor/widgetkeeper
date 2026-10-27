@@ -288,7 +288,10 @@
     "error": "Nie udało się wczytać wykresu.",
     "unavailable": "Niedostępne",
     "noHistory": "Brak historii.",
-    "yesterdayAvg": "Wczoraj · śr."
+    "yesterdayAvg": "Wczoraj · śr.",
+    "lastWeekAvg": "Zeszły tydzień · śr.",
+    "lastMonthAvg": "Zeszły miesiąc · śr.",
+    "lastYearAvg": "Zeszły rok · śr."
   },
   "lights": {
     "selectDevices": "Wybierz światła w ustawieniach widżetu.",
