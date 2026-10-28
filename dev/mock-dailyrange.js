@@ -22,9 +22,10 @@
   /** Chart · Daily Range's `[value]` over `span` at `now`. */
   function dailyRangeState(span = '4w', now = Date.now()) {
     const w = window.WidgetkeeperKit.timeSpan(span, now);
+    // A point an hour (on the step's clock marks, and the value now the last point's, so the renders' ticking clock can't change them).
     const points = [];
-    for (let t = w.from; t < w.end; t += HOUR) points.push([t, round(outdoor(t))]);
-    return [{ deviceId: 'outdoor', capabilityId: 'measure_temperature', name: 'Outdoor sensor', capability: temp, value: round(outdoor(now)), points }];
+    for (let t = Math.ceil(w.from / HOUR) * HOUR; t < w.end; t += HOUR) points.push([t, round(outdoor(t))]);
+    return [{ deviceId: 'outdoor', capabilityId: 'measure_temperature', name: 'Outdoor sensor', capability: temp, value: points.length ? points[points.length - 1][1] : null, points }];
   }
 
   window.mockDailyRange = { outdoor, dailyRangeState };

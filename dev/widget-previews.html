@@ -6,7 +6,7 @@
 <title>Widget Previews</title>
 <!--
   Source for the widget preview PNGs (from the "Widget Previews" Claude Design project).
-  Without a query it shows them all on a canvas; `?p=elec-dark|elec-light|thermo-dark|thermo-light|qa-dark|qa-light|sa-dark|sa-light|sd-dark|sd-light|rh-dark|rh-light|weather-dark|weather-light|hm-dark|hm-light|cam-dark|cam-light|val-dark|val-light|lc-dark|lc-light|lr-dark|lr-light|spark-dark|spark-light|chart-dark|chart-light|var-dark|var-light|vp-dark|vp-light|sd-dark|sd-light|fb-dark|fb-light|pb-dark|pb-light|tm-dark|tm-light|lk-dark|lk-light|ct-dark|ct-light|mw-dark|mw-light|sk-dark|sk-light|ck-dark|ck-light|sp-dark|sp-light|tl-dark|tl-light|ds-dark|ds-light|sc-dark|sc-light|wp-dark|wp-light|pw-dark|pw-light|pu-dark|pu-light|kp-dark|kp-light|tt-dark|tt-light|xy-dark|xy-light|td-dark|td-light|dr-dark|dr-light`
+  Without a query it shows them all on a canvas; `?p=elec-dark|elec-light|thermo-dark|thermo-light|qa-dark|qa-light|sa-dark|sa-light|sd-dark|sd-light|rh-dark|rh-light|weather-dark|weather-light|hm-dark|hm-light|cam-dark|cam-light|val-dark|val-light|lc-dark|lc-light|lr-dark|lr-light|spark-dark|spark-light|chart-dark|chart-light|var-dark|var-light|vp-dark|vp-light|sd-dark|sd-light|fb-dark|fb-light|pb-dark|pb-light|tm-dark|tm-light|lk-dark|lk-light|ct-dark|ct-light|mw-dark|mw-light|sk-dark|sk-light|ck-dark|ck-light|sp-dark|sp-light|tl-dark|tl-light|ds-dark|ds-light|sc-dark|sc-light|wp-dark|wp-light|pw-dark|pw-light|pu-dark|pu-light|kp-dark|kp-light|tt-dark|tt-light|xy-dark|xy-light|td-dark|td-light|dr-dark|dr-light|cp-dark|cp-light`
   renders that one 1024×1024 frame alone on a transparent page, for scripts/render-previews.mjs.
 -->
 <style>
@@ -676,6 +676,30 @@ function dailyRangeChart(t, theme) {
   </div>`;
 }
 
+// Chart · Compare: a row per room, sorted, each with its name, a soft bar for its range today and a blue dot for now, the
+// value at the right, under its title chip (blue: rows read nothing like the Electricity Overview's charts).
+function compareChart(t, theme) {
+  const card = theme === 'dark' ? '#1F2029' : '#FFFFFF';
+  const muted = theme === 'dark' ? 'rgba(237,238,240,.45)' : 'rgba(31,32,41,.4)';
+  const ROWS = [[0.62, 0.92, 0.84], [0.48, 0.78, 0.7], [0.4, 0.82, 0.62], [0.34, 0.66, 0.52], [0.18, 0.46, 0.36], [0.1, 0.4, 0.26]];
+  const NAME = 150, VAL = 90, X0 = NAME + 30, X1 = W - VAL - 20, RH = 62;
+  const px = v => X0 + (X1 - X0) * v;
+  const rows = ROWS.map(([lo, hi, now], i) => {
+    const y = 20 + i * RH;
+    return `${pill(NAME - [0, 30, 10, 40, 20, 50][i], 26, t.fg, `position:absolute;left:0;top:${y - 13}px;opacity:.85`)}`
+      + `<div style="position:absolute;left:${px(lo).toFixed(1)}px;top:${y - 10}px;width:${(px(hi) - px(lo)).toFixed(1)}px;height:20px;border-radius:10px;background:color-mix(in srgb, ${t.fg} 16%, transparent)"></div>`
+      + `<div style="position:absolute;left:${(px(now) - 13).toFixed(1)}px;top:${y - 13}px;width:26px;height:26px;border-radius:50%;background:${BLUE}"></div>`
+      + `${pill(VAL - 10, 26, t.fg, `position:absolute;right:0;top:${y - 13}px;opacity:.7`)}`;
+  }).join('');
+  return `<div class="card" style="gap:36px">
+    <div class="pill" style="align-self:flex-start;height:64px;padding:0 30px 0 24px;box-sizing:border-box;background:color-mix(in srgb, ${t.fg} 9%, ${card});display:flex;align-items:center;gap:18px">
+      <div style="width:24px;height:24px;border-radius:50%;background:${BLUE}"></div>
+      ${pill(200, 30, t.fg, 'opacity:.85')}${pill(56, 30, muted)}
+    </div>
+    <div style="position:relative;width:${W}px;height:${ROWS.length * RH}px">${rows}</div>
+  </div>`;
+}
+
 // Sparklines: Device Values' tiles, 2 per row, each with a small blue line chart (and a faint area) between the
 // icon/value row and the name, and the min/max as two small muted labels at the chart's right edge.
 function sparklines(t, theme) {
@@ -1110,6 +1134,8 @@ const PREVIEWS = [
   { id: 'td-light',     label: '3v · Typical Day — preview-light.png',                 theme: 'light', render: typicalDayChart },
   { id: 'dr-dark',      label: '3w · Daily Range — preview-dark.png',                  theme: 'dark',  render: dailyRangeChart },
   { id: 'dr-light',     label: '3x · Daily Range — preview-light.png',                 theme: 'light', render: dailyRangeChart },
+  { id: 'cp-dark',      label: '3y · Compare — preview-dark.png',                      theme: 'dark',  render: compareChart },
+  { id: 'cp-light',     label: '3z · Compare — preview-light.png',                     theme: 'light', render: compareChart },
   { id: 'var-dark',     label: '1u · Variables — preview-dark.png',         theme: 'dark',  render: flowVariables },
   { id: 'var-light',    label: '1v · Variables — preview-light.png',        theme: 'light', render: flowVariables },
   { id: 'vp-dark',      label: '2y · Variable Presets — preview-dark.png',       theme: 'dark',  render: varPresets },

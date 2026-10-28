@@ -17,6 +17,10 @@ Many motion, contact and vibration sensors at a glance, as dots that change colo
 <a href="#cameras"><b>Cameras</b></a><br>
 Two to six cameras in one grid of snapshots; tap one to watch it live<br clear="left"></p>
 
+<p><a href="#chart--compare"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/compare-dark.png"><img src="docs/previews/compare-light.png" alt="" width="120" align="left"></picture></a>
+<a href="#chart--compare"><b>Chart · Compare</b></a><br>
+One value across devices, now and its range today, sorted: which room is warmest?<br clear="left"></p>
+
 <p><a href="#chart--daily-range"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/dailyrange-dark.png"><img src="docs/previews/dailyrange-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--daily-range"><b>Chart · Daily Range</b></a><br>
 Each day's lowest to highest as a bar, its average across it: how much did it swing?<br clear="left"></p>
@@ -172,6 +176,13 @@ Motion, contact, vibration and camera sensors as a grid of dots that light up wh
 Your cameras as a grid of snapshots that refresh every few seconds (cameras with only a video stream show a still from it). Tap one to watch it live.
 
 **Settings:** cameras, layout (a large camera at the top or bottom, or one per row), refresh interval, how long live view stays on, time format, [rename tiles](#tile-names).
+
+## Chart · Compare
+<img src="docs/screenshots/compare.png" alt="Chart · Compare on a Homey dashboard: six rooms' temperatures, warmest first, each with today's range as a bar and the temperature now as a dot" width="358">
+
+One value from up to eight devices side by side, a row each on one shared scale: the value now as a dot and its lowest to highest today (or over another [time span](#time-spans)) as a bar, warmest first (or coldest first, or as you picked them). The highest and the lowest sit at the top; tap a row for its value and range. A device with several values picked shows them by name.
+
+**Settings:** values 1 to 8, [time span](#time-spans) for the ranges, order (highest first, lowest first or as picked), show the range, title, the values at the top, colour, [colour style](#colour-style).
 
 ## Chart · Daily Range
 <img src="docs/screenshots/dailyrange.png" alt="Chart · Daily Range on a Homey dashboard: the outdoor temperature's lowest to highest each day of the last four weeks as floating bars, each with its average" width="358">

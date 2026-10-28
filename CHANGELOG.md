@@ -25,6 +25,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 ### New: Chart · Daily Range
 - Each day's lowest to highest as a bar, with its average as a tick: how cold the nights and how warm the afternoons were. The last four weeks by default, or any time span (a bar an hour over a day, a month over a year). The latest bar's high and low sit at the top; tap a bar for its own.
 
+### New: Chart · Compare
+- One value from up to eight devices side by side, sorted: each room's temperature now as a dot and its range today as a bar, warmest first. The highest and the lowest sit at the top; tap a row for its own.
+
 ### New: Chart · Totals per Period
 - How much a value went up in each hour, day or month, like the Homey app's Energy tab: a bar an hour for today or yesterday, a day for this or last week or month, a month for this or last year, or any other span (the last 30 days, the three months from the 1st). The period's total sits at the top; tap a bar for its own.
 - Its value list puts meters first.

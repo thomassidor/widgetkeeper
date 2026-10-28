@@ -481,6 +481,24 @@ const BUILD = {
     ] };
   },
 
+  async compare() {
+    const items = await autocomplete('compare', 'slot1');
+    // Temperatures where there are (each room's), else whatever else is logged.
+    const temps = pick(items, i => /:measure_temperature/.test(i.id), 8);
+    const values = temps.length >= 2 ? temps : pick(items, () => true, 8);
+    const slots = list => Object.fromEntries(list.map((v, k) => [`slot${k + 1}`, v]));
+    const missing = { id: `${MISSING}:measure_temperature`, name: 'Deleted device · Temperature' };
+    return { cols: 3, widgets: [
+      wide(w('compare', 'Up to 8, today, highest first (defaults)', slots(values))),
+      w('compare', 'Lowest first · green', { ...slots(values), sort: 'low', color: 'green' }),
+      w('compare', 'As picked · no range · own title', { ...slots(values.slice(0, 4)), sort: 'listed', showRange: false, title: 'Typed title' }),
+      w('compare', 'This week · Vivid · purple', { ...slots(values), count: 1, span: 'calWeeks', colorStyle: 'deep', color: 'purple' }),
+      w('compare', 'No header', { ...slots(values.slice(0, 3)), showHeader: false }),
+      w('compare', 'With a deleted device', { ...slots([missing, ...values.slice(0, 3)]) }),
+      w('compare', 'One value', slots(values.slice(0, 1))),
+      w('compare', 'Nothing picked'),
+    ] };
+  },
   async dailyrange() {
     const items = await autocomplete('dailyrange', 'slot');
     // A temperature where there is (its days swing), then whatever else is logged.

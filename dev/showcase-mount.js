@@ -40,6 +40,8 @@ const MOUNT = {
   typicalday: (el, w) => createTypicalDayWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
   // Chart · DailyRange: `w.state` its `/state` (mock-dailyrange.js).
   dailyrange: (el, w) => createDailyRangeWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
+  // Chart · Compare: `w.state` its `/state` (mock-compare.js).
+  compare: (el, w) => createCompareWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
   scatter: (el, w) => createScatterWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
   lights: (el, w) => createLightsWidget(el, w.opts || {}).setState(w.devices),
   curtains: (el, w) => createCurtainsWidget(el, w.opts || {}).setState(w.devices),

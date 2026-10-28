@@ -354,6 +354,14 @@
     "high": "Høyest",
     "low": "Lavest"
   },
+  "compare": {
+    "selectValues": "Velg verdiene å sammenligne i widgetinnstillingene.",
+    "error": "Kunne ikke laste diagrammet.",
+    "unavailable": "Utilgjengelig",
+    "highest": "Høyest",
+    "lowest": "Lavest",
+    "range": "Spenn"
+  },
   "lights": {
     "selectDevices": "Velg lys i widgetinnstillingene.",
     "error": "Kunne ikke laste inn lysene.",
@@ -889,6 +897,7 @@
       "scatter": "Én verdi mot en annen, ett punkt per time: jobber varmepumpen hardere når det er kaldt?",
       "typicalday": "Dagens linje over den typiske dagen og spredningen: er i dag uvanlig?",
       "dailyrange": "Hver dags laveste og høyeste som en søyle, snittet på tvers: hvor mye svingte det?",
+      "compare": "Én verdi på tvers av enheter, nå og dagens spenn, sortert: hvilket rom er varmest?",
       "variables": "Variabler som rader du kan slå av og på eller endre.",
       "varpresets": "Knapper som setter en variabel til forhåndsvalgte verdier.",
       "keypad": "Knapper bak en valgfri kode som starter flyter eller setter en tilstand.",

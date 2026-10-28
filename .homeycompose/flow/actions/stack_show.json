@@ -408,6 +408,24 @@
           }
         },
         {
+          "id": "compare",
+          "title": {
+            "en": "Chart · Compare",
+            "nl": "Grafiek · Vergelijken",
+            "de": "Diagramm · Vergleich",
+            "fr": "Graphique · Comparaison",
+            "it": "Grafico · Confronto",
+            "sv": "Diagram · Jämförelse",
+            "no": "Diagram · Sammenligning",
+            "es": "Gráfico · Comparación",
+            "da": "Graf · Sammenligning",
+            "ru": "График · Сравнение",
+            "pl": "Wykres · Porównanie",
+            "ko": "차트 · 비교",
+            "ar": "مخطط · مقارنة"
+          }
+        },
+        {
           "id": "variables",
           "title": {
             "en": "Variables",

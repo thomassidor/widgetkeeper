@@ -354,6 +354,14 @@
     "high": "Höchst",
     "low": "Tiefst"
   },
+  "compare": {
+    "selectValues": "Wähle die zu vergleichenden Werte in den Widget-Einstellungen.",
+    "error": "Das Diagramm konnte nicht geladen werden.",
+    "unavailable": "Nicht verfügbar",
+    "highest": "Höchster",
+    "lowest": "Niedrigster",
+    "range": "Spanne"
+  },
   "lights": {
     "selectDevices": "Wähle Lampen in den Widget-Einstellungen.",
     "error": "Lampen konnten nicht geladen werden.",
@@ -889,6 +897,7 @@
       "scatter": "Ein Wert gegen einen anderen, ein Punkt pro Stunde: Arbeitet die Wärmepumpe mehr, wenn es kälter ist?",
       "typicalday": "Die Linie von heute über dem typischen Tag und seiner Streuung: Ist heute ungewöhnlich?",
       "dailyrange": "Tiefst- und Höchstwert jedes Tages als Balken, der Mittelwert quer darüber: Wie stark hat es geschwankt?",
+      "compare": "Ein Wert über Geräte hinweg, jetzt und seine Spanne heute, sortiert: Welcher Raum ist am wärmsten?",
       "variables": "Variablen als Zeilen zum Schalten oder Ändern.",
       "varpresets": "Tasten, die eine Variable auf feste Werte setzen.",
       "keypad": "Tasten hinter einem optionalen Code, die Flows starten oder einen Zustand setzen.",

@@ -23,10 +23,11 @@
     return Math.max(0.2, 2.4 - 0.16 * outdoor(t) + 0.5 * (frac(Math.sin(t / HOUR * 78.233) * 12345.678) - 0.5));
   }
 
+  /** A point every 30 minutes (on the step's clock marks, and the value now the last point's, so the renders' ticking clock can't change them). */
   function series(f, from, now, extra) {
     const points = [];
-    for (let t = from; t < now; t += 30 * MIN) points.push([t, round(f(t))]);
-    return { value: round(f(now)), points, ...extra };
+    for (let t = Math.ceil(from / (30 * MIN)) * 30 * MIN; t < now; t += 30 * MIN) points.push([t, round(f(t))]);
+    return { value: points.length ? points[points.length - 1][1] : null, points, ...extra };
   }
 
   /** Chart · X against Y's `[x, y]` over `span` at `now`. */

@@ -354,6 +354,14 @@
     "high": "Max",
     "low": "Min"
   },
+  "compare": {
+    "selectValues": "Choisissez les valeurs à comparer dans les réglages du widget.",
+    "error": "Impossible de charger le graphique.",
+    "unavailable": "Indisponible",
+    "highest": "Le plus haut",
+    "lowest": "Le plus bas",
+    "range": "Écart"
+  },
   "lights": {
     "selectDevices": "Choisissez des lampes dans les réglages du widget.",
     "error": "Impossible de charger les lampes.",
@@ -889,6 +897,7 @@
       "scatter": "Une valeur face à une autre, un point par heure : la pompe à chaleur travaille-t-elle plus quand il fait froid ?",
       "typicalday": "La courbe d'aujourd'hui sur la journée type et son écart : aujourd'hui sort-il de l'ordinaire ?",
       "dailyrange": "Le minimum et le maximum de chaque jour en barre, la moyenne en travers : de combien ça a varié ?",
+      "compare": "Une valeur sur plusieurs appareils, maintenant et son écart du jour, triée : quelle pièce est la plus chaude ?",
       "variables": "Les variables en lignes à basculer ou modifier.",
       "varpresets": "Des boutons qui donnent des valeurs prédéfinies à une variable.",
       "keypad": "Des boutons derrière un code facultatif qui lancent des flows ou règlent un état.",

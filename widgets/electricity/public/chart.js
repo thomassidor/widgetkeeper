@@ -536,20 +536,21 @@
     }
 
     /**
-     * A bottom value scale over a plot `pw` wide from `L` (Chart · X against Y's x): vertical grid lines and labels
-     * (`format(v, step)`, at least 40 px apart) under `base`, from `ticks()` (fitted unless `fit` is false); a line at zero
-     * where the range crosses it. Returns `x(v)` and the axis range.
+     * A bottom value scale over a plot `pw` wide from `left` (`L`; Chart · X against Y's x, Chart · Compare's): vertical grid
+     * lines and labels (`format(v, step)`, at least 40 px apart, so with the decimals of the labels' own spacing) under
+     * `base`, from `ticks()` (fitted unless `fit` is false); a line at zero where the range crosses it, and with `edge`
+     * one at the left end too (where no value axis stands). Returns `x(v)` and the axis range.
      */
-    function xValueScale(svg, { min, max, pw, top, base, format, fit = true }) {
+    function xValueScale(svg, { min, max, pw, top, base, format, fit = true, left = L, edge = false }) {
       const { step, axisMin, axisMax, k, zeroIndex } = ticks({ min, max, fit });
-      const x = v => L + pw * (v - axisMin) / (axisMax - axisMin);
+      const x = v => left + pw * (v - axisMin) / (axisMax - axisMin);
       const every = Math.max(1, Math.ceil(40 / (pw / k)));
       let grid = '';
       for (let j = 0; j <= k; j++) {
         const v = axisMin + j * step;
-        if (j > 0) grid += `M${f1(x(v))} ${top - 6}V${base}`;
+        if (j > 0 || edge) grid += `M${f1(x(v))} ${top - 6}V${base}`;
         if ((zeroIndex != null ? j - zeroIndex : j) % every === 0) {
-          text(svg, x(v), base + X_LABEL_GAP, format(v, step), j === 0 ? 'start' : j === k ? 'end' : 'middle', 'hanging');
+          text(svg, x(v), base + X_LABEL_GAP, format(v, step * every), j === 0 ? 'start' : j === k ? 'end' : 'middle', 'hanging');
         }
       }
       el('svg:path', { class: 'grid', d: grid }, svg);

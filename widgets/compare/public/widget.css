@@ -1,0 +1,37 @@
+/*
+ * Chart · Compare: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`) in the widget's colour
+ * (the kit's `data-wk-color` on the root: its bright set, as Charts' colours): each row's range a soft bar, the value now a dot.
+ */
+.cp { --cp-color: var(--wk-c-bright, var(--ew-blue)); }
+
+/* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
+html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
+html, body { margin: 0; }
+
+.cp .cp-value { color: var(--cp-color); gap: 3px; }
+.cp .cp-value.tight { gap: 0; }
+/* Yellow text is mixed with the text colour, as Charts' yellow, so it reads on a light card. */
+.wk[data-wk-color="yellow"] .cp .cp-value { color: color-mix(in srgb, var(--cp-color) 75%, var(--ew-text)); }
+.cp .ew-hcol.low .cp-value { color: var(--ew-muted); }
+
+.cp .ew-chips { gap: 6px; }
+.cp .ew-chip.series { max-width: 100%; min-width: 0; }
+.cp .ew-chip.series > span { overflow: hidden; text-overflow: ellipsis; }
+.cp .ew-chip.series i { background: var(--cp-color); flex-shrink: 0; }
+.cp .ew-chip.series.range { flex-shrink: 0; }
+.cp .ew-chip.series.range i { background: color-mix(in srgb, var(--ew-text) 18%, transparent); }
+
+.cp svg text.cp-name { fill: var(--ew-text); font-size: var(--ew-fs-label); }
+.cp svg text.cp-name.missing { fill: var(--ew-muted); }
+.cp svg text.cp-num { fill: var(--ew-text); font-size: var(--ew-fs-label); }
+.cp .cp-range { fill: color-mix(in srgb, var(--ew-text) 14%, transparent); }
+.cp .cp-dot { fill: var(--cp-color); }
+.cp .dot-ring.series { stroke: var(--cp-color); }
+.cp .dot-core.series { fill: var(--cp-color); }
+/* Vivid (kit.css, on the widget's root): the ranges in the widget's colour. */
+.wk-deep .cp .cp-range { fill: color-mix(in srgb, var(--cp-color) 35%, transparent); }
+
+/* A chart without anything to draw keeps its chips, with the reason under them. */
+.cp .cp-chart.empty { min-height: 0; }
+.cp .cp-chart.empty .ew-chips { position: static; }
+.cp .cp-note { padding-bottom: 0; }

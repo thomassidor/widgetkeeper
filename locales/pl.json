@@ -354,6 +354,14 @@
     "high": "Maks.",
     "low": "Min."
   },
+  "compare": {
+    "selectValues": "Wybierz wartości do porównania w ustawieniach widżetu.",
+    "error": "Nie udało się wczytać wykresu.",
+    "unavailable": "Niedostępne",
+    "highest": "Najwyższa",
+    "lowest": "Najniższa",
+    "range": "Zakres"
+  },
   "lights": {
     "selectDevices": "Wybierz światła w ustawieniach widżetu.",
     "error": "Nie udało się wczytać świateł.",
@@ -889,6 +897,7 @@
       "scatter": "Jedna wartość względem drugiej, punkt na godzinę: czy pompa ciepła pracuje więcej, gdy jest zimno?",
       "typicalday": "Linia z dzisiaj na tle typowego dnia i jego rozrzutu: czy dziś jest nietypowo?",
       "dailyrange": "Najniższa i najwyższa wartość każdego dnia jako słupek, średnia w poprzek: jak bardzo się wahało?",
+      "compare": "Jedna wartość z wielu urządzeń, teraz i jej zakres z dzisiaj, posortowana: który pokój jest najcieplejszy?",
       "variables": "Zmienne jako wiersze do przełączania lub zmiany.",
       "varpresets": "Przyciski ustawiające zmienną na wybrane wartości.",
       "keypad": "Przyciski za opcjonalnym kodem, które uruchamiają Flow lub ustawiają stan.",

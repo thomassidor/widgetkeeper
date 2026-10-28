@@ -354,6 +354,14 @@
     "high": "Højest",
     "low": "Lavest"
   },
+  "compare": {
+    "selectValues": "Vælg værdierne, der skal sammenlignes, i widgetindstillingerne.",
+    "error": "Kunne ikke hente grafen.",
+    "unavailable": "Utilgængelig",
+    "highest": "Højest",
+    "lowest": "Lavest",
+    "range": "Spænd"
+  },
   "lights": {
     "selectDevices": "Vælg lys i widgetindstillingerne.",
     "error": "Kunne ikke indlæse lysene.",
@@ -889,6 +897,7 @@
       "scatter": "Én værdi mod en anden, et punkt pr. time: arbejder varmepumpen hårdere, når det er koldt?",
       "typicalday": "Dagens linje over den typiske dag og spredningen: er i dag usædvanlig?",
       "dailyrange": "Hver dags laveste og højeste som en søjle, gennemsnittet på tværs: hvor meget svingede det?",
+      "compare": "Én værdi på tværs af enheder, nu og dagens spænd, sorteret: hvilket rum er varmest?",
       "variables": "Variabler som rækker, du kan slå til og fra eller ændre.",
       "varpresets": "Knapper, der sætter en variabel til faste værdier.",
       "keypad": "Knapper bag en valgfri kode, der starter flows eller sætter en tilstand.",

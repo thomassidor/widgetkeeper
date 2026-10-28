@@ -354,6 +354,14 @@
     "high": "Hoogste",
     "low": "Laagste"
   },
+  "compare": {
+    "selectValues": "Kies de waarden om te vergelijken in de widgetinstellingen.",
+    "error": "Kon de grafiek niet laden.",
+    "unavailable": "Niet beschikbaar",
+    "highest": "Hoogste",
+    "lowest": "Laagste",
+    "range": "Bereik"
+  },
   "lights": {
     "selectDevices": "Kies lampen in de widgetinstellingen.",
     "error": "Kon de lampen niet laden.",
@@ -889,6 +897,7 @@
       "scatter": "Eén waarde tegen een andere, een stip per uur: werkt de warmtepomp harder als het kouder is?",
       "typicalday": "De lijn van vandaag over de normale dag en de spreiding: is vandaag anders?",
       "dailyrange": "Het laagste en hoogste van elke dag als staaf, met het gemiddelde erdoor: hoeveel schommelde het?",
+      "compare": "Eén waarde over apparaten heen, nu en het bereik vandaag, gesorteerd: welke kamer is het warmst?",
       "variables": "Variabelen als rijen om te schakelen of te wijzigen.",
       "varpresets": "Knoppen die een variabele op vaste waarden zetten.",
       "keypad": "Knoppen achter een optionele code die flows starten of een status instellen.",

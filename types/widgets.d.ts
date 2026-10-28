@@ -27,6 +27,7 @@ interface Window {
   createChartsWidget: (root: HTMLElement, opts?: object) => any;
   createTotalsWidget: (root: HTMLElement, opts?: object) => any;
   createScatterWidget: (root: HTMLElement, opts?: object) => any;
+  createCompareWidget: (root: HTMLElement, opts?: object) => any;
   createDailyRangeWidget: (root: HTMLElement, opts?: object) => any;
   createTypicalDayWidget: (root: HTMLElement, opts?: object) => any;
   chartBuckets: (points: [number, number][], from: number, to: number, bucketMs: number | 'month', current?: number | null) => { t: number, end: number, v: number | null }[];
@@ -189,6 +190,7 @@ interface Window {
   mountChartsWidget: MountWidget;
   mountTotalsWidget: MountWidget;
   mountScatterWidget: MountWidget;
+  mountCompareWidget: MountWidget;
   mountDailyRangeWidget: MountWidget;
   mountTypicalDayWidget: MountWidget;
   mountThermostatWidget: MountWidget;

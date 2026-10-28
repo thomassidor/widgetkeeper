@@ -1497,6 +1497,136 @@
         "ko": "각 막대의 평균 위치에 가로선을 그립니다.",
         "ar": "خط عبر كل عمود عند متوسطه."
       }
+    },
+    "compare.slot": {
+      "id": "slot{n}",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value {n}",
+        "nl": "Waarde {n}",
+        "de": "Wert {n}",
+        "fr": "Valeur {n}",
+        "it": "Valore {n}",
+        "sv": "Värde {n}",
+        "no": "Verdi {n}",
+        "es": "Valor {n}",
+        "da": "Værdi {n}",
+        "ru": "Значение {n}",
+        "pl": "Wartość {n}",
+        "ko": "값 {n}",
+        "ar": "القيمة {n}"
+      }
+    },
+    "compare.sort": {
+      "id": "sort",
+      "type": "dropdown",
+      "value": "high",
+      "title": {
+        "en": "Order",
+        "nl": "Volgorde",
+        "de": "Reihenfolge",
+        "fr": "Ordre",
+        "it": "Ordine",
+        "sv": "Ordning",
+        "no": "Rekkefølge",
+        "es": "Orden",
+        "da": "Rækkefølge",
+        "ru": "Порядок",
+        "pl": "Kolejność",
+        "ko": "순서",
+        "ar": "الترتيب"
+      },
+      "values": [
+        {
+          "id": "high",
+          "title": {
+            "en": "Highest first",
+            "nl": "Hoogste eerst",
+            "de": "Höchste zuerst",
+            "fr": "Le plus haut d'abord",
+            "it": "Prima il più alto",
+            "sv": "Högst först",
+            "no": "Høyest først",
+            "es": "Primero el más alto",
+            "da": "Højest først",
+            "ru": "Сначала наибольшее",
+            "pl": "Najwyższa najpierw",
+            "ko": "높은 값부터",
+            "ar": "الأعلى أولًا"
+          }
+        },
+        {
+          "id": "low",
+          "title": {
+            "en": "Lowest first",
+            "nl": "Laagste eerst",
+            "de": "Niedrigste zuerst",
+            "fr": "Le plus bas d'abord",
+            "it": "Prima il più basso",
+            "sv": "Lägst först",
+            "no": "Lavest først",
+            "es": "Primero el más bajo",
+            "da": "Lavest først",
+            "ru": "Сначала наименьшее",
+            "pl": "Najniższa najpierw",
+            "ko": "낮은 값부터",
+            "ar": "الأدنى أولًا"
+          }
+        },
+        {
+          "id": "listed",
+          "title": {
+            "en": "As listed",
+            "nl": "Zoals ingesteld",
+            "de": "Wie eingestellt",
+            "fr": "Dans l'ordre choisi",
+            "it": "Nell'ordine scelto",
+            "sv": "Som valt",
+            "no": "Som valgt",
+            "es": "Como se eligieron",
+            "da": "Som valgt",
+            "ru": "Как выбрано",
+            "pl": "Jak wybrano",
+            "ko": "선택한 순서대로",
+            "ar": "كما اخترتها"
+          }
+        }
+      ]
+    },
+    "compare.range": {
+      "id": "showRange",
+      "type": "checkbox",
+      "value": true,
+      "title": {
+        "en": "Show the range",
+        "nl": "Bereik tonen",
+        "de": "Spanne zeigen",
+        "fr": "Afficher l'écart",
+        "it": "Mostra l'intervallo",
+        "sv": "Visa spannet",
+        "no": "Vis spennet",
+        "es": "Mostrar el rango",
+        "da": "Vis spændet",
+        "ru": "Показывать диапазон",
+        "pl": "Pokaż zakres",
+        "ko": "범위 표시",
+        "ar": "إظهار المدى"
+      },
+      "hint": {
+        "en": "A bar from each value's lowest to its highest over the time span.",
+        "nl": "Een balk van het laagste tot het hoogste van elke waarde over de periode.",
+        "de": "Ein Balken vom Tiefst- bis zum Höchstwert jedes Werts im Zeitraum.",
+        "fr": "Une barre du minimum au maximum de chaque valeur sur la période.",
+        "it": "Una barra dal minimo al massimo di ogni valore nel periodo.",
+        "sv": "En stapel från varje värdes lägsta till högsta under tidsperioden.",
+        "no": "En søyle fra hver verdis laveste til høyeste i tidsrommet.",
+        "es": "Una barra del mínimo al máximo de cada valor en el periodo.",
+        "da": "En søjle fra hver værdis laveste til højeste i tidsrummet.",
+        "ru": "Полоса от минимума до максимума каждого значения за период.",
+        "pl": "Pasek od najniższej do najwyższej wartości każdego z nich w okresie.",
+        "ko": "기간 동안 각 값의 최저~최고를 막대로 보여줍니다.",
+        "ar": "شريط من أدنى كل قيمة إلى أعلاها خلال الفترة."
+      }
     }
   },
   "hints": {
@@ -1634,6 +1764,51 @@
       "pl": "Najwyższa i najniższa wartość ostatniego słupka. Dotknij słupka, by zobaczyć jego wartości.",
       "ko": "최근 막대의 최고값과 최저값입니다. 막대를 탭하면 그 막대의 값을 볼 수 있습니다.",
       "ar": "أعلى وأدنى قيمة لآخر عمود. المس عمودًا لترى قيمه."
+    },
+    "compare.slot1": {
+      "en": "A value from each device to compare, such as each room's temperature. Empty ones are left out. Only numbers with Insights history are listed.",
+      "nl": "Een waarde van elk apparaat om te vergelijken, zoals de temperatuur van elke kamer. Lege worden weggelaten. Alleen getallen met Insights-geschiedenis staan in de lijst.",
+      "de": "Ein Wert jedes Geräts zum Vergleich, etwa die Temperatur jedes Raums. Leere werden ausgelassen. Nur Zahlen mit Insights-Verlauf stehen zur Auswahl.",
+      "fr": "Une valeur de chaque appareil à comparer, comme la température de chaque pièce. Les vides sont ignorées. Seuls les nombres avec un historique Insights sont proposés.",
+      "it": "Un valore di ogni dispositivo da confrontare, come la temperatura di ogni stanza. Quelli vuoti sono esclusi. Sono elencati solo i numeri con cronologia Insights.",
+      "sv": "Ett värde från varje enhet att jämföra, som varje rums temperatur. Tomma utelämnas. Bara tal med Insights-historik visas.",
+      "no": "En verdi fra hver enhet å sammenligne, som temperaturen i hvert rom. Tomme utelates. Bare tall med Insights-historikk vises.",
+      "es": "Un valor de cada dispositivo para comparar, como la temperatura de cada habitación. Los vacíos se omiten. Solo aparecen números con historial de Insights.",
+      "da": "En værdi fra hver enhed at sammenligne, som temperaturen i hvert rum. Tomme udelades. Kun tal med Insights-historik vises.",
+      "ru": "Значение каждого устройства для сравнения, например температура в каждой комнате. Пустые пропускаются. В списке только числа с историей Insights.",
+      "pl": "Wartość z każdego urządzenia do porównania, np. temperatura w każdym pokoju. Puste są pomijane. Lista zawiera tylko liczby z historią Insights.",
+      "ko": "비교할 각 기기의 값입니다(예: 방마다의 온도). 빈 항목은 빠집니다. Insights 기록이 있는 숫자만 나열됩니다.",
+      "ar": "قيمة من كل جهاز للمقارنة، مثل درجة حرارة كل غرفة. تُستبعد الفارغة. تظهر فقط الأرقام التي لها سجل في Insights."
+    },
+    "showHeader.compare": {
+      "en": "The highest and the lowest now. Tap a row to see its own and its range.",
+      "nl": "Het hoogste en het laagste van nu. Tik op een rij voor die van die rij en het bereik.",
+      "de": "Der höchste und der niedrigste jetzt. Tippe auf eine Zeile für ihren und ihre Spanne.",
+      "fr": "Le plus haut et le plus bas actuels. Touchez une ligne pour voir sa valeur et son écart.",
+      "it": "Il più alto e il più basso ora. Tocca una riga per vedere il suo valore e l'intervallo.",
+      "sv": "Det högsta och det lägsta nu. Tryck på en rad för dess eget och spannet.",
+      "no": "Den høyeste og den laveste nå. Trykk på en rad for dens egen og spennet.",
+      "es": "El más alto y el más bajo ahora. Toca una fila para ver el suyo y su rango.",
+      "da": "Den højeste og den laveste nu. Tryk på en række for at se dens egen og spændet.",
+      "ru": "Наибольшее и наименьшее сейчас. Коснитесь строки, чтобы увидеть её значение и диапазон.",
+      "pl": "Najwyższa i najniższa teraz. Dotknij wiersza, by zobaczyć jego wartość i zakres.",
+      "ko": "지금 가장 높은 값과 낮은 값입니다. 행을 탭하면 그 값과 범위를 볼 수 있습니다.",
+      "ar": "الأعلى والأدنى الآن. المس صفًا لترى قيمته ومداه."
+    },
+    "colorStyle.compare": {
+      "en": "Vivid colours each value's range too.",
+      "nl": "Levendig kleurt ook het bereik van elke waarde.",
+      "de": "Kräftig färbt auch die Spanne jedes Werts.",
+      "fr": "Vives colore aussi l'écart de chaque valeur.",
+      "it": "Vivaci colora anche l'intervallo di ogni valore.",
+      "sv": "Livfulla färgar även varje värdes spann.",
+      "no": "Livlige farger også hver verdis spenn.",
+      "es": "Vivos colorea también el rango de cada valor.",
+      "da": "Livlige farver også hver værdis spænd.",
+      "ru": "«Яркие» окрашивают и диапазон каждого значения.",
+      "pl": "Żywe barwią też zakres każdej wartości.",
+      "ko": "선명하게는 각 값의 범위에도 색을 입힙니다.",
+      "ar": "«زاهية» تلوّن مدى كل قيمة أيضًا."
     }
   },
   "widgets": {
@@ -1809,6 +1984,51 @@
       {
         "use": "colorStyle",
         "hint": "colorStyle.totals"
+      }
+    ],
+    "compare": [
+      {
+        "use": "compare.slot:1",
+        "hint": "compare.slot1"
+      },
+      "compare.slot:2",
+      "compare.slot:3",
+      "compare.slot:4",
+      "compare.slot:5",
+      "compare.slot:6",
+      "compare.slot:7",
+      "compare.slot:8",
+      {
+        "use": "count",
+        "top": true,
+        "value": 1
+      },
+      {
+        "use": "span",
+        "top": true,
+        "value": "calDays"
+      },
+      {
+        "use": "leaveOut",
+        "top": true
+      },
+      "compare.sort",
+      "compare.range",
+      {
+        "use": "title",
+        "top": true
+      },
+      {
+        "use": "showHeader.values",
+        "hint": "showHeader.compare"
+      },
+      {
+        "use": "color",
+        "top": true
+      },
+      {
+        "use": "colorStyle",
+        "hint": "colorStyle.compare"
       }
     ]
   }

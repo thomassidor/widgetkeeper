@@ -18,10 +18,11 @@
     return (0.4 + 0.9 * Math.exp(-((h - 7.5) ** 2) / 2) + 1.8 * Math.exp(-((h - 18.5) ** 2) / 5)) * day + noise + boost;
   }
 
+  /** A point every 10 minutes (on the step's clock marks, and the value now the last point's, so the renders' ticking clock can't change them). */
   function series(from, to, now, boost) {
     const points = [];
-    for (let t = from; t < Math.min(to, now); t += 10 * MIN) points.push([t, round(use(t, boost))]);
-    return { deviceId: 'house', capabilityId: 'measure_power', name: 'House', capability: power, value: round(use(now, boost)), points };
+    for (let t = Math.ceil(from / (10 * MIN)) * 10 * MIN; t < Math.min(to, now); t += 10 * MIN) points.push([t, round(use(t, boost))]);
+    return { deviceId: 'house', capabilityId: 'measure_power', name: 'House', capability: power, value: points.length ? points[points.length - 1][1] : null, points };
   }
 
   /** Chart · Typical Day's `[today, past]` at `now`: today's line runs a little high. */
