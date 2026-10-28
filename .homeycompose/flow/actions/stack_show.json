@@ -372,6 +372,24 @@
           }
         },
         {
+          "id": "typicalday",
+          "title": {
+            "en": "Chart · Typical Day",
+            "nl": "Grafiek · Normale dag",
+            "de": "Diagramm · Typischer Tag",
+            "fr": "Graphique · Journée type",
+            "it": "Grafico · Giornata tipo",
+            "sv": "Diagram · Typisk dag",
+            "no": "Diagram · Typisk dag",
+            "es": "Gráfico · Día típico",
+            "da": "Graf · Typisk dag",
+            "ru": "График · Типичный день",
+            "pl": "Wykres · Typowy dzień",
+            "ko": "차트 · 평소 하루",
+            "ar": "مخطط · اليوم المعتاد"
+          }
+        },
+        {
           "id": "variables",
           "title": {
             "en": "Variables",

@@ -1301,6 +1301,133 @@
         "ko": "최근 점일수록 진하게 보여 흐름을 알 수 있습니다.",
         "ar": "النقاط الأحدث أوضح، لترى إلى أين يتجه."
       }
+    },
+    "typicalday.slot": {
+      "id": "slot",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value",
+        "nl": "Waarde",
+        "de": "Wert",
+        "fr": "Valeur",
+        "it": "Valore",
+        "sv": "Värde",
+        "no": "Verdi",
+        "es": "Valor",
+        "da": "Værdi",
+        "ru": "Значение",
+        "pl": "Wartość",
+        "ko": "값",
+        "ar": "القيمة"
+      },
+      "hint": {
+        "en": "Its line today over its usual day, such as the house's power or a room's temperature. Only numbers with Insights history are listed.",
+        "nl": "De lijn van vandaag over de normale dag, zoals het vermogen van het huis of de temperatuur van een kamer. Alleen getallen met Insights-geschiedenis staan in de lijst.",
+        "de": "Die Linie von heute über dem typischen Tag, etwa die Leistung des Hauses oder die Temperatur eines Raums. Nur Zahlen mit Insights-Verlauf stehen zur Auswahl.",
+        "fr": "La courbe d'aujourd'hui sur la journée type, comme la puissance de la maison ou la température d'une pièce. Seuls les nombres avec un historique Insights sont proposés.",
+        "it": "La linea di oggi sulla giornata tipo, come la potenza della casa o la temperatura di una stanza. Sono elencati solo i numeri con cronologia Insights.",
+        "sv": "Dagens linje över den typiska dagen, som husets effekt eller ett rums temperatur. Bara tal med Insights-historik visas.",
+        "no": "Dagens linje over den typiske dagen, som husets effekt eller temperaturen i et rom. Bare tall med Insights-historikk vises.",
+        "es": "La línea de hoy sobre el día típico, como la potencia de la casa o la temperatura de una habitación. Solo aparecen números con historial de Insights.",
+        "da": "Dagens linje over den typiske dag, som husets effekt eller temperaturen i et rum. Kun tal med Insights-historik vises.",
+        "ru": "Линия сегодняшнего дня поверх типичного, например мощность дома или температура в комнате. В списке только числа с историей Insights.",
+        "pl": "Linia z dzisiaj na tle typowego dnia, np. moc domu lub temperatura w pokoju. Lista zawiera tylko liczby z historią Insights.",
+        "ko": "평소 하루 위에 오늘의 선을 그립니다(예: 집의 전력이나 방의 온도). Insights 기록이 있는 숫자만 나열됩니다.",
+        "ar": "خط اليوم فوق اليوم المعتاد، مثل قدرة المنزل أو درجة حرارة غرفة. تظهر فقط الأرقام التي لها سجل في Insights."
+      }
+    },
+    "typicalday.usual": {
+      "id": "usual",
+      "type": "dropdown",
+      "value": "7",
+      "title": {
+        "en": "Usual day from",
+        "nl": "Normale dag uit",
+        "de": "Typischer Tag aus",
+        "fr": "Journée type sur",
+        "it": "Giornata tipo da",
+        "sv": "Typisk dag från",
+        "no": "Typisk dag fra",
+        "es": "Día típico de",
+        "da": "Typisk dag fra",
+        "ru": "Типичный день за",
+        "pl": "Typowy dzień z",
+        "ko": "평소 하루 기준",
+        "ar": "اليوم المعتاد من"
+      },
+      "hint": {
+        "en": "Each hour's average over these days, today left out, dashed; their lowest to highest as a band.",
+        "nl": "Het gemiddelde van elk uur over deze dagen, zonder vandaag, gestippeld; hun laagste tot hoogste als band.",
+        "de": "Der Mittelwert jeder Stunde über diese Tage, ohne heute, gestrichelt; ihr Tiefst- bis Höchstwert als Band.",
+        "fr": "La moyenne de chaque heure sur ces jours, sans aujourd'hui, en pointillé ; leur minimum au maximum en bande.",
+        "it": "La media di ogni ora su questi giorni, oggi escluso, tratteggiata; dal loro minimo al massimo come fascia.",
+        "sv": "Varje timmes medelvärde under de här dagarna, utan i dag, streckat; deras lägsta till högsta som ett band.",
+        "no": "Hver times snitt over disse dagene, uten i dag, stiplet; deres laveste til høyeste som et bånd.",
+        "es": "La media de cada hora en estos días, sin hoy, discontinua; su mínimo a máximo como banda.",
+        "da": "Hver times gennemsnit over disse dage, uden i dag, stiplet; deres laveste til højeste som et bånd.",
+        "ru": "Среднее за каждый час этих дней, без сегодняшнего, пунктиром; от минимума до максимума — полосой.",
+        "pl": "Średnia każdej godziny z tych dni, bez dzisiaj, przerywaną linią; od najniższej do najwyższej jako pas.",
+        "ko": "이 기간 동안 시간대별 평균(오늘 제외)을 점선으로, 최저~최고를 띠로 보여줍니다.",
+        "ar": "متوسط كل ساعة خلال هذه الأيام، دون اليوم، بخط متقطع؛ ومن أدناها إلى أعلاها كشريط."
+      },
+      "values": [
+        {
+          "id": "7",
+          "title": {
+            "en": "The last 7 days",
+            "nl": "De laatste 7 dagen",
+            "de": "Den letzten 7 Tagen",
+            "fr": "Les 7 derniers jours",
+            "it": "Gli ultimi 7 giorni",
+            "sv": "De senaste 7 dagarna",
+            "no": "De siste 7 dagene",
+            "es": "Los últimos 7 días",
+            "da": "De seneste 7 dage",
+            "ru": "Последние 7 дней",
+            "pl": "Ostatnich 7 dni",
+            "ko": "최근 7일",
+            "ar": "آخر 7 أيام"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "The last 3 days",
+            "nl": "De laatste 3 dagen",
+            "de": "Den letzten 3 Tagen",
+            "fr": "Les 3 derniers jours",
+            "it": "Gli ultimi 3 giorni",
+            "sv": "De senaste 3 dagarna",
+            "no": "De siste 3 dagene",
+            "es": "Los últimos 3 días",
+            "da": "De seneste 3 dage",
+            "ru": "Последние 3 дня",
+            "pl": "Ostatnich 3 dni",
+            "ko": "최근 3일",
+            "ar": "آخر 3 أيام"
+          }
+        }
+      ]
+    },
+    "typicalday.band": {
+      "id": "band",
+      "type": "checkbox",
+      "value": true,
+      "title": {
+        "en": "Show the spread",
+        "nl": "Spreiding tonen",
+        "de": "Streuung zeigen",
+        "fr": "Afficher l'écart",
+        "it": "Mostra la variazione",
+        "sv": "Visa spridningen",
+        "no": "Vis spredningen",
+        "es": "Mostrar la dispersión",
+        "da": "Vis spredningen",
+        "ru": "Показывать разброс",
+        "pl": "Pokaż rozrzut",
+        "ko": "범위 표시",
+        "ar": "إظهار المدى"
+      }
     }
   },
   "hints": {
@@ -1393,6 +1520,36 @@
       "pl": "Żywe wzmacniają punkty.",
       "ko": "선명하게는 점을 더 진하게 표시합니다.",
       "ar": "«زاهية» تجعل النقاط أقوى."
+    },
+    "showHeader.typicalday": {
+      "en": "Today's value now and the usual one at this hour. Tap the chart for another hour.",
+      "nl": "De waarde van nu en de normale op dit uur. Tik op de grafiek voor een ander uur.",
+      "de": "Der Wert von jetzt und der übliche zu dieser Stunde. Tippe auf das Diagramm für eine andere Stunde.",
+      "fr": "La valeur actuelle et l'habituelle à cette heure. Touchez le graphique pour une autre heure.",
+      "it": "Il valore di adesso e quello abituale a quest'ora. Tocca il grafico per un'altra ora.",
+      "sv": "Värdet nu och det vanliga den här timmen. Tryck på diagrammet för en annan timme.",
+      "no": "Verdien nå og den vanlige denne timen. Trykk på diagrammet for en annen time.",
+      "es": "El valor actual y el habitual a esta hora. Toca el gráfico para otra hora.",
+      "da": "Værdien nu og den sædvanlige i denne time. Tryk på grafen for en anden time.",
+      "ru": "Значение сейчас и обычное в этот час. Коснитесь графика, чтобы выбрать другой час.",
+      "pl": "Wartość teraz i zwykła o tej godzinie. Dotknij wykresu, by wybrać inną godzinę.",
+      "ko": "지금 값과 이 시간대의 평소 값입니다. 차트를 탭하면 다른 시간을 볼 수 있습니다.",
+      "ar": "القيمة الآن والمعتادة في هذه الساعة. المس المخطط لساعة أخرى."
+    },
+    "colorStyle.typicalday": {
+      "en": "Vivid fills the band with more colour.",
+      "nl": "Levendig vult de band met meer kleur.",
+      "de": "Kräftig füllt das Band mit mehr Farbe.",
+      "fr": "Vives remplit la bande avec plus de couleur.",
+      "it": "Vivaci riempie la fascia con più colore.",
+      "sv": "Livfulla fyller bandet med mer färg.",
+      "no": "Livlige fyller båndet med mer farge.",
+      "es": "Vivos rellena la banda con más color.",
+      "da": "Livlige fylder båndet med mere farve.",
+      "ru": "«Яркие» заливают полосу ярче.",
+      "pl": "Żywe wypełniają pas mocniejszym kolorem.",
+      "ko": "선명하게는 띠를 더 진한 색으로 채웁니다.",
+      "ar": "«زاهية» تملأ الشريط بلون أكثر."
     }
   },
   "widgets": {
@@ -1501,6 +1658,35 @@
       {
         "use": "colorStyle",
         "hint": "colorStyle.scatter"
+      }
+    ],
+    "typicalday": [
+      "typicalday.slot",
+      "typicalday.usual",
+      "typicalday.band",
+      {
+        "use": "smooth",
+        "top": true
+      },
+      {
+        "use": "range",
+        "top": true
+      },
+      {
+        "use": "title",
+        "top": true
+      },
+      {
+        "use": "showHeader.values",
+        "hint": "showHeader.typicalday"
+      },
+      {
+        "use": "color",
+        "top": true
+      },
+      {
+        "use": "colorStyle",
+        "hint": "colorStyle.typicalday"
       }
     ]
   }

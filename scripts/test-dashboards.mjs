@@ -481,6 +481,24 @@ const BUILD = {
     ] };
   },
 
+  async typicalday() {
+    const items = await autocomplete('typicalday', 'slot');
+    // Power where there is (its day has a shape), then a temperature, then whatever else is logged.
+    const [power] = pick(items, i => /:measure_power/.test(i.id));
+    const [temp] = pick(items, i => /:measure_temperature/.test(i.id));
+    const [other] = pick(items, i => !/:measure_(power|temperature)/.test(i.id));
+    const value = power || temp || other;
+    const missing = { id: `${MISSING}:measure_power`, name: 'Deleted device · Power' };
+    return { cols: 3, widgets: [
+      wide(w('typicalday', 'The last 7 days (defaults)', { slot: value })),
+      w('typicalday', 'The last 3 days · green · smooth', { slot: value, usual: '3', color: 'green', smooth: true }),
+      w('typicalday', 'No spread · from zero · Vivid', { slot: value, band: false, range: 'zero', colorStyle: 'deep' }),
+      w('typicalday', 'Own title · no header · purple', { slot: value, title: 'Typed title', showHeader: false, color: 'purple' }),
+      temp && temp !== value && w('typicalday', 'A temperature', { slot: temp, color: 'orange' }),
+      w('typicalday', 'Deleted device', { slot: missing }),
+      w('typicalday', 'Nothing picked'),
+    ].filter(Boolean) };
+  },
   async scatter() {
     const items = await autocomplete('scatter', 'xValue');
     // A temperature across and a power up where there are, else whatever else is logged.

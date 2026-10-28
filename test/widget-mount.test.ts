@@ -39,7 +39,7 @@ describe('widget mount.js', () => {
   });
 
   // A Smart Stack keeps every page mounted: the ones that redraw or poll on a timer stop it while another page shows.
-  it.each(['cameras', 'charts', 'electricity', 'media', 'sparklines', 'timers', 'totals', 'scatter'] as WidgetName[])("%s: answers the Smart Stack's setVisible", async (id) => {
+  it.each(['cameras', 'charts', 'electricity', 'media', 'sparklines', 'timers', 'totals', 'scatter', 'typicalday'] as WidgetName[])("%s: answers the Smart Stack's setVisible", async (id) => {
     const win = loadWidget(id);
     loadMount(id);
     const root = document.createElement('div');
@@ -114,7 +114,7 @@ describe('widget mount.js: its requests reach its own routes', () => {
 /** The widgets that show device names. The names come with their reads, so these read again when the setting changes. */
 const DEVICE_NAMES: WidgetName[] = [
   'cameras', 'charts', 'curtains', 'heatmap', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions', 'roomhealth',
-  'sensoralarms', 'sensordots', 'sparklines', 'thermostat', 'totals', 'scatter', 'valuematrix', 'values',
+  'sensoralarms', 'sensordots', 'sparklines', 'thermostat', 'totals', 'scatter', 'typicalday', 'valuematrix', 'values',
 ];
 
 describe('widget mount.js: the device names setting', () => {

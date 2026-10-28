@@ -6,7 +6,7 @@
 <title>Widget Previews</title>
 <!--
   Source for the widget preview PNGs (from the "Widget Previews" Claude Design project).
-  Without a query it shows them all on a canvas; `?p=elec-dark|elec-light|thermo-dark|thermo-light|qa-dark|qa-light|sa-dark|sa-light|sd-dark|sd-light|rh-dark|rh-light|weather-dark|weather-light|hm-dark|hm-light|cam-dark|cam-light|val-dark|val-light|lc-dark|lc-light|lr-dark|lr-light|spark-dark|spark-light|chart-dark|chart-light|var-dark|var-light|vp-dark|vp-light|sd-dark|sd-light|fb-dark|fb-light|pb-dark|pb-light|tm-dark|tm-light|lk-dark|lk-light|ct-dark|ct-light|mw-dark|mw-light|sk-dark|sk-light|ck-dark|ck-light|sp-dark|sp-light|tl-dark|tl-light|ds-dark|ds-light|sc-dark|sc-light|wp-dark|wp-light|pw-dark|pw-light|pu-dark|pu-light|kp-dark|kp-light|tt-dark|tt-light|xy-dark|xy-light`
+  Without a query it shows them all on a canvas; `?p=elec-dark|elec-light|thermo-dark|thermo-light|qa-dark|qa-light|sa-dark|sa-light|sd-dark|sd-light|rh-dark|rh-light|weather-dark|weather-light|hm-dark|hm-light|cam-dark|cam-light|val-dark|val-light|lc-dark|lc-light|lr-dark|lr-light|spark-dark|spark-light|chart-dark|chart-light|var-dark|var-light|vp-dark|vp-light|sd-dark|sd-light|fb-dark|fb-light|pb-dark|pb-light|tm-dark|tm-light|lk-dark|lk-light|ct-dark|ct-light|mw-dark|mw-light|sk-dark|sk-light|ck-dark|ck-light|sp-dark|sp-light|tl-dark|tl-light|ds-dark|ds-light|sc-dark|sc-light|wp-dark|wp-light|pw-dark|pw-light|pu-dark|pu-light|kp-dark|kp-light|tt-dark|tt-light|xy-dark|xy-light|td-dark|td-light`
   renders that one 1024×1024 frame alone on a transparent page, for scripts/render-previews.mjs.
 -->
 <style>
@@ -612,6 +612,40 @@ function scatterChart(t, theme) {
   </div>`;
 }
 
+// Chart · Typical Day: the usual day as a soft band with its dashed average, today's line over it up to the afternoon
+// with the dot, under its title chip, in green: green as the Electricity Overview's usage, but a single soft line with a
+// band reads as its own.
+function typicalDayChart(t, theme) {
+  const GREEN = '#71D51B';
+  const card = theme === 'dark' ? '#1F2029' : '#FFFFFF';
+  const muted = theme === 'dark' ? 'rgba(237,238,240,.45)' : 'rgba(31,32,41,.4)';
+  const H = 384, PAD = 24;
+  const usual = h => 0.25 + 0.3 * Math.exp(-((h - 7.5) ** 2) / 2) + 0.45 * Math.exp(-((h - 18.5) ** 2) / 5);
+  const px = h => W * h / 24, py = v => PAD + (1 - v) * (H - 2 * PAD);
+  const hs = Array.from({ length: 25 }, (_, h) => h);
+  const top = hs.map(h => [px(h), py(Math.min(0.98, usual(h) * 1.35 + 0.06))]);
+  const bottom = hs.map(h => [px(h), py(usual(h) * 0.6)]).reverse();
+  const path = pts => pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join('');
+  const today = Array.from({ length: 31 }, (_, i) => i * 0.5).map(h => [px(h), py(usual(h) * 1.18 + 0.03 * Math.sin(h * 0.8))]);
+  const [lx, ly] = today[today.length - 1];
+  const grid = Array.from({ length: 3 }, (_, j) => `M0 ${(H * j / 3 + 2).toFixed(1)}H${W}`).join('');
+  return `<div class="card" style="gap:36px">
+    <div class="pill" style="align-self:flex-start;height:64px;padding:0 30px 0 24px;box-sizing:border-box;background:color-mix(in srgb, ${t.fg} 9%, ${card});display:flex;align-items:center;gap:18px">
+      <div style="width:24px;height:24px;border-radius:50%;background:${GREEN}"></div>
+      ${pill(240, 30, t.fg, 'opacity:.85')}${pill(56, 30, muted)}
+    </div>
+    <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+      <path d="${grid}" fill="none" stroke="${t.grid}" stroke-width="3"/>
+      <path d="M0 ${H - 2}H${W}" fill="none" stroke="${t.grid}" stroke-width="4"/>
+      <path d="${path([...top, ...bottom])}Z" fill="${GREEN}" fill-opacity=".16"/>
+      <path d="${path(hs.map(h => [px(h), py(usual(h))]))}" fill="none" stroke="${muted}" stroke-width="6" stroke-dasharray="18 14" stroke-linecap="round"/>
+      <path d="${path(today)}" fill="none" stroke="${GREEN}" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="20" fill="${card}" stroke="${GREEN}" stroke-width="7"/>
+      <circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="10" fill="${GREEN}"/>
+    </svg>
+  </div>`;
+}
+
 // Sparklines: Device Values' tiles, 2 per row, each with a small blue line chart (and a faint area) between the
 // icon/value row and the name, and the min/max as two small muted labels at the chart's right edge.
 function sparklines(t, theme) {
@@ -1042,6 +1076,8 @@ const PREVIEWS = [
   { id: 'tt-light',     label: '3r · Totals per Period — preview-light.png',           theme: 'light', render: totalsChart },
   { id: 'xy-dark',      label: '3s · X against Y — preview-dark.png',                  theme: 'dark',  render: scatterChart },
   { id: 'xy-light',     label: '3t · X against Y — preview-light.png',                 theme: 'light', render: scatterChart },
+  { id: 'td-dark',      label: '3u · Typical Day — preview-dark.png',                  theme: 'dark',  render: typicalDayChart },
+  { id: 'td-light',     label: '3v · Typical Day — preview-light.png',                 theme: 'light', render: typicalDayChart },
   { id: 'var-dark',     label: '1u · Variables — preview-dark.png',         theme: 'dark',  render: flowVariables },
   { id: 'var-light',    label: '1v · Variables — preview-light.png',        theme: 'light', render: flowVariables },
   { id: 'vp-dark',      label: '2y · Variable Presets — preview-dark.png',       theme: 'dark',  render: varPresets },

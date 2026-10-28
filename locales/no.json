@@ -336,6 +336,15 @@
     "now": "Nå",
     "trend": "Trend"
   },
+  "typicalday": {
+    "selectValue": "Velg en enhetsverdi i widgetinnstillingene.",
+    "error": "Kunne ikke laste diagrammet.",
+    "unavailable": "Utilgjengelig",
+    "noHistory": "Ingen historikk ennå.",
+    "now": "Nå",
+    "usual": "Vanlig",
+    "usualAt": "Vanlig kl. __time__"
+  },
   "lights": {
     "selectDevices": "Velg lys i widgetinnstillingene.",
     "error": "Kunne ikke laste inn lysene.",
@@ -869,6 +878,7 @@
       "charts": "Ett eller to diagrammer over en hvilken som helst verdi, som strømmens.",
       "totals": "Hvor mye en verdi har økt per time, dag eller måned: kWh, regn, timer TV.",
       "scatter": "Én verdi mot en annen, ett punkt per time: jobber varmepumpen hardere når det er kaldt?",
+      "typicalday": "Dagens linje over den typiske dagen og spredningen: er i dag uvanlig?",
       "variables": "Variabler som rader du kan slå av og på eller endre.",
       "varpresets": "Knapper som setter en variabel til forhåndsvalgte verdier.",
       "keypad": "Knapper bak en valgfri kode som starter flyter eller setter en tilstand.",

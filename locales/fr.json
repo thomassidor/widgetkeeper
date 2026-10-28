@@ -336,6 +336,15 @@
     "now": "Maint.",
     "trend": "Tendance"
   },
+  "typicalday": {
+    "selectValue": "Choisissez une valeur d'appareil dans les réglages du widget.",
+    "error": "Impossible de charger le graphique.",
+    "unavailable": "Indisponible",
+    "noHistory": "Pas encore d'historique.",
+    "now": "Maint.",
+    "usual": "Habituel",
+    "usualAt": "Habituel à __time__"
+  },
   "lights": {
     "selectDevices": "Choisissez des lampes dans les réglages du widget.",
     "error": "Impossible de charger les lampes.",
@@ -869,6 +878,7 @@
       "charts": "Un ou deux graphiques de n'importe quelle valeur, comme ceux de l'électricité.",
       "totals": "De combien une valeur a augmenté par heure, jour ou mois : kWh, pluie, heures de télé.",
       "scatter": "Une valeur face à une autre, un point par heure : la pompe à chaleur travaille-t-elle plus quand il fait froid ?",
+      "typicalday": "La courbe d'aujourd'hui sur la journée type et son écart : aujourd'hui sort-il de l'ordinaire ?",
       "variables": "Les variables en lignes à basculer ou modifier.",
       "varpresets": "Des boutons qui donnent des valeurs prédéfinies à une variable.",
       "keypad": "Des boutons derrière un code facultatif qui lancent des flows ou règlent un état.",

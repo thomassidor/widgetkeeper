@@ -19,6 +19,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 ### New: Chart · X against Y
 - One value against another, a dot per hour (or a minute to a week, by the time span): the heat pump's power against the outdoor temperature, the humidity against the temperature. The newest dots are strongest, and a trend line shows how the one moves with the other, its slope at the top. Tap a dot for its values and time.
 
+### New: Chart · Typical Day
+- Today's line over the usual day: each hour's average over the last 7 (or 3) days, dashed, with its spread as a band, so a day that runs high or low shows at once. The value now and the usual one for this hour sit at the top; tap for another hour.
+
 ### New: Chart · Totals per Period
 - How much a value went up in each hour, day or month, like the Homey app's Energy tab: a bar an hour for today or yesterday, a day for this or last week or month, a month for this or last year, or any other span (the last 30 days, the three months from the 1st). The period's total sits at the top; tap a bar for its own.
 - Its value list puts meters first.

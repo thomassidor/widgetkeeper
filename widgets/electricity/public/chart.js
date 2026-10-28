@@ -247,6 +247,25 @@
   }
 
   /**
+   * A value's usual day over `[from, to]`: for each local clock hour (0–23), the average, lowest and highest of its hourly
+   * averages there (`buckets()` by the hour, the last value carried over gaps): `{hour, avg, min, max, n}`, the values
+   * null where there were none. Chart · Typical Day's band and dashed line.
+   * @param {[number, number][]} points
+   */
+  function profile(points, from, to) {
+    const hours = Array.from({ length: 24 }, (_, hour) => ({ hour, sum: 0, n: 0, min: Infinity, max: -Infinity }));
+    for (const b of buckets(points, from, to, HOUR)) {
+      if (b.v == null) continue;
+      const h = hours[new Date(b.t).getHours()];
+      h.sum += b.v;
+      h.n++;
+      h.min = Math.min(h.min, b.v);
+      h.max = Math.max(h.max, b.v);
+    }
+    return hours.map(h => (h.n ? { hour: h.hour, avg: h.sum / h.n, min: h.min, max: h.max, n: h.n } : { hour: h.hour, avg: null, min: null, max: null, n: 0 }));
+  }
+
+  /**
    * The least-squares line through `[x, y]` pairs: `{slope, intercept, r}` (r the correlation, −1 … 1), or null for fewer
    * than three or no spread in x.
    * @param {[number, number][]} pairs
@@ -868,7 +887,7 @@
   window.WidgetkeeperChart = {
     MIN, HOUR, L, X_LABEL_GAP, X_LABEL_H, LABEL_PAD, LABEL_MIN_GAP,
     niceStep, ticks, el, clear, show, f1, smoothValues, linePath, stepPath, p985, p015,
-    compactNumber, ago, stepDecimals, axisLabel, buckets, alignSeries, trendLine, barUnit, useBuckets, meterTotal, calendarLabels, createKit, attachScrub, pointerX,
+    compactNumber, ago, stepDecimals, axisLabel, buckets, alignSeries, profile, trendLine, barUnit, useBuckets, meterTotal, calendarLabels, createKit, attachScrub, pointerX,
     createFrame, wireChart,
   };
 })();

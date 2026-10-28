@@ -7,7 +7,7 @@
   <!--
     The README screenshots: the real widget code with mock data, at the width of a widget on Homey's dark dashboard
     on a phone (358 px: a 390 px screen less the dashboard's 16 px margins; colours sampled from an iPhone screenshot).
-    No widget title and a transparent page, so the shots sit flush with the README text in either GitHub theme. `?s=electricity|thermostat|quickactions|sensoralarms|sensordots|roomhealth|valuematrix|weather|heatmap|cameras|values|sparklines|charts|totals|scatter|variables|varpresets|keypad|flows|price|timers|locks|curtains|clock|textline|dayssince|shortcuts|lightrooms|pollen|webpage|popups`
+    No widget title and a transparent page, so the shots sit flush with the README text in either GitHub theme. `?s=electricity|thermostat|quickactions|sensoralarms|sensordots|roomhealth|valuematrix|weather|heatmap|cameras|values|sparklines|charts|totals|scatter|typicalday|variables|varpresets|keypad|flows|price|timers|locks|curtains|clock|textline|dayssince|shortcuts|lightrooms|pollen|webpage|popups`
     shows one, for scripts/render-screenshots.mjs; without it, all of them. The widgets are mounted by mock-dashboard.js with the made-up home of showcase-data.js.
     `popups` is the prompt page a Popups widget opens, in the Homey app's browser on a drawn phone; it fetches the hallway
     camera's made-up picture, so serve the repo root (the render script does).
@@ -42,6 +42,7 @@
   <link rel="stylesheet" href="../widgets/charts/public/widget.css">
   <link rel="stylesheet" href="../widgets/totals/public/widget.css">
   <link rel="stylesheet" href="../widgets/scatter/public/widget.css">
+  <link rel="stylesheet" href="../widgets/typicalday/public/widget.css">
   <link rel="stylesheet" href="../widgets/clock/public/widget.css">
   <link rel="stylesheet" href="../widgets/textline/public/widget.css">
   <link rel="stylesheet" href="../widgets/dayssince/public/widget.css">
@@ -75,6 +76,7 @@
   <script src="../widgets/charts/public/widget.js"></script>
   <script src="../widgets/totals/public/widget.js"></script>
   <script src="../widgets/scatter/public/widget.js"></script>
+  <script src="../widgets/typicalday/public/widget.js"></script>
   <script src="../widgets/clock/public/widget.js"></script>
   <script src="../widgets/textline/public/widget.js"></script>
   <script src="../widgets/dayssince/public/widget.js"></script>
@@ -86,6 +88,7 @@
   <script src="mock-util.js"></script>
   <script src="mock-totals.js"></script>
   <script src="mock-scatter.js"></script>
+  <script src="mock-typicalday.js"></script>
   <script src="showcase-data.js"></script>
   <script src="showcase-mount.js"></script>
   <style>
@@ -130,6 +133,7 @@
   <section class="shot" id="charts"><div class="card"><div id="w-charts"></div></div></section>
   <section class="shot" id="totals"><div class="card"><div id="w-totals"></div></div></section>
   <section class="shot" id="scatter"><div class="card"><div id="w-scatter"></div></div></section>
+  <section class="shot" id="typicalday"><div class="card"><div id="w-typicalday"></div></div></section>
   <section class="shot" id="clock"><div id="w-clock"></div></section>
   <section class="shot" id="textline"><div id="w-textline"></div><div id="w-textline-note" style="margin-top:8px"></div></section>
   <section class="shot" id="dayssince"><div class="card"><div id="w-dayssince"></div></div></section>

@@ -336,6 +336,15 @@
     "now": "Ahora",
     "trend": "Tendencia"
   },
+  "typicalday": {
+    "selectValue": "Elige un valor de dispositivo en los ajustes del widget.",
+    "error": "No se pudo cargar el gráfico.",
+    "unavailable": "No disponible",
+    "noHistory": "Aún no hay historial.",
+    "now": "Ahora",
+    "usual": "Habitual",
+    "usualAt": "Habitual a las __time__"
+  },
   "lights": {
     "selectDevices": "Elige luces en los ajustes del widget.",
     "error": "No se pudieron cargar las luces.",
@@ -869,6 +878,7 @@
       "charts": "Uno o dos gráficos de cualquier valor, como los de electricidad.",
       "totals": "Cuánto subió un valor por hora, día o mes: kWh, lluvia, horas de tele.",
       "scatter": "Un valor frente a otro, un punto por hora: ¿trabaja más la bomba de calor cuando hace frío?",
+      "typicalday": "La línea de hoy sobre el día típico y su dispersión: ¿es hoy distinto?",
       "variables": "Variables como filas para cambiar o activar.",
       "varpresets": "Botones que ponen una variable en valores predefinidos.",
       "keypad": "Botones tras un código opcional que inician flujos o ponen un estado.",

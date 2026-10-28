@@ -36,6 +36,8 @@ const MOUNT = {
   // Totals per Period: `w.state` its `/state` (`[current, previous]`, mock-totals.js's `totalsState()`).
   totals: (el, w) => createTotalsWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
   // Chart · X against Y: `w.state` its `/state` (`[x, y]`, mock-scatter.js's `scatterState()`).
+  // Chart · TypicalDay: `w.state` its `/state` (mock-typicalday.js).
+  typicalday: (el, w) => createTypicalDayWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
   scatter: (el, w) => createScatterWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
   lights: (el, w) => createLightsWidget(el, w.opts || {}).setState(w.devices),
   curtains: (el, w) => createCurtainsWidget(el, w.opts || {}).setState(w.devices),

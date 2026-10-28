@@ -26,6 +26,7 @@ This file holds what applies across the app. Each widget's notes, and those of t
 | Chart · Over Time, called Charts until 1.2.0 (and the shared chart module, frame and settings catalog) | `charts` | `widgets/charts.md` |
 | Chart · Totals per Period | `totals` | `widgets/totals.md` |
 | Chart · X against Y | `scatter` | `widgets/scatter.md` |
+| Chart · Typical Day | `typicalday` | `widgets/typicalday.md` |
 | Sparklines | `sparklines` | `widgets/sparklines.md` |
 | Variables | `variables` | `widgets/variables.md` |
 | Variable Presets | `varpresets` | `widgets/varpresets.md` |

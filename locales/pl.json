@@ -336,6 +336,15 @@
     "now": "Teraz",
     "trend": "Trend"
   },
+  "typicalday": {
+    "selectValue": "Wybierz wartość urządzenia w ustawieniach widżetu.",
+    "error": "Nie udało się wczytać wykresu.",
+    "unavailable": "Niedostępne",
+    "noHistory": "Brak historii.",
+    "now": "Teraz",
+    "usual": "Zwykle",
+    "usualAt": "Zwykle o __time__"
+  },
   "lights": {
     "selectDevices": "Wybierz światła w ustawieniach widżetu.",
     "error": "Nie udało się wczytać świateł.",
@@ -869,6 +878,7 @@
       "charts": "Jeden lub dwa wykresy dowolnej wartości, jak te dla prądu.",
       "totals": "O ile wzrosła wartość w ciągu godziny, dnia lub miesiąca: kWh, deszcz, godziny TV.",
       "scatter": "Jedna wartość względem drugiej, punkt na godzinę: czy pompa ciepła pracuje więcej, gdy jest zimno?",
+      "typicalday": "Linia z dzisiaj na tle typowego dnia i jego rozrzutu: czy dziś jest nietypowo?",
       "variables": "Zmienne jako wiersze do przełączania lub zmiany.",
       "varpresets": "Przyciski ustawiające zmienną na wybrane wartości.",
       "keypad": "Przyciski za opcjonalnym kodem, które uruchamiają Flow lub ustawiają stan.",

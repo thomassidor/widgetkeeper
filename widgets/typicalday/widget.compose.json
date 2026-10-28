@@ -1,0 +1,504 @@
+{
+  "name": {
+    "en": "Chart · Typical Day",
+    "nl": "Grafiek · Normale dag",
+    "de": "Diagramm · Typischer Tag",
+    "fr": "Graphique · Journée type",
+    "it": "Grafico · Giornata tipo",
+    "sv": "Diagram · Typisk dag",
+    "no": "Diagram · Typisk dag",
+    "es": "Gráfico · Día típico",
+    "da": "Graf · Typisk dag",
+    "ru": "График · Типичный день",
+    "pl": "Wykres · Typowy dzień",
+    "ko": "차트 · 평소 하루",
+    "ar": "مخطط · اليوم المعتاد"
+  },
+  "height": 290,
+  "settings": [
+    {
+      "id": "slot",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value",
+        "nl": "Waarde",
+        "de": "Wert",
+        "fr": "Valeur",
+        "it": "Valore",
+        "sv": "Värde",
+        "no": "Verdi",
+        "es": "Valor",
+        "da": "Værdi",
+        "ru": "Значение",
+        "pl": "Wartość",
+        "ko": "값",
+        "ar": "القيمة"
+      },
+      "hint": {
+        "en": "Its line today over its usual day, such as the house's power or a room's temperature. Only numbers with Insights history are listed.",
+        "nl": "De lijn van vandaag over de normale dag, zoals het vermogen van het huis of de temperatuur van een kamer. Alleen getallen met Insights-geschiedenis staan in de lijst.",
+        "de": "Die Linie von heute über dem typischen Tag, etwa die Leistung des Hauses oder die Temperatur eines Raums. Nur Zahlen mit Insights-Verlauf stehen zur Auswahl.",
+        "fr": "La courbe d'aujourd'hui sur la journée type, comme la puissance de la maison ou la température d'une pièce. Seuls les nombres avec un historique Insights sont proposés.",
+        "it": "La linea di oggi sulla giornata tipo, come la potenza della casa o la temperatura di una stanza. Sono elencati solo i numeri con cronologia Insights.",
+        "sv": "Dagens linje över den typiska dagen, som husets effekt eller ett rums temperatur. Bara tal med Insights-historik visas.",
+        "no": "Dagens linje over den typiske dagen, som husets effekt eller temperaturen i et rom. Bare tall med Insights-historikk vises.",
+        "es": "La línea de hoy sobre el día típico, como la potencia de la casa o la temperatura de una habitación. Solo aparecen números con historial de Insights.",
+        "da": "Dagens linje over den typiske dag, som husets effekt eller temperaturen i et rum. Kun tal med Insights-historik vises.",
+        "ru": "Линия сегодняшнего дня поверх типичного, например мощность дома или температура в комнате. В списке только числа с историей Insights.",
+        "pl": "Linia z dzisiaj na tle typowego dnia, np. moc domu lub temperatura w pokoju. Lista zawiera tylko liczby z historią Insights.",
+        "ko": "평소 하루 위에 오늘의 선을 그립니다(예: 집의 전력이나 방의 온도). Insights 기록이 있는 숫자만 나열됩니다.",
+        "ar": "خط اليوم فوق اليوم المعتاد، مثل قدرة المنزل أو درجة حرارة غرفة. تظهر فقط الأرقام التي لها سجل في Insights."
+      }
+    },
+    {
+      "id": "usual",
+      "type": "dropdown",
+      "value": "7",
+      "title": {
+        "en": "Usual day from",
+        "nl": "Normale dag uit",
+        "de": "Typischer Tag aus",
+        "fr": "Journée type sur",
+        "it": "Giornata tipo da",
+        "sv": "Typisk dag från",
+        "no": "Typisk dag fra",
+        "es": "Día típico de",
+        "da": "Typisk dag fra",
+        "ru": "Типичный день за",
+        "pl": "Typowy dzień z",
+        "ko": "평소 하루 기준",
+        "ar": "اليوم المعتاد من"
+      },
+      "hint": {
+        "en": "Each hour's average over these days, today left out, dashed; their lowest to highest as a band.",
+        "nl": "Het gemiddelde van elk uur over deze dagen, zonder vandaag, gestippeld; hun laagste tot hoogste als band.",
+        "de": "Der Mittelwert jeder Stunde über diese Tage, ohne heute, gestrichelt; ihr Tiefst- bis Höchstwert als Band.",
+        "fr": "La moyenne de chaque heure sur ces jours, sans aujourd'hui, en pointillé ; leur minimum au maximum en bande.",
+        "it": "La media di ogni ora su questi giorni, oggi escluso, tratteggiata; dal loro minimo al massimo come fascia.",
+        "sv": "Varje timmes medelvärde under de här dagarna, utan i dag, streckat; deras lägsta till högsta som ett band.",
+        "no": "Hver times snitt over disse dagene, uten i dag, stiplet; deres laveste til høyeste som et bånd.",
+        "es": "La media de cada hora en estos días, sin hoy, discontinua; su mínimo a máximo como banda.",
+        "da": "Hver times gennemsnit over disse dage, uden i dag, stiplet; deres laveste til højeste som et bånd.",
+        "ru": "Среднее за каждый час этих дней, без сегодняшнего, пунктиром; от минимума до максимума — полосой.",
+        "pl": "Średnia każdej godziny z tych dni, bez dzisiaj, przerywaną linią; od najniższej do najwyższej jako pas.",
+        "ko": "이 기간 동안 시간대별 평균(오늘 제외)을 점선으로, 최저~최고를 띠로 보여줍니다.",
+        "ar": "متوسط كل ساعة خلال هذه الأيام، دون اليوم، بخط متقطع؛ ومن أدناها إلى أعلاها كشريط."
+      },
+      "values": [
+        {
+          "id": "7",
+          "title": {
+            "en": "The last 7 days",
+            "nl": "De laatste 7 dagen",
+            "de": "Den letzten 7 Tagen",
+            "fr": "Les 7 derniers jours",
+            "it": "Gli ultimi 7 giorni",
+            "sv": "De senaste 7 dagarna",
+            "no": "De siste 7 dagene",
+            "es": "Los últimos 7 días",
+            "da": "De seneste 7 dage",
+            "ru": "Последние 7 дней",
+            "pl": "Ostatnich 7 dni",
+            "ko": "최근 7일",
+            "ar": "آخر 7 أيام"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "The last 3 days",
+            "nl": "De laatste 3 dagen",
+            "de": "Den letzten 3 Tagen",
+            "fr": "Les 3 derniers jours",
+            "it": "Gli ultimi 3 giorni",
+            "sv": "De senaste 3 dagarna",
+            "no": "De siste 3 dagene",
+            "es": "Los últimos 3 días",
+            "da": "De seneste 3 dage",
+            "ru": "Последние 3 дня",
+            "pl": "Ostatnich 3 dni",
+            "ko": "최근 3일",
+            "ar": "آخر 3 أيام"
+          }
+        }
+      ]
+    },
+    {
+      "id": "band",
+      "type": "checkbox",
+      "value": true,
+      "title": {
+        "en": "Show the spread",
+        "nl": "Spreiding tonen",
+        "de": "Streuung zeigen",
+        "fr": "Afficher l'écart",
+        "it": "Mostra la variazione",
+        "sv": "Visa spridningen",
+        "no": "Vis spredningen",
+        "es": "Mostrar la dispersión",
+        "da": "Vis spredningen",
+        "ru": "Показывать разброс",
+        "pl": "Pokaż rozrzut",
+        "ko": "범위 표시",
+        "ar": "إظهار المدى"
+      }
+    },
+    {
+      "id": "smooth",
+      "type": "checkbox",
+      "title": {
+        "en": "Smooth line",
+        "nl": "Vloeiende lijn",
+        "de": "Geglättete Linie",
+        "fr": "Ligne lissée",
+        "it": "Linea smussata",
+        "sv": "Utjämnad linje",
+        "no": "Glatt linje",
+        "es": "Línea suavizada",
+        "da": "Udglattet linje",
+        "ru": "Сглаженная линия",
+        "pl": "Wygładzona linia",
+        "ko": "부드러운 선",
+        "ar": "خط منعّم"
+      },
+      "value": false
+    },
+    {
+      "id": "range",
+      "type": "dropdown",
+      "title": {
+        "en": "Scale",
+        "nl": "Schaal",
+        "de": "Skala",
+        "fr": "Échelle",
+        "it": "Scala",
+        "sv": "Skala",
+        "no": "Skala",
+        "es": "Escala",
+        "da": "Skala",
+        "ru": "Шкала",
+        "pl": "Skala",
+        "ko": "눈금",
+        "ar": "المقياس"
+      },
+      "value": "fit",
+      "values": [
+        {
+          "id": "fit",
+          "title": {
+            "en": "Fit to the values",
+            "nl": "Passend bij de waarden",
+            "de": "An die Werte angepasst",
+            "fr": "Ajustée aux valeurs",
+            "it": "Adattata ai valori",
+            "sv": "Anpassad till värdena",
+            "no": "Tilpasset verdiene",
+            "es": "Ajustada a los valores",
+            "da": "Tilpasset værdierne",
+            "ru": "По значениям",
+            "pl": "Dopasowana do wartości",
+            "ko": "값에 맞춤",
+            "ar": "ملائم للقيم"
+          }
+        },
+        {
+          "id": "zero",
+          "title": {
+            "en": "Start at zero",
+            "nl": "Begin bij nul",
+            "de": "Bei null beginnen",
+            "fr": "Commencer à zéro",
+            "it": "Parti da zero",
+            "sv": "Börja på noll",
+            "no": "Start på null",
+            "es": "Empezar en cero",
+            "da": "Start ved nul",
+            "ru": "Начинать с нуля",
+            "pl": "Zaczynaj od zera",
+            "ko": "0부터 시작",
+            "ar": "البدء من الصفر"
+          }
+        }
+      ]
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "title": {
+        "en": "Title",
+        "nl": "Titel",
+        "de": "Titel",
+        "fr": "Titre",
+        "it": "Titolo",
+        "sv": "Rubrik",
+        "no": "Tittel",
+        "es": "Título",
+        "da": "Titel",
+        "ru": "Заголовок",
+        "pl": "Tytuł",
+        "ko": "제목",
+        "ar": "العنوان"
+      },
+      "hint": {
+        "en": "Optional. Without one, the device and value name the chart.",
+        "nl": "Optioneel. Zonder titel heet de grafiek naar het apparaat en de waarde.",
+        "de": "Optional. Ohne Titel benennen Gerät und Wert das Diagramm.",
+        "fr": "Facultatif. Sans titre, le graphique porte le nom de l'appareil et de la valeur.",
+        "it": "Facoltativo. Senza titolo, il grafico prende il nome da dispositivo e valore.",
+        "sv": "Valfritt. Utan rubrik namnges diagrammet efter enheten och värdet.",
+        "no": "Valgfritt. Uten tittel får diagrammet navn etter enheten og verdien.",
+        "es": "Opcional. Sin título, el gráfico toma el nombre del dispositivo y el valor.",
+        "da": "Valgfri. Uden titel får grafen navn efter enheden og værdien.",
+        "ru": "Необязательно. Без него график называется по устройству и значению.",
+        "pl": "Opcjonalnie. Bez tytułu wykres nazywa się od urządzenia i wartości.",
+        "ko": "선택 사항입니다. 없으면 기기와 값 이름이 사용됩니다.",
+        "ar": "اختياري. بدونه يُسمّى المخطط باسم الجهاز والقيمة."
+      },
+      "value": ""
+    },
+    {
+      "id": "showHeader",
+      "type": "checkbox",
+      "title": {
+        "en": "Show the values at the top",
+        "nl": "Waarden bovenaan tonen",
+        "de": "Werte oben anzeigen",
+        "fr": "Afficher les valeurs en haut",
+        "it": "Mostra i valori in alto",
+        "sv": "Visa värdena överst",
+        "no": "Vis verdiene øverst",
+        "es": "Mostrar los valores arriba",
+        "da": "Vis værdierne øverst",
+        "ru": "Показывать значения вверху",
+        "pl": "Pokaż wartości u góry",
+        "ko": "맨 위에 값 표시",
+        "ar": "عرض القيم في الأعلى"
+      },
+      "hint": {
+        "en": "Today's value now and the usual one at this hour. Tap the chart for another hour.",
+        "nl": "De waarde van nu en de normale op dit uur. Tik op de grafiek voor een ander uur.",
+        "de": "Der Wert von jetzt und der übliche zu dieser Stunde. Tippe auf das Diagramm für eine andere Stunde.",
+        "fr": "La valeur actuelle et l'habituelle à cette heure. Touchez le graphique pour une autre heure.",
+        "it": "Il valore di adesso e quello abituale a quest'ora. Tocca il grafico per un'altra ora.",
+        "sv": "Värdet nu och det vanliga den här timmen. Tryck på diagrammet för en annan timme.",
+        "no": "Verdien nå og den vanlige denne timen. Trykk på diagrammet for en annen time.",
+        "es": "El valor actual y el habitual a esta hora. Toca el gráfico para otra hora.",
+        "da": "Værdien nu og den sædvanlige i denne time. Tryk på grafen for en anden time.",
+        "ru": "Значение сейчас и обычное в этот час. Коснитесь графика, чтобы выбрать другой час.",
+        "pl": "Wartość teraz i zwykła o tej godzinie. Dotknij wykresu, by wybrać inną godzinę.",
+        "ko": "지금 값과 이 시간대의 평소 값입니다. 차트를 탭하면 다른 시간을 볼 수 있습니다.",
+        "ar": "القيمة الآن والمعتادة في هذه الساعة. المس المخطط لساعة أخرى."
+      },
+      "value": true
+    },
+    {
+      "id": "color",
+      "type": "dropdown",
+      "title": {
+        "en": "Colour",
+        "nl": "Kleur",
+        "de": "Farbe",
+        "fr": "Couleur",
+        "it": "Colore",
+        "sv": "Färg",
+        "no": "Farge",
+        "es": "Color",
+        "da": "Farve",
+        "ru": "Цвет",
+        "pl": "Kolor",
+        "ko": "색상",
+        "ar": "اللون"
+      },
+      "value": "blue",
+      "values": [
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        }
+      ]
+    },
+    {
+      "id": "colorStyle",
+      "type": "dropdown",
+      "title": {
+        "en": "Colour style",
+        "nl": "Kleurstijl",
+        "de": "Farbstil",
+        "fr": "Style de couleur",
+        "it": "Stile colori",
+        "sv": "Färgstil",
+        "no": "Fargestil",
+        "es": "Estilo de color",
+        "da": "Farvestil",
+        "ru": "Цветовой стиль",
+        "pl": "Styl kolorów",
+        "ko": "색상 스타일",
+        "ar": "نمط الألوان"
+      },
+      "hint": {
+        "en": "Vivid fills the band with more colour.",
+        "nl": "Levendig vult de band met meer kleur.",
+        "de": "Kräftig füllt das Band mit mehr Farbe.",
+        "fr": "Vives remplit la bande avec plus de couleur.",
+        "it": "Vivaci riempie la fascia con più colore.",
+        "sv": "Livfulla fyller bandet med mer färg.",
+        "no": "Livlige fyller båndet med mer farge.",
+        "es": "Vivos rellena la banda con más color.",
+        "da": "Livlige fylder båndet med mere farve.",
+        "ru": "«Яркие» заливают полосу ярче.",
+        "pl": "Żywe wypełniają pas mocniejszym kolorem.",
+        "ko": "선명하게는 띠를 더 진한 색으로 채웁니다.",
+        "ar": "«زاهية» تملأ الشريط بلون أكثر."
+      },
+      "value": "soft",
+      "values": [
+        {
+          "id": "soft",
+          "title": {
+            "en": "Muted",
+            "nl": "Gedempt",
+            "de": "Gedämpft",
+            "fr": "Atténuées",
+            "it": "Smorzati",
+            "sv": "Dämpade",
+            "no": "Dempede",
+            "es": "Suaves",
+            "da": "Dæmpede",
+            "ru": "Приглушённые",
+            "pl": "Stonowane",
+            "ko": "차분하게",
+            "ar": "هادئة"
+          }
+        },
+        {
+          "id": "deep",
+          "title": {
+            "en": "Vivid",
+            "nl": "Levendig",
+            "de": "Kräftig",
+            "fr": "Vives",
+            "it": "Vivaci",
+            "sv": "Livfulla",
+            "no": "Livlige",
+            "es": "Vivos",
+            "da": "Livlige",
+            "ru": "Яркие",
+            "pl": "Żywe",
+            "ko": "선명하게",
+            "ar": "زاهية"
+          }
+        }
+      ]
+    }
+  ],
+  "api": {
+    "getState": {
+      "method": "GET",
+      "path": "/state"
+    }
+  }
+}
