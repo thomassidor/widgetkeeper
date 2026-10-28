@@ -293,6 +293,24 @@
     "lastMonthAvg": "Zeszły miesiąc · śr.",
     "lastYearAvg": "Zeszły rok · śr."
   },
+  "totals": {
+    "selectValue": "Wybierz rosnącą wartość w ustawieniach widżetu.",
+    "error": "Nie udało się wczytać wykresu.",
+    "unavailable": "Niedostępne",
+    "noHistory": "Brak historii.",
+    "today": "Dziś",
+    "yesterday": "Wczoraj",
+    "thisWeek": "Ten tydzień",
+    "lastWeek": "Zeszły tydzień",
+    "thisMonth": "Ten miesiąc",
+    "lastMonth": "Zeszły miesiąc",
+    "thisYear": "Ten rok",
+    "lastYear": "Zeszły rok",
+    "dayBefore": "Przedwczoraj",
+    "weekBefore": "Przedostatni tydzień",
+    "monthBefore": "Przedostatni miesiąc",
+    "yearBefore": "Przedostatni rok"
+  },
   "lights": {
     "selectDevices": "Wybierz światła w ustawieniach widżetu.",
     "error": "Nie udało się wczytać świateł.",
@@ -823,6 +841,7 @@
       "lightrooms": "Światła każdego pokoju na karcie: przełącz cały pokój albo otwórz go, by sterować lampami i Moods.",
       "sparklines": "Wartości z małym wykresem ich niedawnej historii.",
       "charts": "Jeden lub dwa wykresy dowolnej wartości, jak te dla prądu.",
+      "totals": "O ile wzrosła wartość w ciągu godziny, dnia lub miesiąca: kWh, deszcz, godziny TV.",
       "variables": "Zmienne jako wiersze do przełączania lub zmiany.",
       "varpresets": "Przyciski ustawiające zmienną na wybrane wartości.",
       "keypad": "Przyciski za opcjonalnym kodem, które uruchamiają Flow lub ustawiają stan.",

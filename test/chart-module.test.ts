@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-/* The chart module shared by the Electricity Overview and Charts (widgets/electricity/public/chart.js). */
+/* The chart module shared by the Electricity Overview, Charts and Totals per Period (widgets/electricity/public/chart.js). */
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { loadWidget } from './helpers/loadWidget.js';
 
@@ -146,5 +146,97 @@ describe('tap to inspect', () => {
     expect(reset).toHaveBeenCalledTimes(1);
     s.dispatchEvent(new PointerEvent('pointerleave', { pointerType: 'mouse' }));
     expect(reset).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('bars on the local clock', () => {
+  const at = (iso: string) => new Date(iso).getTime();
+  const local = (ms: number) => new Date(ms).toString().slice(4, 21);
+
+  it('steps by days and calendar months, across a DST change and month lengths', () => {
+    const days = C.buckets([], at('2026-10-24T00:00'), at('2026-10-27T00:00'), 24 * 36e5);
+    expect(days.map((b: any) => [local(b.t), (b.end - b.t) / 36e5])).toEqual([['Oct 24 2026 00:00', 24], ['Oct 25 2026 00:00', 25], ['Oct 26 2026 00:00', 24]]);
+    const months = C.buckets([], at('2026-01-01T00:00'), at('2026-04-01T00:00'), 'month');
+    expect(months.map((b: any) => local(b.t))).toEqual(['Jan 01 2026 00:00', 'Feb 01 2026 00:00', 'Mar 01 2026 00:00']);
+    expect(months.map((b: any) => Math.round((b.end - b.t) / 864e5))).toEqual([31, 28, 31]);
+    // The average of each day's points, as with lengths.
+    expect(C.buckets([[at('2026-10-24T06:00'), 1], [at('2026-10-24T18:00'), 3], [at('2026-10-26T12:00'), 7]], at('2026-10-24T00:00'), at('2026-10-27T00:00'), 24 * 36e5)
+      .map((b: any) => b.v)).toEqual([2, 3, 7]);
+  });
+});
+
+describe('useBuckets', () => {
+  const H = 36e5;
+  const t0 = new Date('2026-10-28T00:00').getTime();
+  /** A running total rising 1 an hour, a point at each hour's middle from `from` to `to` (hours after t0). */
+  const total = (from: number, to: number) => Array.from({ length: to - from }, (_, i) => [t0 + (from + i + 0.5) * H, from + i + 0.5]);
+
+  it("is each bar's rise, read off the line through the points", () => {
+    expect(C.useBuckets(total(-1, 6), t0, t0 + 6 * H, 2 * H).map((b: any) => b.v)).toEqual([2, 2, 2]);
+  });
+
+  it('ends at the total now, for the bar under way', () => {
+    // The last point is 2.5 at 02:30; 10 at 05:00 makes the line rise 3 an hour from there.
+    expect(C.useBuckets(total(-1, 3), t0, t0 + 5 * H, 2 * H, 10).map((x: any) => x.v)).toEqual([2, 5, 3]);
+  });
+
+  it('goes on at the last rate for a step and a half past the last point, then holds', () => {
+    // Points 6 h apart, the last at 03:00 of a day that ends at 24:00, as a closed month's 6-hour log.
+    const six = [[t0 - 3 * H, 0], [t0 + 3 * H, 6], [t0 + 9 * H, 12], [t0 + 15 * H, 18]];
+    const b = C.useBuckets(six, t0, t0 + 24 * H, 6 * H);
+    expect(b.map((x: any) => x.v)).toEqual([6, 6, 6, 6]); // 15:00 + 9 h reaches 24:00
+    const hold = C.useBuckets(six, t0, t0 + 48 * H, 12 * H).map((x: any) => x.v);
+    expect(hold).toEqual([12, 12, 0, 0]);
+  });
+
+  it('has no bar before the first point, and counts from it for the bar it lies in', () => {
+    const b = C.useBuckets(total(5, 8), t0, t0 + 8 * H, 2 * H).map((x: any) => x.v);
+    expect(b[0]).toBeNull();
+    expect(b[1]).toBeNull();
+    expect(b[2]).toBeCloseTo(2, 6); // 04:00–06:00: back from 05:30 at the same rate
+    expect(C.useBuckets([], t0, t0 + 4 * H, 2 * H).map((x: any) => x.v)).toEqual([null, null]);
+  });
+});
+
+describe('meterTotal', () => {
+  it('carries a running total on with live values, as the app counts the history', () => {
+    const m = { offset: 800, high: 30 };
+    expect(C.meterTotal(m, 31)).toBe(831);
+    expect(C.meterTotal(m, 30.5)).toBe(831); // a dip holds
+    expect(C.meterTotal(m, 2)).toBe(833); // a reset: counts on from 0
+    expect(m).toEqual({ offset: 831, high: 2 });
+    expect(C.meterTotal({ offset: 0, high: null }, 5)).toBe(5);
+  });
+});
+
+describe('calendarLabels', () => {
+  const at = (iso: string) => new Date(iso).getTime();
+
+  it("names a week's days, a month's every seventh day and a year's months, with lines between", () => {
+    const week = C.calendarLabels('week', at('2026-10-26T00:00'), at('2026-11-02T00:00'), 'en', false);
+    expect(week.labels.map((l: any) => l.label)).toEqual(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
+    expect(week.lines).toHaveLength(6);
+    expect(C.calendarLabels('week', at('2026-10-26T00:00'), at('2026-11-02T00:00'), 'da', true).labels.map((l: any) => l.label).join('')).toBe('MTOTFLS');
+    const month = C.calendarLabels('month', at('2026-10-01T00:00'), at('2026-11-01T00:00'), 'en', false);
+    expect(month.labels.map((l: any) => l.label)).toEqual(['1', '8', '15', '22', '29']);
+    expect(month.lines.map((t: number) => new Date(t).getDate())).toEqual([8, 15, 22, 29]);
+    const year = C.calendarLabels('year', at('2026-01-01T00:00'), at('2027-01-01T00:00'), 'en', false);
+    expect(year.labels).toHaveLength(12);
+    expect(year.labels[2].label).toBe('Mar');
+    expect(new Date(year.labels[2].at).getDate()).toBe(16); // mid-month
+    expect(year.lines).toHaveLength(11);
+    expect(C.calendarLabels('day', at('2026-10-28T00:00'), at('2026-10-29T00:00'), 'en', false)).toEqual({ labels: [], lines: [] });
+  });
+
+  it("falls back to the screen's language for one Intl doesn't know", () => {
+    expect(() => C.calendarLabels('year', at('2026-01-01T00:00'), at('2027-01-01T00:00'), 'not a tag!', true)).not.toThrow();
+  });
+});
+
+describe('axisLabel', () => {
+  it('writes thousands as k with the decimals the value needs', () => {
+    expect(C.axisLabel(nf, 1250, 250)).toBe('1,25k');
+    expect(C.axisLabel(nf, 2.5, 0.5)).toBe('2,5');
+    expect(C.axisLabel(nf, -40, 20)).toBe('−40');
   });
 });

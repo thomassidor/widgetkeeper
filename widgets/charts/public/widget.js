@@ -35,57 +35,8 @@
   };
 
 
-  /**
-   * Bars of `bucketMs` (or of a calendar month, `'month'`) on the local clock over `[from, to]`: each the average of
-   * the points in it, or the last value before it (Homey doesn't log unchanged values); null before the first value.
-   * The first and last bars are cut to the span. `current` (the value now) only stands in for a last bar without
-   * points of its own, so it doesn't count as a sample and the bar doesn't jump with each live value. `{t, end, v}`,
-   * oldest first.
-   * @param {[number, number][]} points
-   * @param {number | 'month'} bucketMs
-   * @param {number | null} [current]
-   */
-  function chartBuckets(points, from, to, bucketMs, current = null) {
-    // Bars of whole hours start on the local clock's hours (00, 06, 12, 18), each counted from its day's midnight, so
-    // they stay there across a DST change (that day's bar is an hour longer or shorter); a day's bars on midnight.
-    // Shorter bars divide any hour: stepping by their length from the first stays on the clock. Months start on the 1st.
-    const months = bucketMs === 'month';
-    const ms = typeof bucketMs === 'number' ? bucketMs : 0;
-    const hours = ms / HOUR;
-    const byClock = hours >= 1 && hours % 1 === 0;
-    const offset = new Date(from).getTimezoneOffset() * MIN;
-    const hourStart = (t, add) => {
-      const d = new Date(t);
-      return new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours() - d.getHours() % hours + add).getTime();
-    };
-    const monthStart = (t, add) => {
-      const d = new Date(t);
-      return new Date(d.getFullYear(), d.getMonth() + add, 1).getTime();
-    };
-    const align = t => (months ? monthStart(t, 0) : byClock ? hourStart(t, 0) : Math.floor((t - offset) / ms) * ms + offset);
-    const next = b => (months ? monthStart(b, 1) : byClock ? hourStart(b, hours) : b + ms);
-    const out = [];
-    let j = 0, last = null;
-    while (j < points.length && points[j][0] < from) last = points[j++][1];
-    for (let b = align(from); b < to; b = next(b)) {
-      const e = next(b);
-      let sum = 0, n = 0;
-      while (j < points.length && points[j][0] < e) {
-        if (points[j][0] <= to) { sum += points[j][1]; n++; }
-        last = points[j++][1];
-      }
-      const end = Math.min(e, to);
-      out.push({ t: Math.max(b, from), end, v: n ? sum / n : end === to && current != null ? current : last });
-    }
-    return out;
-  }
-
-  /** The number of decimals in a scale step: 2.5 → 1, 0.25 → 2, 50 → 0. */
-  function stepDecimals(step) {
-    let d = 0;
-    while (d < 4 && Math.abs(step * Math.pow(10, d) - Math.round(step * Math.pow(10, d))) > 1e-6) d++;
-    return d;
-  }
+  /** Bars on the local clock: the chart module's (moved there for Totals per Period; tests and previews call it by this name). */
+  const chartBuckets = C.buckets;
 
   /**
    * @param {HTMLElement} root
@@ -215,17 +166,8 @@
       return [s.name, s.capability.title].filter(Boolean).join(' · ');
     }
 
-    /**
-     * The axis labels: a number to the step's decimals, thousands as `1,5k` once the step is that coarse, with the
-     * decimals the value needs (a 250 step's 1250 is `1,25k`, not `1,3k`).
-     */
-    function axisLabel(v, step) {
-      if (Math.abs(v) < step / 1e6) v = 0;
-      const sign = v < 0 ? '−' : '';
-      const k = Math.abs(v) / 1000;
-      if (step >= 100 && k >= 1) return sign + nf(k, stepDecimals(k)) + 'k';
-      return sign + nf(Math.abs(v), stepDecimals(step));
-    }
+    /** The value axis labels (the chart module's `axisLabel()`): `1,25k` on a 250 step. */
+    const axisLabel = (v, step) => C.axisLabel(nf, v, step);
 
     // ------------------------------------------------------------------ render
 

@@ -129,8 +129,8 @@ describe('shared files', () => {
     for (const f of [...js, ...css]) expect(existsSync(`widgets/${f.replace('/', '/public/')}`)).toBe(true);
   });
 
-  it('the chart module is loaded by the Electricity Overview and Charts, the presets module by both preset widgets', () => {
-    expect(Object.keys(stackDeps).sort()).toEqual(['charts', 'electricity', 'thermostat', 'varpresets']);
+  it('the chart module is loaded by the Electricity Overview, Charts and Totals per Period, the presets module by both preset widgets', () => {
+    expect(Object.keys(stackDeps).sort()).toEqual(['charts', 'electricity', 'thermostat', 'totals', 'varpresets']);
   });
 });
 

@@ -329,6 +329,17 @@ describe('weeks, months and years (wk-104)', () => {
   describe("the kit's timeSpan()", () => {
     const span = (s: string, now = NOW) => kit().timeSpan(s, now);
 
+    it('goes back by whole periods with `back` (Totals per Period\'s period before), across month lengths', () => {
+      const back = (s: string, n: number, now = NOW) => kit().timeSpan(s, now, n);
+      expect(back('thisWeek', 1)).toEqual(span('lastWeek'));
+      expect(back('thisMonth', 1)).toEqual(span('lastMonth'));
+      expect(back('thisYear', 1)).toEqual(span('lastYear'));
+      expect(back('today', 1)).toEqual(span('yesterday'));
+      const march31 = new Date(2026, 2, 31, 12).getTime();
+      expect(new Date(back('lastMonth', 1, march31).from).getMonth()).toBe(0); // January: the month before February
+      expect(back('6h', 1)).toEqual({ from: NOW - 12 * 36e5, to: NOW - 6 * 36e5, end: NOW - 6 * 36e5 });
+    });
+
     it('is the whole local week from Monday: this one up to now, the last one to its end', () => {
       expect(span('thisWeek')).toEqual({ from: MON, to: MON + 7 * DAY, end: NOW, unit: 'week' });
       expect(span('lastWeek')).toEqual({ from: MON - 7 * DAY, to: MON, end: MON, unit: 'week' });

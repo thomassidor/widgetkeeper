@@ -55,6 +55,8 @@ export function widgetAutocompletes(app: WidgetkeeperApp): Record<string, Record
 
   // Charts: each chart's value, from Sparklines' list (logged numbers).
   for (const n of [1, 2]) add('charts', `chart${n}`, query => app.sparklines.listSlots(query));
+  // Totals per Period: its meter, from the same list.
+  add('totals', 'slot', query => app.sparklines.listSlots(query));
 
   // Variables: every slot lists all Logic variables.
   for (const n of VARIABLE_SLOTS) add('variables', `slot${n}`, query => app.variables.listVariables(query));

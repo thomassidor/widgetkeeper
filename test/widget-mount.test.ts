@@ -39,7 +39,7 @@ describe('widget mount.js', () => {
   });
 
   // A Smart Stack keeps every page mounted: the ones that redraw or poll on a timer stop it while another page shows.
-  it.each(['cameras', 'charts', 'electricity', 'media', 'sparklines', 'timers'] as WidgetName[])("%s: answers the Smart Stack's setVisible", async (id) => {
+  it.each(['cameras', 'charts', 'electricity', 'media', 'sparklines', 'timers', 'totals'] as WidgetName[])("%s: answers the Smart Stack's setVisible", async (id) => {
     const win = loadWidget(id);
     loadMount(id);
     const root = document.createElement('div');
@@ -62,6 +62,7 @@ const SETTINGS = {
   slot1: { id: 'd1:measure_temperature', name: 'Device · Temperature' },
   second1: { id: 'measure_humidity', name: 'Humidity' },
   chart1: { id: 'd1:measure_power', name: 'Device · Power' },
+  slot: { id: 'd1:meter_power', name: 'Device · Energy' },
   flow1: { id: 'flow:f1', name: 'Movie' },
   variable: { id: 'v1', name: 'Guests' },
   counter1: { id: 'Filter', name: 'Filter' },

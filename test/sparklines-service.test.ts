@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
-import SparklineService, { calendarWindow, downsample, historyTtl, MAX_POINTS, sparkCaps, spanOf } from '../lib/SparklineService.js';
+import SparklineService, { calendarWindow, downsample, historyTtl, MAX_METER_POINTS, MAX_POINTS, meterPoints, sparkCaps, spanOf } from '../lib/SparklineService.js';
+import { runningTotal } from '../lib/series.js';
 import ValueService, { VALUES_STATE_EVENT } from '../lib/ValueService.js';
 
 vi.mock('homey-api', () => homeyApiMock);
@@ -163,6 +164,37 @@ describe('getState', () => {
     });
   });
 
+  it('asks for the periods before the calendar ones (Totals per Period, verified on the Homey, 2026-10-27)', async () => {
+    const { service, api } = setup();
+    for (const span of ['today', 'yesterday', 'thisWeek', 'lastWeek', 'thisMonth', 'lastMonth', 'thisYear', 'lastYear']) {
+      await service.getState(['sensor:measure_humidity'], span, { prev: true });
+    }
+    expect(api.insights.getLogEntries.mock.calls.map((c: any[]) => c[0].resolution)).toEqual([
+      'yesterday', 'last3Days', 'lastWeek', 'last31Days', 'lastMonth', 'last3Months', 'lastYear', 'last2Years',
+    ]);
+  });
+
+  it('has no period before a rolling span', async () => {
+    const { service, api } = setup();
+    const [s] = await service.getState(['sensor:measure_humidity'], '24h', { prev: true });
+    expect(s).toMatchObject({ value: 48, points: [] });
+    expect(api.insights.getLogEntries).not.toHaveBeenCalled();
+  });
+
+  it('gives a running total with use, and keeps it apart from the values', async () => {
+    // A monthly utility meter, 6-hour steps: 10 kWh a step up to 80, then reset at the month's start.
+    const start = Date.parse('2026-09-30T18:00:00Z');
+    const vs = [50, 60, 70, 80, 5, 15];
+    const { service, api } = setup(() => ({ values: vs.map((v, i) => ({ t: new Date(start + i * 6 * HOUR).toISOString(), v })) }));
+    const [use] = await service.getState(['sensor:measure_humidity'], 'thisMonth', { use: true }) as any[];
+    expect(use.points).toEqual(vs.map((_, i) => [start + i * 6 * HOUR + 3 * HOUR, [50, 60, 70, 80, 85, 95][i]]));
+    expect(use.meter).toEqual({ offset: 80, high: 15 });
+    const [plain] = await service.getState(['sensor:measure_humidity'], 'thisMonth') as any[];
+    expect(plain.meter).toBeUndefined();
+    expect(plain.points.at(-1)[1]).toBe(15); // the value's own, not its total
+    expect(api.insights.getLogEntries).toHaveBeenCalledTimes(1); // one log, two histories
+  });
+
   it("draws today over the log's day, up to now", async () => {
     const midnight = NOW - 14 * HOUR;
     const { service } = setup(args => ({ ...entries(args), start: new Date(midnight).toISOString(), end: new Date(NOW + 5 * 60e3).toISOString() }));
@@ -271,5 +303,54 @@ describe('getState', () => {
     vi.advanceTimersByTime(12 * 60e3);
     expect(service.describe()).toHaveLength(0);
     await service.stop();
+  });
+});
+
+describe('runningTotal', () => {
+  const at = (vs: number[]) => vs.map((w, i) => ({ t: i, w }));
+  const totals = (vs: number[]) => runningTotal(at(vs)).totals.map(s => s.w);
+
+  it('follows a value that only counts up', () => {
+    expect(totals([100, 101, 103, 103, 110])).toEqual([100, 101, 103, 103, 110]);
+    expect(runningTotal(at([100, 110])).meter).toEqual({ offset: 0, high: 110 });
+  });
+
+  it('counts on across a reset', () => {
+    expect(totals([700, 750, 800, 4, 30])).toEqual([700, 750, 800, 804, 830]);
+    expect(runningTotal(at([700, 800, 4, 30])).meter).toEqual({ offset: 800, high: 30 });
+  });
+
+  it('leaves out a step averaged across a reset', () => {
+    // The step holding the reset averages 800 before it and 0–10 after: under half (380) it's left out, over half it holds.
+    expect(runningTotal(at([795, 800, 380, 8, 20])).totals).toEqual([{ t: 0, w: 795 }, { t: 1, w: 800 }, { t: 3, w: 808 }, { t: 4, w: 820 }]);
+    expect(totals([795, 800, 420, 8, 20])).toEqual([795, 800, 800, 808, 820]);
+  });
+
+  it("holds the total through a dip, so it isn't counted twice", () => {
+    expect(totals([100, 99.5, 100, 101])).toEqual([100, 100, 100, 101]);
+  });
+
+  it('is empty without samples', () => {
+    expect(runningTotal([])).toEqual({ totals: [], meter: { offset: 0, high: null } });
+  });
+});
+
+describe('meterPoints', () => {
+  it("puts each entry at its step's middle and averages runs beyond the most points", () => {
+    const values = Array.from({ length: 1000 }, (_, i) => ({ t: new Date(NOW + i * HOUR).toISOString(), v: i }));
+    const { points } = meterPoints({ values }, HOUR);
+    expect(points).toHaveLength(Math.ceil(1000 / 3));
+    expect(points.length).toBeLessThanOrEqual(MAX_METER_POINTS);
+    // Runs of three entries (0–2, 3–5 …): the middle one's middle.
+    expect(points[0]).toEqual([NOW + HOUR + HOUR / 2, 1]);
+    expect(points[1]).toEqual([NOW + 4 * HOUR + HOUR / 2, 4]);
+    expect(meterPoints({ values: values.slice(0, 3) }, HOUR).points.map(p => p[0]))
+      .toEqual([0, 1, 2].map(i => NOW + i * HOUR + HOUR / 2));
+  });
+
+  it("takes the log's own step where it gives one", () => {
+    // Homey's thisWeek came in 5-minute steps (2026-10-27), whatever the table says.
+    const res = { step: 5 * 60e3, values: [{ t: new Date(NOW).toISOString(), v: 1 }] };
+    expect(meterPoints(res, HOUR).points).toEqual([[NOW + 2.5 * 60e3, 1]]);
   });
 });

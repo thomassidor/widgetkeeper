@@ -1,7 +1,8 @@
 /*
- * The chart drawing shared by the Electricity Overview and Charts widgets: scales, traces, bars, dots, chips,
- * the export (below zero) split and the tap-to-inspect wiring. Plain browser JS (served as-is), on
- * `window.WidgetkeeperChart`. Charts loads it from here (`../electricity/chart.js`), as does the Smart Stack.
+ * The chart drawing shared by the Electricity Overview, Charts and Totals per Period widgets: scales, traces, bars, dots,
+ * chips, the export (below zero) split and the tap-to-inspect wiring, and the bars and labels on the local clock.
+ * Plain browser JS (served as-is), on `window.WidgetkeeperChart`. Charts and Totals per Period load it from here
+ * (`../electricity/chart.js`), as does the Smart Stack.
  * The class names are the Electricity Overview's (chart.css, scoped by `.ew`), so its markup didn't change.
  */
 (function () {
@@ -121,6 +122,155 @@
     return ms >= HOUR && ms % HOUR === 0 ? `${ms / HOUR}h`
       : ms >= MIN ? `${nf(ms / MIN, ms % MIN ? 1 : 0)}m`
         : `${Math.round(ms / 1000)}s`;
+  }
+
+  /** The number of decimals in a scale step: 2.5 → 1, 0.25 → 2, 50 → 0. */
+  function stepDecimals(step) {
+    let d = 0;
+    while (d < 4 && Math.abs(step * Math.pow(10, d) - Math.round(step * Math.pow(10, d))) > 1e-6) d++;
+    return d;
+  }
+
+  /**
+   * A value axis label (Charts' and Totals per Period's): `nf(v, decimals)` to the step's decimals, thousands as `1,5k` once
+   * the step is that coarse, with the decimals the value needs (a 250 step's 1250 is `1,25k`, not `1,3k`).
+   */
+  function axisLabel(nf, v, step) {
+    if (Math.abs(v) < step / 1e6) v = 0;
+    const sign = v < 0 ? '−' : '';
+    const k = Math.abs(v) / 1000;
+    if (step >= 100 && k >= 1) return sign + nf(k, stepDecimals(k)) + 'k';
+    return sign + nf(Math.abs(v), stepDecimals(step));
+  }
+
+  /**
+   * Steps along a time axis on the local clock by `unit`: a length in ms, or `'month'` (calendar months, starting on the
+   * 1st). Steps of whole hours start on the clock's hours, each counted from its day's midnight, so they stay there
+   * across a DST change (that day's step is an hour longer or shorter, and a day's, 24 h, runs midnight to midnight);
+   * shorter ones divide any hour, so stepping by their length from the first stays on the clock. `align(t)` is the
+   * start of the step holding `t`, `next(b)` the start of the one after `b`.
+   */
+  function clockSteps(unit, from) {
+    if (unit === 'month') {
+      const start = (t, add) => {
+        const d = new Date(t);
+        return new Date(d.getFullYear(), d.getMonth() + add, 1).getTime();
+      };
+      return { align: t => start(t, 0), next: b => start(b, 1) };
+    }
+    const hours = unit / HOUR;
+    const byClock = hours >= 1 && hours % 1 === 0;
+    const offset = new Date(from).getTimezoneOffset() * MIN;
+    const hourStart = (t, add) => {
+      const d = new Date(t);
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours() - d.getHours() % hours + add).getTime();
+    };
+    return {
+      align: t => (byClock ? hourStart(t, 0) : Math.floor((t - offset) / unit) * unit + offset),
+      next: b => (byClock ? hourStart(b, hours) : b + unit),
+    };
+  }
+
+  /**
+   * Bars of `unit` (`clockSteps()`) on the local clock over `[from, to]`: each the average of the points in it, or
+   * the last value before it (Homey doesn't log unchanged values); null before the first value. The first and last
+   * bars are cut to the span. `current` (the value now) only stands in for a last bar without points of its own,
+   * so it doesn't count as a sample and the bar doesn't jump with each live value. `{t, end, v}`, oldest first.
+   * @param {[number, number][]} points
+   * @param {number | string} unit
+   * @param {number | null} [current]
+   */
+  function buckets(points, from, to, unit, current = null) {
+    const { align, next } = clockSteps(unit, from);
+    const out = [];
+    let j = 0, last = null;
+    while (j < points.length && points[j][0] < from) last = points[j++][1];
+    for (let b = align(from); b < to; b = next(b)) {
+      const e = next(b);
+      let sum = 0, n = 0;
+      while (j < points.length && points[j][0] < e) {
+        if (points[j][0] <= to) { sum += points[j][1]; n++; }
+        last = points[j++][1];
+      }
+      const end = Math.min(e, to);
+      out.push({ t: Math.max(b, from), end, v: n ? sum / n : end === to && current != null ? current : last });
+    }
+    return out;
+  }
+
+  /**
+   * Bars of a meter's use, `unit` as `buckets()`: each how much its running total (`points`, `[t, total]` oldest first,
+   * lib/SparklineService.ts' `meterPoints()`) rose from the bar's start to its end, read off the line through the
+   * points. `current`, the total now, ends that line at `to`. Past the last point the total goes on at its last rate
+   * for up to one and a half steps between points (Insights leaves out a closed period's last 6-hour step when it
+   * straddles midnight), then holds (Homey doesn't log an unchanged value); before the first point likewise, back. A
+   * bar wholly before that has none. `{t, end, v}`, oldest first.
+   * @param {[number, number][]} points
+   * @param {number | string} unit
+   * @param {number | null} [current]
+   */
+  function useBuckets(points, from, to, unit, current = null) {
+    const pts = points.filter(p => p[0] <= to);
+    if (current != null && (!pts.length || pts[pts.length - 1][0] < to)) pts.push([to, current]);
+    const n = pts.length;
+    const gaps = pts.slice(1).map((p, i) => p[0] - pts[i][0]).sort((a, b) => a - b);
+    const reach = gaps.length ? 1.5 * gaps[Math.floor(gaps.length / 2)] : 0;
+    const rate = (a, b) => Math.max(0, (b[1] - a[1]) / ((b[0] - a[0]) || 1));
+    const total = (t) => {
+      if (t <= pts[0][0]) return pts[0][1] - (n > 1 ? rate(pts[0], pts[1]) * Math.min(pts[0][0] - t, reach) : 0);
+      if (t >= pts[n - 1][0]) return pts[n - 1][1] + (n > 1 ? rate(pts[n - 2], pts[n - 1]) * Math.min(t - pts[n - 1][0], reach) : 0);
+      let lo = 0, hi = n - 1;
+      while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (pts[mid][0] <= t) lo = mid; else hi = mid; }
+      return pts[lo][1] + rate(pts[lo], pts[hi]) * (t - pts[lo][0]);
+    };
+    const { align, next } = clockSteps(unit, from);
+    const out = [];
+    for (let b = align(from); b < to; b = next(b)) {
+      const t = Math.max(b, from), end = Math.min(next(b), to);
+      out.push({ t, end, v: n && end > pts[0][0] - reach ? Math.max(0, total(end) - total(t)) : null });
+    }
+    return out;
+  }
+
+  /**
+   * A live value on a meter's running total, carried on from `meter` (`{offset, high}`, lib/series.ts' `runningTotal()`,
+   * which it updates) by the same rule: a value below half the highest since the last reset is a reset, a smaller drop
+   * holds the total. Returns the total.
+   */
+  function meterTotal(meter, v) {
+    if (meter.high == null) meter.high = v;
+    else if (meter.high > 0 && v < meter.high / 2) { meter.offset += meter.high; meter.high = v; }
+    else meter.high = Math.max(meter.high, v);
+    return meter.offset + meter.high;
+  }
+
+  /**
+   * The x labels and dashed lines of a calendar axis `[from, to]` by its `unit` (the kit's `timeSpan()`): a week's
+   * weekdays and a month's days 1, 8, 15, 22 and 29, each at its noon, with lines at those days' starts; a year's
+   * months mid-month, with lines at the months' starts. `narrow` names (M T W, J F M) where short ones don't fit,
+   * in `language`. A day has none: its axis keeps the hours. `{labels: [{at, label}], lines}`, times in ms.
+   */
+  function calendarLabels(unit, from, to, language, narrow) {
+    const labels = [], lines = [];
+    const format = (opts) => {
+      try { return new Intl.DateTimeFormat(language || 'en', opts); } catch (e) { return new Intl.DateTimeFormat(undefined, opts); }
+    };
+    if (unit === 'week' || unit === 'month') {
+      const weekday = format({ weekday: narrow ? 'narrow' : 'short' });
+      for (const d = new Date(from); d.getTime() < to; d.setDate(d.getDate() + 1)) {
+        if (unit === 'month' && (d.getDate() - 1) % 7) continue;
+        labels.push({ at: new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12).getTime(), label: unit === 'week' ? weekday.format(d) : String(d.getDate()) });
+        if (d.getTime() > from) lines.push(d.getTime());
+      }
+    } else if (unit === 'year') {
+      const month = format({ month: narrow ? 'narrow' : 'short' });
+      for (const d = new Date(from); d.getTime() < to; d.setMonth(d.getMonth() + 1)) {
+        const start = d.getTime(), end = new Date(d.getFullYear(), d.getMonth() + 1, 1).getTime();
+        labels.push({ at: (start + end) / 2, label: month.format(d) });
+        if (start > from) lines.push(start);
+      }
+    }
+    return { labels, lines };
   }
 
   /**
@@ -412,6 +562,6 @@
   window.WidgetkeeperChart = {
     MIN, HOUR, L, X_LABEL_GAP, X_LABEL_H, LABEL_PAD, LABEL_MIN_GAP,
     niceStep, el, clear, show, f1, smoothValues, linePath, stepPath, p985, p015,
-    compactNumber, ago, createKit, attachScrub, pointerX,
+    compactNumber, ago, stepDecimals, axisLabel, buckets, useBuckets, meterTotal, calendarLabels, createKit, attachScrub, pointerX,
   };
 })();

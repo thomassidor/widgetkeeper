@@ -22,10 +22,11 @@ interface Window {
     place: (columns: any[][], heightOf: (entry: any) => number, gap: number) => { entry: any, top: number, margin: number, height: number, hidden: boolean }[][],
   };
   createElectricityWidget: (root: HTMLElement, opts?: object) => any;
-  /** The chart module shared by the Electricity Overview and Charts (widgets/electricity/public/chart.js). */
+  /** The chart module shared by the Electricity Overview, Charts and Totals per Period (widgets/electricity/public/chart.js). */
   WidgetkeeperChart: any;
   createChartsWidget: (root: HTMLElement, opts?: object) => any;
-  chartBuckets: (points: [number, number][], from: number, to: number, bucketMs: number, current?: number | null) => { t: number, end: number, v: number | null }[];
+  createTotalsWidget: (root: HTMLElement, opts?: object) => any;
+  chartBuckets: (points: [number, number][], from: number, to: number, bucketMs: number | 'month', current?: number | null) => { t: number, end: number, v: number | null }[];
   createThermostatWidget: (root: HTMLElement, opts?: object) => any;
   createQuickActionsWidget: (root: HTMLElement, opts?: object) => any;
   createSensorAlarmsWidget: (root: HTMLElement, opts?: object) => any;
@@ -78,7 +79,7 @@ interface Window {
     formatSince: (ms: number, now: number, language?: string, locale?: string, timeFormat?: unknown) => string,
     baseTitle: (title: unknown) => string,
     lowestSlot: (slots: any[], from: number, hours: number) => number,
-    timeSpan: (span: string, at: number) => { from: number, to: number, end: number, unit?: 'day' | 'week' | 'month' | 'year' },
+    timeSpan: (span: string, at: number, back?: number) => { from: number, to: number, end: number, unit?: 'day' | 'week' | 'month' | 'year' },
     isTimeSpan: (span: unknown) => boolean,
     spanUnit: (span: unknown) => 'day' | 'week' | 'month' | 'year' | null,
     sixHourSpan: (span: unknown) => boolean,
@@ -179,6 +180,7 @@ interface Window {
   mountValueMatrixWidget: MountWidget;
   mountSparklinesWidget: MountWidget;
   mountChartsWidget: MountWidget;
+  mountTotalsWidget: MountWidget;
   mountThermostatWidget: MountWidget;
   mountTimersWidget: MountWidget;
   mountValuesWidget: MountWidget;

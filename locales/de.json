@@ -293,6 +293,24 @@
     "lastMonthAvg": "Letzter Monat · Ø",
     "lastYearAvg": "Letztes Jahr · Ø"
   },
+  "totals": {
+    "selectValue": "Wähle einen hochzählenden Wert in den Widget-Einstellungen.",
+    "error": "Das Diagramm konnte nicht geladen werden.",
+    "unavailable": "Nicht verfügbar",
+    "noHistory": "Noch kein Verlauf.",
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "thisWeek": "Diese Woche",
+    "lastWeek": "Letzte Woche",
+    "thisMonth": "Dieser Monat",
+    "lastMonth": "Letzter Monat",
+    "thisYear": "Dieses Jahr",
+    "lastYear": "Letztes Jahr",
+    "dayBefore": "Vorgestern",
+    "weekBefore": "Vorletzte Woche",
+    "monthBefore": "Vorletzter Monat",
+    "yearBefore": "Vorletztes Jahr"
+  },
   "lights": {
     "selectDevices": "Wähle Lampen in den Widget-Einstellungen.",
     "error": "Lampen konnten nicht geladen werden.",
@@ -823,6 +841,7 @@
       "lightrooms": "Die Lampen jedes Raums auf einer Karte: schalte einen Raum oder öffne ihn für seine Lampen und Moods.",
       "sparklines": "Werte mit einem kleinen Diagramm ihres Verlaufs.",
       "charts": "Ein oder zwei Diagramme beliebiger Werte, wie die für Strom.",
+      "totals": "Wie viel ein Wert pro Stunde, Tag oder Monat gestiegen ist: kWh, Regen, Stunden Fernsehen.",
       "variables": "Variablen als Zeilen zum Schalten oder Ändern.",
       "varpresets": "Tasten, die eine Variable auf feste Werte setzen.",
       "keypad": "Tasten hinter einem optionalen Code, die Flows starten oder einen Zustand setzen.",

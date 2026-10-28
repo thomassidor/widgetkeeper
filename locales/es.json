@@ -293,6 +293,24 @@
     "lastMonthAvg": "Mes pasado · media",
     "lastYearAvg": "Año pasado · media"
   },
+  "totals": {
+    "selectValue": "Elige un valor que va sumando en los ajustes del widget.",
+    "error": "No se pudo cargar el gráfico.",
+    "unavailable": "No disponible",
+    "noHistory": "Aún no hay historial.",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "thisWeek": "Esta semana",
+    "lastWeek": "La semana pasada",
+    "thisMonth": "Este mes",
+    "lastMonth": "El mes pasado",
+    "thisYear": "Este año",
+    "lastYear": "El año pasado",
+    "dayBefore": "Anteayer",
+    "weekBefore": "Semana anterior",
+    "monthBefore": "Mes anterior",
+    "yearBefore": "Año anterior"
+  },
   "lights": {
     "selectDevices": "Elige luces en los ajustes del widget.",
     "error": "No se pudieron cargar las luces.",
@@ -823,6 +841,7 @@
       "lightrooms": "Las luces de cada habitación en una tarjeta: enciende una habitación o ábrela para ver sus luces y Moods.",
       "sparklines": "Valores con un pequeño gráfico de su historial reciente.",
       "charts": "Uno o dos gráficos de cualquier valor, como los de electricidad.",
+      "totals": "Cuánto subió un valor por hora, día o mes: kWh, lluvia, horas de tele.",
       "variables": "Variables como filas para cambiar o activar.",
       "varpresets": "Botones que ponen una variable en valores predefinidos.",
       "keypad": "Botones tras un código opcional que inician flujos o ponen un estado.",

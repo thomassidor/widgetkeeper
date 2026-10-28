@@ -6,9 +6,9 @@ import { KIT, loadMount, loadWidget, runFile, type WidgetName } from './helpers/
 // The Colour style setting (`colorStyle`: Muted or Vivid, kit.css's palette) and the colour pickers it goes with.
 const SCHEME_WIDGETS: WidgetName[] = ['quickactions', 'sensoralarms', 'locks', 'values', 'lights', 'lightrooms', 'curtains', 'dayssince', 'textline',
   'timers', 'flows', 'variables', 'varpresets', 'thermostat', 'price', 'heatmap', 'sparklines', 'charts', 'electricity', 'media', 'sensordots', 'roomhealth',
-  'valuematrix', 'shortcuts', 'keypad'];
+  'valuematrix', 'shortcuts', 'keypad', 'totals'];
 // Widgets whose fixed state colour became a `color` setting with Colour style.
-const PICKERS: WidgetName[] = ['quickactions', 'variables', 'curtains', 'media', 'timers'];
+const PICKERS: WidgetName[] = ['quickactions', 'variables', 'curtains', 'media', 'timers', 'totals'];
 
 type Setting = { id: string, type: string, title: Record<string, string>, hint?: Record<string, string>, value?: unknown, values?: { id: string, title: Record<string, string> }[] };
 const settings = (id: string): Setting[] => JSON.parse(readFileSync(`widgets/${id}/widget.compose.json`, 'utf8')).settings;

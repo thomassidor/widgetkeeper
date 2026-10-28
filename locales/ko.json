@@ -293,6 +293,24 @@
     "lastMonthAvg": "지난달 · 평균",
     "lastYearAvg": "작년 · 평균"
   },
+  "totals": {
+    "selectValue": "위젯 설정에서 증가하는 값을 선택하세요.",
+    "error": "차트를 불러올 수 없습니다.",
+    "unavailable": "사용할 수 없음",
+    "noHistory": "아직 기록이 없습니다.",
+    "today": "오늘",
+    "yesterday": "어제",
+    "thisWeek": "이번 주",
+    "lastWeek": "지난주",
+    "thisMonth": "이번 달",
+    "lastMonth": "지난달",
+    "thisYear": "올해",
+    "lastYear": "작년",
+    "dayBefore": "그저께",
+    "weekBefore": "지지난주",
+    "monthBefore": "지지난달",
+    "yearBefore": "재작년"
+  },
   "lights": {
     "selectDevices": "위젯 설정에서 조명을 선택하세요.",
     "error": "조명을 불러올 수 없습니다.",
@@ -823,6 +841,7 @@
       "lightrooms": "방마다 조명을 카드 하나에: 방 전체를 켜고 끄거나, 열어서 조명과 무드를 조절하세요.",
       "sparklines": "최근 기록을 작은 차트로 보여 주는 값.",
       "charts": "전기 차트처럼 어떤 값이든 차트 1~2개로 표시합니다.",
+      "totals": "값이 시간별, 일별, 월별로 얼마나 늘었는지 보여줍니다: kWh, 강수량, TV 시청 시간.",
       "variables": "켜고 끄거나 바꿀 수 있는 변수 행.",
       "varpresets": "변수를 미리 정한 값으로 설정하는 버튼.",
       "keypad": "선택적 코드로 보호되는 버튼으로 플로우를 시작하거나 상태를 설정합니다.",

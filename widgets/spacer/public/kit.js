@@ -227,7 +227,7 @@
   }
 
   /**
-   * The time spans of Charts and Sparklines (`SPANS` in lib/SparklineService.ts): rolling ones by length, calendar
+   * The time spans of Charts, Sparklines and Totals per Period (`SPANS` in lib/SparklineService.ts): rolling ones by length, calendar
    * periods by unit and offset (this one, or the one before).
    */
   const SPAN_MS = { '1h': 36e5, '6h': 6 * 36e5, '24h': DAY, '2d': 2 * DAY, '3d': 3 * DAY, '5d': 5 * DAY, '7d': 7 * DAY };
@@ -251,13 +251,17 @@
   /**
    * A span's window at `at`: the axis `[from, to]` and `end`, where its data stops. A rolling span ends at `at`;
    * a calendar one (`unit`) is the whole local day, week, month or year: this one with data up to `at`, the last
-   * one up to its end. A DST day is 23 or 25 h. An unknown span is 24 h.
+   * one up to its end. A DST day is 23 or 25 h. An unknown span is 24 h. `back`: that many windows before (Totals per
+   * Period's period before).
    */
-  function timeSpan(span, at) {
-    if (!own(SPAN_PERIODS, span)) return { from: at - (own(SPAN_MS, span) ? SPAN_MS[span] : DAY), to: at, end: at };
+  function timeSpan(span, at, back = 0) {
+    if (!own(SPAN_PERIODS, span)) {
+      const ms = own(SPAN_MS, span) ? SPAN_MS[span] : DAY;
+      return { from: at - ms * (back + 1), to: at - ms * back, end: at - ms * back };
+    }
     const [unit, n] = SPAN_PERIODS[span];
-    const from = periodStart(at, unit, n);
-    const to = periodStart(at, unit, n + 1);
+    const from = periodStart(at, unit, n - back);
+    const to = periodStart(at, unit, n + 1 - back);
     return { from, to, end: Math.min(to, at), unit };
   }
 

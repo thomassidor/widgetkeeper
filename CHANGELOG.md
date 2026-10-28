@@ -2,6 +2,13 @@
 
 All notable changes to Widgetkeeper. The version numbers match the Homey app version.
 
+## 1.2.0
+
+### New: Chart · Totals per Period
+- How much a value went up in each hour, day or month, like the Homey app's Energy tab: a bar an hour for today or yesterday, a day for this or last week or month, a month for this or last year. The period's total sits at the top; tap a bar for its own.
+- **Compare with the period before:** last week's, last month's or last year's bars beside this one's, day by day or month by month, with both totals at the top.
+- Any value that only counts up and has Insights history: a meter's kWh or m³, a rain gauge's millimetres, hours of TV, and utility meters that start again each week, month or year (the bars count on across the reset).
+
 ## 1.1.2
 
 ### Charts

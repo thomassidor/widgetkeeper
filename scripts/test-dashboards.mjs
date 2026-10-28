@@ -470,6 +470,24 @@ const BUILD = {
     ] };
   },
 
+  async totals() {
+    const items = await autocomplete('totals', 'slot');
+    // Meters first (they count up), then whatever else is logged.
+    const [meter, meter2] = [...pick(items, i => /:meter_/.test(i.id), 2), ...pick(items, i => !/:meter_/.test(i.id), 2)];
+    const missing = { id: `${MISSING}:meter_power`, name: 'Deleted device · Energy' };
+    return { cols: 3, widgets: [
+      wide(w('totals', 'This month against last month', { slot: meter, period: 'thisMonth', compare: true })),
+      w('totals', 'This week (defaults)', { slot: meter }),
+      ...[['today', 'Today'], ['yesterday', 'Yesterday'], ['lastWeek', 'Last week'], ['thisMonth', 'This month'], ['lastMonth', 'Last month'], ['thisYear', 'This year'], ['lastYear', 'Last year']]
+        .map(([period, name]) => w('totals', name, { slot: meter, period })),
+      ...[['today', 'Today'], ['thisWeek', 'This week'], ['yesterday', 'Yesterday'], ['lastMonth', 'Last month'], ['thisYear', 'This year'], ['lastYear', 'Last year']]
+        .map(([period, name]) => w('totals', `${name} against the one before`, { slot: meter, period, compare: true })),
+      w('totals', 'Another value · no totals · own title', { slot: meter2 || meter, period: 'thisMonth', showHeader: false, title: 'Typed title' }),
+      w('totals', 'Deleted device', { slot: missing, compare: true }),
+      w('totals', 'Nothing picked'),
+    ] };
+  },
+
   async variables() {
     const items = pick(await autocomplete('variables', 'slot1'), () => true, 10);
     const missing = { id: 'missing-variable-0000', name: 'Deleted variable' };

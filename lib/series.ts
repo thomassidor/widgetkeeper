@@ -34,6 +34,35 @@ export function bucketAverage(points: Sample[], start: number, step: number, cou
   return out;
 }
 
+/**
+ * How a meter's running total carries on (`runningTotal()`): the total is `offset + high`, `high` the highest value
+ * since the last reset (null before any value).
+ */
+export type Meter = { offset: number, high: number | null };
+
+/**
+ * A meter's running total at each sample, so a meter that resets (a utility meter's week, month or year) keeps
+ * counting: a value below half the highest since the last reset is a reset, and the total goes on from there; a
+ * smaller drop holds the total, so a meter that dips and comes back isn't counted twice. Insights averages each
+ * step, so the step a reset falls in can land between both sides: when the next value is lower still, that sample
+ * is left out. Widgets carry on with `meter` for live values by the same rule (the chart module's `meterTotal()`).
+ */
+export function runningTotal(samples: Sample[]): { totals: Sample[], meter: Meter } {
+  const totals: Sample[] = [];
+  let offset = 0, high: number | null = null;
+  samples.forEach((s, i) => {
+    if (high == null) high = s.w;
+    else if (high > 0 && s.w < high / 2) {
+      const next = samples[i + 1];
+      if (next && next.w < s.w) return; // half before the reset, half after
+      offset += high;
+      high = s.w;
+    } else high = Math.max(high, s.w);
+    totals.push({ t: s.t, w: offset + high });
+  });
+  return { totals, meter: { offset, high } };
+}
+
 /** Normalise an insights `getLogEntries` response to sorted samples. */
 export function parseInsightsEntries(res: any): Sample[] {
   const values: any[] = Array.isArray(res) ? res : (res?.values ?? res?.entries ?? []);

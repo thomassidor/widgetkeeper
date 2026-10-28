@@ -1,0 +1,549 @@
+{
+  "name": {
+    "en": "Chart · Totals per Period",
+    "nl": "Grafiek · Totalen per periode",
+    "de": "Diagramm · Summen pro Zeitraum",
+    "fr": "Graphique · Totaux par période",
+    "it": "Grafico · Totali per periodo",
+    "sv": "Diagram · Summor per period",
+    "no": "Diagram · Summer per periode",
+    "es": "Gráfico · Totales por periodo",
+    "da": "Graf · Totaler pr. periode",
+    "ru": "График · Итоги за период",
+    "pl": "Wykres · Sumy za okres",
+    "ko": "차트 · 기간별 합계",
+    "ar": "مخطط · المجاميع حسب الفترة"
+  },
+  "height": 280,
+  "settings": [
+    {
+      "id": "slot",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value that counts up",
+        "nl": "Waarde die optelt",
+        "de": "Hochzählender Wert",
+        "fr": "Valeur qui augmente",
+        "it": "Valore che aumenta",
+        "sv": "Värde som räknar upp",
+        "no": "Verdi som teller oppover",
+        "es": "Valor que va sumando",
+        "da": "Værdi, der tæller op",
+        "ru": "Растущее значение",
+        "pl": "Rosnąca wartość",
+        "ko": "증가하는 값",
+        "ar": "قيمة متزايدة"
+      },
+      "hint": {
+        "en": "A total that only goes up, such as a meter's kWh or m³, a rain gauge's mm or hours of TV. Only numbers with Insights history are listed.",
+        "nl": "Een totaal dat alleen oploopt, zoals de kWh of m³ van een meter, de mm van een regenmeter of uren tv. Alleen getallen met Insights-geschiedenis staan in de lijst.",
+        "de": "Eine Summe, die nur steigt, etwa die kWh oder m³ eines Zählers, die mm eines Regenmessers oder Stunden Fernsehen. Nur Zahlen mit Insights-Verlauf stehen zur Auswahl.",
+        "fr": "Un total qui ne fait qu'augmenter, comme les kWh ou m³ d'un compteur, les mm d'un pluviomètre ou les heures de télé. Seuls les nombres avec un historique Insights sont proposés.",
+        "it": "Un totale che può solo crescere, come i kWh o m³ di un contatore, i mm di un pluviometro o le ore di TV. Sono elencati solo i numeri con cronologia Insights.",
+        "sv": "En summa som bara ökar, som en mätares kWh eller m³, en regnmätares mm eller timmar tv. Bara tal med Insights-historik visas.",
+        "no": "En sum som bare øker, som en målers kWh eller m³, en regnmålers mm eller timer TV. Bare tall med Insights-historikk vises.",
+        "es": "Un total que solo sube, como los kWh o m³ de un contador, los mm de un pluviómetro o las horas de tele. Solo aparecen números con historial de Insights.",
+        "da": "En total, der kun stiger, som en målers kWh eller m³, en regnmålers mm eller timers tv. Kun tal med Insights-historik vises.",
+        "ru": "Итог, который только растёт: кВт·ч или м³ счётчика, мм осадков дождемера или часы просмотра ТВ. В списке только числа с историей Insights.",
+        "pl": "Suma, która tylko rośnie, np. kWh lub m³ licznika, mm deszczomierza czy godziny oglądania TV. Lista zawiera tylko liczby z historią Insights.",
+        "ko": "계량기의 kWh나 m³, 우량계의 mm, TV 시청 시간처럼 늘어나기만 하는 합계입니다. Insights 기록이 있는 숫자만 나열됩니다.",
+        "ar": "مجموع يزداد فقط، مثل kWh أو m³ للعداد أو mm لمقياس المطر أو ساعات التلفاز. تظهر فقط الأرقام التي لها سجل في Insights."
+      }
+    },
+    {
+      "id": "period",
+      "type": "dropdown",
+      "title": {
+        "en": "Period",
+        "nl": "Periode",
+        "de": "Zeitraum",
+        "fr": "Période",
+        "it": "Periodo",
+        "sv": "Period",
+        "no": "Periode",
+        "es": "Periodo",
+        "da": "Periode",
+        "ru": "Период",
+        "pl": "Okres",
+        "ko": "기간",
+        "ar": "الفترة"
+      },
+      "hint": {
+        "en": "A bar per hour for a day, per day for a week or month, per month for a year.",
+        "nl": "Een staaf per uur voor een dag, per dag voor een week of maand, per maand voor een jaar.",
+        "de": "Ein Balken pro Stunde für einen Tag, pro Tag für eine Woche oder einen Monat, pro Monat für ein Jahr.",
+        "fr": "Une barre par heure pour un jour, par jour pour une semaine ou un mois, par mois pour une année.",
+        "it": "Una barra per ora per un giorno, per giorno per una settimana o un mese, per mese per un anno.",
+        "sv": "En stapel per timme för en dag, per dag för en vecka eller månad, per månad för ett år.",
+        "no": "En søyle per time for en dag, per dag for en uke eller måned, per måned for et år.",
+        "es": "Una barra por hora para un día, por día para una semana o un mes, por mes para un año.",
+        "da": "En søjle pr. time for en dag, pr. dag for en uge eller måned, pr. måned for et år.",
+        "ru": "Столбец за час для дня, за день для недели или месяца, за месяц для года.",
+        "pl": "Słupek na godzinę dla dnia, na dzień dla tygodnia lub miesiąca, na miesiąc dla roku.",
+        "ko": "하루는 시간별, 한 주나 한 달은 일별, 한 해는 월별 막대로 표시합니다.",
+        "ar": "عمود لكل ساعة لليوم، ولكل يوم للأسبوع أو الشهر، ولكل شهر للسنة."
+      },
+      "value": "thisWeek",
+      "values": [
+        {
+          "id": "today",
+          "title": {
+            "en": "Today",
+            "nl": "Vandaag",
+            "de": "Heute",
+            "fr": "Aujourd'hui",
+            "it": "Oggi",
+            "sv": "I dag",
+            "no": "I dag",
+            "es": "Hoy",
+            "da": "I dag",
+            "ru": "Сегодня",
+            "pl": "Dziś",
+            "ko": "오늘",
+            "ar": "اليوم"
+          }
+        },
+        {
+          "id": "yesterday",
+          "title": {
+            "en": "Yesterday",
+            "nl": "Gisteren",
+            "de": "Gestern",
+            "fr": "Hier",
+            "it": "Ieri",
+            "sv": "I går",
+            "no": "I går",
+            "es": "Ayer",
+            "da": "I går",
+            "ru": "Вчера",
+            "pl": "Wczoraj",
+            "ko": "어제",
+            "ar": "أمس"
+          }
+        },
+        {
+          "id": "thisWeek",
+          "title": {
+            "en": "This week",
+            "nl": "Deze week",
+            "de": "Diese Woche",
+            "fr": "Cette semaine",
+            "it": "Questa settimana",
+            "sv": "Denna vecka",
+            "no": "Denne uken",
+            "es": "Esta semana",
+            "da": "Denne uge",
+            "ru": "Эта неделя",
+            "pl": "Ten tydzień",
+            "ko": "이번 주",
+            "ar": "هذا الأسبوع"
+          }
+        },
+        {
+          "id": "lastWeek",
+          "title": {
+            "en": "Last week",
+            "nl": "Vorige week",
+            "de": "Letzte Woche",
+            "fr": "La semaine dernière",
+            "it": "La settimana scorsa",
+            "sv": "Förra veckan",
+            "no": "Forrige uke",
+            "es": "La semana pasada",
+            "da": "Sidste uge",
+            "ru": "Прошлая неделя",
+            "pl": "Zeszły tydzień",
+            "ko": "지난주",
+            "ar": "الأسبوع الماضي"
+          }
+        },
+        {
+          "id": "thisMonth",
+          "title": {
+            "en": "This month",
+            "nl": "Deze maand",
+            "de": "Dieser Monat",
+            "fr": "Ce mois-ci",
+            "it": "Questo mese",
+            "sv": "Denna månad",
+            "no": "Denne måneden",
+            "es": "Este mes",
+            "da": "Denne måned",
+            "ru": "Этот месяц",
+            "pl": "Ten miesiąc",
+            "ko": "이번 달",
+            "ar": "هذا الشهر"
+          }
+        },
+        {
+          "id": "lastMonth",
+          "title": {
+            "en": "Last month",
+            "nl": "Vorige maand",
+            "de": "Letzter Monat",
+            "fr": "Le mois dernier",
+            "it": "Il mese scorso",
+            "sv": "Förra månaden",
+            "no": "Forrige måned",
+            "es": "El mes pasado",
+            "da": "Sidste måned",
+            "ru": "Прошлый месяц",
+            "pl": "Zeszły miesiąc",
+            "ko": "지난달",
+            "ar": "الشهر الماضي"
+          }
+        },
+        {
+          "id": "thisYear",
+          "title": {
+            "en": "This year",
+            "nl": "Dit jaar",
+            "de": "Dieses Jahr",
+            "fr": "Cette année",
+            "it": "Quest'anno",
+            "sv": "I år",
+            "no": "I år",
+            "es": "Este año",
+            "da": "I år",
+            "ru": "Этот год",
+            "pl": "Ten rok",
+            "ko": "올해",
+            "ar": "هذا العام"
+          }
+        },
+        {
+          "id": "lastYear",
+          "title": {
+            "en": "Last year",
+            "nl": "Vorig jaar",
+            "de": "Letztes Jahr",
+            "fr": "L'année dernière",
+            "it": "L'anno scorso",
+            "sv": "Förra året",
+            "no": "I fjor",
+            "es": "El año pasado",
+            "da": "Sidste år",
+            "ru": "Прошлый год",
+            "pl": "Zeszły rok",
+            "ko": "작년",
+            "ar": "العام الماضي"
+          }
+        }
+      ]
+    },
+    {
+      "id": "compare",
+      "type": "checkbox",
+      "title": {
+        "en": "Compare with the period before",
+        "nl": "Vergelijk met de vorige periode",
+        "de": "Mit dem vorigen Zeitraum vergleichen",
+        "fr": "Comparer à la période précédente",
+        "it": "Confronta con il periodo precedente",
+        "sv": "Jämför med perioden innan",
+        "no": "Sammenlign med perioden før",
+        "es": "Comparar con el periodo anterior",
+        "da": "Sammenlign med perioden før",
+        "ru": "Сравнить с предыдущим периодом",
+        "pl": "Porównaj z poprzednim okresem",
+        "ko": "이전 기간과 비교",
+        "ar": "المقارنة بالفترة السابقة"
+      },
+      "hint": {
+        "en": "The period before in a lighter colour beside each bar: yesterday's hour, last month's day, last year's month.",
+        "nl": "De vorige periode in een lichtere kleur naast elke staaf: het uur van gisteren, de dag van vorige maand, de maand van vorig jaar.",
+        "de": "Der vorige Zeitraum in hellerer Farbe neben jedem Balken: die Stunde von gestern, der Tag im letzten Monat, der Monat im letzten Jahr.",
+        "fr": "La période précédente en couleur plus claire à côté de chaque barre : l'heure d'hier, le jour du mois dernier, le mois de l'année dernière.",
+        "it": "Il periodo precedente in un colore più chiaro accanto a ogni barra: l'ora di ieri, il giorno del mese scorso, il mese dell'anno scorso.",
+        "sv": "Perioden innan i en ljusare färg bredvid varje stapel: gårdagens timme, förra månadens dag, förra årets månad.",
+        "no": "Perioden før i en lysere farge ved siden av hver søyle: gårsdagens time, forrige måneds dag, fjorårets måned.",
+        "es": "El periodo anterior en un color más claro junto a cada barra: la hora de ayer, el día del mes pasado, el mes del año pasado.",
+        "da": "Perioden før i en lysere farve ved siden af hver søjle: gårsdagens time, sidste måneds dag, sidste års måned.",
+        "ru": "Предыдущий период более светлым цветом рядом с каждым столбцом: час вчера, день прошлого месяца, месяц прошлого года.",
+        "pl": "Poprzedni okres jaśniejszym kolorem obok każdego słupka: godzina z wczoraj, dzień z poprzedniego miesiąca, miesiąc z poprzedniego roku.",
+        "ko": "각 막대 옆에 이전 기간을 연한 색으로 표시합니다. 어제의 같은 시간, 지난달의 같은 날, 작년의 같은 달입니다.",
+        "ar": "الفترة السابقة بلون أفتح بجانب كل عمود: ساعة الأمس، ويوم الشهر الماضي، وشهر العام الماضي."
+      },
+      "value": false
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "title": {
+        "en": "Title",
+        "nl": "Titel",
+        "de": "Titel",
+        "fr": "Titre",
+        "it": "Titolo",
+        "sv": "Rubrik",
+        "no": "Tittel",
+        "es": "Título",
+        "da": "Titel",
+        "ru": "Заголовок",
+        "pl": "Tytuł",
+        "ko": "제목",
+        "ar": "العنوان"
+      },
+      "hint": {
+        "en": "Optional. Without one, the device and value name the chart.",
+        "nl": "Optioneel. Zonder titel heet de grafiek naar het apparaat en de waarde.",
+        "de": "Optional. Ohne Titel benennen Gerät und Wert das Diagramm.",
+        "fr": "Facultatif. Sans titre, le graphique porte le nom de l'appareil et de la valeur.",
+        "it": "Facoltativo. Senza titolo, il grafico prende il nome da dispositivo e valore.",
+        "sv": "Valfritt. Utan rubrik namnges diagrammet efter enheten och värdet.",
+        "no": "Valgfritt. Uten tittel får diagrammet navn etter enheten og verdien.",
+        "es": "Opcional. Sin título, el gráfico toma el nombre del dispositivo y el valor.",
+        "da": "Valgfri. Uden titel får grafen navn efter enheden og værdien.",
+        "ru": "Необязательно. Без него график называется по устройству и значению.",
+        "pl": "Opcjonalnie. Bez tytułu wykres nazywa się od urządzenia i wartości.",
+        "ko": "선택 사항입니다. 없으면 기기와 값 이름이 사용됩니다.",
+        "ar": "اختياري. بدونه يُسمّى المخطط باسم الجهاز والقيمة."
+      },
+      "value": ""
+    },
+    {
+      "id": "showHeader",
+      "type": "checkbox",
+      "title": {
+        "en": "Show the totals at the top",
+        "nl": "Totalen bovenaan tonen",
+        "de": "Summen oben anzeigen",
+        "fr": "Afficher les totaux en haut",
+        "it": "Mostra i totali in alto",
+        "sv": "Visa summorna överst",
+        "no": "Vis summene øverst",
+        "es": "Mostrar los totales arriba",
+        "da": "Vis totalerne øverst",
+        "ru": "Показывать итоги вверху",
+        "pl": "Pokaż sumy u góry",
+        "ko": "맨 위에 합계 표시",
+        "ar": "عرض المجاميع في الأعلى"
+      },
+      "hint": {
+        "en": "The period's total so far. Tap a bar to see its own.",
+        "nl": "Het totaal van de periode tot nu toe. Tik op een staaf voor dat van de staaf.",
+        "de": "Die Summe des Zeitraums bisher. Tippe auf einen Balken für seine eigene.",
+        "fr": "Le total de la période jusqu'ici. Touchez une barre pour voir le sien.",
+        "it": "Il totale del periodo finora. Tocca una barra per vedere il suo.",
+        "sv": "Periodens summa hittills. Tryck på en stapel för att se dess egen.",
+        "no": "Periodens sum så langt. Trykk på en søyle for å se dens egen.",
+        "es": "El total del periodo hasta ahora. Toca una barra para ver el suyo.",
+        "da": "Periodens total indtil nu. Tryk på en søjle for at se dens egen.",
+        "ru": "Итог за период на сейчас. Коснитесь столбца, чтобы увидеть его значение.",
+        "pl": "Suma okresu do tej pory. Dotknij słupka, aby zobaczyć jego własną.",
+        "ko": "지금까지 이 기간의 합계입니다. 막대를 탭하면 해당 막대의 값을 볼 수 있습니다.",
+        "ar": "مجموع الفترة حتى الآن. المس عمودًا لرؤية مجموعه."
+      },
+      "value": true
+    },
+    {
+      "id": "color",
+      "type": "dropdown",
+      "title": {
+        "en": "Colour",
+        "nl": "Kleur",
+        "de": "Farbe",
+        "fr": "Couleur",
+        "it": "Colore",
+        "sv": "Färg",
+        "no": "Farge",
+        "es": "Color",
+        "da": "Farve",
+        "ru": "Цвет",
+        "pl": "Kolor",
+        "ko": "색상",
+        "ar": "اللون"
+      },
+      "value": "blue",
+      "values": [
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        }
+      ]
+    },
+    {
+      "id": "colorStyle",
+      "type": "dropdown",
+      "title": {
+        "en": "Colour style",
+        "nl": "Kleurstijl",
+        "de": "Farbstil",
+        "fr": "Style de couleur",
+        "it": "Stile colori",
+        "sv": "Färgstil",
+        "no": "Fargestil",
+        "es": "Estilo de color",
+        "da": "Farvestil",
+        "ru": "Цветовой стиль",
+        "pl": "Styl kolorów",
+        "ko": "색상 스타일",
+        "ar": "نمط الألوان"
+      },
+      "hint": {
+        "en": "Vivid fills the bars with more colour.",
+        "nl": "Levendig vult de staven met meer kleur.",
+        "de": "Kräftig füllt die Balken mit mehr Farbe.",
+        "fr": "Vives remplit les barres avec plus de couleur.",
+        "it": "Vivaci riempie le barre con più colore.",
+        "sv": "Livfulla fyller staplarna med mer färg.",
+        "no": "Livlige fyller søylene med mer farge.",
+        "es": "Vivos rellena las barras con más color.",
+        "da": "Livlige fylder søjlerne med mere farve.",
+        "ru": "«Яркие» заливают столбцы ярче.",
+        "pl": "Żywe wypełniają słupki mocniejszym kolorem.",
+        "ko": "선명하게는 막대를 더 진한 색으로 채웁니다.",
+        "ar": "«زاهية» تملأ الأعمدة بلون أكثر."
+      },
+      "value": "soft",
+      "values": [
+        {
+          "id": "soft",
+          "title": {
+            "en": "Muted",
+            "nl": "Gedempt",
+            "de": "Gedämpft",
+            "fr": "Atténuées",
+            "it": "Smorzati",
+            "sv": "Dämpade",
+            "no": "Dempede",
+            "es": "Suaves",
+            "da": "Dæmpede",
+            "ru": "Приглушённые",
+            "pl": "Stonowane",
+            "ko": "차분하게",
+            "ar": "هادئة"
+          }
+        },
+        {
+          "id": "deep",
+          "title": {
+            "en": "Vivid",
+            "nl": "Levendig",
+            "de": "Kräftig",
+            "fr": "Vives",
+            "it": "Vivaci",
+            "sv": "Livfulla",
+            "no": "Livlige",
+            "es": "Vivos",
+            "da": "Livlige",
+            "ru": "Яркие",
+            "pl": "Żywe",
+            "ko": "선명하게",
+            "ar": "زاهية"
+          }
+        }
+      ]
+    }
+  ],
+  "api": {
+    "getState": {
+      "method": "GET",
+      "path": "/state"
+    }
+  }
+}

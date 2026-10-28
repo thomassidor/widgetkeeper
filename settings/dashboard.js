@@ -194,6 +194,7 @@
       lightrooms: "Every room's lights on a card: switch a room, or open it for its lights and Moods.",
       sparklines: 'Values with a small chart of their recent history.',
       charts: 'One or two charts of any value, like the electricity ones.',
+      totals: 'How much a value went up per hour, day or month: kWh, rain, hours of TV.',
       variables: 'Variables as rows you can switch or change.',
       varpresets: 'Buttons that set a variable to preset values.',
       keypad: 'Buttons behind an optional code that start Flows or set a state.',

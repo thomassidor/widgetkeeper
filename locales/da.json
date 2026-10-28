@@ -293,6 +293,24 @@
     "lastMonthAvg": "Sidste måned · gns.",
     "lastYearAvg": "Sidste år · gns."
   },
+  "totals": {
+    "selectValue": "Vælg en værdi, der tæller op, i widgetindstillingerne.",
+    "error": "Kunne ikke hente grafen.",
+    "unavailable": "Utilgængelig",
+    "noHistory": "Ingen historik endnu.",
+    "today": "I dag",
+    "yesterday": "I går",
+    "thisWeek": "Denne uge",
+    "lastWeek": "Sidste uge",
+    "thisMonth": "Denne måned",
+    "lastMonth": "Sidste måned",
+    "thisYear": "I år",
+    "lastYear": "Sidste år",
+    "dayBefore": "I forgårs",
+    "weekBefore": "Ugen før",
+    "monthBefore": "Måneden før",
+    "yearBefore": "Året før"
+  },
   "lights": {
     "selectDevices": "Vælg lys i widgetindstillingerne.",
     "error": "Kunne ikke indlæse lysene.",
@@ -823,6 +841,7 @@
       "lightrooms": "Hvert rums lys på et kort: tænd et rum, eller åbn det for dets lys og Moods.",
       "sparklines": "Værdier med en lille graf over deres seneste historik.",
       "charts": "Én eller to grafer over en vilkårlig værdi, som el-graferne.",
+      "totals": "Hvor meget en værdi er steget pr. time, dag eller måned: kWh, regn, timers tv.",
       "variables": "Variabler som rækker, du kan slå til og fra eller ændre.",
       "varpresets": "Knapper, der sætter en variabel til faste værdier.",
       "keypad": "Knapper bag en valgfri kode, der starter flows eller sætter en tilstand.",

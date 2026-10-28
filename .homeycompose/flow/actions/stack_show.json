@@ -336,6 +336,24 @@
           }
         },
         {
+          "id": "totals",
+          "title": {
+            "en": "Chart · Totals per Period",
+            "nl": "Grafiek · Totalen per periode",
+            "de": "Diagramm · Summen pro Zeitraum",
+            "fr": "Graphique · Totaux par période",
+            "it": "Grafico · Totali per periodo",
+            "sv": "Diagram · Summor per period",
+            "no": "Diagram · Summer per periode",
+            "es": "Gráfico · Totales por periodo",
+            "da": "Graf · Totaler pr. periode",
+            "ru": "График · Итоги за период",
+            "pl": "Wykres · Sumy za okres",
+            "ko": "차트 · 기간별 합계",
+            "ar": "مخطط · المجاميع حسب الفترة"
+          }
+        },
+        {
           "id": "variables",
           "title": {
             "en": "Variables",

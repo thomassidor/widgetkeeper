@@ -293,6 +293,24 @@
     "lastMonthAvg": "Förra månaden · snitt",
     "lastYearAvg": "Förra året · snitt"
   },
+  "totals": {
+    "selectValue": "Välj ett värde som räknar upp i widgetinställningarna.",
+    "error": "Kunde inte läsa in diagrammet.",
+    "unavailable": "Inte tillgänglig",
+    "noHistory": "Ingen historik än.",
+    "today": "I dag",
+    "yesterday": "I går",
+    "thisWeek": "Denna vecka",
+    "lastWeek": "Förra veckan",
+    "thisMonth": "Denna månad",
+    "lastMonth": "Förra månaden",
+    "thisYear": "I år",
+    "lastYear": "Förra året",
+    "dayBefore": "I förrgår",
+    "weekBefore": "Veckan innan",
+    "monthBefore": "Månaden innan",
+    "yearBefore": "Året innan"
+  },
   "lights": {
     "selectDevices": "Välj lampor i widgetinställningarna.",
     "error": "Kunde inte läsa in lamporna.",
@@ -823,6 +841,7 @@
       "lightrooms": "Varje rums lampor på ett kort: tänd ett rum eller öppna det för dess lampor och Moods.",
       "sparklines": "Värden med ett litet diagram över deras senaste historik.",
       "charts": "Ett eller två diagram över valfritt värde, som elens.",
+      "totals": "Hur mycket ett värde ökat per timme, dag eller månad: kWh, regn, timmar tv.",
       "variables": "Variabler som rader att slå om eller ändra.",
       "varpresets": "Knappar som sätter en variabel till förinställda värden.",
       "keypad": "Knappar bakom en valfri kod som startar flöden eller ställer in ett läge.",

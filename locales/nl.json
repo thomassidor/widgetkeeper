@@ -293,6 +293,24 @@
     "lastMonthAvg": "Vorige maand · gem.",
     "lastYearAvg": "Vorig jaar · gem."
   },
+  "totals": {
+    "selectValue": "Kies een waarde die optelt in de widgetinstellingen.",
+    "error": "Kon de grafiek niet laden.",
+    "unavailable": "Niet beschikbaar",
+    "noHistory": "Nog geen geschiedenis.",
+    "today": "Vandaag",
+    "yesterday": "Gisteren",
+    "thisWeek": "Deze week",
+    "lastWeek": "Vorige week",
+    "thisMonth": "Deze maand",
+    "lastMonth": "Vorige maand",
+    "thisYear": "Dit jaar",
+    "lastYear": "Vorig jaar",
+    "dayBefore": "Eergisteren",
+    "weekBefore": "Week daarvoor",
+    "monthBefore": "Maand daarvoor",
+    "yearBefore": "Jaar daarvoor"
+  },
   "lights": {
     "selectDevices": "Kies lampen in de widgetinstellingen.",
     "error": "Kon de lampen niet laden.",
@@ -823,6 +841,7 @@
       "lightrooms": "De lampen van elke kamer op een kaart: schakel een kamer, of open hem voor zijn lampen en Moods.",
       "sparklines": "Waarden met een kleine grafiek van hun recente verloop.",
       "charts": "Eén of twee grafieken van elke waarde, zoals die van stroom.",
+      "totals": "Hoeveel een waarde per uur, dag of maand opliep: kWh, regen, uren tv.",
       "variables": "Variabelen als rijen om te schakelen of te wijzigen.",
       "varpresets": "Knoppen die een variabele op vaste waarden zetten.",
       "keypad": "Knoppen achter een optionele code die flows starten of een status instellen.",
