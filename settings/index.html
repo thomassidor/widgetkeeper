@@ -65,6 +65,12 @@
     .kp-code-digits { flex: none; font-size: 14px; color: var(--homey-color-mono-50, #7A7B7D); }
     .kp-codes button { flex: none; }
     .kp-changing { margin: 12px 0 0; font-weight: var(--homey-font-weight-medium, 500); }
+    /* Device names: a few of the Homey's own, as they are and as the widgets show them. */
+    .names-examples { list-style: none; margin: 8px 0 0; padding: 0; }
+    .names-examples li { padding: 6px 0; font-size: 14px; line-height: 20px; overflow-wrap: anywhere; border-bottom: 1px solid var(--homey-color-mono-05, #E9EAEE); }
+    .names-examples li:last-child { border-bottom: 0; }
+    .names-from { color: var(--homey-color-mono-50, #7A7B7D); }
+    .names-to { font-weight: var(--homey-font-weight-medium, 500); }
     .web-url { display: block; margin-top: 4px; font-size: 14px; line-height: 20px; word-break: break-all; text-decoration: none; color: var(--homey-color-blue, #0082FA); }
     #report {
       display: block; width: 100%; box-sizing: border-box; height: 40vh; min-height: 180px; margin-top: 12px;
@@ -108,6 +114,32 @@
         </div>
         <p class="help status" id="varStatus" role="status"></p>
       </div>
+    </div>
+  </details>
+
+  <!-- How every widget shows device names: the whole name or a part of it (`lib/deviceNames.ts`), with what that does to
+       the Homey's own names. Widget settings, Flows and typed tile names keep theirs. -->
+  <details class="card" id="namesCard">
+    <summary><span class="card-titles"><span class="card-title" data-i18n="namesTitle">Device names</span><span class="card-line" id="namesLine"></span></span></summary>
+    <div class="card-body">
+      <p class="help" data-i18n="namesHelp"></p>
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="namesMode" data-i18n="namesShow">Show on widgets</label>
+        <select class="homey-form-select" id="namesMode" disabled>
+          <option value="full" data-i18n="namesFull">Full name</option>
+          <option value="before" data-i18n="namesBefore">Before the separator</option>
+          <option value="after" data-i18n="namesAfter">After the separator</option>
+          <option value="lastWord" data-i18n="namesLastWord">Last word</option>
+        </select>
+      </div>
+      <div class="homey-form-group" id="namesSepGroup" hidden>
+        <label class="homey-form-label" for="namesSep" data-i18n="namesSeparator">Separator</label>
+        <input class="homey-form-input" id="namesSep" type="text" maxlength="5" autocomplete="off" spellcheck="false">
+        <p class="help" data-i18n="namesSepHelp"></p>
+      </div>
+      <p class="help" id="namesCount"></p>
+      <ul class="names-examples" id="namesExamples"></ul>
+      <p class="help status" id="namesStatus" role="status"></p>
     </div>
   </details>
 
@@ -348,6 +380,70 @@
       $('varReplace').addEventListener('click', () => { showKeyForm(true); varStatus.textContent = ''; varKey.focus(); });
       $('varCancel').addEventListener('click', () => { showKeyForm(false); varStatus.textContent = ''; });
       showKeyState();
+
+      // ---- Device names: how every widget shows them, saved at once, with examples from the Homey's own. ----
+      const namesMode = $('namesMode');
+      const namesSep = $('namesSep');
+      const namesStatus = $('namesStatus');
+      const NAME_MODES = { full: 'namesFull', before: 'namesBefore', after: 'namesAfter', lastWord: 'namesLastWord' };
+      const usesSeparator = mode => mode === 'before' || mode === 'after';
+      let names = null; // the app's last answer
+      function showNames(res) {
+        names = res;
+        const mode = NAME_MODES[res.mode] ? res.mode : 'full';
+        const sep = { separator: res.separator || '' };
+        namesMode.value = mode;
+        namesMode.disabled = false;
+        namesSep.value = sep.separator;
+        $('namesSepGroup').hidden = !usesSeparator(mode);
+        setLine('namesLine', t(usesSeparator(mode) ? `${NAME_MODES[mode]}Line` : NAME_MODES[mode], usesSeparator(mode) ? sep : undefined));
+        // Without the devices (the app couldn't read them) or with full names, no examples.
+        const count = mode === 'full' || !res.total ? ''
+          : res.changed ? t('namesChanged', { changed: res.changed, total: res.total })
+            : t(usesSeparator(mode) ? 'namesNoneSep' : 'namesNone', usesSeparator(mode) ? sep : undefined);
+        $('namesCount').textContent = count;
+        $('namesCount').hidden = !count;
+        $('namesExamples').replaceChildren(...(mode === 'full' ? [] : res.examples || []).map((e) => {
+          const row = document.createElement('li');
+          const from = document.createElement('span');
+          from.className = 'names-from';
+          from.textContent = e.name;
+          const to = document.createElement('span');
+          to.className = 'names-to';
+          to.textContent = e.shown;
+          row.append(from, ' → ', to);
+          return row;
+        }));
+        namesStatus.textContent = '';
+      }
+      function saveNames() {
+        // An emptied field sends no separator: the stored one stays.
+        const body = namesSep.value ? { mode: namesMode.value, separator: namesSep.value } : { mode: namesMode.value };
+        namesMode.disabled = true;
+        Homey.api('PUT', '/device-names', body, (err, res) => {
+          namesMode.disabled = false;
+          if (err || !res || !res.ok) {
+            // The choice as it was, and why.
+            if (names) showNames(names);
+            namesStatus.textContent = err ? err.message || String(err) : t('namesSepNeeded');
+            return;
+          }
+          showNames(res);
+        });
+      }
+      namesMode.addEventListener('change', () => {
+        $('namesSepGroup').hidden = !usesSeparator(namesMode.value);
+        saveNames();
+      });
+      namesSep.addEventListener('change', () => {
+        if (!namesSep.value) { namesStatus.textContent = t('namesSepNeeded'); namesSep.value = names ? names.separator : ''; return; }
+        saveNames();
+      });
+      namesSep.addEventListener('keydown', (e) => { if (e.key === 'Enter') namesSep.blur(); });
+      Homey.api('GET', '/device-names', null, (err, res) => {
+        if (err || !res) { namesStatus.textContent = err ? err.message || String(err) : ''; return; }
+        showNames(res);
+      });
 
       // ---- The Keypad's codes: checked and hashed by the app, never sent back. ----
       const kpList = $('kpList');

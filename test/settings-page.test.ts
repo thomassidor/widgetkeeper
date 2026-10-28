@@ -182,3 +182,46 @@ it('Web dashboards: the line, the password form for a new one or the current one
   expect(calls.filter(c => c[1].startsWith('/diagnostics')).length).toBe(1);
   expect(($('device') as unknown as HTMLSelectElement).options.length).toBe(2);
 });
+
+it('Device names: the line, the separator only for its two choices, the examples; each change saved at once', () => {
+  let stored = { mode: 'full', separator: '|' };
+  const names = ['Bed | Bedroom', 'Ceiling lamp | Kitchen', 'Hall'];
+  const answer = () => {
+    const shown = names.map(name => [name, stored.mode === 'before' && name.includes(stored.separator) ? name.split(stored.separator)[0].trim() : name]);
+    const changed = shown.filter(([name, s]) => name !== s).map(([name, s]) => ({ name, shown: s }));
+    return { ...stored, examples: changed, changed: changed.length, total: names.length };
+  };
+  const { calls, $ } = loadPage((method, path, body) => {
+    if (path !== '/device-names') return undefined;
+    if (method === 'GET') return answer();
+    if (body.separator === '') return { ok: false, reason: 'separator' };
+    stored = { mode: body.mode, separator: body.separator ?? stored.separator };
+    return { ok: true, ...answer() };
+  });
+  const select = $('namesMode') as unknown as HTMLSelectElement;
+  const examples = () => [...document.querySelectorAll('#namesExamples li')].map(li => li.textContent);
+  expect([$('namesLine').textContent, select.value, select.disabled, $('namesSepGroup').hidden, $('namesCount').hidden, examples()])
+    .toEqual(['namesFull', 'full', false, true, true, []]);
+  select.value = 'before';
+  select.dispatchEvent(new Event('change'));
+  expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'before', separator: '|' }]);
+  expect([$('namesLine').textContent, $('namesSepGroup').hidden, $('namesCount').textContent, examples()]).toEqual([
+    'namesBeforeLine{"separator":"|"}', false, 'namesChanged{"changed":2,"total":3}',
+    ['Bed | Bedroom → Bed', 'Ceiling lamp | Kitchen → Ceiling lamp'],
+  ]);
+  // A separator no name has: no examples, and the line says so.
+  $('namesSep').value = ' - ';
+  $('namesSep').dispatchEvent(new Event('change'));
+  expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'before', separator: ' - ' }]);
+  expect([$('namesLine').textContent, $('namesCount').textContent, examples()]).toEqual(['namesBeforeLine{"separator":" - "}', 'namesNoneSep{"separator":" - "}', []]);
+  // An emptied one isn't sent: the stored one comes back.
+  const sent = calls.length;
+  $('namesSep').value = '';
+  $('namesSep').dispatchEvent(new Event('change'));
+  expect([calls.length, $('namesSep').value, $('namesStatus').textContent]).toEqual([sent, ' - ', 'namesSepNeeded']);
+  // Last word has no separator.
+  select.value = 'lastWord';
+  select.dispatchEvent(new Event('change'));
+  expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'lastWord', separator: ' - ' }]);
+  expect([$('namesLine').textContent, $('namesSepGroup').hidden, $('namesStatus').textContent]).toEqual(['namesLastWord', true, '']);
+});

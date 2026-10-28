@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
+import { DEVICE_NAMES_SETTING } from '../lib/deviceNames.js';
 import CurtainService, { CURTAINS_STATE_EVENT } from '../lib/CurtainService.js';
 
 vi.mock('homey-api', () => homeyApiMock);
@@ -26,6 +27,13 @@ beforeEach(() => { vi.useFakeTimers(); });
 afterEach(() => { vi.useRealTimers(); });
 
 describe('getState', () => {
+  it('shows the name as the device names setting says', async () => {
+    const { homey, service, devices } = setup();
+    devices.find(d => d.id === 'motor')!.name = 'Terrace | Living room';
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'before', separator: '|' });
+    expect(await service.getState(['motor'])).toMatchObject([{ id: 'motor', name: 'Terrace' }]);
+  });
+
   it('returns the curtain capabilities in the order asked, with missing ones marked', async () => {
     const { service } = setup();
     expect(await service.getState(['motor', 'nope', 'curtain', 'simple', 'lamp'])).toEqual([

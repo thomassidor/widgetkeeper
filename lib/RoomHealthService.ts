@@ -1,5 +1,6 @@
 import type Homey from 'homey';
 import DeviceTracker, { readZones, zoneRef, type TrackedEntry } from './DeviceTracker.js';
+import { shownName } from './deviceNames.js';
 import Timings from './Timings.js';
 
 export const RH_STATE_EVENT = 'roomhealth:state';
@@ -123,7 +124,7 @@ export default class RoomHealthService {
     const out = await this.tracker.each(deviceIds, tm, this.log, 'Room health sensor', async (t, id): Promise<RoomHealthDevice> => {
       return {
         id,
-        name: t.name,
+        name: shownName(this.homey, t.name),
         zone: zoneRef(await zonesP, t.zone),
         measures: Object.fromEntries(t.caps.map(c => [c.measure, { capabilityId: c.capabilityId, value: t.values[c.measure] ?? null }])),
       };

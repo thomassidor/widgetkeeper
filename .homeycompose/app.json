@@ -72,6 +72,14 @@
       "method": "PUT",
       "path": "/variables-key"
     },
+    "getDeviceNames": {
+      "method": "GET",
+      "path": "/device-names"
+    },
+    "putDeviceNames": {
+      "method": "PUT",
+      "path": "/device-names"
+    },
     "getWebSetup": {
       "method": "GET",
       "path": "/web/setup"

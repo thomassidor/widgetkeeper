@@ -551,9 +551,20 @@
   }
 
   /**
+   * Runs `load` when the app settings page changes how device names show (`lib/deviceNames.ts`): the names come with
+   * the widget's own read, so it reads again.
+   * @param {any} Homey
+   * @param {() => void} load
+   */
+  function onDeviceNames(Homey, load) {
+    Homey.on('devicenames:state', () => load());
+  }
+
+  /**
    * The usual device widget's loop (CLAUDE.md): the `devices` setting's ids, `/state?deviceIds=…` with them now and
-   * every 5 min (the app drops a device's tracking after 10 min without one), and the realtime `event`'s changes of
-   * those devices (`watches(id)` adds others, e.g. a group's lights). Without devices the widget says
+   * every 5 min (the app drops a device's tracking after 10 min without one) and when the device names setting changes
+   * (`onDeviceNames()`), and the realtime `event`'s changes of those devices (`watches(id)` adds others, e.g. a group's
+   * lights). Without devices the widget says
    * `selectDevices` (or what `need()` says is missing); a failed refresh keeps the tiles with a passing message, only
    * a failed first load replaces them. `tileNames` (the mount's `wireTileNames()`) reads the names with it; `query()`
    * adds to the request; `setState(state)` hands the answer to the widget (default `widget.setState(state)`), and
@@ -602,6 +613,7 @@
       .then((ids) => { deviceIds = ids; })
       .then(() => {
         setInterval(load, DEVICE_REFRESH_MS);
+        onDeviceNames(Homey, load);
         load();
       });
     return {
@@ -787,6 +799,6 @@
   window.WidgetkeeperKit = {
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, undoTextZoom, el, setMask, tileNames, timeFormatter,
     formatSince, baseTitle, lowestSlot, timeSpan, isTimeSpan, spanUnit, sixHourSpan, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
-    colorStyle, applyColors, sound,
+    onDeviceNames, colorStyle, applyColors, sound,
   };
 })();

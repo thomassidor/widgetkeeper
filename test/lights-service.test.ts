@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock, keyApis } from './helpers/fakeHomey.js';
+import { DEVICE_NAMES_SETTING } from '../lib/deviceNames.js';
 import LightService, { GROUP_DRIVER, LIGHTS_STATE_EVENT } from '../lib/LightService.js';
 import { API_KEY_SETTING } from '../lib/PersonalApiKey.js';
 import Secrets from '../lib/secrets.js';
@@ -31,6 +32,13 @@ beforeEach(() => { vi.useFakeTimers(); });
 afterEach(() => { vi.useRealTimers(); });
 
 describe('getState', () => {
+  it('shows the name as the device names setting says', async () => {
+    const { homey, service, devices } = setup();
+    devices.find(d => d.id === 'dimmer')!.name = 'Spots | Kitchen';
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'before', separator: '|' });
+    expect(await service.getState(['dimmer'])).toMatchObject([{ id: 'dimmer', name: 'Spots' }]);
+  });
+
   it('returns the light capabilities in the order asked, with missing ones marked', async () => {
     const { service } = setup();
     expect(await service.getState(['dimmer', 'nope', 'bulb', 'plug'])).toEqual([

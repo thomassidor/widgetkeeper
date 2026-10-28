@@ -3,6 +3,7 @@ import { getAppApi } from './appApi.js';
 import { listDevicesWhere, matches, type AutocompleteItem } from './autocomplete.js';
 import { describeCapability } from './capabilities.js';
 import { fetchDeviceIcon } from './deviceIcon.js';
+import { shownName } from './deviceNames.js';
 import { hourlyAverages, hourlyShareTrue, spanFor, type HeatmapDay, type Span } from './heatmap.js';
 import { limitInsights, readCapabilityLog } from './insightsLog.js';
 import { HOUR, MINUTE, parseInsightsEntries } from './series.js';
@@ -241,7 +242,7 @@ export default class HeatmapService {
     const raw = device.capabilitiesObj?.[capabilityId]?.value;
     this.debug(`Heatmap ${device.name} ${capabilityId}: ${tm.summary()}`);
     return {
-      name: device.name,
+      name: shownName(this.homey, device.name),
       icon,
       capability,
       value: typeof raw === 'number' || typeof raw === 'boolean' ? raw : null,

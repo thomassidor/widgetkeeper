@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock, keyApis } from './helpers/fakeHomey.js';
+import { DEVICE_NAMES_SETTING } from '../lib/deviceNames.js';
 import FlowService from '../lib/FlowService.js';
 import MediaService, { MEDIA_ART_EVENT, MEDIA_STATE_EVENT, cardIndex, mediaArt, parseCardId } from '../lib/MediaService.js';
 import { API_KEY_SETTING, KeyError } from '../lib/PersonalApiKey.js';
@@ -89,6 +90,13 @@ describe('helpers', () => {
 });
 
 describe('getState', () => {
+  it('shows the name as the device names setting says', async () => {
+    const { homey, service, devices } = setup();
+    devices.find(d => d.id === 'tv')!.name = 'TV | Living room';
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'before', separator: '|' });
+    expect(await service.getState('tv')).toMatchObject({ id: 'tv', name: 'TV' });
+  });
+
   it('returns the media capabilities, the icon and the album art', async () => {
     const { service } = setup();
     const state: any = await service.getState('tv');
@@ -338,6 +346,14 @@ describe('buttons', () => {
 });
 
 describe('listSpeakers', () => {
+  it('shows the name as the device names setting says', async () => {
+    const kitchen = fakeDevice({ id: 'kitchen', name: 'B | Kitchen', class: 'speaker', caps: { volume_set: { type: 'number', value: 0.2 } } });
+    const { homey, service, devices } = setup([sonos(), kitchen]);
+    devices.find(d => d.id === 'tv')!.name = 'A | TV';
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'after', separator: '|' });
+    expect((await service.listSpeakers()).map(s => [s.name, s.zone])).toEqual([['Kitchen', 'Stue'], ['TV', 'Stue']]);
+  });
+
   it('lists every speaker with its zone and what it plays, by name', async () => {
     const kitchen = fakeDevice({
       id: 'kitchen', name: 'Kitchen', class: 'speaker',

@@ -7,7 +7,7 @@ window.mountKeypadWidget = function (Homey, { root, frame }) {
   // The events keep it current; this keeps the app's interest in the state alive and catches a missed one.
   const REFRESH_MS = 5 * 60e3;
 
-  const { wireFrame } = window.WidgetkeeperKit;
+  const { wireFrame, onDeviceNames } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -76,6 +76,7 @@ window.mountKeypadWidget = function (Homey, { root, frame }) {
     if (!document.hidden && Date.now() - loadedAt >= REFRESH_MS) load();
   });
   setInterval(load, REFRESH_MS);
+  onDeviceNames(Homey, load);
   load();
 };
 /** The classes index.html puts on its body. */

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
+import { DEVICE_NAMES_SETTING } from '../lib/deviceNames.js';
 import QuickActionService, { QA_STATE_EVENT, quickActionId } from '../lib/QuickActionService.js';
 
 vi.mock('homey-api', () => homeyApiMock);
@@ -37,6 +38,13 @@ describe('quickActionId', () => {
 });
 
 describe('getState', () => {
+  it('shows the name as the device names setting says', async () => {
+    const { homey, service, devices } = setup();
+    devices.find(d => d.id === 'lamp')!.name = 'Lamp | Hall';
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'before', separator: '|' });
+    expect(await service.getState(['lamp'])).toMatchObject([{ id: 'lamp', name: 'Lamp' }]);
+  });
+
   it('returns the devices in the order asked, with missing ones marked', async () => {
     const { service } = setup();
     const state = await service.getState(['lock', 'nope', 'lamp', 'sensor']);

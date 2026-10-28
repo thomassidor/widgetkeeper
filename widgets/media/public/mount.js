@@ -6,7 +6,7 @@
 window.mountMediaWidget = function (Homey, { root, frame }) {
   const REFRESH_MS = 5 * 60e3; // keeps the app's device subscription alive and resyncs state
 
-  const { wireFrame } = window.WidgetkeeperKit;
+  const { wireFrame, onDeviceNames } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -129,6 +129,7 @@ window.mountMediaWidget = function (Homey, { root, frame }) {
   document.addEventListener('visibilitychange', () => { if (!document.hidden && loaded) load(); });
 
   setInterval(load, REFRESH_MS);
+  onDeviceNames(Homey, load);
   load();
 
   return {

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
+import { DEVICE_NAMES_SETTING } from '../lib/deviceNames.js';
 import CameraService, { cameraImage, cameraVideos, h265Videos } from '../lib/CameraService.js';
 
 vi.mock('homey-api', () => homeyApiMock);
@@ -85,6 +86,12 @@ describe('cameraImage / cameraVideos', () => {
 });
 
 describe('getState', () => {
+  it('shows the name as the device names setting says', async () => {
+    const { homey, service } = setup([camera('kitchen', 'E1 Kitchen | Hall', { images: [], videos: [] })]);
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'before', separator: '|' });
+    expect(await service.getState(['kitchen'])).toMatchObject([{ id: 'kitchen', name: 'E1 Kitchen' }]);
+  });
+
   it('returns the cameras in the order asked, with missing ones marked', async () => {
     const { service } = setup();
     expect(await service.getState(['terrace', 'nope', 'kitchen'])).toEqual([

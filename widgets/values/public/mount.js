@@ -6,7 +6,7 @@
 window.mountValuesWidget = function (Homey, { root, frame }) {
   const REFRESH_MS = 5 * 60e3; // keeps the app's device subscriptions alive and resyncs state
 
-  const { wireFrame, wireTileNames } = window.WidgetkeeperKit;
+  const { wireFrame, wireTileNames, onDeviceNames } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -72,6 +72,7 @@ window.mountValuesWidget = function (Homey, { root, frame }) {
   });
 
   setInterval(load, REFRESH_MS);
+  onDeviceNames(Homey, load);
   load();
 };
 /** The classes index.html puts on its body; the Smart Stack puts them on the slide. */

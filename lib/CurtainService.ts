@@ -2,6 +2,7 @@ import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
 import { capValuesText, copyCaps, presentCaps, readCaps, type CapState } from './capabilities.js';
 import DeviceTracker, { readZones, zoneRef, type TrackedEntry } from './DeviceTracker.js';
+import { shownName } from './deviceNames.js';
 import Timings from './Timings.js';
 
 export const CURTAINS_STATE_EVENT = 'curtains:state';
@@ -92,7 +93,7 @@ export default class CurtainService {
     const tm = new Timings();
     const zonesP = readZones(this.homey, tm, this.log, 'Curtain');
     const out = await this.tracker.each(deviceIds, tm, this.log, 'Curtain', async (t, id): Promise<CurtainDevice> => ({
-      id, name: t.name, kind: t.kind, zone: zoneRef(await zonesP, t.zone), caps: copyCaps(t.caps),
+      id, name: shownName(this.homey, t.name), kind: t.kind, zone: zoneRef(await zonesP, t.zone), caps: copyCaps(t.caps),
     }));
     this.debug(`Curtains state for ${deviceIds.length} devices: ${tm.summary()}`);
     return out;

@@ -1,5 +1,6 @@
 import type { App } from 'homey';
 import type WidgetkeeperApp from './app.js';
+import { deviceNamesState, setDeviceNames } from './lib/deviceNames.js';
 import { scopesAllow, type KeyUse } from './lib/PersonalApiKey.js';
 import { idList } from './lib/widgetApi.js';
 import { MAX_DASHBOARDS, MAX_SECTIONS } from './lib/WebDashboardService.js';
@@ -77,6 +78,18 @@ export default {
   async putVariablesKey({ homey, body }: { homey: Homey, body: { key?: unknown } }) {
     const app = homey.app as WidgetkeeperApp;
     return app.apiKey.save(typeof body?.key === 'string' ? body.key : '');
+  },
+
+  /** Used by the app settings page: how the widgets show device names, with examples from the Homey's own. */
+  async getDeviceNames({ homey }: { homey: Homey }) {
+    const app = homey.app as WidgetkeeperApp;
+    return deviceNamesState(homey, (...args) => app.log(...args));
+  },
+
+  /** Used by the app settings page: `{mode, separator?}` → `{ok, …}` as above, or `{ok: false, reason: 'separator'}`. */
+  async putDeviceNames({ homey, body }: { homey: Homey, body: { mode?: unknown, separator?: unknown } }) {
+    const app = homey.app as WidgetkeeperApp;
+    return setDeviceNames(homey, (...args) => app.log(...args), body);
   },
 
   /**

@@ -108,3 +108,24 @@ describe('widget mount.js: its requests reach its own routes', () => {
     if (manifest.widgets[id].devices) expect([id, JSON.stringify(calls).includes('"d1"')]).toEqual([id, true]);
   });
 });
+
+/** The widgets that show device names. The names come with their reads, so these read again when the setting changes. */
+const DEVICE_NAMES: WidgetName[] = [
+  'cameras', 'charts', 'curtains', 'heatmap', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions', 'roomhealth',
+  'sensoralarms', 'sensordots', 'sparklines', 'thermostat', 'totals', 'valuematrix', 'values',
+];
+
+describe('widget mount.js: the device names setting', () => {
+  it.each(WIDGETS)('%s', async (id) => {
+    const win = loadWidget(id);
+    loadMount(id);
+    const { frame, root } = frameElements();
+    const Homey = fakeFrame(SETTINGS, { deviceIds: ['d1'], instance: id === 'shortcuts' ? 'web-dash1-w1' : 'w1' });
+    win[mountName(id)](Homey, { root, frame });
+    await vi.advanceTimersByTimeAsync(2000);
+    const before = Homey.api.mock.calls.length;
+    Homey.emit('devicenames:state', { mode: 'before', separator: '|' });
+    await vi.advanceTimersByTimeAsync(0);
+    expect([id, Homey.api.mock.calls.length > before]).toEqual([id, DEVICE_NAMES.includes(id)]);
+  });
+});

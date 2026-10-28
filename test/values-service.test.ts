@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
+import { DEVICE_NAMES_SETTING } from '../lib/deviceNames.js';
 import ValueService, { parseSlot, VALUE_COLORS_SETTING, VALUES_COLOR_EVENT, VALUES_STATE_EVENT, valueCaps } from '../lib/ValueService.js';
 
 vi.mock('homey-api', () => homeyApiMock);
@@ -85,6 +86,13 @@ describe('listSecondValues', () => {
 });
 
 describe('getState', () => {
+  it('shows the name as the device names setting says', async () => {
+    const { homey, service, devices } = setup();
+    devices.find(d => d.id === 'ac')!.name = 'Aircon | Bedroom';
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'before', separator: '|' });
+    expect(await service.getState(['ac:mode'])).toMatchObject([{ deviceId: 'ac', name: 'Aircon' }]);
+  });
+
   it('returns the slots in order, with missing ones marked', async () => {
     const { service } = setup();
     const state = await service.getState(['ac:mode', 'nope:onoff', 'sensor:measure_temperature', 'sensor:gone', 'bad']);

@@ -3,6 +3,7 @@ import { getAppApi, lastUpdatedMs } from './appApi.js';
 import { devicesAndZones, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { capValuesText, copyCaps, describeCapability, presentCaps, readCaps, type CapState } from './capabilities.js';
 import DeviceTracker, { type TrackedEntry } from './DeviceTracker.js';
+import { shownName } from './deviceNames.js';
 import Timings from './Timings.js';
 
 export const LOCKS_STATE_EVENT = 'locks:state';
@@ -108,7 +109,7 @@ export default class LockService {
   async getState(deviceIds: string[], openCap?: string | null): Promise<LockDevice[]> {
     const tm = new Timings();
     const out = await this.tracker.each(deviceIds, tm, this.log, 'Lock device', (t, id): LockDevice => ({
-      id, name: t.name, icon: t.icon, caps: copyCaps(t.caps),
+      id, name: shownName(this.homey, t.name), icon: t.icon, caps: copyCaps(t.caps),
       ...(openCap && t.buttons.includes(openCap) ? { open: openCap } : {}),
     }));
     this.debug(`Locks state for ${deviceIds.length} devices: ${tm.summary()}`);

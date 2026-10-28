@@ -6,7 +6,7 @@
 window.mountTotalsWidget = function (Homey, { root, frame }) {
   const REFRESH_MS = 5 * 60e3; // keeps the app's device subscription alive and resyncs the history
 
-  const { wireFrame } = window.WidgetkeeperKit;
+  const { wireFrame, onDeviceNames } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -53,6 +53,7 @@ window.mountTotalsWidget = function (Homey, { root, frame }) {
   });
 
   setInterval(load, REFRESH_MS);
+  onDeviceNames(Homey, load);
   load();
 
   return {

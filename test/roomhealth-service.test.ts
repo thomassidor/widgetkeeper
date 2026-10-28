@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
+import { DEVICE_NAMES_SETTING } from '../lib/deviceNames.js';
 import RoomHealthService, { RH_STATE_EVENT, healthCaps } from '../lib/RoomHealthService.js';
 
 vi.mock('homey-api', () => homeyApiMock);
@@ -91,6 +92,13 @@ describe('healthCaps', () => {
 });
 
 describe('getState', () => {
+  it('shows the name as the device names setting says', async () => {
+    const { homey, service, devices } = setup();
+    devices.find(d => d.id === 'pump')!.name = 'Heat pump | Living room';
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'before', separator: '|' });
+    expect(await service.getState(['pump'])).toMatchObject([{ id: 'pump', name: 'Heat pump' }]);
+  });
+
   it('returns the devices in the order asked, each with its zone and readings; a deleted one is missing', async () => {
     const { service } = setup();
     expect(await service.getState(['pump', 'nope', 'aqara'])).toEqual([

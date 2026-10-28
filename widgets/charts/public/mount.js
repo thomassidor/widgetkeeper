@@ -6,7 +6,7 @@
 window.mountChartsWidget = function (Homey, { root, frame }) {
   const REFRESH_MS = 5 * 60e3; // keeps the app's device subscriptions alive and resyncs the histories
 
-  const { wireFrame } = window.WidgetkeeperKit;
+  const { wireFrame, onDeviceNames } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -69,6 +69,7 @@ window.mountChartsWidget = function (Homey, { root, frame }) {
   });
 
   setInterval(load, REFRESH_MS);
+  onDeviceNames(Homey, load);
   load();
 
   return {

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
+import { DEVICE_NAMES_SETTING } from '../lib/deviceNames.js';
 import LockService, { LOCKS_STATE_EVENT } from '../lib/LockService.js';
 
 vi.mock('homey-api', () => homeyApiMock);
@@ -25,6 +26,13 @@ beforeEach(() => { vi.useFakeTimers(); });
 afterEach(() => { vi.useRealTimers(); });
 
 describe('getState', () => {
+  it('shows the name as the device names setting says', async () => {
+    const { homey, service, devices } = setup();
+    devices.find(d => d.id === 'garage')!.name = 'Garage | Outside';
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'before', separator: '|' });
+    expect(await service.getState(['garage'])).toMatchObject([{ id: 'garage', name: 'Garage' }]);
+  });
+
   it('returns the lock, contact and garage door capabilities in the order asked', async () => {
     const { service } = setup();
     expect(await service.getState(['garage', 'nope', 'front', 'lamp'])).toEqual([

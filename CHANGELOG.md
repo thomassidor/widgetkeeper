@@ -4,6 +4,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 
 ## 1.2.0
 
+### New: Device names
+- **Show only part of a device's name on every widget:** under **Apps → Widgetkeeper → Configure → Device names**, choose the full name, the part before or after a separator you type (such as `|`, so *Ceiling lamp | Kitchen* shows as *Ceiling lamp*), or the last word. The page shows a few of your own names as they'll look, and open widgets change at once. The device lists in widget settings, Flow tokens and names typed on tiles stay as they are.
+
 ### New: Chart · Totals per Period
 - How much a value went up in each hour, day or month, like the Homey app's Energy tab: a bar an hour for today or yesterday, a day for this or last week or month, a month for this or last year. The period's total sits at the top; tap a bar for its own.
 - **Compare with the period before:** last week's, last month's or last year's bars beside this one's, day by day or month by month, with both totals at the top.

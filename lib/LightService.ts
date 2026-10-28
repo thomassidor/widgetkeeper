@@ -3,6 +3,7 @@ import { getAppApi } from './appApi.js';
 import { capValuesText, copyCaps, presentCaps, readCaps, type CapState } from './capabilities.js';
 import DeviceTracker, { readZones, zoneRef, type TrackedEntry } from './DeviceTracker.js';
 import { fetchZoneIcon } from './deviceIcon.js';
+import { shownName } from './deviceNames.js';
 import PersonalApiKey from './PersonalApiKey.js';
 import { sharedCache } from './sharedCache.js';
 import Timings from './Timings.js';
@@ -179,7 +180,7 @@ export default class LightService {
         this.log(`Light ${id} unavailable:`, err);
         return { id, missing: true };
       }
-      const entry: LightDevice = { id, name: t.name, icon: t.icon, zone: zoneRef(await zonesP, t.zone), caps: copyCaps(t.caps) };
+      const entry: LightDevice = { id, name: shownName(this.homey, t.name), icon: t.icon, zone: zoneRef(await zonesP, t.zone), caps: copyCaps(t.caps) };
       if (t.members) entry.groupLights = await this.groupLights(t.members, read);
       return entry;
     }));

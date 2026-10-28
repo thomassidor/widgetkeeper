@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
+import { DEVICE_NAMES_SETTING } from '../lib/deviceNames.js';
 import SensorAlarmService, { SA_STATE_EVENT, alarmCaps } from '../lib/SensorAlarmService.js';
 
 vi.mock('homey-api', () => homeyApiMock);
@@ -54,6 +55,13 @@ describe('alarmCaps', () => {
 });
 
 describe('getState', () => {
+  it('shows the name as the device names setting says', async () => {
+    const { homey, service, devices } = setup();
+    devices.find(d => d.id === 'door')!.name = 'Back door | Utility';
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'before', separator: '|' });
+    expect(await service.getState(['door'])).toMatchObject([{ id: 'door', name: 'Back door' }]);
+  });
+
   it('returns the devices in the order asked, with missing ones marked', async () => {
     const { service } = setup();
     expect(await service.getState(['door', 'nope', 'air', 'thermo'])).toEqual([

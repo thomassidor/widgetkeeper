@@ -2,6 +2,7 @@ import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
 import { isTransientError, readFresh } from './DeviceTracker.js';
 import { deviceImage, fetchDeviceIcon, fetchImageBase64, type DeviceImage } from './deviceIcon.js';
+import { shownName } from './deviceNames.js';
 import Timings from './Timings.js';
 
 /** Several widgets (or a fast refresh) asking for the same snapshot within this share one fetch. */
@@ -105,7 +106,7 @@ export default class CameraService {
         else this.imageUrls.delete(id);
         const entry: CameraDevice = {
           id,
-          name: device.name,
+          name: shownName(this.homey, device.name),
           icon: await tm.time('icons', () => fetchDeviceIcon(api, device, this.log)),
           image,
           video: videos[0] ?? null,

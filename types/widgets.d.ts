@@ -110,6 +110,7 @@ interface Window {
       setState?: ((state: any) => void) | null,
       onState?: ((state: any) => void) | null,
     }) => { ids: () => string[], loaded: () => boolean },
+    onDeviceNames: (Homey: any, load: () => void) => void,
     COLORS: string[],
     colorStyle: (value: unknown) => 'soft' | 'deep',
     applyColors: (root: HTMLElement, opts?: { style?: unknown, color?: unknown, fallback?: string | null }) => 'soft' | 'deep',

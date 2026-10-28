@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
+import { DEVICE_NAMES_SETTING } from '../lib/deviceNames.js';
 import ValueMatrixService, { VM_STATE_EVENT, matrixCaps } from '../lib/ValueMatrixService.js';
 
 vi.mock('homey-api', () => homeyApiMock);
@@ -39,6 +40,13 @@ describe('matrixCaps', () => {
 });
 
 describe('getState', () => {
+  it('shows the name as the device names setting says', async () => {
+    const { homey, service, devices } = setup();
+    devices.find(d => d.id === 'thermo')!.name = 'Thermometer | Kitchen';
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'before', separator: '|' });
+    expect((await service.getState(['thermo'], ['measure_temperature'])).devices).toMatchObject([{ id: 'thermo', name: 'Thermometer' }]);
+  });
+
   it('gives each device its zone and a value per column it has, in the order asked; a deleted one is missing', async () => {
     const { service } = setup();
     const state = await service.getState(['thermo', 'gone', 'air'], ['measure_temperature', 'measure_co2']);

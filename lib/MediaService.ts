@@ -4,6 +4,7 @@ import { devicesAndZones, listDevicesWhere, matches, withNone, type Autocomplete
 import { capabilityValues, presentCaps } from './capabilities.js';
 import DeviceTracker, { isTransientError, readFresh, type TrackedEntry } from './DeviceTracker.js';
 import { deviceImage, fetchDeviceIcon, fetchImageBase64 } from './deviceIcon.js';
+import { shownName } from './deviceNames.js';
 import type FlowService from './FlowService.js';
 import PersonalApiKey from './PersonalApiKey.js';
 import { sharedCache } from './sharedCache.js';
@@ -259,7 +260,7 @@ export default class MediaService {
     const tm = new Timings();
     try {
       const t = await this.tracker.current(deviceId, tm);
-      const state: MediaDevice = { id: deviceId, name: t.name, icon: t.icon, caps: structuredClone(t.caps), art: t.art && { ...t.art } };
+      const state: MediaDevice = { id: deviceId, name: shownName(this.homey, t.name), icon: t.icon, caps: structuredClone(t.caps), art: t.art && { ...t.art } };
       if (opts.cards) {
         state.cards = await tm.time('cards', () => this.deviceCards(deviceId)
           .then(cards => cards.map(c => cardSuffix(c.id)))
@@ -289,7 +290,7 @@ export default class MediaService {
       }
       return {
         id: d.id,
-        name: d.name,
+        name: shownName(this.homey, d.name),
         icon: await fetchDeviceIcon(api, d, this.log),
         zone: (zones as any)[d.zone]?.name ?? null,
         caps,

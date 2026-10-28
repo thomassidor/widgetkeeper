@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock, memoryStorage } from './helpers/fakeHomey.js';
+import { DEVICE_NAMES_SETTING } from '../lib/deviceNames.js';
 import HeatmapService, { HISTORY_SETTING, heatmapCaps, mergeChanges, mergeInto } from '../lib/HeatmapService.js';
 import { heatmapDates, hourlyAverages, hourlyShareTrue, spanFor } from '../lib/heatmap.js';
 
@@ -157,6 +158,13 @@ describe('heatmapCaps', () => {
 });
 
 describe('HeatmapService', () => {
+  it('shows the name as the device names setting says', async () => {
+    const { homey, device, service } = setup({ logEntries: () => ({ step: 3600000, values: [] }) });
+    device.name = 'Hue motion sensor | Garden';
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'before', separator: '|' });
+    expect(await service.getHistory('hue', 'measure_luminance')).toMatchObject({ name: 'Hue motion sensor' });
+  });
+
   it('lists devices with a logged capability, and their capabilities', async () => {
     const plain = fakeDevice({ id: 'plain', name: 'Plug', caps: { onoff: { type: 'boolean', insights: false } } });
     const homey = fakeHomey(fakeApi({ devices: [sensor(), plain] }));
