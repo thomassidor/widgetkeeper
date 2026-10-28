@@ -24,6 +24,7 @@
     "forum-images": "node scripts/render-forum-images.mjs",
     "flow-icons": "node scripts/render-flow-icons.mjs",
     "web-socket": "node scripts/build-web-socket.mjs",
+    "chart-settings": "node scripts/chart-settings.mjs",
     "diagnostics": "node scripts/diagnostics.mjs",
     "test-dashboards": "node scripts/test-dashboards.mjs",
     "port-dashboard": "node scripts/port-dashboard.mjs",

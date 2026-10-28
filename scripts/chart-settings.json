@@ -1,0 +1,1378 @@
+{
+  "settings": {
+    "charts": {
+      "id": "charts",
+      "type": "dropdown",
+      "title": {
+        "en": "Charts",
+        "nl": "Grafieken",
+        "de": "Diagramme",
+        "fr": "Graphiques",
+        "it": "Grafici",
+        "sv": "Diagram",
+        "no": "Diagrammer",
+        "es": "Gráficos",
+        "da": "Grafer",
+        "ru": "Графики",
+        "pl": "Wykresy",
+        "ko": "차트",
+        "ar": "المخططات"
+      },
+      "hint": {
+        "en": "On one chart, the second value has its scale on the right.",
+        "nl": "In één grafiek staat de schaal van de tweede waarde rechts.",
+        "de": "In einem Diagramm steht die Skala des zweiten Werts rechts.",
+        "fr": "Dans un graphique, l’échelle de la deuxième valeur est à droite.",
+        "it": "In un grafico, la scala del secondo valore è a destra.",
+        "sv": "I ett diagram har det andra värdet sin skala till höger.",
+        "no": "I ett diagram har den andre verdien skalaen til høyre.",
+        "es": "En un gráfico, la escala del segundo valor está a la derecha.",
+        "da": "I én graf har den anden værdi sin skala til højre.",
+        "ru": "На одном графике шкала второго значения справа.",
+        "pl": "Na jednym wykresie skala drugiej wartości jest po prawej.",
+        "ko": "차트 1개에서는 두 번째 값의 눈금이 오른쪽에 있습니다.",
+        "ar": "في مخطط واحد، يكون مقياس القيمة الثانية على اليمين."
+      },
+      "value": "1",
+      "values": [
+        {
+          "id": "1",
+          "title": {
+            "en": "One chart",
+            "nl": "Eén grafiek",
+            "de": "Ein Diagramm",
+            "fr": "Un graphique",
+            "it": "Un grafico",
+            "sv": "Ett diagram",
+            "no": "Ett diagram",
+            "es": "Un gráfico",
+            "da": "Én graf",
+            "ru": "Один график",
+            "pl": "Jeden wykres",
+            "ko": "차트 1개",
+            "ar": "مخطط واحد"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "Two charts, stacked",
+            "nl": "Twee grafieken onder elkaar",
+            "de": "Zwei Diagramme untereinander",
+            "fr": "Deux graphiques superposés",
+            "it": "Due grafici uno sopra l'altro",
+            "sv": "Två diagram, staplade",
+            "no": "To diagrammer, stablet",
+            "es": "Dos gráficos, uno sobre otro",
+            "da": "To grafer over hinanden",
+            "ru": "Два графика друг под другом",
+            "pl": "Dwa wykresy, jeden pod drugim",
+            "ko": "차트 2개, 위아래로",
+            "ar": "مخططان، أحدهما فوق الآخر"
+          }
+        },
+        {
+          "id": "overlay",
+          "title": {
+            "en": "Two, on one chart",
+            "nl": "Twee in één grafiek",
+            "de": "Zwei in einem Diagramm",
+            "fr": "Deux dans un graphique",
+            "it": "Due in un grafico",
+            "sv": "Två i ett diagram",
+            "no": "To i ett diagram",
+            "es": "Dos en un gráfico",
+            "da": "To i én graf",
+            "ru": "Два на одном графике",
+            "pl": "Dwa na jednym wykresie",
+            "ko": "차트 1개에 2개",
+            "ar": "اثنان في مخطط واحد"
+          }
+        }
+      ]
+    },
+    "sharedScale": {
+      "id": "sharedScale",
+      "type": "checkbox",
+      "title": {
+        "en": "One scale for both",
+        "nl": "Eén schaal voor beide",
+        "de": "Eine Skala für beide",
+        "fr": "Une échelle pour les deux",
+        "it": "Una scala per entrambi",
+        "sv": "En skala för båda",
+        "no": "Én skala for begge",
+        "es": "Una escala para ambos",
+        "da": "Én skala til begge",
+        "ru": "Одна шкала для обоих",
+        "pl": "Jedna skala dla obu",
+        "ko": "두 값에 같은 눈금",
+        "ar": "مقياس واحد للقيمتين"
+      },
+      "hint": {
+        "en": "On one chart, both values use the left scale, so they compare directly.",
+        "nl": "In één grafiek gebruiken beide waarden de linkerschaal, zodat ze direct te vergelijken zijn.",
+        "de": "In einem Diagramm nutzen beide Werte die linke Skala und sind direkt vergleichbar.",
+        "fr": "Dans un graphique, les deux valeurs utilisent l’échelle de gauche et se comparent directement.",
+        "it": "In un grafico, entrambi i valori usano la scala di sinistra e si confrontano direttamente.",
+        "sv": "I ett diagram använder båda värdena den vänstra skalan och kan jämföras direkt.",
+        "no": "I ett diagram bruker begge verdiene skalaen til venstre og kan sammenlignes direkte.",
+        "es": "En un gráfico, ambos valores usan la escala de la izquierda y se comparan directamente.",
+        "da": "I én graf bruger begge værdier skalaen til venstre og kan sammenlignes direkte.",
+        "ru": "На одном графике оба значения используют левую шкалу, и их можно сравнить напрямую.",
+        "pl": "Na jednym wykresie obie wartości używają lewej skali i można je porównać wprost.",
+        "ko": "차트 1개에서 두 값 모두 왼쪽 눈금을 사용해 바로 비교할 수 있습니다.",
+        "ar": "في مخطط واحد، تستخدم القيمتان المقياس الأيسر فتُقارنان مباشرة."
+      },
+      "value": false
+    },
+    "showHeader.values": {
+      "id": "showHeader",
+      "type": "checkbox",
+      "title": {
+        "en": "Show the values at the top",
+        "nl": "Waarden bovenaan tonen",
+        "de": "Werte oben anzeigen",
+        "fr": "Afficher les valeurs en haut",
+        "it": "Mostra i valori in alto",
+        "sv": "Visa värdena överst",
+        "no": "Vis verdiene øverst",
+        "es": "Mostrar los valores arriba",
+        "da": "Vis værdierne øverst",
+        "ru": "Показывать значения вверху",
+        "pl": "Pokaż wartości u góry",
+        "ko": "맨 위에 값 표시",
+        "ar": "عرض القيم في الأعلى"
+      },
+      "hint": {
+        "en": "The latest value of each chart, in its colour. Tap a chart to see an earlier one. Yesterday and last week, month and year show their average.",
+        "nl": "De laatste waarde van elke grafiek, in zijn kleur. Tik op een grafiek voor een eerdere. Gisteren en vorige week, maand en jaar tonen hun gemiddelde.",
+        "de": "Der letzte Wert jedes Diagramms, in seiner Farbe. Tippe auf ein Diagramm für einen früheren. Gestern und die letzte Woche, der letzte Monat und das letzte Jahr zeigen ihren Durchschnitt.",
+        "fr": "La dernière valeur de chaque graphique, dans sa couleur. Touchez un graphique pour une valeur antérieure. Hier et la semaine, le mois et l'année derniers affichent leur moyenne.",
+        "it": "L'ultimo valore di ogni grafico, nel suo colore. Tocca un grafico per vederne uno precedente. Ieri e la settimana, il mese e l'anno scorsi mostrano la loro media.",
+        "sv": "Det senaste värdet i varje diagram, i dess färg. Tryck på ett diagram för ett tidigare. I går och förra veckan, månaden och året visar sitt medelvärde.",
+        "no": "Siste verdi i hvert diagram, i sin farge. Trykk på et diagram for en tidligere. I går og forrige uke, måned og år viser gjennomsnittet.",
+        "es": "El último valor de cada gráfico, en su color. Toca un gráfico para ver uno anterior. Ayer y la semana, el mes y el año pasados muestran su media.",
+        "da": "Den seneste værdi i hver graf, i dens farve. Tryk på en graf for en tidligere. I går og sidste uge, måned og år viser deres gennemsnit.",
+        "ru": "Последнее значение каждого графика, его цветом. Коснитесь графика, чтобы увидеть более раннее. «Вчера» и прошлые неделя, месяц и год показывают среднее.",
+        "pl": "Ostatnia wartość każdego wykresu, w jego kolorze. Dotknij wykresu, aby zobaczyć wcześniejszą. Wczoraj oraz zeszły tydzień, miesiąc i rok pokazują swoją średnią.",
+        "ko": "각 차트의 최신 값이 차트 색상으로 표시됩니다. 차트를 탭하면 이전 값을 볼 수 있습니다. 어제와 지난주, 지난달, 작년은 평균을 표시합니다.",
+        "ar": "آخر قيمة لكل مخطط بلونه. المس المخطط لرؤية قيمة سابقة. يعرض أمس والأسبوع والشهر والعام الماضي متوسطها."
+      },
+      "value": true
+    },
+    "legend": {
+      "id": "legend",
+      "type": "dropdown",
+      "title": {
+        "en": "Legend",
+        "nl": "Legenda",
+        "de": "Legende",
+        "fr": "Légende",
+        "it": "Legenda",
+        "sv": "Teckenförklaring",
+        "no": "Tegnforklaring",
+        "es": "Leyenda",
+        "da": "Forklaring",
+        "ru": "Легенда",
+        "pl": "Legenda",
+        "ko": "범례",
+        "ar": "وسيلة الإيضاح"
+      },
+      "hint": {
+        "en": "Each chart's name and units.",
+        "nl": "De naam en eenheid van elke grafiek.",
+        "de": "Name und Einheit jedes Diagramms.",
+        "fr": "Le nom et l'unité de chaque graphique.",
+        "it": "Il nome e l'unità di ogni grafico.",
+        "sv": "Varje diagrams namn och enhet.",
+        "no": "Navnet og enheten til hvert diagram.",
+        "es": "El nombre y la unidad de cada gráfico.",
+        "da": "Hver grafs navn og enhed.",
+        "ru": "Название и единицы каждого графика.",
+        "pl": "Nazwa i jednostka każdego wykresu.",
+        "ko": "각 차트의 이름과 단위입니다.",
+        "ar": "اسم كل مخطط ووحدته."
+      },
+      "value": "above",
+      "values": [
+        {
+          "id": "above",
+          "title": {
+            "en": "Above the chart",
+            "nl": "Boven de grafiek",
+            "de": "Über dem Diagramm",
+            "fr": "Au-dessus du graphique",
+            "it": "Sopra il grafico",
+            "sv": "Ovanför diagrammet",
+            "no": "Over diagrammet",
+            "es": "Encima del gráfico",
+            "da": "Over grafen",
+            "ru": "Над графиком",
+            "pl": "Nad wykresem",
+            "ko": "차트 위",
+            "ar": "فوق المخطط"
+          }
+        },
+        {
+          "id": "below",
+          "title": {
+            "en": "Below the chart",
+            "nl": "Onder de grafiek",
+            "de": "Unter dem Diagramm",
+            "fr": "Sous le graphique",
+            "it": "Sotto il grafico",
+            "sv": "Under diagrammet",
+            "no": "Under diagrammet",
+            "es": "Debajo del gráfico",
+            "da": "Under grafen",
+            "ru": "Под графиком",
+            "pl": "Pod wykresem",
+            "ko": "차트 아래",
+            "ar": "أسفل المخطط"
+          }
+        }
+      ]
+    },
+    "colorStyle": {
+      "id": "colorStyle",
+      "type": "dropdown",
+      "title": {
+        "en": "Colour style",
+        "nl": "Kleurstijl",
+        "de": "Farbstil",
+        "fr": "Style de couleur",
+        "it": "Stile colori",
+        "sv": "Färgstil",
+        "no": "Fargestil",
+        "es": "Estilo de color",
+        "da": "Farvestil",
+        "ru": "Цветовой стиль",
+        "pl": "Styl kolorów",
+        "ko": "색상 스타일",
+        "ar": "نمط الألوان"
+      },
+      "hint": {
+        "en": "Vivid fills the area under the lines with more colour.",
+        "nl": "Levendig vult het vlak onder de lijnen met meer kleur.",
+        "de": "Kräftig füllt die Fläche unter den Linien mit mehr Farbe.",
+        "fr": "Vives remplit la zone sous les courbes avec plus de couleur.",
+        "it": "Vivaci riempie l'area sotto le linee con più colore.",
+        "sv": "Livfulla fyller ytan under linjerna med mer färg.",
+        "no": "Livlige fyller flaten under linjene med mer farge.",
+        "es": "Vivos rellena el área bajo las líneas con más color.",
+        "da": "Livlige fylder fladen under linjerne med mere farve.",
+        "ru": "«Яркие» заливают область под линиями ярче.",
+        "pl": "Żywe wypełniają obszar pod liniami mocniejszym kolorem.",
+        "ko": "선명하게는 선 아래 영역을 더 진한 색으로 채웁니다.",
+        "ar": "«زاهية» تملأ المساحة تحت الخطوط بلون أكثر."
+      },
+      "value": "soft",
+      "values": [
+        {
+          "id": "soft",
+          "title": {
+            "en": "Muted",
+            "nl": "Gedempt",
+            "de": "Gedämpft",
+            "fr": "Atténuées",
+            "it": "Smorzati",
+            "sv": "Dämpade",
+            "no": "Dempede",
+            "es": "Suaves",
+            "da": "Dæmpede",
+            "ru": "Приглушённые",
+            "pl": "Stonowane",
+            "ko": "차분하게",
+            "ar": "هادئة"
+          }
+        },
+        {
+          "id": "deep",
+          "title": {
+            "en": "Vivid",
+            "nl": "Levendig",
+            "de": "Kräftig",
+            "fr": "Vives",
+            "it": "Vivaci",
+            "sv": "Livfulla",
+            "no": "Livlige",
+            "es": "Vivos",
+            "da": "Livlige",
+            "ru": "Яркие",
+            "pl": "Żywe",
+            "ko": "선명하게",
+            "ar": "زاهية"
+          }
+        }
+      ]
+    },
+    "chart": {
+      "id": "chart{n}",
+      "type": "autocomplete",
+      "title": {
+        "en": "Chart {n}: device value",
+        "nl": "Grafiek {n}: apparaatwaarde",
+        "de": "Diagramm {n}: Gerätewert",
+        "fr": "Graphique {n}: valeur d'appareil",
+        "it": "Grafico {n}: valore dispositivo",
+        "sv": "Diagram {n}: enhetsvärde",
+        "no": "Diagram {n}: enhetsverdi",
+        "es": "Gráfico {n}: valor del dispositivo",
+        "da": "Graf {n}: enhedsværdi",
+        "ru": "График {n}: значение устройства",
+        "pl": "Wykres {n}: wartość urządzenia",
+        "ko": "차트 {n}: 기기 값",
+        "ar": "المخطط {n}: قيمة الجهاز"
+      },
+      "hint": {
+        "en": "Only numbers with Insights history are listed.",
+        "nl": "Alleen getallen met Insights-geschiedenis staan in de lijst.",
+        "de": "Nur Zahlen mit Insights-Verlauf stehen zur Auswahl.",
+        "fr": "Seuls les nombres avec un historique Insights sont proposés.",
+        "it": "Sono elencati solo i numeri con cronologia Insights.",
+        "sv": "Bara tal med Insights-historik visas.",
+        "no": "Bare tall med Insights-historikk vises.",
+        "es": "Solo aparecen números con historial de Insights.",
+        "da": "Kun tal med Insights-historik vises.",
+        "ru": "В списке только числа с историей Insights.",
+        "pl": "Lista zawiera tylko liczby z historią Insights.",
+        "ko": "Insights 기록이 있는 숫자만 나열됩니다.",
+        "ar": "تظهر فقط الأرقام التي لها سجل في Insights."
+      }
+    },
+    "span": {
+      "id": "span{n}",
+      "type": "dropdown",
+      "title": {
+        "en": "  – Time span",
+        "nl": "  – Periode",
+        "de": "  – Zeitraum",
+        "fr": "  – Période",
+        "it": "  – Periodo",
+        "sv": "  – Tidsperiod",
+        "no": "  – Tidsrom",
+        "es": "  – Periodo",
+        "da": "  – Tidsrum",
+        "ru": "  – Период",
+        "pl": "  – Okres",
+        "ko": "  – 기간",
+        "ar": "  – الفترة الزمنية"
+      },
+      "value": "24h",
+      "values": [
+        {
+          "id": "1h",
+          "title": {
+            "en": "1 hour",
+            "nl": "1 uur",
+            "de": "1 Stunde",
+            "fr": "1 heure",
+            "it": "1 ora",
+            "sv": "1 timme",
+            "no": "1 time",
+            "es": "1 hora",
+            "da": "1 time",
+            "ru": "1 час",
+            "pl": "1 godzina",
+            "ko": "1시간",
+            "ar": "ساعة واحدة"
+          }
+        },
+        {
+          "id": "6h",
+          "title": {
+            "en": "6 hours",
+            "nl": "6 uur",
+            "de": "6 Stunden",
+            "fr": "6 heures",
+            "it": "6 ore",
+            "sv": "6 timmar",
+            "no": "6 timer",
+            "es": "6 horas",
+            "da": "6 timer",
+            "ru": "6 часов",
+            "pl": "6 godzin",
+            "ko": "6시간",
+            "ar": "6 ساعات"
+          }
+        },
+        {
+          "id": "24h",
+          "title": {
+            "en": "24 hours",
+            "nl": "24 uur",
+            "de": "24 Stunden",
+            "fr": "24 heures",
+            "it": "24 ore",
+            "sv": "24 timmar",
+            "no": "24 timer",
+            "es": "24 horas",
+            "da": "24 timer",
+            "ru": "24 часа",
+            "pl": "24 godziny",
+            "ko": "24시간",
+            "ar": "24 ساعة"
+          }
+        },
+        {
+          "id": "today",
+          "title": {
+            "en": "Today",
+            "nl": "Vandaag",
+            "de": "Heute",
+            "fr": "Aujourd'hui",
+            "it": "Oggi",
+            "sv": "I dag",
+            "no": "I dag",
+            "es": "Hoy",
+            "da": "I dag",
+            "ru": "Сегодня",
+            "pl": "Dziś",
+            "ko": "오늘",
+            "ar": "اليوم"
+          }
+        },
+        {
+          "id": "yesterday",
+          "title": {
+            "en": "Yesterday",
+            "nl": "Gisteren",
+            "de": "Gestern",
+            "fr": "Hier",
+            "it": "Ieri",
+            "sv": "I går",
+            "no": "I går",
+            "es": "Ayer",
+            "da": "I går",
+            "ru": "Вчера",
+            "pl": "Wczoraj",
+            "ko": "어제",
+            "ar": "أمس"
+          }
+        },
+        {
+          "id": "2d",
+          "title": {
+            "en": "2 days",
+            "nl": "2 dagen",
+            "de": "2 Tage",
+            "fr": "2 jours",
+            "it": "2 giorni",
+            "sv": "2 dagar",
+            "no": "2 dager",
+            "es": "2 días",
+            "da": "2 dage",
+            "ru": "2 дня",
+            "pl": "2 dni",
+            "ko": "2일",
+            "ar": "يومان"
+          }
+        },
+        {
+          "id": "3d",
+          "title": {
+            "en": "3 days",
+            "nl": "3 dagen",
+            "de": "3 Tage",
+            "fr": "3 jours",
+            "it": "3 giorni",
+            "sv": "3 dagar",
+            "no": "3 dager",
+            "es": "3 días",
+            "da": "3 dage",
+            "ru": "3 дня",
+            "pl": "3 dni",
+            "ko": "3일",
+            "ar": "3 أيام"
+          }
+        },
+        {
+          "id": "5d",
+          "title": {
+            "en": "5 days",
+            "nl": "5 dagen",
+            "de": "5 Tage",
+            "fr": "5 jours",
+            "it": "5 giorni",
+            "sv": "5 dagar",
+            "no": "5 dager",
+            "es": "5 días",
+            "da": "5 dage",
+            "ru": "5 дней",
+            "pl": "5 dni",
+            "ko": "5일",
+            "ar": "5 أيام"
+          }
+        },
+        {
+          "id": "7d",
+          "title": {
+            "en": "7 days",
+            "nl": "7 dagen",
+            "de": "7 Tage",
+            "fr": "7 jours",
+            "it": "7 giorni",
+            "sv": "7 dagar",
+            "no": "7 dager",
+            "es": "7 días",
+            "da": "7 dage",
+            "ru": "7 дней",
+            "pl": "7 dni",
+            "ko": "7일",
+            "ar": "7 أيام"
+          }
+        },
+        {
+          "id": "thisWeek",
+          "title": {
+            "en": "This week",
+            "nl": "Deze week",
+            "de": "Diese Woche",
+            "fr": "Cette semaine",
+            "it": "Questa settimana",
+            "sv": "Denna vecka",
+            "no": "Denne uken",
+            "es": "Esta semana",
+            "da": "Denne uge",
+            "ru": "Эта неделя",
+            "pl": "Ten tydzień",
+            "ko": "이번 주",
+            "ar": "هذا الأسبوع"
+          }
+        },
+        {
+          "id": "lastWeek",
+          "title": {
+            "en": "Last week",
+            "nl": "Vorige week",
+            "de": "Letzte Woche",
+            "fr": "La semaine dernière",
+            "it": "La settimana scorsa",
+            "sv": "Förra veckan",
+            "no": "Forrige uke",
+            "es": "La semana pasada",
+            "da": "Sidste uge",
+            "ru": "Прошлая неделя",
+            "pl": "Zeszły tydzień",
+            "ko": "지난주",
+            "ar": "الأسبوع الماضي"
+          }
+        },
+        {
+          "id": "thisMonth",
+          "title": {
+            "en": "This month",
+            "nl": "Deze maand",
+            "de": "Dieser Monat",
+            "fr": "Ce mois-ci",
+            "it": "Questo mese",
+            "sv": "Denna månad",
+            "no": "Denne måneden",
+            "es": "Este mes",
+            "da": "Denne måned",
+            "ru": "Этот месяц",
+            "pl": "Ten miesiąc",
+            "ko": "이번 달",
+            "ar": "هذا الشهر"
+          }
+        },
+        {
+          "id": "lastMonth",
+          "title": {
+            "en": "Last month",
+            "nl": "Vorige maand",
+            "de": "Letzter Monat",
+            "fr": "Le mois dernier",
+            "it": "Il mese scorso",
+            "sv": "Förra månaden",
+            "no": "Forrige måned",
+            "es": "El mes pasado",
+            "da": "Sidste måned",
+            "ru": "Прошлый месяц",
+            "pl": "Zeszły miesiąc",
+            "ko": "지난달",
+            "ar": "الشهر الماضي"
+          }
+        },
+        {
+          "id": "thisYear",
+          "title": {
+            "en": "This year",
+            "nl": "Dit jaar",
+            "de": "Dieses Jahr",
+            "fr": "Cette année",
+            "it": "Quest'anno",
+            "sv": "I år",
+            "no": "I år",
+            "es": "Este año",
+            "da": "I år",
+            "ru": "Этот год",
+            "pl": "Ten rok",
+            "ko": "올해",
+            "ar": "هذا العام"
+          }
+        },
+        {
+          "id": "lastYear",
+          "title": {
+            "en": "Last year",
+            "nl": "Vorig jaar",
+            "de": "Letztes Jahr",
+            "fr": "L'année dernière",
+            "it": "L'anno scorso",
+            "sv": "Förra året",
+            "no": "I fjor",
+            "es": "El año pasado",
+            "da": "Sidste år",
+            "ru": "Прошлый год",
+            "pl": "Zeszły rok",
+            "ko": "작년",
+            "ar": "العام الماضي"
+          }
+        }
+      ]
+    },
+    "style": {
+      "id": "style{n}",
+      "type": "dropdown",
+      "title": {
+        "en": "  – Style",
+        "nl": "  – Stijl",
+        "de": "  – Stil",
+        "fr": "  – Style",
+        "it": "  – Stile",
+        "sv": "  – Stil",
+        "no": "  – Stil",
+        "es": "  – Estilo",
+        "da": "  – Stil",
+        "ru": "  – Стиль",
+        "pl": "  – Styl",
+        "ko": "  – 스타일",
+        "ar": "  – النمط"
+      },
+      "value": "area",
+      "values": [
+        {
+          "id": "area",
+          "title": {
+            "en": "Line with area",
+            "nl": "Lijn met vlak",
+            "de": "Linie mit Fläche",
+            "fr": "Ligne avec aire",
+            "it": "Linea con area",
+            "sv": "Linje med yta",
+            "no": "Linje med flate",
+            "es": "Línea con área",
+            "da": "Linje med flade",
+            "ru": "Линия с заливкой",
+            "pl": "Linia z wypełnieniem",
+            "ko": "영역 포함 선",
+            "ar": "خط مع مساحة"
+          }
+        },
+        {
+          "id": "line",
+          "title": {
+            "en": "Line",
+            "nl": "Lijn",
+            "de": "Linie",
+            "fr": "Ligne",
+            "it": "Linea",
+            "sv": "Linje",
+            "no": "Linje",
+            "es": "Línea",
+            "da": "Linje",
+            "ru": "Линия",
+            "pl": "Linia",
+            "ko": "선",
+            "ar": "خط"
+          }
+        },
+        {
+          "id": "bars",
+          "title": {
+            "en": "Bars",
+            "nl": "Staven",
+            "de": "Balken",
+            "fr": "Barres",
+            "it": "Barre",
+            "sv": "Staplar",
+            "no": "Søyler",
+            "es": "Barras",
+            "da": "Søjler",
+            "ru": "Столбцы",
+            "pl": "Słupki",
+            "ko": "막대",
+            "ar": "أعمدة"
+          }
+        }
+      ]
+    },
+    "color": {
+      "id": "color{n}",
+      "type": "dropdown",
+      "title": {
+        "en": "  – Colour",
+        "nl": "  – Kleur",
+        "de": "  – Farbe",
+        "fr": "  – Couleur",
+        "it": "  – Colore",
+        "sv": "  – Färg",
+        "no": "  – Farge",
+        "es": "  – Color",
+        "da": "  – Farve",
+        "ru": "  – Цвет",
+        "pl": "  – Kolor",
+        "ko": "  – 색상",
+        "ar": "  – اللون"
+      },
+      "value": "blue",
+      "values": [
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        }
+      ]
+    },
+    "range": {
+      "id": "range{n}",
+      "type": "dropdown",
+      "title": {
+        "en": "  – Scale",
+        "nl": "  – Schaal",
+        "de": "  – Skala",
+        "fr": "  – Échelle",
+        "it": "  – Scala",
+        "sv": "  – Skala",
+        "no": "  – Skala",
+        "es": "  – Escala",
+        "da": "  – Skala",
+        "ru": "  – Шкала",
+        "pl": "  – Skala",
+        "ko": "  – 눈금",
+        "ar": "  – المقياس"
+      },
+      "value": "fit",
+      "values": [
+        {
+          "id": "fit",
+          "title": {
+            "en": "Fit to the values",
+            "nl": "Passend bij de waarden",
+            "de": "An die Werte angepasst",
+            "fr": "Ajustée aux valeurs",
+            "it": "Adattata ai valori",
+            "sv": "Anpassad till värdena",
+            "no": "Tilpasset verdiene",
+            "es": "Ajustada a los valores",
+            "da": "Tilpasset værdierne",
+            "ru": "По значениям",
+            "pl": "Dopasowana do wartości",
+            "ko": "값에 맞춤",
+            "ar": "ملائم للقيم"
+          }
+        },
+        {
+          "id": "zero",
+          "title": {
+            "en": "Start at zero",
+            "nl": "Begin bij nul",
+            "de": "Bei null beginnen",
+            "fr": "Commencer à zéro",
+            "it": "Parti da zero",
+            "sv": "Börja på noll",
+            "no": "Start på null",
+            "es": "Empezar en cero",
+            "da": "Start ved nul",
+            "ru": "Начинать с нуля",
+            "pl": "Zaczynaj od zera",
+            "ko": "0부터 시작",
+            "ar": "البدء من الصفر"
+          }
+        }
+      ]
+    },
+    "negative": {
+      "id": "negative{n}",
+      "type": "checkbox",
+      "title": {
+        "en": "  – Below zero in yellow",
+        "nl": "  – Onder nul in geel",
+        "de": "  – Unter null in Gelb",
+        "fr": "  – Sous zéro en jaune",
+        "it": "  – Sotto zero in giallo",
+        "sv": "  – Under noll i gult",
+        "no": "  – Under null i gult",
+        "es": "  – Bajo cero en amarillo",
+        "da": "  – Under nul i gult",
+        "ru": "  – Ниже нуля жёлтым",
+        "pl": "  – Poniżej zera na żółto",
+        "ko": "  – 0 미만은 노란색",
+        "ar": "  – ما دون الصفر بالأصفر"
+      },
+      "value": false
+    },
+    "smooth": {
+      "id": "smooth{n}",
+      "type": "checkbox",
+      "title": {
+        "en": "  – Smooth line",
+        "nl": "  – Vloeiende lijn",
+        "de": "  – Geglättete Linie",
+        "fr": "  – Ligne lissée",
+        "it": "  – Linea smussata",
+        "sv": "  – Utjämnad linje",
+        "no": "  – Glatt linje",
+        "es": "  – Línea suavizada",
+        "da": "  – Udglattet linje",
+        "ru": "  – Сглаженная линия",
+        "pl": "  – Wygładzona linia",
+        "ko": "  – 부드러운 선",
+        "ar": "  – خط منعّم"
+      },
+      "value": false
+    },
+    "title": {
+      "id": "title{n}",
+      "type": "text",
+      "title": {
+        "en": "  – Title",
+        "nl": "  – Titel",
+        "de": "  – Titel",
+        "fr": "  – Titre",
+        "it": "  – Titolo",
+        "sv": "  – Rubrik",
+        "no": "  – Tittel",
+        "es": "  – Título",
+        "da": "  – Titel",
+        "ru": "  – Заголовок",
+        "pl": "  – Tytuł",
+        "ko": "  – 제목",
+        "ar": "  – العنوان"
+      },
+      "hint": {
+        "en": "Optional. Without one, the device and value name the chart.",
+        "nl": "Optioneel. Zonder titel heet de grafiek naar het apparaat en de waarde.",
+        "de": "Optional. Ohne Titel benennen Gerät und Wert das Diagramm.",
+        "fr": "Facultatif. Sans titre, le graphique porte le nom de l'appareil et de la valeur.",
+        "it": "Facoltativo. Senza titolo, il grafico prende il nome da dispositivo e valore.",
+        "sv": "Valfritt. Utan rubrik namnges diagrammet efter enheten och värdet.",
+        "no": "Valgfritt. Uten tittel får diagrammet navn etter enheten og verdien.",
+        "es": "Opcional. Sin título, el gráfico toma el nombre del dispositivo y el valor.",
+        "da": "Valgfri. Uden titel får grafen navn efter enheden og værdien.",
+        "ru": "Необязательно. Без него график называется по устройству и значению.",
+        "pl": "Opcjonalnie. Bez tytułu wykres nazywa się od urządzenia i wartości.",
+        "ko": "선택 사항입니다. 없으면 기기와 값 이름이 사용됩니다.",
+        "ar": "اختياري. بدونه يُسمّى المخطط باسم الجهاز والقيمة."
+      },
+      "value": ""
+    },
+    "totals.slot": {
+      "id": "slot",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value that counts up",
+        "nl": "Waarde die optelt",
+        "de": "Hochzählender Wert",
+        "fr": "Valeur qui augmente",
+        "it": "Valore che aumenta",
+        "sv": "Värde som räknar upp",
+        "no": "Verdi som teller oppover",
+        "es": "Valor que va sumando",
+        "da": "Værdi, der tæller op",
+        "ru": "Растущее значение",
+        "pl": "Rosnąca wartość",
+        "ko": "증가하는 값",
+        "ar": "قيمة متزايدة"
+      },
+      "hint": {
+        "en": "A total that only goes up, such as a meter's kWh or m³, a rain gauge's mm or hours of TV. Only numbers with Insights history are listed.",
+        "nl": "Een totaal dat alleen oploopt, zoals de kWh of m³ van een meter, de mm van een regenmeter of uren tv. Alleen getallen met Insights-geschiedenis staan in de lijst.",
+        "de": "Eine Summe, die nur steigt, etwa die kWh oder m³ eines Zählers, die mm eines Regenmessers oder Stunden Fernsehen. Nur Zahlen mit Insights-Verlauf stehen zur Auswahl.",
+        "fr": "Un total qui ne fait qu'augmenter, comme les kWh ou m³ d'un compteur, les mm d'un pluviomètre ou les heures de télé. Seuls les nombres avec un historique Insights sont proposés.",
+        "it": "Un totale che può solo crescere, come i kWh o m³ di un contatore, i mm di un pluviometro o le ore di TV. Sono elencati solo i numeri con cronologia Insights.",
+        "sv": "En summa som bara ökar, som en mätares kWh eller m³, en regnmätares mm eller timmar tv. Bara tal med Insights-historik visas.",
+        "no": "En sum som bare øker, som en målers kWh eller m³, en regnmålers mm eller timer TV. Bare tall med Insights-historikk vises.",
+        "es": "Un total que solo sube, como los kWh o m³ de un contador, los mm de un pluviómetro o las horas de tele. Solo aparecen números con historial de Insights.",
+        "da": "En total, der kun stiger, som en målers kWh eller m³, en regnmålers mm eller timers tv. Kun tal med Insights-historik vises.",
+        "ru": "Итог, который только растёт: кВт·ч или м³ счётчика, мм осадков дождемера или часы просмотра ТВ. В списке только числа с историей Insights.",
+        "pl": "Suma, która tylko rośnie, np. kWh lub m³ licznika, mm deszczomierza czy godziny oglądania TV. Lista zawiera tylko liczby z historią Insights.",
+        "ko": "계량기의 kWh나 m³, 우량계의 mm, TV 시청 시간처럼 늘어나기만 하는 합계입니다. Insights 기록이 있는 숫자만 나열됩니다.",
+        "ar": "مجموع يزداد فقط، مثل kWh أو m³ للعداد أو mm لمقياس المطر أو ساعات التلفاز. تظهر فقط الأرقام التي لها سجل في Insights."
+      }
+    },
+    "totals.period": {
+      "id": "period",
+      "type": "dropdown",
+      "title": {
+        "en": "Period",
+        "nl": "Periode",
+        "de": "Zeitraum",
+        "fr": "Période",
+        "it": "Periodo",
+        "sv": "Period",
+        "no": "Periode",
+        "es": "Periodo",
+        "da": "Periode",
+        "ru": "Период",
+        "pl": "Okres",
+        "ko": "기간",
+        "ar": "الفترة"
+      },
+      "hint": {
+        "en": "A bar per hour for a day, per day for a week or month, per month for a year.",
+        "nl": "Een staaf per uur voor een dag, per dag voor een week of maand, per maand voor een jaar.",
+        "de": "Ein Balken pro Stunde für einen Tag, pro Tag für eine Woche oder einen Monat, pro Monat für ein Jahr.",
+        "fr": "Une barre par heure pour un jour, par jour pour une semaine ou un mois, par mois pour une année.",
+        "it": "Una barra per ora per un giorno, per giorno per una settimana o un mese, per mese per un anno.",
+        "sv": "En stapel per timme för en dag, per dag för en vecka eller månad, per månad för ett år.",
+        "no": "En søyle per time for en dag, per dag for en uke eller måned, per måned for et år.",
+        "es": "Una barra por hora para un día, por día para una semana o un mes, por mes para un año.",
+        "da": "En søjle pr. time for en dag, pr. dag for en uge eller måned, pr. måned for et år.",
+        "ru": "Столбец за час для дня, за день для недели или месяца, за месяц для года.",
+        "pl": "Słupek na godzinę dla dnia, na dzień dla tygodnia lub miesiąca, na miesiąc dla roku.",
+        "ko": "하루는 시간별, 한 주나 한 달은 일별, 한 해는 월별 막대로 표시합니다.",
+        "ar": "عمود لكل ساعة لليوم، ولكل يوم للأسبوع أو الشهر، ولكل شهر للسنة."
+      },
+      "value": "thisWeek",
+      "values": [
+        {
+          "id": "today",
+          "title": {
+            "en": "Today",
+            "nl": "Vandaag",
+            "de": "Heute",
+            "fr": "Aujourd'hui",
+            "it": "Oggi",
+            "sv": "I dag",
+            "no": "I dag",
+            "es": "Hoy",
+            "da": "I dag",
+            "ru": "Сегодня",
+            "pl": "Dziś",
+            "ko": "오늘",
+            "ar": "اليوم"
+          }
+        },
+        {
+          "id": "yesterday",
+          "title": {
+            "en": "Yesterday",
+            "nl": "Gisteren",
+            "de": "Gestern",
+            "fr": "Hier",
+            "it": "Ieri",
+            "sv": "I går",
+            "no": "I går",
+            "es": "Ayer",
+            "da": "I går",
+            "ru": "Вчера",
+            "pl": "Wczoraj",
+            "ko": "어제",
+            "ar": "أمس"
+          }
+        },
+        {
+          "id": "thisWeek",
+          "title": {
+            "en": "This week",
+            "nl": "Deze week",
+            "de": "Diese Woche",
+            "fr": "Cette semaine",
+            "it": "Questa settimana",
+            "sv": "Denna vecka",
+            "no": "Denne uken",
+            "es": "Esta semana",
+            "da": "Denne uge",
+            "ru": "Эта неделя",
+            "pl": "Ten tydzień",
+            "ko": "이번 주",
+            "ar": "هذا الأسبوع"
+          }
+        },
+        {
+          "id": "lastWeek",
+          "title": {
+            "en": "Last week",
+            "nl": "Vorige week",
+            "de": "Letzte Woche",
+            "fr": "La semaine dernière",
+            "it": "La settimana scorsa",
+            "sv": "Förra veckan",
+            "no": "Forrige uke",
+            "es": "La semana pasada",
+            "da": "Sidste uge",
+            "ru": "Прошлая неделя",
+            "pl": "Zeszły tydzień",
+            "ko": "지난주",
+            "ar": "الأسبوع الماضي"
+          }
+        },
+        {
+          "id": "thisMonth",
+          "title": {
+            "en": "This month",
+            "nl": "Deze maand",
+            "de": "Dieser Monat",
+            "fr": "Ce mois-ci",
+            "it": "Questo mese",
+            "sv": "Denna månad",
+            "no": "Denne måneden",
+            "es": "Este mes",
+            "da": "Denne måned",
+            "ru": "Этот месяц",
+            "pl": "Ten miesiąc",
+            "ko": "이번 달",
+            "ar": "هذا الشهر"
+          }
+        },
+        {
+          "id": "lastMonth",
+          "title": {
+            "en": "Last month",
+            "nl": "Vorige maand",
+            "de": "Letzter Monat",
+            "fr": "Le mois dernier",
+            "it": "Il mese scorso",
+            "sv": "Förra månaden",
+            "no": "Forrige måned",
+            "es": "El mes pasado",
+            "da": "Sidste måned",
+            "ru": "Прошлый месяц",
+            "pl": "Zeszły miesiąc",
+            "ko": "지난달",
+            "ar": "الشهر الماضي"
+          }
+        },
+        {
+          "id": "thisYear",
+          "title": {
+            "en": "This year",
+            "nl": "Dit jaar",
+            "de": "Dieses Jahr",
+            "fr": "Cette année",
+            "it": "Quest'anno",
+            "sv": "I år",
+            "no": "I år",
+            "es": "Este año",
+            "da": "I år",
+            "ru": "Этот год",
+            "pl": "Ten rok",
+            "ko": "올해",
+            "ar": "هذا العام"
+          }
+        },
+        {
+          "id": "lastYear",
+          "title": {
+            "en": "Last year",
+            "nl": "Vorig jaar",
+            "de": "Letztes Jahr",
+            "fr": "L'année dernière",
+            "it": "L'anno scorso",
+            "sv": "Förra året",
+            "no": "I fjor",
+            "es": "El año pasado",
+            "da": "Sidste år",
+            "ru": "Прошлый год",
+            "pl": "Zeszły rok",
+            "ko": "작년",
+            "ar": "العام الماضي"
+          }
+        }
+      ]
+    },
+    "totals.compare": {
+      "id": "compare",
+      "type": "checkbox",
+      "title": {
+        "en": "Compare with the period before",
+        "nl": "Vergelijk met de vorige periode",
+        "de": "Mit dem vorigen Zeitraum vergleichen",
+        "fr": "Comparer à la période précédente",
+        "it": "Confronta con il periodo precedente",
+        "sv": "Jämför med perioden innan",
+        "no": "Sammenlign med perioden før",
+        "es": "Comparar con el periodo anterior",
+        "da": "Sammenlign med perioden før",
+        "ru": "Сравнить с предыдущим периодом",
+        "pl": "Porównaj z poprzednim okresem",
+        "ko": "이전 기간과 비교",
+        "ar": "المقارنة بالفترة السابقة"
+      },
+      "hint": {
+        "en": "The period before in a lighter colour beside each bar: yesterday's hour, last month's day, last year's month.",
+        "nl": "De vorige periode in een lichtere kleur naast elke staaf: het uur van gisteren, de dag van vorige maand, de maand van vorig jaar.",
+        "de": "Der vorige Zeitraum in hellerer Farbe neben jedem Balken: die Stunde von gestern, der Tag im letzten Monat, der Monat im letzten Jahr.",
+        "fr": "La période précédente en couleur plus claire à côté de chaque barre : l'heure d'hier, le jour du mois dernier, le mois de l'année dernière.",
+        "it": "Il periodo precedente in un colore più chiaro accanto a ogni barra: l'ora di ieri, il giorno del mese scorso, il mese dell'anno scorso.",
+        "sv": "Perioden innan i en ljusare färg bredvid varje stapel: gårdagens timme, förra månadens dag, förra årets månad.",
+        "no": "Perioden før i en lysere farge ved siden av hver søyle: gårsdagens time, forrige måneds dag, fjorårets måned.",
+        "es": "El periodo anterior en un color más claro junto a cada barra: la hora de ayer, el día del mes pasado, el mes del año pasado.",
+        "da": "Perioden før i en lysere farve ved siden af hver søjle: gårsdagens time, sidste måneds dag, sidste års måned.",
+        "ru": "Предыдущий период более светлым цветом рядом с каждым столбцом: час вчера, день прошлого месяца, месяц прошлого года.",
+        "pl": "Poprzedni okres jaśniejszym kolorem obok każdego słupka: godzina z wczoraj, dzień z poprzedniego miesiąca, miesiąc z poprzedniego roku.",
+        "ko": "각 막대 옆에 이전 기간을 연한 색으로 표시합니다. 어제의 같은 시간, 지난달의 같은 날, 작년의 같은 달입니다.",
+        "ar": "الفترة السابقة بلون أفتح بجانب كل عمود: ساعة الأمس، ويوم الشهر الماضي، وشهر العام الماضي."
+      },
+      "value": false
+    },
+    "showHeader.totals": {
+      "id": "showHeader",
+      "type": "checkbox",
+      "title": {
+        "en": "Show the totals at the top",
+        "nl": "Totalen bovenaan tonen",
+        "de": "Summen oben anzeigen",
+        "fr": "Afficher les totaux en haut",
+        "it": "Mostra i totali in alto",
+        "sv": "Visa summorna överst",
+        "no": "Vis summene øverst",
+        "es": "Mostrar los totales arriba",
+        "da": "Vis totalerne øverst",
+        "ru": "Показывать итоги вверху",
+        "pl": "Pokaż sumy u góry",
+        "ko": "맨 위에 합계 표시",
+        "ar": "عرض المجاميع في الأعلى"
+      },
+      "hint": {
+        "en": "The period's total so far. Tap a bar to see its own.",
+        "nl": "Het totaal van de periode tot nu toe. Tik op een staaf voor dat van de staaf.",
+        "de": "Die Summe des Zeitraums bisher. Tippe auf einen Balken für seine eigene.",
+        "fr": "Le total de la période jusqu'ici. Touchez une barre pour voir le sien.",
+        "it": "Il totale del periodo finora. Tocca una barra per vedere il suo.",
+        "sv": "Periodens summa hittills. Tryck på en stapel för att se dess egen.",
+        "no": "Periodens sum så langt. Trykk på en søyle for å se dens egen.",
+        "es": "El total del periodo hasta ahora. Toca una barra para ver el suyo.",
+        "da": "Periodens total indtil nu. Tryk på en søjle for at se dens egen.",
+        "ru": "Итог за период на сейчас. Коснитесь столбца, чтобы увидеть его значение.",
+        "pl": "Suma okresu do tej pory. Dotknij słupka, aby zobaczyć jego własną.",
+        "ko": "지금까지 이 기간의 합계입니다. 막대를 탭하면 해당 막대의 값을 볼 수 있습니다.",
+        "ar": "مجموع الفترة حتى الآن. المس عمودًا لرؤية مجموعه."
+      },
+      "value": true
+    }
+  },
+  "hints": {
+    "chart.2": {
+      "en": "Only with Charts set to two.",
+      "nl": "Alleen als Grafieken op twee staat.",
+      "de": "Nur wenn Diagramme auf zwei steht.",
+      "fr": "Seulement si Graphiques est réglé sur deux.",
+      "it": "Solo con Grafici impostato su due.",
+      "sv": "Bara när Diagram är satt till två.",
+      "no": "Bare når Diagrammer er satt til to.",
+      "es": "Solo con Gráficos en dos.",
+      "da": "Kun når Grafer er sat til to.",
+      "ru": "Только если в «Графики» выбрано два.",
+      "pl": "Tylko gdy Wykresy ustawiono na dwa.",
+      "ko": "차트를 두 개로 설정한 경우에만.",
+      "ar": "فقط عند ضبط المخططات على اثنين."
+    },
+    "span.overlay": {
+      "en": "On one chart, chart 1's is used; two of a kind can be combined, like Today and Yesterday or This month and Last month.",
+      "nl": "In één grafiek geldt die van grafiek 1; twee van dezelfde soort kunnen samen, zoals Vandaag en Gisteren of Deze maand en Vorige maand.",
+      "de": "In einem Diagramm gilt die von Diagramm 1; zwei gleicher Art lassen sich kombinieren, etwa Heute und Gestern oder Dieser Monat und Letzter Monat.",
+      "fr": "Dans un graphique, celle du graphique 1 s’applique ; deux du même type peuvent être combinées, comme Aujourd'hui et Hier ou Ce mois-ci et Le mois dernier.",
+      "it": "In un grafico vale quella del grafico 1; due dello stesso tipo si possono combinare, come Oggi e Ieri o Questo mese e Il mese scorso.",
+      "sv": "I ett diagram gäller diagram 1:s; två av samma slag kan kombineras, som I dag och I går eller Denna månad och Förra månaden.",
+      "no": "I ett diagram gjelder diagram 1 sin; to av samme slag kan kombineres, som I dag og I går eller Denne måneden og Forrige måned.",
+      "es": "En un gráfico, se usa la del gráfico 1; dos del mismo tipo se pueden combinar, como Hoy y Ayer o Este mes y El mes pasado.",
+      "da": "I én graf gælder graf 1's; to af samme slags kan kombineres, som I dag og I går eller Denne måned og Sidste måned.",
+      "ru": "На одном графике действует настройка графика 1; два периода одного вида можно совместить, например «Сегодня» и «Вчера» или «Этот месяц» и «Прошлый месяц».",
+      "pl": "Na jednym wykresie obowiązuje ustawienie wykresu 1; dwa okresy tego samego rodzaju można połączyć, np. Dziś i Wczoraj albo Ten miesiąc i Zeszły miesiąc.",
+      "ko": "차트 1개에서는 차트 1의 설정을 사용합니다. 오늘과 어제, 이번 달과 지난달처럼 같은 종류의 두 기간은 함께 쓸 수 있습니다.",
+      "ar": "في مخطط واحد، يُستخدم إعداد المخطط 1؛ ويمكن الجمع بين فترتين من النوع نفسه، مثل اليوم وأمس أو هذا الشهر والشهر الماضي."
+    },
+    "range.overlay": {
+      "en": "On one chart, chart 1's is used.",
+      "nl": "In één grafiek geldt die van grafiek 1.",
+      "de": "In einem Diagramm gilt die von Diagramm 1.",
+      "fr": "Dans un graphique, celle du graphique 1 s’applique.",
+      "it": "In un grafico vale quella del grafico 1.",
+      "sv": "I ett diagram gäller diagram 1:s.",
+      "no": "I ett diagram gjelder diagram 1 sin.",
+      "es": "En un gráfico, se usa la del gráfico 1.",
+      "da": "I én graf gælder graf 1's.",
+      "ru": "На одном графике действует настройка графика 1.",
+      "pl": "Na jednym wykresie obowiązuje ustawienie wykresu 1.",
+      "ko": "차트 1개에서는 차트 1의 설정을 사용합니다.",
+      "ar": "في مخطط واحد، يُستخدم إعداد المخطط 1."
+    },
+    "colorStyle.totals": {
+      "en": "Vivid fills the bars with more colour.",
+      "nl": "Levendig vult de staven met meer kleur.",
+      "de": "Kräftig füllt die Balken mit mehr Farbe.",
+      "fr": "Vives remplit les barres avec plus de couleur.",
+      "it": "Vivaci riempie le barre con più colore.",
+      "sv": "Livfulla fyller staplarna med mer färg.",
+      "no": "Livlige fyller søylene med mer farge.",
+      "es": "Vivos rellena las barras con más color.",
+      "da": "Livlige fylder søjlerne med mere farve.",
+      "ru": "«Яркие» заливают столбцы ярче.",
+      "pl": "Żywe wypełniają słupki mocniejszym kolorem.",
+      "ko": "선명하게는 막대를 더 진한 색으로 채웁니다.",
+      "ar": "«زاهية» تملأ الأعمدة بلون أكثر."
+    }
+  },
+  "widgets": {
+    "charts": [
+      "charts",
+      "sharedScale",
+      "showHeader.values",
+      "legend",
+      "colorStyle",
+      "chart:1",
+      "span:1",
+      "style:1",
+      "color:1",
+      "range:1",
+      "negative:1",
+      "smooth:1",
+      "title:1",
+      {
+        "use": "chart:2",
+        "hint": "chart.2"
+      },
+      {
+        "use": "span:2",
+        "hint": "span.overlay"
+      },
+      "style:2",
+      {
+        "use": "color:2",
+        "value": "green"
+      },
+      {
+        "use": "range:2",
+        "hint": "range.overlay"
+      },
+      "negative:2",
+      "smooth:2",
+      "title:2"
+    ],
+    "totals": [
+      "totals.slot",
+      "totals.period",
+      "totals.compare",
+      {
+        "use": "title",
+        "top": true
+      },
+      "showHeader.totals",
+      {
+        "use": "color",
+        "top": true
+      },
+      {
+        "use": "colorStyle",
+        "hint": "colorStyle.totals"
+      }
+    ]
+  }
+}
