@@ -345,6 +345,15 @@
     "usual": "Normaal",
     "usualAt": "Normaal om __time__"
   },
+  "dailyrange": {
+    "selectValue": "Kies een apparaatwaarde in de widgetinstellingen.",
+    "error": "Kon de grafiek niet laden.",
+    "unavailable": "Niet beschikbaar",
+    "noHistory": "Nog geen geschiedenis.",
+    "now": "Nu",
+    "high": "Hoogste",
+    "low": "Laagste"
+  },
   "lights": {
     "selectDevices": "Kies lampen in de widgetinstellingen.",
     "error": "Kon de lampen niet laden.",
@@ -879,6 +888,7 @@
       "totals": "Hoeveel een waarde per uur, dag of maand opliep: kWh, regen, uren tv.",
       "scatter": "Eén waarde tegen een andere, een stip per uur: werkt de warmtepomp harder als het kouder is?",
       "typicalday": "De lijn van vandaag over de normale dag en de spreiding: is vandaag anders?",
+      "dailyrange": "Het laagste en hoogste van elke dag als staaf, met het gemiddelde erdoor: hoeveel schommelde het?",
       "variables": "Variabelen als rijen om te schakelen of te wijzigen.",
       "varpresets": "Knoppen die een variabele op vaste waarden zetten.",
       "keypad": "Knoppen achter een optionele code die flows starten of een status instellen.",

@@ -6,7 +6,7 @@
 <title>Widget Previews</title>
 <!--
   Source for the widget preview PNGs (from the "Widget Previews" Claude Design project).
-  Without a query it shows them all on a canvas; `?p=elec-dark|elec-light|thermo-dark|thermo-light|qa-dark|qa-light|sa-dark|sa-light|sd-dark|sd-light|rh-dark|rh-light|weather-dark|weather-light|hm-dark|hm-light|cam-dark|cam-light|val-dark|val-light|lc-dark|lc-light|lr-dark|lr-light|spark-dark|spark-light|chart-dark|chart-light|var-dark|var-light|vp-dark|vp-light|sd-dark|sd-light|fb-dark|fb-light|pb-dark|pb-light|tm-dark|tm-light|lk-dark|lk-light|ct-dark|ct-light|mw-dark|mw-light|sk-dark|sk-light|ck-dark|ck-light|sp-dark|sp-light|tl-dark|tl-light|ds-dark|ds-light|sc-dark|sc-light|wp-dark|wp-light|pw-dark|pw-light|pu-dark|pu-light|kp-dark|kp-light|tt-dark|tt-light|xy-dark|xy-light|td-dark|td-light`
+  Without a query it shows them all on a canvas; `?p=elec-dark|elec-light|thermo-dark|thermo-light|qa-dark|qa-light|sa-dark|sa-light|sd-dark|sd-light|rh-dark|rh-light|weather-dark|weather-light|hm-dark|hm-light|cam-dark|cam-light|val-dark|val-light|lc-dark|lc-light|lr-dark|lr-light|spark-dark|spark-light|chart-dark|chart-light|var-dark|var-light|vp-dark|vp-light|sd-dark|sd-light|fb-dark|fb-light|pb-dark|pb-light|tm-dark|tm-light|lk-dark|lk-light|ct-dark|ct-light|mw-dark|mw-light|sk-dark|sk-light|ck-dark|ck-light|sp-dark|sp-light|tl-dark|tl-light|ds-dark|ds-light|sc-dark|sc-light|wp-dark|wp-light|pw-dark|pw-light|pu-dark|pu-light|kp-dark|kp-light|tt-dark|tt-light|xy-dark|xy-light|td-dark|td-light|dr-dark|dr-light`
   renders that one 1024×1024 frame alone on a transparent page, for scripts/render-previews.mjs.
 -->
 <style>
@@ -646,6 +646,36 @@ function typicalDayChart(t, theme) {
   </div>`;
 }
 
+// Chart · Daily Range: a floating bar a day from its low to its high, each with a tick at its average, under its title chip,
+// in yellow (the other chart widgets have blue, green, purple, orange and red).
+function dailyRangeChart(t, theme) {
+  const YELLOW = '#F5C518';
+  const card = theme === 'dark' ? '#1F2029' : '#FFFFFF';
+  const muted = theme === 'dark' ? 'rgba(237,238,240,.45)' : 'rgba(31,32,41,.4)';
+  const H = 384, PAD = 24;
+  const LOW = [0.32, 0.28, 0.36, 0.42, 0.38, 0.3, 0.22, 0.26, 0.34, 0.4, 0.46, 0.4];
+  const HIGH = [0.66, 0.7, 0.78, 0.84, 0.72, 0.6, 0.58, 0.68, 0.8, 0.88, 0.9, 0.78];
+  const slot = W / LOW.length, bw = slot * 0.5;
+  const py = v => PAD + (1 - v) * (H - 2 * PAD);
+  const bars = LOW.map((lo, i) => {
+    const x = slot * i + (slot - bw) / 2, hi = HIGH[i], avg = lo + (hi - lo) * 0.55;
+    return `<rect x="${x.toFixed(1)}" y="${py(hi).toFixed(1)}" width="${bw.toFixed(1)}" height="${(py(lo) - py(hi)).toFixed(1)}" rx="10" fill="${YELLOW}" fill-opacity="${i === LOW.length - 1 ? 1 : 0.7}"/>`
+      + `<path d="M${(x - 4).toFixed(1)} ${py(avg).toFixed(1)}h${(bw + 8).toFixed(1)}" stroke="${t.fg}" stroke-width="6" stroke-linecap="round"/>`;
+  }).join('');
+  const grid = Array.from({ length: 3 }, (_, j) => `M0 ${(H * j / 3 + 2).toFixed(1)}H${W}`).join('');
+  return `<div class="card" style="gap:36px">
+    <div class="pill" style="align-self:flex-start;height:64px;padding:0 30px 0 24px;box-sizing:border-box;background:color-mix(in srgb, ${t.fg} 9%, ${card});display:flex;align-items:center;gap:18px">
+      <div style="width:24px;height:24px;border-radius:50%;background:${YELLOW}"></div>
+      ${pill(240, 30, t.fg, 'opacity:.85')}${pill(56, 30, muted)}
+    </div>
+    <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+      <path d="${grid}" fill="none" stroke="${t.grid}" stroke-width="3"/>
+      <path d="M0 ${H - 2}H${W}" fill="none" stroke="${t.grid}" stroke-width="4"/>
+      ${bars}
+    </svg>
+  </div>`;
+}
+
 // Sparklines: Device Values' tiles, 2 per row, each with a small blue line chart (and a faint area) between the
 // icon/value row and the name, and the min/max as two small muted labels at the chart's right edge.
 function sparklines(t, theme) {
@@ -1078,6 +1108,8 @@ const PREVIEWS = [
   { id: 'xy-light',     label: '3t · X against Y — preview-light.png',                 theme: 'light', render: scatterChart },
   { id: 'td-dark',      label: '3u · Typical Day — preview-dark.png',                  theme: 'dark',  render: typicalDayChart },
   { id: 'td-light',     label: '3v · Typical Day — preview-light.png',                 theme: 'light', render: typicalDayChart },
+  { id: 'dr-dark',      label: '3w · Daily Range — preview-dark.png',                  theme: 'dark',  render: dailyRangeChart },
+  { id: 'dr-light',     label: '3x · Daily Range — preview-light.png',                 theme: 'light', render: dailyRangeChart },
   { id: 'var-dark',     label: '1u · Variables — preview-dark.png',         theme: 'dark',  render: flowVariables },
   { id: 'var-light',    label: '1v · Variables — preview-light.png',        theme: 'light', render: flowVariables },
   { id: 'vp-dark',      label: '2y · Variable Presets — preview-dark.png',       theme: 'dark',  render: varPresets },

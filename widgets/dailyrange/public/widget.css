@@ -1,0 +1,32 @@
+/*
+ * Chart · Daily Range: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`) in the widget's colour
+ * (the kit's `data-wk-color` on the root: its bright set, as Charts' colours); each bar's average in the text colour.
+ */
+.dr { --dr-color: var(--wk-c-bright, var(--ew-blue)); }
+
+/* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
+html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
+html, body { margin: 0; }
+
+.dr .dr-value { color: var(--dr-color); gap: 3px; }
+.dr .dr-value.tight { gap: 0; }
+/* Yellow text is mixed with the text colour, as Charts' yellow, so it reads on a light card. */
+.wk[data-wk-color="yellow"] .dr .dr-value { color: color-mix(in srgb, var(--dr-color) 75%, var(--ew-text)); }
+.dr .ew-hcol.low .dr-value { color: var(--ew-muted); }
+
+.dr .ew-chips { gap: 6px; }
+.dr .ew-chip.series { max-width: 100%; min-width: 0; }
+.dr .ew-chip.series > span { overflow: hidden; text-overflow: ellipsis; }
+.dr .ew-chip.series i { background: var(--dr-color); flex-shrink: 0; }
+
+.dr .dr-bar { fill: color-mix(in srgb, var(--dr-color) 60%, transparent); }
+.dr .dr-bar.selected { fill: var(--dr-color); }
+.dr .dr-avg { stroke: var(--ew-text); stroke-width: 1.5; fill: none; }
+/* Vivid (kit.css, on the widget's root): stronger bars. */
+.wk-deep .dr .dr-bar { fill: color-mix(in srgb, var(--dr-color) 90%, transparent); }
+.wk-deep .dr .dr-bar.selected { fill: var(--dr-color); }
+
+/* A chart without anything to draw keeps its chip, with the reason under it. */
+.dr .dr-chart.empty { min-height: 0; }
+.dr .dr-chart.empty .ew-chips { position: static; }
+.dr .dr-note { padding-bottom: 0; }

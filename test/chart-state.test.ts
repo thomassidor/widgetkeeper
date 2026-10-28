@@ -47,6 +47,12 @@ describe('parseChartRequests', () => {
     ]);
   });
 
+  it('reads a request for more points (Daily Range)', () => {
+    expect(parseChartRequests('a:x~1mo!~100~200~month~fine')).toEqual([
+      { slot: 'a:x', span: '1mo!', from: 100, end: 200, unit: 'month', use: false, fine: true, window: true },
+    ]);
+  });
+
   it("takes a page's older request (a span without a window) as Sparklines' span", () => {
     expect(parseChartRequests('a:x~7d')).toEqual([{ slot: 'a:x', span: '7d', window: false }]);
     expect(parseChartRequests('a:x~7d~300~100~')).toEqual([{ slot: 'a:x', span: '7d', window: false }]); // ends before it starts
@@ -74,6 +80,12 @@ describe('getWindows', () => {
       ask(local('2026-10-05T00:00'), NOW, 'day'), // two days from midnight: today's log again, with yesterday's
     ].join(',')));
     expect(resolutions()).toEqual(['last24Hours', 'today', 'lastWeek', 'yesterday']);
+  });
+
+  it('keeps up to 400 points with fine, no bucket under the log step', async () => {
+    const { app } = setup();
+    const [s] = await chartStates(app, parseChartRequests(`${slot}~x~${NOW - 24 * HOUR}~${NOW}~~fine`)) as any[];
+    expect(s.points).toHaveLength(24 * 12); // 5-minute steps
   });
 
   it('gives a running total with use', async () => {

@@ -129,8 +129,8 @@ export function downsample(res: any, now: number, spanMs: number, logStep = 0): 
 }
 
 /** `downsample()` of samples. */
-export function downsampleSamples(samples: Sample[], now: number, spanMs: number, logStep = 0): [number, number][] {
-  const count = Math.max(1, Math.min(MAX_POINTS, logStep ? Math.floor(spanMs / logStep) : MAX_POINTS));
+export function downsampleSamples(samples: Sample[], now: number, spanMs: number, logStep = 0, max = MAX_POINTS): [number, number][] {
+  const count = Math.max(1, Math.min(max, logStep ? Math.floor(spanMs / logStep) : max));
   const step = spanMs / count;
   const start = now - spanMs;
   const out: [number, number][] = [];
@@ -174,9 +174,10 @@ function logStep(res: any): number | null {
 /**
  * A chart's request (Charts, Totals per Period and the other `Chart · …` widgets): the slot's history over `[from, end]`,
  * which the widget works out on the phone's clock, with its span's calendar unit for a calendar one (`planLogs()`),
- * and with `use` the running total. `span` is the setting, for the log line.
+ * and with `use` the running total; `fine` keeps up to `MAX_METER_POINTS` of it (Chart · Daily Range's lows and highs). `span`
+ * is the setting, for the log line.
  */
-export type WindowRequest = { slot: string, from: number, end: number, unit?: CalendarUnit | null, use?: boolean, span?: string };
+export type WindowRequest = { slot: string, from: number, end: number, unit?: CalendarUnit | null, use?: boolean, fine?: boolean, span?: string };
 
 /**
  * The Sparklines widget: Device Values' tiles with each value's recent history from Insights.
@@ -264,7 +265,7 @@ export default class SparklineService {
    * they overlap), averaged into at most `MAX_POINTS` over the window (no bucket shorter than the coarsest log's step),
    * or with `use` the running total around it (`meterPointsOf()`). A failed read gives no history.
    */
-  private async windowHistory({ slot, from, end, unit = null, use = false }: WindowRequest): Promise<History> {
+  private async windowHistory({ slot, from, end, unit = null, use = false, fine = false }: WindowRequest): Promise<History> {
     const { deviceId, capabilityId } = parseSlot(slot)!;
     const timeZone = this.homey.clock.getTimezone() || 'UTC';
     const logs = planLogs(from, end, Date.now(), timeZone, unit);
@@ -274,7 +275,7 @@ export default class SparklineService {
       const step = Math.max(...logs.map(l => l.step));
       const samples = mergeLogs(read.map((res, i) => ({ samples: parseInsightsEntries(res), step: logStep(res) ?? logs[i].step })));
       if (use) return meterPointsOf(samples.filter(e => e.t >= from - 2 * step && e.t <= end + step));
-      return { points: downsampleSamples(samples, end, end - from, step) };
+      return { points: downsampleSamples(samples, end, end - from, step, fine ? MAX_METER_POINTS : MAX_POINTS) };
     } catch (err) {
       this.log(`Chart history of ${slot} unavailable:`, err);
       return { points: [] };

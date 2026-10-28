@@ -22,6 +22,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 ### New: Chart · Typical Day
 - Today's line over the usual day: each hour's average over the last 7 (or 3) days, dashed, with its spread as a band, so a day that runs high or low shows at once. The value now and the usual one for this hour sit at the top; tap for another hour.
 
+### New: Chart · Daily Range
+- Each day's lowest to highest as a bar, with its average as a tick: how cold the nights and how warm the afternoons were. The last four weeks by default, or any time span (a bar an hour over a day, a month over a year). The latest bar's high and low sit at the top; tap a bar for its own.
+
 ### New: Chart · Totals per Period
 - How much a value went up in each hour, day or month, like the Homey app's Energy tab: a bar an hour for today or yesterday, a day for this or last week or month, a month for this or last year, or any other span (the last 30 days, the three months from the 1st). The period's total sits at the top; tap a bar for its own.
 - Its value list puts meters first.

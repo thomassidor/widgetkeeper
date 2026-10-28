@@ -120,11 +120,15 @@
       return nf(v, Math.min(most, a < 10 ? 2 : a < 1000 ? 1 : 0));
     }
 
-    /** A bar's time: an hour's `13:00–14:00` (a weekday before it over several days), a day's or week's `tir. 14`, a month's name. */
+    /**
+     * A bar's time, by its unit (not its length: the last of a rolling span ends now): an hour's `13:00–14:00` (a weekday
+     * before it over several days), a day's or week's `tir. 14`, a month's name.
+     */
     function whenText(bar) {
-      if (bar.end - bar.t > 27 * DAY) return dateText(bar.t, { month: 'long' });
-      if (bar.end - bar.t > 23 * C.HOUR) return dateText(bar.t, { weekday: 'short', day: 'numeric' });
       const win = timeSpan(period, now());
+      const unit = C.barUnit(win.from, win.to, win.unit);
+      if (unit === 'month') return dateText(bar.t, { month: 'long' });
+      if (unit === 'week' || unit >= 23 * C.HOUR) return dateText(bar.t, { weekday: 'short', day: 'numeric' });
       const day = win.to - win.from > DAY + C.HOUR ? `${dateText(bar.t, { weekday: 'short' })} ` : '';
       return `${day}${hhmm(bar.t)}–${hhmm(bar.end)}`;
     }

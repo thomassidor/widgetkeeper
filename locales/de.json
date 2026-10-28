@@ -345,6 +345,15 @@
     "usual": "Üblich",
     "usualAt": "Üblich um __time__"
   },
+  "dailyrange": {
+    "selectValue": "Wähle einen Gerätewert in den Widget-Einstellungen.",
+    "error": "Das Diagramm konnte nicht geladen werden.",
+    "unavailable": "Nicht verfügbar",
+    "noHistory": "Noch kein Verlauf.",
+    "now": "Jetzt",
+    "high": "Höchst",
+    "low": "Tiefst"
+  },
   "lights": {
     "selectDevices": "Wähle Lampen in den Widget-Einstellungen.",
     "error": "Lampen konnten nicht geladen werden.",
@@ -879,6 +888,7 @@
       "totals": "Wie viel ein Wert pro Stunde, Tag oder Monat gestiegen ist: kWh, Regen, Stunden Fernsehen.",
       "scatter": "Ein Wert gegen einen anderen, ein Punkt pro Stunde: Arbeitet die Wärmepumpe mehr, wenn es kälter ist?",
       "typicalday": "Die Linie von heute über dem typischen Tag und seiner Streuung: Ist heute ungewöhnlich?",
+      "dailyrange": "Tiefst- und Höchstwert jedes Tages als Balken, der Mittelwert quer darüber: Wie stark hat es geschwankt?",
       "variables": "Variablen als Zeilen zum Schalten oder Ändern.",
       "varpresets": "Tasten, die eine Variable auf feste Werte setzen.",
       "keypad": "Tasten hinter einem optionalen Code, die Flows starten oder einen Zustand setzen.",

@@ -18,7 +18,7 @@ const MAX_SHOW_MINUTES = 24 * 60;
 /** The widgets a stack can show: every widget of this app but the stack itself, the (empty) spacer, Web Page (its frame would take the stack's swipes), Lights by Room (a tall list), the hidden Popups and the web-only Dashboard Shortcuts. Keep in step with `TYPES` in widget.js. */
 export const STACK_TYPES = [
   'electricity', 'thermostat', 'quickactions', 'sensoralarms', 'sensordots', 'roomhealth', 'valuematrix', 'weather', 'pollen', 'heatmap', 'cameras', 'values',
-  'lights', 'sparklines', 'charts', 'totals', 'scatter', 'typicalday', 'variables', 'varpresets', 'flows', 'price', 'timers', 'locks', 'curtains', 'media', 'clock',
+  'lights', 'sparklines', 'charts', 'totals', 'scatter', 'typicalday', 'dailyrange', 'variables', 'varpresets', 'flows', 'price', 'timers', 'locks', 'curtains', 'media', 'clock',
   'textline', 'dayssince',
 ] as const;
 

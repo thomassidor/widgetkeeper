@@ -481,6 +481,25 @@ const BUILD = {
     ] };
   },
 
+  async dailyrange() {
+    const items = await autocomplete('dailyrange', 'slot');
+    // A temperature where there is (its days swing), then whatever else is logged.
+    const [temp] = pick(items, i => /:measure_temperature/.test(i.id));
+    const [other] = pick(items, i => !/:measure_temperature/.test(i.id));
+    const value = temp || other;
+    const missing = { id: `${MISSING}:measure_temperature`, name: 'Deleted device · Temperature' };
+    return { cols: 3, widgets: [
+      wide(w('dailyrange', 'The last 4 weeks (defaults)', { slot: value })),
+      w('dailyrange', 'This month · yellow', { slot: value, count: 1, span: 'calMonths', color: 'yellow' }),
+      w('dailyrange', 'Last week · Vivid', { slot: value, count: 1, span: 'calWeeks', leaveOut: true, colorStyle: 'deep' }),
+      w('dailyrange', '24 hours, a bar an hour · no average', { slot: value, count: 24, span: 'hours', average: false, color: 'purple' }),
+      w('dailyrange', 'This year, a bar a month · from zero', { slot: value, count: 1, span: 'calYears', range: 'zero', color: 'orange' }),
+      w('dailyrange', 'Own title · no header', { slot: value, title: 'Typed title', showHeader: false }),
+      other && other !== value && w('dailyrange', 'Another value', { slot: other, color: 'green' }),
+      w('dailyrange', 'Deleted device', { slot: missing }),
+      w('dailyrange', 'Nothing picked'),
+    ].filter(Boolean) };
+  },
   async typicalday() {
     const items = await autocomplete('typicalday', 'slot');
     // Power where there is (its day has a shape), then a temperature, then whatever else is logged.

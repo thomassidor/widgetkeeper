@@ -172,6 +172,7 @@ const CAPABILITY_SLOTS: Record<string, { setting: RegExp, caps: (device: any) =>
   totals: { setting: /^slot$/, caps: sparkCaps },
   scatter: { setting: /^(xValue|yValue)$/, caps: sparkCaps },
   typicalday: { setting: /^slot$/, caps: sparkCaps },
+  dailyrange: { setting: /^slot$/, caps: sparkCaps },
 };
 
 /** A device's icon for the page, as the widgets pick it: the user-picked library icon, else the driver's (on the Homey). */

@@ -1428,6 +1428,75 @@
         "ko": "범위 표시",
         "ar": "إظهار المدى"
       }
+    },
+    "dailyrange.slot": {
+      "id": "slot",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value",
+        "nl": "Waarde",
+        "de": "Wert",
+        "fr": "Valeur",
+        "it": "Valore",
+        "sv": "Värde",
+        "no": "Verdi",
+        "es": "Valor",
+        "da": "Værdi",
+        "ru": "Значение",
+        "pl": "Wartość",
+        "ko": "값",
+        "ar": "القيمة"
+      },
+      "hint": {
+        "en": "Its lowest to highest in each bar's time, such as the outdoor temperature or a room's humidity. Only numbers with Insights history are listed.",
+        "nl": "Het laagste tot hoogste in de tijd van elke staaf, zoals de buitentemperatuur of de luchtvochtigheid van een kamer. Alleen getallen met Insights-geschiedenis staan in de lijst.",
+        "de": "Der Tiefst- bis Höchstwert in der Zeit jedes Balkens, etwa die Außentemperatur oder die Luftfeuchte eines Raums. Nur Zahlen mit Insights-Verlauf stehen zur Auswahl.",
+        "fr": "Le minimum au maximum sur la durée de chaque barre, comme la température extérieure ou l'humidité d'une pièce. Seuls les nombres avec un historique Insights sont proposés.",
+        "it": "Dal minimo al massimo nel tempo di ogni barra, come la temperatura esterna o l'umidità di una stanza. Sono elencati solo i numeri con cronologia Insights.",
+        "sv": "Lägsta till högsta under varje stapels tid, som utetemperaturen eller ett rums luftfuktighet. Bara tal med Insights-historik visas.",
+        "no": "Laveste til høyeste i hver søyles tid, som utetemperaturen eller fuktigheten i et rom. Bare tall med Insights-historikk vises.",
+        "es": "Del mínimo al máximo en el tiempo de cada barra, como la temperatura exterior o la humedad de una habitación. Solo aparecen números con historial de Insights.",
+        "da": "Laveste til højeste i hver søjles tid, som udetemperaturen eller luftfugtigheden i et rum. Kun tal med Insights-historik vises.",
+        "ru": "От минимума до максимума за время каждого столбца, например уличная температура или влажность в комнате. В списке только числа с историей Insights.",
+        "pl": "Od najniższej do najwyższej w czasie każdego słupka, np. temperatura na zewnątrz lub wilgotność w pokoju. Lista zawiera tylko liczby z historią Insights.",
+        "ko": "각 막대 시간 동안의 최저~최고입니다(예: 바깥 온도나 방의 습도). Insights 기록이 있는 숫자만 나열됩니다.",
+        "ar": "من الأدنى إلى الأعلى خلال وقت كل عمود، مثل درجة الحرارة الخارجية أو رطوبة غرفة. تظهر فقط الأرقام التي لها سجل في Insights."
+      }
+    },
+    "dailyrange.average": {
+      "id": "average",
+      "type": "checkbox",
+      "value": true,
+      "title": {
+        "en": "Average tick",
+        "nl": "Streepje voor het gemiddelde",
+        "de": "Strich für den Mittelwert",
+        "fr": "Trait de la moyenne",
+        "it": "Tacca della media",
+        "sv": "Streck för medelvärdet",
+        "no": "Strek for snittet",
+        "es": "Marca de la media",
+        "da": "Streg for gennemsnittet",
+        "ru": "Отметка среднего",
+        "pl": "Kreska średniej",
+        "ko": "평균 표시",
+        "ar": "علامة المتوسط"
+      },
+      "hint": {
+        "en": "A line across each bar at its average.",
+        "nl": "Een streepje over elke staaf bij het gemiddelde.",
+        "de": "Ein Strich quer über jeden Balken beim Mittelwert.",
+        "fr": "Un trait en travers de chaque barre à sa moyenne.",
+        "it": "Una linea su ogni barra alla sua media.",
+        "sv": "Ett streck tvärs över varje stapel vid medelvärdet.",
+        "no": "En strek på tvers av hver søyle ved snittet.",
+        "es": "Una línea a través de cada barra en su media.",
+        "da": "En streg på tværs af hver søjle ved gennemsnittet.",
+        "ru": "Черта поперёк каждого столбца на уровне среднего.",
+        "pl": "Kreska w poprzek każdego słupka na poziomie średniej.",
+        "ko": "각 막대의 평균 위치에 가로선을 그립니다.",
+        "ar": "خط عبر كل عمود عند متوسطه."
+      }
     }
   },
   "hints": {
@@ -1550,6 +1619,21 @@
       "pl": "Żywe wypełniają pas mocniejszym kolorem.",
       "ko": "선명하게는 띠를 더 진한 색으로 채웁니다.",
       "ar": "«زاهية» تملأ الشريط بلون أكثر."
+    },
+    "showHeader.dailyrange": {
+      "en": "The highest and lowest of the latest bar. Tap a bar to see its own.",
+      "nl": "Het hoogste en laagste van de laatste staaf. Tik op een staaf voor die van die staaf.",
+      "de": "Höchst- und Tiefstwert des letzten Balkens. Tippe auf einen Balken für seine.",
+      "fr": "Le maximum et le minimum de la dernière barre. Touchez une barre pour voir les siens.",
+      "it": "Il massimo e il minimo dell'ultima barra. Tocca una barra per vedere i suoi.",
+      "sv": "Högsta och lägsta för den senaste stapeln. Tryck på en stapel för dess egna.",
+      "no": "Høyeste og laveste for den siste søylen. Trykk på en søyle for dens egne.",
+      "es": "El máximo y el mínimo de la última barra. Toca una barra para ver los suyos.",
+      "da": "Højeste og laveste for den seneste søjle. Tryk på en søjle for at se dens egne.",
+      "ru": "Максимум и минимум последнего столбца. Коснитесь столбца, чтобы увидеть его значения.",
+      "pl": "Najwyższa i najniższa wartość ostatniego słupka. Dotknij słupka, by zobaczyć jego wartości.",
+      "ko": "최근 막대의 최고값과 최저값입니다. 막대를 탭하면 그 막대의 값을 볼 수 있습니다.",
+      "ar": "أعلى وأدنى قيمة لآخر عمود. المس عمودًا لترى قيمه."
     }
   },
   "widgets": {
@@ -1687,6 +1771,44 @@
       {
         "use": "colorStyle",
         "hint": "colorStyle.typicalday"
+      }
+    ],
+    "dailyrange": [
+      "dailyrange.slot",
+      {
+        "use": "count",
+        "top": true,
+        "value": 4
+      },
+      {
+        "use": "span",
+        "top": true,
+        "value": "weeks"
+      },
+      {
+        "use": "leaveOut",
+        "top": true
+      },
+      "dailyrange.average",
+      {
+        "use": "range",
+        "top": true
+      },
+      {
+        "use": "title",
+        "top": true
+      },
+      {
+        "use": "showHeader.values",
+        "hint": "showHeader.dailyrange"
+      },
+      {
+        "use": "color",
+        "top": true
+      },
+      {
+        "use": "colorStyle",
+        "hint": "colorStyle.totals"
       }
     ]
   }

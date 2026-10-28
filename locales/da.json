@@ -345,6 +345,15 @@
     "usual": "Sædvanlig",
     "usualAt": "Sædvanlig kl. __time__"
   },
+  "dailyrange": {
+    "selectValue": "Vælg en enhedsværdi i widgetindstillingerne.",
+    "error": "Kunne ikke hente grafen.",
+    "unavailable": "Utilgængelig",
+    "noHistory": "Ingen historik endnu.",
+    "now": "Nu",
+    "high": "Højest",
+    "low": "Lavest"
+  },
   "lights": {
     "selectDevices": "Vælg lys i widgetindstillingerne.",
     "error": "Kunne ikke indlæse lysene.",
@@ -879,6 +888,7 @@
       "totals": "Hvor meget en værdi er steget pr. time, dag eller måned: kWh, regn, timers tv.",
       "scatter": "Én værdi mod en anden, et punkt pr. time: arbejder varmepumpen hårdere, når det er koldt?",
       "typicalday": "Dagens linje over den typiske dag og spredningen: er i dag usædvanlig?",
+      "dailyrange": "Hver dags laveste og højeste som en søjle, gennemsnittet på tværs: hvor meget svingede det?",
       "variables": "Variabler som rækker, du kan slå til og fra eller ændre.",
       "varpresets": "Knapper, der sætter en variabel til faste værdier.",
       "keypad": "Knapper bag en valgfri kode, der starter flows eller sætter en tilstand.",

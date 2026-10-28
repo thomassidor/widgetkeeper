@@ -17,6 +17,10 @@ Many motion, contact and vibration sensors at a glance, as dots that change colo
 <a href="#cameras"><b>Cameras</b></a><br>
 Two to six cameras in one grid of snapshots; tap one to watch it live<br clear="left"></p>
 
+<p><a href="#chart--daily-range"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/dailyrange-dark.png"><img src="docs/previews/dailyrange-light.png" alt="" width="120" align="left"></picture></a>
+<a href="#chart--daily-range"><b>Chart · Daily Range</b></a><br>
+Each day's lowest to highest as a bar, its average across it: how much did it swing?<br clear="left"></p>
+
 <p><a href="#chart--over-time"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/charts-dark.png"><img src="docs/previews/charts-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--over-time"><b>Chart · Over Time</b></a><br>
 One or two charts of any value over any span, from minutes to two years, drawn like Electricity Overview's<br clear="left"></p>
@@ -168,6 +172,15 @@ Motion, contact, vibration and camera sensors as a grid of dots that light up wh
 Your cameras as a grid of snapshots that refresh every few seconds (cameras with only a video stream show a still from it). Tap one to watch it live.
 
 **Settings:** cameras, layout (a large camera at the top or bottom, or one per row), refresh interval, how long live view stays on, time format, [rename tiles](#tile-names).
+
+## Chart · Daily Range
+<img src="docs/screenshots/dailyrange.png" alt="Chart · Daily Range on a Homey dashboard: the outdoor temperature's lowest to highest each day of the last four weeks as floating bars, each with its average" width="358">
+
+A value's lowest to highest in each day as a floating bar, its average as a tick across it: how cold the nights and how warm the afternoons were, how much the humidity swung. The last four weeks by default, a bar a day; another [time span](#time-spans) gets its own bars (an hour each over a day, a month each over a year). The latest bar's high and low sit at the top; tap a bar for its own.
+
+It takes any value that Homey logs in Insights. Insights keeps spans over eight days in 6-hour averages, so a day's low and high there are those of its 6-hour steps, a little milder than the real ones.
+
+**Settings:** the value, [time span](#time-spans), average tick, scale (fitted or from zero), title, the values at the top, colour, [colour style](#colour-style).
 
 <a name="charts"></a>
 
