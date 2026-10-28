@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html class="homey-dark-mode">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What's next in 1.2.0</title>
+  <!--
+    A teaser of 1.2.0 (CHANGELOG.md), in the look of the 1.0.0 and 1.1.0 posters (whats-new.html, whats-next-1.1.0.html):
+    the five new chart widgets (Totals per Period, X against Y, Typical Day, Daily Range, Compare) as the real widgets
+    with the README screenshots' made-up readings (mock-*.js), Chart · Over Time's free time spans (two stacked charts of
+    6 months and 40 minutes, drawn here), the Device names setting (its card drawn, Quick Actions with the full and the
+    short names) and the web editor's live preview (docs/web/preview.png, `npm run web-showcase -- preview`).
+    scripts/render-whats-next.mjs (`npm run whats-next`) renders it to docs/whats-next-1.2.0.png at 2x; the clock is
+    fixed (fixed-clock.js).
+  -->
+  <script src="fixed-clock.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../widgets/spacer/public/kit.css">
+  <link rel="stylesheet" href="../widgets/electricity/public/chart.css">
+  <link rel="stylesheet" href="../widgets/charts/public/widget.css">
+  <link rel="stylesheet" href="../widgets/totals/public/widget.css">
+  <link rel="stylesheet" href="../widgets/scatter/public/widget.css">
+  <link rel="stylesheet" href="../widgets/typicalday/public/widget.css">
+  <link rel="stylesheet" href="../widgets/dailyrange/public/widget.css">
+  <link rel="stylesheet" href="../widgets/compare/public/widget.css">
+  <link rel="stylesheet" href="../widgets/quickactions/public/widget.css">
+  <script src="../widgets/spacer/public/kit.js"></script>
+  <script src="../widgets/electricity/public/chart.js"></script>
+  <script src="../widgets/charts/public/widget.js"></script>
+  <script src="../widgets/totals/public/widget.js"></script>
+  <script src="../widgets/scatter/public/widget.js"></script>
+  <script src="../widgets/typicalday/public/widget.js"></script>
+  <script src="../widgets/dailyrange/public/widget.js"></script>
+  <script src="../widgets/compare/public/widget.js"></script>
+  <script src="../widgets/quickactions/public/widget.js"></script>
+  <script src="../temp/screenshot-icons.js" onerror="window.ICONS = {}"></script>
+  <script src="mock-util.js"></script>
+  <script src="mock-totals.js"></script>
+  <script src="mock-scatter.js"></script>
+  <script src="mock-typicalday.js"></script>
+  <script src="mock-dailyrange.js"></script>
+  <script src="mock-compare.js"></script>
+  <script src="showcase-data.js"></script>
+  <script src="showcase-mount.js"></script>
+  <style>
+    html { background: #0C0B12 !important; }
+    body {
+      margin: 0; padding: 56px 48px 48px; width: 1760px; box-sizing: border-box; font-family: Roboto, sans-serif; color: #FFFFFF;
+      background:
+        radial-gradient(1100px 520px at 18% -4%, rgba(92, 64, 180, 0.55), transparent 70%),
+        radial-gradient(900px 600px at 96% 8%, rgba(42, 25, 88, 0.9), transparent 70%),
+        #0C0B12 !important;
+    }
+
+    header { display: flex; align-items: center; gap: 28px; margin: 0 8px 44px; }
+    .logo {
+      width: 96px; height: 96px; flex: none; border-radius: 26px; background: #2A1958;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 12px 32px rgba(0, 0, 0, 0.4);
+      display: grid; place-items: center;
+    }
+    .logo svg { width: 72px; height: 72px; display: block; }
+    header h1 { margin: 0; font-size: 64px; line-height: 68px; font-weight: 900; letter-spacing: -1.5px; }
+    .eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 6px; font-size: 20px; line-height: 28px; font-weight: 700; color: #B9A6FF; }
+    .eyebrow span { padding: 2px 10px; border-radius: 999px; background: rgba(185, 166, 255, 0.16); font-size: 13px; line-height: 20px; letter-spacing: 0.6px; text-transform: uppercase; }
+    header p { margin: 8px 0 0; font-size: 22px; line-height: 30px; color: #B4B2C6; }
+    .chips { margin-left: auto; display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; max-width: 660px; }
+    .chips span { padding: 8px 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.07); color: #DCDAE8; font-size: 15px; font-weight: 500; }
+    .chips b { font-weight: 700; color: #FFFFFF; }
+
+    .columns { display: flex; gap: 24px; align-items: flex-start; }
+    .columns + .columns, .columns + .feat { margin-top: 24px; }
+    .column { width: 398px; display: flex; flex-direction: column; gap: 24px; }
+
+    .feat {
+      background: #111217; border-radius: 28px; padding: 22px 20px 20px; box-sizing: border-box;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07), 0 16px 40px rgba(0, 0, 0, 0.35);
+    }
+    .tag {
+      display: inline-block; margin: 0 0 10px; padding: 3px 10px; border-radius: 999px; font-size: 12px; line-height: 18px;
+      font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; background: rgba(255, 255, 255, 0.08); color: #C9C7D6;
+    }
+    .tag.new { background: #6C4CE0; color: #FFFFFF; }
+    .feat h2 { margin: 0 0 6px; font-size: 24px; line-height: 30px; font-weight: 700; }
+    /* The chart widgets' shared first word, quieter, so the new name stands out. */
+    .feat h2 .pre { color: #8E8DA0; font-weight: 500; }
+    .feat p { margin: 0 0 18px; font-size: 15px; line-height: 21px; color: #A9A8B8; }
+    .feat .label { margin: 14px 0 8px; font-size: 13px; line-height: 16px; font-weight: 500; color: #8E8DA0; text-transform: uppercase; letter-spacing: 0.5px; }
+    ul.more { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    ul.more li { font-size: 15px; line-height: 21px; color: #A9A8B8; padding-left: 18px; position: relative; }
+    ul.more li::before { content: ''; position: absolute; left: 2px; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: #8E6CFF; }
+    ul.more b { color: #FFFFFF; font-weight: 500; }
+    .card + ul.more, .spans + .card, .names-card + .label { margin-top: 18px; }
+
+    /* Homey's widget frame: 16 px padding on the default widget background. */
+    .card { padding: 16px; box-sizing: border-box; }
+    .card.chart { background: #1F2029; border-radius: 20px; }
+
+    /* Any time span: a few of the spans one can set, as chips. */
+    .spans { display: flex; flex-wrap: wrap; gap: 8px; }
+    .spans span { padding: 5px 11px; border-radius: 999px; background: rgba(108, 76, 224, 0.22); color: #D9CFFF; font-size: 14px; line-height: 18px; font-weight: 500; }
+
+    /* Device names: the app settings page's card, drawn in the poster's colours. */
+    .names-card { border-radius: 18px; background: #1F2029; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); padding: 14px 16px 6px; }
+    .names-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+    .names-head b { font-size: 17px; line-height: 24px; font-weight: 700; }
+    .names-head span { font-size: 14px; line-height: 20px; color: #8E8DA0; }
+    .names-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; font-size: 15px; line-height: 20px; color: #E4E4E7; }
+    .names-row .field { padding: 6px 12px; border-radius: 10px; background: #2B2C36; color: #FFFFFF; font-weight: 500; }
+    .names-row .field.sep { min-width: 28px; text-align: center; }
+    .names-row .field svg { width: 12px; height: 12px; margin-left: 8px; vertical-align: -1px; }
+    .names-count { margin: 6px 0 2px; font-size: 14px; line-height: 20px; color: #8E8DA0; }
+    .names-list { list-style: none; margin: 0; padding: 0; }
+    .names-list li { padding: 7px 0; font-size: 14px; line-height: 20px; color: #8E8DA0; border-top: 1px solid rgba(255, 255, 255, 0.07); }
+    .names-list li:first-child { border-top: 0; }
+    .names-list b { color: #FFFFFF; font-weight: 500; }
+
+    .wide { margin-top: 24px; display: flex; gap: 40px; align-items: center; padding: 32px 40px 32px 36px; }
+    .wide .text { flex: 1 1 auto; min-width: 0; }
+    .wide p { margin-bottom: 22px; }
+    .wide img { flex: none; width: 1140px; margin: -16px -24px -24px 0; display: block; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="3"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div>
+    <div>
+      <div class="eyebrow">Widgetkeeper 1.2.0 <span>Coming soon</span></div>
+      <h1>What's next in 1.2.0</h1>
+      <p>Five new chart widgets, any time span, a live preview and shorter device names.</p>
+    </div>
+    <div class="chips">
+      <span>Totals per Period</span><span>X against Y</span><span>Typical Day</span><span>Daily Range</span><span>Compare</span>
+      <span>Charts → <b>Chart · Over Time</b></span><span>Live preview</span><span>Device names</span>
+    </div>
+  </header>
+
+  <div class="columns">
+    <div class="column">
+      <section class="feat">
+        <span class="tag new">New widget</span>
+        <h2><span class="pre">Chart ·</span> Totals per Period</h2>
+        <p>How much a value went up in each hour, day or month, like the Homey app's Energy tab: a meter's kWh or m³, a rain gauge's millimetres, hours of TV.</p>
+        <div class="card chart"><div id="w-totals"></div></div>
+        <ul class="more">
+          <li><b>Compare with the period before:</b> last week's, month's or year's bars beside this one's, with both totals at the top.</li>
+          <li><b>Utility meters</b> that start again each month or year are counted on across the reset.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="feat">
+        <span class="tag new">New widget</span>
+        <h2><span class="pre">Chart ·</span> X against Y</h2>
+        <p>One value against another, a dot per hour: does the heat pump work harder when it's colder? The trend line's slope says how much.</p>
+        <div class="card chart"><div id="w-scatter"></div></div>
+        <ul class="more">
+          <li><b>The newest dots strongest</b>, so you see where it's heading.</li>
+          <li><b>A dot per minute to a week</b>, by the time span. Tap one for its values and time.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="feat">
+        <span class="tag new">New widget</span>
+        <h2><span class="pre">Chart ·</span> Typical Day</h2>
+        <p>Today's line over the usual day: each hour's average over the last 7 days, dashed, with its spread as a band. Is today unusual?</p>
+        <div class="card chart"><div id="w-typicalday"></div></div>
+        <ul class="more">
+          <li><b>The usual day</b> from the last 7 or 3 days, today left out.</li>
+          <li><b>Now and the usual</b> for this hour at the top; tap for another hour.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="feat">
+        <span class="tag new">New widget</span>
+        <h2><span class="pre">Chart ·</span> Daily Range</h2>
+        <p>Each day's lowest to highest as a bar, with its average as a tick: how cold the nights and how warm the afternoons were.</p>
+        <div class="card chart"><div id="w-dailyrange"></div></div>
+        <ul class="more">
+          <li><b>The last four weeks</b>, or any time span: a bar an hour over a day, a month over a year.</li>
+          <li><b>The latest bar's high and low</b> at the top; tap a bar for its own.</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <div class="columns">
+    <div class="column">
+      <section class="feat">
+        <span class="tag new">New widget</span>
+        <h2><span class="pre">Chart ·</span> Compare</h2>
+        <p>One value from up to eight devices, side by side and sorted: each room's temperature now as a dot, its range today as a bar. Which room is warmest?</p>
+        <div class="card chart"><div id="w-compare"></div></div>
+        <ul class="more">
+          <li><b>Highest first</b>, lowest first, or in the order you picked them.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="feat">
+        <span class="tag">Chart · Over Time</span>
+        <h2>Any time span</h2>
+        <p>A number and a unit instead of a fixed list, up to two years. Or whole periods: days from midnight, weeks from Monday, months from the 1st.</p>
+        <div class="spans"><span>40 minutes</span><span>18 hours</span><span>10 days</span><span>6 months</span><span>This week</span><span>Last month</span></div>
+        <div class="card chart"><div id="w-charts"></div></div>
+        <ul class="more">
+          <li><b>Charts is now Chart · Over Time</b>, beside the other charts in Homey's list. Widgets already on your dashboards keep their span.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="feat">
+        <span class="tag">App settings</span>
+        <h2>Device names</h2>
+        <p>Show only part of a device's name on every widget: before or after a separator such as |, or the last word. Open widgets change at once.</p>
+        <div class="names-card">
+          <div class="names-head"><b>Device names</b><span>Before “|”</span></div>
+          <div class="names-row">Show on widgets<span class="field">Before the separator<svg viewBox="0 0 12 12" fill="none" stroke="#999AA3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5l3 3 3-3"/></svg></span></div>
+          <div class="names-row">Separator<span class="field sep">|</span></div>
+          <div class="names-count">14 of 52 device names change:</div>
+          <ul class="names-list">
+            <li>Car charger | Driveway → <b>Car charger</b></li>
+            <li>Dryer | Utility room → <b>Dryer</b></li>
+            <li>Water heater | Utility room → <b>Water heater</b></li>
+          </ul>
+        </div>
+        <div class="label">Full name</div>
+        <div id="w-qa-full"></div>
+        <div class="label">Before “|”</div>
+        <div id="w-qa-short"></div>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="feat">
+        <span class="tag">And also</span>
+        <ul class="more">
+          <li><b>Longer spans in detail:</b> two weeks or six months come from the Insights logs that hold them, stitched together, as detailed as Homey keeps them.</li>
+          <li><b>Smart Stack:</b> each new chart can be one of its pages.</li>
+          <li><b>Totals per Period</b> lists meters first when you pick its value.</li>
+          <li><b>Web dashboards:</b> the new charts in the editor, with a picker for each value.</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <section class="feat wide">
+    <div class="text">
+      <span class="tag">Web dashboards</span>
+      <h2>A live preview</h2>
+      <p>While you set up a widget on a web dashboard, its settings show the widget as it will look, beside them (above them on a narrow screen), and it follows each change you make.</p>
+      <ul class="more">
+        <li><b>Devices included:</b> pick another value, and the preview draws it.</li>
+        <li><b>Cancel</b> leaves the widget as it was.</li>
+        <li><b>Every Widgetkeeper widget</b>, the new charts too.</li>
+      </ul>
+    </div>
+    <img src="../docs/web/preview.png" alt="">
+  </section>
+
+  <script>
+    (function () {
+      const el = id => document.getElementById(id);
+      const NOW = Date.now(); // fixed-clock.js: the showcase's Tuesday 6 October 2026 at 18:40
+
+      // The five new charts as their README screenshots (mock-dashboard.js), from the same made-up readings.
+      MOUNT.totals(el('w-totals'), { opts: { period: 'thisYear', compare: true }, state: mockTotals.totalsState('thisYear', NOW) });
+      MOUNT.scatter(el('w-scatter'), { opts: { span: '7d' }, state: mockScatter.scatterState('7d', NOW) });
+      MOUNT.typicalday(el('w-typicalday'), { opts: {}, state: mockTypicalDay.typicalDayState(7, NOW) });
+      MOUNT.dailyrange(el('w-dailyrange'), { opts: {}, state: mockDailyRange.dailyRangeState('4w', NOW) });
+      MOUNT.compare(el('w-compare'), { opts: { count: 6 }, state: mockCompare.compareState('1d!', NOW) });
+
+      // Chart · Over Time: two stacked charts of very different spans. The outdoor temperature over the last 6 months
+      // (a Danish year's curve with the weather's ups and downs, each point a day and a half's average) and the house's
+      // power over the last 40 minutes (the oven keeping its heat while dinner cooks), both made up; their values now
+      // as the showcase's (11.6 °C, 3,536 W).
+      const cap = (title, units, decimals) => ({ title, type: 'number', units, decimals, min: null, max: null, values: null, icon: null });
+      const entry = (deviceId, capabilityId, name, capability, points, value) => ({ deviceId, capabilityId, name, capability, value, points });
+      const DAY = 864e5, MIN = 6e4;
+      const noise = k => { const x = Math.sin(k * 12.9898) * 43758.5453; return x - Math.floor(x) - 0.5; };
+      const months = (() => {
+        const from = new Date(NOW);
+        from.setMonth(from.getMonth() - 6);
+        const span = NOW - from.getTime();
+        return Array.from({ length: 120 }, (_, i) => {
+          const t = from.getTime() + (i + 0.5) * span / 120;
+          const start = new Date(new Date(t).getFullYear(), 0, 1).getTime();
+          const doy = (t - start) / DAY;
+          const season = 9 - 8.5 * Math.cos(2 * Math.PI * (doy - 20) / 365);
+          // The weather: smoothed made-up noise (a few days' spells), over a slow swing of warmer and colder weeks.
+          const weather = 12 * [1, 2, 3, 2, 1].reduce((sum, w, j) => sum + w * noise(i + j - 2), 0) / 9 + 1.4 * Math.sin(i * 0.23 + 1);
+          return [t, Math.round((season + weather) * 10) / 10];
+        });
+      })();
+      const minutes = Array.from({ length: 120 }, (_, i) => {
+        const t = NOW - 40 * MIN + (i + 0.5) * 40 * MIN / 120;
+        const m = (t - (NOW - 40 * MIN)) / MIN;
+        const oven = (m + 1.2) % 6.5 < 3.6 ? 2380 : 0;
+        return [t, Math.round(1080 + oven + 70 * Math.sin(i * 0.9) + 40 * Math.sin(i * 2.3))];
+      });
+      MOUNT.charts(el('w-charts'), {
+        opts: { charts: [{ span: '6mo', color: 'purple', smooth: true, title: 'Outdoor · 6 months' }, { span: '40m', style: 'line', color: 'orange', title: 'House · 40 minutes' }] },
+        charts: [
+          entry('outdoor', 'measure_temperature', 'Outdoor sensor', cap('Temperature', '°C', 1), months, 11.6),
+          entry('house', 'measure_power', 'House', cap('Power', 'W', 0), minutes, 3536),
+        ],
+      });
+
+      // Device names: Energy's Quick Actions (showcase-data.js) with each device's room after a |, in full and before it.
+      const qa = findWidget('quickactions', 1);
+      const rooms = ['Driveway', 'Utility room', 'Utility room'];
+      const tiles = short => qa.devices.slice(0, 3).map((d, i) => ({ ...d, name: short ? d.name : `${d.name} | ${rooms[i]}` }));
+      MOUNT.quickactions(el('w-qa-full'), { ...qa, devices: tiles(false) });
+      MOUNT.quickactions(el('w-qa-short'), { ...qa, devices: tiles(true) });
+
+      // The page's size and the columns' heights, for the render script.
+      document.fonts.ready.then(() => setTimeout(() => {
+        const r = document.body.getBoundingClientRect();
+        document.body.dataset.width = String(Math.ceil(r.width));
+        document.body.dataset.height = String(Math.ceil(r.height));
+        document.body.dataset.columns = [...document.querySelectorAll('.column')].map(c => Math.round(c.getBoundingClientRect().height)).join(',');
+      }, 800));
+    })();
+  </script>
+</body>
+</html>
