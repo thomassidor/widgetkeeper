@@ -306,10 +306,12 @@
     "yesterdayAvg": "Wczoraj · śr.",
     "lastWeekAvg": "Zeszły tydzień · śr.",
     "lastMonthAvg": "Zeszły miesiąc · śr.",
-    "lastYearAvg": "Zeszły rok · śr."
+    "lastYearAvg": "Zeszły rok · śr.",
+    "rangeAvg": "__range__ · śr."
   },
   "totals": {
     "selectValue": "Wybierz rosnącą wartość w ustawieniach widżetu.",
+    "now": "Teraz",
     "error": "Nie udało się wczytać wykresu.",
     "unavailable": "Niedostępne",
     "noHistory": "Brak historii.",

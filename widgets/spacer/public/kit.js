@@ -227,15 +227,32 @@
   }
 
   /**
-   * The time spans of Charts, Sparklines and Totals per Period (`SPANS` in lib/SparklineService.ts): rolling ones by length, calendar
-   * periods by unit and offset (this one, or the one before).
+   * The time spans of the chart widgets (Chart · Over Time, Totals per Period …) and Sparklines: `<count><unit>`, the last
+   * `count` minutes (`m`), hours (`h`), days (`d`), weeks (`w`), months (`mo`) or years (`y`) up to now; with `!` whole
+   * local periods instead (days from midnight, weeks from Monday, as Homey's, months from the 1st, years from 1 January),
+   * the current one included, or with `!-` left out (`1d!-` is yesterday). The names spans had before 1.2.0 are whole
+   * periods (`today` `1d!`, `lastMonth` `1mo!-` …); the rolling ones (`24h`, `7d`) read as they are. At most two years:
+   * Insights keeps no more.
    */
-  const SPAN_MS = { '1h': 36e5, '6h': 6 * 36e5, '24h': DAY, '2d': 2 * DAY, '3d': 3 * DAY, '5d': 5 * DAY, '7d': 7 * DAY };
-  const SPAN_PERIODS = {
-    today: ['day', 0], yesterday: ['day', -1], thisWeek: ['week', 0], lastWeek: ['week', -1],
-    thisMonth: ['month', 0], lastMonth: ['month', -1], thisYear: ['year', 0], lastYear: ['year', -1],
+  const SPAN_UNITS = { m: 'minute', h: 'hour', d: 'day', w: 'week', mo: 'month', y: 'year' };
+  const SPAN_NAMES = {
+    today: '1d!', yesterday: '1d!-', thisWeek: '1w!', lastWeek: '1w!-', thisMonth: '1mo!', lastMonth: '1mo!-', thisYear: '1y!', lastYear: '1y!-',
   };
+  const UNIT_MS = { minute: 6e4, hour: 36e5, day: DAY, week: 7 * DAY };
+  /** The most of each unit: two years. */
+  const MAX_COUNT = { minute: 2 * 366 * 1440, hour: 2 * 366 * 24, day: 2 * 366, week: 105, month: 24, year: 2 };
   const own = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+
+  /** A span's `{count, unit, whole, skip}`, or null for one that isn't. */
+  function parseSpan(span) {
+    const m = /^(\d{1,6})(mo|m|h|d|w|y)(!?)(-?)$/.exec(own(SPAN_NAMES, span) ? SPAN_NAMES[span] : String(span));
+    if (!m || !(+m[1] > 0)) return null;
+    const unit = SPAN_UNITS[m[2]];
+    const whole = m[3] === '!';
+    if (whole && (unit === 'minute' || unit === 'hour')) return null;
+    if (m[4] && !whole) return null;
+    return { count: Math.min(+m[1], MAX_COUNT[unit]), unit, whole, skip: m[4] === '-' };
+  }
 
   /** The local start of the `unit` holding `at`, moved by `n` units. Weeks start on Monday, as Homey's do. */
   function periodStart(at, unit, n) {
@@ -248,40 +265,91 @@
     return d.getTime();
   }
 
+  /** `at` moved by `n` calendar months, on the same day and time (the month's last day where it's shorter). */
+  function addMonths(at, n) {
+    const d = new Date(at);
+    const day = d.getDate();
+    d.setDate(1);
+    d.setMonth(d.getMonth() + n);
+    d.setDate(Math.min(day, new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()));
+    return d.getTime();
+  }
+
   /**
-   * A span's window at `at`: the axis `[from, to]` and `end`, where its data stops. A rolling span ends at `at`;
-   * a calendar one (`unit`) is the whole local day, week, month or year: this one with data up to `at`, the last
-   * one up to its end. A DST day is 23 or 25 h. An unknown span is 24 h. `back`: that many windows before (Totals per
-   * Period's period before).
+   * A span's window at `at`: the axis `[from, to]` and `end`, where its data stops. A rolling span ends at `at` (months
+   * and years back on the calendar); whole periods (`unit`: `day`, `week`, `month`, `year`) cover theirs entirely,
+   * with data up to `at` when the current one is in, else up to their end. A DST day is 23 or 25 h. An unknown span is
+   * 24 h. `back`: that many windows before (Totals per Period's period before).
    */
   function timeSpan(span, at, back = 0) {
-    if (!own(SPAN_PERIODS, span)) {
-      const ms = own(SPAN_MS, span) ? SPAN_MS[span] : DAY;
-      return { from: at - ms * (back + 1), to: at - ms * back, end: at - ms * back };
+    const p = parseSpan(span) || parseSpan('24h');
+    if (p.whole) {
+      const shift = (p.skip ? 1 : 0) + back * p.count;
+      const from = periodStart(at, p.unit, 1 - p.count - shift);
+      const to = periodStart(at, p.unit, 1 - shift);
+      return { from, to, end: Math.min(to, at), unit: p.unit };
     }
-    const [unit, n] = SPAN_PERIODS[span];
-    const from = periodStart(at, unit, n - back);
-    const to = periodStart(at, unit, n + 1 - back);
-    return { from, to, end: Math.min(to, at), unit };
+    if (p.unit === 'month' || p.unit === 'year') {
+      const months = p.count * (p.unit === 'year' ? 12 : 1);
+      const to = addMonths(at, -months * back);
+      return { from: addMonths(at, -months * (back + 1)), to, end: to };
+    }
+    const ms = p.count * UNIT_MS[p.unit];
+    return { from: at - ms * (back + 1), to: at - ms * back, end: at - ms * back };
   }
 
   /** Whether `span` is one the widgets know. */
   function isTimeSpan(span) {
-    return own(SPAN_MS, span) || own(SPAN_PERIODS, span);
+    return parseSpan(span) != null;
   }
 
-  /** A calendar span's unit (`day`, `week`, `month`, `year`), whose axis is the whole period; null for a rolling one. */
+  /** Whole periods' unit (`day`, `week`, `month`, `year`), whose axis is the whole periods; null for a rolling span. */
   function spanUnit(span) {
-    return own(SPAN_PERIODS, span) ? SPAN_PERIODS[span][0] : null;
+    const p = parseSpan(span);
+    return p && p.whole ? p.unit : null;
   }
 
   /**
-   * Whether a span's log is Homey's 6-hour averages (a month or a year; `SPANS` in lib/SparklineService.ts): live
-   * values aren't appended (a meter's would pile up behind it), and its first 6 hours can start before the period.
+   * Whether a span is read from Homey's 6-hour (or weekly) averages: anything over 8 days but a whole two weeks
+   * (`planLogs()` in lib/logPlan.ts). Live values aren't appended to it (a meter's would pile up behind the log).
    */
   function sixHourSpan(span) {
-    const unit = spanUnit(span);
-    return unit === 'month' || unit === 'year';
+    const p = parseSpan(span);
+    if (!p) return false;
+    if (p.unit === 'month' || p.unit === 'year') return true;
+    const days = p.unit === 'week' ? 7 * p.count : p.unit === 'day' ? p.count : p.count * UNIT_MS[p.unit] / DAY;
+    return days > (p.whole && p.unit === 'week' ? 14 : 8);
+  }
+
+  /** The time span block's units (scripts/chart-settings.json `span{n}`): the rolling ones, then whole periods. */
+  const SETTING_UNITS = {
+    minutes: 'm', hours: 'h', days: 'd', weeks: 'w', months: 'mo', years: 'y', calDays: 'd!', calWeeks: 'w!', calMonths: 'mo!', calYears: 'y!',
+  };
+
+  /**
+   * A chart's span from its settings (the catalog's time span block): `count<n>` of the unit `span<n>`, whole periods
+   * with `leaveOut<n>` leaving out the current one. A span stored before 1.2.0 (`24h`, `today`, `lastMonth` …) is used
+   * as it was, until the unit is picked. Missing ones are `defaults` (`{count, unit}`).
+   */
+  function spanSetting(settings, n = '', defaults = { count: 24, unit: 'hours' }) {
+    const stored = settings[`span${n}`];
+    if (typeof stored === 'string' && isTimeSpan(stored) && !own(SETTING_UNITS, stored)) return stored;
+    const unit = own(SETTING_UNITS, stored) ? SETTING_UNITS[stored] : SETTING_UNITS[defaults.unit];
+    const count = Math.max(1, Math.round(Number(settings[`count${n}`]) || defaults.count));
+    return `${count}${unit}${unit.endsWith('!') && settings[`leaveOut${n}`] === true ? '-' : ''}`;
+  }
+
+  /**
+   * A span stored before 1.2.0 (`7d`, `today`, `lastMonth` …) in `span<n>` as the time span block's settings
+   * (`{count<n>, span<n>, leaveOut<n>}`), for the web dashboards' editor to show; `{}` for anything else.
+   */
+  function spanFields(stored, n = '') {
+    if (typeof stored !== 'string' || own(SETTING_UNITS, stored)) return {};
+    const p = parseSpan(stored);
+    if (!p) return {};
+    const code = Object.keys(SPAN_UNITS).find(k => SPAN_UNITS[k] === p.unit) + (p.whole ? '!' : '');
+    const unit = Object.keys(SETTING_UNITS).find(k => SETTING_UNITS[k] === code);
+    return { [`count${n}`]: p.count, [`span${n}`]: unit, [`leaveOut${n}`]: p.skip };
   }
 
   /** Why a write through the personal API key failed (`KeyProblem` in lib/PersonalApiKey.ts): each has its own message. */
@@ -798,7 +866,7 @@
 
   window.WidgetkeeperKit = {
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, undoTextZoom, el, setMask, tileNames, timeFormatter,
-    formatSince, baseTitle, lowestSlot, timeSpan, isTimeSpan, spanUnit, sixHourSpan, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
+    formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, spanUnit, sixHourSpan, spanSetting, spanFields, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     onDeviceNames, colorStyle, applyColors, sound,
   };
 })();

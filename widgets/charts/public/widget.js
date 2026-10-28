@@ -4,7 +4,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { COLORS, scaled, formatNumber, timeSpan, isTimeSpan, spanUnit, sixHourSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { COLORS, scaled, formatNumber, parseSpan, timeSpan, isTimeSpan, spanUnit, sixHourSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart;
@@ -27,7 +27,10 @@
     lastWeekAvg: 'Last week · avg',
     lastMonthAvg: 'Last month · avg',
     lastYearAvg: 'Last year · avg',
+    rangeAvg: '__range__ · avg',
   };
+  /** A finished period's header line, by its unit: the one before this (yesterday …), or its dates (`rangeAvg`). */
+  const AVG_KEYS = { day: 'yesterdayAvg', week: 'lastWeekAvg', month: 'lastMonthAvg', year: 'lastYearAvg' };
 
 
   /** Bars on the local clock: the chart module's (moved there for Totals per Period; tests and previews call it by this name). */
@@ -154,18 +157,26 @@
     }
 
     /**
-     * A tapped point's or bar's time: `14:00` (a bar `14:00–15:00`) up to a day, `Mon 14:00` up to a week, a month's
-     * points `15 Sep 14:00` and a year's `15 Sep`; a bar of a day `Tue 15 Sep`, of a month `September 2025`.
+     * A tapped point's or bar's time, by how long the span is: `14:00` (a bar `14:00–15:00`) up to a day, `Mon 14:00` up to
+     * 8 days, then `15 Sep 14:00` up to two months and `15 Sep` beyond; a bar of a day or a week `Tue 15 Sep`, of a month
+     * `September 2025`.
      */
     function itemLabel(win, item) {
-      const { unit } = win;
-      if (item.end != null && unit === 'year') return date(item.t, { month: 'long', year: 'numeric' });
-      if (item.end != null && (unit === 'week' || unit === 'month')) return date(item.t, { weekday: 'short', day: 'numeric', month: 'short' });
-      if (unit === 'year') return date(item.t, { day: 'numeric', month: 'short' });
-      if (unit === 'month') return `${date(item.t, { day: 'numeric', month: 'short' })} ${hhmm(item.t)}`;
-      const long = unit === 'week' || (!unit && win.to - win.from > DAY);
-      const at = ms => (long ? `${weekday(ms)} ${hhmm(ms)}` : hhmm(ms));
+      const span = win.to - win.from;
+      if (item.end != null && item.end - item.t > 27 * DAY) return date(item.t, { month: 'long', year: 'numeric' });
+      if (item.end != null && item.end - item.t > 23 * HOUR) return date(item.t, { weekday: 'short', day: 'numeric', month: 'short' });
+      if (span > 62 * DAY) return date(item.t, { day: 'numeric', month: 'short' });
+      if (span > 8 * DAY + HOUR) return `${date(item.t, { day: 'numeric', month: 'short' })} ${hhmm(item.t)}`;
+      const at = ms => (span > DAY + HOUR ? `${weekday(ms)} ${hhmm(ms)}` : hhmm(ms));
       return item.end != null ? `${at(item.t)}–${hhmm(item.end)}` : at(item.t);
+    }
+
+    /** A finished window's header line: `Yesterday · avg` …, or for several periods their dates (`1 Jul – 30 Sep · avg`). */
+    function avgText(i, win) {
+      const p = parseSpan(charts[i].span);
+      if (p && p.whole && p.count === 1 && AVG_KEYS[p.unit]) return t(AVG_KEYS[p.unit]);
+      const o = win.to - win.from > 366 * DAY ? { month: 'short', year: 'numeric' } : { day: 'numeric', month: 'short' };
+      return t('rangeAvg', { range: `${date(win.from, o)} – ${date(win.to - 1, o)}` });
     }
 
     /**
@@ -190,7 +201,7 @@
           sum += item.v * w;
           weight += w;
         }
-        return { value: weight ? sum / weight : null, sub: t(`${charts[i].span}Avg`), averaged: true };
+        return { value: weight ? sum / weight : null, sub: avgText(i, win), averaged: true };
       }
       return { value: s && !('missing' in s) ? s.value : null, sub: s && 'missing' in s ? t('unavailable') : t('now'), averaged: false };
     }
@@ -236,7 +247,7 @@
       kit.prepareSvg(svg, w, H);
       const x = ms => L + pw * (ms - win.from) / (win.to - win.from);
       const scale = kit.valueScale(svg, { max: data.max, min: data.min, h: plotH, top, pw, format: axisLabel, fit: c.fit });
-      xLabels(svg, win, pw, top, base);
+      kit.timeLabels(svg, win, { pw, top, base, nf, date, now: t('now') });
       kit.axis(svg, top, base, pw);
 
       const drawn = drawSeries(i, svg, { data, x, scale, top, base });
@@ -291,7 +302,7 @@
         const side = d => (d.drawable ? { max: d.max, min: d.min, format: axisLabel } : { max: 1, min: 0, format: () => '' });
         scales = kit.dualScale(svg, { a: side(data[0]), b: side(data[1]), h: plotH, top, pw, fit: charts[0].fit });
       }
-      xLabels(svg, win, pw, top, base);
+      kit.timeLabels(svg, win, { pw, top, base, nf, date, now: t('now') });
       kit.axis(svg, top, base, pw);
 
       const bothBars = !!(data[0].bars && data[1].bars && data[0].drawable && data[1].drawable);
@@ -393,65 +404,6 @@
         cursorX: sel != null ? xs[idx] : null,
         dot: g => kit.dot(g, xy[idx][0], xy[idx][1], c.negative && ws[idx] < 0 ? 'series export' : 'series'),
       };
-    }
-
-    /**
-     * Time labels: up to 6 h relative (`1h · 30m · Now`, as the live power chart), 24 h and a day (today, yesterday)
-     * the clock hours every 6 h, longer spans and a week the weekday at each day's noon, a month the 7th, 14th, 21st
-     * and 28th, a year the months from their 1st, as many as fit. Now at the right end, except on a calendar span,
-     * which ends at its period's end. Midnights are dashed lines, up to a week.
-     */
-    function xLabels(svg, { from, to, unit }, pw, top, base) {
-      const span = to - from;
-      const ly = base + X_LABEL_GAP;
-      if (!unit && span <= 6 * HOUR) {
-        kit.text(svg, L, ly, C.ago(span, nf), 'start', 'hanging');
-        kit.text(svg, L + pw / 2, ly, C.ago(span / 2, nf), 'middle', 'hanging');
-        kit.text(svg, L + pw, ly, t('now'), 'end', 'hanging');
-        return;
-      }
-      const x = ms => L + pw * (ms - from) / span;
-      if (unit !== 'month' && unit !== 'year') {
-        const midnights = [];
-        const m = new Date(from);
-        m.setHours(24, 0, 0, 0);
-        for (; m.getTime() < to; m.setDate(m.getDate() + 1)) midnights.push(m.getTime());
-        kit.midnightLines(svg, midnights.map(x), top, base);
-      }
-      const kept = unit ? [] : [{ x: L + pw, cx: L + pw - 15, anchor: 'end', label: t('now') }];
-      const candidates = [];
-      const d = new Date(from);
-      if (unit === 'day' || (!unit && span <= DAY)) {
-        d.setMinutes(0, 0, 0);
-        for (d.setHours(d.getHours() + 1); d.getTime() < to; d.setHours(d.getHours() + 1)) {
-          if (d.getHours() % 6 === 0) candidates.push({ at: d.getTime(), label: d.getHours() + ':00' });
-        }
-      } else if (unit === 'month') {
-        for (const day of [7, 14, 21, 28]) {
-          d.setDate(day);
-          d.setHours(12, 0, 0, 0);
-          candidates.push({ at: d.getTime(), label: date(d.getTime(), { day: 'numeric', month: 'short' }) });
-        }
-      } else if (unit === 'year') {
-        // From each month's 1st, as on a calendar, so January isn't lost against the scale.
-        for (let k = 0; k < 12; k++) {
-          d.setMonth(k, 1);
-          candidates.push({ at: d.getTime(), label: date(d.getTime(), { month: 'short' }), anchor: 'start' });
-        }
-      } else {
-        d.setHours(12, 0, 0, 0);
-        if (d.getTime() < from) d.setDate(d.getDate() + 1);
-        for (; d.getTime() < to; d.setDate(d.getDate() + 1)) candidates.push({ at: d.getTime(), label: weekday(d.getTime()) });
-      }
-      // A centred label keeps clear of the scale: 18 px on a rolling span, half a weekday on a calendar week.
-      const minX = unit ? 12 : 18;
-      for (const cnd of candidates) {
-        const cx = x(cnd.at) + (cnd.anchor ? 3 : 0);
-        if ((cnd.anchor || cx - L >= minX) && kept.every(q => Math.abs(q.cx - cx) >= 40)) {
-          kept.push({ x: cx, cx, anchor: cnd.anchor || 'middle', label: cnd.label });
-        }
-      }
-      for (const q of kept) kit.text(svg, q.x, ly, q.label, q.anchor, 'hanging');
     }
 
     // ------------------------------------------------------------------ interaction

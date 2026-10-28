@@ -11,6 +11,7 @@
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const MIN = 60e3;
   const HOUR = 60 * MIN;
+  const DAY = 24 * HOUR;
 
   const L = 38; // left gutter
   const X_LABEL_GAP = 5;
@@ -396,6 +397,72 @@
     }
 
     /**
+     * A time axis' labels for the window `{from, to, unit}` (the kit's `timeSpan()`), of any length, as many as fit 40 px
+     * apart: up to 6 h relative (`1h · 30m · Now`, as the live power chart); up to a day the clock hours every 6 h; up to
+     * 8 days the weekday at each noon, with dashed midnights; up to two months the 7th, 14th, 21st and 28th (`7 Sep`);
+     * longer the months from their 1st (January as its year once the axis spans more than a year). Now at the right end
+     * of a rolling span; whole periods (`unit`) end at their end. `date(ms, options)` formats in Homey's language, `nf`
+     * the numbers, `now` the word for now.
+     */
+    function timeLabels(svg, { from, to, unit }, { pw, top, base, nf, date, now }) {
+      const span = to - from;
+      const ly = base + X_LABEL_GAP;
+      if (!unit && span <= 6 * HOUR) {
+        text(svg, L, ly, ago(span, nf), 'start', 'hanging');
+        text(svg, L + pw / 2, ly, ago(span / 2, nf), 'middle', 'hanging');
+        text(svg, L + pw, ly, now, 'end', 'hanging');
+        return;
+      }
+      const x = ms => L + pw * (ms - from) / span;
+      const d = new Date(from);
+      if (span <= 8 * DAY + HOUR) {
+        const midnights = [];
+        const m = new Date(from);
+        m.setHours(24, 0, 0, 0);
+        for (; m.getTime() < to; m.setDate(m.getDate() + 1)) midnights.push(m.getTime());
+        midnightLines(svg, midnights.map(x), top, base);
+      }
+      const kept = unit ? [] : [{ x: L + pw, cx: L + pw - 15, anchor: 'end', label: now }];
+      const candidates = [];
+      if (span <= DAY + HOUR) {
+        d.setMinutes(0, 0, 0);
+        for (d.setHours(d.getHours() + 1); d.getTime() < to; d.setHours(d.getHours() + 1)) {
+          if (d.getHours() % 6 === 0) candidates.push({ at: d.getTime(), label: d.getHours() + ':00' });
+        }
+      } else if (span <= 8 * DAY + HOUR) {
+        d.setHours(12, 0, 0, 0);
+        if (d.getTime() < from) d.setDate(d.getDate() + 1);
+        for (; d.getTime() < to; d.setDate(d.getDate() + 1)) candidates.push({ at: d.getTime(), label: date(d.getTime(), { weekday: 'short' }) });
+      } else if (span <= 62 * DAY) {
+        d.setHours(12, 0, 0, 0);
+        for (; d.getTime() < to; d.setDate(d.getDate() + 1)) {
+          if (d.getTime() >= from && d.getDate() % 7 === 0 && d.getDate() < 29) {
+            candidates.push({ at: d.getTime(), label: date(d.getTime(), { day: 'numeric', month: 'short' }) });
+          }
+        }
+      } else {
+        // From each month's 1st, as on a calendar, so January isn't lost against the scale.
+        d.setHours(0, 0, 0, 0);
+        d.setDate(1);
+        if (d.getTime() < from) d.setMonth(d.getMonth() + 1);
+        for (; d.getTime() < to; d.setMonth(d.getMonth() + 1)) {
+          const year = span > 366 * DAY && d.getMonth() === 0;
+          candidates.push({ at: d.getTime(), label: date(d.getTime(), year ? { year: 'numeric' } : { month: 'short' }), anchor: 'start', first: year });
+        }
+      }
+      // A centred label keeps clear of the scale: 18 px on a rolling span, half a weekday on whole periods. A year's goes
+      // in first, so the months make room for it.
+      const minX = unit ? 12 : 18;
+      for (const cnd of candidates.filter(c => c.first).concat(candidates.filter(c => !c.first))) {
+        const cx = x(cnd.at) + (cnd.anchor ? 3 : 0);
+        if ((cnd.anchor || cx - L >= minX) && kept.every(q => Math.abs(q.cx - cx) >= 40)) {
+          kept.push({ x: cx, cx, anchor: cnd.anchor || 'middle', label: cnd.label });
+        }
+      }
+      for (const q of kept) text(svg, q.x, ly, q.label, q.anchor, 'hanging');
+    }
+
+    /**
      * The left value scale for a plot of height `h` starting at `top`: grid, thinned labels (`format(v, step)`).
      * From zero (`fit` off): 0 at the base, and a negative `min` extends it below zero in whole steps, with a
      * zero line. With `fit`, it runs in whole steps from just below `min` to just above `max`; a zero line
@@ -538,7 +605,7 @@
       if (split) exportSplit(svg, zeroY, base, draw); else draw(null, false);
     }
 
-    return { uid, text, gradient, dot, chip, exportSplit, prepareSvg, axis, midnightLines, valueScale, dualScale, trace, bars };
+    return { uid, text, gradient, dot, chip, exportSplit, prepareSvg, axis, midnightLines, timeLabels, valueScale, dualScale, trace, bars };
   }
 
   /**

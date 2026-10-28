@@ -306,10 +306,12 @@
     "yesterdayAvg": "I går · snitt",
     "lastWeekAvg": "Forrige uke · snitt",
     "lastMonthAvg": "Forrige måned · snitt",
-    "lastYearAvg": "I fjor · snitt"
+    "lastYearAvg": "I fjor · snitt",
+    "rangeAvg": "__range__ · snitt"
   },
   "totals": {
     "selectValue": "Velg en verdi som teller oppover i widgetinnstillingene.",
+    "now": "Nå",
     "error": "Kunne ikke laste diagrammet.",
     "unavailable": "Utilgjengelig",
     "noHistory": "Ingen historikk ennå.",

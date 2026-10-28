@@ -367,6 +367,46 @@ describe('weeks, months and years (wk-104)', () => {
       expect(kit().isTimeSpan('lastYear')).toBe(true);
       expect(span('7d').unit).toBeUndefined();
     });
+
+    it('takes any number of a unit (1.2.0): the last so many up to now, or whole periods', () => {
+      expect(kit().parseSpan('40m')).toEqual({ count: 40, unit: 'minute', whole: false, skip: false });
+      expect(kit().parseSpan('3mo!-')).toEqual({ count: 3, unit: 'month', whole: true, skip: true });
+      expect(['0h', '5h!', '2d-', '1x', 'today!', ''].map(kit().parseSpan)).toEqual([null, null, null, null, null, null]);
+      expect(span('40m')).toEqual({ from: NOW - 40 * 6e4, to: NOW, end: NOW });
+      expect(span('2w')).toEqual({ from: NOW - 14 * DAY, to: NOW, end: NOW });
+      // Months and years back on the calendar, the 31st to the month's last day.
+      expect(span('3mo', at('2026-05-31T12:00:00'))).toEqual({ from: at('2026-02-28T12:00:00'), to: at('2026-05-31T12:00:00'), end: at('2026-05-31T12:00:00') });
+      expect(span('1y').from).toBe(new Date(2025, 0, new Date(NOW).getDate(), new Date(NOW).getHours(), new Date(NOW).getMinutes()).getTime());
+      // Whole periods: the current one in, or with `-` left out; `back` steps by all of them.
+      expect(span('2w!')).toEqual({ from: MON - 7 * DAY, to: MON + 7 * DAY, end: NOW, unit: 'week' });
+      expect(span('2w!-')).toEqual({ from: MON - 14 * DAY, to: MON, end: MON, unit: 'week' });
+      expect(kit().timeSpan('3mo!', NOW, 1)).toMatchObject({ from: at('2025-08-01T00:00:00'), to: at('2025-11-01T00:00:00') });
+      // The names of before are whole periods.
+      expect(span('1d!-')).toEqual(span('yesterday'));
+      expect(span('1y!')).toEqual(span('thisYear'));
+      // At most two years.
+      expect(kit().parseSpan('9y')!.count).toBe(2);
+      expect(kit().spanUnit('3w!')).toBe('week');
+      expect(['6h', '7d', '10d', '2w!', '3w!', '1mo', 'today'].map(kit().sixHourSpan)).toEqual([false, false, true, false, true, true, false]);
+    });
+
+    it("reads a chart's span from its settings, keeping one stored before 1.2.0", () => {
+      const of = (s: Record<string, unknown>, n = 1) => kit().spanSetting(s, n);
+      expect(of({ count1: 3, span1: 'days' })).toBe('3d');
+      expect(of({ count1: 1, span1: 'calDays', leaveOut1: true })).toBe('1d!-');
+      expect(of({ count1: 2, span1: 'calMonths' })).toBe('2mo!');
+      expect(of({ count1: 2, span1: 'months', leaveOut1: true })).toBe('2mo'); // only whole periods leave one out
+      expect(of({ span1: 'yesterday', count1: 5 })).toBe('yesterday');
+      expect(of({ span1: '7d' })).toBe('7d');
+      expect(of({})).toBe('24h');
+      expect(kit().spanSetting({}, '', { count: 1, unit: 'calWeeks' })).toBe('1w!');
+      // The web editor shows a stored one as its number and unit.
+      expect(kit().spanFields('7d', 2)).toEqual({ count2: 7, span2: 'days', leaveOut2: false });
+      expect(kit().spanFields('lastMonth', 1)).toEqual({ count1: 1, span1: 'calMonths', leaveOut1: true });
+      expect([kit().spanFields('hours', 1), kit().spanFields(undefined, 1)]).toEqual([{}, {}]);
+      // … which is the same window.
+      for (const old of ['1h', '24h', 'today', 'yesterday', '5d', 'thisWeek', 'lastYear']) expect(span(of(kit().spanFields(old, 1)))).toEqual(span(old));
+    });
   });
 
   describe('chartBuckets', () => {
@@ -407,6 +447,23 @@ describe('weeks, months and years (wk-104)', () => {
     expect(xLabels(r)).toEqual([7, 14, 21, 28].map(d => da(dec + (d - 1) * DAY + 12 * HOUR, { day: 'numeric', month: 'short' })));
     expect(r.q('path.midnight')).toBeNull();
     expect(r.header()).toEqual(['5°C | Last month · avg']);
+  });
+
+  it('labels any span by its length (1.2.0): minutes, dates, months, and finished periods by their dates', () => {
+    const labels = (span: string, from: number) => xLabels(widget([{ span }], [entry(between(from, NOW, () => 5))]));
+    expect(labels('40m', NOW - 40 * 6e4)).toEqual(['40m', '20m', 'Now']);
+    // 30 days: the 7th, 14th … of each month, Now at the end.
+    const days = labels('30d', NOW - 30 * DAY);
+    expect(days).toContain('Now');
+    expect(days).toContain(da(at('2026-01-07T12:00:00'), { day: 'numeric', month: 'short' }));
+    // A rolling year and a half: the months from their 1st, January as its year.
+    const months = labels('18mo', NOW - 548 * DAY);
+    expect(months).toContain('2025');
+    expect(months).toContain(da(at('2025-08-01T00:00:00'), { month: 'short' }));
+    // The three months before this one: their average, named by their dates.
+    const r = widget([{ span: '3mo!-' }], [entry(between(at('2025-10-01T00:00:00'), at('2026-01-01T00:00:00'), () => 5))]);
+    const range = `${da(at('2025-10-01T00:00:00'), { day: 'numeric', month: 'short' })} – ${da(at('2025-12-31T12:00:00'), { day: 'numeric', month: 'short' })}`;
+    expect(r.header()).toEqual([`5°C | ${range} · avg`]);
   });
 
   it("starts a month's line at its start with the 6 hours holding it, logged before it", () => {

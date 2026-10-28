@@ -17,13 +17,13 @@ Many motion, contact and vibration sensors at a glance, as dots that change colo
 <a href="#cameras"><b>Cameras</b></a><br>
 Two to six cameras in one grid of snapshots; tap one to watch it live<br clear="left"></p>
 
+<p><a href="#chart--over-time"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/charts-dark.png"><img src="docs/previews/charts-light.png" alt="" width="120" align="left"></picture></a>
+<a href="#chart--over-time"><b>Chart · Over Time</b></a><br>
+One or two charts of any value over any span, from minutes to two years, drawn like Electricity Overview's<br clear="left"></p>
+
 <p><a href="#chart--totals-per-period"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/totals-dark.png"><img src="docs/previews/totals-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--totals-per-period"><b>Chart · Totals per Period</b></a><br>
-How much a value went up per hour, day or month (kWh, rain, hours of TV), like the Energy tab, beside the period before if you like<br clear="left"></p>
-
-<p><a href="#charts"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/charts-dark.png"><img src="docs/previews/charts-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#charts"><b>Charts</b></a><br>
-One or two charts of any value over the last hour, day or week, drawn like Electricity Overview's<br clear="left"></p>
+How much a value went up per hour, day or month (kWh, rain, hours of TV), like the Energy tab, over any span, beside the period before if you like<br clear="left"></p>
 
 <p><a href="#clock"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/clock-dark.png"><img src="docs/previews/clock-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#clock"><b>Clock</b></a><br>
@@ -161,23 +161,29 @@ Your cameras as a grid of snapshots that refresh every few seconds (cameras with
 
 **Settings:** cameras, layout (a large camera at the top or bottom, or one per row), refresh interval, how long live view stays on, time format, [rename tiles](#tile-names).
 
-## Chart · Totals per Period
-<img src="docs/screenshots/totals.png" alt="Chart · Totals per Period on a Homey dashboard: the main meter's kilowatt-hours a month this year, beside last year's, both years' totals at the top" width="358">
+<a name="charts"></a>
 
-How much a value went up in each hour, day or month, like the Homey app's Energy tab: a bar an hour for a day, a day for a week or a month, a month for a year. Turn on *Compare with the period before* for last week's, last month's or last year's bar beside each (the 3rd of the month beside the 3rd, March beside March). The totals sit at the top; tap a bar for its own.
-
-It takes any value that only counts up and that Homey logs in Insights: an electricity, water or gas meter's kWh or m³, a rain gauge's millimetres, hours of TV, a car's odometer, or a utility meter that starts again each week, month or year (it counts on across the reset). The bars come from Insights, which keeps a month or a year in 6-hour steps, so a day's bar in a month view can be off by an hour or two at its edges.
-
-**Settings:** the value, period (today, yesterday, this or last week, month or year), compare with the period before, title, the totals at the top, colour, [colour style](#colour-style).
-
-## Charts
-<img src="docs/screenshots/charts.png" alt="Charts on a Homey dashboard: the outdoor temperature as a line, and the power use as bars" width="358">
+## Chart · Over Time
+<img src="docs/screenshots/charts.png" alt="Chart · Over Time on a Homey dashboard: the outdoor temperature as a line, and the power use as bars" width="358">
 
 One chart, two stacked, or two values on one chart (each with its own scale, or sharing one), of any value that Homey logs in Insights, drawn like Electricity Overview's charts. The value now sits at the top in the chart's colour. Tap a chart to see the value at that moment.
 
-**Settings:** one chart, two stacked or two on one chart (they share chart 1's time span, or compare today with yesterday, this week with last, and so on), and on one chart one scale for both; per chart the value, time span (1 hour to 7 days, today or yesterday, or this or last week, month or year), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (yesterday and the last week, month or year show their average there); the legend above or below the chart; [colour style](#colour-style).
+**Settings:** one chart, two stacked or two on one chart (they share chart 1's time span, or compare whole periods of one unit: today with yesterday, this week with last, and so on), and on one chart one scale for both; per chart the value, [time span](#time-spans), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (a finished period shows its average there); the legend above or below the chart; [colour style](#colour-style).
 
 For how much a value went up in each hour, day or month (a meter's kWh, rain, hours of TV), as bars, see [Chart · Totals per Period](#chart--totals-per-period).
+
+<a name="time-spans"></a>
+
+**Time spans** (both chart widgets): a number and a unit. Minutes, hours, days, weeks, months or years are the last so many up to now (40 minutes, 24 hours, 18 months). Days from midnight, weeks from Monday, months from the 1st and years from 1 January are whole periods, the current one included (1 day from midnight is today, 3 months from the 1st this month and the two before), or with *Leave out the current period* the ones before it (yesterday, last week, the three months before this one). Up to two years: Insights keeps no more. A chart set up before 1.2.0 keeps its span.
+
+## Chart · Totals per Period
+<img src="docs/screenshots/totals.png" alt="Chart · Totals per Period on a Homey dashboard: the main meter's kilowatt-hours a month this year, beside last year's, both years' totals at the top" width="358">
+
+How much a value went up in each hour, day or month, like the Homey app's Energy tab: a bar an hour for a day, a day for a week or a month, a month for a year, and for other spans about 12 to 28 bars on the clock. Turn on *Compare with the period before* for last week's, last month's or last year's bar beside each (the 3rd of the month beside the 3rd, March beside March). The totals sit at the top; tap a bar for its own.
+
+It takes any value that only counts up and that Homey logs in Insights: an electricity, water or gas meter's kWh or m³, a rain gauge's millimetres, hours of TV, a car's odometer, or a utility meter that starts again each week, month or year (it counts on across the reset). The bars come from Insights, which keeps a month or a year in 6-hour steps, so a day's bar in a month view can be off by an hour or two at its edges.
+
+**Settings:** the value (meters first), [time span](#time-spans) (any number of hours, days, weeks, months or years, or whole ones: this week, last month …), compare with the period before, title, the totals at the top, colour, [colour style](#colour-style).
 
 ## Clock
 <img src="docs/screenshots/clock.png" alt="Clock on a Homey dashboard" width="358">

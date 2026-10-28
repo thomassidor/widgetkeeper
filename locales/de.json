@@ -306,10 +306,12 @@
     "yesterdayAvg": "Gestern · Ø",
     "lastWeekAvg": "Letzte Woche · Ø",
     "lastMonthAvg": "Letzter Monat · Ø",
-    "lastYearAvg": "Letztes Jahr · Ø"
+    "lastYearAvg": "Letztes Jahr · Ø",
+    "rangeAvg": "__range__ · Ø"
   },
   "totals": {
     "selectValue": "Wähle einen hochzählenden Wert in den Widget-Einstellungen.",
+    "now": "Jetzt",
     "error": "Das Diagramm konnte nicht geladen werden.",
     "unavailable": "Nicht verfügbar",
     "noHistory": "Noch kein Verlauf.",

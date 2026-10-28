@@ -3027,6 +3027,11 @@
       // Another app's widget: size it as on Homey, run it unsandboxed.
       const trust = { settings: { scaled: w.scaled === true, trusted: w.trusted === true } };
       for (const s of def.settings) if (!(s.id in draft.settings)) draft.settings[s.id] = clone(s.value);
+      // A chart's span stored before 1.2.0 (`7d`, `today`) shown as its number and unit (saved so once the dialog is).
+      for (const s of def.settings) {
+        const n = /^span(\d*)$/.exec(s.id);
+        if (n && (s.values || []).some(v => v.id === 'calDays')) Object.assign(draft.settings, window.WidgetkeeperKit.spanFields(draft.settings[s.id], n[1]));
+      }
       const { d, body } = dialog(def.name, def.type);
       d.classList.add('wd-settings');
       const byId = new Map(def.settings.map(s => [s.id, s]));

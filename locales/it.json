@@ -306,10 +306,12 @@
     "yesterdayAvg": "Ieri · media",
     "lastWeekAvg": "Settimana scorsa · media",
     "lastMonthAvg": "Mese scorso · media",
-    "lastYearAvg": "Anno scorso · media"
+    "lastYearAvg": "Anno scorso · media",
+    "rangeAvg": "__range__ · media"
   },
   "totals": {
     "selectValue": "Scegli un valore che aumenta nelle impostazioni del widget.",
+    "now": "Ora",
     "error": "Impossibile caricare il grafico.",
     "unavailable": "Non disponibile",
     "noHistory": "Ancora nessuna cronologia.",

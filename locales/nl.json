@@ -306,10 +306,12 @@
     "yesterdayAvg": "Gisteren · gem.",
     "lastWeekAvg": "Vorige week · gem.",
     "lastMonthAvg": "Vorige maand · gem.",
-    "lastYearAvg": "Vorig jaar · gem."
+    "lastYearAvg": "Vorig jaar · gem.",
+    "rangeAvg": "__range__ · gem."
   },
   "totals": {
     "selectValue": "Kies een waarde die optelt in de widgetinstellingen.",
+    "now": "Nu",
     "error": "Kon de grafiek niet laden.",
     "unavailable": "Niet beschikbaar",
     "noHistory": "Nog geen geschiedenis.",

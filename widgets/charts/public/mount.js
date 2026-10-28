@@ -4,6 +4,7 @@
  * page and a Homey of its own. `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountChartsWidget = function (Homey, { root, frame }) {
+  const { spanSetting } = window.WidgetkeeperKit;
   const settings = Homey.getSettings() || {};
   // '2': stacked; 'overlay': both on one chart, over chart 1's time span (or two periods of a kind: today with yesterday …).
   const overlay = settings.charts === 'overlay';
@@ -11,7 +12,7 @@ window.mountChartsWidget = function (Homey, { root, frame }) {
   // Each chart setting is an autocomplete item whose id is `<deviceId>:<capabilityId>`; empty ones are left out.
   const charts = [1, 2].slice(0, count).map(n => ({
     slot: settings[`chart${n}`] && settings[`chart${n}`].id,
-    span: settings[`span${n}`],
+    span: spanSetting(settings, n), // a number of a unit, or the span set before 1.2.0
     style: settings[`style${n}`],
     color: settings[`color${n}`] || (n === 2 ? 'green' : 'blue'),
     range: settings[`range${n}`],

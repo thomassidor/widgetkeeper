@@ -5,7 +5,7 @@
  * first). Plain browser JS (served as-is).
  */
 (function () {
-  const { timeSpan, spanUnit } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { parseSpan, timeSpan, isTimeSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart;
@@ -13,12 +13,16 @@
 
   const CHIP_H = 38; // chip row → top grid line, as Charts'
   const PLOT_H = 122; // Charts' one chart
-  const PERIODS = ['today', 'yesterday', 'thisWeek', 'lastWeek', 'thisMonth', 'lastMonth', 'thisYear', 'lastYear'];
-  /** The period before each, by the name its chip and header column show. */
-  const BEFORE = { today: 'yesterday', yesterday: 'dayBefore', thisWeek: 'lastWeek', lastWeek: 'weekBefore', thisMonth: 'lastMonth', lastMonth: 'monthBefore', thisYear: 'lastYear', lastYear: 'yearBefore' };
+  const DAY = 24 * C.HOUR;
+  /** A single whole period's name, by how many periods back it is: this one, the last one, the one before (`windowName()`). */
+  const NAMES = {
+    day: ['today', 'yesterday', 'dayBefore'], week: ['thisWeek', 'lastWeek', 'weekBefore'],
+    month: ['thisMonth', 'lastMonth', 'monthBefore'], year: ['thisYear', 'lastYear', 'yearBefore'],
+  };
 
   const DEFAULT_STRINGS = {
     selectValue: 'Pick a value that counts up in the widget settings.',
+    now: 'Now',
     error: 'Could not load the chart.',
     unavailable: 'Unavailable',
     noHistory: 'No history yet.',
@@ -42,7 +46,8 @@
    *   period?: string, compare?: boolean, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createTotalsWidget(root, opts = {}) {
-    const period = PERIODS.includes(opts.period) ? opts.period : 'thisWeek';
+    // Any time span (the kit's `timeSpan()`: `1w!` is this week, `30d` the last 30 days); missing or unknown: this week.
+    const period = isTimeSpan(opts.period) ? opts.period : '1w!';
     const compare = opts.compare === true;
     const title = typeof opts.title === 'string' ? opts.title.trim() : '';
 
@@ -115,12 +120,26 @@
       return nf(v, Math.min(most, a < 10 ? 2 : a < 1000 ? 1 : 0));
     }
 
-    /** A bar's time: an hour's `13:00–14:00`, a day's `tir. 14`, a month's name. */
+    /** A bar's time: an hour's `13:00–14:00` (a weekday before it over several days), a day's or week's `tir. 14`, a month's name. */
     function whenText(bar) {
-      const unit = spanUnit(period);
-      if (unit === 'year') return dateText(bar.t, { month: 'long' });
-      if (unit === 'day') return `${hhmm(bar.t)}–${hhmm(bar.end)}`;
-      return dateText(bar.t, { weekday: 'short', day: 'numeric' });
+      if (bar.end - bar.t > 27 * DAY) return dateText(bar.t, { month: 'long' });
+      if (bar.end - bar.t > 23 * C.HOUR) return dateText(bar.t, { weekday: 'short', day: 'numeric' });
+      const win = timeSpan(period, now());
+      const day = win.to - win.from > DAY + C.HOUR ? `${dateText(bar.t, { weekday: 'short' })} ` : '';
+      return `${day}${hhmm(bar.t)}–${hhmm(bar.end)}`;
+    }
+
+    /**
+     * The name of the window `back` periods before this one: a single whole period's (Today, Last week, Month before last
+     * …), else its dates (`1 Jul – 30 Sep`).
+     */
+    function windowName(back) {
+      const p = parseSpan(period);
+      const steps = (p.skip ? 1 : 0) + back;
+      if (p.whole && p.count === 1 && steps < 3) return t(NAMES[p.unit][steps]);
+      const w = timeSpan(period, now(), back);
+      const o = w.to - w.from > 366 * DAY ? { month: 'short', year: 'numeric' } : { day: 'numeric', month: 'short' };
+      return `${dateText(w.from, o)} – ${dateText(w.to - 1, o)}`;
     }
 
     // ------------------------------------------------------------------ render
@@ -152,11 +171,11 @@
       };
       if (!ok(s)) column(null, t('unavailable'), false);
       else if (k != null) column(slots[k].v, whenText(slots[k]), false);
-      else column(sum(slots.map(x => x.v)), t(period), false);
+      else column(sum(slots.map(x => x.v)), windowName(0), false);
       if (!compare) return;
       const p = k != null ? slots[k].prev : null;
-      if (k != null) column(p ? p.v : null, p ? whenText(p) : t(BEFORE[period]), true);
-      else column(sum(slots.map(x => (x.prev ? x.prev.v : null))), t(BEFORE[period]), true);
+      if (k != null) column(p ? p.v : null, p ? whenText(p) : windowName(1), true);
+      else column(sum(slots.map(x => (x.prev ? x.prev.v : null))), windowName(1), true);
     }
 
     function renderChart() {
@@ -169,7 +188,7 @@
 
       clear(chips);
       kit.chip(chips, 'series', titleText(), units);
-      if (compare) kit.chip(chips, 'series prev', t(BEFORE[period]), null);
+      if (compare) kit.chip(chips, 'series prev', windowName(1), null);
 
       const { win, slots } = slotsAt(now());
       const values = [];
@@ -216,16 +235,15 @@
     }
 
     /**
-     * Time labels: a day's hours 6:00, 12:00 and 18:00 with no lines, else the chart module's calendar labels (a week's
-     * weekdays, a month's days 1·8·15·22·29, a year's months; narrow ones where short ones don't fit) and dashed lines.
+     * Time labels: a single week, month or year the chart module's calendar labels (a week's weekdays, a month's days
+     * 1·8·15·22·29, a year's months; narrow ones where short ones don't fit, as the Energy tab) and dashed lines; any
+     * other span the chart kit's `timeLabels()` (a day's hours 6:00, 12:00 and 18:00, a rolling span's Now …).
      */
     function xLabels(win, x, pw, top, base) {
       const ly = base + X_LABEL_GAP;
-      if (win.unit === 'day') {
-        const h = new Date(win.from);
-        for (h.setHours(h.getHours() + 1); h.getTime() < win.to; h.setHours(h.getHours() + 1)) {
-          if (h.getHours() % 6 === 0) kit.text(svg, x(h.getTime()), ly, h.getHours() + ':00', 'middle', 'hanging');
-        }
+      const p = parseSpan(period);
+      if (!(p.whole && p.count === 1 && p.unit !== 'day')) {
+        kit.timeLabels(svg, win, { pw, top, base, nf, date: dateText, now: t('now') });
         return;
       }
       const narrow = win.unit === 'week' ? pw / 7 < 34 : win.unit === 'year' && pw / 12 < 30;

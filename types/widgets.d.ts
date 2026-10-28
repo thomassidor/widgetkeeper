@@ -79,10 +79,13 @@ interface Window {
     formatSince: (ms: number, now: number, language?: string, locale?: string, timeFormat?: unknown) => string,
     baseTitle: (title: unknown) => string,
     lowestSlot: (slots: any[], from: number, hours: number) => number,
+    parseSpan: (span: unknown) => { count: number, unit: 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year', whole: boolean, skip: boolean } | null,
     timeSpan: (span: string, at: number, back?: number) => { from: number, to: number, end: number, unit?: 'day' | 'week' | 'month' | 'year' },
     isTimeSpan: (span: unknown) => boolean,
     spanUnit: (span: unknown) => 'day' | 'week' | 'month' | 'year' | null,
     sixHourSpan: (span: unknown) => boolean,
+    spanSetting: (settings: Record<string, any>, n?: string | number, defaults?: { count: number, unit: string }) => string,
+    spanFields: (stored: unknown, n?: string | number) => Record<string, any>,
     wireFrame: (Homey: any, frame: HTMLElement) => {
       height: () => number,
       setHeight: () => void,

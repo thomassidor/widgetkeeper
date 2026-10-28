@@ -7,8 +7,15 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 ### New: Device names
 - **Show only part of a device's name on every widget:** under **Apps → Widgetkeeper → Configure → Device names**, choose the full name, the part before or after a separator you type (such as `|`, so *Ceiling lamp | Kitchen* shows as *Ceiling lamp*), or the last word. The page shows a few of your own names as they'll look, and open widgets change at once. The device lists in widget settings, Flow tokens and names typed on tiles stay as they are.
 
+### Charts: any time span
+- **Charts is now Chart · Over Time**, so it sits beside the other chart widgets in Homey's list. Widgets already on your dashboards stay as they are.
+- **Any time span:** pick a number and a unit instead of a fixed list: the last 40 minutes, 18 hours, 10 days or 6 months, up to two years. Or whole periods: days from midnight, weeks from Monday, months from the 1st or years from 1 January, such as this week or this month and the two before, and with *Leave out the current period* the ones before it (yesterday, last week, the three months before this one). The time labels and bars fit whatever span you pick. Charts set up before keep their span until you pick a unit.
+- On one chart, two whole periods of one unit still compare (today over yesterday, this month over last).
+- Longer spans read Homey's history from the logs that hold them, stitched together where one doesn't, so a span of two weeks or six months comes out as detailed as Homey keeps it.
+
 ### New: Chart · Totals per Period
-- How much a value went up in each hour, day or month, like the Homey app's Energy tab: a bar an hour for today or yesterday, a day for this or last week or month, a month for this or last year. The period's total sits at the top; tap a bar for its own.
+- How much a value went up in each hour, day or month, like the Homey app's Energy tab: a bar an hour for today or yesterday, a day for this or last week or month, a month for this or last year, or any other span (the last 30 days, the three months from the 1st). The period's total sits at the top; tap a bar for its own.
+- Its value list puts meters first.
 - **Compare with the period before:** last week's, last month's or last year's bars beside this one's, day by day or month by month, with both totals at the top.
 - Any value that only counts up and has Insights history: a meter's kWh or m³, a rain gauge's millimetres, hours of TV, and utility meters that start again each week, month or year (the bars count on across the reset).
 

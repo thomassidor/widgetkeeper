@@ -190,11 +190,14 @@ describe('mount', () => {
   it("asks for the meter's running total over the period, and the one before with compare", async () => {
     const month = (back: number) => {
       const w = win.WidgetkeeperKit.timeSpan('thisMonth', Date.now(), back);
-      return `m1:meter_power~thisMonth~${w.from}~${Math.ceil(w.end)}~month~use`;
+      return `m1:meter_power~1mo!~${w.from}~${Math.ceil(w.end)}~month~use`;
     };
-    expect((await requested({ slot: { id: 'm1:meter_power' }, period: 'thisMonth', compare: true })).url)
+    expect((await requested({ slot: { id: 'm1:meter_power' }, count: 1, span: 'calMonths', compare: true })).url)
       .toMatch(new RegExp(`^/state\\?charts=${month(0)},${month(1)}(&|$)`));
-    expect((await requested({ slot: { id: 'm1:meter_power' } })).url).toMatch(/^\/state\?charts=m1:meter_power~thisWeek~\d+~\d+~week~use(&|$)/);
+    // Missing: this week. A span stored before the count and unit existed is used as it was.
+    expect((await requested({ slot: { id: 'm1:meter_power' } })).url).toMatch(/^\/state\?charts=m1:meter_power~1w!~\d+~\d+~week~use(&|$)/);
+    expect((await requested({ slot: { id: 'm1:meter_power' }, span: 'lastMonth' })).url).toMatch(/^\/state\?charts=m1:meter_power~lastMonth~\d+~\d+~month~use(&|$)/);
+    expect((await requested({ slot: { id: 'm1:meter_power' }, count: 30, span: 'days' })).url).toMatch(/^\/state\?charts=m1:meter_power~30d~\d+~\d+~~use(&|$)/);
   });
 
   it('asks for a value without one', async () => {

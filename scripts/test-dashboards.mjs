@@ -12,7 +12,8 @@
 // It writes the app setting `webDashboards` through the Homey CLI's login (the web dashboards' own API wants the
 // password's session too), so the app's `normalize()` checks it on the next read, as for any saved dashboard.
 // The "Rename tiles" widgets get a name already typed on a tile, in the app setting `tileNames`. On the front page they're
-// under their own section, Test dashboards (the app setting `webFront`), which goes with the last of them.
+// under their own section, Test dashboards (the app setting `webFront`), and the chart widgets' (every `Chart · …` one, the
+// widgets in scripts/chart-settings.json) under Test charts, the user's ask; each section goes with the last of its dashboards.
 // Each type also gets a Vivid copy of its first plain widget (Colour style), one in purple where it has a colour setting,
 // and a Muted one in orange. A widget marked `wide()` spans two columns on the web dashboard (native ones can't).
 //
@@ -31,8 +32,12 @@ import { APP_ID, WEB_SETTING as SETTING, WEB_FRONT_SETTING, DASHBOARDS, TILE_NAM
 
 const EN = JSON.parse(readFileSync(new URL('../locales/en.json', import.meta.url), 'utf8'));
 const PREFIX = 'test-';
-/** The front page's section the web test dashboards are under, as long as there are any. */
+/** The front page's sections the web test dashboards are under, each as long as it has any: the chart widgets' apart. */
 const SECTION = { id: 'test-dashboards', name: 'Test dashboards' };
+const CHART_SECTION = { id: 'test-charts', name: 'Test charts' };
+const CHART_TYPES = new Set(Object.keys(JSON.parse(readFileSync(new URL('chart-settings.json', import.meta.url), 'utf8')).widgets));
+/** A test dashboard's section, by its id (`test-<type>`). */
+const sectionOf = id => (CHART_TYPES.has(id.slice(PREFIX.length)) ? CHART_SECTION : SECTION).id;
 /** The name every native test dashboard starts with: the Homey picks their ids, so the name is the marker. */
 const NATIVE_PREFIX = 'Test · ';
 const MISSING = 'missing-device-0000'; // a device id that doesn't exist: the widgets' missing state
@@ -464,6 +469,12 @@ const BUILD = {
       w('charts', 'On one chart · this + last year', { charts: 'overlay', chart1: temp, span1: 'thisYear', color1: 'purple', chart2: temp, span2: 'lastYear', style2: 'line', color2: 'orange' }),
       w('charts', 'Two · legend below · this week + last week, of one value', { charts: '2', legend: 'below', chart1: temp, span1: 'thisWeek', chart2: temp, span2: 'lastWeek', color2: 'green' }),
       w('charts', '1 h · no header · own title', { chart1: power, span1: '1h', showHeader: false, title1: 'Power now' }),
+      // Any number of a unit (1.2.0); the spans above are stored as before.
+      w('charts', '40 minutes', { chart1: power, count1: 40, span1: 'minutes' }),
+      w('charts', '30 days · bars, a day each', { chart1: power, count1: 30, span1: 'days', style1: 'bars', color1: 'orange' }),
+      w('charts', '18 months · line', { chart1: temp, count1: 18, span1: 'months', style1: 'line' }),
+      w('charts', 'The 3 months before this one · bars', { chart1: power, count1: 3, span1: 'calMonths', leaveOut1: true, style1: 'bars', color1: 'purple' }),
+      w('charts', 'On one chart · this week + last week, set as units', { charts: 'overlay', chart1: temp, count1: 1, span1: 'calWeeks', chart2: temp, count2: 1, span2: 'calWeeks', leaveOut2: true, style2: 'line', color2: 'green' }),
       ...other.map((item, i) => w('charts', `Other value ${i + 1} · ${['2d', '3d', '5d'][i]}`, { chart1: item, span1: ['2d', '3d', '5d'][i], color1: ['red', 'yellow', 'green'][i] })),
       w('charts', 'Deleted device + empty', { charts: '2', chart1: missing }),
       w('charts', 'Nothing picked'),
@@ -471,18 +482,27 @@ const BUILD = {
   },
 
   async totals() {
+    // The periods as the time span block sets them: one whole day, week, month or year, the current one or the last.
+    const whole = (span, leaveOut = false) => ({ count: 1, span, leaveOut });
+    const PERIODS = {
+      today: whole('calDays'), yesterday: whole('calDays', true), thisWeek: whole('calWeeks'), lastWeek: whole('calWeeks', true),
+      thisMonth: whole('calMonths'), lastMonth: whole('calMonths', true), thisYear: whole('calYears'), lastYear: whole('calYears', true),
+    };
     const items = await autocomplete('totals', 'slot');
     // Meters first (they count up), then whatever else is logged.
     const [meter, meter2] = [...pick(items, i => /:meter_/.test(i.id), 2), ...pick(items, i => !/:meter_/.test(i.id), 2)];
     const missing = { id: `${MISSING}:meter_power`, name: 'Deleted device · Energy' };
     return { cols: 3, widgets: [
-      wide(w('totals', 'This month against last month', { slot: meter, period: 'thisMonth', compare: true })),
+      wide(w('totals', 'This month against last month', { slot: meter, ...PERIODS.thisMonth, compare: true })),
       w('totals', 'This week (defaults)', { slot: meter }),
       ...[['today', 'Today'], ['yesterday', 'Yesterday'], ['lastWeek', 'Last week'], ['thisMonth', 'This month'], ['lastMonth', 'Last month'], ['thisYear', 'This year'], ['lastYear', 'Last year']]
-        .map(([period, name]) => w('totals', name, { slot: meter, period })),
+        .map(([period, name]) => w('totals', name, { slot: meter, ...PERIODS[period] })),
       ...[['today', 'Today'], ['thisWeek', 'This week'], ['yesterday', 'Yesterday'], ['lastMonth', 'Last month'], ['thisYear', 'This year'], ['lastYear', 'Last year']]
-        .map(([period, name]) => w('totals', `${name} against the one before`, { slot: meter, period, compare: true })),
-      w('totals', 'Another value · no totals · own title', { slot: meter2 || meter, period: 'thisMonth', showHeader: false, title: 'Typed title' }),
+        .map(([period, name]) => w('totals', `${name} against the one before`, { slot: meter, ...PERIODS[period], compare: true })),
+      w('totals', '12 hours', { slot: meter, count: 12, span: 'hours' }),
+      w('totals', '30 days', { slot: meter, count: 30, span: 'days' }),
+      w('totals', '3 months from the 1st against the 3 before', { slot: meter, count: 3, span: 'calMonths', compare: true }),
+      w('totals', 'Another value · no totals · own title', { slot: meter2 || meter, ...PERIODS.thisMonth, showHeader: false, title: 'Typed title' }),
       w('totals', 'Deleted device', { slot: missing, compare: true }),
       w('totals', 'Nothing picked'),
     ] };
@@ -986,21 +1006,24 @@ async function writeWeb(built) {
     const laid = placed.some(x => x.col !== undefined)
       ? Array.from({ length: cols }, (_, i) => widgets.filter((x, j) => placed[j].col === i))
       : columns(widgets, cols);
-    return { id: PREFIX + type, name, theme: 'auto', columns: laid, section: SECTION.id };
+    return { id: PREFIX + type, name, theme: 'auto', columns: laid, section: sectionOf(PREFIX + type) };
   });
   // The user's dashboards first, as they were; then the test ones in the manifest's order.
   const order = [...Object.keys(widgetDefs), 'apps'].map(t => PREFIX + t);
   const tests = [...current.filter(d => d.id.startsWith(PREFIX) && !replace.has(d.id)), ...dashboards]
-    .map(d => ({ ...d, section: SECTION.id }))
+    .map(d => ({ ...d, section: sectionOf(d.id) }))
     .sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
   const next = [...current.filter(d => !d.id.startsWith(PREFIX)), ...tests];
   if (next.length > MAX_WEB_DASHBOARDS) throw new Error(`That would make ${next.length} web dashboards; at most ${MAX_WEB_DASHBOARDS}`);
   // The section first, so the app never reads a test dashboard in one it doesn't know (it'd show under Your dashboards).
   const front = await homeyApi('GET', WEB_FRONT_SETTING);
-  // Where it is when it's there already (the user may have moved or renamed it), else last.
-  const sections = front && Array.isArray(front.sections) ? front.sections : [];
-  const has = sections.some(x => x && x.id === SECTION.id);
-  const kept = !tests.length ? sections.filter(x => !x || x.id !== SECTION.id) : has ? sections : [...sections, SECTION];
+  // Each where it is when it's there already (the user may have moved or renamed it), else last; gone without dashboards.
+  let kept = front && Array.isArray(front.sections) ? front.sections : [];
+  for (const section of [SECTION, CHART_SECTION]) {
+    const has = kept.some(x => x && x.id === section.id);
+    if (!tests.some(d => d.section === section.id)) kept = kept.filter(x => !x || x.id !== section.id);
+    else if (!has) kept = [...kept, section];
+  }
   await homeyApi('PUT', WEB_FRONT_SETTING, { value: { ...(front && typeof front === 'object' ? front : {}), sections: kept } });
   await homeyApi('PUT', SETTING, { value: next });
   await writeTileNames(instance => [...replace].some(id => instance.startsWith(`web-${id}-`)), typed);

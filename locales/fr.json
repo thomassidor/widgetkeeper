@@ -306,10 +306,12 @@
     "yesterdayAvg": "Hier · moy.",
     "lastWeekAvg": "Semaine dernière · moy.",
     "lastMonthAvg": "Mois dernier · moy.",
-    "lastYearAvg": "Année dernière · moy."
+    "lastYearAvg": "Année dernière · moy.",
+    "rangeAvg": "__range__ · moy."
   },
   "totals": {
     "selectValue": "Choisissez une valeur qui augmente dans les réglages du widget.",
+    "now": "Maint.",
     "error": "Impossible de charger le graphique.",
     "unavailable": "Indisponible",
     "noHistory": "Pas encore d'historique.",

@@ -306,10 +306,12 @@
     "yesterdayAvg": "I går · gns.",
     "lastWeekAvg": "Sidste uge · gns.",
     "lastMonthAvg": "Sidste måned · gns.",
-    "lastYearAvg": "Sidste år · gns."
+    "lastYearAvg": "Sidste år · gns.",
+    "rangeAvg": "__range__ · gns."
   },
   "totals": {
     "selectValue": "Vælg en værdi, der tæller op, i widgetindstillingerne.",
+    "now": "Nu",
     "error": "Kunne ikke hente grafen.",
     "unavailable": "Utilgængelig",
     "noHistory": "Ingen historik endnu.",

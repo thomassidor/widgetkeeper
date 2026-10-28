@@ -320,19 +320,19 @@
         {
           "id": "charts",
           "title": {
-            "en": "Charts",
-            "nl": "Grafieken",
-            "de": "Diagramme",
-            "fr": "Graphiques",
-            "it": "Grafici",
-            "sv": "Diagram",
-            "no": "Diagrammer",
-            "es": "Gráficos",
-            "da": "Grafer",
-            "ru": "Графики",
-            "pl": "Wykresy",
-            "ko": "차트",
-            "ar": "المخططات"
+            "en": "Chart · Over Time",
+            "nl": "Grafiek · Verloop",
+            "de": "Diagramm · Verlauf",
+            "fr": "Graphique · Évolution",
+            "it": "Grafico · Andamento",
+            "sv": "Diagram · Över tid",
+            "no": "Diagram · Over tid",
+            "es": "Gráfico · Evolución",
+            "da": "Graf · Over tid",
+            "ru": "График · Динамика",
+            "pl": "Wykres · Przebieg w czasie",
+            "ko": "차트 · 시간별 추이",
+            "ar": "مخطط · عبر الزمن"
           }
         },
         {

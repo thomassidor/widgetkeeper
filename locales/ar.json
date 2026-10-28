@@ -306,10 +306,12 @@
     "yesterdayAvg": "أمس · المتوسط",
     "lastWeekAvg": "الأسبوع الماضي · المتوسط",
     "lastMonthAvg": "الشهر الماضي · المتوسط",
-    "lastYearAvg": "العام الماضي · المتوسط"
+    "lastYearAvg": "العام الماضي · المتوسط",
+    "rangeAvg": "__range__ · المتوسط"
   },
   "totals": {
     "selectValue": "اختر قيمة متزايدة في إعدادات الأداة.",
+    "now": "الآن",
     "error": "تعذّر تحميل المخطط.",
     "unavailable": "غير متاح",
     "noHistory": "لا يوجد سجل بعد.",

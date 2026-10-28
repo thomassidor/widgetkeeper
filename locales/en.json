@@ -306,10 +306,12 @@
     "yesterdayAvg": "Yesterday · avg",
     "lastWeekAvg": "Last week · avg",
     "lastMonthAvg": "Last month · avg",
-    "lastYearAvg": "Last year · avg"
+    "lastYearAvg": "Last year · avg",
+    "rangeAvg": "__range__ · avg"
   },
   "totals": {
     "selectValue": "Pick a value that counts up in the widget settings.",
+    "now": "Now",
     "error": "Could not load the chart.",
     "unavailable": "Unavailable",
     "noHistory": "No history yet.",
