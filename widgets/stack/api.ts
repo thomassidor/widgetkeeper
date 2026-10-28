@@ -18,6 +18,7 @@ import lights from '../lights/api.js';
 import sparklines from '../sparklines/api.js';
 import charts from '../charts/api.js';
 import totals from '../totals/api.js';
+import scatter from '../scatter/api.js';
 import variables from '../variables/api.js';
 import varpresets from '../varpresets/api.js';
 import flows from '../flows/api.js';
@@ -36,7 +37,7 @@ type Homey = App['homey'];
 /** Each page widget's own API (its `api.ts`), by widget id: one for every `STACK_TYPES` (tsc checks). */
 export const PAGE_APIS: Record<StackType, WidgetApis[string]> = {
   electricity, thermostat, quickactions, sensoralarms, sensordots, roomhealth, valuematrix, weather, pollen, heatmap, cameras, values,
-  lights, sparklines, charts, totals, variables, varpresets, flows, price, timers, locks, curtains, media, clock, textline, dayssince,
+  lights, sparklines, charts, totals, scatter, variables, varpresets, flows, price, timers, locks, curtains, media, clock, textline, dayssince,
 };
 
 export default {

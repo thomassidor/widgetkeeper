@@ -25,6 +25,10 @@ One or two charts of any value over any span, from minutes to two years, drawn l
 <a href="#chart--totals-per-period"><b>Chart · Totals per Period</b></a><br>
 How much a value went up per hour, day or month (kWh, rain, hours of TV), like the Energy tab, over any span, beside the period before if you like<br clear="left"></p>
 
+<p><a href="#chart--x-against-y"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/scatter-dark.png"><img src="docs/previews/scatter-light.png" alt="" width="120" align="left"></picture></a>
+<a href="#chart--x-against-y"><b>Chart · X against Y</b></a><br>
+One value against another, a dot an hour, with the line that fits them: does the heat pump work harder when it's colder?<br clear="left"></p>
+
 <p><a href="#clock"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/clock-dark.png"><img src="docs/previews/clock-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#clock"><b>Clock</b></a><br>
 The time and the date, with the weather now and today's high and low<br clear="left"></p>
@@ -184,6 +188,15 @@ How much a value went up in each hour, day or month, like the Homey app's Energy
 It takes any value that only counts up and that Homey logs in Insights: an electricity, water or gas meter's kWh or m³, a rain gauge's millimetres, hours of TV, a car's odometer, or a utility meter that starts again each week, month or year (it counts on across the reset). The bars come from Insights, which keeps a month or a year in 6-hour steps, so a day's bar in a month view can be off by an hour or two at its edges.
 
 **Settings:** the value (meters first), [time span](#time-spans) (any number of hours, days, weeks, months or years, or whole ones: this week, last month …), compare with the period before, title, the totals at the top, colour, [colour style](#colour-style).
+
+## Chart · X against Y
+<img src="docs/screenshots/scatter.png" alt="Chart · X against Y on a Homey dashboard: the heat pump's power against the outdoor temperature over a week, a dot an hour, falling as it gets warmer, with the trend line" width="358">
+
+One value against another: each dot is where both were at the same time, their averages over an hour (or, by the [time span](#time-spans), a minute to a week). The newer dots are stronger, the newest is ringed, and a dashed line shows the trend through them, its slope at the top: how much more the heat pump draws for each degree colder, how much the humidity rises with the temperature. Tap a dot to see its values and when.
+
+It takes any two values that Homey logs in Insights. Over spans longer than eight days Insights keeps 6-hour steps, so a dot is at least 6 hours there.
+
+**Settings:** the value across (x) and the value up (y), [time span](#time-spans), one dot per (automatic, hour or day), trend line, fade older dots, title, the values at the top, colour, [colour style](#colour-style).
 
 ## Clock
 <img src="docs/screenshots/clock.png" alt="Clock on a Homey dashboard" width="358">

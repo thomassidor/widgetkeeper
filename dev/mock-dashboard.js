@@ -1,6 +1,6 @@
 // The widgets of dev/screenshots.html: the real widget code with the made-up home of showcase-data.js ("Solbakken",
 // the showcase dashboards' data, so no real home's names or readings end up in the README), mounted into the elements
-// with the ids w-elec, w-thermo, w-qa, w-sa, w-roomhealth, w-valuematrix, w-weather, w-heatmap, w-cameras, w-values, w-sparklines, w-charts, w-totals, w-variables,
+// with the ids w-elec, w-thermo, w-qa, w-sa, w-roomhealth, w-valuematrix, w-weather, w-heatmap, w-cameras, w-values, w-sparklines, w-charts, w-totals, w-scatter, w-variables,
 // w-varpresets, w-keypad, w-flows, w-price, w-locks, w-clock, w-textline(-note), w-dayssince, w-shortcuts, w-lightrooms,
 // w-pollen and w-webpage, and the Popups prompt page into the frame w-popup. Most go through showcase-mount.js's MOUNT with a
 // showcase entry (`findWidget()`); only the README's own changes are here. Needs the widget scripts,
@@ -41,6 +41,9 @@
 
   // Totals per Period: the main meter's year so far against last year, a month a bar (mock-totals.js, on the fixed clock).
   MOUNT.totals(el('w-totals'), { opts: { period: 'thisYear', compare: true }, state: mockTotals.totalsState('thisYear', SHOWCASE_NOW) });
+
+  // Chart · X against Y: the heat pump's power against the outdoor temperature over a week, a dot an hour (mock-scatter.js).
+  if (el('w-scatter')) MOUNT.scatter(el('w-scatter'), { opts: { span: '7d' }, state: mockScatter.scatterState('7d', SHOWCASE_NOW) });
 
   // The Climate dashboard's rooms, with the kitchen humid after dinner, a stuffy bedroom and the office's radon far over.
   MOUNT.roomhealth(el('w-roomhealth'), findWidget('roomhealth'));

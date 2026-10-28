@@ -25,6 +25,7 @@ This file holds what applies across the app. Each widget's notes, and those of t
 | Lights by Room | `lightrooms` | `widgets/lightrooms.md` |
 | Chart · Over Time, called Charts until 1.2.0 (and the shared chart module, frame and settings catalog) | `charts` | `widgets/charts.md` |
 | Chart · Totals per Period | `totals` | `widgets/totals.md` |
+| Chart · X against Y | `scatter` | `widgets/scatter.md` |
 | Sparklines | `sparklines` | `widgets/sparklines.md` |
 | Variables | `variables` | `widgets/variables.md` |
 | Variable Presets | `varpresets` | `widgets/varpresets.md` |

@@ -25,6 +25,7 @@ export const DEPS: Partial<Record<WidgetName, string[]>> = {
   electricity: ['electricity/chart.js'],
   charts: ['electricity/chart.js'],
   totals: ['electricity/chart.js'],
+  scatter: ['electricity/chart.js'],
   thermostat: ['thermostat/presets.js'],
   varpresets: ['thermostat/presets.js'],
 };
@@ -36,7 +37,7 @@ export function loadMount(name: WidgetName): any {
 }
 
 export type WidgetName = 'electricity' | 'thermostat' | 'quickactions' | 'sensoralarms' | 'sensordots' | 'roomhealth' | 'valuematrix' | 'weather' | 'heatmap'
-  | 'cameras' | 'values' | 'lights' | 'lightrooms' | 'sparklines' | 'charts' | 'totals' | 'variables' | 'varpresets' | 'flows' | 'price' | 'timers' | 'locks' | 'curtains' | 'media' | 'clock'
+  | 'cameras' | 'values' | 'lights' | 'lightrooms' | 'sparklines' | 'charts' | 'totals' | 'scatter' | 'variables' | 'varpresets' | 'flows' | 'price' | 'timers' | 'locks' | 'curtains' | 'media' | 'clock'
   | 'spacer' | 'textline' | 'dayssince' | 'stack' | 'shortcuts' | 'webpage' | 'pollen' | 'popups' | 'keypad';
 
 function loadScript(name: WidgetName, file: string): any {

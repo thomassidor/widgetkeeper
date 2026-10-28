@@ -328,6 +328,14 @@
     "monthBefore": "Månaden innan",
     "yearBefore": "Året innan"
   },
+  "scatter": {
+    "selectValues": "Välj ett värde på bredden (x) och ett på höjden (y) i widgetinställningarna.",
+    "error": "Kunde inte läsa in diagrammet.",
+    "unavailable": "Inte tillgänglig",
+    "noHistory": "Ännu inte tillräckligt med historik för båda.",
+    "now": "Nu",
+    "trend": "Trend"
+  },
   "lights": {
     "selectDevices": "Välj lampor i widgetinställningarna.",
     "error": "Kunde inte läsa in lamporna.",
@@ -860,6 +868,7 @@
       "sparklines": "Värden med ett litet diagram över deras senaste historik.",
       "charts": "Ett eller två diagram över valfritt värde, som elens.",
       "totals": "Hur mycket ett värde ökat per timme, dag eller månad: kWh, regn, timmar tv.",
+      "scatter": "Ett värde mot ett annat, en punkt per timme: jobbar värmepumpen hårdare när det är kallt?",
       "variables": "Variabler som rader att slå om eller ändra.",
       "varpresets": "Knappar som sätter en variabel till förinställda värden.",
       "keypad": "Knappar bakom en valfri kod som startar flöden eller ställer in ett läge.",

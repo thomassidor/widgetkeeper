@@ -1072,6 +1072,235 @@
         "ar": "مجموع الفترة حتى الآن. المس عمودًا لرؤية مجموعه."
       },
       "value": true
+    },
+    "scatter.x": {
+      "id": "xValue",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value across (x)",
+        "nl": "Waarde in de breedte (x)",
+        "de": "Wert in der Breite (x)",
+        "fr": "Valeur horizontale (x)",
+        "it": "Valore orizzontale (x)",
+        "sv": "Värde på bredden (x)",
+        "no": "Verdi i bredden (x)",
+        "es": "Valor horizontal (x)",
+        "da": "Værdi i bredden (x)",
+        "ru": "Значение по горизонтали (x)",
+        "pl": "Wartość w poziomie (x)",
+        "ko": "가로 값 (x)",
+        "ar": "القيمة الأفقية (x)"
+      },
+      "hint": {
+        "en": "Each dot's place across: its average over the dot's time, such as the outdoor temperature. Only numbers with Insights history are listed.",
+        "nl": "De plek van elke stip in de breedte: het gemiddelde over de tijd van de stip, zoals de buitentemperatuur. Alleen getallen met Insights-geschiedenis staan in de lijst.",
+        "de": "Die Lage jedes Punkts in der Breite: sein Mittel über die Zeit des Punkts, etwa die Außentemperatur. Nur Zahlen mit Insights-Verlauf stehen zur Auswahl.",
+        "fr": "La position horizontale de chaque point : sa moyenne sur la durée du point, comme la température extérieure. Seuls les nombres avec un historique Insights sont proposés.",
+        "it": "La posizione orizzontale di ogni punto: la media nel tempo del punto, come la temperatura esterna. Sono elencati solo i numeri con cronologia Insights.",
+        "sv": "Varje punkts läge på bredden: medelvärdet under punktens tid, som utetemperaturen. Bara tal med Insights-historik visas.",
+        "no": "Hvert punkts plass i bredden: snittet over punktets tid, som utetemperaturen. Bare tall med Insights-historikk vises.",
+        "es": "La posición horizontal de cada punto: su media durante el tiempo del punto, como la temperatura exterior. Solo aparecen números con historial de Insights.",
+        "da": "Hvert punkts plads i bredden: gennemsnittet over punktets tid, som udetemperaturen. Kun tal med Insights-historik vises.",
+        "ru": "Положение каждой точки по горизонтали: среднее за время точки, например уличная температура. В списке только числа с историей Insights.",
+        "pl": "Położenie każdego punktu w poziomie: średnia z czasu punktu, np. temperatura na zewnątrz. Lista zawiera tylko liczby z historią Insights.",
+        "ko": "각 점의 가로 위치: 그 점 시간 동안의 평균입니다(예: 바깥 온도). Insights 기록이 있는 숫자만 나열됩니다.",
+        "ar": "موضع كل نقطة أفقيًا: متوسطها خلال وقت النقطة، مثل درجة الحرارة الخارجية. تظهر فقط الأرقام التي لها سجل في Insights."
+      }
+    },
+    "scatter.y": {
+      "id": "yValue",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value up (y)",
+        "nl": "Waarde in de hoogte (y)",
+        "de": "Wert in der Höhe (y)",
+        "fr": "Valeur verticale (y)",
+        "it": "Valore verticale (y)",
+        "sv": "Värde på höjden (y)",
+        "no": "Verdi i høyden (y)",
+        "es": "Valor vertical (y)",
+        "da": "Værdi i højden (y)",
+        "ru": "Значение по вертикали (y)",
+        "pl": "Wartość w pionie (y)",
+        "ko": "세로 값 (y)",
+        "ar": "القيمة الرأسية (y)"
+      },
+      "hint": {
+        "en": "Each dot's height, such as the heat pump's power or a room's humidity. Only numbers with Insights history are listed.",
+        "nl": "De hoogte van elke stip, zoals het vermogen van de warmtepomp of de luchtvochtigheid van een kamer. Alleen getallen met Insights-geschiedenis staan in de lijst.",
+        "de": "Die Höhe jedes Punkts, etwa die Leistung der Wärmepumpe oder die Luftfeuchte eines Raums. Nur Zahlen mit Insights-Verlauf stehen zur Auswahl.",
+        "fr": "La hauteur de chaque point, comme la puissance de la pompe à chaleur ou l'humidité d'une pièce. Seuls les nombres avec un historique Insights sont proposés.",
+        "it": "L'altezza di ogni punto, come la potenza della pompa di calore o l'umidità di una stanza. Sono elencati solo i numeri con cronologia Insights.",
+        "sv": "Varje punkts höjd, som värmepumpens effekt eller ett rums luftfuktighet. Bara tal med Insights-historik visas.",
+        "no": "Hvert punkts høyde, som varmepumpens effekt eller fuktigheten i et rom. Bare tall med Insights-historikk vises.",
+        "es": "La altura de cada punto, como la potencia de la bomba de calor o la humedad de una habitación. Solo aparecen números con historial de Insights.",
+        "da": "Hvert punkts højde, som varmepumpens effekt eller luftfugtigheden i et rum. Kun tal med Insights-historik vises.",
+        "ru": "Высота каждой точки, например мощность теплового насоса или влажность в комнате. В списке только числа с историей Insights.",
+        "pl": "Wysokość każdego punktu, np. moc pompy ciepła lub wilgotność w pokoju. Lista zawiera tylko liczby z historią Insights.",
+        "ko": "각 점의 높이입니다(예: 히트펌프의 전력이나 방의 습도). Insights 기록이 있는 숫자만 나열됩니다.",
+        "ar": "ارتفاع كل نقطة، مثل قدرة المضخة الحرارية أو رطوبة غرفة. تظهر فقط الأرقام التي لها سجل في Insights."
+      }
+    },
+    "scatter.dots": {
+      "id": "dots",
+      "type": "dropdown",
+      "value": "auto",
+      "title": {
+        "en": "One dot per",
+        "nl": "Eén stip per",
+        "de": "Ein Punkt pro",
+        "fr": "Un point par",
+        "it": "Un punto per",
+        "sv": "En punkt per",
+        "no": "Ett punkt per",
+        "es": "Un punto por",
+        "da": "Ét punkt pr.",
+        "ru": "Одна точка на",
+        "pl": "Jeden punkt na",
+        "ko": "점 하나당",
+        "ar": "نقطة لكل"
+      },
+      "hint": {
+        "en": "Automatic: a minute to a week each, so the time span gives up to a few hundred dots.",
+        "nl": "Automatisch: een minuut tot een week per stip, zodat de periode hooguit een paar honderd stippen geeft.",
+        "de": "Automatisch: eine Minute bis eine Woche je Punkt, sodass der Zeitraum höchstens einige Hundert Punkte ergibt.",
+        "fr": "Automatique : d'une minute à une semaine par point, pour que la période donne au plus quelques centaines de points.",
+        "it": "Automatico: da un minuto a una settimana per punto, così il periodo dà al massimo qualche centinaio di punti.",
+        "sv": "Automatiskt: en minut till en vecka per punkt, så att tidsperioden ger högst några hundra punkter.",
+        "no": "Automatisk: ett minutt til en uke per punkt, så tidsrommet gir høyst noen hundre punkter.",
+        "es": "Automático: de un minuto a una semana por punto, para que el periodo dé como mucho unos cientos de puntos.",
+        "da": "Automatisk: et minut til en uge pr. punkt, så tidsrummet højst giver nogle hundrede punkter.",
+        "ru": "Автоматически: от минуты до недели на точку, чтобы за период было не больше нескольких сотен точек.",
+        "pl": "Automatycznie: od minuty do tygodnia na punkt, tak by okres dał najwyżej kilkaset punktów.",
+        "ko": "자동: 점 하나에 1분에서 1주까지로, 기간 전체가 수백 개 이하의 점이 됩니다.",
+        "ar": "تلقائي: من دقيقة إلى أسبوع لكل نقطة، فلا تتجاوز الفترة بضع مئات من النقاط."
+      },
+      "values": [
+        {
+          "id": "auto",
+          "title": {
+            "en": "Automatic",
+            "nl": "Automatisch",
+            "de": "Automatisch",
+            "fr": "Automatique",
+            "it": "Automatico",
+            "sv": "Automatiskt",
+            "no": "Automatisk",
+            "es": "Automático",
+            "da": "Automatisk",
+            "ru": "Автоматически",
+            "pl": "Automatycznie",
+            "ko": "자동",
+            "ar": "تلقائي"
+          }
+        },
+        {
+          "id": "hour",
+          "title": {
+            "en": "Hour",
+            "nl": "Uur",
+            "de": "Stunde",
+            "fr": "Heure",
+            "it": "Ora",
+            "sv": "Timme",
+            "no": "Time",
+            "es": "Hora",
+            "da": "Time",
+            "ru": "Час",
+            "pl": "Godzina",
+            "ko": "시간",
+            "ar": "ساعة"
+          }
+        },
+        {
+          "id": "day",
+          "title": {
+            "en": "Day",
+            "nl": "Dag",
+            "de": "Tag",
+            "fr": "Jour",
+            "it": "Giorno",
+            "sv": "Dag",
+            "no": "Dag",
+            "es": "Día",
+            "da": "Dag",
+            "ru": "День",
+            "pl": "Dzień",
+            "ko": "일",
+            "ar": "يوم"
+          }
+        }
+      ]
+    },
+    "scatter.trend": {
+      "id": "trend",
+      "type": "checkbox",
+      "value": true,
+      "title": {
+        "en": "Trend line",
+        "nl": "Trendlijn",
+        "de": "Trendlinie",
+        "fr": "Ligne de tendance",
+        "it": "Linea di tendenza",
+        "sv": "Trendlinje",
+        "no": "Trendlinje",
+        "es": "Línea de tendencia",
+        "da": "Tendenslinje",
+        "ru": "Линия тренда",
+        "pl": "Linia trendu",
+        "ko": "추세선",
+        "ar": "خط الاتجاه"
+      },
+      "hint": {
+        "en": "The straight line that fits the dots best; its slope shows at the top.",
+        "nl": "De rechte lijn die het best bij de stippen past; de helling staat bovenaan.",
+        "de": "Die Gerade, die am besten zu den Punkten passt; ihre Steigung steht oben.",
+        "fr": "La droite qui correspond le mieux aux points ; sa pente s'affiche en haut.",
+        "it": "La retta che si adatta meglio ai punti; la pendenza compare in alto.",
+        "sv": "Den raka linje som passar punkterna bäst; lutningen visas överst.",
+        "no": "Den rette linjen som passer best til punktene; stigningen vises øverst.",
+        "es": "La recta que mejor se ajusta a los puntos; su pendiente aparece arriba.",
+        "da": "Den rette linje, der passer bedst til punkterne; hældningen vises øverst.",
+        "ru": "Прямая, лучше всего проходящая через точки; её наклон показан вверху.",
+        "pl": "Prosta najlepiej dopasowana do punktów; jej nachylenie widać u góry.",
+        "ko": "점에 가장 잘 맞는 직선이며, 기울기가 위에 표시됩니다.",
+        "ar": "الخط المستقيم الأنسب للنقاط؛ ويظهر ميله في الأعلى."
+      }
+    },
+    "scatter.fade": {
+      "id": "fade",
+      "type": "checkbox",
+      "value": true,
+      "title": {
+        "en": "Fade older dots",
+        "nl": "Oudere stippen vager",
+        "de": "Ältere Punkte blasser",
+        "fr": "Estomper les anciens points",
+        "it": "Sfuma i punti più vecchi",
+        "sv": "Tona ut äldre punkter",
+        "no": "Ton ned eldre punkter",
+        "es": "Atenuar los puntos antiguos",
+        "da": "Ton ældre punkter ned",
+        "ru": "Бледнее старые точки",
+        "pl": "Starsze punkty bledsze",
+        "ko": "오래된 점은 흐리게",
+        "ar": "تخفيف النقاط الأقدم"
+      },
+      "hint": {
+        "en": "The newest dots strongest, so you see where it's heading.",
+        "nl": "De nieuwste stippen het sterkst, zodat je ziet waar het heen gaat.",
+        "de": "Die neuesten Punkte am kräftigsten, damit du siehst, wohin es geht.",
+        "fr": "Les points les plus récents les plus marqués, pour voir où ça va.",
+        "it": "I punti più recenti più marcati, per vedere dove si va.",
+        "sv": "De nyaste punkterna starkast, så att du ser vart det är på väg.",
+        "no": "De nyeste punktene sterkest, så du ser hvor det er på vei.",
+        "es": "Los puntos más recientes más intensos, para ver hacia dónde va.",
+        "da": "De nyeste punkter stærkest, så du kan se, hvor det er på vej hen.",
+        "ru": "Новые точки ярче, чтобы видеть, куда всё идёт.",
+        "pl": "Najnowsze punkty najwyraźniejsze, by widać było, dokąd zmierza.",
+        "ko": "최근 점일수록 진하게 보여 흐름을 알 수 있습니다.",
+        "ar": "النقاط الأحدث أوضح، لترى إلى أين يتجه."
+      }
     }
   },
   "hints": {
@@ -1134,6 +1363,36 @@
       "pl": "Żywe wypełniają słupki mocniejszym kolorem.",
       "ko": "선명하게는 막대를 더 진한 색으로 채웁니다.",
       "ar": "«زاهية» تملأ الأعمدة بلون أكثر."
+    },
+    "showHeader.scatter": {
+      "en": "The newest dot's values and the trend line's slope. Tap a dot to see its own.",
+      "nl": "De waarden van de nieuwste stip en de helling van de trendlijn. Tik op een stip voor die van die stip.",
+      "de": "Die Werte des neuesten Punkts und die Steigung der Trendlinie. Tippe auf einen Punkt für seine.",
+      "fr": "Les valeurs du point le plus récent et la pente de la ligne de tendance. Touchez un point pour voir les siennes.",
+      "it": "I valori del punto più recente e la pendenza della linea di tendenza. Tocca un punto per vedere i suoi.",
+      "sv": "Den nyaste punktens värden och trendlinjens lutning. Tryck på en punkt för dess egna.",
+      "no": "Verdiene for det nyeste punktet og trendlinjens stigning. Trykk på et punkt for dets egne.",
+      "es": "Los valores del punto más reciente y la pendiente de la línea de tendencia. Toca un punto para ver los suyos.",
+      "da": "Det nyeste punkts værdier og tendenslinjens hældning. Tryk på et punkt for at se dets egne.",
+      "ru": "Значения новейшей точки и наклон линии тренда. Коснитесь точки, чтобы увидеть её значения.",
+      "pl": "Wartości najnowszego punktu i nachylenie linii trendu. Dotknij punktu, by zobaczyć jego wartości.",
+      "ko": "최신 점의 값과 추세선의 기울기입니다. 점을 탭하면 그 점의 값을 볼 수 있습니다.",
+      "ar": "قيم أحدث نقطة وميل خط الاتجاه. المس نقطة لترى قيمها."
+    },
+    "colorStyle.scatter": {
+      "en": "Vivid makes the dots stronger.",
+      "nl": "Levendig maakt de stippen sterker.",
+      "de": "Kräftig macht die Punkte stärker.",
+      "fr": "Vives rend les points plus marqués.",
+      "it": "Vivaci rende i punti più marcati.",
+      "sv": "Livfulla gör punkterna starkare.",
+      "no": "Livlige gjør punktene sterkere.",
+      "es": "Vivos hace los puntos más intensos.",
+      "da": "Livlige gør punkterne stærkere.",
+      "ru": "«Яркие» делают точки насыщеннее.",
+      "pl": "Żywe wzmacniają punkty.",
+      "ko": "선명하게는 점을 더 진하게 표시합니다.",
+      "ar": "«زاهية» تجعل النقاط أقوى."
     }
   },
   "widgets": {
@@ -1205,6 +1464,43 @@
       {
         "use": "colorStyle",
         "hint": "colorStyle.totals"
+      }
+    ],
+    "scatter": [
+      "scatter.x",
+      "scatter.y",
+      {
+        "use": "count",
+        "top": true,
+        "value": 7
+      },
+      {
+        "use": "span",
+        "top": true,
+        "value": "days"
+      },
+      {
+        "use": "leaveOut",
+        "top": true
+      },
+      "scatter.dots",
+      "scatter.trend",
+      "scatter.fade",
+      {
+        "use": "title",
+        "top": true
+      },
+      {
+        "use": "showHeader.values",
+        "hint": "showHeader.scatter"
+      },
+      {
+        "use": "color",
+        "top": true
+      },
+      {
+        "use": "colorStyle",
+        "hint": "colorStyle.scatter"
       }
     ]
   }

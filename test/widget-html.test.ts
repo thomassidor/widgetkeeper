@@ -130,7 +130,7 @@ describe('shared files', () => {
   });
 
   it('the chart module is loaded by the Electricity Overview, Charts and Totals per Period, the presets module by both preset widgets', () => {
-    expect(Object.keys(stackDeps).sort()).toEqual(['charts', 'electricity', 'thermostat', 'totals', 'varpresets']);
+    expect(Object.keys(stackDeps).sort()).toEqual(['charts', 'electricity', 'scatter', 'thermostat', 'totals', 'varpresets']);
   });
 });
 

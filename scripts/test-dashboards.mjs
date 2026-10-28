@@ -481,6 +481,26 @@ const BUILD = {
     ] };
   },
 
+  async scatter() {
+    const items = await autocomplete('scatter', 'xValue');
+    // A temperature across and a power up where there are, else whatever else is logged.
+    const [temp, temp2] = pick(items, i => /:measure_temperature/.test(i.id), 2);
+    const [power] = pick(items, i => /:measure_power/.test(i.id));
+    const others = pick(items, i => !/:measure_(temperature|power)/.test(i.id), 2);
+    const x = temp || others[0], y = power || others[1] || temp2;
+    const missing = { id: `${MISSING}:measure_temperature`, name: 'Deleted device · Temperature' };
+    return { cols: 3, widgets: [
+      wide(w('scatter', 'Up against across · 7 days (defaults)', { xValue: x, yValue: y })),
+      w('scatter', '24 hours · red', { xValue: x, yValue: y, count: 24, span: 'hours', color: 'red' }),
+      w('scatter', '30 days · a dot a day', { xValue: x, yValue: y, count: 30, span: 'days', dots: 'day', color: 'purple' }),
+      w('scatter', 'This month · no trend · no fading · Vivid', { xValue: x, yValue: y, count: 1, span: 'calMonths', trend: false, fade: false, colorStyle: 'deep' }),
+      w('scatter', 'Last week · own title · no header', { xValue: x, yValue: y, count: 1, span: 'calWeeks', leaveOut: true, title: 'Typed title', showHeader: false }),
+      w('scatter', '6 hours · a dot an hour', { xValue: x, yValue: y, count: 6, span: 'hours', dots: 'hour', color: 'green' }),
+      temp2 && w('scatter', 'Two temperatures · 3 days', { xValue: temp, yValue: temp2, count: 3, span: 'days', color: 'orange' }),
+      w('scatter', 'Deleted device across', { xValue: missing, yValue: y }),
+      w('scatter', 'Nothing picked'),
+    ].filter(Boolean) };
+  },
   async totals() {
     // The periods as the time span block sets them: one whole day, week, month or year, the current one or the last.
     const whole = (span, leaveOut = false) => ({ count: 1, span, leaveOut });

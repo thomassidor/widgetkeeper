@@ -235,6 +235,33 @@
     return out;
   }
 
+  /**
+   * Several series on one clock grid: `buckets()` of each over `[from, to]` by `unit`, as rows `{t, end, values}`, a
+   * value per series (null before its first). `currents` (each series' value now) stand in for a last row without
+   * points, as in `buckets()`. Chart · X against Y's pairs.
+   * @param {[number, number][][]} list
+   */
+  function alignSeries(list, from, to, unit, currents = []) {
+    const each = list.map((pts, i) => buckets(pts, from, to, unit, currents[i] == null ? null : currents[i]));
+    return (each[0] || []).map((b, k) => ({ t: b.t, end: b.end, values: each.map(series => series[k].v) }));
+  }
+
+  /**
+   * The least-squares line through `[x, y]` pairs: `{slope, intercept, r}` (r the correlation, −1 … 1), or null for fewer
+   * than three or no spread in x.
+   * @param {[number, number][]} pairs
+   */
+  function trendLine(pairs) {
+    const n = pairs.length;
+    if (n < 3) return null;
+    const mx = pairs.reduce((a, p) => a + p[0], 0) / n, my = pairs.reduce((a, p) => a + p[1], 0) / n;
+    let sxy = 0, sxx = 0, syy = 0;
+    for (const [x, y] of pairs) { sxy += (x - mx) * (y - my); sxx += (x - mx) ** 2; syy += (y - my) ** 2; }
+    if (!(sxx > 0)) return null;
+    const slope = sxy / sxx;
+    return { slope, intercept: my - slope * mx, r: syy > 0 ? sxy / Math.sqrt(sxx * syy) : 0 };
+  }
+
   /** The bars' lengths `barUnit()` picks from, shortest first: about 12–28 of them over a rolling span. */
   const BAR_STEPS = [MIN, 2 * MIN, 5 * MIN, 15 * MIN, 30 * MIN, HOUR, 2 * HOUR, 3 * HOUR, 6 * HOUR, 12 * HOUR, 24 * HOUR, 'week', 'month'];
   const MAX_BARS = 28;
@@ -490,6 +517,28 @@
     }
 
     /**
+     * A bottom value scale over a plot `pw` wide from `L` (Chart · X against Y's x): vertical grid lines and labels
+     * (`format(v, step)`, at least 40 px apart) under `base`, from `ticks()` (fitted unless `fit` is false); a line at zero
+     * where the range crosses it. Returns `x(v)` and the axis range.
+     */
+    function xValueScale(svg, { min, max, pw, top, base, format, fit = true }) {
+      const { step, axisMin, axisMax, k, zeroIndex } = ticks({ min, max, fit });
+      const x = v => L + pw * (v - axisMin) / (axisMax - axisMin);
+      const every = Math.max(1, Math.ceil(40 / (pw / k)));
+      let grid = '';
+      for (let j = 0; j <= k; j++) {
+        const v = axisMin + j * step;
+        if (j > 0) grid += `M${f1(x(v))} ${top - 6}V${base}`;
+        if ((zeroIndex != null ? j - zeroIndex : j) % every === 0) {
+          text(svg, x(v), base + X_LABEL_GAP, format(v, step), j === 0 ? 'start' : j === k ? 'end' : 'middle', 'hanging');
+        }
+      }
+      el('svg:path', { class: 'grid', d: grid }, svg);
+      if (zeroIndex != null) el('svg:path', { class: 'axis', d: `M${f1(x(0))} ${top - 6}V${base}` }, svg);
+      return { x, axisMin, axisMax, step };
+    }
+
+    /**
      * Two value scales on one plot (Charts' two series on one chart): `a` on the left, `b` on the right
      * (each `{max, min, format}`), on one shared grid. From zero (`fit` off), as the Electricity Overview's
      * price and usage scales: each side its own step, sharing the zero line and the steps above and below it.
@@ -605,7 +654,7 @@
       if (split) exportSplit(svg, zeroY, base, draw); else draw(null, false);
     }
 
-    return { uid, text, gradient, dot, chip, exportSplit, prepareSvg, axis, midnightLines, timeLabels, valueScale, dualScale, trace, bars };
+    return { uid, text, gradient, dot, chip, exportSplit, prepareSvg, axis, midnightLines, timeLabels, valueScale, xValueScale, dualScale, trace, bars };
   }
 
   /**
@@ -740,8 +789,10 @@
       renderIfSeen() { if (seen()) render(); },
       /** After new state: a lasting message goes (a passing one stays its 8 s). */
       resetMessage() { line.reset({ lastingOnly: true }); },
-      /** Tap-to-inspect on a box's svg (`attachScrub()`): `onPointer(px)` with the pointer's x in the svg, `onReset()`. */
-      scrub(svg, onPointer, onReset) { attachScrub(svg, e => onPointer(pointerX(e, svg)), onReset, { timer: null }); },
+      /** Tap-to-inspect on a box's svg (`attachScrub()`): `onPointer(px, py)` with the pointer in the svg, `onReset()`. */
+      scrub(svg, onPointer, onReset) {
+        attachScrub(svg, e => onPointer(pointerX(e, svg), e.clientY - svg.getBoundingClientRect().top), onReset, { timer: null });
+      },
       /** The widget's public API: its own (`setState`, `pushChange` …) with the frame's. */
       api(own) {
         return {
@@ -817,7 +868,7 @@
   window.WidgetkeeperChart = {
     MIN, HOUR, L, X_LABEL_GAP, X_LABEL_H, LABEL_PAD, LABEL_MIN_GAP,
     niceStep, ticks, el, clear, show, f1, smoothValues, linePath, stepPath, p985, p015,
-    compactNumber, ago, stepDecimals, axisLabel, buckets, barUnit, useBuckets, meterTotal, calendarLabels, createKit, attachScrub, pointerX,
+    compactNumber, ago, stepDecimals, axisLabel, buckets, alignSeries, trendLine, barUnit, useBuckets, meterTotal, calendarLabels, createKit, attachScrub, pointerX,
     createFrame, wireChart,
   };
 })();

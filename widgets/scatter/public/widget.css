@@ -1,0 +1,36 @@
+/*
+ * Chart · X against Y: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`) in the widget's colour
+ * (the kit's `data-wk-color` on the root: its bright set, as Charts' colours).
+ */
+.xy { --xy-color: var(--wk-c-bright, var(--ew-blue)); }
+
+/* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
+html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
+html, body { margin: 0; }
+
+.xy .xy-value { color: var(--xy-color); gap: 3px; }
+.xy .xy-value.tight { gap: 0; }
+/* Yellow text is mixed with the text colour, as Charts' yellow, so it reads on a light card. */
+.wk[data-wk-color="yellow"] .xy .xy-value { color: color-mix(in srgb, var(--xy-color) 75%, var(--ew-text)); }
+/* The trend's slope in the text colour: it's about the line, not the dots. */
+.xy .ew-hcol.trend .xy-value { color: var(--ew-text); }
+
+.xy .ew-chips { gap: 6px; }
+.xy .ew-chip.series { max-width: 100%; min-width: 0; }
+.xy .ew-chip.series > span { overflow: hidden; text-overflow: ellipsis; }
+.xy .ew-chip.series i { background: var(--xy-color); flex-shrink: 0; }
+/* The x value's chip: under its labels at the right, a neutral dot (its value is the dots' place, not their colour). */
+.xy .ew-chips.xy-x { position: static; justify-content: flex-end; margin-top: 8px; }
+.xy .ew-chip.series.x i { background: var(--ew-muted); }
+
+.xy .xy-dot { fill: var(--xy-color); }
+.xy .xy-trend { stroke: var(--ew-text); stroke-opacity: .75; stroke-width: 1.5; stroke-dasharray: 5 4; fill: none; }
+.xy .dot-ring.series { stroke: var(--xy-color); }
+.xy .dot-core.series { fill: var(--xy-color); }
+/* Vivid (kit.css, on the widget's root): stronger dots, each with a rim (older ones still fainter). */
+.wk-deep .xy .xy-dot { stroke: var(--xy-color); stroke-width: 1; stroke-opacity: .6; }
+
+/* A chart without anything to draw keeps its chips, with the reason under them. */
+.xy .xy-chart.empty { min-height: 0; }
+.xy .xy-chart.empty .ew-chips { position: static; }
+.xy .xy-note { padding-bottom: 0; }

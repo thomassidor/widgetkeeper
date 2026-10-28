@@ -328,6 +328,14 @@
     "monthBefore": "Måneden før",
     "yearBefore": "Året før"
   },
+  "scatter": {
+    "selectValues": "Vælg en værdi i bredden (x) og en i højden (y) i widgetindstillingerne.",
+    "error": "Kunne ikke hente grafen.",
+    "unavailable": "Utilgængelig",
+    "noHistory": "Endnu ikke nok historik for begge.",
+    "now": "Nu",
+    "trend": "Tendens"
+  },
   "lights": {
     "selectDevices": "Vælg lys i widgetindstillingerne.",
     "error": "Kunne ikke indlæse lysene.",
@@ -860,6 +868,7 @@
       "sparklines": "Værdier med en lille graf over deres seneste historik.",
       "charts": "Én eller to grafer over en vilkårlig værdi, som el-graferne.",
       "totals": "Hvor meget en værdi er steget pr. time, dag eller måned: kWh, regn, timers tv.",
+      "scatter": "Én værdi mod en anden, et punkt pr. time: arbejder varmepumpen hårdere, når det er koldt?",
       "variables": "Variabler som rækker, du kan slå til og fra eller ændre.",
       "varpresets": "Knapper, der sætter en variabel til faste værdier.",
       "keypad": "Knapper bag en valgfri kode, der starter flows eller sætter en tilstand.",

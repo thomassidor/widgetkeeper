@@ -328,6 +328,14 @@
     "monthBefore": "Mese prima",
     "yearBefore": "Anno prima"
   },
+  "scatter": {
+    "selectValues": "Scegli un valore orizzontale (x) e uno verticale (y) nelle impostazioni del widget.",
+    "error": "Impossibile caricare il grafico.",
+    "unavailable": "Non disponibile",
+    "noHistory": "Non c’è ancora abbastanza cronologia di entrambi.",
+    "now": "Ora",
+    "trend": "Tendenza"
+  },
   "lights": {
     "selectDevices": "Scegli le luci nelle impostazioni del widget.",
     "error": "Impossibile caricare le luci.",
@@ -860,6 +868,7 @@
       "sparklines": "Valori con un piccolo grafico del loro andamento recente.",
       "charts": "Uno o due grafici di qualsiasi valore, come quelli dell'elettricità.",
       "totals": "Di quanto è cresciuto un valore per ora, giorno o mese: kWh, pioggia, ore di TV.",
+      "scatter": "Un valore contro un altro, un punto all'ora: la pompa di calore lavora di più quando fa freddo?",
       "variables": "Variabili come righe da attivare o modificare.",
       "varpresets": "Pulsanti che impostano una variabile su valori predefiniti.",
       "keypad": "Pulsanti dietro un codice facoltativo che avviano flow o impostano uno stato.",

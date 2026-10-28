@@ -354,6 +354,24 @@
           }
         },
         {
+          "id": "scatter",
+          "title": {
+            "en": "Chart · X against Y",
+            "nl": "Grafiek · X tegen Y",
+            "de": "Diagramm · X gegen Y",
+            "fr": "Graphique · X contre Y",
+            "it": "Grafico · X contro Y",
+            "sv": "Diagram · X mot Y",
+            "no": "Diagram · X mot Y",
+            "es": "Gráfico · X frente a Y",
+            "da": "Graf · X mod Y",
+            "ru": "График · X против Y",
+            "pl": "Wykres · X względem Y",
+            "ko": "차트 · X 대 Y",
+            "ar": "مخطط · X مقابل Y"
+          }
+        },
+        {
           "id": "variables",
           "title": {
             "en": "Variables",

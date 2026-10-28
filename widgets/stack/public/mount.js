@@ -98,6 +98,7 @@ window.mountStackWidget = function (Homey, { root, frame }) {
     electricity: ['electricity/chart'],
     charts: ['electricity/chart'],
     totals: ['electricity/chart'],
+    scatter: ['electricity/chart'],
     thermostat: ['thermostat/presets'],
     varpresets: ['thermostat/presets'],
   };

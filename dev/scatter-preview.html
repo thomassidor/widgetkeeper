@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>X against Y widget preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../widgets/spacer/public/kit.css">
+  <link rel="stylesheet" href="../widgets/electricity/public/chart.css">
+  <link rel="stylesheet" href="../widgets/scatter/public/widget.css">
+  <script src="../widgets/spacer/public/kit.js"></script>
+  <script src="../widgets/electricity/public/chart.js"></script>
+  <script src="../widgets/scatter/public/widget.js"></script>
+  <script src="mock-scatter.js"></script>
+  <script src="i18n.js"></script>
+  <link rel="stylesheet" href="preview.css">
+  <style>
+    .card { background: var(--homey-background-color, #1F2029); border-radius: 20px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.3); box-sizing: border-box; }
+    .light { color: var(--ew-text); }
+  </style>
+</head>
+<body>
+  <div class="col"><span>358 px (phone) · dark · 7 days, a dot an hour</span><div class="card homey-dark-mode" style="width:358px"><div id="u1"></div></div></div>
+  <div class="col"><span>358 px · light · 24 hours · red</span><div class="card light" style="width:358px"><div id="u2"></div></div></div>
+  <div class="col"><span>300 px · dark · 30 days · Vivid · tapped on load</span><div class="card homey-dark-mode" style="width:300px"><div id="u3"></div></div></div>
+  <div class="col"><span>358 px · dark · a dot a day, no trend, no fading, own title</span><div class="card homey-dark-mode" style="width:358px"><div id="u4"></div></div></div>
+  <div class="col"><span>358 px · dark · no history · missing value</span><div class="card homey-dark-mode" style="width:358px"><div id="u5"></div><div style="height:16px"></div><div id="u6"></div></div></div>
+  <div class="col"><span>358 px · nothing picked</span><div class="card homey-dark-mode" style="width:358px"><div id="u7"></div></div></div>
+
+  <script>
+    const make = (id, opts) => createScatterWidget(document.getElementById(id), { t: devT, language: 'en', ...opts });
+    const state = span => mockScatter.scatterState(span);
+    make('u1', { span: '7d' }).setState(state('7d'));
+    make('u2', { span: '24h', color: 'red' }).setState(state('24h'));
+    make('u3', { span: '30d', colorStyle: 'deep' }).setState(state('30d'));
+    const dot = document.querySelector('#u3 circle.xy-dot:nth-of-type(40)');
+    const r = dot.getBoundingClientRect();
+    document.querySelector('#u3 svg').dispatchEvent(new PointerEvent('pointerdown', { clientX: r.left + r.width / 2, clientY: r.top + r.height / 2, pointerType: 'mouse' }));
+    make('u4', { span: '30d', dots: 'day', trend: false, fade: false, title: 'Heat pump in the cold' }).setState(state('30d'));
+    const [x, y] = state('7d');
+    make('u5', { span: '7d' }).setState([{ ...x, points: [] }, { ...y, points: [] }]);
+    make('u6', { span: '7d' }).setState([{ deviceId: 'gone', capabilityId: 'measure_temperature', missing: true }, y]);
+    const empty = make('u7', {});
+    empty.setMessage(empty.t('selectValues'));
+  </script>
+</body>
+</html>

@@ -100,6 +100,8 @@ const ROUTES: Route[] = [
   ['timers', 'GET', '/state', { instance: 'w1' }, {}, [['timers.getState', ['w1']]]],
   ['timers', 'POST', '/start', {}, { instance: 'w1', minutes: 5, label: 'Tea' }, [['timers.startTimer', ['w1', 5, 'Tea']]]],
   ['timers', 'POST', '/action', {}, { instance: 'w1', id: 't1', action: 'pause' }, [['timers.act', ['w1', 't1', 'pause']]]],
+  ['scatter', 'GET', '/state', { charts: 'd2:measure_temperature~7d~100~200~,d1:measure_power~7d~100~200~' }, {},
+    [['sparklines.getWindows', [[{ slot: 'd2:measure_temperature', span: '7d', from: 100, end: 200, unit: null, use: false, window: true }, { slot: 'd1:measure_power', span: '7d', from: 100, end: 200, unit: null, use: false, window: true }]]]]],
   ['totals', 'GET', '/state', { charts: 'd1:meter_power~thisMonth~100~200~month~use,d1:meter_power~thisMonth~50~100~month~use' }, {},
     [['sparklines.getWindows', [[{ slot: 'd1:meter_power', span: 'thisMonth', from: 100, end: 200, unit: 'month', use: true, window: true }, { slot: 'd1:meter_power', span: 'thisMonth', from: 50, end: 100, unit: 'month', use: true, window: true }]]]]],
   ['valuematrix', 'GET', '/state', { deviceIds: 'a,b', capabilityIds: 'measure_temperature,measure_humidity' }, {},

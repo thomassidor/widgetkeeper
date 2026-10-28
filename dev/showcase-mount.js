@@ -35,6 +35,8 @@ const MOUNT = {
   charts: (el, w) => createChartsWidget(el, { locale: LOCALE, language: 'en', ...w.opts }).setState(w.charts),
   // Totals per Period: `w.state` its `/state` (`[current, previous]`, mock-totals.js's `totalsState()`).
   totals: (el, w) => createTotalsWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
+  // Chart · X against Y: `w.state` its `/state` (`[x, y]`, mock-scatter.js's `scatterState()`).
+  scatter: (el, w) => createScatterWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
   lights: (el, w) => createLightsWidget(el, w.opts || {}).setState(w.devices),
   curtains: (el, w) => createCurtainsWidget(el, w.opts || {}).setState(w.devices),
   cameras: (el, w) => { const x = createCamerasWidget(el, w.opts || {}); x.setState(w.cameras); x.refresh(); },

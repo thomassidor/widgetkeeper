@@ -26,6 +26,7 @@ interface Window {
   WidgetkeeperChart: any;
   createChartsWidget: (root: HTMLElement, opts?: object) => any;
   createTotalsWidget: (root: HTMLElement, opts?: object) => any;
+  createScatterWidget: (root: HTMLElement, opts?: object) => any;
   chartBuckets: (points: [number, number][], from: number, to: number, bucketMs: number | 'month', current?: number | null) => { t: number, end: number, v: number | null }[];
   createThermostatWidget: (root: HTMLElement, opts?: object) => any;
   createQuickActionsWidget: (root: HTMLElement, opts?: object) => any;
@@ -185,6 +186,7 @@ interface Window {
   mountSparklinesWidget: MountWidget;
   mountChartsWidget: MountWidget;
   mountTotalsWidget: MountWidget;
+  mountScatterWidget: MountWidget;
   mountThermostatWidget: MountWidget;
   mountTimersWidget: MountWidget;
   mountValuesWidget: MountWidget;

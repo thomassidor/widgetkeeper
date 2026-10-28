@@ -3485,6 +3485,24 @@
                 }
               },
               {
+                "id": "scatter",
+                "title": {
+                  "en": "Chart · X against Y",
+                  "nl": "Grafiek · X tegen Y",
+                  "de": "Diagramm · X gegen Y",
+                  "fr": "Graphique · X contre Y",
+                  "it": "Grafico · X contro Y",
+                  "sv": "Diagram · X mot Y",
+                  "no": "Diagram · X mot Y",
+                  "es": "Gráfico · X frente a Y",
+                  "da": "Graf · X mod Y",
+                  "ru": "График · X против Y",
+                  "pl": "Wykres · X względem Y",
+                  "ko": "차트 · X 대 Y",
+                  "ar": "مخطط · X مقابل Y"
+                }
+              },
+              {
                 "id": "variables",
                 "title": {
                   "en": "Variables",
@@ -17168,6 +17186,824 @@
         }
       },
       "id": "roomhealth"
+    },
+    "scatter": {
+      "name": {
+        "en": "Chart · X against Y",
+        "nl": "Grafiek · X tegen Y",
+        "de": "Diagramm · X gegen Y",
+        "fr": "Graphique · X contre Y",
+        "it": "Grafico · X contro Y",
+        "sv": "Diagram · X mot Y",
+        "no": "Diagram · X mot Y",
+        "es": "Gráfico · X frente a Y",
+        "da": "Graf · X mod Y",
+        "ru": "График · X против Y",
+        "pl": "Wykres · X względem Y",
+        "ko": "차트 · X 대 Y",
+        "ar": "مخطط · X مقابل Y"
+      },
+      "height": 360,
+      "settings": [
+        {
+          "id": "xValue",
+          "type": "autocomplete",
+          "title": {
+            "en": "Value across (x)",
+            "nl": "Waarde in de breedte (x)",
+            "de": "Wert in der Breite (x)",
+            "fr": "Valeur horizontale (x)",
+            "it": "Valore orizzontale (x)",
+            "sv": "Värde på bredden (x)",
+            "no": "Verdi i bredden (x)",
+            "es": "Valor horizontal (x)",
+            "da": "Værdi i bredden (x)",
+            "ru": "Значение по горизонтали (x)",
+            "pl": "Wartość w poziomie (x)",
+            "ko": "가로 값 (x)",
+            "ar": "القيمة الأفقية (x)"
+          },
+          "hint": {
+            "en": "Each dot's place across: its average over the dot's time, such as the outdoor temperature. Only numbers with Insights history are listed.",
+            "nl": "De plek van elke stip in de breedte: het gemiddelde over de tijd van de stip, zoals de buitentemperatuur. Alleen getallen met Insights-geschiedenis staan in de lijst.",
+            "de": "Die Lage jedes Punkts in der Breite: sein Mittel über die Zeit des Punkts, etwa die Außentemperatur. Nur Zahlen mit Insights-Verlauf stehen zur Auswahl.",
+            "fr": "La position horizontale de chaque point : sa moyenne sur la durée du point, comme la température extérieure. Seuls les nombres avec un historique Insights sont proposés.",
+            "it": "La posizione orizzontale di ogni punto: la media nel tempo del punto, come la temperatura esterna. Sono elencati solo i numeri con cronologia Insights.",
+            "sv": "Varje punkts läge på bredden: medelvärdet under punktens tid, som utetemperaturen. Bara tal med Insights-historik visas.",
+            "no": "Hvert punkts plass i bredden: snittet over punktets tid, som utetemperaturen. Bare tall med Insights-historikk vises.",
+            "es": "La posición horizontal de cada punto: su media durante el tiempo del punto, como la temperatura exterior. Solo aparecen números con historial de Insights.",
+            "da": "Hvert punkts plads i bredden: gennemsnittet over punktets tid, som udetemperaturen. Kun tal med Insights-historik vises.",
+            "ru": "Положение каждой точки по горизонтали: среднее за время точки, например уличная температура. В списке только числа с историей Insights.",
+            "pl": "Położenie każdego punktu w poziomie: średnia z czasu punktu, np. temperatura na zewnątrz. Lista zawiera tylko liczby z historią Insights.",
+            "ko": "각 점의 가로 위치: 그 점 시간 동안의 평균입니다(예: 바깥 온도). Insights 기록이 있는 숫자만 나열됩니다.",
+            "ar": "موضع كل نقطة أفقيًا: متوسطها خلال وقت النقطة، مثل درجة الحرارة الخارجية. تظهر فقط الأرقام التي لها سجل في Insights."
+          }
+        },
+        {
+          "id": "yValue",
+          "type": "autocomplete",
+          "title": {
+            "en": "Value up (y)",
+            "nl": "Waarde in de hoogte (y)",
+            "de": "Wert in der Höhe (y)",
+            "fr": "Valeur verticale (y)",
+            "it": "Valore verticale (y)",
+            "sv": "Värde på höjden (y)",
+            "no": "Verdi i høyden (y)",
+            "es": "Valor vertical (y)",
+            "da": "Værdi i højden (y)",
+            "ru": "Значение по вертикали (y)",
+            "pl": "Wartość w pionie (y)",
+            "ko": "세로 값 (y)",
+            "ar": "القيمة الرأسية (y)"
+          },
+          "hint": {
+            "en": "Each dot's height, such as the heat pump's power or a room's humidity. Only numbers with Insights history are listed.",
+            "nl": "De hoogte van elke stip, zoals het vermogen van de warmtepomp of de luchtvochtigheid van een kamer. Alleen getallen met Insights-geschiedenis staan in de lijst.",
+            "de": "Die Höhe jedes Punkts, etwa die Leistung der Wärmepumpe oder die Luftfeuchte eines Raums. Nur Zahlen mit Insights-Verlauf stehen zur Auswahl.",
+            "fr": "La hauteur de chaque point, comme la puissance de la pompe à chaleur ou l'humidité d'une pièce. Seuls les nombres avec un historique Insights sont proposés.",
+            "it": "L'altezza di ogni punto, come la potenza della pompa di calore o l'umidità di una stanza. Sono elencati solo i numeri con cronologia Insights.",
+            "sv": "Varje punkts höjd, som värmepumpens effekt eller ett rums luftfuktighet. Bara tal med Insights-historik visas.",
+            "no": "Hvert punkts høyde, som varmepumpens effekt eller fuktigheten i et rom. Bare tall med Insights-historikk vises.",
+            "es": "La altura de cada punto, como la potencia de la bomba de calor o la humedad de una habitación. Solo aparecen números con historial de Insights.",
+            "da": "Hvert punkts højde, som varmepumpens effekt eller luftfugtigheden i et rum. Kun tal med Insights-historik vises.",
+            "ru": "Высота каждой точки, например мощность теплового насоса или влажность в комнате. В списке только числа с историей Insights.",
+            "pl": "Wysokość każdego punktu, np. moc pompy ciepła lub wilgotność w pokoju. Lista zawiera tylko liczby z historią Insights.",
+            "ko": "각 점의 높이입니다(예: 히트펌프의 전력이나 방의 습도). Insights 기록이 있는 숫자만 나열됩니다.",
+            "ar": "ارتفاع كل نقطة، مثل قدرة المضخة الحرارية أو رطوبة غرفة. تظهر فقط الأرقام التي لها سجل في Insights."
+          }
+        },
+        {
+          "id": "count",
+          "type": "number",
+          "value": 7,
+          "min": 1,
+          "max": 999,
+          "title": {
+            "en": "Time span",
+            "nl": "Periode",
+            "de": "Zeitraum",
+            "fr": "Période",
+            "it": "Periodo",
+            "sv": "Tidsperiod",
+            "no": "Tidsrom",
+            "es": "Periodo",
+            "da": "Tidsrum",
+            "ru": "Период",
+            "pl": "Okres",
+            "ko": "기간",
+            "ar": "الفترة الزمنية"
+          },
+          "hint": {
+            "en": "How many of the unit below, e.g. 24 hours or 3 months. At most two years.",
+            "nl": "Hoeveel van de eenheid hieronder, bijv. 24 uur of 3 maanden. Hoogstens twee jaar.",
+            "de": "Wie viele der Einheit darunter, z. B. 24 Stunden oder 3 Monate. Höchstens zwei Jahre.",
+            "fr": "Combien de l'unité ci-dessous, p. ex. 24 heures ou 3 mois. Deux ans au plus.",
+            "it": "Quante unità di quella qui sotto, ad es. 24 ore o 3 mesi. Al massimo due anni.",
+            "sv": "Hur många av enheten nedan, t.ex. 24 timmar eller 3 månader. Högst två år.",
+            "no": "Hvor mange av enheten under, f.eks. 24 timer eller 3 måneder. Høyst to år.",
+            "es": "Cuántas de la unidad de abajo, p. ej. 24 horas o 3 meses. Dos años como máximo.",
+            "da": "Hvor mange af enheden nedenfor, f.eks. 24 timer eller 3 måneder. Højst to år.",
+            "ru": "Сколько единиц, выбранных ниже, например 24 часа или 3 месяца. Не больше двух лет.",
+            "pl": "Ile jednostek wybranych poniżej, np. 24 godziny lub 3 miesiące. Najwyżej dwa lata.",
+            "ko": "아래 단위의 개수입니다(예: 24시간, 3개월). 최대 2년까지입니다.",
+            "ar": "عدد الوحدات المحددة أدناه، مثل 24 ساعة أو 3 أشهر. سنتان على الأكثر."
+          }
+        },
+        {
+          "id": "span",
+          "type": "dropdown",
+          "value": "days",
+          "title": {
+            "en": "Unit",
+            "nl": "Eenheid",
+            "de": "Einheit",
+            "fr": "Unité",
+            "it": "Unità",
+            "sv": "Enhet",
+            "no": "Enhet",
+            "es": "Unidad",
+            "da": "Enhed",
+            "ru": "Единица",
+            "pl": "Jednostka",
+            "ko": "단위",
+            "ar": "الوحدة"
+          },
+          "hint": {
+            "en": "Minutes to years: the last so many, up to now. From midnight, Monday, the 1st or 1 January: whole days, weeks, months or years, the current one included.",
+            "nl": "Minuten tot jaren: de laatste zoveel, tot nu. Vanaf middernacht, maandag, de 1e of 1 januari: hele dagen, weken, maanden of jaren, de huidige meegerekend.",
+            "de": "Minuten bis Jahre: die letzten so viele, bis jetzt. Ab Mitternacht, Montag, dem 1. oder dem 1. Januar: ganze Tage, Wochen, Monate oder Jahre, der laufende eingeschlossen.",
+            "fr": "Minutes à années : les dernières, jusqu'à maintenant. Depuis minuit, lundi, le 1er ou le 1er janvier : des jours, semaines, mois ou années entiers, l'actuel compris.",
+            "it": "Da minuti ad anni: gli ultimi, fino ad ora. Da mezzanotte, lunedì, il 1° o il 1° gennaio: giorni, settimane, mesi o anni interi, quello in corso incluso.",
+            "sv": "Minuter till år: de senaste så många, fram till nu. Från midnatt, måndag, den 1:a eller 1 januari: hela dagar, veckor, månader eller år, den pågående medräknad.",
+            "no": "Minutter til år: de siste så mange, frem til nå. Fra midnatt, mandag, den 1. eller 1. januar: hele dager, uker, måneder eller år, den pågående medregnet.",
+            "es": "De minutos a años: los últimos, hasta ahora. Desde medianoche, el lunes, el día 1 o el 1 de enero: días, semanas, meses o años completos, el actual incluido.",
+            "da": "Minutter til år: de seneste så mange, frem til nu. Fra midnat, mandag, den 1. eller 1. januar: hele dage, uger, måneder eller år, den igangværende medregnet.",
+            "ru": "От минут до лет: последние столько-то, до текущего момента. С полуночи, понедельника, 1-го числа или 1 января: целые дни, недели, месяцы или годы, включая текущий.",
+            "pl": "Od minut do lat: ostatnie tyle, aż do teraz. Od północy, poniedziałku, 1. dnia lub 1 stycznia: pełne dni, tygodnie, miesiące lub lata, z bieżącym włącznie.",
+            "ko": "분~년: 지금까지의 최근 기간입니다. 자정, 월요일, 1일 또는 1월 1일부터: 현재 기간을 포함한 일, 주, 월 또는 연 단위 전체입니다.",
+            "ar": "من الدقائق إلى السنوات: آخر عدد منها حتى الآن. من منتصف الليل أو الاثنين أو اليوم الأول أو 1 يناير: أيام أو أسابيع أو أشهر أو سنوات كاملة، بما فيها الحالية."
+          },
+          "values": [
+            {
+              "id": "minutes",
+              "title": {
+                "en": "Minutes",
+                "nl": "Minuten",
+                "de": "Minuten",
+                "fr": "Minutes",
+                "it": "Minuti",
+                "sv": "Minuter",
+                "no": "Minutter",
+                "es": "Minutos",
+                "da": "Minutter",
+                "ru": "Минуты",
+                "pl": "Minuty",
+                "ko": "분",
+                "ar": "دقائق"
+              }
+            },
+            {
+              "id": "hours",
+              "title": {
+                "en": "Hours",
+                "nl": "Uren",
+                "de": "Stunden",
+                "fr": "Heures",
+                "it": "Ore",
+                "sv": "Timmar",
+                "no": "Timer",
+                "es": "Horas",
+                "da": "Timer",
+                "ru": "Часы",
+                "pl": "Godziny",
+                "ko": "시간",
+                "ar": "ساعات"
+              }
+            },
+            {
+              "id": "days",
+              "title": {
+                "en": "Days",
+                "nl": "Dagen",
+                "de": "Tage",
+                "fr": "Jours",
+                "it": "Giorni",
+                "sv": "Dagar",
+                "no": "Dager",
+                "es": "Días",
+                "da": "Dage",
+                "ru": "Дни",
+                "pl": "Dni",
+                "ko": "일",
+                "ar": "أيام"
+              }
+            },
+            {
+              "id": "weeks",
+              "title": {
+                "en": "Weeks",
+                "nl": "Weken",
+                "de": "Wochen",
+                "fr": "Semaines",
+                "it": "Settimane",
+                "sv": "Veckor",
+                "no": "Uker",
+                "es": "Semanas",
+                "da": "Uger",
+                "ru": "Недели",
+                "pl": "Tygodnie",
+                "ko": "주",
+                "ar": "أسابيع"
+              }
+            },
+            {
+              "id": "months",
+              "title": {
+                "en": "Months",
+                "nl": "Maanden",
+                "de": "Monate",
+                "fr": "Mois",
+                "it": "Mesi",
+                "sv": "Månader",
+                "no": "Måneder",
+                "es": "Meses",
+                "da": "Måneder",
+                "ru": "Месяцы",
+                "pl": "Miesiące",
+                "ko": "개월",
+                "ar": "أشهر"
+              }
+            },
+            {
+              "id": "years",
+              "title": {
+                "en": "Years",
+                "nl": "Jaren",
+                "de": "Jahre",
+                "fr": "Années",
+                "it": "Anni",
+                "sv": "År",
+                "no": "År",
+                "es": "Años",
+                "da": "År",
+                "ru": "Годы",
+                "pl": "Lata",
+                "ko": "년",
+                "ar": "سنوات"
+              }
+            },
+            {
+              "id": "calDays",
+              "title": {
+                "en": "Days from midnight",
+                "nl": "Dagen vanaf middernacht",
+                "de": "Tage ab Mitternacht",
+                "fr": "Jours depuis minuit",
+                "it": "Giorni da mezzanotte",
+                "sv": "Dagar från midnatt",
+                "no": "Dager fra midnatt",
+                "es": "Días desde medianoche",
+                "da": "Dage fra midnat",
+                "ru": "Дни с полуночи",
+                "pl": "Dni od północy",
+                "ko": "자정부터 일 단위",
+                "ar": "أيام من منتصف الليل"
+              }
+            },
+            {
+              "id": "calWeeks",
+              "title": {
+                "en": "Weeks from Monday",
+                "nl": "Weken vanaf maandag",
+                "de": "Wochen ab Montag",
+                "fr": "Semaines depuis lundi",
+                "it": "Settimane da lunedì",
+                "sv": "Veckor från måndag",
+                "no": "Uker fra mandag",
+                "es": "Semanas desde el lunes",
+                "da": "Uger fra mandag",
+                "ru": "Недели с понедельника",
+                "pl": "Tygodnie od poniedziałku",
+                "ko": "월요일부터 주 단위",
+                "ar": "أسابيع من الاثنين"
+              }
+            },
+            {
+              "id": "calMonths",
+              "title": {
+                "en": "Months from the 1st",
+                "nl": "Maanden vanaf de 1e",
+                "de": "Monate ab dem 1.",
+                "fr": "Mois depuis le 1er",
+                "it": "Mesi dal 1°",
+                "sv": "Månader från den 1:a",
+                "no": "Måneder fra den 1.",
+                "es": "Meses desde el día 1",
+                "da": "Måneder fra den 1.",
+                "ru": "Месяцы с 1-го числа",
+                "pl": "Miesiące od 1. dnia",
+                "ko": "1일부터 월 단위",
+                "ar": "أشهر من اليوم الأول"
+              }
+            },
+            {
+              "id": "calYears",
+              "title": {
+                "en": "Years from 1 January",
+                "nl": "Jaren vanaf 1 januari",
+                "de": "Jahre ab 1. Januar",
+                "fr": "Années depuis le 1er janvier",
+                "it": "Anni dal 1° gennaio",
+                "sv": "År från 1 januari",
+                "no": "År fra 1. januar",
+                "es": "Años desde el 1 de enero",
+                "da": "År fra 1. januar",
+                "ru": "Годы с 1 января",
+                "pl": "Lata od 1 stycznia",
+                "ko": "1월 1일부터 연 단위",
+                "ar": "سنوات من 1 يناير"
+              }
+            }
+          ]
+        },
+        {
+          "id": "leaveOut",
+          "type": "checkbox",
+          "value": false,
+          "title": {
+            "en": "Leave out the current period",
+            "nl": "Huidige periode weglaten",
+            "de": "Laufenden Zeitraum weglassen",
+            "fr": "Exclure la période en cours",
+            "it": "Escludi il periodo in corso",
+            "sv": "Utelämna pågående period",
+            "no": "Utelat pågående periode",
+            "es": "Excluir el periodo actual",
+            "da": "Udelad den igangværende periode",
+            "ru": "Без текущего периода",
+            "pl": "Pomiń bieżący okres",
+            "ko": "현재 기간 제외",
+            "ar": "استبعاد الفترة الحالية"
+          },
+          "hint": {
+            "en": "Whole periods only: 1 day from midnight is then yesterday, 1 week from Monday last week.",
+            "nl": "Alleen bij hele periodes: 1 dag vanaf middernacht is dan gisteren, 1 week vanaf maandag vorige week.",
+            "de": "Nur bei ganzen Zeiträumen: 1 Tag ab Mitternacht ist dann gestern, 1 Woche ab Montag letzte Woche.",
+            "fr": "Périodes entières uniquement : 1 jour depuis minuit devient hier, 1 semaine depuis lundi la semaine dernière.",
+            "it": "Solo per periodi interi: 1 giorno da mezzanotte diventa ieri, 1 settimana da lunedì la settimana scorsa.",
+            "sv": "Bara för hela perioder: 1 dag från midnatt blir då i går, 1 vecka från måndag förra veckan.",
+            "no": "Bare for hele perioder: 1 dag fra midnatt blir da i går, 1 uke fra mandag forrige uke.",
+            "es": "Solo con periodos completos: 1 día desde medianoche pasa a ser ayer, 1 semana desde el lunes la semana pasada.",
+            "da": "Kun ved hele perioder: 1 dag fra midnat er så i går, 1 uge fra mandag sidste uge.",
+            "ru": "Только для целых периодов: 1 день с полуночи — это тогда вчера, 1 неделя с понедельника — прошлая неделя.",
+            "pl": "Tylko dla pełnych okresów: 1 dzień od północy to wtedy wczoraj, 1 tydzień od poniedziałku – zeszły tydzień.",
+            "ko": "전체 기간 단위에만 적용됩니다. 자정부터 1일은 어제, 월요일부터 1주는 지난주가 됩니다.",
+            "ar": "للفترات الكاملة فقط: يصبح يوم واحد من منتصف الليل هو أمس، وأسبوع واحد من الاثنين هو الأسبوع الماضي."
+          }
+        },
+        {
+          "id": "dots",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "One dot per",
+            "nl": "Eén stip per",
+            "de": "Ein Punkt pro",
+            "fr": "Un point par",
+            "it": "Un punto per",
+            "sv": "En punkt per",
+            "no": "Ett punkt per",
+            "es": "Un punto por",
+            "da": "Ét punkt pr.",
+            "ru": "Одна точка на",
+            "pl": "Jeden punkt na",
+            "ko": "점 하나당",
+            "ar": "نقطة لكل"
+          },
+          "hint": {
+            "en": "Automatic: a minute to a week each, so the time span gives up to a few hundred dots.",
+            "nl": "Automatisch: een minuut tot een week per stip, zodat de periode hooguit een paar honderd stippen geeft.",
+            "de": "Automatisch: eine Minute bis eine Woche je Punkt, sodass der Zeitraum höchstens einige Hundert Punkte ergibt.",
+            "fr": "Automatique : d'une minute à une semaine par point, pour que la période donne au plus quelques centaines de points.",
+            "it": "Automatico: da un minuto a una settimana per punto, così il periodo dà al massimo qualche centinaio di punti.",
+            "sv": "Automatiskt: en minut till en vecka per punkt, så att tidsperioden ger högst några hundra punkter.",
+            "no": "Automatisk: ett minutt til en uke per punkt, så tidsrommet gir høyst noen hundre punkter.",
+            "es": "Automático: de un minuto a una semana por punto, para que el periodo dé como mucho unos cientos de puntos.",
+            "da": "Automatisk: et minut til en uge pr. punkt, så tidsrummet højst giver nogle hundrede punkter.",
+            "ru": "Автоматически: от минуты до недели на точку, чтобы за период было не больше нескольких сотен точек.",
+            "pl": "Automatycznie: od minuty do tygodnia na punkt, tak by okres dał najwyżej kilkaset punktów.",
+            "ko": "자동: 점 하나에 1분에서 1주까지로, 기간 전체가 수백 개 이하의 점이 됩니다.",
+            "ar": "تلقائي: من دقيقة إلى أسبوع لكل نقطة، فلا تتجاوز الفترة بضع مئات من النقاط."
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "hour",
+              "title": {
+                "en": "Hour",
+                "nl": "Uur",
+                "de": "Stunde",
+                "fr": "Heure",
+                "it": "Ora",
+                "sv": "Timme",
+                "no": "Time",
+                "es": "Hora",
+                "da": "Time",
+                "ru": "Час",
+                "pl": "Godzina",
+                "ko": "시간",
+                "ar": "ساعة"
+              }
+            },
+            {
+              "id": "day",
+              "title": {
+                "en": "Day",
+                "nl": "Dag",
+                "de": "Tag",
+                "fr": "Jour",
+                "it": "Giorno",
+                "sv": "Dag",
+                "no": "Dag",
+                "es": "Día",
+                "da": "Dag",
+                "ru": "День",
+                "pl": "Dzień",
+                "ko": "일",
+                "ar": "يوم"
+              }
+            }
+          ]
+        },
+        {
+          "id": "trend",
+          "type": "checkbox",
+          "value": true,
+          "title": {
+            "en": "Trend line",
+            "nl": "Trendlijn",
+            "de": "Trendlinie",
+            "fr": "Ligne de tendance",
+            "it": "Linea di tendenza",
+            "sv": "Trendlinje",
+            "no": "Trendlinje",
+            "es": "Línea de tendencia",
+            "da": "Tendenslinje",
+            "ru": "Линия тренда",
+            "pl": "Linia trendu",
+            "ko": "추세선",
+            "ar": "خط الاتجاه"
+          },
+          "hint": {
+            "en": "The straight line that fits the dots best; its slope shows at the top.",
+            "nl": "De rechte lijn die het best bij de stippen past; de helling staat bovenaan.",
+            "de": "Die Gerade, die am besten zu den Punkten passt; ihre Steigung steht oben.",
+            "fr": "La droite qui correspond le mieux aux points ; sa pente s'affiche en haut.",
+            "it": "La retta che si adatta meglio ai punti; la pendenza compare in alto.",
+            "sv": "Den raka linje som passar punkterna bäst; lutningen visas överst.",
+            "no": "Den rette linjen som passer best til punktene; stigningen vises øverst.",
+            "es": "La recta que mejor se ajusta a los puntos; su pendiente aparece arriba.",
+            "da": "Den rette linje, der passer bedst til punkterne; hældningen vises øverst.",
+            "ru": "Прямая, лучше всего проходящая через точки; её наклон показан вверху.",
+            "pl": "Prosta najlepiej dopasowana do punktów; jej nachylenie widać u góry.",
+            "ko": "점에 가장 잘 맞는 직선이며, 기울기가 위에 표시됩니다.",
+            "ar": "الخط المستقيم الأنسب للنقاط؛ ويظهر ميله في الأعلى."
+          }
+        },
+        {
+          "id": "fade",
+          "type": "checkbox",
+          "value": true,
+          "title": {
+            "en": "Fade older dots",
+            "nl": "Oudere stippen vager",
+            "de": "Ältere Punkte blasser",
+            "fr": "Estomper les anciens points",
+            "it": "Sfuma i punti più vecchi",
+            "sv": "Tona ut äldre punkter",
+            "no": "Ton ned eldre punkter",
+            "es": "Atenuar los puntos antiguos",
+            "da": "Ton ældre punkter ned",
+            "ru": "Бледнее старые точки",
+            "pl": "Starsze punkty bledsze",
+            "ko": "오래된 점은 흐리게",
+            "ar": "تخفيف النقاط الأقدم"
+          },
+          "hint": {
+            "en": "The newest dots strongest, so you see where it's heading.",
+            "nl": "De nieuwste stippen het sterkst, zodat je ziet waar het heen gaat.",
+            "de": "Die neuesten Punkte am kräftigsten, damit du siehst, wohin es geht.",
+            "fr": "Les points les plus récents les plus marqués, pour voir où ça va.",
+            "it": "I punti più recenti più marcati, per vedere dove si va.",
+            "sv": "De nyaste punkterna starkast, så att du ser vart det är på väg.",
+            "no": "De nyeste punktene sterkest, så du ser hvor det er på vei.",
+            "es": "Los puntos más recientes más intensos, para ver hacia dónde va.",
+            "da": "De nyeste punkter stærkest, så du kan se, hvor det er på vej hen.",
+            "ru": "Новые точки ярче, чтобы видеть, куда всё идёт.",
+            "pl": "Najnowsze punkty najwyraźniejsze, by widać było, dokąd zmierza.",
+            "ko": "최근 점일수록 진하게 보여 흐름을 알 수 있습니다.",
+            "ar": "النقاط الأحدث أوضح، لترى إلى أين يتجه."
+          }
+        },
+        {
+          "id": "title",
+          "type": "text",
+          "title": {
+            "en": "Title",
+            "nl": "Titel",
+            "de": "Titel",
+            "fr": "Titre",
+            "it": "Titolo",
+            "sv": "Rubrik",
+            "no": "Tittel",
+            "es": "Título",
+            "da": "Titel",
+            "ru": "Заголовок",
+            "pl": "Tytuł",
+            "ko": "제목",
+            "ar": "العنوان"
+          },
+          "hint": {
+            "en": "Optional. Without one, the device and value name the chart.",
+            "nl": "Optioneel. Zonder titel heet de grafiek naar het apparaat en de waarde.",
+            "de": "Optional. Ohne Titel benennen Gerät und Wert das Diagramm.",
+            "fr": "Facultatif. Sans titre, le graphique porte le nom de l'appareil et de la valeur.",
+            "it": "Facoltativo. Senza titolo, il grafico prende il nome da dispositivo e valore.",
+            "sv": "Valfritt. Utan rubrik namnges diagrammet efter enheten och värdet.",
+            "no": "Valgfritt. Uten tittel får diagrammet navn etter enheten og verdien.",
+            "es": "Opcional. Sin título, el gráfico toma el nombre del dispositivo y el valor.",
+            "da": "Valgfri. Uden titel får grafen navn efter enheden og værdien.",
+            "ru": "Необязательно. Без него график называется по устройству и значению.",
+            "pl": "Opcjonalnie. Bez tytułu wykres nazywa się od urządzenia i wartości.",
+            "ko": "선택 사항입니다. 없으면 기기와 값 이름이 사용됩니다.",
+            "ar": "اختياري. بدونه يُسمّى المخطط باسم الجهاز والقيمة."
+          },
+          "value": ""
+        },
+        {
+          "id": "showHeader",
+          "type": "checkbox",
+          "title": {
+            "en": "Show the values at the top",
+            "nl": "Waarden bovenaan tonen",
+            "de": "Werte oben anzeigen",
+            "fr": "Afficher les valeurs en haut",
+            "it": "Mostra i valori in alto",
+            "sv": "Visa värdena överst",
+            "no": "Vis verdiene øverst",
+            "es": "Mostrar los valores arriba",
+            "da": "Vis værdierne øverst",
+            "ru": "Показывать значения вверху",
+            "pl": "Pokaż wartości u góry",
+            "ko": "맨 위에 값 표시",
+            "ar": "عرض القيم في الأعلى"
+          },
+          "hint": {
+            "en": "The newest dot's values and the trend line's slope. Tap a dot to see its own.",
+            "nl": "De waarden van de nieuwste stip en de helling van de trendlijn. Tik op een stip voor die van die stip.",
+            "de": "Die Werte des neuesten Punkts und die Steigung der Trendlinie. Tippe auf einen Punkt für seine.",
+            "fr": "Les valeurs du point le plus récent et la pente de la ligne de tendance. Touchez un point pour voir les siennes.",
+            "it": "I valori del punto più recente e la pendenza della linea di tendenza. Tocca un punto per vedere i suoi.",
+            "sv": "Den nyaste punktens värden och trendlinjens lutning. Tryck på en punkt för dess egna.",
+            "no": "Verdiene for det nyeste punktet og trendlinjens stigning. Trykk på et punkt for dets egne.",
+            "es": "Los valores del punto más reciente y la pendiente de la línea de tendencia. Toca un punto para ver los suyos.",
+            "da": "Det nyeste punkts værdier og tendenslinjens hældning. Tryk på et punkt for at se dets egne.",
+            "ru": "Значения новейшей точки и наклон линии тренда. Коснитесь точки, чтобы увидеть её значения.",
+            "pl": "Wartości najnowszego punktu i nachylenie linii trendu. Dotknij punktu, by zobaczyć jego wartości.",
+            "ko": "최신 점의 값과 추세선의 기울기입니다. 점을 탭하면 그 점의 값을 볼 수 있습니다.",
+            "ar": "قيم أحدث نقطة وميل خط الاتجاه. المس نقطة لترى قيمها."
+          },
+          "value": true
+        },
+        {
+          "id": "color",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour",
+            "nl": "Kleur",
+            "de": "Farbe",
+            "fr": "Couleur",
+            "it": "Colore",
+            "sv": "Färg",
+            "no": "Farge",
+            "es": "Color",
+            "da": "Farve",
+            "ru": "Цвет",
+            "pl": "Kolor",
+            "ko": "색상",
+            "ar": "اللون"
+          },
+          "value": "blue",
+          "values": [
+            {
+              "id": "blue",
+              "title": {
+                "en": "Blue",
+                "nl": "Blauw",
+                "de": "Blau",
+                "fr": "Bleu",
+                "it": "Blu",
+                "sv": "Blå",
+                "no": "Blå",
+                "es": "Azul",
+                "da": "Blå",
+                "ru": "Синий",
+                "pl": "Niebieski",
+                "ko": "파랑",
+                "ar": "أزرق"
+              }
+            },
+            {
+              "id": "red",
+              "title": {
+                "en": "Red",
+                "nl": "Rood",
+                "de": "Rot",
+                "fr": "Rouge",
+                "it": "Rosso",
+                "sv": "Röd",
+                "no": "Rød",
+                "es": "Rojo",
+                "da": "Rød",
+                "ru": "Красный",
+                "pl": "Czerwony",
+                "ko": "빨강",
+                "ar": "أحمر"
+              }
+            },
+            {
+              "id": "orange",
+              "title": {
+                "en": "Orange",
+                "nl": "Oranje",
+                "de": "Orange",
+                "fr": "Orange",
+                "it": "Arancione",
+                "sv": "Orange",
+                "no": "Oransje",
+                "es": "Naranja",
+                "da": "Orange",
+                "ru": "Оранжевый",
+                "pl": "Pomarańczowy",
+                "ko": "주황",
+                "ar": "برتقالي"
+              }
+            },
+            {
+              "id": "yellow",
+              "title": {
+                "en": "Yellow",
+                "nl": "Geel",
+                "de": "Gelb",
+                "fr": "Jaune",
+                "it": "Giallo",
+                "sv": "Gul",
+                "no": "Gul",
+                "es": "Amarillo",
+                "da": "Gul",
+                "ru": "Жёлтый",
+                "pl": "Żółty",
+                "ko": "노랑",
+                "ar": "أصفر"
+              }
+            },
+            {
+              "id": "green",
+              "title": {
+                "en": "Green",
+                "nl": "Groen",
+                "de": "Grün",
+                "fr": "Vert",
+                "it": "Verde",
+                "sv": "Grön",
+                "no": "Grønn",
+                "es": "Verde",
+                "da": "Grøn",
+                "ru": "Зелёный",
+                "pl": "Zielony",
+                "ko": "초록",
+                "ar": "أخضر"
+              }
+            },
+            {
+              "id": "purple",
+              "title": {
+                "en": "Purple",
+                "nl": "Paars",
+                "de": "Lila",
+                "fr": "Violet",
+                "it": "Viola",
+                "sv": "Lila",
+                "no": "Lilla",
+                "es": "Morado",
+                "da": "Lilla",
+                "ru": "Фиолетовый",
+                "pl": "Fioletowy",
+                "ko": "보라",
+                "ar": "بنفسجي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid makes the dots stronger.",
+            "nl": "Levendig maakt de stippen sterker.",
+            "de": "Kräftig macht die Punkte stärker.",
+            "fr": "Vives rend les points plus marqués.",
+            "it": "Vivaci rende i punti più marcati.",
+            "sv": "Livfulla gör punkterna starkare.",
+            "no": "Livlige gjør punktene sterkere.",
+            "es": "Vivos hace los puntos más intensos.",
+            "da": "Livlige gør punkterne stærkere.",
+            "ru": "«Яркие» делают точки насыщеннее.",
+            "pl": "Żywe wzmacniają punkty.",
+            "ko": "선명하게는 점을 더 진하게 표시합니다.",
+            "ar": "«زاهية» تجعل النقاط أقوى."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
+              }
+            }
+          ]
+        }
+      ],
+      "api": {
+        "getState": {
+          "method": "GET",
+          "path": "/state"
+        }
+      },
+      "id": "scatter"
     },
     "sensoralarms": {
       "name": {

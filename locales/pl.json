@@ -328,6 +328,14 @@
     "monthBefore": "Przedostatni miesiąc",
     "yearBefore": "Przedostatni rok"
   },
+  "scatter": {
+    "selectValues": "Wybierz wartość w poziomie (x) i w pionie (y) w ustawieniach widżetu.",
+    "error": "Nie udało się wczytać wykresu.",
+    "unavailable": "Niedostępne",
+    "noHistory": "Za mało historii obu wartości.",
+    "now": "Teraz",
+    "trend": "Trend"
+  },
   "lights": {
     "selectDevices": "Wybierz światła w ustawieniach widżetu.",
     "error": "Nie udało się wczytać świateł.",
@@ -860,6 +868,7 @@
       "sparklines": "Wartości z małym wykresem ich niedawnej historii.",
       "charts": "Jeden lub dwa wykresy dowolnej wartości, jak te dla prądu.",
       "totals": "O ile wzrosła wartość w ciągu godziny, dnia lub miesiąca: kWh, deszcz, godziny TV.",
+      "scatter": "Jedna wartość względem drugiej, punkt na godzinę: czy pompa ciepła pracuje więcej, gdy jest zimno?",
       "variables": "Zmienne jako wiersze do przełączania lub zmiany.",
       "varpresets": "Przyciski ustawiające zmienną na wybrane wartości.",
       "keypad": "Przyciski za opcjonalnym kodem, które uruchamiają Flow lub ustawiają stan.",

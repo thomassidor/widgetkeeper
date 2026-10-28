@@ -196,6 +196,7 @@
       sparklines: 'Values with a small chart of their recent history.',
       charts: 'One or two charts of any value, like the electricity ones.',
       totals: 'How much a value went up per hour, day or month: kWh, rain, hours of TV.',
+      scatter: "One value against another, a dot per hour: does the heat pump work harder when it's colder?",
       variables: 'Variables as rows you can switch or change.',
       varpresets: 'Buttons that set a variable to preset values.',
       keypad: 'Buttons behind an optional code that start Flows or set a state.',
