@@ -54,18 +54,22 @@ export async function listDevicesWhere(homey: Homey.App['homey'], query: string,
  * described by the zone and the units. "None" first, so a tile can be emptied again: its id has no colon, so the
  * widget skips the slot.
  */
-export async function listCapabilitySlots(homey: Homey.App['homey'], query: string, capsOf: (device: any) => string[]): Promise<AutocompleteItem[]> {
+export async function listCapabilitySlots(
+  homey: Homey.App['homey'], query: string, capsOf: (device: any) => string[], first: (capabilityId: string) => boolean = () => false,
+): Promise<AutocompleteItem[]> {
   const [devices, zones] = await devicesAndZones(homey);
-  const items: AutocompleteItem[] = [];
+  const items: (AutocompleteItem & { first: boolean })[] = [];
   for (const d of devices) {
     const zone = zones[d.zone]?.name as string | undefined;
     for (const id of capsOf(d)) {
       const c = describeCapability(d.capabilitiesObj[id], id);
       const name = `${d.name} · ${c.title}`;
       if (!matches(query, name, zone, id)) continue;
-      items.push({ name, description: [zone, c.units].filter(Boolean).join(' · ') || undefined, id: `${d.id}:${id}` });
+      items.push({ name, description: [zone, c.units].filter(Boolean).join(' · ') || undefined, id: `${d.id}:${id}`, first: first(id) });
     }
   }
-  items.sort((a, b) => a.name.localeCompare(b.name));
+  // The capabilities `first` picks (a meter's for Totals per Period) before the rest, each alphabetically.
+  items.sort((a, b) => Number(b.first) - Number(a.first) || a.name.localeCompare(b.name));
+  for (const item of items) delete (item as Partial<typeof item>).first;
   return withNone(homey.__('values.none') || 'None', query, items);
 }

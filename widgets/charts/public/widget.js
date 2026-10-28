@@ -531,8 +531,14 @@
         });
         if (changed) frame.renderIfSeen();
       },
-      /** Each chart's span as drawn (on one chart, series 2's may be chart 1's): what the mount asks `/state` for. */
-      spans: () => charts.map(c => c.span),
+      /**
+       * Each chart's window now, as `/state` asks for it (lib/chartState.ts): `<span>~<from>~<end>~<unit>`, its data's
+       * window on the phone's clock (on one chart, series 2's may be chart 1's span).
+       */
+      windows: () => charts.map((c, i) => {
+        const w = windowOf(i, now());
+        return `${c.span}~${Math.floor(w.from)}~${Math.ceil(w.end)}~${w.unit || ''}`;
+      }),
     });
   }
 

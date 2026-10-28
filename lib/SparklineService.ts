@@ -4,7 +4,8 @@ import { listCapabilitySlots, type AutocompleteItem } from './autocomplete.js';
 import { heatmapCaps } from './HeatmapService.js';
 import { isTransientError } from './DeviceTracker.js';
 import { readCapabilityLog } from './insightsLog.js';
-import { bucketAverage, HOUR, MINUTE, parseInsightsEntries, runningTotal, type Meter } from './series.js';
+import { logCover, mergeLogs, periodStart, planLogs, type CalendarUnit, type InsightsLog } from './logPlan.js';
+import { bucketAverage, HOUR, MINUTE, parseInsightsEntries, runningTotal, type Meter, type Sample } from './series.js';
 import Timings from './Timings.js';
 import type ValueService from './ValueService.js';
 import { parseSlot, type ValueSlot } from './ValueService.js';
@@ -124,11 +125,16 @@ export function sparkCaps(device: any): string[] {
  * hourly log over 2 days is 48 points, not 120 drawn as steps.
  */
 export function downsample(res: any, now: number, spanMs: number, logStep = 0): [number, number][] {
+  return downsampleSamples(parseInsightsEntries(res), now, spanMs, logStep);
+}
+
+/** `downsample()` of samples. */
+export function downsampleSamples(samples: Sample[], now: number, spanMs: number, logStep = 0): [number, number][] {
   const count = Math.max(1, Math.min(MAX_POINTS, logStep ? Math.floor(spanMs / logStep) : MAX_POINTS));
   const step = spanMs / count;
   const start = now - spanMs;
   const out: [number, number][] = [];
-  bucketAverage(parseInsightsEntries(res), start, step, count).forEach((v, i) => {
+  bucketAverage(samples, start, step, count).forEach((v, i) => {
     if (v != null) out.push([Math.round(start + (i + 0.5) * step), Math.round(v * 1000) / 1000]);
   });
   return out;
@@ -140,19 +146,37 @@ export function downsample(res: any, now: number, spanMs: number, logStep = 0): 
  * `max` points by averaging runs of entries, so no point moves off its time; with the `meter` to carry on with.
  */
 export function meterPoints(res: any, step: number, max = MAX_METER_POINTS): { points: [number, number][], meter: Meter } {
-  const own = Number(res?.step);
-  const half = (Number.isFinite(own) && own > 0 ? own : step) / 2;
-  const { totals, meter } = runningTotal(parseInsightsEntries(res));
+  const s = logStep(res) ?? step;
+  return meterPointsOf(parseInsightsEntries(res).map(e => ({ ...e, step: s })), max);
+}
+
+/** `meterPoints()` of samples, each with its log's step (`mergeLogs()`). */
+export function meterPointsOf(samples: (Sample & { step: number })[], max = MAX_METER_POINTS): { points: [number, number][], meter: Meter } {
+  const steps = new Map(samples.map(e => [e.t, e.step]));
+  const { totals, meter } = runningTotal(samples);
   const run = Math.max(1, Math.ceil(totals.length / max));
   const points: [number, number][] = [];
   for (let i = 0; i < totals.length; i += run) {
     const part = totals.slice(i, i + run);
-    const t = part.reduce((a, p) => a + p.t, 0) / part.length + half;
+    const t = part.reduce((a, p) => a + p.t + (steps.get(p.t) ?? 0) / 2, 0) / part.length;
     const v = part.reduce((a, p) => a + p.w, 0) / part.length;
     points.push([Math.round(t), Math.round(v * 1000) / 1000]);
   }
   return { points, meter };
 }
+
+/** A log's own step, when it says (Homey's do). */
+function logStep(res: any): number | null {
+  const own = Number(res?.step);
+  return Number.isFinite(own) && own > 0 ? own : null;
+}
+
+/**
+ * A chart's request (Charts, Totals per Period and the other `Chart · …` widgets): the slot's history over `[from, end]`,
+ * which the widget works out on the phone's clock, with its span's calendar unit for a calendar one (`planLogs()`),
+ * and with `use` the running total. `span` is the setting, for the log line.
+ */
+export type WindowRequest = { slot: string, from: number, end: number, unit?: CalendarUnit | null, use?: boolean, span?: string };
 
 /**
  * The Sparklines widget: Device Values' tiles with each value's recent history from Insights.
@@ -163,8 +187,11 @@ export default class SparklineService {
 
   private cache = new Map<string, HistoryCache>();
   private promises = new Map<string, Promise<History>>();
-  /** The raw Insights log per slot and resolution, so spans on the same log (2d and 3d, 5d and 7d) read it once. */
-  private logs = new Map<string, { at: number, log: Promise<any> }>();
+  /**
+   * The raw Insights log per slot and resolution, so spans on the same log (2d and 3d, 5d and 7d, a chart's windows)
+   * read it once: for `ttl` (a finished period's until the next begins), dropped after 10 min without a request.
+   */
+  private logs = new Map<string, { at: number, ttl: number, lastRequested: number, log: Promise<any> }>();
   private logIds = new Map<string, string>(); // the Insights log that worked, per device and capability
   private tickTimer: NodeJS.Timeout | null = null;
 
@@ -185,9 +212,12 @@ export default class SparklineService {
 
   // ---------------------------------------------------------------- settings autocomplete
 
-  /** Every logged number of every device, as `Device · Capability`, with `None` first. */
-  listSlots(query: string): Promise<AutocompleteItem[]> {
-    return listCapabilitySlots(this.homey, query, sparkCaps);
+  /**
+   * Every logged number of every device, as `Device · Capability`, with `None` first; `counter` (Totals per Period's
+   * value that counts up) lists the meters (`meter_*`: kWh, m³, …) before the rest.
+   */
+  listSlots(query: string, kind: 'number' | 'counter' = 'number'): Promise<AutocompleteItem[]> {
+    return listCapabilitySlots(this.homey, query, sparkCaps, kind === 'counter' ? id => id.startsWith('meter_') : undefined);
   }
 
   // ---------------------------------------------------------------- state
@@ -206,6 +236,49 @@ export default class SparklineService {
     ]);
     this.debug(`Sparklines state for ${valid.length} slots (${span}${opts.prev ? ', before' : ''}${opts.use ? ', use' : ''}): ${tm.summary()}`);
     return states.map((s, i) => ('missing' in s ? s : { ...s, ...histories[i] }));
+  }
+
+  /**
+   * Device Values' state for each request's slot, in order (`{missing}` for one that isn't a slot), each with its
+   * history over the request's window (`windowHistory()`).
+   */
+  async getWindows(requests: WindowRequest[]): Promise<SparklineSlot[]> {
+    const tm = new Timings();
+    const valid = requests.filter(r => parseSlot(r.slot));
+    const [states, histories] = await Promise.all([
+      tm.time('values', () => this.values.getState([...new Set(valid.map(r => r.slot))])),
+      tm.time('insights', () => Promise.all(valid.map(r => this.windowHistory(r)))),
+    ]);
+    this.debug(`Chart state for ${valid.length} windows (${valid.map(r => `${r.span ?? '?'}${r.use ? ' use' : ''}`).join(', ')}): ${tm.summary()}`);
+    const bySlot = new Map(states.map(s => [`${s.deviceId}:${s.capabilityId}`, s]));
+    return requests.map((r) => {
+      const at = valid.indexOf(r);
+      const s = at < 0 ? null : bySlot.get(r.slot);
+      if (!s) return { ...(parseSlot(r.slot) ?? { deviceId: r.slot, capabilityId: '' }), missing: true as const };
+      return 'missing' in s ? s : { ...s, ...histories[at] };
+    });
+  }
+
+  /**
+   * A window's history: the Insights logs `planLogs()` picks (stitched where one doesn't hold it, the finer one where
+   * they overlap), averaged into at most `MAX_POINTS` over the window (no bucket shorter than the coarsest log's step),
+   * or with `use` the running total around it (`meterPointsOf()`). A failed read gives no history.
+   */
+  private async windowHistory({ slot, from, end, unit = null, use = false }: WindowRequest): Promise<History> {
+    const { deviceId, capabilityId } = parseSlot(slot)!;
+    const timeZone = this.homey.clock.getTimezone() || 'UTC';
+    const logs = planLogs(from, end, Date.now(), timeZone, unit);
+    if (!logs.length) return { points: [] };
+    try {
+      const read = await Promise.all(logs.map(l => this.readLog(slot, deviceId, capabilityId, l.resolution, logTtl(l, Date.now(), timeZone))));
+      const step = Math.max(...logs.map(l => l.step));
+      const samples = mergeLogs(read.map((res, i) => ({ samples: parseInsightsEntries(res), step: logStep(res) ?? logs[i].step })));
+      if (use) return meterPointsOf(samples.filter(e => e.t >= from - 2 * step && e.t <= end + step));
+      return { points: downsampleSamples(samples, end, end - from, step) };
+    } catch (err) {
+      this.log(`Chart history of ${slot} unavailable:`, err);
+      return { points: [] };
+    }
   }
 
   private history(slot: string, span: SpanId, { prev = false, use = false }: HistoryOptions): Promise<History> {
@@ -250,20 +323,27 @@ export default class SparklineService {
     return p;
   }
 
-  private readLog(slot: string, deviceId: string, capabilityId: string, resolution: string): Promise<any> {
+  private readLog(slot: string, deviceId: string, capabilityId: string, resolution: string, ttl = HISTORY_TTL): Promise<any> {
     const k = `${slot}:${resolution}`;
+    const now = Date.now();
     const cached = this.logs.get(k);
-    if (cached && Date.now() - cached.at < HISTORY_TTL) return cached.log;
+    if (cached && now - cached.at < cached.ttl) {
+      cached.lastRequested = now;
+      return cached.log;
+    }
     const log = getAppApi(this.homey).then(api => readCapabilityLog(api, deviceId, capabilityId, resolution, this.logIds));
-    log.catch(() => {}); // a failure is handled by each caller
-    this.logs.set(k, { at: Date.now(), log });
+    const entry = { at: now, ttl, lastRequested: now, log };
+    // A failure is handled by each caller; a busy Homey's is asked again soon, so a dashboard's load burst doesn't leave
+    // its charts empty until the next refresh (a window's history isn't cached beyond its logs).
+    log.catch((err) => { if (isTransientError(err)) entry.ttl = Math.min(entry.ttl, RETRY_BUSY); });
+    this.logs.set(k, entry);
     return log;
   }
 
   private tick() {
     const now = Date.now();
     for (const [k, l] of this.logs) {
-      if (now - l.at >= HISTORY_TTL) this.logs.delete(k);
+      if (now - l.at >= l.ttl || now - l.lastRequested > IDLE_TIMEOUT) this.logs.delete(k);
     }
     for (const [k, c] of this.cache) {
       if (now - c.lastRequested > IDLE_TIMEOUT) this.cache.delete(k);
@@ -275,6 +355,17 @@ export default class SparklineService {
     return [...this.cache.entries()].map(([k, c]) => ({ key: k, points: c.points.length, fetchedAt: new Date(c.at).toISOString() }));
   }
 
+}
+
+/**
+ * How long a log read now is kept: a finished period's (yesterday, last week … the two years before this one) until the
+ * next period begins, once its last step has passed (before that Homey may still be completing it); else `HISTORY_TTL`.
+ */
+export function logTtl(log: InsightsLog, now: number, timeZone: string): number {
+  if (!log.unit || !log.back) return HISTORY_TTL;
+  const [, to] = logCover(log, now, timeZone);
+  if (now < to + log.step) return HISTORY_TTL;
+  return Math.max(HISTORY_TTL, periodStart(now, log.unit, 1, timeZone) - now);
 }
 
 /** A cached history as `getState()` hands it on: its points, and the running total's count with `use`. */

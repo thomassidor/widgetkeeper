@@ -33,11 +33,11 @@ window.mountChartsWidget = function (Homey, { root, frame }) {
       onHeight: link.setHeight,
     })),
     need: 'selectChart',
-    // The spans the widget draws: on one chart, series 2 may take chart 1's (a lone chart keeps its own).
+    // The windows the widget draws: on one chart, series 2 may take chart 1's span (a lone chart keeps its own).
     query: () => {
       if (!charts.length) return null;
-      const spans = widget.spans();
-      return `charts=${charts.map((c, i) => `${encodeURIComponent(c.slot)}~${encodeURIComponent(spans[i])}`).join(',')}`;
+      const windows = widget.windows();
+      return `charts=${charts.map((c, i) => `${encodeURIComponent(c.slot)}~${encodeURIComponent(windows[i])}`).join(',')}`;
     },
     state: res => [res && res.charts, res && res.language],
   });

@@ -11,6 +11,7 @@ const RETURNS: Record<string, (...args: any[]) => unknown> = {
   'lights.getState': async () => [{ id: 'l1', zone: { id: 'z1' } }],
   'sensorAlarms.getState': async () => [],
   'sparklines.getState': async () => [],
+  'sparklines.getWindows': async (requests: unknown[]) => requests.map(() => ({ missing: true })),
   'values.getState': async () => [],
   'variables.getState': async () => [],
   'thermostat.getState': async () => ({ id: 't1' }),

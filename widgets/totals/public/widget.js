@@ -288,6 +288,14 @@
         }
         frame.renderIfSeen();
       },
+      /**
+       * The period's window now and with compare the one before's, as `/state` asks for them (lib/chartState.ts):
+       * `<period>~<from>~<end>~<unit>~use`, on the phone's clock.
+       */
+      windows: () => [0, ...(compare ? [1] : [])].map((back) => {
+        const w = timeSpan(period, now(), back);
+        return `${period}~${Math.floor(w.from)}~${Math.ceil(w.end)}~${w.unit || ''}~use`;
+      }),
     });
   }
 

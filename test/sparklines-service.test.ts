@@ -136,6 +136,18 @@ describe('listSlots', () => {
     ]);
     expect((await service.listSlots('temp')).map(i => i.id)).toEqual(['sensor:measure_temperature']);
   });
+
+  it("lists the meters first for a value that counts up (Totals per Period's)", async () => {
+    const meter = fakeDevice({
+      id: 'meter', name: 'Zähler', zone: 'z1',
+      caps: { meter_power: { type: 'number', value: 1234, title: 'Energy', units: 'kWh', insights: true } },
+    });
+    const api = fakeApi({ devices: [sensor(), meter], zones: { z1: { name: 'Living room' } }, logEntries: entries });
+    const homey = fakeHomey(api);
+    const service = new SparklineService(homey, new ValueService(homey, () => {}), () => {});
+    expect((await service.listSlots('', 'counter')).map(i => i.id)).toEqual(['none', 'meter:meter_power', 'sensor:measure_humidity', 'sensor:measure_temperature']);
+    expect((await service.listSlots('')).map(i => i.id)).toEqual(['none', 'sensor:measure_humidity', 'sensor:measure_temperature', 'meter:meter_power']);
+  });
 });
 
 describe('getState', () => {

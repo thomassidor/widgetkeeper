@@ -11,8 +11,9 @@ window.mountTotalsWidget = function (Homey, { root, frame }) {
   const period = settings.period || 'thisWeek'; // missing: the default
   const compare = settings.compare === true;
 
+  let widget;
   return window.WidgetkeeperChart.wireChart(Homey, { frame }, {
-    create: link => window.createTotalsWidget(root, {
+    create: link => (widget = window.createTotalsWidget(root, {
       colorStyle: settings.colorStyle,
       color: settings.color,
       t: key => Homey.__(key),
@@ -21,10 +22,11 @@ window.mountTotalsWidget = function (Homey, { root, frame }) {
       title: settings.title,
       showHeader: settings.showHeader !== false, // missing: on
       onHeight: link.setHeight,
-    }),
+    })),
     need: 'selectValue',
-    query: () => (picked ? `slot=${encodeURIComponent(slot)}&period=${encodeURIComponent(period)}${compare ? '&compare=1' : ''}` : null),
-    state: res => (res ? [[res.current, res.previous], res.language] : [[], undefined]),
+    // The period's running total, and with compare the period before's.
+    query: () => (picked ? `charts=${widget.windows().map(w => `${encodeURIComponent(slot)}~${encodeURIComponent(w)}`).join(',')}` : null),
+    state: res => [res && res.charts, res && res.language],
   });
 };
 /** The classes index.html puts on its body; the Smart Stack puts them on the slide. */

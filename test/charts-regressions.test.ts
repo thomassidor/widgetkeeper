@@ -97,7 +97,8 @@ describe('mount: spans', () => {
     document.body.append(root);
     win.mountChartsWidget(Homey, { root, frame: root });
     await vi.waitFor(() => expect(api).toHaveBeenCalled());
-    return decodeURIComponent((api.mock.calls[0] as any)[1]).match(/charts=([^&]*)/)![1];
+    // Each series' slot and span (its window on the phone's clock, `~<from>~<end>~<unit>`, left out).
+    return decodeURIComponent((api.mock.calls[0] as any)[1]).match(/charts=([^&]*)/)![1].replace(/~\d+~\d+~\w*/g, '');
   }
   const slot = (id: string) => ({ id, name: id });
 

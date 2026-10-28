@@ -187,9 +187,14 @@ describe('mount', () => {
     return { api, root, url: api.mock.calls.length ? decodeURIComponent((api.mock.calls[0] as any)[1]) : null };
   }
 
-  it('asks for the meter over the period, and the one before with compare', async () => {
-    expect((await requested({ slot: { id: 'm1:meter_power' }, period: 'thisMonth', compare: true })).url).toMatch(/^\/state\?slot=m1:meter_power&period=thisMonth&compare=1/);
-    expect((await requested({ slot: { id: 'm1:meter_power' } })).url).toMatch(/^\/state\?slot=m1:meter_power&period=thisWeek(&|$)/);
+  it("asks for the meter's running total over the period, and the one before with compare", async () => {
+    const month = (back: number) => {
+      const w = win.WidgetkeeperKit.timeSpan('thisMonth', Date.now(), back);
+      return `m1:meter_power~thisMonth~${w.from}~${Math.ceil(w.end)}~month~use`;
+    };
+    expect((await requested({ slot: { id: 'm1:meter_power' }, period: 'thisMonth', compare: true })).url)
+      .toMatch(new RegExp(`^/state\\?charts=${month(0)},${month(1)}(&|$)`));
+    expect((await requested({ slot: { id: 'm1:meter_power' } })).url).toMatch(/^\/state\?charts=m1:meter_power~thisWeek~\d+~\d+~week~use(&|$)/);
   });
 
   it('asks for a value without one', async () => {
