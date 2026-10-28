@@ -45,10 +45,10 @@ describe('copied widget helpers', () => {
     }
   });
 
-  it("every mount.js but the spacer's wires its frame through the kit", () => {
+  it("every mount.js but the spacer's wires its frame through the kit (a chart widget's through the chart module's wireChart())", () => {
     for (const id of WIDGETS.filter(w => w !== 'spacer')) {
       const mount = read(id, 'mount.js');
-      expect(mount, `${id}/mount.js`).toMatch(/wireFrame\(Homey, frame\)/);
+      expect(mount, `${id}/mount.js`).toMatch(/wireFrame\(Homey, frame\)|WidgetkeeperChart\.wireChart\(Homey, \{ frame \}/);
       expect(mount, `${id}/mount.js`).not.toMatch(/readySent|Homey\.ready\(|Homey\.setHeight\(/);
     }
   });
@@ -61,8 +61,8 @@ describe('copied widget helpers', () => {
   });
 
   it("transient messages go through the kit's messageLine()", () => {
-    // Charts keeps its message and its transient one apart; the thermostat's panel message is its own.
-    for (const id of WIDGETS.filter(w => w !== 'charts' && w !== 'thermostat')) {
+    // The thermostat's panel message is its own.
+    for (const id of WIDGETS.filter(w => w !== 'thermostat')) {
       expect(read(id, 'widget.js'), `${id}: a message timer of its own`).not.toMatch(/let message(Text|Timer)\b/);
     }
     expect(read('thermostat', 'presets.js')).not.toMatch(/let message(Text|Timer)\b/);
@@ -141,7 +141,8 @@ describe('fallback strings', () => {
   it.each(WIDGETS.filter(id => id !== 'stack' && id !== 'clock' && id !== 'spacer' && id !== 'popups'))("%s: DEFAULT_STRINGS are en.json's", (id) => {
     const js = readFileSync(`widgets/${id}/public/widget.js`, 'utf8').replace(/\r\n/g, '\n');
     const table = js.match(/\n( *)const DEFAULT_STRINGS = (\{[\s\S]*?\n\1\});/);
-    const ns = js.match(/opts\.t\(`(\w+)\.\$\{/);
+    // The namespace: `opts.t(`<ns>.${key}`)`, or a chart widget's frame's `prefix: '<ns>'` (the chart module's createFrame()).
+    const ns = js.match(/opts\.t\(`(\w+)\.\$\{/) || js.match(/C\.createFrame\(root, \{[^}]*?prefix: '(\w+)'/);
     expect(table && ns).toBeTruthy();
     const strings = new Function(`return ${table![2]}`)();
     for (const [key, value] of Object.entries(strings)) expect([key, value]).toEqual([key, en[ns![1]][key]]);

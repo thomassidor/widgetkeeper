@@ -163,6 +163,56 @@ describe('bars on the local clock', () => {
     expect(C.buckets([[at('2026-10-24T06:00'), 1], [at('2026-10-24T18:00'), 3], [at('2026-10-26T12:00'), 7]], at('2026-10-24T00:00'), at('2026-10-27T00:00'), 24 * 36e5)
       .map((b: any) => b.v)).toEqual([2, 3, 7]);
   });
+
+  it('steps by calendar weeks from Monday', () => {
+    const weeks = C.buckets([], at('2026-10-01T00:00'), at('2026-10-31T00:00'), 'week');
+    expect(weeks.map((b: any) => local(b.t))).toEqual(['Oct 01 2026 00:00', 'Oct 05 2026 00:00', 'Oct 12 2026 00:00', 'Oct 19 2026 00:00', 'Oct 26 2026 00:00']);
+    // The week holding the DST change (25 Oct) is an hour longer.
+    expect((weeks[3].end - weeks[3].t) / 36e5).toBe(7 * 24 + 1);
+  });
+
+  it("gives each bar its points' lowest, highest or last value, else the last before", () => {
+    const pts = [[at('2026-10-24T06:00'), 1], [at('2026-10-24T18:00'), 3], [at('2026-10-24T20:00'), 2], [at('2026-10-26T12:00'), 7]];
+    const by = (agg: string) => C.buckets(pts, at('2026-10-24T00:00'), at('2026-10-27T00:00'), 24 * 36e5, null, agg).map((b: any) => b.v);
+    expect(by('min')).toEqual([1, 2, 7]);
+    expect(by('max')).toEqual([3, 2, 7]);
+    expect(by('last')).toEqual([2, 2, 7]);
+    expect(by('avg')).toEqual([2, 2, 7]);
+  });
+});
+
+describe('barUnit', () => {
+  const H = 36e5, D = 24 * H;
+  it('keeps the bars Charts drew for each span', () => {
+    const rolling = { '1h': [H, 5 * 6e4], '6h': [6 * H, 15 * 6e4], '24h': [D, H], '2d': [2 * D, 2 * H], '3d': [3 * D, 3 * H], '5d': [5 * D, 6 * H], '7d': [7 * D, 6 * H] };
+    for (const [span, [ms, bar]] of Object.entries(rolling)) expect([span, C.barUnit(0, ms)]).toEqual([span, bar]);
+    expect(C.barUnit(0, 25 * H, 'day')).toBe(H); // a DST day
+    expect(C.barUnit(0, 7 * D, 'week')).toBe(D);
+    expect(C.barUnit(0, 31 * D, 'month')).toBe(D);
+    expect(C.barUnit(0, 365 * D, 'year')).toBe('month');
+  });
+
+  it('gives any other span at most 28 bars, up to calendar weeks and months', () => {
+    expect(C.barUnit(0, 40 * 6e4)).toBe(2 * 6e4); // 40 minutes: 20 bars of 2 min
+    expect(C.barUnit(0, 10 * D)).toBe(12 * H);
+    expect(C.barUnit(0, 3 * D, 'day')).toBe(3 * H); // three whole days
+    expect(C.barUnit(0, 60 * D)).toBe('week');
+    expect(C.barUnit(0, 2 * 365 * D)).toBe('month');
+  });
+});
+
+describe('ticks', () => {
+  it('runs from zero by default, in whole steps above and below it', () => {
+    expect(C.ticks({ max: 830 })).toEqual({ step: 500, axisMin: 0, axisMax: 1000, k: 2, zeroIndex: null });
+    expect(C.ticks({ max: 4, min: -2 })).toEqual({ step: 2, axisMin: -2, axisMax: 4, k: 3, zeroIndex: 1 });
+  });
+
+  it('fits a range when asked, marking zero where it crosses', () => {
+    expect(C.ticks({ max: 23.4, min: 18.2, fit: true })).toEqual({ step: 2, axisMin: 18, axisMax: 24, k: 3, zeroIndex: null });
+    expect(C.ticks({ max: 3, min: -4, fit: true })).toEqual({ step: 2.5, axisMin: -5, axisMax: 5, k: 4, zeroIndex: 2 });
+    // A flat range: one small step either side.
+    expect(C.ticks({ max: 20, min: 20, fit: true })).toEqual({ step: 1, axisMin: 19, axisMax: 21, k: 2, zeroIndex: null });
+  });
 });
 
 describe('useBuckets', () => {

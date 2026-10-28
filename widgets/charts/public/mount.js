@@ -1,15 +1,9 @@
 /*
- * Wires createChartsWidget to Homey: the settings, the app's API and its realtime events. index.html calls it
- * with the frame's own Homey and body; the Smart Stack calls it with a slide of its page and a Homey of its own.
- * `frame` is the element whose height Homey gets (the body, or the slide).
+ * Wires createChartsWidget to Homey: the settings, the app's API and its realtime events (the chart module's
+ * `wireChart()`). index.html calls it with the frame's own Homey and body; the Smart Stack calls it with a slide of its
+ * page and a Homey of its own. `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountChartsWidget = function (Homey, { root, frame }) {
-  const REFRESH_MS = 5 * 60e3; // keeps the app's device subscriptions alive and resyncs the histories
-
-  const { wireFrame, onDeviceNames } = window.WidgetkeeperKit;
-  // Homey's frame: ready, the height, and the load marks sent with the first request.
-  const link = wireFrame(Homey, frame);
-
   const settings = Homey.getSettings() || {};
   // '2': stacked; 'overlay': both on one chart, over chart 1's time span (or two periods of a kind: today with yesterday …).
   const overlay = settings.charts === 'overlay';
@@ -25,57 +19,28 @@ window.mountChartsWidget = function (Homey, { root, frame }) {
     smooth: settings[`smooth${n}`] === true,
     title: settings[`title${n}`],
   })).filter(c => typeof c.slot === 'string' && c.slot.indexOf(':') > 0 && !c.slot.endsWith(':')); // as parseSlot()
-  let loaded = false;
 
-  const widget = window.createChartsWidget(root, {
-    colorStyle: settings.colorStyle,
-    t: (key, tokens) => Homey.__(key, tokens),
-    charts,
-    overlay: overlay && charts.length === 2,
-    sharedScale: settings.sharedScale === true, // missing: off, each its own scale
-    showHeader: settings.showHeader !== false, // missing: on
-    legend: settings.legend, // missing: above
-    onHeight: link.setHeight,
-  });
-
-  function ready() {
-    return link.ready();
-  }
-
-  async function load() {
-    if (!charts.length) {
-      widget.setMessage(widget.t('selectChart'));
-      ready();
-      return;
-    }
-    try {
-      // The spans the widget draws: on one chart, series 2 may take chart 1's (a lone chart keeps its own).
+  let widget;
+  return window.WidgetkeeperChart.wireChart(Homey, { frame }, {
+    create: link => (widget = window.createChartsWidget(root, {
+      colorStyle: settings.colorStyle,
+      t: (key, tokens) => Homey.__(key, tokens),
+      charts,
+      overlay: overlay && charts.length === 2,
+      sharedScale: settings.sharedScale === true, // missing: off, each its own scale
+      showHeader: settings.showHeader !== false, // missing: on
+      legend: settings.legend, // missing: above
+      onHeight: link.setHeight,
+    })),
+    need: 'selectChart',
+    // The spans the widget draws: on one chart, series 2 may take chart 1's (a lone chart keeps its own).
+    query: () => {
+      if (!charts.length) return null;
       const spans = widget.spans();
-      const list = charts.map((c, i) => `${encodeURIComponent(c.slot)}~${encodeURIComponent(spans[i])}`).join(',');
-      const res = await Homey.api('GET', `/state?charts=${list}${link.perfParam()}`);
-      widget.setState(res && res.charts, res && res.language);
-      loaded = true;
-    } catch (err) {
-      console.error(err);
-      // A failed refresh keeps the charts; only a failed first load replaces them with the error.
-      widget.setMessage(widget.t('error'), loaded);
-    }
-    ready();
-  }
-
-  // The live values come from the Device Values service, which the app's Sparklines service (behind /state) uses.
-  Homey.on('values:state', (data) => {
-    if (data) widget.pushChange(data);
+      return `charts=${charts.map((c, i) => `${encodeURIComponent(c.slot)}~${encodeURIComponent(spans[i])}`).join(',')}`;
+    },
+    state: res => [res && res.charts, res && res.language],
   });
-
-  setInterval(load, REFRESH_MS);
-  onDeviceNames(Homey, load);
-  load();
-
-  return {
-    /** The Smart Stack: whether this page is the one on screen. */
-    setVisible: (v) => widget.setVisible(v),
-  };
 };
 /** The classes index.html puts on its body; the Smart Stack puts them on the slide. */
 window.mountChartsWidget.frameClass = 'homey-widget';

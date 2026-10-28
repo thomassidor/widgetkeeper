@@ -20,12 +20,43 @@
   const SMOOTH_PASSES = 6; // `smooth`: averaging passes over a trace
   const STEP_RADIUS = 5; // `smooth`: corner radius on step lines
   const TOUCH_HOLD_MS = 3000; // a touch selection stays this long after the finger lifts
+  const REFRESH_MS = 5 * 60e3; // a chart widget's refetch (`wireChart()`)
 
   function niceStep(raw) {
     if (!(raw > 0)) return 1;
     const p = Math.pow(10, Math.floor(Math.log10(raw)));
     const f = raw / p;
     return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p;
+  }
+
+  /**
+   * A value axis' steps over `[min, max]`. From zero (`fit` off), 0 is always on it, with whole steps above and below;
+   * with `fit`, whole steps from just below `min` to just above `max` (a flat range: one small step either side, so
+   * its line sits in the middle). `{step, axisMin, axisMax, k, zeroIndex}`: `k` steps from `axisMin` to `axisMax`, and
+   * `zeroIndex` the step at 0 when the axis reaches below zero (fitted: when it crosses zero), else null.
+   */
+  function ticks({ max, min = 0, fit = false }) {
+    if (!fit) {
+      min = Math.min(0, min);
+      max = Math.max(0, max);
+      if (max === min) max = 1;
+      const step = niceStep((max - min) / 3);
+      const kPos = Math.ceil(max / step - 1e-9), kNeg = Math.ceil(-min / step - 1e-9);
+      return { step, axisMin: -step * kNeg, axisMax: step * kPos, k: kPos + kNeg, zeroIndex: kNeg || null };
+    }
+    let step, axisMin, k;
+    if (max === min) {
+      step = niceStep(Math.abs(max) / 20 || 1);
+      axisMin = max - step;
+      k = 2;
+    } else {
+      step = niceStep((max - min) / 3);
+      const kLo = Math.floor(min / step + 1e-9);
+      axisMin = kLo * step;
+      k = Math.ceil(max / step - 1e-9) - kLo;
+    }
+    const axisMax = axisMin + k * step;
+    return { step, axisMin, axisMax, k, zeroIndex: axisMin < 0 && axisMax > 0 ? Math.round(-axisMin / step) : null };
   }
 
   /** The kit's el() (../spacer/kit.js, loaded first), with `svg:<tag>` made in the SVG namespace. */
@@ -144,17 +175,19 @@
   }
 
   /**
-   * Steps along a time axis on the local clock by `unit`: a length in ms, or `'month'` (calendar months, starting on the
-   * 1st). Steps of whole hours start on the clock's hours, each counted from its day's midnight, so they stay there
-   * across a DST change (that day's step is an hour longer or shorter, and a day's, 24 h, runs midnight to midnight);
-   * shorter ones divide any hour, so stepping by their length from the first stays on the clock. `align(t)` is the
-   * start of the step holding `t`, `next(b)` the start of the one after `b`.
+   * Steps along a time axis on the local clock by `unit`: a length in ms, `'week'` (calendar weeks from Monday, as
+   * Homey's) or `'month'` (calendar months, starting on the 1st). Steps of whole hours start on the clock's hours, each
+   * counted from its day's midnight, so they stay there across a DST change (that day's step is an hour longer or
+   * shorter, and a day's, 24 h, runs midnight to midnight); shorter ones divide any hour, so stepping by their length
+   * from the first stays on the clock. `align(t)` is the start of the step holding `t`, `next(b)` the start of the one
+   * after `b`.
    */
   function clockSteps(unit, from) {
-    if (unit === 'month') {
+    if (unit === 'month' || unit === 'week') {
       const start = (t, add) => {
         const d = new Date(t);
-        return new Date(d.getFullYear(), d.getMonth() + add, 1).getTime();
+        return (unit === 'month' ? new Date(d.getFullYear(), d.getMonth() + add, 1)
+          : new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() + 6) % 7 + 7 * add)).getTime();
       };
       return { align: t => start(t, 0), next: b => start(b, 1) };
     }
@@ -172,30 +205,52 @@
   }
 
   /**
-   * Bars of `unit` (`clockSteps()`) on the local clock over `[from, to]`: each the average of the points in it, or
-   * the last value before it (Homey doesn't log unchanged values); null before the first value. The first and last
-   * bars are cut to the span. `current` (the value now) only stands in for a last bar without points of its own,
-   * so it doesn't count as a sample and the bar doesn't jump with each live value. `{t, end, v}`, oldest first.
+   * Bars of `unit` (`clockSteps()`) on the local clock over `[from, to]`: each the average of the points in it (`agg`:
+   * or their `min`, `max` or `last`), or the last value before it (Homey doesn't log unchanged values); null before the
+   * first value. The first and last bars are cut to the span. `current` (the value now) only stands in for a last bar
+   * without points of its own, so it doesn't count as a sample and the bar doesn't jump with each live value.
+   * `{t, end, v}`, oldest first.
    * @param {[number, number][]} points
    * @param {number | string} unit
    * @param {number | null} [current]
+   * @param {'avg' | 'min' | 'max' | 'last'} [agg]
    */
-  function buckets(points, from, to, unit, current = null) {
+  function buckets(points, from, to, unit, current = null, agg = 'avg') {
     const { align, next } = clockSteps(unit, from);
+    const fold = agg === 'min' ? Math.min : agg === 'max' ? Math.max : agg === 'last' ? (a, v) => v : (a, v) => a + v;
     const out = [];
     let j = 0, last = null;
     while (j < points.length && points[j][0] < from) last = points[j++][1];
     for (let b = align(from); b < to; b = next(b)) {
       const e = next(b);
-      let sum = 0, n = 0;
+      let acc = 0, n = 0;
       while (j < points.length && points[j][0] < e) {
-        if (points[j][0] <= to) { sum += points[j][1]; n++; }
+        if (points[j][0] <= to) { acc = n ? fold(acc, points[j][1]) : points[j][1]; n++; }
         last = points[j++][1];
       }
       const end = Math.min(e, to);
-      out.push({ t: Math.max(b, from), end, v: n ? sum / n : end === to && current != null ? current : last });
+      out.push({ t: Math.max(b, from), end, v: n ? (agg === 'avg' ? acc / n : acc) : end === to && current != null ? current : last });
     }
     return out;
+  }
+
+  /** The bars' lengths `barUnit()` picks from, shortest first: about 12–28 of them over a rolling span. */
+  const BAR_STEPS = [MIN, 2 * MIN, 5 * MIN, 15 * MIN, 30 * MIN, HOUR, 2 * HOUR, 3 * HOUR, 6 * HOUR, 12 * HOUR, 24 * HOUR, 'week', 'month'];
+  const MAX_BARS = 28;
+
+  /**
+   * The bars' unit (`clockSteps()`) over `[from, to]`: on a calendar span (`unit`, the kit's `timeSpan()`) a day's hours,
+   * a week's or a month's days or a year's months (a few of them: as long as at most 31 bars), else the shortest of
+   * `BAR_STEPS` giving at most 28 bars (an hour: 12 of 5 min; 24 h: an hour each; 7 days: 6 h each), ending with
+   * calendar weeks and months.
+   */
+  function barUnit(from, to, unit = null) {
+    const days = (to - from) / (24 * HOUR);
+    if (unit === 'day' && days <= 1.05) return HOUR;
+    if ((unit === 'week' || unit === 'month') && days <= 31.05) return 24 * HOUR;
+    if (unit === 'year' && days <= 2 * 366) return 'month';
+    const length = s => (s === 'week' ? 7 * 24 * HOUR : s === 'month' ? 30.44 * 24 * HOUR : s);
+    return BAR_STEPS.find(s => (to - from) / length(s) <= MAX_BARS + 0.05) || 'month';
   }
 
   /**
@@ -348,56 +403,21 @@
      * `baseY` (where areas and bars close: 0, or the nearer edge when 0 is outside) and the axis range.
      */
     function valueScale(svg, { max, min = 0, h, top, pw, rightExt = 0, format, fit = false }) {
-      if (fit) return fitScale(svg, { max, min, h, top, pw, rightExt, format });
-      min = Math.min(0, min); // from zero: 0 is always on the scale
-      max = Math.max(0, max);
-      if (max === min) max = 1;
-      const step = niceStep((max - min) / 3);
-      const kPos = Math.ceil(max / step - 1e-9), kNeg = Math.ceil(-min / step - 1e-9), k = kPos + kNeg;
-      const axisMax = step * kPos, axisMin = -step * kNeg;
-      const y = kNeg
-        ? v => Math.min(top + h + 2, top + h * (1 - (v - axisMin) / (axisMax - axisMin)))
-        : v => top + h * (1 - Math.max(0, v) / axisMax);
+      const { step, axisMin, axisMax, k, zeroIndex } = ticks({ max, min, fit });
+      const linear = v => top + h * (1 - (v - axisMin) / (axisMax - axisMin));
+      // From zero, a value below a scale that doesn't reach below zero sits on the base; one below the scale's
+      // bottom, at most 2 px under it.
+      const y = fit ? linear : zeroIndex != null ? v => Math.min(top + h + 2, linear(v)) : v => top + h * (1 - Math.max(0, v) / axisMax);
       let grid = '';
       const every = Math.max(1, Math.ceil(LABEL_MIN_GAP / (h / k)));
       for (let j = 0; j <= k; j++) {
         const v = axisMin + step * j;
         if (j > 0) grid += `M${L - 6} ${f1(y(v))}H${L + pw + rightExt}`;
-        if ((kNeg ? j - kNeg : k - j) % every === 0) text(svg, L - LABEL_PAD, y(v), format(v, step), 'end', 'central');
+        if ((zeroIndex != null ? j - zeroIndex : k - j) % every === 0) text(svg, L - LABEL_PAD, y(v), format(v, step), 'end', 'central');
       }
       el('svg:path', { class: 'grid', d: grid }, svg);
       const zeroY = y(0);
-      if (kNeg) el('svg:path', { class: 'axis', d: `M${L - 6} ${f1(zeroY)}H${L + pw + rightExt}` }, svg);
-      return { y, axisMax, axisMin, zeroY, baseY: zeroY, step };
-    }
-
-    function fitScale(svg, { max, min, h, top, pw, rightExt, format }) {
-      let step, axisMin, k;
-      if (max === min) {
-        // Flat: one small step either side, so the line sits in the middle.
-        step = niceStep(Math.abs(max) / 20 || 1);
-        axisMin = max - step;
-        k = 2;
-      } else {
-        step = niceStep((max - min) / 3);
-        const kLo = Math.floor(min / step + 1e-9);
-        axisMin = kLo * step;
-        k = Math.ceil(max / step - 1e-9) - kLo;
-      }
-      const axisMax = axisMin + k * step;
-      const y = v => top + h * (1 - (v - axisMin) / (axisMax - axisMin));
-      const crosses = axisMin < 0 && axisMax > 0;
-      const jZero = Math.round(-axisMin / step); // the zero line's index, when it crosses
-      let grid = '';
-      const every = Math.max(1, Math.ceil(LABEL_MIN_GAP / (h / k)));
-      for (let j = 0; j <= k; j++) {
-        const v = axisMin + j * step;
-        if (j > 0) grid += `M${L - 6} ${f1(y(v))}H${L + pw + rightExt}`;
-        if ((crosses ? j - jZero : k - j) % every === 0) text(svg, L - LABEL_PAD, y(v), format(v, step), 'end', 'central');
-      }
-      el('svg:path', { class: 'grid', d: grid }, svg);
-      const zeroY = y(0);
-      if (crosses) el('svg:path', { class: 'axis', d: `M${L - 6} ${f1(zeroY)}H${L + pw + rightExt}` }, svg);
+      if (zeroIndex != null) el('svg:path', { class: 'axis', d: `M${L - 6} ${f1(zeroY)}H${L + pw + rightExt}` }, svg);
       const baseY = axisMin >= 0 ? top + h : axisMax <= 0 ? top : zeroY;
       return { y, axisMax, axisMin, zeroY, baseY, step };
     }
@@ -441,13 +461,11 @@
 
     /** From zero: `{a, b}` as `{step, axisMin}`, `k` steps in all, `anchor` the zero line's index (or null). */
     function zeroPair(a, b) {
-      const span = s => {
-        const lo = Math.min(0, s.min), hi = Math.max(0, s.max);
-        return hi === lo ? { lo, hi: 1 } : { lo, hi };
-      };
-      const A = span(a), B = span(b);
-      const stepA = niceStep((A.hi - A.lo) / 3);
-      let kPos = Math.ceil(A.hi / stepA - 1e-9), kNeg = Math.ceil(-A.lo / stepA - 1e-9);
+      const B = { lo: Math.min(0, b.min), hi: Math.max(0, b.max) };
+      if (B.hi === B.lo) B.hi = 1;
+      const A = ticks({ max: a.max, min: a.min });
+      const stepA = A.step;
+      let kPos = Math.round(A.axisMax / stepA), kNeg = Math.round(-A.axisMin / stepA);
       let stepB;
       if ((B.lo < 0 && !kNeg) || (B.hi > 0 && !kPos)) {
         // b needs a side a doesn't have: both get as many steps as either needs.
@@ -462,17 +480,7 @@
 
     /** Fitted: a as `fitScale`, b in the same number of steps (its step raised until its values fit). */
     function fitPair(a, b) {
-      let stepA, minA, k;
-      if (a.max === a.min) {
-        stepA = niceStep(Math.abs(a.max) / 20 || 1);
-        minA = a.max - stepA;
-        k = 2;
-      } else {
-        stepA = niceStep((a.max - a.min) / 3);
-        const kLo = Math.floor(a.min / stepA + 1e-9);
-        minA = kLo * stepA;
-        k = Math.ceil(a.max / stepA - 1e-9) - kLo;
-      }
+      const { step: stepA, axisMin: minA, k } = ticks({ max: a.max, min: a.min, fit: true });
       let stepB, minB;
       if (b.max === b.min) {
         stepB = niceStep(Math.abs(b.max) / 20 || 1);
@@ -559,9 +567,190 @@
   /** The pointer's x in the <svg>'s own coordinates. */
   const pointerX = (e, svg) => e.clientX - svg.getBoundingClientRect().left;
 
+  /**
+   * The frame a chart widget draws in (Charts, Totals per Period and the other `Chart · …` widgets; the Electricity Overview
+   * has its own): the `.ew` box (`ew <cls>`) with a message, the header, a plot box per `boxes` entry (its attributes;
+   * each a chip row, the <svg> and a note, with `legendBelow` the chips under the svg) and a passing message under them.
+   * It keeps the width (a ResizeObserver on `root`), tells `opts.onHeight` the height, redraws every `redrawMs` while
+   * the widget is seen (not on a hidden page or an off-screen Smart Stack page) and keeps the messages (the kit's
+   * `messageLine()`: a lasting one drops the widget's state through `clear()` and shows in the chart's place, a
+   * passing one under it for 8 s). Strings are `opts.t('<prefix>.<key>')`, else `strings`.
+   * The widget draws in `draw(shown)` (its plots: shown or hidden, `shown` when `has()` says there's state to draw)
+   * and `header(column)` (its header's columns), and returns `api({setState, pushChange, …})`.
+   * @param {HTMLElement} root
+   * @param {{ opts?: any, cls: string, prefix: string, strings?: Record<string, string>, colors?: object, boxes?: object[],
+   *   legendBelow?: boolean, showHeader?: boolean, redrawMs: number, has: () => boolean, clear: () => void,
+   *   draw: (shown: boolean) => void, header: (column: (c: object) => void) => void }} spec
+   */
+  function createFrame(root, spec) {
+    const { applyColors, messageLine, TIGHT_UNITS } = window.WidgetkeeperKit;
+    const { opts = {}, cls, prefix, strings = {}, legendBelow = false } = spec;
+    const t = (key, tokens) => {
+      const s = opts.t ? opts.t(`${prefix}.${key}`, tokens) : null;
+      if (s && s !== `${prefix}.${key}`) return s;
+      return (strings[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
+    };
+    const locale = opts.locale || navigator.language || 'en';
+    const nfCache = {};
+    /** A number in the phone's locale: `d` decimals, or none (rounded) without. */
+    const nf = (v, d) => {
+      const key = d == null ? 'int' : d;
+      nfCache[key] = nfCache[key] || new Intl.NumberFormat(locale, d == null
+        ? { maximumFractionDigits: 0 }
+        : { minimumFractionDigits: d, maximumFractionDigits: d });
+      return nfCache[key].format(v);
+    };
+    const pad2 = n => String(n).padStart(2, '0');
+
+    applyColors(root, spec.colors || { style: opts.colorStyle }); // on the root, so the chart markup stays as it was
+    const wrap = el('div', { class: `ew ${cls}${legendBelow ? ' legend-below' : ''}` }, root);
+    const message = el('div', { class: 'ew-message', dir: 'auto' }, wrap);
+    const header = el('div', { class: 'ew-header' }, wrap);
+    const boxes = (spec.boxes || [{}]).map((attrs) => {
+      const box = el('div', { class: `ew-chart ${cls}-chart`, ...attrs }, wrap);
+      const chips = el('div', { class: 'ew-chips' }, box);
+      const svg = el('svg:svg', null, box);
+      if (legendBelow) box.appendChild(chips);
+      const note = el('div', { class: `ew-message ${cls}-note`, dir: 'auto' }, box);
+      return { box, chips, svg, note };
+    });
+    const transient = el('div', { class: `ew-message ${cls}-transient`, dir: 'auto' }, wrap);
+    const line = messageLine(render, { clear: spec.clear });
+    let lastHeight = 0;
+    let offScreen = false;
+
+    /** A header column: the value (`–` without one), its units (`units`; `tightUnits` decides the spacing) and the sub line. */
+    function column({ value, units = '', tightUnits = units, sub, colCls = '', valueCls = '', attrs = {} }) {
+      const col = el('div', { class: `ew-hcol${colCls}`, ...attrs }, header);
+      const hv = el('div', { class: `ew-hval ${cls}-value${valueCls}${TIGHT_UNITS.test(tightUnits || '') ? ' tight' : ''}` }, col);
+      el('span', { class: 'v ew-num', text: value == null ? '–' : value }, hv);
+      if (units) el('span', { class: 'u', text: units }, hv);
+      el('div', { class: 'ew-hsub', dir: 'auto', text: sub }, col);
+    }
+
+    function render() {
+      const shown = spec.has();
+      const lasting = line.text != null && !shown;
+      show(message, lasting);
+      message.textContent = lasting ? line.text : '';
+      spec.draw(shown);
+      const withHeader = shown && spec.showHeader !== false;
+      show(header, withHeader);
+      if (withHeader) {
+        clear(header);
+        spec.header(column);
+        header.classList.toggle('one', header.childElementCount < 2);
+      }
+      const passing = shown && line.text != null;
+      show(transient, passing);
+      transient.textContent = passing ? line.text : '';
+      if (opts.onHeight) {
+        const h = Math.ceil(root.getBoundingClientRect().height);
+        if (h && h !== lastHeight) { lastHeight = h; opts.onHeight(h); }
+      }
+    }
+
+    const seen = () => !offScreen && !document.hidden;
+    const timer = setInterval(() => { if (spec.has() && seen()) render(); }, spec.redrawMs);
+    const onVisibility = () => { if (spec.has() && seen()) render(); };
+    document.addEventListener('visibilitychange', onVisibility);
+
+    const frame = {
+      t, nf, locale,
+      now: opts.now || (() => Date.now()),
+      /** Homey's language (the dates' and weekdays' names): `setState()`'s, else `opts.language`. */
+      language: opts.language || 'en',
+      width: root.clientWidth || 368,
+      kit: createKit(),
+      wrap, header, boxes,
+      hhmm: ms => { const d = new Date(ms); return pad2(d.getHours()) + ':' + pad2(d.getMinutes()); },
+      /** A date in Homey's language (`{weekday: 'short', day: 'numeric'}` → `tir. 14`). */
+      date: (ms, o) => {
+        try { return new Intl.DateTimeFormat(frame.language || 'en', o).format(new Date(ms)); } catch (e) { return new Date(ms).toLocaleDateString(undefined, o); }
+      },
+      render,
+      /** Draws now, unless nobody sees it (a hidden page, an off-screen Smart Stack page): then when it's back. */
+      renderIfSeen() { if (seen()) render(); },
+      /** After new state: a lasting message goes (a passing one stays its 8 s). */
+      resetMessage() { line.reset({ lastingOnly: true }); },
+      /** Tap-to-inspect on a box's svg (`attachScrub()`): `onPointer(px)` with the pointer's x in the svg, `onReset()`. */
+      scrub(svg, onPointer, onReset) { attachScrub(svg, e => onPointer(pointerX(e, svg)), onReset, { timer: null }); },
+      /** The widget's public API: its own (`setState`, `pushChange` …) with the frame's. */
+      api(own) {
+        return {
+          ...own,
+          /** A message in place of the chart, or with `transient` under it for 8 s (a failed refresh). */
+          setMessage(text, transient) { line.set(text, transient); },
+          render,
+          t,
+          /** The Smart Stack: whether this page is the one on screen (it only redraws while it is). */
+          setVisible(visible) { offScreen = !visible; if (spec.has() && seen()) render(); },
+          destroy() { clearInterval(timer); document.removeEventListener('visibilitychange', onVisibility); },
+        };
+      },
+    };
+
+    if (typeof ResizeObserver === 'function') {
+      new ResizeObserver((entries) => {
+        const w = Math.round(entries[0].contentRect.width);
+        if (w && w !== frame.width) { frame.width = w; render(); }
+      }).observe(root);
+    }
+    return frame;
+  }
+
+  /**
+   * A chart widget's mount.js: Homey's frame (the kit's `wireFrame()`), the first load and a refetch every 5 min (which
+   * keeps the app's device subscriptions alive and resyncs the history), the realtime values (Device Values' `values:state`,
+   * which the app's Sparklines service behind `/state` uses) and a changed device names setting. `create(link)` makes the
+   * widget (with `onHeight: link.setHeight`); `query()` is the `/state` request's own part, or null when nothing is picked
+   * (the widget then says its `need` string); `state(res)` is `setState()`'s arguments from the answer. A failed refresh
+   * keeps the chart with a passing message; only a failed first load replaces it with the error.
+   * @param {any} Homey
+   * @param {{ frame: HTMLElement }} where
+   * @param {{ create: (link: any) => any, query: () => string | null, need: string, state: (res: any) => any[] }} spec
+   */
+  function wireChart(Homey, { frame }, { create, query, need, state }) {
+    const { wireFrame, onDeviceNames } = window.WidgetkeeperKit;
+    const link = wireFrame(Homey, frame);
+    const widget = create(link);
+    let loaded = false;
+
+    async function load() {
+      const q = query();
+      if (q == null) {
+        widget.setMessage(widget.t(need));
+        link.ready();
+        return;
+      }
+      try {
+        const res = await Homey.api('GET', `/state?${q}${link.perfParam()}`);
+        widget.setState(...state(res));
+        loaded = true;
+      } catch (err) {
+        console.error(err);
+        widget.setMessage(widget.t('error'), loaded);
+      }
+      link.ready();
+    }
+
+    Homey.on('values:state', (data) => {
+      if (data) widget.pushChange(data);
+    });
+    setInterval(load, REFRESH_MS);
+    onDeviceNames(Homey, load);
+    load();
+
+    return {
+      /** The Smart Stack: whether this page is the one on screen. */
+      setVisible: v => widget.setVisible(v),
+    };
+  }
+
   window.WidgetkeeperChart = {
     MIN, HOUR, L, X_LABEL_GAP, X_LABEL_H, LABEL_PAD, LABEL_MIN_GAP,
-    niceStep, el, clear, show, f1, smoothValues, linePath, stepPath, p985, p015,
-    compactNumber, ago, stepDecimals, axisLabel, buckets, useBuckets, meterTotal, calendarLabels, createKit, attachScrub, pointerX,
+    niceStep, ticks, el, clear, show, f1, smoothValues, linePath, stepPath, p985, p015,
+    compactNumber, ago, stepDecimals, axisLabel, buckets, barUnit, useBuckets, meterTotal, calendarLabels, createKit, attachScrub, pointerX,
+    createFrame, wireChart,
   };
 })();

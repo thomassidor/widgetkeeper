@@ -4,22 +4,17 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { TIGHT_UNITS, COLORS, scaled, formatNumber, applyColors, timeSpan, isTimeSpan, spanUnit, sixHourSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { COLORS, scaled, formatNumber, timeSpan, isTimeSpan, spanUnit, sixHourSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart;
-  const { MIN, HOUR, L, X_LABEL_GAP, X_LABEL_H, el, clear, show, f1, smoothValues } = C;
+  const { HOUR, L, X_LABEL_GAP, X_LABEL_H, el, clear, show, f1, smoothValues } = C;
 
   const DAY = 24 * HOUR;
   const CHIP_H = 38; // chip row → top grid line, as the Electricity Overview's
   const TOP_PAD = 10; // the top grid line with the legend below the chart: room for the top scale label
   const PLOT_H = { 1: 122, 2: 83 }; // one chart: the price chart's height; two: the live chart's
   const R = 34; // right gutter for the second scale on one chart, as the Electricity Overview's usage scale
-  /** Each bar's length per span: about 12–28 bars, on the clock; a calendar week or month a bar a day, a year a bar a month. */
-  const BAR_MS = {
-    '1h': 5 * MIN, '6h': 15 * MIN, '24h': HOUR, today: HOUR, yesterday: HOUR, '2d': 2 * HOUR, '3d': 3 * HOUR, '5d': 6 * HOUR, '7d': 6 * HOUR,
-    thisWeek: DAY, lastWeek: DAY, thisMonth: DAY, lastMonth: DAY, thisYear: 'month', lastYear: 'month',
-  };
   const STYLES = ['area', 'line', 'bars'];
 
   const DEFAULT_STRINGS = {
@@ -45,27 +40,6 @@
    *   overlay?: boolean, sharedScale?: boolean, showHeader?: boolean, legend?: string, onHeight?: (h: number) => void }} opts
    */
   function createChartsWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`charts.${key}`, tokens) : null;
-      if (s && s !== `charts.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
-    const now = opts.now || (() => Date.now());
-    const locale = opts.locale || navigator.language || 'en';
-    let language = opts.language || 'en';
-    const nfCache = {};
-    const nf = (v, d) => {
-      const key = d == null ? 'int' : d;
-      nfCache[key] = nfCache[key] || new Intl.NumberFormat(locale, d == null
-        ? { maximumFractionDigits: 0 }
-        : { minimumFractionDigits: d, maximumFractionDigits: d });
-      return nfCache[key].format(v);
-    };
-    const pad2 = n => String(n).padStart(2, '0');
-    const hhmm = ms => { const d = new Date(ms); return pad2(d.getHours()) + ':' + pad2(d.getMinutes()); };
-    const date = (ms, o) => new Intl.DateTimeFormat(language || 'en', o).format(new Date(ms));
-    const weekday = ms => date(ms, { weekday: 'short' });
-
     /** The charts' settings, with fallbacks for anything missing or unknown. */
     const charts = (opts.charts && opts.charts.length ? opts.charts : [{}]).slice(0, 2).map(c => ({
       span: isTimeSpan(c.span) ? c.span : '24h',
@@ -86,38 +60,32 @@
       if (!(unit && unit === spanUnit(charts[1].span))) charts[1].span = charts[0].span;
     }
     const sharedScale = overlay && opts.sharedScale === true;
-    const showHeader = opts.showHeader !== false;
     // The legend (each chart's chip) above its plot, or under its time labels.
     const legendBelow = opts.legend === 'below';
     const plotTop = legendBelow ? TOP_PAD : CHIP_H;
 
     const state = {
       entries: [], // per chart: Sparklines' slot ({deviceId, capabilityId, name, capability, value, points} | {missing})
-      message: null,
-      transient: null,
-      width: root.clientWidth || 368,
-      lastHeight: 0,
       // The tapped point's time, or a time inside the tapped bar (its end), per chart: not an index, since the
       // points move along with the window and the live values.
       sel: charts.map(() => null),
     };
-    let messageTimer = null;
-
-    const kit = C.createKit();
-    applyColors(root, { style: opts.colorStyle }); // on the root, so the chart markup stays as it was
-    const wrap = el('div', { class: `ew ch${legendBelow ? ' legend-below' : ''}` }, root);
-    const message = el('div', { class: 'ew-message', dir: 'auto' }, wrap);
-    const header = el('div', { class: 'ew-header' }, wrap);
-    const ui = charts.map((c) => {
-      const box = el('div', { class: 'ew-chart ch-chart', 'data-color': c.color }, wrap);
-      const chips = el('div', { class: 'ew-chips' }, box);
-      const svg = el('svg:svg', null, box);
-      if (legendBelow) box.appendChild(chips);
-      const note = el('div', { class: 'ew-message ch-note', dir: 'auto' }, box);
-      return { box, chips, svg, note };
-    });
-    const transientEl = el('div', { class: 'ew-message ch-transient', dir: 'auto' }, wrap);
     const geom = charts.map(() => null); // the latest render's x positions, for the pointer math
+
+    // The line scrolls with time: about a pixel per redraw, at most once a second.
+    const at = opts.now ? opts.now() : Date.now();
+    const shortest = Math.min(...charts.map((c) => { const w = timeSpan(c.span, at); return w.to - w.from; }));
+    const frame = C.createFrame(root, {
+      opts, cls: 'ch', prefix: 'charts', strings: DEFAULT_STRINGS, legendBelow, showHeader: opts.showHeader,
+      boxes: charts.map(c => ({ 'data-color': c.color })),
+      redrawMs: Math.max(1000, Math.min(60e3, shortest / 300)),
+      has: () => state.entries.length > 0,
+      clear: () => { state.entries = []; },
+      draw, header: renderHeader,
+    });
+    const { t, nf, hhmm, date, now, kit } = frame;
+    const ui = frame.boxes;
+    const weekday = ms => date(ms, { weekday: 'short' });
 
     // ------------------------------------------------------------------ derived data
 
@@ -171,31 +139,18 @@
 
     // ------------------------------------------------------------------ render
 
-    function render() {
-      const ready = !state.message;
-      show(message, !!state.message);
-      message.textContent = state.message || '';
-      show(header, ready && showHeader && state.entries.length > 0);
+    /** The plots, shown (`on`) or hidden; the frame draws the message, the header and the passing message around them. */
+    function draw(on) {
       if (overlay) {
-        show(ui[0].box, ready && state.entries.length > 0);
+        show(ui[0].box, on);
         show(ui[1].box, false);
-        if (ready && state.entries.length) renderOverlay();
+        if (on) renderOverlay();
       } else {
         ui.forEach((u, i) => {
-          show(u.box, ready && i < state.entries.length);
-          if (ready && i < state.entries.length) renderChart(i);
+          show(u.box, on && i < state.entries.length);
+          if (on && i < state.entries.length) renderChart(i);
         });
       }
-      if (ready && showHeader && state.entries.length) renderHeader();
-      show(transientEl, !!state.transient);
-      transientEl.textContent = state.transient || '';
-      reportHeight();
-    }
-
-    function reportHeight() {
-      if (!opts.onHeight) return;
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== state.lastHeight) { state.lastHeight = h; opts.onHeight(h); }
     }
 
     /**
@@ -240,19 +195,16 @@
       return { value: s && !('missing' in s) ? s.value : null, sub: s && 'missing' in s ? t('unavailable') : t('now'), averaged: false };
     }
 
-    function renderHeader() {
-      clear(header);
-      header.classList.toggle('one', state.entries.length < 2);
+    function renderHeader(column) {
       state.entries.forEach((s, i) => {
         const { value, sub, averaged } = shown(i);
-        const col = el('div', { class: 'ew-hcol', 'data-color': charts[i].color }, header);
         const ok = s && !('missing' in s) && typeof value === 'number' && isFinite(value);
         const units = ok && s.capability.units ? s.capability.units : '';
         const below = ok && charts[i].negative && scaled(s.capability, value) < 0;
-        const hv = el('div', { class: `ew-hval ch-value${below ? ' export' : ''}${TIGHT_UNITS.test(units) ? ' tight' : ''}` }, col);
-        el('span', { class: 'v ew-num', text: ok ? formatNumber(s.capability, value, averaged) : '–' }, hv);
-        if (units) el('span', { class: 'u', text: units }, hv);
-        el('div', { class: 'ew-hsub', dir: 'auto', text: sub }, col);
+        column({
+          value: ok ? formatNumber(s.capability, value, averaged) : null, units, sub,
+          valueCls: below ? ' export' : '', attrs: { 'data-color': charts[i].color },
+        });
       });
     }
 
@@ -260,7 +212,7 @@
       const c = charts[i];
       const u = ui[i];
       const s = state.entries[i];
-      const w = state.width;
+      const w = frame.width;
       const pw = Math.max(40, w - L - 4);
       const plotH = PLOT_H[state.entries.length > 1 ? 2 : 1];
       const top = plotTop, base = top + plotH;
@@ -299,7 +251,7 @@
      */
     function renderOverlay() {
       const u = ui[0];
-      const w = state.width;
+      const w = frame.width;
       const pw = Math.max(40, w - L - (sharedScale ? 4 : R));
       const plotH = PLOT_H[1];
       const top = plotTop, base = top + plotH;
@@ -370,7 +322,7 @@
       if (!s || 'missing' in s) return { drawable: false };
       const { from } = win;
       const bars = charts[i].style === 'bars'
-        ? chartBuckets(loggedPoints(i, win), from, win.end, BAR_MS[charts[i].span], win.live ? currentOf(i) : null) : null;
+        ? chartBuckets(loggedPoints(i, win), from, win.end, C.barUnit(from, win.to, win.unit), win.live ? currentOf(i) : null) : null;
       const pts = bars ? null : pointsOf(i, win);
       const drawable = bars ? bars.some(b => b.v != null) : pts.length >= 2;
       if (!drawable) return { drawable };
@@ -521,8 +473,7 @@
 
     // On one chart, a tap selects both series at that x (two bars in a slot: either half picks the slot).
     const scrubbed = overlay ? [0, 1] : null;
-    function scrub(i, e) {
-      const px = C.pointerX(e, ui[i].svg);
+    function scrub(i, px) {
       let changed = false;
       for (const j of scrubbed || [i]) {
         const g = geom[j];
@@ -536,39 +487,21 @@
         const at = k == null ? null : g.kind === 'bars' ? g.items[k].end : g.items[k].t;
         if (at !== state.sel[j]) { state.sel[j] = at; changed = true; }
       }
-      if (changed) render();
+      if (changed) frame.render();
     }
     ui.forEach((u, i) => {
-      const reset = () => {
+      frame.scrub(u.svg, px => scrub(i, px), () => {
         const js = scrubbed || [i];
-        if (js.some(j => state.sel[j] != null)) { js.forEach((j) => { state.sel[j] = null; }); render(); }
-      };
-      C.attachScrub(u.svg, e => scrub(i, e), reset, { timer: null });
+        if (js.some(j => state.sel[j] != null)) { js.forEach((j) => { state.sel[j] = null; }); frame.render(); }
+      });
     });
-
-    if (typeof ResizeObserver === 'function') {
-      new ResizeObserver((entries) => {
-        const w = Math.round(entries[0].contentRect.width);
-        if (w && w !== state.width) { state.width = w; render(); }
-      }).observe(root);
-    }
-
-    // The line scrolls with time: about a pixel per redraw, at most once a second. Not while nobody sees it (a hidden
-    // page, or a Smart Stack page that isn't on screen); drawn at once when it's back.
-    const shortest = Math.min(...charts.map((c, i) => { const w = windowOf(i, now()); return w.to - w.from; }));
-    let offScreen = false;
-    const scrolling = () => state.entries.length && !state.message && !offScreen && !document.hidden;
-    const scrollTimer = setInterval(() => { if (scrolling()) render(); },
-      Math.max(1000, Math.min(60e3, shortest / 300)));
-    const onVisibility = () => { if (scrolling()) render(); };
-    document.addEventListener('visibilitychange', onVisibility);
 
     // ------------------------------------------------------------------ public API
 
-    return {
+    return frame.api({
       /** One entry per chart, in order. Live points newer than a refreshed history are kept (it's cached up to 5 min). */
       setState(list, lang) {
-        if (lang) language = lang;
+        if (lang) frame.language = lang;
         const previous = state.entries;
         state.entries = (Array.isArray(list) ? list : []).slice(0, charts.length).map((s, i) => {
           if (!s || 'missing' in s) return s || { missing: true };
@@ -578,8 +511,8 @@
           const after = points.length ? points[points.length - 1][0] : -Infinity;
           return { ...s, points: points.concat(old.filter(p => p[0] > after)) };
         });
-        state.message = null;
-        render();
+        frame.resetMessage();
+        frame.render();
       },
       /** A realtime value (Device Values' `values:state`): appended to every chart that shows it. */
       pushChange({ deviceId, capabilityId, value }) {
@@ -596,29 +529,11 @@
           }
           changed = true;
         });
-        if (changed && !document.hidden && !offScreen) render(); // else drawn when it's back
+        if (changed) frame.renderIfSeen();
       },
-      /** A message in place of the charts, or with `transient` under them for 8 s (a failed refresh). */
-      setMessage(text, transient) {
-        if (messageTimer) clearTimeout(messageTimer);
-        messageTimer = null;
-        if (transient) {
-          state.transient = text;
-          messageTimer = setTimeout(() => { state.transient = null; render(); }, 8000);
-        } else {
-          state.message = text;
-          state.entries = [];
-        }
-        render();
-      },
-      render,
-      t,
       /** Each chart's span as drawn (on one chart, series 2's may be chart 1's): what the mount asks `/state` for. */
       spans: () => charts.map(c => c.span),
-      /** The Smart Stack: whether this page is the one on screen (the lines only scroll while it is). */
-      setVisible(visible) { offScreen = !visible; if (scrolling()) render(); },
-      destroy() { clearInterval(scrollTimer); document.removeEventListener('visibilitychange', onVisibility); },
-    };
+    });
   }
 
   window.createChartsWidget = createChartsWidget;
