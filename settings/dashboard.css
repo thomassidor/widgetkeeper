@@ -586,6 +586,16 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-dialog.wd-settings { width: min(720px, calc(100vw - 32px)); background: var(--wd-bg); }
 .wd-settings .wd-dialog-head { align-items: flex-start; padding: 16px 12px 12px 20px; background: var(--wd-bg); border-bottom: 1px solid var(--wd-line); }
 .wd-settings .wd-dialog-body { gap: 12px; padding: 16px 20px 20px; }
+/* The live preview: beside the cards, staying in view while they scroll; above them on a narrow screen. */
+.wd-dialog.wd-settings.with-preview { width: min(1100px, calc(100vw - 32px)); }
+.wd-settings.with-preview .wd-dialog-body { display: grid; grid-template-columns: minmax(0, 1fr) 360px; align-items: start; gap: 16px; }
+.wd-set-cards { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.wd-preview { position: sticky; top: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.wd-preview .wd-set-caption { margin: 0; }
+@media (max-width: 860px) {
+  .wd-settings.with-preview .wd-dialog-body { grid-template-columns: minmax(0, 1fr); }
+  .wd-preview { position: static; order: -1; }
+}
 .wd-settings .wd-actions { background: var(--wd-bg); }
 .wd-dialog-who { display: flex; align-items: center; gap: 14px; min-width: 0; }
 .wd-dialog-titles { display: flex; flex-direction: column; gap: 2px; min-width: 0; }

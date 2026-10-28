@@ -7,6 +7,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 ### New: Device names
 - **Show only part of a device's name on every widget:** under **Apps → Widgetkeeper → Configure → Device names**, choose the full name, the part before or after a separator you type (such as `|`, so *Ceiling lamp | Kitchen* shows as *Ceiling lamp*), or the last word. The page shows a few of your own names as they'll look, and open widgets change at once. The device lists in widget settings, Flow tokens and names typed on tiles stay as they are.
 
+### Web dashboards
+- **A live preview while you set up a widget:** the settings show the widget as it will look, beside them (above them on a narrow screen), and it follows each change you make. Cancel leaves the widget as it was.
+
 ### Charts: any time span
 - **Charts is now Chart · Over Time**, so it sits beside the other chart widgets in Homey's list. Widgets already on your dashboards stay as they are.
 - **Any time span:** pick a number and a unit instead of a fixed list: the last 40 minutes, 18 hours, 10 days or 6 months, up to two years. Or whole periods: days from midnight, weeks from Monday, months from the 1st or years from 1 January, such as this week or this month and the two before, and with *Leave out the current period* the ones before it (yesterday, last week, the three months before this one). The time labels and bars fit whatever span you pick. Charts set up before keep their span until you pick a unit.

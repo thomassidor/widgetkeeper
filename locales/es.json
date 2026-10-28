@@ -785,6 +785,7 @@
     "remove": "Quitar",
     "widgetTitle": "Título",
     "widgetTitleHint": "Se muestra encima del widget. Déjalo vacío para ninguno.",
+    "preview": "Vista previa",
     "width": "Ancho",
     "widthHint": "Cuántas columnas ocupa.",
     "resize": "Arrastra para cambiar el ancho",

@@ -121,6 +121,7 @@
     remove: 'Remove',
     widgetTitle: 'Title',
     widgetTitleHint: 'Shown above the widget. Leave it empty for none.',
+    preview: 'Preview',
     width: 'Width',
     widthHint: 'How many columns it spans.',
     resize: 'Drag to change the width',
@@ -3042,7 +3043,7 @@
       const card = (className) => el('section', `wd-set-card${className ? ` ${className}` : ''}`);
       const rows = (ids, label, hints = true) => ids.map(sid => settingRow(def, byId.get(sid), draft, changed, uid(), label ? label(byId.get(sid)) : undefined, hints));
 
-      if (def.devices) body.append(devicePicker(def, draft, pickDevices));
+      if (def.devices) body.append(devicePicker(def, draft, pickDevices, () => changed()));
 
       const title = el('input', 'wd-input');
       title.id = uid();
@@ -3188,6 +3189,13 @@
         return { parts, empty };
       }
 
+      // Ours get a live preview beside the cards (above them on a narrow screen).
+      if (!appWidget(w.type)) {
+        const cards = el('div', 'wd-set-cards');
+        cards.append(...body.childNodes);
+        body.append(cards, livePreview(w, def, draft, d, updates));
+        d.classList.add('with-preview');
+      }
       changed();
       const actions = el('div', 'wd-actions');
       actions.append(
@@ -3215,6 +3223,47 @@
       );
       d.append(actions);
       d.showModal();
+    }
+
+    /**
+     * A widget's live preview in its settings dialog: its own index.html in a frame like the dashboard's (or the dev
+     * renders' `mountWidget`), whose settings and devices are the dialog's draft, drawn again 400 ms after a change
+     * (pushed to `updates`). Its own widget instance, so a Timers or Media preview doesn't share the widget's. Closing
+     * the dialog takes it away; Cancel leaves the widget as it was.
+     */
+    function livePreview(w, def, draft, dialog, updates) {
+      const aside = el('aside', 'wd-preview');
+      aside.append(el('h3', 'wd-set-caption', t('preview')));
+      const wrap = el('div', `wd-frame${def.transparent ? '' : ' card'}`);
+      aside.append(wrap);
+      const shown = () => ({ ...w, settings: clone(draft.settings), deviceIds: draft.deviceIds.slice() });
+      let draw;
+      if (opts.mountWidget) {
+        draw = () => { wrap.textContent = ''; opts.mountWidget(shown(), wrap); };
+      } else {
+        const iframe = document.createElement('iframe');
+        iframe.title = t('preview');
+        if (typeof def.height === 'string') iframe.style.aspectRatio = `100 / ${parseFloat(def.height)}`;
+        else iframe.style.height = `${def.height || 120}px`;
+        wrap.append(iframe);
+        const frame = { widget: shown(), iframe, subs: new Map(), gen: 0, app: null, sandboxed: false, scaled: false };
+        frames.add(frame);
+        let n = 0;
+        draw = () => {
+          frame.widget = shown();
+          iframe.src = `${widgetFolder(w.type)}/index.html?widgetInstanceId=${encodeURIComponent(`web-preview-${w.id}`)}&v=${++n}`;
+        };
+        dialog.addEventListener('close', () => { dropListeners(frame); frames.delete(frame); });
+      }
+      let timer = null;
+      let first = true;
+      updates.push(() => {
+        clearTimeout(timer);
+        if (first) { first = false; draw(); return; }
+        timer = setTimeout(draw, 400);
+      });
+      dialog.addEventListener('close', () => clearTimeout(timer));
+      return aside;
     }
 
     /** `Amber after (days)` → `Amber after` and `days`: a number's unit goes after its field. */
@@ -3392,7 +3441,7 @@
      * The widget's devices in its settings: the chosen ones in their order (the widget's tiles follow it; drag the
      * grip to change it, ✕ to drop one) and a button that opens the device picker.
      */
-    function devicePicker(def, draft, openAtOnce) {
+    function devicePicker(def, draft, openAtOnce, onChange = () => {}) {
       const singular = def.devices.singular;
       const wrap = el('section', 'wd-set-card wd-set-devices');
       const head = el('div', 'wd-set-cardhead');
@@ -3418,6 +3467,7 @@
       wrap.append(head, list, hint);
 
       function draw() {
+        onChange();
         list.textContent = '';
         const ids = draft.deviceIds;
         choose.textContent = t(ids.length ? (singular ? 'changeDevice' : 'changeDevices') : (singular ? 'chooseDevice' : 'chooseDevices'));
