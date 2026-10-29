@@ -426,6 +426,42 @@
           }
         },
         {
+          "id": "timeline",
+          "title": {
+            "en": "Chart · Timeline",
+            "nl": "Grafiek · Tijdlijn",
+            "de": "Diagramm · Zeitleiste",
+            "fr": "Graphique · Chronologie",
+            "it": "Grafico · Cronologia",
+            "sv": "Diagram · Tidslinje",
+            "no": "Diagram · Tidslinje",
+            "es": "Gráfico · Cronología",
+            "da": "Graf · Tidslinje",
+            "ru": "График · Хронология",
+            "pl": "Wykres · Oś czasu",
+            "ko": "차트 · 타임라인",
+            "ar": "مخطط · خط زمني"
+          }
+        },
+        {
+          "id": "stacked",
+          "title": {
+            "en": "Chart · Stacked",
+            "nl": "Grafiek · Gestapeld",
+            "de": "Diagramm · Gestapelt",
+            "fr": "Graphique · Empilé",
+            "it": "Grafico · In pila",
+            "sv": "Diagram · Staplat",
+            "no": "Diagram · Stablet",
+            "es": "Gráfico · Apilado",
+            "da": "Graf · Stablet",
+            "ru": "График · С накоплением",
+            "pl": "Wykres · Skumulowany",
+            "ko": "차트 · 누적",
+            "ar": "مخطط · مكدّس"
+          }
+        },
+        {
           "id": "variables",
           "title": {
             "en": "Variables",

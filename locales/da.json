@@ -362,6 +362,34 @@
     "lowest": "Lavest",
     "range": "Spænd"
   },
+  "timeline": {
+    "selectValues": "Vælg værdierne, der skal vises, i widgetindstillingerne.",
+    "error": "Kunne ikke hente grafen.",
+    "unavailable": "Utilgængelig",
+    "noHistory": "Intet registreret endnu",
+    "now": "Nu",
+    "timeOn": "Tændt",
+    "timeOpen": "Åben",
+    "timeMotion": "Bevægelse",
+    "timeAlarm": "Aktiv",
+    "countOn": "Tændt",
+    "countOpen": "Åbnet",
+    "countMotion": "Registreringer",
+    "countAlarm": "Udløst",
+    "hours": "t",
+    "minutes": "min"
+  },
+  "stacked": {
+    "selectValues": "Vælg værdierne, der skal stables, i widgetindstillingerne.",
+    "error": "Kunne ikke hente grafen.",
+    "unavailable": "Utilgængelig",
+    "noHistory": "Ingen historik endnu.",
+    "otherUnits": "Anden enhed",
+    "now": "Nu",
+    "total": "I alt",
+    "other": "Andet",
+    "largest": "Størst"
+  },
   "lights": {
     "selectDevices": "Vælg lys i widgetindstillingerne.",
     "error": "Kunne ikke indlæse lysene.",
@@ -898,6 +926,8 @@
       "typicalday": "Dagens linje over den typiske dag og spredningen: er i dag usædvanlig?",
       "dailyrange": "Hver dags laveste og højeste som en søjle, gennemsnittet på tværs: hvor meget svingede det?",
       "compare": "Én værdi på tværs af enheder, nu og dagens spænd, sorteret: hvilket rum er varmest?",
+      "timeline": "Hvornår var det tændt, åbent eller i bevægelse? En række pr. værdi over dagen, bånd hvor det var sådan.",
+      "stacked": "Flere værdier stablet på én tidsakse, resten af en total som Andet: hvem bruger strømmen?",
       "variables": "Variabler som rækker, du kan slå til og fra eller ændre.",
       "varpresets": "Knapper, der sætter en variabel til faste værdier.",
       "keypad": "Knapper bag en valgfri kode, der starter flows eller sætter en tilstand.",

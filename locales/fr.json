@@ -362,6 +362,34 @@
     "lowest": "Le plus bas",
     "range": "Écart"
   },
+  "timeline": {
+    "selectValues": "Choisissez les valeurs à afficher dans les réglages du widget.",
+    "error": "Impossible de charger le graphique.",
+    "unavailable": "Indisponible",
+    "noHistory": "Rien d'enregistré pour l'instant",
+    "now": "Maint.",
+    "timeOn": "Allumé",
+    "timeOpen": "Ouvert",
+    "timeMotion": "Mouvement",
+    "timeAlarm": "Actif",
+    "countOn": "Allumages",
+    "countOpen": "Ouvertures",
+    "countMotion": "Détections",
+    "countAlarm": "Déclenchements",
+    "hours": "h",
+    "minutes": "min"
+  },
+  "stacked": {
+    "selectValues": "Choisissez les valeurs à empiler dans les réglages du widget.",
+    "error": "Impossible de charger le graphique.",
+    "unavailable": "Indisponible",
+    "noHistory": "Pas encore d'historique.",
+    "otherUnits": "Autre unité",
+    "now": "Maint.",
+    "total": "Total",
+    "other": "Autre",
+    "largest": "Le plus grand"
+  },
   "lights": {
     "selectDevices": "Choisissez des lampes dans les réglages du widget.",
     "error": "Impossible de charger les lampes.",
@@ -898,6 +926,8 @@
       "typicalday": "La courbe d'aujourd'hui sur la journée type et son écart : aujourd'hui sort-il de l'ordinaire ?",
       "dailyrange": "Le minimum et le maximum de chaque jour en barre, la moyenne en travers : de combien ça a varié ?",
       "compare": "Une valeur sur plusieurs appareils, maintenant et son écart du jour, triée : quelle pièce est la plus chaude ?",
+      "timeline": "Quand était-ce allumé, ouvert ou en mouvement ? Une ligne par valeur sur la journée, des bandes là où c'était le cas.",
+      "stacked": "Plusieurs valeurs empilées sur un axe du temps, le reste d'un total en Autre : qui consomme l'électricité ?",
       "variables": "Les variables en lignes à basculer ou modifier.",
       "varpresets": "Des boutons qui donnent des valeurs prédéfinies à une variable.",
       "keypad": "Des boutons derrière un code facultatif qui lancent des flows ou règlent un état.",

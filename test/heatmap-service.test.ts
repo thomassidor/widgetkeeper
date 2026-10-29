@@ -275,6 +275,39 @@ describe('HeatmapService', () => {
     expect(homey.settings.get(HISTORY_SETTING)).toBeNull(); // presence data: never in the app settings
   });
 
+  it("gives Chart · Timeline a boolean's changes from a time on, led by the state it starts in, sharing the recording", async () => {
+    const { device, service } = setup({
+      logEntries: () => ({ values: [
+        { t: '2026-10-04T05:00:00.000Z', v: true },
+        { t: '2026-10-04T06:15:00.000Z', v: false },
+        { t: '2026-10-04T06:45:00.000Z', v: true },
+      ] }),
+    });
+    const from = at('2026-10-04T06:00:00Z');
+    let c = await service.getChanges('hue', 'alarm_motion', from);
+    // The change at 05:00 is the state at 06:00, known since then (the first change); subscribing adds the state now.
+    expect(c.changes).toEqual([[at('2026-10-04T05:00:00Z'), 1], [at('2026-10-04T06:15:00Z'), 0], [at('2026-10-04T06:45:00Z'), 1], [NOW, 0]]);
+    expect(c.since).toBe(at('2026-10-04T05:00:00Z'));
+    expect(device.listenerCount('alarm_motion')).toBe(1);
+    vi.setSystemTime(at('2026-10-04T07:40:00Z'));
+    device.report('alarm_motion', true);
+    c = await service.getChanges('hue', 'alarm_motion', at('2026-10-04T07:35:00Z'));
+    expect(c.changes.map(([t, v]) => [new Date(t).toISOString(), v])).toEqual([['2026-10-04T07:30:00.000Z', 0], ['2026-10-04T07:40:00.000Z', 1]]);
+    // The Heatmap reads the same recording.
+    expect(service.describe().recorded.map(r => r.key)).toEqual(['hue:alarm_motion']);
+    await service.stop();
+  });
+
+  it('refuses a value that is not a logged boolean, and says since null without any change', async () => {
+    const { service } = setup({ logEntries: () => ({ values: [] }) });
+    await expect(service.getChanges('hue', 'measure_luminance', NOW)).rejects.toThrow(/no logged boolean/);
+    await expect(service.getChanges('hue', 'alarm_tamper', NOW)).rejects.toThrow(/no logged boolean/);
+    // With no backfill, subscribing records the state now: known from now on.
+    const c = await service.getChanges('hue', 'button', NOW - 3600e3);
+    expect(c).toEqual({ changes: [[NOW, 0]], since: NOW });
+    await service.stop();
+  });
+
   it('resumes recording saved booleans when the app starts', async () => {
     const first = setup();
     await first.service.getHistory('hue', 'alarm_motion');

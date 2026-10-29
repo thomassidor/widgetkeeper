@@ -14,7 +14,7 @@
     sensoralarms: 'mountSensorAlarmsWidget', sensordots: 'mountSensorDotsWidget', roomhealth: 'mountRoomHealthWidget',
     valuematrix: 'mountValueMatrixWidget', weather: 'mountWeatherWidget', pollen: 'mountPollenWidget',
     heatmap: 'mountHeatmapWidget', cameras: 'mountCamerasWidget', values: 'mountValuesWidget', lights: 'mountLightsWidget',
-    sparklines: 'mountSparklinesWidget', charts: 'mountChartsWidget', totals: 'mountTotalsWidget', compare: 'mountCompareWidget', dailyrange: 'mountDailyRangeWidget', typicalday: 'mountTypicalDayWidget', scatter: 'mountScatterWidget', variables: 'mountVariablesWidget',
+    sparklines: 'mountSparklinesWidget', charts: 'mountChartsWidget', totals: 'mountTotalsWidget', compare: 'mountCompareWidget', timeline: 'mountTimelineWidget', stacked: 'mountStackedWidget', dailyrange: 'mountDailyRangeWidget', typicalday: 'mountTypicalDayWidget', scatter: 'mountScatterWidget', variables: 'mountVariablesWidget',
     varpresets: 'mountVarPresetsWidget', flows: 'mountFlowsWidget', price: 'mountPriceWidget',
     timers: 'mountTimersWidget', locks: 'mountLocksWidget', curtains: 'mountCurtainsWidget', media: 'mountMediaWidget',
     clock: 'mountClockWidget', textline: 'mountTextLineWidget', dayssince: 'mountDaysSinceWidget',

@@ -200,6 +200,8 @@
       typicalday: "Today's line over the usual day and its spread: is today unusual?",
       dailyrange: "Each day's lowest and highest as a bar, its average across it: how much did it swing?",
       compare: "One value across devices, now and its range today, sorted: which room is warmest?",
+      timeline: 'When was it on, open or moving? A row per value over the day, bands where it was true.',
+      stacked: 'Several values stacked on one time axis, the rest of a total as Other: who uses the power?',
       variables: 'Variables as rows you can switch or change.',
       varpresets: 'Buttons that set a variable to preset values.',
       keypad: 'Buttons behind an optional code that start Flows or set a state.',

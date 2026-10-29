@@ -28,6 +28,12 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 ### New: Chart · Compare
 - One value from up to eight devices side by side, sorted: each room's temperature now as a dot and its range today as a bar, warmest first. The highest and the lowest sit at the top; tap a row for its own.
 
+### New: Chart · Timeline
+- When was it on, open or moving? A row for each of up to eight on/off values over the day (the heating, a motion sensor, a door, the TV), with a band where it was on, open or moving. How long the first was on and how often the second turned on sit at the top; tap a row or a band for its own. Homey keeps only a value's last 50 changes, so the app records them itself from the first time they're shown, shared with the Insights Heatmap.
+
+### New: Chart · Stacked
+- Who uses the power? Up to six values stacked on one time axis, with a total (such as the house's meter) the rest as Other. Values below zero, such as solar, stack downwards. The total now and the largest part's share sit at the top; tap for a moment's. Areas or bars.
+
 ### New: Chart · Totals per Period
 - How much a value went up in each hour, day or month, like the Homey app's Energy tab: a bar an hour for today or yesterday, a day for this or last week or month, a month for this or last year, or any other span (the last 30 days, the three months from the 1st). The period's total sits at the top; tap a bar for its own.
 - Its value list puts meters first.

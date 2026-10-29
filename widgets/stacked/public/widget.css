@@ -1,0 +1,42 @@
+/*
+ * Chart · Stacked: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`), each layer in its own
+ * colour (the kit's `data-wk-color` on the layer, its chip and its header column: the bright set), Other in grey.
+ */
+.sk { --sk-color: var(--ew-muted); }
+/* A custom property resolves where it's set, so on each coloured part, not on `.sk`. */
+.sk [data-wk-color] { --sk-color: var(--wk-c-bright, var(--ew-blue)); }
+
+/* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
+html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
+html, body { margin: 0; }
+
+.sk .sk-value { color: var(--ew-text); gap: 3px; }
+.sk .sk-value.tight { gap: 0; }
+.sk .ew-hcol[data-wk-color] .sk-value { color: var(--sk-color); }
+/* Yellow text is mixed with the text colour, as Charts' yellow, so it reads on a light card. */
+.sk .ew-hcol[data-wk-color="yellow"] .sk-value { color: color-mix(in srgb, var(--sk-color) 75%, var(--ew-text)); }
+
+/* The legend: a chip per layer, wrapping onto a second line where they don't fit, so it's in the flow above the plot
+   (Charts' chips sit over a fixed gap). */
+.sk .ew-chips { position: static; gap: 4px 6px; flex-wrap: wrap; justify-content: flex-start; margin-bottom: 2px; }
+.sk .ew-chip.series { max-width: 100%; min-width: 0; }
+.sk .ew-chip.series > span { overflow: hidden; text-overflow: ellipsis; }
+.sk .ew-chip.series i { background: var(--sk-color); flex-shrink: 0; }
+.sk .ew-chip.series.missing > span { color: var(--ew-muted); }
+
+.sk .sk-area { fill: color-mix(in srgb, var(--sk-color) 30%, transparent); stroke: none; }
+.sk .sk-line { stroke: var(--sk-color); stroke-width: 1.5; fill: none; stroke-linejoin: round; }
+.sk .sk-layer.other { --sk-color: var(--ew-muted); }
+.sk rect.sk-layer { fill: color-mix(in srgb, var(--sk-color) 70%, transparent); }
+.sk rect.sk-layer.selected { fill: var(--sk-color); }
+.sk .sk-total { stroke: var(--ew-text); stroke-width: 1; stroke-dasharray: 3 3; fill: none; }
+/* Vivid (kit.css, on the widget's root): stronger areas and bars, as Charts'; the lines keep their colours. */
+.wk-deep .sk .sk-area { fill: color-mix(in srgb, var(--sk-color) 60%, transparent); }
+.wk-deep .sk rect.sk-layer { fill: color-mix(in srgb, var(--sk-color) 90%, transparent); }
+
+/* The Legend setting's Below the chart: the chips under the time labels. */
+.sk.legend-below .ew-chips { margin: 8px 0 0; }
+
+/* A chart without anything to draw keeps its chips, with the reason under them. */
+.sk .sk-chart.empty { min-height: 0; }
+.sk .sk-note { padding-bottom: 0; }

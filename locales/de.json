@@ -362,6 +362,34 @@
     "lowest": "Niedrigster",
     "range": "Spanne"
   },
+  "timeline": {
+    "selectValues": "Wähle die anzuzeigenden Werte in den Widget-Einstellungen.",
+    "error": "Das Diagramm konnte nicht geladen werden.",
+    "unavailable": "Nicht verfügbar",
+    "noHistory": "Noch nichts aufgezeichnet",
+    "now": "Jetzt",
+    "timeOn": "An",
+    "timeOpen": "Offen",
+    "timeMotion": "Bewegung",
+    "timeAlarm": "Aktiv",
+    "countOn": "Eingeschaltet",
+    "countOpen": "Geöffnet",
+    "countMotion": "Erkennungen",
+    "countAlarm": "Ausgelöst",
+    "hours": "h",
+    "minutes": "Min."
+  },
+  "stacked": {
+    "selectValues": "Wähle die zu stapelnden Werte in den Widget-Einstellungen.",
+    "error": "Das Diagramm konnte nicht geladen werden.",
+    "unavailable": "Nicht verfügbar",
+    "noHistory": "Noch kein Verlauf.",
+    "otherUnits": "Andere Einheit",
+    "now": "Jetzt",
+    "total": "Gesamt",
+    "other": "Sonstiges",
+    "largest": "Größter"
+  },
   "lights": {
     "selectDevices": "Wähle Lampen in den Widget-Einstellungen.",
     "error": "Lampen konnten nicht geladen werden.",
@@ -898,6 +926,8 @@
       "typicalday": "Die Linie von heute über dem typischen Tag und seiner Streuung: Ist heute ungewöhnlich?",
       "dailyrange": "Tiefst- und Höchstwert jedes Tages als Balken, der Mittelwert quer darüber: Wie stark hat es geschwankt?",
       "compare": "Ein Wert über Geräte hinweg, jetzt und seine Spanne heute, sortiert: Welcher Raum ist am wärmsten?",
+      "timeline": "Wann war es an, offen oder in Bewegung? Eine Zeile pro Wert über den Tag, Balken, wo es so war.",
+      "stacked": "Mehrere Werte gestapelt auf einer Zeitachse, der Rest einer Summe als Sonstiges: Wer verbraucht den Strom?",
       "variables": "Variablen als Zeilen zum Schalten oder Ändern.",
       "varpresets": "Tasten, die eine Variable auf feste Werte setzen.",
       "keypad": "Tasten hinter einem optionalen Code, die Flows starten oder einen Zustand setzen.",

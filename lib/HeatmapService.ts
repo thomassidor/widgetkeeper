@@ -134,7 +134,8 @@ function parseRecorded(saved: unknown): Recorded[] {
  * Numbers come from Insights' `last7Days` or `last14Days` (hourly averages). Booleans can't: their log only ever returns
  * the last 50 changes, whatever the resolution (a motion sensor's are under a day). So a boolean is
  * recorded by the app from the first time a widget asks for it, backfilled from those 50 changes, and
- * kept in `HISTORY_FILE` until no widget has asked for it for 8 days.
+ * kept in `HISTORY_FILE` until no widget has asked for it for 8 days. Chart · Timeline reads the same
+ * recordings (`getChanges()`).
  */
 export default class HeatmapService {
 
@@ -271,6 +272,15 @@ export default class HeatmapService {
   }
 
   private async booleanHistory(api: any, deviceId: string, capabilityId: string, device: any, span: Span): Promise<HeatmapDay[]> {
+    const r = await this.recording(api, deviceId, capabilityId, device);
+    return hourlyShareTrue(r.changes.map(([t, v]) => ({ t, v: v === 1 })), Date.now(), this.homey.clock.getTimezone(), span);
+  }
+
+  /**
+   * A boolean's recording, started on the first request (the Heatmap's `/history`, the Timeline's `/state`), backfilled
+   * from Insights at most every 5 min and subscribed to its changes; written only when something changed.
+   */
+  private async recording(api: any, deviceId: string, capabilityId: string, device: any): Promise<Recorded> {
     const k = key(deviceId, capabilityId);
     let r = this.recorded.get(k);
     if (!r) {
@@ -300,7 +310,25 @@ export default class HeatmapService {
     if (!this.instances.has(k)) await this.subscribe(r, device);
     this.prune(r);
     if (changed) this.saved.schedule();
-    return hourlyShareTrue(r.changes.map(([t, v]) => ({ t, v: v === 1 })), Date.now(), this.homey.clock.getTimezone(), span);
+    return r;
+  }
+
+  /**
+   * Chart · Timeline's rows: a logged boolean's recorded changes from `from` on (`[t, 0 | 1]`, oldest first), led by the
+   * last one before `from` (the state the window starts in) where there is one; `since` is the first change known (before
+   * it, the state isn't known), null without any. Starts the recording as the Heatmap's `/history` does. Throws for a
+   * device without that logged boolean.
+   */
+  async getChanges(deviceId: string, capabilityId: string, from: number): Promise<{ changes: [number, 0 | 1][], since: number | null }> {
+    const api = await getAppApi(this.homey);
+    const device: any = await api.devices.getDevice({ id: deviceId });
+    const capability = heatmapCaps(device).find(c => c.id === capabilityId);
+    if (capability?.type !== 'boolean') throw new Error(`${device.name} has no logged boolean ${capabilityId}`);
+    this.types.set(key(deviceId, capabilityId), 'boolean');
+    const r = await this.recording(api, deviceId, capabilityId, device);
+    let i = r.changes.length;
+    while (i > 0 && r.changes[i - 1][0] >= from) i--;
+    return { changes: r.changes.slice(Math.max(0, i - 1)), since: r.changes.length ? r.changes[0][0] : null };
   }
 
   // ---------------------------------------------------------------- boolean recording

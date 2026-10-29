@@ -29,6 +29,8 @@ This file holds what applies across the app. Each widget's notes, and those of t
 | Chart · Typical Day | `typicalday` | `widgets/typicalday.md` |
 | Chart · Daily Range | `dailyrange` | `widgets/dailyrange.md` |
 | Chart · Compare | `compare` | `widgets/compare.md` |
+| Chart · Timeline | `timeline` | `widgets/timeline.md` |
+| Chart · Stacked | `stacked` | `widgets/stacked.md` |
 | Sparklines | `sparklines` | `widgets/sparklines.md` |
 | Variables | `variables` | `widgets/variables.md` |
 | Variable Presets | `varpresets` | `widgets/varpresets.md` |

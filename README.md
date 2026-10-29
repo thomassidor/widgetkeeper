@@ -29,6 +29,14 @@ Each day's lowest to highest as a bar, its average across it: how much did it sw
 <a href="#chart--over-time"><b>Chart · Over Time</b></a><br>
 One or two charts of any value over any span, from minutes to two years, drawn like Electricity Overview's<br clear="left"></p>
 
+<p><a href="#chart--stacked"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/stacked-dark.png"><img src="docs/previews/stacked-light.png" alt="" width="120" align="left"></picture></a>
+<a href="#chart--stacked"><b>Chart · Stacked</b></a><br>
+Several values stacked on one time axis, the rest of a total as Other: who uses the power?<br clear="left"></p>
+
+<p><a href="#chart--timeline"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/timeline-dark.png"><img src="docs/previews/timeline-light.png" alt="" width="120" align="left"></picture></a>
+<a href="#chart--timeline"><b>Chart · Timeline</b></a><br>
+When was it on, open or moving? A row per value over the day, bands where it was true<br clear="left"></p>
+
 <p><a href="#chart--totals-per-period"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/totals-dark.png"><img src="docs/previews/totals-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--totals-per-period"><b>Chart · Totals per Period</b></a><br>
 How much a value went up per hour, day or month (kWh, rain, hours of TV), like the Energy tab, over any span, beside the period before if you like<br clear="left"></p>
@@ -207,6 +215,24 @@ For how much a value went up in each hour, day or month (a meter's kWh, rain, ho
 <a name="time-spans"></a>
 
 **Time spans** (both chart widgets): a number and a unit. Minutes, hours, days, weeks, months or years are the last so many up to now (40 minutes, 24 hours, 18 months). Days from midnight, weeks from Monday, months from the 1st and years from 1 January are whole periods, the current one included (1 day from midnight is today, 3 months from the 1st this month and the two before), or with *Leave out the current period* the ones before it (yesterday, last week, the three months before this one). Up to two years: Insights keeps no more. A chart set up before 1.2.0 keeps its span.
+
+## Chart · Stacked
+<img src="docs/screenshots/stacked.png" alt="Chart · Stacked on a Homey dashboard: the last 24 hours of the house's power as stacked areas, the rest at the bottom, then the heat pump, the oven and the EV charger" width="358">
+
+Who uses the power? Up to six values stacked on one time axis, the last 24 hours by default (or any other [time span](#time-spans)): the heat pump, the oven, the EV charger. Pick a total too, such as the house's meter, and what the others don't cover shows as Other at the bottom. A value below zero, such as solar or a battery charging, stacks downwards from the zero line. The total now and the largest part's share of the span sit at the top; tap the chart for a moment's total and the part under your finger.
+
+The values must be the same kind, such as power: W and kW are put on one scale, and a value in other units is left out, its chip saying so.
+
+**Settings:** the total (optional), values 1 to 6 each with its colour, [time span](#time-spans), style (areas or bars), the legend above or below the chart, title, the values at the top, [colour style](#colour-style).
+
+## Chart · Timeline
+<img src="docs/screenshots/timeline.png" alt="Chart · Timeline on a Homey dashboard: today's heating, hall motion, front door and TV as rows with coloured bands where each was on, open or moving" width="358">
+
+When was it on, open or moving? A row for each of up to eight on/off values (the heating, a motion sensor, a door, the TV) over today, or any other [time span](#time-spans) up to about two weeks, with a band where it was on, open or moving. The time the first was on and how often the second turned on sit at the top; tap a row for its own, or a band for when it was.
+
+Homey's Insights keeps only a value's last 50 changes, so the app records each one itself from the first time it's shown, as the [Insights Heatmap](#insights-heatmap) does (the two share it). Before the first change it knows of, a row is a dotted line rather than a guess.
+
+**Settings:** values 1 to 8 each with its colour, [time span](#time-spans), title, the values at the top, [colour style](#colour-style).
 
 ## Chart · Totals per Period
 <img src="docs/screenshots/totals.png" alt="Chart · Totals per Period on a Homey dashboard: the main meter's kilowatt-hours a month this year, beside last year's, both years' totals at the top" width="358">

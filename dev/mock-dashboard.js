@@ -1,6 +1,6 @@
 // The widgets of dev/screenshots.html: the real widget code with the made-up home of showcase-data.js ("Solbakken",
 // the showcase dashboards' data, so no real home's names or readings end up in the README), mounted into the elements
-// with the ids w-elec, w-thermo, w-qa, w-sa, w-roomhealth, w-valuematrix, w-weather, w-heatmap, w-cameras, w-values, w-sparklines, w-charts, w-totals, w-scatter, w-compare, w-dailyrange, w-typicalday, w-variables,
+// with the ids w-elec, w-thermo, w-qa, w-sa, w-roomhealth, w-valuematrix, w-weather, w-heatmap, w-cameras, w-values, w-sparklines, w-charts, w-totals, w-scatter, w-compare, w-timeline, w-stacked, w-dailyrange, w-typicalday, w-variables,
 // w-varpresets, w-keypad, w-flows, w-price, w-locks, w-clock, w-textline(-note), w-dayssince, w-shortcuts, w-lightrooms,
 // w-pollen and w-webpage, and the Popups prompt page into the frame w-popup. Most go through showcase-mount.js's MOUNT with a
 // showcase entry (`findWidget()`); only the README's own changes are here. Needs the widget scripts,
@@ -49,6 +49,10 @@
   if (el('w-dailyrange')) MOUNT.dailyrange(el('w-dailyrange'), { opts: {}, state: mockDailyRange.dailyRangeState('4w', SHOWCASE_NOW) });
   // Chart · Compare: six rooms' temperatures now and today's range, warmest first (mock-compare.js).
   if (el('w-compare')) MOUNT.compare(el('w-compare'), { opts: { count: 6 }, state: mockCompare.compareState('1d!', SHOWCASE_NOW) });
+  // Chart · Timeline: the heating, hall motion, front door and TV today, in the mock-up's colours (mock-timeline.js).
+  if (el('w-timeline')) MOUNT.timeline(el('w-timeline'), { opts: { colors: ['orange', 'yellow', 'red', 'blue'] }, state: mockTimeline.timelineState('1d!', SHOWCASE_NOW) });
+  // Chart · Stacked: the meter's last 24 hours as the heat pump, the oven, the EV charger and the rest (mock-stacked.js).
+  if (el('w-stacked')) MOUNT.stacked(el('w-stacked'), { opts: { total: true, count: 3, colors: ['orange', 'red', 'green'] }, state: mockStacked.stackedState('24h', SHOWCASE_NOW) });
   if (el('w-scatter')) MOUNT.scatter(el('w-scatter'), { opts: { span: '7d' }, state: mockScatter.scatterState('7d', SHOWCASE_NOW) });
 
   // The Climate dashboard's rooms, with the kitchen humid after dinner, a stuffy bedroom and the office's radon far over.

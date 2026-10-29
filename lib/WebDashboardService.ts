@@ -5,7 +5,7 @@ import { devicesAndZones, matches, withNone, type AutocompleteItem } from './aut
 import { describeCapability } from './capabilities.js';
 import { driverIconPath, libraryIconUrl } from './deviceIcon.js';
 import { deviceApp } from './MediaService.js';
-import { sparkCaps } from './SparklineService.js';
+import { booleanCaps, sparkCaps } from './SparklineService.js';
 import { isReservedKey } from './storedSetting.js';
 import { valueCaps } from './ValueService.js';
 import type { AutocompleteListener, SettingItem } from './widgetAutocompletes.js';
@@ -174,6 +174,8 @@ const CAPABILITY_SLOTS: Record<string, { setting: RegExp, caps: (device: any) =>
   typicalday: { setting: /^slot$/, caps: sparkCaps },
   dailyrange: { setting: /^slot$/, caps: sparkCaps },
   compare: { setting: /^slot\d$/, caps: sparkCaps },
+  timeline: { setting: /^slot\d$/, caps: booleanCaps },
+  stacked: { setting: /^(total|slot\d)$/, caps: sparkCaps },
 };
 
 /** A device's icon for the page, as the widgets pick it: the user-picked library icon, else the driver's (on the Homey). */

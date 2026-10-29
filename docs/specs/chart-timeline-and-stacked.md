@@ -1,4 +1,9 @@
-# Later: Chart · Timeline and Chart · Stacked
+# Chart · Timeline and Chart · Stacked
+
+**Built in 1.2.0** (2026-10-29); the widgets' notes (`.claude/rules/widgets/timeline.md`, `stacked.md`) say how they work
+now. The user settled the open questions below: a colour setting per row and per layer (defaults the kit's `COLORS` in
+order), per-capability words for true (open, motion, active, on), booleans only for now (no number thresholds), and a
+layer below zero stacking downwards (two stacks) rather than being left out. This is the plan as it was.
 
 Two chart types mocked up while planning 1.2.0's charts (2026-10-28) and kept for later; the user picked X against Y,
 Typical Day, Daily Range and Compare for 1.2.0, and wants these two too. Both build on what 1.2.0 made for chart

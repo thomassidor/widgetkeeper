@@ -362,6 +362,34 @@
     "lowest": "Il più basso",
     "range": "Intervallo"
   },
+  "timeline": {
+    "selectValues": "Scegli i valori da mostrare nelle impostazioni del widget.",
+    "error": "Impossibile caricare il grafico.",
+    "unavailable": "Non disponibile",
+    "noHistory": "Ancora niente registrato",
+    "now": "Ora",
+    "timeOn": "Acceso",
+    "timeOpen": "Aperto",
+    "timeMotion": "Movimento",
+    "timeAlarm": "Attivo",
+    "countOn": "Accensioni",
+    "countOpen": "Aperture",
+    "countMotion": "Rilevamenti",
+    "countAlarm": "Attivazioni",
+    "hours": "h",
+    "minutes": "min"
+  },
+  "stacked": {
+    "selectValues": "Scegli i valori da impilare nelle impostazioni del widget.",
+    "error": "Impossibile caricare il grafico.",
+    "unavailable": "Non disponibile",
+    "noHistory": "Ancora nessuna cronologia.",
+    "otherUnits": "Altra unità",
+    "now": "Ora",
+    "total": "Totale",
+    "other": "Altro",
+    "largest": "Il maggiore"
+  },
   "lights": {
     "selectDevices": "Scegli le luci nelle impostazioni del widget.",
     "error": "Impossibile caricare le luci.",
@@ -898,6 +926,8 @@
       "typicalday": "La linea di oggi sulla giornata tipo e la sua variazione: oggi è insolito?",
       "dailyrange": "Il minimo e il massimo di ogni giorno come barra, la media attraverso: quanto ha oscillato?",
       "compare": "Un valore su più dispositivi, ora e l'intervallo di oggi, in ordine: quale stanza è la più calda?",
+      "timeline": "Quando era acceso, aperto o in movimento? Una riga per valore lungo la giornata, bande dove lo era.",
+      "stacked": "Più valori impilati su un asse del tempo, il resto di un totale come Altro: chi consuma la corrente?",
       "variables": "Variabili come righe da attivare o modificare.",
       "varpresets": "Pulsanti che impostano una variabile su valori predefiniti.",
       "keypad": "Pulsanti dietro un codice facoltativo che avviano flow o impostano uno stato.",

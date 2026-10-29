@@ -1,0 +1,1665 @@
+{
+  "name": {
+    "en": "Chart · Timeline",
+    "nl": "Grafiek · Tijdlijn",
+    "de": "Diagramm · Zeitleiste",
+    "fr": "Graphique · Chronologie",
+    "it": "Grafico · Cronologia",
+    "sv": "Diagram · Tidslinje",
+    "no": "Diagram · Tidslinje",
+    "es": "Gráfico · Cronología",
+    "da": "Graf · Tidslinje",
+    "ru": "График · Хронология",
+    "pl": "Wykres · Oś czasu",
+    "ko": "차트 · 타임라인",
+    "ar": "مخطط · خط زمني"
+  },
+  "height": 240,
+  "settings": [
+    {
+      "id": "slot1",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value 1",
+        "nl": "Waarde 1",
+        "de": "Wert 1",
+        "fr": "Valeur 1",
+        "it": "Valore 1",
+        "sv": "Värde 1",
+        "no": "Verdi 1",
+        "es": "Valor 1",
+        "da": "Værdi 1",
+        "ru": "Значение 1",
+        "pl": "Wartość 1",
+        "ko": "값 1",
+        "ar": "القيمة 1"
+      },
+      "hint": {
+        "en": "Something that is on or off, open or closed, such as the heating, a door or motion. Empty ones are left out. The app records each from the first time it's shown and keeps about two weeks.",
+        "nl": "Iets dat aan of uit, open of dicht is, zoals de verwarming, een deur of beweging. Lege worden weggelaten. De app legt elk vast vanaf de eerste keer dat het getoond wordt en bewaart ongeveer twee weken.",
+        "de": "Etwas, das an oder aus, offen oder geschlossen ist, etwa die Heizung, eine Tür oder Bewegung. Leere werden ausgelassen. Die App zeichnet jeden ab der ersten Anzeige auf und behält etwa zwei Wochen.",
+        "fr": "Quelque chose d'allumé ou éteint, ouvert ou fermé, comme le chauffage, une porte ou un mouvement. Les vides sont ignorées. L'app enregistre chacune dès son premier affichage et garde environ deux semaines.",
+        "it": "Qualcosa che è acceso o spento, aperto o chiuso, come il riscaldamento, una porta o il movimento. Quelli vuoti sono esclusi. L'app registra ciascuno dalla prima volta che viene mostrato e conserva circa due settimane.",
+        "sv": "Något som är på eller av, öppet eller stängt, som värmen, en dörr eller rörelse. Tomma utelämnas. Appen registrerar var och en från första gången den visas och sparar ungefär två veckor.",
+        "no": "Noe som er på eller av, åpent eller lukket, som varmen, en dør eller bevegelse. Tomme utelates. Appen registrerer hver fra første gang den vises og tar vare på omtrent to uker.",
+        "es": "Algo que está encendido o apagado, abierto o cerrado, como la calefacción, una puerta o el movimiento. Los vacíos se omiten. La app registra cada uno desde la primera vez que se muestra y guarda unas dos semanas.",
+        "da": "Noget, der er tændt eller slukket, åbent eller lukket, som varmen, en dør eller bevægelse. Tomme udelades. Appen registrerer hver fra første gang, den vises, og gemmer omkring to uger.",
+        "ru": "То, что включено или выключено, открыто или закрыто: отопление, дверь, движение. Пустые пропускаются. Приложение записывает каждое с первого показа и хранит около двух недель.",
+        "pl": "Coś, co jest włączone lub wyłączone, otwarte lub zamknięte, np. ogrzewanie, drzwi lub ruch. Puste są pomijane. Aplikacja zapisuje każde od pierwszego wyświetlenia i przechowuje około dwóch tygodni.",
+        "ko": "켜짐/꺼짐, 열림/닫힘이 있는 값입니다(예: 난방, 문, 움직임). 빈 항목은 빠집니다. 앱은 처음 표시될 때부터 각 값을 기록하며 약 2주간 보관합니다.",
+        "ar": "شيء يعمل أو يتوقف، مفتوح أو مغلق، مثل التدفئة أو باب أو حركة. تُستبعد الفارغة. يسجل التطبيق كلًا منها منذ أول عرض له ويحتفظ بنحو أسبوعين."
+      }
+    },
+    {
+      "id": "color1",
+      "type": "dropdown",
+      "title": {
+        "en": "  – Colour",
+        "nl": "  – Kleur",
+        "de": "  – Farbe",
+        "fr": "  – Couleur",
+        "it": "  – Colore",
+        "sv": "  – Färg",
+        "no": "  – Farge",
+        "es": "  – Color",
+        "da": "  – Farve",
+        "ru": "  – Цвет",
+        "pl": "  – Kolor",
+        "ko": "  – 색상",
+        "ar": "  – اللون"
+      },
+      "value": "blue",
+      "values": [
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        }
+      ]
+    },
+    {
+      "id": "slot2",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value 2",
+        "nl": "Waarde 2",
+        "de": "Wert 2",
+        "fr": "Valeur 2",
+        "it": "Valore 2",
+        "sv": "Värde 2",
+        "no": "Verdi 2",
+        "es": "Valor 2",
+        "da": "Værdi 2",
+        "ru": "Значение 2",
+        "pl": "Wartość 2",
+        "ko": "값 2",
+        "ar": "القيمة 2"
+      }
+    },
+    {
+      "id": "color2",
+      "type": "dropdown",
+      "title": {
+        "en": "  – Colour",
+        "nl": "  – Kleur",
+        "de": "  – Farbe",
+        "fr": "  – Couleur",
+        "it": "  – Colore",
+        "sv": "  – Färg",
+        "no": "  – Farge",
+        "es": "  – Color",
+        "da": "  – Farve",
+        "ru": "  – Цвет",
+        "pl": "  – Kolor",
+        "ko": "  – 색상",
+        "ar": "  – اللون"
+      },
+      "value": "red",
+      "values": [
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        }
+      ]
+    },
+    {
+      "id": "slot3",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value 3",
+        "nl": "Waarde 3",
+        "de": "Wert 3",
+        "fr": "Valeur 3",
+        "it": "Valore 3",
+        "sv": "Värde 3",
+        "no": "Verdi 3",
+        "es": "Valor 3",
+        "da": "Værdi 3",
+        "ru": "Значение 3",
+        "pl": "Wartość 3",
+        "ko": "값 3",
+        "ar": "القيمة 3"
+      }
+    },
+    {
+      "id": "color3",
+      "type": "dropdown",
+      "title": {
+        "en": "  – Colour",
+        "nl": "  – Kleur",
+        "de": "  – Farbe",
+        "fr": "  – Couleur",
+        "it": "  – Colore",
+        "sv": "  – Färg",
+        "no": "  – Farge",
+        "es": "  – Color",
+        "da": "  – Farve",
+        "ru": "  – Цвет",
+        "pl": "  – Kolor",
+        "ko": "  – 색상",
+        "ar": "  – اللون"
+      },
+      "value": "orange",
+      "values": [
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        }
+      ]
+    },
+    {
+      "id": "slot4",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value 4",
+        "nl": "Waarde 4",
+        "de": "Wert 4",
+        "fr": "Valeur 4",
+        "it": "Valore 4",
+        "sv": "Värde 4",
+        "no": "Verdi 4",
+        "es": "Valor 4",
+        "da": "Værdi 4",
+        "ru": "Значение 4",
+        "pl": "Wartość 4",
+        "ko": "값 4",
+        "ar": "القيمة 4"
+      }
+    },
+    {
+      "id": "color4",
+      "type": "dropdown",
+      "title": {
+        "en": "  – Colour",
+        "nl": "  – Kleur",
+        "de": "  – Farbe",
+        "fr": "  – Couleur",
+        "it": "  – Colore",
+        "sv": "  – Färg",
+        "no": "  – Farge",
+        "es": "  – Color",
+        "da": "  – Farve",
+        "ru": "  – Цвет",
+        "pl": "  – Kolor",
+        "ko": "  – 색상",
+        "ar": "  – اللون"
+      },
+      "value": "yellow",
+      "values": [
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        }
+      ]
+    },
+    {
+      "id": "slot5",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value 5",
+        "nl": "Waarde 5",
+        "de": "Wert 5",
+        "fr": "Valeur 5",
+        "it": "Valore 5",
+        "sv": "Värde 5",
+        "no": "Verdi 5",
+        "es": "Valor 5",
+        "da": "Værdi 5",
+        "ru": "Значение 5",
+        "pl": "Wartość 5",
+        "ko": "값 5",
+        "ar": "القيمة 5"
+      }
+    },
+    {
+      "id": "color5",
+      "type": "dropdown",
+      "title": {
+        "en": "  – Colour",
+        "nl": "  – Kleur",
+        "de": "  – Farbe",
+        "fr": "  – Couleur",
+        "it": "  – Colore",
+        "sv": "  – Färg",
+        "no": "  – Farge",
+        "es": "  – Color",
+        "da": "  – Farve",
+        "ru": "  – Цвет",
+        "pl": "  – Kolor",
+        "ko": "  – 색상",
+        "ar": "  – اللون"
+      },
+      "value": "green",
+      "values": [
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        }
+      ]
+    },
+    {
+      "id": "slot6",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value 6",
+        "nl": "Waarde 6",
+        "de": "Wert 6",
+        "fr": "Valeur 6",
+        "it": "Valore 6",
+        "sv": "Värde 6",
+        "no": "Verdi 6",
+        "es": "Valor 6",
+        "da": "Værdi 6",
+        "ru": "Значение 6",
+        "pl": "Wartość 6",
+        "ko": "값 6",
+        "ar": "القيمة 6"
+      }
+    },
+    {
+      "id": "color6",
+      "type": "dropdown",
+      "title": {
+        "en": "  – Colour",
+        "nl": "  – Kleur",
+        "de": "  – Farbe",
+        "fr": "  – Couleur",
+        "it": "  – Colore",
+        "sv": "  – Färg",
+        "no": "  – Farge",
+        "es": "  – Color",
+        "da": "  – Farve",
+        "ru": "  – Цвет",
+        "pl": "  – Kolor",
+        "ko": "  – 색상",
+        "ar": "  – اللون"
+      },
+      "value": "purple",
+      "values": [
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        }
+      ]
+    },
+    {
+      "id": "slot7",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value 7",
+        "nl": "Waarde 7",
+        "de": "Wert 7",
+        "fr": "Valeur 7",
+        "it": "Valore 7",
+        "sv": "Värde 7",
+        "no": "Verdi 7",
+        "es": "Valor 7",
+        "da": "Værdi 7",
+        "ru": "Значение 7",
+        "pl": "Wartość 7",
+        "ko": "값 7",
+        "ar": "القيمة 7"
+      }
+    },
+    {
+      "id": "color7",
+      "type": "dropdown",
+      "title": {
+        "en": "  – Colour",
+        "nl": "  – Kleur",
+        "de": "  – Farbe",
+        "fr": "  – Couleur",
+        "it": "  – Colore",
+        "sv": "  – Färg",
+        "no": "  – Farge",
+        "es": "  – Color",
+        "da": "  – Farve",
+        "ru": "  – Цвет",
+        "pl": "  – Kolor",
+        "ko": "  – 색상",
+        "ar": "  – اللون"
+      },
+      "value": "blue",
+      "values": [
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        }
+      ]
+    },
+    {
+      "id": "slot8",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value 8",
+        "nl": "Waarde 8",
+        "de": "Wert 8",
+        "fr": "Valeur 8",
+        "it": "Valore 8",
+        "sv": "Värde 8",
+        "no": "Verdi 8",
+        "es": "Valor 8",
+        "da": "Værdi 8",
+        "ru": "Значение 8",
+        "pl": "Wartość 8",
+        "ko": "값 8",
+        "ar": "القيمة 8"
+      }
+    },
+    {
+      "id": "color8",
+      "type": "dropdown",
+      "title": {
+        "en": "  – Colour",
+        "nl": "  – Kleur",
+        "de": "  – Farbe",
+        "fr": "  – Couleur",
+        "it": "  – Colore",
+        "sv": "  – Färg",
+        "no": "  – Farge",
+        "es": "  – Color",
+        "da": "  – Farve",
+        "ru": "  – Цвет",
+        "pl": "  – Kolor",
+        "ko": "  – 색상",
+        "ar": "  – اللون"
+      },
+      "value": "red",
+      "values": [
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        }
+      ]
+    },
+    {
+      "id": "count",
+      "type": "number",
+      "value": 1,
+      "min": 1,
+      "max": 999,
+      "title": {
+        "en": "Time span",
+        "nl": "Periode",
+        "de": "Zeitraum",
+        "fr": "Période",
+        "it": "Periodo",
+        "sv": "Tidsperiod",
+        "no": "Tidsrom",
+        "es": "Periodo",
+        "da": "Tidsrum",
+        "ru": "Период",
+        "pl": "Okres",
+        "ko": "기간",
+        "ar": "الفترة الزمنية"
+      },
+      "hint": {
+        "en": "How many of the unit below, e.g. 1 day or 7 days. The app keeps about two weeks of changes.",
+        "nl": "Hoeveel van de eenheid hieronder, bijv. 1 dag of 7 dagen. De app bewaart ongeveer twee weken aan wijzigingen.",
+        "de": "Wie viele der Einheit darunter, z. B. 1 Tag oder 7 Tage. Die App behält etwa zwei Wochen an Änderungen.",
+        "fr": "Combien de l'unité ci-dessous, p. ex. 1 jour ou 7 jours. L'app garde environ deux semaines de changements.",
+        "it": "Quante unità di quella qui sotto, ad es. 1 giorno o 7 giorni. L'app conserva circa due settimane di cambiamenti.",
+        "sv": "Hur många av enheten nedan, t.ex. 1 dag eller 7 dagar. Appen sparar ungefär två veckors ändringar.",
+        "no": "Hvor mange av enheten under, f.eks. 1 dag eller 7 dager. Appen tar vare på omtrent to uker med endringer.",
+        "es": "Cuántas de la unidad de abajo, p. ej. 1 día o 7 días. La app guarda unas dos semanas de cambios.",
+        "da": "Hvor mange af enheden nedenfor, f.eks. 1 dag eller 7 dage. Appen gemmer omkring to ugers ændringer.",
+        "ru": "Сколько единиц, выбранных ниже, например 1 день или 7 дней. Приложение хранит около двух недель изменений.",
+        "pl": "Ile jednostek wybranych poniżej, np. 1 dzień lub 7 dni. Aplikacja przechowuje około dwóch tygodni zmian.",
+        "ko": "아래 단위의 개수입니다(예: 1일, 7일). 앱은 약 2주간의 변경을 보관합니다.",
+        "ar": "عدد الوحدات المحددة أدناه، مثل يوم واحد أو 7 أيام. يحتفظ التطبيق بنحو أسبوعين من التغييرات."
+      }
+    },
+    {
+      "id": "span",
+      "type": "dropdown",
+      "value": "calDays",
+      "title": {
+        "en": "Unit",
+        "nl": "Eenheid",
+        "de": "Einheit",
+        "fr": "Unité",
+        "it": "Unità",
+        "sv": "Enhet",
+        "no": "Enhet",
+        "es": "Unidad",
+        "da": "Enhed",
+        "ru": "Единица",
+        "pl": "Jednostka",
+        "ko": "단위",
+        "ar": "الوحدة"
+      },
+      "hint": {
+        "en": "Minutes to years: the last so many, up to now. From midnight, Monday, the 1st or 1 January: whole days, weeks, months or years, the current one included.",
+        "nl": "Minuten tot jaren: de laatste zoveel, tot nu. Vanaf middernacht, maandag, de 1e of 1 januari: hele dagen, weken, maanden of jaren, de huidige meegerekend.",
+        "de": "Minuten bis Jahre: die letzten so viele, bis jetzt. Ab Mitternacht, Montag, dem 1. oder dem 1. Januar: ganze Tage, Wochen, Monate oder Jahre, der laufende eingeschlossen.",
+        "fr": "Minutes à années : les dernières, jusqu'à maintenant. Depuis minuit, lundi, le 1er ou le 1er janvier : des jours, semaines, mois ou années entiers, l'actuel compris.",
+        "it": "Da minuti ad anni: gli ultimi, fino ad ora. Da mezzanotte, lunedì, il 1° o il 1° gennaio: giorni, settimane, mesi o anni interi, quello in corso incluso.",
+        "sv": "Minuter till år: de senaste så många, fram till nu. Från midnatt, måndag, den 1:a eller 1 januari: hela dagar, veckor, månader eller år, den pågående medräknad.",
+        "no": "Minutter til år: de siste så mange, frem til nå. Fra midnatt, mandag, den 1. eller 1. januar: hele dager, uker, måneder eller år, den pågående medregnet.",
+        "es": "De minutos a años: los últimos, hasta ahora. Desde medianoche, el lunes, el día 1 o el 1 de enero: días, semanas, meses o años completos, el actual incluido.",
+        "da": "Minutter til år: de seneste så mange, frem til nu. Fra midnat, mandag, den 1. eller 1. januar: hele dage, uger, måneder eller år, den igangværende medregnet.",
+        "ru": "От минут до лет: последние столько-то, до текущего момента. С полуночи, понедельника, 1-го числа или 1 января: целые дни, недели, месяцы или годы, включая текущий.",
+        "pl": "Od minut do lat: ostatnie tyle, aż do teraz. Od północy, poniedziałku, 1. dnia lub 1 stycznia: pełne dni, tygodnie, miesiące lub lata, z bieżącym włącznie.",
+        "ko": "분~년: 지금까지의 최근 기간입니다. 자정, 월요일, 1일 또는 1월 1일부터: 현재 기간을 포함한 일, 주, 월 또는 연 단위 전체입니다.",
+        "ar": "من الدقائق إلى السنوات: آخر عدد منها حتى الآن. من منتصف الليل أو الاثنين أو اليوم الأول أو 1 يناير: أيام أو أسابيع أو أشهر أو سنوات كاملة، بما فيها الحالية."
+      },
+      "values": [
+        {
+          "id": "minutes",
+          "title": {
+            "en": "Minutes",
+            "nl": "Minuten",
+            "de": "Minuten",
+            "fr": "Minutes",
+            "it": "Minuti",
+            "sv": "Minuter",
+            "no": "Minutter",
+            "es": "Minutos",
+            "da": "Minutter",
+            "ru": "Минуты",
+            "pl": "Minuty",
+            "ko": "분",
+            "ar": "دقائق"
+          }
+        },
+        {
+          "id": "hours",
+          "title": {
+            "en": "Hours",
+            "nl": "Uren",
+            "de": "Stunden",
+            "fr": "Heures",
+            "it": "Ore",
+            "sv": "Timmar",
+            "no": "Timer",
+            "es": "Horas",
+            "da": "Timer",
+            "ru": "Часы",
+            "pl": "Godziny",
+            "ko": "시간",
+            "ar": "ساعات"
+          }
+        },
+        {
+          "id": "days",
+          "title": {
+            "en": "Days",
+            "nl": "Dagen",
+            "de": "Tage",
+            "fr": "Jours",
+            "it": "Giorni",
+            "sv": "Dagar",
+            "no": "Dager",
+            "es": "Días",
+            "da": "Dage",
+            "ru": "Дни",
+            "pl": "Dni",
+            "ko": "일",
+            "ar": "أيام"
+          }
+        },
+        {
+          "id": "weeks",
+          "title": {
+            "en": "Weeks",
+            "nl": "Weken",
+            "de": "Wochen",
+            "fr": "Semaines",
+            "it": "Settimane",
+            "sv": "Veckor",
+            "no": "Uker",
+            "es": "Semanas",
+            "da": "Uger",
+            "ru": "Недели",
+            "pl": "Tygodnie",
+            "ko": "주",
+            "ar": "أسابيع"
+          }
+        },
+        {
+          "id": "months",
+          "title": {
+            "en": "Months",
+            "nl": "Maanden",
+            "de": "Monate",
+            "fr": "Mois",
+            "it": "Mesi",
+            "sv": "Månader",
+            "no": "Måneder",
+            "es": "Meses",
+            "da": "Måneder",
+            "ru": "Месяцы",
+            "pl": "Miesiące",
+            "ko": "개월",
+            "ar": "أشهر"
+          }
+        },
+        {
+          "id": "years",
+          "title": {
+            "en": "Years",
+            "nl": "Jaren",
+            "de": "Jahre",
+            "fr": "Années",
+            "it": "Anni",
+            "sv": "År",
+            "no": "År",
+            "es": "Años",
+            "da": "År",
+            "ru": "Годы",
+            "pl": "Lata",
+            "ko": "년",
+            "ar": "سنوات"
+          }
+        },
+        {
+          "id": "calDays",
+          "title": {
+            "en": "Days from midnight",
+            "nl": "Dagen vanaf middernacht",
+            "de": "Tage ab Mitternacht",
+            "fr": "Jours depuis minuit",
+            "it": "Giorni da mezzanotte",
+            "sv": "Dagar från midnatt",
+            "no": "Dager fra midnatt",
+            "es": "Días desde medianoche",
+            "da": "Dage fra midnat",
+            "ru": "Дни с полуночи",
+            "pl": "Dni od północy",
+            "ko": "자정부터 일 단위",
+            "ar": "أيام من منتصف الليل"
+          }
+        },
+        {
+          "id": "calWeeks",
+          "title": {
+            "en": "Weeks from Monday",
+            "nl": "Weken vanaf maandag",
+            "de": "Wochen ab Montag",
+            "fr": "Semaines depuis lundi",
+            "it": "Settimane da lunedì",
+            "sv": "Veckor från måndag",
+            "no": "Uker fra mandag",
+            "es": "Semanas desde el lunes",
+            "da": "Uger fra mandag",
+            "ru": "Недели с понедельника",
+            "pl": "Tygodnie od poniedziałku",
+            "ko": "월요일부터 주 단위",
+            "ar": "أسابيع من الاثنين"
+          }
+        },
+        {
+          "id": "calMonths",
+          "title": {
+            "en": "Months from the 1st",
+            "nl": "Maanden vanaf de 1e",
+            "de": "Monate ab dem 1.",
+            "fr": "Mois depuis le 1er",
+            "it": "Mesi dal 1°",
+            "sv": "Månader från den 1:a",
+            "no": "Måneder fra den 1.",
+            "es": "Meses desde el día 1",
+            "da": "Måneder fra den 1.",
+            "ru": "Месяцы с 1-го числа",
+            "pl": "Miesiące od 1. dnia",
+            "ko": "1일부터 월 단위",
+            "ar": "أشهر من اليوم الأول"
+          }
+        },
+        {
+          "id": "calYears",
+          "title": {
+            "en": "Years from 1 January",
+            "nl": "Jaren vanaf 1 januari",
+            "de": "Jahre ab 1. Januar",
+            "fr": "Années depuis le 1er janvier",
+            "it": "Anni dal 1° gennaio",
+            "sv": "År från 1 januari",
+            "no": "År fra 1. januar",
+            "es": "Años desde el 1 de enero",
+            "da": "År fra 1. januar",
+            "ru": "Годы с 1 января",
+            "pl": "Lata od 1 stycznia",
+            "ko": "1월 1일부터 연 단위",
+            "ar": "سنوات من 1 يناير"
+          }
+        }
+      ]
+    },
+    {
+      "id": "leaveOut",
+      "type": "checkbox",
+      "value": false,
+      "title": {
+        "en": "Leave out the current period",
+        "nl": "Huidige periode weglaten",
+        "de": "Laufenden Zeitraum weglassen",
+        "fr": "Exclure la période en cours",
+        "it": "Escludi il periodo in corso",
+        "sv": "Utelämna pågående period",
+        "no": "Utelat pågående periode",
+        "es": "Excluir el periodo actual",
+        "da": "Udelad den igangværende periode",
+        "ru": "Без текущего периода",
+        "pl": "Pomiń bieżący okres",
+        "ko": "현재 기간 제외",
+        "ar": "استبعاد الفترة الحالية"
+      },
+      "hint": {
+        "en": "Whole periods only: 1 day from midnight is then yesterday, 1 week from Monday last week.",
+        "nl": "Alleen bij hele periodes: 1 dag vanaf middernacht is dan gisteren, 1 week vanaf maandag vorige week.",
+        "de": "Nur bei ganzen Zeiträumen: 1 Tag ab Mitternacht ist dann gestern, 1 Woche ab Montag letzte Woche.",
+        "fr": "Périodes entières uniquement : 1 jour depuis minuit devient hier, 1 semaine depuis lundi la semaine dernière.",
+        "it": "Solo per periodi interi: 1 giorno da mezzanotte diventa ieri, 1 settimana da lunedì la settimana scorsa.",
+        "sv": "Bara för hela perioder: 1 dag från midnatt blir då i går, 1 vecka från måndag förra veckan.",
+        "no": "Bare for hele perioder: 1 dag fra midnatt blir da i går, 1 uke fra mandag forrige uke.",
+        "es": "Solo con periodos completos: 1 día desde medianoche pasa a ser ayer, 1 semana desde el lunes la semana pasada.",
+        "da": "Kun ved hele perioder: 1 dag fra midnat er så i går, 1 uge fra mandag sidste uge.",
+        "ru": "Только для целых периодов: 1 день с полуночи — это тогда вчера, 1 неделя с понедельника — прошлая неделя.",
+        "pl": "Tylko dla pełnych okresów: 1 dzień od północy to wtedy wczoraj, 1 tydzień od poniedziałku – zeszły tydzień.",
+        "ko": "전체 기간 단위에만 적용됩니다. 자정부터 1일은 어제, 월요일부터 1주는 지난주가 됩니다.",
+        "ar": "للفترات الكاملة فقط: يصبح يوم واحد من منتصف الليل هو أمس، وأسبوع واحد من الاثنين هو الأسبوع الماضي."
+      }
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "title": {
+        "en": "Title",
+        "nl": "Titel",
+        "de": "Titel",
+        "fr": "Titre",
+        "it": "Titolo",
+        "sv": "Rubrik",
+        "no": "Tittel",
+        "es": "Título",
+        "da": "Titel",
+        "ru": "Заголовок",
+        "pl": "Tytuł",
+        "ko": "제목",
+        "ar": "العنوان"
+      },
+      "hint": {
+        "en": "Optional: a name shown above the chart.",
+        "nl": "Optioneel: een naam boven de grafiek.",
+        "de": "Optional: ein Name über dem Diagramm.",
+        "fr": "Facultatif : un nom au-dessus du graphique.",
+        "it": "Facoltativo: un nome sopra il grafico.",
+        "sv": "Valfritt: ett namn ovanför diagrammet.",
+        "no": "Valgfritt: et navn over diagrammet.",
+        "es": "Opcional: un nombre sobre el gráfico.",
+        "da": "Valgfri: et navn over grafen.",
+        "ru": "Необязательно: название над графиком.",
+        "pl": "Opcjonalnie: nazwa nad wykresem.",
+        "ko": "선택 사항입니다: 차트 위에 표시할 이름입니다.",
+        "ar": "اختياري: اسم يظهر فوق المخطط."
+      },
+      "value": ""
+    },
+    {
+      "id": "showHeader",
+      "type": "checkbox",
+      "title": {
+        "en": "Show the values at the top",
+        "nl": "Waarden bovenaan tonen",
+        "de": "Werte oben anzeigen",
+        "fr": "Afficher les valeurs en haut",
+        "it": "Mostra i valori in alto",
+        "sv": "Visa värdena överst",
+        "no": "Vis verdiene øverst",
+        "es": "Mostrar los valores arriba",
+        "da": "Vis værdierne øverst",
+        "ru": "Показывать значения вверху",
+        "pl": "Pokaż wartości u góry",
+        "ko": "맨 위에 값 표시",
+        "ar": "عرض القيم في الأعلى"
+      },
+      "hint": {
+        "en": "How long the first value was on and how often the second turned on. Tap a row or a band for its own.",
+        "nl": "Hoe lang de eerste waarde aan was en hoe vaak de tweede aanging. Tik op een rij of een balk voor die van die rij.",
+        "de": "Wie lange der erste Wert an war und wie oft der zweite anging. Tippe auf eine Zeile oder einen Balken für ihren eigenen.",
+        "fr": "Combien de temps la première valeur était active et combien de fois la deuxième s'est allumée. Touchez une ligne ou une bande pour la sienne.",
+        "it": "Per quanto tempo il primo valore è stato acceso e quante volte il secondo si è acceso. Tocca una riga o una banda per i suoi.",
+        "sv": "Hur länge det första värdet var på och hur ofta det andra slogs på. Tryck på en rad eller ett band för dess eget.",
+        "no": "Hvor lenge den første verdien var på og hvor ofte den andre ble slått på. Trykk på en rad eller et bånd for dens egen.",
+        "es": "Cuánto tiempo estuvo encendido el primer valor y cuántas veces se encendió el segundo. Toca una fila o una banda para ver los suyos.",
+        "da": "Hvor længe den første værdi var tændt, og hvor ofte den anden tændte. Tryk på en række eller et bånd for dens egen.",
+        "ru": "Сколько времени первое значение было включено и сколько раз включалось второе. Коснитесь строки или полосы, чтобы увидеть её данные.",
+        "pl": "Jak długo pierwsza wartość była włączona i ile razy włączała się druga. Dotknij wiersza lub paska, by zobaczyć jego dane.",
+        "ko": "첫 번째 값이 켜져 있던 시간과 두 번째 값이 켜진 횟수입니다. 행이나 막대를 탭하면 그 값을 볼 수 있습니다.",
+        "ar": "كم بقيت القيمة الأولى تعمل وكم مرة اشتغلت الثانية. المس صفًا أو شريطًا لترى بياناته."
+      },
+      "value": true
+    },
+    {
+      "id": "colorStyle",
+      "type": "dropdown",
+      "title": {
+        "en": "Colour style",
+        "nl": "Kleurstijl",
+        "de": "Farbstil",
+        "fr": "Style de couleur",
+        "it": "Stile colori",
+        "sv": "Färgstil",
+        "no": "Fargestil",
+        "es": "Estilo de color",
+        "da": "Farvestil",
+        "ru": "Цветовой стиль",
+        "pl": "Styl kolorów",
+        "ko": "색상 스타일",
+        "ar": "نمط الألوان"
+      },
+      "hint": {
+        "en": "Vivid draws the bands in their full colour.",
+        "nl": "Levendig tekent de balken in hun volle kleur.",
+        "de": "Kräftig zeichnet die Balken in voller Farbe.",
+        "fr": "Vives dessine les bandes en pleine couleur.",
+        "it": "Vivaci disegna le bande a colore pieno.",
+        "sv": "Livfulla ritar banden i full färg.",
+        "no": "Livlige tegner båndene i full farge.",
+        "es": "Vivos dibuja las bandas con todo su color.",
+        "da": "Livlige tegner båndene i fuld farve.",
+        "ru": "«Яркие» рисуют полосы полным цветом.",
+        "pl": "Żywe rysują paski pełnym kolorem.",
+        "ko": "선명하게는 막대를 원래 색으로 그립니다.",
+        "ar": "«زاهية» ترسم الأشرطة بلونها الكامل."
+      },
+      "value": "soft",
+      "values": [
+        {
+          "id": "soft",
+          "title": {
+            "en": "Muted",
+            "nl": "Gedempt",
+            "de": "Gedämpft",
+            "fr": "Atténuées",
+            "it": "Smorzati",
+            "sv": "Dämpade",
+            "no": "Dempede",
+            "es": "Suaves",
+            "da": "Dæmpede",
+            "ru": "Приглушённые",
+            "pl": "Stonowane",
+            "ko": "차분하게",
+            "ar": "هادئة"
+          }
+        },
+        {
+          "id": "deep",
+          "title": {
+            "en": "Vivid",
+            "nl": "Levendig",
+            "de": "Kräftig",
+            "fr": "Vives",
+            "it": "Vivaci",
+            "sv": "Livfulla",
+            "no": "Livlige",
+            "es": "Vivos",
+            "da": "Livlige",
+            "ru": "Яркие",
+            "pl": "Żywe",
+            "ko": "선명하게",
+            "ar": "زاهية"
+          }
+        }
+      ]
+    }
+  ],
+  "api": {
+    "getState": {
+      "method": "GET",
+      "path": "/state"
+    }
+  }
+}

@@ -1627,6 +1627,98 @@
         "ko": "기간 동안 각 값의 최저~최고를 막대로 보여줍니다.",
         "ar": "شريط من أدنى كل قيمة إلى أعلاها خلال الفترة."
       }
+    },
+    "stacked.total": {
+      "id": "total",
+      "type": "autocomplete",
+      "title": {
+        "en": "Total",
+        "nl": "Totaal",
+        "de": "Gesamt",
+        "fr": "Total",
+        "it": "Totale",
+        "sv": "Totalt",
+        "no": "Totalt",
+        "es": "Total",
+        "da": "I alt",
+        "ru": "Итого",
+        "pl": "Suma",
+        "ko": "합계",
+        "ar": "الإجمالي"
+      },
+      "hint": {
+        "en": "Optional: the whole, such as the house's meter. What the values below don't cover shows as Other.",
+        "nl": "Optioneel: het geheel, zoals de meter van het huis. Wat de waarden hieronder niet dekken, staat als Overig.",
+        "de": "Optional: das Ganze, etwa der Zähler des Hauses. Was die Werte darunter nicht abdecken, erscheint als Sonstiges.",
+        "fr": "Facultatif : l'ensemble, comme le compteur de la maison. Ce que les valeurs ci-dessous ne couvrent pas apparaît comme Autre.",
+        "it": "Facoltativo: l'insieme, come il contatore della casa. Ciò che i valori qui sotto non coprono appare come Altro.",
+        "sv": "Valfritt: helheten, som husets mätare. Det som värdena nedan inte täcker visas som Övrigt.",
+        "no": "Valgfritt: helheten, som husets måler. Det verdiene under ikke dekker, vises som Annet.",
+        "es": "Opcional: el conjunto, como el contador de la casa. Lo que no cubren los valores de abajo aparece como Otros.",
+        "da": "Valgfri: helheden, som husets måler. Det, værdierne nedenfor ikke dækker, vises som Andet.",
+        "ru": "Необязательно: целое, например счётчик дома. То, что не покрывают значения ниже, показано как «Прочее».",
+        "pl": "Opcjonalnie: całość, np. licznik domu. To, czego nie obejmują wartości poniżej, pokazuje się jako Inne.",
+        "ko": "선택 사항입니다: 집의 계량기처럼 전체 값입니다. 아래 값들이 포함하지 않는 부분은 기타로 표시됩니다.",
+        "ar": "اختياري: الكل، مثل عدّاد المنزل. ما لا تغطيه القيم أدناه يظهر كـ«أخرى»."
+      }
+    },
+    "stacked.style": {
+      "id": "style",
+      "type": "dropdown",
+      "value": "area",
+      "title": {
+        "en": "Style",
+        "nl": "Stijl",
+        "de": "Stil",
+        "fr": "Style",
+        "it": "Stile",
+        "sv": "Stil",
+        "no": "Stil",
+        "es": "Estilo",
+        "da": "Stil",
+        "ru": "Стиль",
+        "pl": "Styl",
+        "ko": "스타일",
+        "ar": "النمط"
+      },
+      "values": [
+        {
+          "id": "area",
+          "title": {
+            "en": "Areas",
+            "nl": "Vlakken",
+            "de": "Flächen",
+            "fr": "Aires",
+            "it": "Aree",
+            "sv": "Ytor",
+            "no": "Flater",
+            "es": "Áreas",
+            "da": "Flader",
+            "ru": "Области",
+            "pl": "Obszary",
+            "ko": "영역",
+            "ar": "مساحات"
+          }
+        },
+        {
+          "id": "bars",
+          "title": {
+            "en": "Bars",
+            "nl": "Staven",
+            "de": "Balken",
+            "fr": "Barres",
+            "it": "Barre",
+            "sv": "Staplar",
+            "no": "Søyler",
+            "es": "Barras",
+            "da": "Søjler",
+            "ru": "Столбцы",
+            "pl": "Słupki",
+            "ko": "막대",
+            "ar": "أعمدة"
+          }
+        }
+      ]
     }
   },
   "hints": {
@@ -1809,6 +1901,111 @@
       "pl": "Żywe barwią też zakres każdej wartości.",
       "ko": "선명하게는 각 값의 범위에도 색을 입힙니다.",
       "ar": "«زاهية» تلوّن مدى كل قيمة أيضًا."
+    },
+    "timeline.slot1": {
+      "en": "Something that is on or off, open or closed, such as the heating, a door or motion. Empty ones are left out. The app records each from the first time it's shown and keeps about two weeks.",
+      "nl": "Iets dat aan of uit, open of dicht is, zoals de verwarming, een deur of beweging. Lege worden weggelaten. De app legt elk vast vanaf de eerste keer dat het getoond wordt en bewaart ongeveer twee weken.",
+      "de": "Etwas, das an oder aus, offen oder geschlossen ist, etwa die Heizung, eine Tür oder Bewegung. Leere werden ausgelassen. Die App zeichnet jeden ab der ersten Anzeige auf und behält etwa zwei Wochen.",
+      "fr": "Quelque chose d'allumé ou éteint, ouvert ou fermé, comme le chauffage, une porte ou un mouvement. Les vides sont ignorées. L'app enregistre chacune dès son premier affichage et garde environ deux semaines.",
+      "it": "Qualcosa che è acceso o spento, aperto o chiuso, come il riscaldamento, una porta o il movimento. Quelli vuoti sono esclusi. L'app registra ciascuno dalla prima volta che viene mostrato e conserva circa due settimane.",
+      "sv": "Något som är på eller av, öppet eller stängt, som värmen, en dörr eller rörelse. Tomma utelämnas. Appen registrerar var och en från första gången den visas och sparar ungefär två veckor.",
+      "no": "Noe som er på eller av, åpent eller lukket, som varmen, en dør eller bevegelse. Tomme utelates. Appen registrerer hver fra første gang den vises og tar vare på omtrent to uker.",
+      "es": "Algo que está encendido o apagado, abierto o cerrado, como la calefacción, una puerta o el movimiento. Los vacíos se omiten. La app registra cada uno desde la primera vez que se muestra y guarda unas dos semanas.",
+      "da": "Noget, der er tændt eller slukket, åbent eller lukket, som varmen, en dør eller bevægelse. Tomme udelades. Appen registrerer hver fra første gang, den vises, og gemmer omkring to uger.",
+      "ru": "То, что включено или выключено, открыто или закрыто: отопление, дверь, движение. Пустые пропускаются. Приложение записывает каждое с первого показа и хранит около двух недель.",
+      "pl": "Coś, co jest włączone lub wyłączone, otwarte lub zamknięte, np. ogrzewanie, drzwi lub ruch. Puste są pomijane. Aplikacja zapisuje każde od pierwszego wyświetlenia i przechowuje około dwóch tygodni.",
+      "ko": "켜짐/꺼짐, 열림/닫힘이 있는 값입니다(예: 난방, 문, 움직임). 빈 항목은 빠집니다. 앱은 처음 표시될 때부터 각 값을 기록하며 약 2주간 보관합니다.",
+      "ar": "شيء يعمل أو يتوقف، مفتوح أو مغلق، مثل التدفئة أو باب أو حركة. تُستبعد الفارغة. يسجل التطبيق كلًا منها منذ أول عرض له ويحتفظ بنحو أسبوعين."
+    },
+    "showHeader.timeline": {
+      "en": "How long the first value was on and how often the second turned on. Tap a row or a band for its own.",
+      "nl": "Hoe lang de eerste waarde aan was en hoe vaak de tweede aanging. Tik op een rij of een balk voor die van die rij.",
+      "de": "Wie lange der erste Wert an war und wie oft der zweite anging. Tippe auf eine Zeile oder einen Balken für ihren eigenen.",
+      "fr": "Combien de temps la première valeur était active et combien de fois la deuxième s'est allumée. Touchez une ligne ou une bande pour la sienne.",
+      "it": "Per quanto tempo il primo valore è stato acceso e quante volte il secondo si è acceso. Tocca una riga o una banda per i suoi.",
+      "sv": "Hur länge det första värdet var på och hur ofta det andra slogs på. Tryck på en rad eller ett band för dess eget.",
+      "no": "Hvor lenge den første verdien var på og hvor ofte den andre ble slått på. Trykk på en rad eller et bånd for dens egen.",
+      "es": "Cuánto tiempo estuvo encendido el primer valor y cuántas veces se encendió el segundo. Toca una fila o una banda para ver los suyos.",
+      "da": "Hvor længe den første værdi var tændt, og hvor ofte den anden tændte. Tryk på en række eller et bånd for dens egen.",
+      "ru": "Сколько времени первое значение было включено и сколько раз включалось второе. Коснитесь строки или полосы, чтобы увидеть её данные.",
+      "pl": "Jak długo pierwsza wartość była włączona i ile razy włączała się druga. Dotknij wiersza lub paska, by zobaczyć jego dane.",
+      "ko": "첫 번째 값이 켜져 있던 시간과 두 번째 값이 켜진 횟수입니다. 행이나 막대를 탭하면 그 값을 볼 수 있습니다.",
+      "ar": "كم بقيت القيمة الأولى تعمل وكم مرة اشتغلت الثانية. المس صفًا أو شريطًا لترى بياناته."
+    },
+    "colorStyle.timeline": {
+      "en": "Vivid draws the bands in their full colour.",
+      "nl": "Levendig tekent de balken in hun volle kleur.",
+      "de": "Kräftig zeichnet die Balken in voller Farbe.",
+      "fr": "Vives dessine les bandes en pleine couleur.",
+      "it": "Vivaci disegna le bande a colore pieno.",
+      "sv": "Livfulla ritar banden i full färg.",
+      "no": "Livlige tegner båndene i full farge.",
+      "es": "Vivos dibuja las bandas con todo su color.",
+      "da": "Livlige tegner båndene i fuld farve.",
+      "ru": "«Яркие» рисуют полосы полным цветом.",
+      "pl": "Żywe rysują paski pełnym kolorem.",
+      "ko": "선명하게는 막대를 원래 색으로 그립니다.",
+      "ar": "«زاهية» ترسم الأشرطة بلونها الكامل."
+    },
+    "count.timeline": {
+      "en": "How many of the unit below, e.g. 1 day or 7 days. The app keeps about two weeks of changes.",
+      "nl": "Hoeveel van de eenheid hieronder, bijv. 1 dag of 7 dagen. De app bewaart ongeveer twee weken aan wijzigingen.",
+      "de": "Wie viele der Einheit darunter, z. B. 1 Tag oder 7 Tage. Die App behält etwa zwei Wochen an Änderungen.",
+      "fr": "Combien de l'unité ci-dessous, p. ex. 1 jour ou 7 jours. L'app garde environ deux semaines de changements.",
+      "it": "Quante unità di quella qui sotto, ad es. 1 giorno o 7 giorni. L'app conserva circa due settimane di cambiamenti.",
+      "sv": "Hur många av enheten nedan, t.ex. 1 dag eller 7 dagar. Appen sparar ungefär två veckors ändringar.",
+      "no": "Hvor mange av enheten under, f.eks. 1 dag eller 7 dager. Appen tar vare på omtrent to uker med endringer.",
+      "es": "Cuántas de la unidad de abajo, p. ej. 1 día o 7 días. La app guarda unas dos semanas de cambios.",
+      "da": "Hvor mange af enheden nedenfor, f.eks. 1 dag eller 7 dage. Appen gemmer omkring to ugers ændringer.",
+      "ru": "Сколько единиц, выбранных ниже, например 1 день или 7 дней. Приложение хранит около двух недель изменений.",
+      "pl": "Ile jednostek wybranych poniżej, np. 1 dzień lub 7 dni. Aplikacja przechowuje około dwóch tygodni zmian.",
+      "ko": "아래 단위의 개수입니다(예: 1일, 7일). 앱은 약 2주간의 변경을 보관합니다.",
+      "ar": "عدد الوحدات المحددة أدناه، مثل يوم واحد أو 7 أيام. يحتفظ التطبيق بنحو أسبوعين من التغييرات."
+    },
+    "title.label": {
+      "en": "Optional: a name shown above the chart.",
+      "nl": "Optioneel: een naam boven de grafiek.",
+      "de": "Optional: ein Name über dem Diagramm.",
+      "fr": "Facultatif : un nom au-dessus du graphique.",
+      "it": "Facoltativo: un nome sopra il grafico.",
+      "sv": "Valfritt: ett namn ovanför diagrammet.",
+      "no": "Valgfritt: et navn over diagrammet.",
+      "es": "Opcional: un nombre sobre el gráfico.",
+      "da": "Valgfri: et navn over grafen.",
+      "ru": "Необязательно: название над графиком.",
+      "pl": "Opcjonalnie: nazwa nad wykresem.",
+      "ko": "선택 사항입니다: 차트 위에 표시할 이름입니다.",
+      "ar": "اختياري: اسم يظهر فوق المخطط."
+    },
+    "stacked.slot1": {
+      "en": "The parts to stack, all the same kind of value, such as each appliance's power. Empty ones are left out; values below zero, such as solar, stack downwards.",
+      "nl": "De delen om te stapelen, allemaal hetzelfde soort waarde, zoals het vermogen van elk apparaat. Lege worden weggelaten; waarden onder nul, zoals zonnepanelen, stapelen naar beneden.",
+      "de": "Die zu stapelnden Teile, alle dieselbe Art Wert, etwa die Leistung jedes Geräts. Leere werden ausgelassen; Werte unter null, etwa Solar, stapeln sich nach unten.",
+      "fr": "Les parts à empiler, toutes du même type de valeur, comme la puissance de chaque appareil. Les vides sont ignorées ; les valeurs sous zéro, comme le solaire, s'empilent vers le bas.",
+      "it": "Le parti da impilare, tutte dello stesso tipo di valore, come la potenza di ogni elettrodomestico. Quelle vuote sono escluse; i valori sotto zero, come il solare, si impilano verso il basso.",
+      "sv": "Delarna att stapla, alla samma sorts värde, som varje apparats effekt. Tomma utelämnas; värden under noll, som solceller, staplas nedåt.",
+      "no": "Delene som skal stables, alle samme slags verdi, som hvert apparats effekt. Tomme utelates; verdier under null, som solceller, stables nedover.",
+      "es": "Las partes que apilar, todas del mismo tipo de valor, como la potencia de cada aparato. Los vacíos se omiten; los valores bajo cero, como la solar, se apilan hacia abajo.",
+      "da": "Delene, der skal stables, alle samme slags værdi, som hvert apparats effekt. Tomme udelades; værdier under nul, som solceller, stables nedad.",
+      "ru": "Части для сложения, одного вида, например мощность каждого прибора. Пустые пропускаются; значения ниже нуля, например солнечные панели, складываются вниз.",
+      "pl": "Części do zestawienia, wszystkie tego samego rodzaju, np. moc każdego urządzenia. Puste są pomijane; wartości poniżej zera, np. fotowoltaika, układają się w dół.",
+      "ko": "쌓을 항목으로, 모두 같은 종류의 값이어야 합니다(예: 각 기기의 전력). 빈 항목은 빠지며, 태양광처럼 0 아래인 값은 아래로 쌓입니다.",
+      "ar": "الأجزاء المراد تكديسها، وكلها من نوع القيمة نفسه، مثل قدرة كل جهاز. تُستبعد الفارغة؛ والقيم دون الصفر، مثل الطاقة الشمسية، تُكدَّس إلى الأسفل."
+    },
+    "showHeader.stacked": {
+      "en": "The total now and the largest part's share of the time span. Tap the chart for a moment's.",
+      "nl": "Het totaal van nu en het aandeel van het grootste deel in de periode. Tik op de grafiek voor een moment.",
+      "de": "Die Gesamtsumme jetzt und der Anteil des größten Teils am Zeitraum. Tippe auf das Diagramm für einen Moment.",
+      "fr": "Le total actuel et la part de la plus grande sur la période. Touchez le graphique pour un instant donné.",
+      "it": "Il totale ora e la quota della parte più grande nel periodo. Tocca il grafico per un momento.",
+      "sv": "Totalen nu och den största delens andel av tidsperioden. Tryck på diagrammet för ett ögonblicks.",
+      "no": "Totalen nå og den største delens andel av tidsrommet. Trykk på diagrammet for et øyeblikks.",
+      "es": "El total ahora y la parte de la mayor en el periodo. Toca el gráfico para un momento.",
+      "da": "Totalen nu og den største dels andel af tidsrummet. Tryk på grafen for et øjebliks.",
+      "ru": "Итог сейчас и доля самой большой части за период. Коснитесь графика, чтобы увидеть момент.",
+      "pl": "Suma teraz i udział największej części w okresie. Dotknij wykresu, by zobaczyć dany moment.",
+      "ko": "지금의 합계와 기간 중 가장 큰 항목의 비율입니다. 차트를 탭하면 그 순간의 값을 볼 수 있습니다.",
+      "ar": "الإجمالي الآن وحصة أكبر جزء من الفترة. المس المخطط لترى لحظة بعينها."
     }
   },
   "widgets": {
@@ -2030,6 +2227,141 @@
         "use": "colorStyle",
         "hint": "colorStyle.compare"
       }
+    ],
+    "timeline": [
+      {
+        "use": "compare.slot:1",
+        "hint": "timeline.slot1"
+      },
+      {
+        "use": "color:1",
+        "value": "blue"
+      },
+      "compare.slot:2",
+      {
+        "use": "color:2",
+        "value": "red"
+      },
+      "compare.slot:3",
+      {
+        "use": "color:3",
+        "value": "orange"
+      },
+      "compare.slot:4",
+      {
+        "use": "color:4",
+        "value": "yellow"
+      },
+      "compare.slot:5",
+      {
+        "use": "color:5",
+        "value": "green"
+      },
+      "compare.slot:6",
+      {
+        "use": "color:6",
+        "value": "purple"
+      },
+      "compare.slot:7",
+      {
+        "use": "color:7",
+        "value": "blue"
+      },
+      "compare.slot:8",
+      {
+        "use": "color:8",
+        "value": "red"
+      },
+      {
+        "use": "count",
+        "top": true,
+        "value": 1,
+        "hint": "count.timeline"
+      },
+      {
+        "use": "span",
+        "top": true,
+        "value": "calDays"
+      },
+      {
+        "use": "leaveOut",
+        "top": true
+      },
+      {
+        "use": "title",
+        "top": true,
+        "hint": "title.label"
+      },
+      {
+        "use": "showHeader.values",
+        "hint": "showHeader.timeline"
+      },
+      {
+        "use": "colorStyle",
+        "hint": "colorStyle.timeline"
+      }
+    ],
+    "stacked": [
+      "stacked.total",
+      {
+        "use": "compare.slot:1",
+        "hint": "stacked.slot1"
+      },
+      {
+        "use": "color:1",
+        "value": "blue"
+      },
+      "compare.slot:2",
+      {
+        "use": "color:2",
+        "value": "red"
+      },
+      "compare.slot:3",
+      {
+        "use": "color:3",
+        "value": "orange"
+      },
+      "compare.slot:4",
+      {
+        "use": "color:4",
+        "value": "yellow"
+      },
+      "compare.slot:5",
+      {
+        "use": "color:5",
+        "value": "green"
+      },
+      "compare.slot:6",
+      {
+        "use": "color:6",
+        "value": "purple"
+      },
+      {
+        "use": "count",
+        "top": true,
+        "value": 24
+      },
+      {
+        "use": "span",
+        "top": true,
+        "value": "hours"
+      },
+      {
+        "use": "leaveOut",
+        "top": true
+      },
+      "stacked.style",
+      "legend",
+      {
+        "use": "title",
+        "top": true,
+        "hint": "title.label"
+      },
+      {
+        "use": "showHeader.values",
+        "hint": "showHeader.stacked"
+      },
+      "colorStyle"
     ]
   }
 }

@@ -362,6 +362,34 @@
     "lowest": "Najniższa",
     "range": "Zakres"
   },
+  "timeline": {
+    "selectValues": "Wybierz wartości do pokazania w ustawieniach widżetu.",
+    "error": "Nie udało się wczytać wykresu.",
+    "unavailable": "Niedostępne",
+    "noHistory": "Nic jeszcze nie zapisano",
+    "now": "Teraz",
+    "timeOn": "Wł.",
+    "timeOpen": "Otwarte",
+    "timeMotion": "Ruch",
+    "timeAlarm": "Aktywne",
+    "countOn": "Włączenia",
+    "countOpen": "Otwarcia",
+    "countMotion": "Wykrycia",
+    "countAlarm": "Alarmy",
+    "hours": "godz.",
+    "minutes": "min"
+  },
+  "stacked": {
+    "selectValues": "Wybierz wartości do zestawienia w ustawieniach widżetu.",
+    "error": "Nie udało się wczytać wykresu.",
+    "unavailable": "Niedostępne",
+    "noHistory": "Brak historii.",
+    "otherUnits": "Inna jednostka",
+    "now": "Teraz",
+    "total": "Suma",
+    "other": "Inne",
+    "largest": "Największy"
+  },
   "lights": {
     "selectDevices": "Wybierz światła w ustawieniach widżetu.",
     "error": "Nie udało się wczytać świateł.",
@@ -898,6 +926,8 @@
       "typicalday": "Linia z dzisiaj na tle typowego dnia i jego rozrzutu: czy dziś jest nietypowo?",
       "dailyrange": "Najniższa i najwyższa wartość każdego dnia jako słupek, średnia w poprzek: jak bardzo się wahało?",
       "compare": "Jedna wartość z wielu urządzeń, teraz i jej zakres z dzisiaj, posortowana: który pokój jest najcieplejszy?",
+      "timeline": "Kiedy było włączone, otwarte lub był ruch? Wiersz na wartość przez cały dzień, paski tam, gdzie tak było.",
+      "stacked": "Kilka wartości ułożonych na jednej osi czasu, reszta sumy jako Inne: kto zużywa prąd?",
       "variables": "Zmienne jako wiersze do przełączania lub zmiany.",
       "varpresets": "Przyciski ustawiające zmienną na wybrane wartości.",
       "keypad": "Przyciski za opcjonalnym kodem, które uruchamiają Flow lub ustawiają stan.",

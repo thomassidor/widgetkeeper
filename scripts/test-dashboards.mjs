@@ -499,6 +499,50 @@ const BUILD = {
       w('compare', 'Nothing picked'),
     ] };
   },
+  async stacked() {
+    const items = await autocomplete('stacked', 'slot1');
+    // Power values where there are (power is listed first), a meter-like one as the total, else whatever else is logged.
+    const powers = pick(items, i => /:measure_power/.test(i.id), 7);
+    const values = powers.length >= 2 ? powers : pick(items, () => true, 7);
+    const [total, ...layers] = values.length > 2 ? values : [null, ...values];
+    const slots = list => Object.fromEntries(list.map((v, k) => [`slot${k + 1}`, v]));
+    const temp = pick(items, i => /:measure_temperature/.test(i.id))[0];
+    const missing = { id: `${MISSING}:measure_power`, name: 'Deleted device · Power' };
+    const withTotal = total ? { total } : {};
+    return { cols: 3, widgets: [
+      wide(w('stacked', 'Total + up to 6, 24 hours, areas (defaults)', { ...withTotal, ...slots(layers.slice(0, 6)) })),
+      w('stacked', 'No total', slots(layers.slice(0, 3))),
+      w('stacked', 'Bars · legend below · own colours', { ...withTotal, ...slots(layers.slice(0, 3)), style: 'bars', legend: 'below', color1: 'green', color2: 'purple', color3: 'yellow' }),
+      w('stacked', 'Today · Vivid', { ...withTotal, ...slots(layers.slice(0, 4)), count: 1, span: 'calDays', colorStyle: 'deep' }),
+      w('stacked', 'Last 7 days · bars', { ...withTotal, ...slots(layers.slice(0, 3)), count: 7, span: 'days', style: 'bars' }),
+      w('stacked', 'Last month · own title · no header', { ...slots(layers.slice(0, 3)), count: 1, span: 'calMonths', leaveOut: true, title: 'Typed title', showHeader: false }),
+      w('stacked', 'A value in other units', { ...slots([...layers.slice(0, 2), ...(temp ? [temp] : [])]) }),
+      w('stacked', 'With a deleted device', { ...withTotal, ...slots([missing, ...layers.slice(0, 2)]) }),
+      w('stacked', 'A total alone', withTotal),
+      w('stacked', 'Nothing picked'),
+    ] };
+  },
+
+  async timeline() {
+    const items = await autocomplete('timeline', 'slot1');
+    // A contact, motion and on/off where there are, then whatever else is logged.
+    const kinds = ['alarm_contact', 'alarm_motion', 'onoff'];
+    const byKind = kinds.flatMap(c => pick(items, i => i.id.endsWith(`:${c}`), 3));
+    const values = [...new Set([...byKind, ...pick(items, () => true, 8)])].slice(0, 8);
+    const slots = list => Object.fromEntries(list.map((v, k) => [`slot${k + 1}`, v]));
+    const missing = { id: `${MISSING}:alarm_contact`, name: 'Deleted device · Contact' };
+    return { cols: 3, widgets: [
+      w('timeline', 'Up to 8, today (defaults)', slots(values)),
+      w('timeline', 'Own colours · own title', { ...slots(values.slice(0, 4)), color1: 'orange', color2: 'yellow', color3: 'red', color4: 'blue', title: 'Typed title' }),
+      w('timeline', 'Last 7 days · Vivid', { ...slots(values.slice(0, 4)), count: 7, span: 'days', colorStyle: 'deep' }),
+      w('timeline', 'Yesterday', { ...slots(values.slice(0, 3)), count: 1, span: 'calDays', leaveOut: true }),
+      w('timeline', 'Last 6 hours · no header', { ...slots(values.slice(0, 3)), count: 6, span: 'hours', showHeader: false }),
+      w('timeline', 'With a deleted device', slots([missing, ...values.slice(0, 2)])),
+      w('timeline', 'One value', slots(values.slice(0, 1))),
+      w('timeline', 'Nothing picked'),
+    ] };
+  },
+
   async dailyrange() {
     const items = await autocomplete('dailyrange', 'slot');
     // A temperature where there is (its days swing), then whatever else is logged.
