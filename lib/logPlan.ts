@@ -1,4 +1,4 @@
-import { localHour } from './heatmap.js';
+import { localHour, zoneParts } from './heatmap.js';
 import { HOUR, MINUTE, type Sample } from './series.js';
 
 const DAY = 24 * HOUR;
@@ -38,9 +38,7 @@ const SLACK = 2 * MINUTE;
 
 /** The offset of `timeZone` from UTC at `t`, in ms (local = UTC + offset). */
 function zoneOffset(t: number, timeZone: string): number {
-  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
-    timeZone, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric',
-  }).formatToParts(new Date(t)).map(p => [p.type, p.value]));
+  const parts = zoneParts(t, timeZone);
   const asUtc = Date.UTC(+parts.year, +parts.month - 1, +parts.day, +parts.hour % 24, +parts.minute, +parts.second);
   return asUtc - Math.floor(t / 1000) * 1000;
 }

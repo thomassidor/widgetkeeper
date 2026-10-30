@@ -41,9 +41,8 @@ export async function timelineState(homey: Homey, query: Record<string, string>)
     const numbers = states.map((s, i) => ('missing' in s || s.capability.type !== 'number' ? null : slots[i]));
     const wanted = numbers.filter((s): s is string => s != null);
     const [windows, changes] = await Promise.all([
-      wanted.length
-        ? app.sparklines.getWindows(wanted.map(slot => ({ slot, from: start, end: stop, unit, fine: true, span: query.span })))
-        : [],
+      // Only the histories: the values' state is read above.
+      wanted.length ? app.sparklines.histories(wanted.map(slot => ({ slot, from: start, end: stop, unit, fine: true, span: query.span }))) : [],
       Promise.all(states.map((s, i) => {
         if ('missing' in s || numbers[i] != null) return null;
         return app.heatmap.getChanges(s.deviceId, s.capabilityId, start).catch((err: unknown) => {
@@ -56,7 +55,7 @@ export async function timelineState(homey: Homey, query: Record<string, string>)
       if ('missing' in s) return s;
       if (numbers[i] != null) {
         const w = windows[wanted.indexOf(numbers[i]!)];
-        return { ...s, points: w && 'points' in w ? w.points : [] };
+        return { ...s, points: w ? w.points : [] };
       }
       return { ...s, ...(changes[i] ?? { changes: [], since: null }) };
     });

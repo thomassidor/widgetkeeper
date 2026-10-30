@@ -15,7 +15,7 @@ function setup() {
         return { deviceId, capabilityId, name: deviceId, capability: cap(capabilityId === 'measure_power' ? 'number' : 'boolean'), value: null };
       })),
     },
-    sparklines: { getWindows: vi.fn(async (requests: any[]) => requests.map(() => ({ points: [[150, 80]] }))) },
+    sparklines: { histories: vi.fn(async (requests: any[]) => requests.map(() => ({ points: [[150, 80]] }))) },
     heatmap: { getChanges: vi.fn(async () => ({ changes: [[120, 1]], since: 110 })) },
   };
   const homey = { app, i18n: { getLanguage: () => 'en' } } as any;
@@ -26,7 +26,8 @@ describe('timelineState', () => {
   it("gives a boolean its recorded changes and a number its Insights points over the window, in order", async () => {
     const { app, homey } = setup();
     const res = await timelineState(homey, { slots: 'h:measure_power,d:alarm_contact,gone:onoff', from: '100', end: '200', unit: 'day', span: '1d!' });
-    expect(app.sparklines.getWindows).toHaveBeenCalledWith([{ slot: 'h:measure_power', from: 100, end: 200, unit: 'day', fine: true, span: '1d!' }]);
+    expect(app.sparklines.histories).toHaveBeenCalledWith([{ slot: 'h:measure_power', from: 100, end: 200, unit: 'day', fine: true, span: '1d!' }]);
+    expect(app.values.getState).toHaveBeenCalledTimes(1); // the number's state isn't read again with its history
     expect(app.heatmap.getChanges).toHaveBeenCalledTimes(1);
     expect(app.heatmap.getChanges).toHaveBeenCalledWith('d', 'alarm_contact', 100);
     expect(res.rows.map((r: any) => r.points ?? r.changes ?? 'missing')).toEqual([[[150, 80]], [[120, 1]], 'missing']);
@@ -38,7 +39,7 @@ describe('timelineState', () => {
     vi.setSystemTime(5000);
     await timelineState(homey, { slots: 'h:measure_power', from: '100' });
     vi.useRealTimers();
-    expect(app.sparklines.getWindows).toHaveBeenCalledWith([expect.objectContaining({ from: 100, end: 5000, unit: null })]);
+    expect(app.sparklines.histories).toHaveBeenCalledWith([expect.objectContaining({ from: 100, end: 5000, unit: null })]);
   });
 
   it("keeps a boolean whose changes can't be read, unknown", async () => {

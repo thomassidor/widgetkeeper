@@ -1,5 +1,5 @@
 /* Which Insights logs a chart's window is read from (lib/logPlan.ts). The tests run in Europe/Copenhagen. */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { logCover, mergeLogs, periodStart, planLogs, INSIGHTS_LOGS } from '../lib/logPlan.js';
 
 const TZ = 'Europe/Copenhagen';
@@ -32,6 +32,14 @@ describe('periodStart', () => {
 });
 
 describe('planLogs', () => {
+  it("builds no time zone formatter of its own on each call (a slow constructor; the Heatmap's cached one is shared)", () => {
+    plan(now - D, now);
+    const made = vi.spyOn(Intl, 'DateTimeFormat');
+    for (let i = 0; i < 5; i++) plan(at('2026-07-01T00:00'), now, 'month');
+    expect(made).not.toHaveBeenCalled();
+    made.mockRestore();
+  });
+
   it('reads what Sparklines read for each rolling span', () => {
     expect(plan(now - H, now)).toEqual(['lastHour']);
     expect(plan(now - 6 * H, now)).toEqual(['last6Hours']);

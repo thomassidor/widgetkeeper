@@ -91,7 +91,9 @@ export type SparklineSlot =
   | (Extract<ValueSlot, { name: string }> & { points: [number, number][], step?: number, meter?: Meter })
   | Extract<ValueSlot, { missing: true }>;
 
-type History = { points: [number, number][], step?: number, meter?: Meter };
+export type History = { points: [number, number][], step?: number, meter?: Meter };
+/** The logs a window is read from, each with how long a read of it is kept (`planLogs()`, `logTtl()`). */
+type Plan = { log: InsightsLog, ttl: number }[];
 type HistoryCache = History & { at: number, lastRequested: number, ttl: number };
 
 /** The device's capabilities a sparkline can show: numbers that Homey logs in Insights. */
@@ -237,7 +239,7 @@ export default class SparklineService {
     const valid = requests.filter(r => parseSlot(r.slot));
     const [states, histories] = await Promise.all([
       tm.time('values', () => this.values.getState([...new Set(valid.map(r => r.slot))])),
-      tm.time('insights', () => Promise.all(valid.map(r => this.windowHistory(r)))),
+      tm.time('insights', () => this.histories(valid)),
     ]);
     this.debug(`Chart state for ${valid.length} windows (${valid.map(r => `${r.span ?? '?'}${r.use ? ' use' : ''}`).join(', ')}): ${tm.summary()}`);
     const bySlot = new Map(states.map(s => [`${s.deviceId}:${s.capabilityId}`, s]));
@@ -250,19 +252,39 @@ export default class SparklineService {
   }
 
   /**
+   * Each request's history (`windowHistory()`), in order, without Device Values' state (Chart · Timeline has read it). The
+   * logs to read and how long to keep them are worked out once per distinct window: a Ranking or Stacked asks one window
+   * per value.
+   */
+  histories(requests: WindowRequest[]): Promise<History[]> {
+    const now = Date.now();
+    const timeZone = this.homey.clock.getTimezone() || 'UTC';
+    const plans = new Map<string, Plan>();
+    return Promise.all(requests.map((r) => {
+      const k = `${r.from}~${r.end}~${r.unit ?? ''}`;
+      let plan = plans.get(k);
+      if (!plan) {
+        const logs = planLogs(r.from, r.end, now, timeZone, r.unit ?? null);
+        plan = logs.map(log => ({ log, ttl: logTtl(log, now, timeZone) }));
+        plans.set(k, plan);
+      }
+      return this.windowHistory(r, plan);
+    }));
+  }
+
+  /**
    * A window's history: the Insights logs `planLogs()` picks (stitched where one doesn't hold it, the finer one where
    * they overlap), averaged into at most `MAX_POINTS` over the window up to where the logs end (no bucket shorter than
    * the coarsest log's step, `step`), or with `use` the running total around it (`meterPointsOf()`). This month's and
    * year's logs end at the last finished 6 hours, up to 12 h before now: buckets past that would only carry the last
    * value on, as if it had been logged. A failed read gives no history.
    */
-  private async windowHistory({ slot, from, end, unit = null, use = false, fine = false }: WindowRequest): Promise<History> {
+  private async windowHistory({ slot, from, end, use = false, fine = false }: WindowRequest, plan: Plan): Promise<History> {
     const { deviceId, capabilityId } = parseSlot(slot)!;
-    const timeZone = this.homey.clock.getTimezone() || 'UTC';
-    const logs = planLogs(from, end, Date.now(), timeZone, unit);
+    const logs = plan.map(p => p.log);
     if (!logs.length) return { points: [] };
     try {
-      const read = await Promise.all(logs.map(l => this.readLog(slot, deviceId, capabilityId, l.resolution, logTtl(l, Date.now(), timeZone))));
+      const read = await Promise.all(plan.map(p => this.readLog(slot, deviceId, capabilityId, p.log.resolution, p.ttl)));
       const step = Math.max(...logs.map(l => l.step));
       const samples = mergeLogs(read.map((res, i) => ({ samples: parseInsightsEntries(res), step: logStep(res) ?? logs[i].step })));
       if (use) return { ...meterPointsOf(samples.filter(e => e.t >= from - 2 * step && e.t <= end + step)), step };

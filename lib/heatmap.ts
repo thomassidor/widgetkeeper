@@ -25,22 +25,27 @@ export type HeatmapDay = {
 
 type LocalHour = { date: string, hour: number };
 
-/** A cached formatter per timezone: `en-CA` gives YYYY-MM-DD, h23 gives 00–23. */
+/** A cached formatter per timezone (building one is slow): `en-CA` gives YYYY-MM-DD, h23 gives 00–23. */
 const formatters = new Map<string, Intl.DateTimeFormat>();
 function formatter(timeZone: string) {
   let f = formatters.get(timeZone);
   if (!f) {
     f = new Intl.DateTimeFormat('en-CA', {
-      timeZone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hourCycle: 'h23',
+      timeZone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
     });
     formatters.set(timeZone, f);
   }
   return f;
 }
 
+/** The local clock of `t` in `timeZone`, as zero-padded strings (`year`, `month`, `day`, `hour`, `minute`, `second`). */
+export function zoneParts(t: number, timeZone: string): Record<string, string> {
+  return Object.fromEntries(formatter(timeZone).formatToParts(new Date(t)).map(p => [p.type, p.value]));
+}
+
 /** The local date and hour of `t` in `timeZone`. */
 export function localHour(t: number, timeZone: string): LocalHour {
-  const parts = Object.fromEntries(formatter(timeZone).formatToParts(new Date(t)).map(p => [p.type, p.value]));
+  const parts = zoneParts(t, timeZone);
   return { date: `${parts.year}-${parts.month}-${parts.day}`, hour: Number(parts.hour) % 24 };
 }
 
