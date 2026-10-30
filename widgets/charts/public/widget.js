@@ -4,7 +4,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { COLORS, scaled, formatNumber, parseSpan, timeSpan, isTimeSpan, spanUnit, sixHourSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { COLORS, scaled, formatNumber, parseSpan, timeSpan, isTimeSpan, sixHourLog } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart;
@@ -54,13 +54,15 @@
       title: typeof c.title === 'string' ? c.title.trim() : '',
     }));
     // Two series on one chart share chart 1's time axis and kind of scale; with `sharedScale`, the scale itself. Two
-    // calendar periods of one kind (today with yesterday, this month with last …) keep their own: each runs over the
-    // whole axis, so series 2 is drawn by its place in its period. The mount asks for these spans (`spans()`).
+    // calendar windows of one kind and length (today with yesterday, this month with last, the last 3 whole weeks with
+    // the 3 before …) keep their own: each runs over the whole axis, so series 2 is drawn by its place in its window. A
+    // different count (this week with 4 whole weeks) would squeeze series 2 under labels it doesn't match, so it takes
+    // chart 1's span. The mount asks for these spans (`spans()`).
     const overlay = opts.overlay === true && charts.length === 2;
     if (overlay) {
       charts[1].fit = charts[0].fit;
-      const unit = spanUnit(charts[0].span);
-      if (!(unit && unit === spanUnit(charts[1].span))) charts[1].span = charts[0].span;
+      const [a, b] = charts.map(c => parseSpan(c.span));
+      if (!(a.whole && b.whole && a.unit === b.unit && a.count === b.count)) charts[1].span = charts[0].span;
     }
     const sharedScale = overlay && opts.sharedScale === true;
     // The legend (each chart's chip) above its plot, or under its time labels.
@@ -111,7 +113,7 @@
       if (!s || 'missing' in s) return [];
       const ok = p => typeof p[1] === 'number' && isFinite(p[1]);
       const pts = (s.points || []).filter(p => p[0] >= win.from && p[0] <= win.end && ok(p));
-      if (!sixHourSpan(charts[i].span) || (pts.length && pts[0][0] === win.from)) return pts;
+      if (!sixHourLog(s) || (pts.length && pts[0][0] === win.from)) return pts;
       const before = (s.points || []).filter(p => p[0] < win.from && p[0] >= win.from - 6 * HOUR && ok(p)).pop();
       return before ? [[win.from, before[1]], ...pts] : pts;
     }
@@ -159,12 +161,14 @@
     /**
      * A tapped point's or bar's time, by how long the span is: `14:00` (a bar `14:00–15:00`) up to a day, `Mon 14:00` up to
      * 8 days, then `15 Sep 14:00` up to two months and `15 Sep` beyond; a bar of a day or a week `Tue 15 Sep`, of a month
-     * `September 2025`.
+     * `September 2025`. A bar goes by its unit, not its length: today's is cut short at now and a rolling span's first at
+     * its start.
      */
     function itemLabel(win, item) {
       const span = win.to - win.from;
-      if (item.end != null && item.end - item.t > 27 * DAY) return date(item.t, { month: 'long', year: 'numeric' });
-      if (item.end != null && item.end - item.t > 23 * HOUR) return date(item.t, { weekday: 'short', day: 'numeric', month: 'short' });
+      const unit = item.end != null ? C.barUnit(win.from, win.to, win.unit) : null;
+      if (unit === 'month') return date(item.t, { month: 'long', year: 'numeric' });
+      if (unit === 'week' || unit >= 23 * HOUR) return date(item.t, { weekday: 'short', day: 'numeric', month: 'short' });
       if (span > 62 * DAY) return date(item.t, { day: 'numeric', month: 'short' });
       if (span > 8 * DAY + HOUR) return `${date(item.t, { day: 'numeric', month: 'short' })} ${hhmm(item.t)}`;
       const at = ms => (span > DAY + HOUR ? `${weekday(ms)} ${hhmm(ms)}` : hhmm(ms));
@@ -455,34 +459,12 @@
       setState(list, lang) {
         if (lang) frame.language = lang;
         const previous = state.entries;
-        state.entries = (Array.isArray(list) ? list : []).slice(0, charts.length).map((s, i) => {
-          if (!s || 'missing' in s) return s || { missing: true };
-          const points = Array.isArray(s.points) ? s.points.slice() : [];
-          const old = previous[i] && !('missing' in previous[i]) && previous[i].deviceId === s.deviceId
-            && previous[i].capabilityId === s.capabilityId ? previous[i].points : [];
-          const after = points.length ? points[points.length - 1][0] : -Infinity;
-          return { ...s, points: points.concat(old.filter(p => p[0] > after)) };
-        });
+        state.entries = (Array.isArray(list) ? list : []).slice(0, charts.length).map((s, i) => C.keepLive(s, previous[i]));
         frame.resetMessage();
         frame.render();
       },
       /** A realtime value (Device Values' `values:state`): appended to every chart that shows it. */
-      pushChange({ deviceId, capabilityId, value }) {
-        let changed = false;
-        const at = now();
-        state.entries.forEach((s, i) => {
-          if (!s || 'missing' in s || s.deviceId !== deviceId || s.capabilityId !== capabilityId) return;
-          s.value = value;
-          const win = windowOf(i, at);
-          // Not on a month or a year (`sixHourSpan()`): the current value still carries the line on to now.
-          if (typeof value === 'number' && isFinite(value) && win.live && !sixHourSpan(charts[i].span)) {
-            s.points.push([at, value]);
-            while (s.points.length && s.points[0][0] < win.from) s.points.shift();
-          }
-          changed = true;
-        });
-        if (changed) frame.renderIfSeen();
-      },
+      pushChange(change) { frame.pushLive(state.entries, change, (at, i) => windowOf(i, at)); },
       /**
        * Each chart's window now, as `/state` asks for it (lib/chartState.ts): `<span>~<from>~<end>~<unit>`, its data's
        * window on the phone's clock (on one chart, series 2's may be chart 1's span).

@@ -363,7 +363,7 @@ describe('weeks, months and years (wk-104)', () => {
     });
 
     it('names the unit of a calendar span only', () => {
-      expect(['today', 'yesterday', 'thisWeek', 'lastMonth', 'lastYear', '7d', 'x'].map(kit().spanUnit)).toEqual(['day', 'day', 'week', 'month', 'year', null, null]);
+      expect(span('lastYear').unit).toBe('year');
       expect(kit().isTimeSpan('lastYear')).toBe(true);
       expect(span('7d').unit).toBeUndefined();
     });
@@ -386,8 +386,6 @@ describe('weeks, months and years (wk-104)', () => {
       expect(span('1y!')).toEqual(span('thisYear'));
       // At most two years.
       expect(kit().parseSpan('9y')!.count).toBe(2);
-      expect(kit().spanUnit('3w!')).toBe('week');
-      expect(['6h', '7d', '10d', '2w!', '3w!', '1mo', 'today'].map(kit().sixHourSpan)).toEqual([false, false, true, false, true, true, false]);
     });
 
     it("reads a chart's span from its settings, keeping one stored before 1.2.0", () => {
@@ -441,6 +439,15 @@ describe('weeks, months and years (wk-104)', () => {
     expect(r.header()[0].split(' | ')[1]).toBe(da(MON + DAY, { weekday: 'short', day: 'numeric', month: 'short' }));
   });
 
+  it("names today's bar by its date though it's cut short at now, and this year's month by its month", () => {
+    const r = widget([{ span: 'thisWeek', style: 'bars' }], [entry(between(MON, NOW, x => 20 + x))]);
+    tap(r, PW * 3.2 / 7); // Thursday, today: 00:00 to 10:20
+    expect(r.header()[0].split(' | ')[1]).toBe(da(MON + 3 * DAY, { weekday: 'short', day: 'numeric', month: 'short' }));
+    const y = widget([{ span: 'thisYear', style: 'bars' }], [entry(between(at('2026-01-01T00:00:00'), NOW, x => 20 + x))]);
+    tap(y, 2); // January, 15 days of it
+    expect(y.header()[0].split(' | ')[1]).toBe(da(at('2026-01-01T00:00:00'), { month: 'long', year: 'numeric' }));
+  });
+
   it('labels a month on the 7th, 14th, 21st and 28th, without midnights or Now', () => {
     const dec = at('2025-12-01T00:00:00');
     const r = widget([{ span: 'lastMonth' }], [entry(between(dec, at('2026-01-01T00:00:00'), () => 5))]);
@@ -469,14 +476,15 @@ describe('weeks, months and years (wk-104)', () => {
   it("starts a month's line at its start with the 6 hours holding it, logged before it", () => {
     const dec = at('2025-12-01T00:00:00');
     const startX = (before: [number, number][]) => {
-      const r = widget([{ span: 'lastMonth' }], [entry(before.concat(between(dec + 3 * HOUR, at('2026-01-01T00:00:00'), () => 5)))]);
+      const r = widget([{ span: 'lastMonth' }], [entry(before.concat(between(dec + 3 * HOUR, at('2026-01-01T00:00:00'), () => 5)), { step: 6 * HOUR })]);
       return Number(r.q('path.series-line')!.getAttribute('d')!.match(/^M\s*([\d.]+)/)![1]);
     };
     expect(startX([[dec - 2 * HOUR, 5]])).toBe(L);
     expect(startX([])).toBeGreaterThan(L);
     expect(startX([[dec - 7 * HOUR, 5]])).toBeGreaterThan(L); // older than those 6 hours
-    expect(kit().sixHourSpan('lastMonth') && kit().sixHourSpan('thisYear')).toBe(true);
-    expect(['thisWeek', 'yesterday', '7d', 'x'].some(kit().sixHourSpan)).toBe(false);
+    // 6-hour averages by the step the app read them with (`/state`'s `step`), not by the span.
+    expect([{ step: 6 * HOUR }, { step: 7 * DAY }].every(kit().sixHourLog)).toBe(true);
+    expect([{ step: HOUR }, {}, null, { missing: true }].some(kit().sixHourLog)).toBe(false);
   });
 
   it('makes a bar a day over a month, the last month all of it', () => {
@@ -514,7 +522,7 @@ describe('weeks, months and years (wk-104)', () => {
     expect(y.header()[0].split(' | ')[1]).toMatch(/^\d+\. \S+$/); // a date, no time
   });
 
-  it('keeps live values on a week, but only the value now on a month or year', () => {
+  it("keeps live values on a week, but only the value now on Homey's 6-hour averages (a month or year)", () => {
     const top = (r: ReturnType<typeof widget>) => Math.max(...[...r.yLabels()].map(t => Number(t.textContent!.replace(',', '.'))).filter(Number.isFinite));
     const push = (r: ReturnType<typeof widget>) => {
       r.w.pushChange({ deviceId: 'd1', capabilityId: 'measure_temperature', value: 50 });
@@ -524,7 +532,7 @@ describe('weeks, months and years (wk-104)', () => {
     const week = widget([{ span: 'thisWeek' }], [entry(between(MON, NOW - HOUR, () => 20))]);
     push(week);
     expect(top(week)).toBeGreaterThanOrEqual(50);
-    const month = widget([{ span: 'thisMonth' }], [entry(between(at('2026-01-01T00:00:00'), NOW - 6 * HOUR, () => 20))]);
+    const month = widget([{ span: 'thisMonth' }], [entry(between(at('2026-01-01T00:00:00'), NOW - 6 * HOUR, () => 20), { step: 6 * HOUR })]);
     push(month);
     expect(top(month)).toBeLessThan(50);
     expect(month.header()).toEqual(['20°C | Now']);
@@ -541,6 +549,15 @@ describe('weeks, months and years (wk-104)', () => {
     it("gives series 2 chart 1's span when they're of different kinds", () => {
       const r = widget([{ span: 'thisWeek' }, { span: 'lastMonth' }], [entry(between(MON, NOW, () => 20)), entry(between(MON, NOW, () => 30))], { overlay: true });
       expect(r.header()).toEqual(['20°C | Now', '30°C | Now']);
+    });
+
+    it("gives series 2 chart 1's span when it's more of the same periods, which wouldn't fit the axis", () => {
+      const r = widget([{ span: 'thisWeek' }, { span: '4w!' }], [entry(between(MON, NOW, () => 20)), entry(between(MON - 21 * DAY, NOW, () => 30))], { overlay: true });
+      const [w1, w2] = r.w.windows();
+      expect(w2).toBe(w1);
+      // The same number of whole periods keeps its own: the 2 weeks before under these 2.
+      const r2 = widget([{ span: '2w!' }, { span: '2w!-' }], [entry(between(MON, NOW, () => 20)), entry(between(MON - 14 * DAY, MON, () => 30))], { overlay: true });
+      expect(r2.w.windows()[1]).not.toBe(r2.w.windows()[0]);
     });
   });
 });

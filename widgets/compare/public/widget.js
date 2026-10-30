@@ -4,7 +4,7 @@
  * shared chart module (../electricity/chart.js, `window.WidgetkeeperChart`, loaded first). Plain browser JS (served as-is).
  */
 (function () {
-  const { TIGHT_UNITS, scaled, formatNumber, timeSpan, isTimeSpan, sixHourSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { TIGHT_UNITS, scaled, formatNumber, timeSpan, isTimeSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart;
@@ -174,13 +174,11 @@
     // ------------------------------------------------------------------ interaction
 
     /** The row under the pointer, kept as its value's place in the settings. */
-    function scrub(px, py) {
-      if (!drawn) return;
+    frame.select(svg, state, (px, py) => {
+      if (!drawn) return undefined;
       const row = drawn.rows.find(r => !r.missing && Math.abs(r.cy - py) <= ROW / 2);
-      const at = row ? row.i : null;
-      if (at !== state.sel) { state.sel = at; frame.render(); }
-    }
-    frame.scrub(svg, scrub, () => { if (state.sel != null) { state.sel = null; frame.render(); } });
+      return row ? row.i : null;
+    });
 
     // ------------------------------------------------------------------ public API
 
@@ -189,30 +187,12 @@
       setState(list, lang) {
         if (lang) frame.language = lang;
         const previous = state.entries;
-        state.entries = (Array.isArray(list) ? list : []).slice(0, MAX).map((s, i) => {
-          if (!ok(s)) return s || { missing: true };
-          const old = previous[i];
-          const points = Array.isArray(s.points) ? s.points.slice() : [];
-          const same = ok(old) && old.deviceId === s.deviceId && old.capabilityId === s.capabilityId;
-          const after = points.length ? points[points.length - 1][0] : -Infinity;
-          return { ...s, points: points.concat(same ? old.points.filter(p => p[0] > after) : []) };
-        });
+        state.entries = (Array.isArray(list) ? list : []).slice(0, MAX).map((s, i) => C.keepLive(s, previous[i]));
         frame.resetMessage();
         frame.render();
       },
       /** A realtime value (Device Values' `values:state`): every row that shows it. */
-      pushChange({ deviceId, capabilityId, value }) {
-        const at = now();
-        const win = timeSpan(span, at);
-        let changed = false;
-        for (const s of state.entries) {
-          if (!ok(s) || s.deviceId !== deviceId || s.capabilityId !== capabilityId) continue;
-          s.value = value;
-          if (num(value) && win.end === at && !sixHourSpan(span)) s.points.push([at, value]);
-          changed = true;
-        }
-        if (changed) frame.renderIfSeen();
-      },
+      pushChange(change) { frame.pushLive(state.entries, change, at => timeSpan(span, at)); },
       /** The span's window now, once per value, as `/state` asks for it (lib/chartState.ts). */
       windows: () => {
         const w = timeSpan(span, now());

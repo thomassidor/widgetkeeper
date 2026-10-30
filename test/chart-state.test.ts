@@ -124,6 +124,44 @@ describe('getWindows', () => {
     expect(resolutions()).toHaveLength(2);
   });
 
+  it('says the step of the logs it read, so a widget knows 6-hour averages', async () => {
+    const { app } = setup();
+    const [day, month] = await chartStates(app, parseChartRequests(`${ask(NOW - 24 * HOUR, NOW)},${ask(local('2026-10-01T00:00'), NOW, 'month')}`)) as any[];
+    expect(day.step).toBe(5 * 60e3);
+    expect(month.step).toBe(6 * HOUR);
+    // A rolling 8 days is read from last31Days: 6-hour averages too, though it isn't a month.
+    const [eight] = await chartStates(app, parseChartRequests(ask(NOW - 8 * 24 * HOUR, NOW))) as any[];
+    expect(eight.step).toBe(6 * HOUR);
+  });
+
+  it('makes up no points past where the logs end', async () => {
+    // This month's log ends at the last finished 6 hours: 06:00Z, 6 hours before now.
+    const logEnd = Date.parse('2026-10-06T06:00:00Z');
+    const start = Date.parse('2026-09-30T18:00:00Z');
+    const values: { t: string, v: number }[] = [];
+    for (let t = start; t < logEnd; t += 6 * HOUR) values.push({ t: new Date(t).toISOString(), v: 20 });
+    const { app } = setup(() => ({ values, step: 6 * HOUR, end: new Date(logEnd).toISOString() }));
+    const [s] = await chartStates(app, parseChartRequests(ask(local('2026-10-01T00:00'), NOW, 'month'))) as any[];
+    expect(s.points.at(-1)[0]).toBeLessThan(logEnd);
+  });
+
+  it("asks again after 5 minutes for a finished period's log that failed, not when the next period starts", async () => {
+    let missing = true;
+    const { app, resolutions } = setup(() => {
+      if (missing) throw Object.assign(new Error('Not Found: LogLocal'), { statusCode: 404 });
+      return entries();
+    });
+    const req = () => parseChartRequests(ask(local('2026-09-28T00:00'), local('2026-10-05T00:00'), 'week'));
+    await chartStates(app, req());
+    missing = false;
+    vi.advanceTimersByTime(60e3);
+    await chartStates(app, req());
+    expect(resolutions()).toHaveLength(1); // kept a while, so a value without a log isn't asked for on every request
+    vi.advanceTimersByTime(5 * 60e3);
+    await chartStates(app, req());
+    expect(resolutions()).toHaveLength(2);
+  });
+
   it("answers a page's older request as Sparklines did", async () => {
     const { app, resolutions } = setup();
     const [s] = await chartStates(app, parseChartRequests(`${slot}~7d`)) as any[];

@@ -6,7 +6,7 @@
  * (served as-is).
  */
 (function () {
-  const { COLORS, scaled, formatNumber, timeSpan, isTimeSpan, sixHourSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { COLORS, scaled, formatNumber, timeSpan, isTimeSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart;
@@ -247,50 +247,28 @@
     // ------------------------------------------------------------------ interaction
 
     /** The time under the pointer, and its height for the line nearest it. */
-    function scrub(px, py) {
-      if (!drawn) return;
+    frame.select(svg, state, (px) => {
+      if (!drawn) return undefined;
       const { win } = drawn;
       const ms = Math.max(win.from, Math.min(win.end, win.from + (px - L) / (drawn.x(win.to) - L) * (win.to - win.from)));
       // The nearest point's time, so the header and the dots agree.
       const q = drawn.known.map(l => pointAt(l, ms)).filter(Boolean).sort((a, b) => Math.abs(a[0] - ms) - Math.abs(b[0] - ms))[0];
-      const sel = q ? q[0] : null;
-      if (sel !== state.sel || py !== state.selY) { state.sel = sel; state.selY = py; frame.render(); }
-    }
-    frame.scrub(svg, scrub, () => { if (state.sel != null) { state.sel = null; state.selY = null; frame.render(); } });
+      return q ? q[0] : null;
+    }, { withY: true });
 
     // ------------------------------------------------------------------ public API
-
-    /** A slot's state with the live points newer than its refreshed history kept from `old`. */
-    function keep(s, old) {
-      if (!ok(s)) return s || { missing: true };
-      const points = Array.isArray(s.points) ? s.points.slice() : [];
-      const same = ok(old) && old.deviceId === s.deviceId && old.capabilityId === s.capabilityId;
-      const after = points.length ? points[points.length - 1][0] : -Infinity;
-      return { ...s, points: points.concat(same ? old.points.filter(q => q[0] > after) : []) };
-    }
 
     return frame.api({
       /** Each value, as picked (`/state`'s `charts`). */
       setState(list, lang) {
         if (lang) frame.language = lang;
         const previous = state.series;
-        state.series = (Array.isArray(list) ? list : []).slice(0, MAX).map((s, i) => keep(s, previous[i]));
+        state.series = (Array.isArray(list) ? list : []).slice(0, MAX).map((s, i) => C.keepLive(s, previous[i]));
         frame.resetMessage();
         frame.render();
       },
       /** A realtime value (Device Values' `values:state`): onto every line that shows it (not on a 6-hourly span). */
-      pushChange({ deviceId, capabilityId, value }) {
-        const at = now();
-        const win = timeSpan(span, at);
-        let changed = false;
-        for (const s of state.series) {
-          if (!ok(s) || s.deviceId !== deviceId || s.capabilityId !== capabilityId) continue;
-          s.value = value;
-          if (num(value) && win.end === at && !sixHourSpan(span)) s.points.push([at, value]);
-          changed = true;
-        }
-        if (changed) frame.renderIfSeen();
-      },
+      pushChange(change) { frame.pushLive(state.series, change, at => timeSpan(span, at)); },
       /** The span's window now, once per value, as `/state` asks for it (lib/chartState.ts). */
       windows: () => {
         const w = timeSpan(span, now());

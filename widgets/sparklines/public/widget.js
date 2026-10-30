@@ -4,7 +4,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, formatNumber, formatValue, applyColors, timeSpan, isTimeSpan, sixHourSpan, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, formatNumber, formatValue, applyColors, timeSpan, isTimeSpan, sixHourLog, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -153,8 +153,9 @@
         if (s.deviceId !== deviceId || s.capabilityId !== capabilityId || 'missing' in s) continue;
         s.value = value;
         const w = windowAt(at);
-        // Not for a last day, week …, nor on a month or a year (`sixHourSpan()`; the current value still carries the line on to now).
-        if (typeof value === 'number' && isFinite(value) && w.end === at && !sixHourSpan(span)) {
+        // Not for a last day, week …, nor on Homey's 6-hour averages, a month or a year (`sixHourLog()`; the current value
+        // still carries the line on to now).
+        if (typeof value === 'number' && isFinite(value) && w.end === at && !sixHourLog(s)) {
           s.points.push([at, value]);
           while (s.points.length && s.points[0][0] < w.from) s.points.shift();
         }

@@ -24,7 +24,9 @@ const power = { title: 'Power', type: 'number', units: 'kW', decimals: 2, min: n
 function series(id: string, capability: object, f: (t: number) => number, days = 7) {
   const points: [number, number][] = [];
   for (let t = NOW - days * DAY; t < NOW; t += 30 * MIN) points.push([t, f(t)]);
-  return { deviceId: id, capabilityId: 'c', name: id === 'out' ? 'Outside' : 'Heat pump', capability, value: f(NOW), points };
+  // The step of the logs the app read (lib/SparklineService.ts): over 7 days, Homey's 6-hour averages.
+  const step = days > 7 ? 6 * HOUR : days > 1 ? HOUR : 5 * MIN;
+  return { deviceId: id, capabilityId: 'c', name: id === 'out' ? 'Outside' : 'Heat pump', capability, value: f(NOW), points, step };
 }
 /** The outdoor temperature swinging over the day, and the heat pump using more the colder it is. */
 const outdoor = (t: number) => 5 + 6 * Math.sin((t / HOUR) * Math.PI / 12);
@@ -59,7 +61,7 @@ describe('the dots', () => {
     expect(new Set(widget({ span: '7d', fade: false }, both()).dots().map(x => x[2]))).toEqual(new Set([0.7]));
   });
 
-  it('takes a dot length by the span: 5 min over a day, 6 hours over a month (Homey keeps 6-hour steps), or as set', () => {
+  it('takes a dot length by the span: 5 min over a day, 6 hours on 6-hour averages (as the app read them), or as set', () => {
     expect(widget({ span: '24h' }, [series('out', temp, outdoor, 1), series('hp', power, pump, 1)]).dots().length).toBe(24 * 12);
     expect(widget({ span: '30d' }, [series('out', temp, outdoor, 30), series('hp', power, pump, 30)]).dots().length).toBe(30 * 4 + 1); // the first cut
     expect(widget({ span: '7d', dots: 'day' }, both()).dots().length).toBe(8); // seven days back from 15:30 touch eight

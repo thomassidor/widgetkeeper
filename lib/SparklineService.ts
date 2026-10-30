@@ -52,24 +52,6 @@ export const SPANS = {
 } as const;
 export type SpanId = keyof typeof SPANS;
 
-/**
- * Each calendar span's period before (Chart · Totals' `compare`), as the log that holds it: Insights has no
- * resolution for the week, month or year before last, so `last31Days`, `last3Months` (ending at this month's start)
- * and `last2Years` (weekly, ending at this year's start) reach past it, and `last3Days` past the day before yesterday;
- * the widget cuts each to its own window. Verified on the Homey, 2026-10-27; `last14Days` doesn't reach the week
- * before last.
- */
-export const PREV_LOGS: Partial<Record<SpanId, { resolution: string, step: number }>> = {
-  today: { resolution: 'yesterday', step: 5 * MINUTE },
-  yesterday: { resolution: 'last3Days', step: HOUR },
-  thisWeek: { resolution: 'lastWeek', step: HOUR },
-  lastWeek: { resolution: 'last31Days', step: 6 * HOUR },
-  thisMonth: { resolution: 'lastMonth', step: 6 * HOUR },
-  lastMonth: { resolution: 'last3Months', step: 6 * HOUR },
-  thisYear: { resolution: 'lastYear', step: 6 * HOUR },
-  lastYear: { resolution: 'last2Years', step: 7 * DAY },
-};
-
 export function spanOf(id: string | undefined): SpanId {
   return id && id in SPANS ? id as SpanId : '24h';
 }
@@ -100,17 +82,16 @@ export function historyTtl(span: SpanId, res: any, now: number): number {
 }
 
 /**
- * A Device Values slot plus its history as `[epoch ms, value]`, oldest first. With `use`, the history is the value's
- * running total, and `meter` carries its count on for live values (`runningTotal()`).
+ * A Device Values slot plus its history as `[epoch ms, value]`, oldest first, and `step`, the coarsest step of the logs it
+ * was read from (6 h or more: Homey's 6-hour averages, which a widget doesn't append live values to; the kit's
+ * `sixHourLog()`). With `use`, the history is the value's running total, and `meter` carries its count on for live
+ * values (`runningTotal()`).
  */
 export type SparklineSlot =
-  | (Extract<ValueSlot, { name: string }> & { points: [number, number][], meter?: Meter })
+  | (Extract<ValueSlot, { name: string }> & { points: [number, number][], step?: number, meter?: Meter })
   | Extract<ValueSlot, { missing: true }>;
 
-/** `prev`: the period before a calendar span's (`PREV_LOGS`); `use`: a running total instead of the values. */
-export type HistoryOptions = { prev?: boolean, use?: boolean };
-
-type History = { points: [number, number][], meter?: Meter };
+type History = { points: [number, number][], step?: number, meter?: Meter };
 type HistoryCache = History & { at: number, lastRequested: number, ttl: number };
 
 /** The device's capabilities a sparkline can show: numbers that Homey logs in Insights. */
@@ -151,16 +132,10 @@ export function downsampleSamples(samples: Sample[], now: number, spanMs: number
 }
 
 /**
- * A running total (`runningTotal()`) at each log entry's middle (Insights stamps an entry, the average over its step,
- * at the step's start; `step` is the log's own when it says, as Homey's do), as `[epoch ms, total]`, thinned to at most
- * `max` points by averaging runs of entries, so no point moves off its time; with the `meter` to carry on with.
+ * A running total (`runningTotal()`) of samples, each with its log's step (`mergeLogs()`), at each one's middle (Insights
+ * stamps an entry, the average over its step, at the step's start), as `[epoch ms, total]`, thinned to at most `max`
+ * points by averaging runs of entries, so no point moves off its time; with the `meter` to carry on with.
  */
-export function meterPoints(res: any, step: number, max = MAX_METER_POINTS): { points: [number, number][], meter: Meter } {
-  const s = logStep(res) ?? step;
-  return meterPointsOf(parseInsightsEntries(res).map(e => ({ ...e, step: s })), max);
-}
-
-/** `meterPoints()` of samples, each with its log's step (`mergeLogs()`). */
 export function meterPointsOf(samples: (Sample & { step: number })[], max = MAX_METER_POINTS): { points: [number, number][], meter: Meter } {
   const steps = new Map(samples.map(e => [e.t, e.step]));
   const { totals, meter } = runningTotal(samples);
@@ -239,18 +214,17 @@ export default class SparklineService {
   // ---------------------------------------------------------------- state
 
   /**
-   * Device Values' state for the slots, each with its history over the span (`prev`: the period before it; `use`: the
-   * running total). A failed history is empty.
+   * Device Values' state for the slots, each with its history over the span. A failed history is empty.
    */
-  async getState(slots: string[], spanId: string | undefined, opts: HistoryOptions = {}): Promise<SparklineSlot[]> {
+  async getState(slots: string[], spanId: string | undefined): Promise<SparklineSlot[]> {
     const span = spanOf(spanId);
     const tm = new Timings();
     const valid = slots.filter(s => parseSlot(s));
     const [states, histories] = await Promise.all([
       tm.time('values', () => this.values.getState(valid)),
-      tm.time('insights', () => Promise.all(valid.map(s => this.history(s, span, opts)))),
+      tm.time('insights', () => Promise.all(valid.map(s => this.history(s, span)))),
     ]);
-    this.debug(`Sparklines state for ${valid.length} slots (${span}${opts.prev ? ', before' : ''}${opts.use ? ', use' : ''}): ${tm.summary()}`);
+    this.debug(`Sparklines state for ${valid.length} slots (${span}): ${tm.summary()}`);
     return states.map((s, i) => ('missing' in s ? s : { ...s, ...histories[i] }));
   }
 
@@ -277,8 +251,10 @@ export default class SparklineService {
 
   /**
    * A window's history: the Insights logs `planLogs()` picks (stitched where one doesn't hold it, the finer one where
-   * they overlap), averaged into at most `MAX_POINTS` over the window (no bucket shorter than the coarsest log's step),
-   * or with `use` the running total around it (`meterPointsOf()`). A failed read gives no history.
+   * they overlap), averaged into at most `MAX_POINTS` over the window up to where the logs end (no bucket shorter than
+   * the coarsest log's step, `step`), or with `use` the running total around it (`meterPointsOf()`). This month's and
+   * year's logs end at the last finished 6 hours, up to 12 h before now: buckets past that would only carry the last
+   * value on, as if it had been logged. A failed read gives no history.
    */
   private async windowHistory({ slot, from, end, unit = null, use = false, fine = false }: WindowRequest): Promise<History> {
     const { deviceId, capabilityId } = parseSlot(slot)!;
@@ -289,16 +265,18 @@ export default class SparklineService {
       const read = await Promise.all(logs.map(l => this.readLog(slot, deviceId, capabilityId, l.resolution, logTtl(l, Date.now(), timeZone))));
       const step = Math.max(...logs.map(l => l.step));
       const samples = mergeLogs(read.map((res, i) => ({ samples: parseInsightsEntries(res), step: logStep(res) ?? logs[i].step })));
-      if (use) return meterPointsOf(samples.filter(e => e.t >= from - 2 * step && e.t <= end + step));
-      return { points: downsampleSamples(samples, end, end - from, step, fine ? MAX_METER_POINTS : MAX_POINTS) };
+      if (use) return { ...meterPointsOf(samples.filter(e => e.t >= from - 2 * step && e.t <= end + step)), step };
+      const logEnd = Math.max(...read.map(res => Date.parse(res?.end)).filter(Number.isFinite));
+      const to = logEnd > from && logEnd < end ? logEnd : end;
+      return { points: downsampleSamples(samples, to, to - from, step, fine ? MAX_METER_POINTS : MAX_POINTS), step };
     } catch (err) {
       this.log(`Chart history of ${slot} unavailable:`, err);
       return { points: [] };
     }
   }
 
-  private history(slot: string, span: SpanId, { prev = false, use = false }: HistoryOptions): Promise<History> {
-    const k = `${slot}:${span}${prev ? ':prev' : ''}${use ? ':use' : ''}`;
+  private history(slot: string, span: SpanId): Promise<History> {
+    const k = `${slot}:${span}`;
     const now = Date.now();
     const cached = this.cache.get(k);
     if (cached) cached.lastRequested = now;
@@ -306,29 +284,23 @@ export default class SparklineService {
     let p = this.promises.get(k);
     if (!p) {
       p = (async () => {
-        const log = prev ? PREV_LOGS[span] : SPANS[span]; // a rolling span has no period before it
-        let h: History = { points: [] };
+        const log = SPANS[span];
+        let h: History = { points: [], step: log.step };
         let ttl = HISTORY_TTL;
-        if (log) {
-          const { deviceId, capabilityId } = parseSlot(slot)!;
-          try {
-            const res = await this.readLog(slot, deviceId, capabilityId, log.resolution);
-            if (use) h = meterPoints(res, log.step);
-            else {
-              const { ms } = SPANS[span];
-              const w = 'calendar' in SPANS[span] ? calendarWindow(res, Date.now(), ms) : { to: Date.now(), ms };
-              h = { points: downsample(res, w.to, w.ms, log.step) };
-            }
-            // A finished period's own log stays as it is (`historyTtl()`); the logs that reach past one are read again.
-            if (!prev) ttl = historyTtl(span, res, Date.now());
-          } catch (err) {
-            // Cached all the same, so a capability without a log isn't asked for again on every request; a busy Homey
-            // only for a moment, so a dashboard's load burst doesn't leave its charts empty for 5 minutes.
-            this.log(`Sparkline history of ${slot} unavailable:`, err);
-            if (isTransientError(err)) {
-              ttl = RETRY_BUSY;
-              this.logs.delete(`${slot}:${log.resolution}`);
-            }
+        const { deviceId, capabilityId } = parseSlot(slot)!;
+        try {
+          const res = await this.readLog(slot, deviceId, capabilityId, log.resolution);
+          const w = 'calendar' in log ? calendarWindow(res, Date.now(), log.ms) : { to: Date.now(), ms: log.ms };
+          h = { points: downsample(res, w.to, w.ms, log.step), step: log.step };
+          // A finished period's log stays as it is (`historyTtl()`).
+          ttl = historyTtl(span, res, Date.now());
+        } catch (err) {
+          // Cached all the same, so a capability without a log isn't asked for again on every request; a busy Homey
+          // only for a moment, so a dashboard's load burst doesn't leave its charts empty for 5 minutes.
+          this.log(`Sparkline history of ${slot} unavailable:`, err);
+          if (isTransientError(err)) {
+            ttl = RETRY_BUSY;
+            this.logs.delete(`${slot}:${log.resolution}`);
           }
         }
         this.cache.set(k, { ...h, at: Date.now(), lastRequested: Date.now(), ttl });
@@ -349,9 +321,10 @@ export default class SparklineService {
     }
     const log = getAppApi(this.homey).then(api => readCapabilityLog(api, deviceId, capabilityId, resolution, this.logIds));
     const entry = { at: now, ttl, lastRequested: now, log };
-    // A failure is handled by each caller; a busy Homey's is asked again soon, so a dashboard's load burst doesn't leave
-    // its charts empty until the next refresh (a window's history isn't cached beyond its logs).
-    log.catch((err) => { if (isTransientError(err)) entry.ttl = Math.min(entry.ttl, RETRY_BUSY); });
+    // A failure is handled by each caller and kept no longer than an ordinary read (a finished period's `ttl` runs until
+    // the next period, which would leave its chart empty until then); a busy Homey's is asked again soon, so a dashboard's
+    // load burst doesn't leave its charts empty until the next refresh (a window's history isn't cached beyond its logs).
+    log.catch((err) => { entry.ttl = Math.min(entry.ttl, isTransientError(err) ? RETRY_BUSY : HISTORY_TTL); });
     this.logs.set(k, entry);
     return log;
   }
@@ -384,7 +357,7 @@ export function logTtl(log: InsightsLog, now: number, timeZone: string): number 
   return Math.max(HISTORY_TTL, periodStart(now, log.unit, 1, timeZone) - now);
 }
 
-/** A cached history as `getState()` hands it on: its points, and the running total's count with `use`. */
-function historyOf({ points, meter }: History): History {
-  return meter ? { points, meter } : { points };
+/** A cached history as `getState()` hands it on: its points and its log's step. */
+function historyOf({ points, step }: History): History {
+  return { points, step };
 }

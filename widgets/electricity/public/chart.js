@@ -302,7 +302,7 @@
 
   /**
    * Bars of a meter's use, `unit` as `buckets()`: each how much its running total (`points`, `[t, total]` oldest first,
-   * lib/SparklineService.ts' `meterPoints()`) rose from the bar's start to its end, read off the line through the
+   * lib/SparklineService.ts' `meterPointsOf()`) rose from the bar's start to its end, read off the line through the
    * points. `current`, the total now, ends that line at `to`. Past the last point the total goes on at its last rate
    * for up to one and a half steps between points (Insights leaves out a closed period's last 6-hour step when it
    * straddles midnight), then holds (Homey doesn't log an unchanged value); before the first point likewise, back. A
@@ -807,11 +807,42 @@
       render,
       /** Draws now, unless nobody sees it (a hidden page, an off-screen Smart Stack page): then when it's back. */
       renderIfSeen() { if (seen()) render(); },
+      /**
+       * A realtime value (`{deviceId, capabilityId, value}`) onto each of `entries` that shows it (`pushLive()`, in the
+       * window `win(at, i)` of entry i now), then drawn if seen.
+       */
+      pushLive(entries, { deviceId, capabilityId, value }, win) {
+        const at = frame.now();
+        let changed = false;
+        entries.forEach((s, i) => {
+          if (!isValue(s) || s.deviceId !== deviceId || s.capabilityId !== capabilityId) return;
+          pushLive(s, value, at, win(at, i));
+          changed = true;
+        });
+        if (changed) frame.renderIfSeen();
+      },
       /** After new state: a lasting message goes (a passing one stays its 8 s). */
       resetMessage() { line.reset({ lastingOnly: true }); },
       /** Tap-to-inspect on a box's svg (`attachScrub()`): `onPointer(px, py)` with the pointer in the svg, `onReset()`. */
       scrub(svg, onPointer, onReset) {
         attachScrub(svg, e => onPointer(pointerX(e, svg), e.clientY - svg.getBoundingClientRect().top), onReset, { timer: null });
+      },
+      /**
+       * A tap selection on a box's svg (`scrub()`): `pick(px, py)` gives what's tapped (null for nothing; `undefined`
+       * leaves it, before the first drawing), kept in `state.sel` and drawn when it changes (compared as JSON, so it can
+       * be an object, Chart · Timeline's row and band). With `withY` the pointer's height goes in `state.selY` too (the
+       * line or layer nearest it). The pointer leaving, or a touch's 3 s after it lifts, clears it.
+       */
+      select(svg, state, pick, { withY = false } = {}) {
+        const set = (sel, y = null) => {
+          if (sel === undefined) return;
+          const same = JSON.stringify(sel) === JSON.stringify(state.sel) && (!withY || sel == null || y === state.selY);
+          if (same) return;
+          state.sel = sel;
+          if (withY) state.selY = sel == null ? null : y;
+          render();
+        };
+        frame.scrub(svg, (px, py) => set(pick(px, py), py), () => set(null));
       },
       /** The widget's public API: its own (`setState`, `pushChange` …) with the frame's. */
       api(own) {
@@ -835,6 +866,36 @@
       }).observe(root);
     }
     return frame;
+  }
+
+  const isValue = s => !!s && !('missing' in s);
+
+  /**
+   * A refreshed entry from `/state` with the live values of the one it replaces (`old`, the same value) that are newer
+   * than its history kept: the app caches a history up to 5 min. One that isn't a value (`{missing}`) as it is. `key`:
+   * the list, `[t, …]` oldest first (Chart · Timeline's `changes`).
+   */
+  function keepLive(s, old, key = 'points') {
+    if (!isValue(s)) return s || { missing: true };
+    const list = Array.isArray(s[key]) ? s[key].slice() : [];
+    const same = isValue(old) && old.deviceId === s.deviceId && old.capabilityId === s.capabilityId;
+    const after = list.length ? list[list.length - 1][0] : -Infinity;
+    return { ...s, [key]: list.concat(same ? old[key].filter(p => p[0] > after) : []) };
+  }
+
+  /**
+   * A realtime value (Device Values' `values:state`) onto an entry that shows it: its value now, and a point at `at` when
+   * the window `win` (the kit's `timeSpan()`) runs up to now and the history isn't Homey's 6-hour averages (the kit's
+   * `sixHourLog()`: a meter's values would pile up behind the log; the value now still carries the line on). Points older
+   * than the window go, but the last one before it, which carries into its start.
+   * @param {{ value?: unknown, points: [number, number][], step?: number }} s
+   * @param {{ from: number, end: number }} win
+   */
+  function pushLive(s, value, at, win) {
+    s.value = value;
+    if (typeof value !== 'number' || !isFinite(value) || win.end !== at || window.WidgetkeeperKit.sixHourLog(s)) return;
+    s.points.push([at, value]);
+    while (s.points.length > 1 && s.points[1][0] < win.from) s.points.shift();
   }
 
   /**
@@ -889,6 +950,6 @@
     MIN, HOUR, L, X_LABEL_GAP, X_LABEL_H, LABEL_PAD, LABEL_MIN_GAP,
     niceStep, ticks, el, clear, show, f1, smoothValues, linePath, stepPath, p985, p015,
     compactNumber, ago, stepDecimals, axisLabel, buckets, alignSeries, profile, trendLine, barUnit, useBuckets, meterTotal, calendarLabels, createKit, attachScrub, pointerX,
-    createFrame, wireChart,
+    createFrame, wireChart, keepLive, pushLive,
   };
 })();

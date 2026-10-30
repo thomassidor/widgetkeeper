@@ -5,7 +5,7 @@
  * `window.WidgetkeeperChart`, loaded first). Plain browser JS (served as-is).
  */
 (function () {
-  const { COLORS, scaled, formatNumber, timeSpan, isTimeSpan, sixHourSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { COLORS, scaled, formatNumber, timeSpan, isTimeSpan, sixHourLog } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart;
@@ -99,7 +99,7 @@
     /** An area's step over the window: about `MAX_STEPS`, never under Homey's 6 hours where its log is 6-hourly. */
     function areaUnit(win) {
       const length = s => (s === 'week' ? 7 * DAY : s);
-      const least = sixHourSpan(span) ? 6 * HOUR : 0;
+      const least = [state.total, ...state.layers].some(sixHourLog) ? 6 * HOUR : 0;
       return AREA_STEPS.find(s => length(s) >= least && (win.to - win.from) / length(s) <= MAX_STEPS) || 'week';
     }
 
@@ -329,51 +329,29 @@
     // ------------------------------------------------------------------ interaction
 
     /** The row under the pointer, kept as its time, and the pointer's height for the layer under it. */
-    function scrub(px, py) {
-      if (!drawn) return;
+    frame.select(svg, state, (px) => {
+      if (!drawn) return undefined;
       const { win } = drawn;
       const ms = win.from + (px - L) / (drawn.x(win.to) - L) * (win.to - win.from);
       const row = drawn.known.find(r => ms >= r.t && ms < r.end) || (ms >= win.end ? drawn.known[drawn.known.length - 1] : null);
-      const sel = row ? (row.t + row.end) / 2 : null;
-      if (sel !== state.sel || py !== state.selY) { state.sel = sel; state.selY = py; frame.render(); }
-    }
-    frame.scrub(svg, scrub, () => { if (state.sel != null) { state.sel = null; state.selY = null; frame.render(); } });
+      return row ? (row.t + row.end) / 2 : null;
+    }, { withY: true });
 
     // ------------------------------------------------------------------ public API
-
-    /** A slot's state with the live points newer than its refreshed history kept from `old`. */
-    function keep(s, old) {
-      if (!ok(s)) return s || { missing: true };
-      const points = Array.isArray(s.points) ? s.points.slice() : [];
-      const same = ok(old) && old.deviceId === s.deviceId && old.capabilityId === s.capabilityId;
-      const after = points.length ? points[points.length - 1][0] : -Infinity;
-      return { ...s, points: points.concat(same ? old.points.filter(q => q[0] > after) : []) };
-    }
 
     return frame.api({
       /** The total (when picked) and each layer, in that order (`/state`'s `charts`). */
       setState(list, lang) {
         if (lang) frame.language = lang;
         const all = Array.isArray(list) ? list : [];
-        state.total = hasTotal ? keep(all[0], state.total) : null;
+        state.total = hasTotal ? C.keepLive(all[0], state.total) : null;
         const previous = state.layers;
-        state.layers = all.slice(hasTotal ? 1 : 0).slice(0, MAX).map((s, i) => keep(s, previous[i]));
+        state.layers = all.slice(hasTotal ? 1 : 0).slice(0, MAX).map((s, i) => C.keepLive(s, previous[i]));
         frame.resetMessage();
         frame.render();
       },
       /** A realtime value (Device Values' `values:state`): onto the total and every layer that shows it. */
-      pushChange({ deviceId, capabilityId, value }) {
-        const at = now();
-        const win = timeSpan(span, at);
-        let changed = false;
-        for (const s of [state.total, ...state.layers]) {
-          if (!ok(s) || s.deviceId !== deviceId || s.capabilityId !== capabilityId) continue;
-          s.value = value;
-          if (num(value) && win.end === at && !sixHourSpan(span)) s.points.push([at, value]);
-          changed = true;
-        }
-        if (changed) frame.renderIfSeen();
-      },
+      pushChange(change) { frame.pushLive([state.total, ...state.layers], change, at => timeSpan(span, at)); },
       /** The span's window now, once per request (the total, then each layer), as `/state` asks for it (lib/chartState.ts). */
       windows: () => {
         const w = timeSpan(span, now());

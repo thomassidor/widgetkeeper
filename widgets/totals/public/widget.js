@@ -263,14 +263,12 @@
     // ------------------------------------------------------------------ interaction
 
     /** The slot under the pointer, kept as its start; a slot with no bar in it selects nothing. */
-    function scrub(px) {
-      if (!drawn) return;
+    frame.select(svg, state, (px) => {
+      if (!drawn) return undefined;
       const k = drawn.xs.findIndex(([x0, x1]) => px >= x0 && px < x1);
       const slot = k >= 0 ? drawn.slots[k] : null;
-      const at = slot && (slot.v != null || (slot.prev && slot.prev.v != null)) ? slot.t : null;
-      if (at !== state.sel) { state.sel = at; frame.render(); }
-    }
-    frame.scrub(svg, scrub, () => { if (state.sel != null) { state.sel = null; frame.render(); } });
+      return slot && (slot.v != null || (slot.prev && slot.prev.v != null)) ? slot.t : null;
+    });
 
     // ------------------------------------------------------------------ public API
 
@@ -282,17 +280,8 @@
       setState(list, lang) {
         if (lang) frame.language = lang;
         const [current, previous] = Array.isArray(list) ? list : [];
-        const old = state.current;
-        if (ok(current)) {
-          const points = Array.isArray(current.points) ? current.points.slice() : [];
-          const same = ok(old) && old.deviceId === current.deviceId && old.capabilityId === current.capabilityId;
-          const after = points.length ? points[points.length - 1][0] : -Infinity;
-          state.current = {
-            ...current,
-            points: points.concat(same ? old.points.filter(p => p[0] > after) : []),
-            meter: { offset: 0, high: null, ...current.meter },
-          };
-        } else state.current = current || { missing: true };
+        const kept = C.keepLive(current, state.current);
+        state.current = ok(kept) ? { ...kept, meter: { offset: 0, high: null, ...kept.meter } } : kept;
         state.previous = previous || null;
         frame.resetMessage();
         frame.render();

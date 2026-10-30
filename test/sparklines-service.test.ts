@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
-import SparklineService, { calendarWindow, downsample, historyTtl, MAX_METER_POINTS, MAX_POINTS, meterPoints, sparkCaps, spanOf } from '../lib/SparklineService.js';
+import SparklineService, { calendarWindow, downsample, historyTtl, MAX_METER_POINTS, MAX_POINTS, meterPointsOf, sparkCaps, spanOf } from '../lib/SparklineService.js';
 import { runningTotal } from '../lib/series.js';
 import ValueService, { VALUES_STATE_EVENT } from '../lib/ValueService.js';
 
@@ -176,37 +176,6 @@ describe('getState', () => {
     });
   });
 
-  it('asks for the periods before the calendar ones (Chart · Totals, verified on the Homey, 2026-10-27)', async () => {
-    const { service, api } = setup();
-    for (const span of ['today', 'yesterday', 'thisWeek', 'lastWeek', 'thisMonth', 'lastMonth', 'thisYear', 'lastYear']) {
-      await service.getState(['sensor:measure_humidity'], span, { prev: true });
-    }
-    expect(api.insights.getLogEntries.mock.calls.map((c: any[]) => c[0].resolution)).toEqual([
-      'yesterday', 'last3Days', 'lastWeek', 'last31Days', 'lastMonth', 'last3Months', 'lastYear', 'last2Years',
-    ]);
-  });
-
-  it('has no period before a rolling span', async () => {
-    const { service, api } = setup();
-    const [s] = await service.getState(['sensor:measure_humidity'], '24h', { prev: true });
-    expect(s).toMatchObject({ value: 48, points: [] });
-    expect(api.insights.getLogEntries).not.toHaveBeenCalled();
-  });
-
-  it('gives a running total with use, and keeps it apart from the values', async () => {
-    // A monthly utility meter, 6-hour steps: 10 kWh a step up to 80, then reset at the month's start.
-    const start = Date.parse('2026-09-30T18:00:00Z');
-    const vs = [50, 60, 70, 80, 5, 15];
-    const { service, api } = setup(() => ({ values: vs.map((v, i) => ({ t: new Date(start + i * 6 * HOUR).toISOString(), v })) }));
-    const [use] = await service.getState(['sensor:measure_humidity'], 'thisMonth', { use: true }) as any[];
-    expect(use.points).toEqual(vs.map((_, i) => [start + i * 6 * HOUR + 3 * HOUR, [50, 60, 70, 80, 85, 95][i]]));
-    expect(use.meter).toEqual({ offset: 80, high: 15 });
-    const [plain] = await service.getState(['sensor:measure_humidity'], 'thisMonth') as any[];
-    expect(plain.meter).toBeUndefined();
-    expect(plain.points.at(-1)[1]).toBe(15); // the value's own, not its total
-    expect(api.insights.getLogEntries).toHaveBeenCalledTimes(1); // one log, two histories
-  });
-
   it("draws today over the log's day, up to now", async () => {
     const midnight = NOW - 14 * HOUR;
     const { service } = setup(args => ({ ...entries(args), start: new Date(midnight).toISOString(), end: new Date(NOW + 5 * 60e3).toISOString() }));
@@ -347,22 +316,23 @@ describe('runningTotal', () => {
   });
 });
 
-describe('meterPoints', () => {
+describe('meterPointsOf', () => {
+  const at = (values: { t: string, v: number }[], step: number) => values.map(e => ({ t: Date.parse(e.t), w: e.v, step }));
+
   it("puts each entry at its step's middle and averages runs beyond the most points", () => {
     const values = Array.from({ length: 1000 }, (_, i) => ({ t: new Date(NOW + i * HOUR).toISOString(), v: i }));
-    const { points } = meterPoints({ values }, HOUR);
+    const { points } = meterPointsOf(at(values, HOUR));
     expect(points).toHaveLength(Math.ceil(1000 / 3));
     expect(points.length).toBeLessThanOrEqual(MAX_METER_POINTS);
     // Runs of three entries (0–2, 3–5 …): the middle one's middle.
     expect(points[0]).toEqual([NOW + HOUR + HOUR / 2, 1]);
     expect(points[1]).toEqual([NOW + 4 * HOUR + HOUR / 2, 4]);
-    expect(meterPoints({ values: values.slice(0, 3) }, HOUR).points.map(p => p[0]))
+    expect(meterPointsOf(at(values.slice(0, 3), HOUR)).points.map(p => p[0]))
       .toEqual([0, 1, 2].map(i => NOW + i * HOUR + HOUR / 2));
   });
 
-  it("takes the log's own step where it gives one", () => {
+  it("puts each entry at its own log's step middle", () => {
     // Homey's thisWeek came in 5-minute steps (2026-10-27), whatever the table says.
-    const res = { step: 5 * 60e3, values: [{ t: new Date(NOW).toISOString(), v: 1 }] };
-    expect(meterPoints(res, HOUR).points).toEqual([[NOW + 2.5 * 60e3, 1]]);
+    expect(meterPointsOf(at([{ t: new Date(NOW).toISOString(), v: 1 }], 5 * 60e3)).points).toEqual([[NOW + 2.5 * 60e3, 1]]);
   });
 });

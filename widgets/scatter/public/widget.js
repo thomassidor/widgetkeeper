@@ -5,7 +5,7 @@
  * `window.WidgetkeeperChart`, loaded first). Plain browser JS (served as-is).
  */
 (function () {
-  const { scaled, formatNumber, timeSpan, isTimeSpan, sixHourSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { scaled, formatNumber, timeSpan, isTimeSpan, sixHourLog } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart;
@@ -73,13 +73,13 @@
 
     /**
      * A dot's time over the window: an hour or a day when set, else the shortest of `DOT_STEPS` giving at most `MAX_DOTS`,
-     * no shorter than 6 h where Homey's log is 6-hourly (`sixHourSpan()`).
+     * no shorter than 6 h where Homey's log is 6-hourly (the kit's `sixHourLog()`).
      */
     function dotUnit(win) {
       if (dots === 'hour') return HOUR;
       if (dots === 'day') return DAY;
       const length = s => (s === 'week' ? 7 * DAY : s);
-      const least = sixHourSpan(span) ? 6 * HOUR : 0;
+      const least = [state.x, state.y].some(sixHourLog) ? 6 * HOUR : 0;
       return DOT_STEPS.find(s => length(s) >= least && (win.to - win.from) / length(s) <= MAX_DOTS) || 'week';
     }
 
@@ -206,56 +206,30 @@
     // ------------------------------------------------------------------ interaction
 
     /** The dot nearest the pointer, within `PICK_PX`, kept as its time. */
-    function scrub(px, py) {
-      if (!drawn) return;
+    frame.select(svg, state, (px, py) => {
+      if (!drawn) return undefined;
       let best = null, bestD = PICK_PX;
       for (const d of drawn.dots) {
         const dd = Math.hypot(d.px - px, d.py - py);
         if (dd <= bestD) { best = d; bestD = dd; }
       }
-      const at = best ? best.t : null;
-      if (at !== state.sel) { state.sel = at; frame.render(); }
-    }
-    frame.scrub(svg, scrub, () => { if (state.sel != null) { state.sel = null; frame.render(); } });
+      return best ? best.t : null;
+    });
 
     // ------------------------------------------------------------------ public API
-
-    /** An entry with the live points newer than its refreshed history kept (it's cached up to 5 min). */
-    function merged(s, old) {
-      if (!ok(s)) return s || { missing: true };
-      const points = Array.isArray(s.points) ? s.points.slice() : [];
-      const same = ok(old) && old.deviceId === s.deviceId && old.capabilityId === s.capabilityId;
-      const after = points.length ? points[points.length - 1][0] : -Infinity;
-      return { ...s, points: points.concat(same ? old.points.filter(p => p[0] > after) : []) };
-    }
 
     return frame.api({
       /** The two values' states, across and up (`/state`'s `charts`). */
       setState(list, lang) {
         if (lang) frame.language = lang;
         const [x, y] = Array.isArray(list) ? list : [];
-        state.x = merged(x, state.x);
-        state.y = merged(y, state.y);
+        state.x = C.keepLive(x, state.x);
+        state.y = C.keepLive(y, state.y);
         frame.resetMessage();
         frame.render();
       },
-      /** A realtime value (Device Values' `values:state`): appended to the value it is, across or up. */
-      pushChange({ deviceId, capabilityId, value }) {
-        const at = now();
-        const win = timeSpan(span, at);
-        let changed = false;
-        for (const s of [state.x, state.y]) {
-          if (!ok(s) || s.deviceId !== deviceId || s.capabilityId !== capabilityId) continue;
-          s.value = value;
-          // Not onto Homey's 6-hour averages (`sixHourSpan()`): the value now still fills the last dot.
-          if (typeof value === 'number' && isFinite(value) && win.end === at && !sixHourSpan(span)) {
-            s.points.push([at, value]);
-            while (s.points.length && s.points[0][0] < win.from) s.points.shift();
-          }
-          changed = true;
-        }
-        if (changed) frame.renderIfSeen();
-      },
+      /** A realtime value (Device Values' `values:state`): appended to the value it is, across or up (not onto 6-hour averages: the value now still fills the last dot). */
+      pushChange(change) { frame.pushLive([state.x, state.y], change, at => timeSpan(span, at)); },
       /** Both values' window now, as `/state` asks for them (lib/chartState.ts): `<span>~<from>~<end>~<unit>`. */
       windows: () => {
         const w = timeSpan(span, now());

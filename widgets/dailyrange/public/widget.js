@@ -4,7 +4,7 @@
  * chart module (../electricity/chart.js, `window.WidgetkeeperChart`, loaded first). Plain browser JS (served as-is).
  */
 (function () {
-  const { scaled, formatNumber, timeSpan, isTimeSpan, sixHourSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { scaled, formatNumber, timeSpan, isTimeSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart;
@@ -176,13 +176,11 @@
     // ------------------------------------------------------------------ interaction
 
     /** The bar under the pointer, kept as its start; a bar without a value selects nothing. */
-    function scrub(px) {
-      if (!drawn) return;
+    frame.select(svg, state, (px) => {
+      if (!drawn) return undefined;
       const bar = drawn.bars.find(b => px >= b.x0 && px < b.x1);
-      const at = bar && bar.max != null ? bar.t : null;
-      if (at !== state.sel) { state.sel = at; frame.render(); }
-    }
-    frame.scrub(svg, scrub, () => { if (state.sel != null) { state.sel = null; frame.render(); } });
+      return bar && bar.max != null ? bar.t : null;
+    });
 
     // ------------------------------------------------------------------ public API
 
@@ -191,26 +189,12 @@
       setState(list, lang) {
         if (lang) frame.language = lang;
         const [s] = Array.isArray(list) ? list : [];
-        const old = state.entry;
-        if (ok(s)) {
-          const points = Array.isArray(s.points) ? s.points.slice() : [];
-          const same = ok(old) && old.deviceId === s.deviceId && old.capabilityId === s.capabilityId;
-          const after = points.length ? points[points.length - 1][0] : -Infinity;
-          state.entry = { ...s, points: points.concat(same ? old.points.filter(p => p[0] > after) : []) };
-        } else state.entry = s || { missing: true };
+        state.entry = C.keepLive(s, state.entry);
         frame.resetMessage();
         frame.render();
       },
       /** A realtime value (Device Values' `values:state`): into the bar under way (not onto Homey's 6-hour averages). */
-      pushChange({ deviceId, capabilityId, value }) {
-        const s = state.entry;
-        if (!ok(s) || s.deviceId !== deviceId || s.capabilityId !== capabilityId) return;
-        s.value = value;
-        const at = now();
-        const win = timeSpan(span, at);
-        if (typeof value === 'number' && isFinite(value) && win.end === at && !sixHourSpan(span)) s.points.push([at, value]);
-        frame.renderIfSeen();
-      },
+      pushChange(change) { frame.pushLive([state.entry], change, at => timeSpan(span, at)); },
       /** The span's window now, as `/state` asks for it (lib/chartState.ts), with up to 400 points (`~fine`). */
       windows: () => {
         const w = timeSpan(span, now());

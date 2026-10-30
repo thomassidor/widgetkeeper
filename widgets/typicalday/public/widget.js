@@ -174,43 +174,26 @@
     // ------------------------------------------------------------------ interaction
 
     /** The hour under the pointer, kept as its number (0–23); none past now. */
-    function scrub(px) {
-      if (!drawn) return;
+    frame.select(svg, state, (px) => {
+      if (!drawn) return undefined;
       const at = drawn.win.from + (px - L) / drawn.pw * (drawn.win.to - drawn.win.from);
-      const h = at >= drawn.win.from && at < drawn.win.to ? new Date(at).getHours() : null;
-      if (h !== state.sel) { state.sel = h; frame.render(); }
-    }
-    frame.scrub(svg, scrub, () => { if (state.sel != null) { state.sel = null; frame.render(); } });
+      return at >= drawn.win.from && at < drawn.win.to ? new Date(at).getHours() : null;
+    });
 
     // ------------------------------------------------------------------ public API
-
-    /** An entry with the live points newer than its refreshed history kept (it's cached up to 5 min). */
-    function merged(s, old) {
-      if (!ok(s)) return s || { missing: true };
-      const points = Array.isArray(s.points) ? s.points.slice() : [];
-      const same = ok(old) && old.deviceId === s.deviceId && old.capabilityId === s.capabilityId;
-      const after = points.length ? points[points.length - 1][0] : -Infinity;
-      return { ...s, points: points.concat(same ? old.points.filter(p => p[0] > after) : []) };
-    }
 
     return frame.api({
       /** Today's state and the last days' (`/state`'s `charts`). */
       setState(list, lang) {
         if (lang) frame.language = lang;
         const [today, past] = Array.isArray(list) ? list : [];
-        state.today = merged(today, state.today);
+        state.today = C.keepLive(today, state.today);
         state.past = past || null;
         frame.resetMessage();
         frame.render();
       },
       /** A realtime value (Device Values' `values:state`): appended to today's line. */
-      pushChange({ deviceId, capabilityId, value }) {
-        const s = state.today;
-        if (!ok(s) || s.deviceId !== deviceId || s.capabilityId !== capabilityId) return;
-        s.value = value;
-        if (typeof value === 'number' && isFinite(value)) s.points.push([now(), value]);
-        frame.renderIfSeen();
-      },
+      pushChange(change) { frame.pushLive([state.today], change, at => timeSpan('1d!', at)); },
       /**
        * Today's window and the last days' (rolling, so Insights' hourly log holds them), as `/state` asks for them
        * (lib/chartState.ts): `<span>~<from>~<end>~<unit>`.

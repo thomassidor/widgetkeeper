@@ -303,22 +303,14 @@
     return parseSpan(span) != null;
   }
 
-  /** Whole periods' unit (`day`, `week`, `month`, `year`), whose axis is the whole periods; null for a rolling span. */
-  function spanUnit(span) {
-    const p = parseSpan(span);
-    return p && p.whole ? p.unit : null;
-  }
-
   /**
-   * Whether a span is read from Homey's 6-hour (or weekly) averages: anything over 8 days but a whole two weeks
-   * (`planLogs()` in lib/logPlan.ts). Live values aren't appended to it (a meter's would pile up behind the log).
+   * Whether a chart's history came from Homey's 6-hour (or weekly) averages: its `step` in `/state`, the coarsest of the
+   * logs the app read for it (lib/SparklineService.ts), not a guess from the span. Live values aren't appended to it (a
+   * meter's would pile up behind the log).
+   * @param {{ step?: number } | null | undefined} entry
    */
-  function sixHourSpan(span) {
-    const p = parseSpan(span);
-    if (!p) return false;
-    if (p.unit === 'month' || p.unit === 'year') return true;
-    const days = p.unit === 'week' ? 7 * p.count : p.unit === 'day' ? p.count : p.count * UNIT_MS[p.unit] / DAY;
-    return days > (p.whole && p.unit === 'week' ? 14 : 8);
+  function sixHourLog(entry) {
+    return !!entry && typeof entry.step === 'number' && entry.step >= DAY / 4;
   }
 
   /** The time span block's units (scripts/chart-settings.json `span{n}`): the rolling ones, then whole periods. */
@@ -866,7 +858,7 @@
 
   window.WidgetkeeperKit = {
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, undoTextZoom, el, setMask, tileNames, timeFormatter,
-    formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, spanUnit, sixHourSpan, spanSetting, spanFields, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
+    formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, spanFields, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     onDeviceNames, colorStyle, applyColors, sound,
   };
 })();

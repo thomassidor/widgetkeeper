@@ -275,14 +275,12 @@
     // ------------------------------------------------------------------ interaction
 
     /** The row under the pointer, and the band under it on that row (kept as the row's place and the band's start). */
-    function scrub(px, py) {
-      if (!drawn) return;
+    frame.select(svg, state, (px, py) => {
+      if (!drawn) return undefined;
       const row = drawn.rows.find(r => !r.missing && r.hits && py >= r.ty - TRACK_Y && py < r.ty - TRACK_Y + ROW);
       const band = row ? row.hits.find(b => px >= b.x0 - HIT && px <= b.x1 + HIT) : null;
-      const sel = row ? { row: row.i, at: band ? band.from : null } : null;
-      if (JSON.stringify(sel) !== JSON.stringify(state.sel)) { state.sel = sel; frame.render(); }
-    }
-    frame.scrub(svg, scrub, () => { if (state.sel != null) { state.sel = null; frame.render(); } });
+      return row ? { row: row.i, at: band ? band.from : null } : null;
+    });
 
     // ------------------------------------------------------------------ public API
 
@@ -291,15 +289,8 @@
       setState(list, lang) {
         if (lang) frame.language = lang;
         const previous = state.entries;
-        state.entries = (Array.isArray(list) ? list : []).slice(0, MAX).map((s, i) => {
-          if (!ok(s)) return s || { missing: true };
-          if (Array.isArray(s.points)) s = numberRow(s, i);
-          const old = previous[i];
-          const changes = Array.isArray(s.changes) ? s.changes.slice() : [];
-          const same = ok(old) && old.deviceId === s.deviceId && old.capabilityId === s.capabilityId;
-          const after = changes.length ? changes[changes.length - 1][0] : -Infinity;
-          return { ...s, changes: changes.concat(same ? old.changes.filter(c => c[0] > after) : []) };
-        });
+        state.entries = (Array.isArray(list) ? list : []).slice(0, MAX)
+          .map((s, i) => C.keepLive(ok(s) && Array.isArray(s.points) ? numberRow(s, i) : s, previous[i], 'changes'));
         frame.resetMessage();
         frame.render();
       },

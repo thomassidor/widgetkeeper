@@ -290,3 +290,45 @@ describe('axisLabel', () => {
     expect(C.axisLabel(nf, -40, 20)).toBe('−40');
   });
 });
+
+describe('live values', () => {
+  const HOUR = 3600e3;
+  const value = (points: [number, number][], extra: Record<string, unknown> = {}) => ({ deviceId: 'd', capabilityId: 'c', name: 'D', value: 1, points, ...extra });
+
+  it("keeps a refresh's history and the live points of the same value newer than it", () => {
+    const old = value([[1, 1], [5, 2], [9, 3]]);
+    expect(C.keepLive(value([[1, 1], [5, 2]]), old).points).toEqual([[1, 1], [5, 2], [9, 3]]);
+    expect(C.keepLive(value([[1, 1]], { capabilityId: 'other' }), old).points).toEqual([[1, 1]]);
+    expect(C.keepLive(value([], { changes: [[2, 1]] }), value([], { changes: [[2, 1], [7, 0]] }), 'changes').changes).toEqual([[2, 1], [7, 0]]);
+    expect(C.keepLive(undefined, old)).toEqual({ missing: true });
+    expect(C.keepLive({ deviceId: 'd', capabilityId: 'c', missing: true }, old)).toEqual({ deviceId: 'd', capabilityId: 'c', missing: true });
+  });
+
+  it("appends a live value while the window runs to now, not onto 6-hour averages, keeping the point before the window", () => {
+    const s = value([[0, 1], [10, 2], [20, 3]]);
+    C.pushLive(s, 4, 30, { from: 15, end: 30 });
+    expect(s).toMatchObject({ value: 4, points: [[10, 2], [20, 3], [30, 4]] });
+    C.pushLive(s, 5, 40, { from: 15, end: 35 }); // a finished window
+    expect(s.points).toHaveLength(3);
+    const month = value([[0, 1]], { step: 6 * HOUR });
+    C.pushLive(month, 9, 30, { from: 0, end: 30 });
+    expect(month).toMatchObject({ value: 9, points: [[0, 1]] });
+  });
+
+  it('keeps a tap selection on the frame, drawn only when it changes, cleared when the pointer leaves', () => {
+    const root = document.createElement('div');
+    document.body.append(root);
+    let draws = 0;
+    const frame = C.createFrame(root, { cls: 'x', prefix: 'x', redrawMs: 60e3, has: () => true, clear() {}, draw: () => { draws++; }, header() {} });
+    const state: { sel: unknown, selY?: unknown } = { sel: null };
+    const { svg: s } = frame.boxes[0];
+    frame.select(s, state, (px: number) => (px > 50 ? { row: 1 } : null), { withY: true });
+    const before = draws;
+    s.dispatchEvent(new PointerEvent('pointerdown', { clientX: 80, clientY: 7, pointerType: 'mouse' }));
+    expect(state).toEqual({ sel: { row: 1 }, selY: 7 });
+    s.dispatchEvent(new PointerEvent('pointermove', { clientX: 90, clientY: 7, pointerType: 'mouse' }));
+    expect(draws).toBe(before + 1); // the same row and height
+    s.dispatchEvent(new PointerEvent('pointerleave', { pointerType: 'mouse' }));
+    expect(state).toEqual({ sel: null, selY: null });
+  });
+});

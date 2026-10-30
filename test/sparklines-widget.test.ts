@@ -162,7 +162,8 @@ describe('weeks, months and years (wk-104)', () => {
 
   it('keeps live values off a month or year, the line still running on to the value now', () => {
     const points = [[at('2026-01-20T12:00:00'), 18], [at('2026-09-20T12:00:00'), 21.5]];
-    const { w, text, setNow } = widget([temp({ points })], { span: 'thisYear' });
+    // The app sends the step of the log it read: Homey's 6-hour averages for a year.
+    const { w, text, setNow } = widget([temp({ points, step: 6 * 3600e3 })], { span: 'thisYear' });
     setNow(NOW + 60e3);
     w.pushChange({ deviceId: 'a', capabilityId: 'measure_temperature', value: 25 });
     expect(text('.sl-max')).toEqual(['↑25']);
