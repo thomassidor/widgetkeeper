@@ -9,6 +9,9 @@ const DAY = 24 * HOUR;
 const NOW = new Date('2026-10-28T15:30:00').getTime(); // Europe/Copenhagen (vitest.config.ts)
 const MIDNIGHT = new Date('2026-10-28T00:00:00').getTime();
 
+/** A number as the widget writes it: in the system locale (the kit's `formatNumber()` doesn't take `opts.locale`). */
+const num = (v: number) => v.toLocaleString(undefined, { maximumFractionDigits: 2 });
+
 let win: any;
 beforeAll(() => { win = loadWidget('typicalday'); loadMount('typicalday'); });
 beforeEach(() => {
@@ -62,7 +65,7 @@ describe('the usual day', () => {
     expect(r.q('path.td-band')).not.toBeNull();
     expect(r.q('path.td-usual')).not.toBeNull();
     expect(r.q('path.series-line')).not.toBeNull();
-    expect(r.header()).toEqual(['2kW | Now', '1,25kW | Usual at 15:00']);
+    expect(r.header()).toEqual(['2kW | Now', `${num(1.25)}kW | Usual at 15:00`]);
     expect(r.all('.ew-chip').map(c => c.textContent)).toEqual(['House · Power – kW', 'Usual · 7 d']);
     expect(r.all('svg text').map(t => t.textContent)).toEqual(expect.arrayContaining(['6:00', '12:00', '18:00']));
     // Without the spread, only the dashed average.
@@ -72,7 +75,7 @@ describe('the usual day', () => {
   it("shows a tapped hour's value today and as usual", () => {
     const r = widget({}, [today(), past()]);
     r.tap(8);
-    expect(r.header()).toEqual(['2kW | 08:00', '1,25kW | Usual at 08:00']);
+    expect(r.header()).toEqual(['2kW | 08:00', `${num(1.25)}kW | Usual at 08:00`]);
     expect(r.q('path.cursor')).not.toBeNull();
   });
 });

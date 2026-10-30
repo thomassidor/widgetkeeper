@@ -8,6 +8,9 @@ const HOUR = 60 * MIN;
 const NOW = new Date('2026-10-28T15:30:00').getTime(); // Europe/Copenhagen (vitest.config.ts)
 const OCT1 = new Date('2026-10-01T00:00:00').getTime();
 
+/** A number as the widget writes it: in the system locale (the kit's `formatNumber()` doesn't take `opts.locale`). */
+const num = (v: number) => v.toLocaleString(undefined, { maximumFractionDigits: 2 });
+
 let win: any;
 beforeAll(() => { win = loadWidget('dailyrange'); loadMount('dailyrange'); });
 beforeEach(() => {
@@ -54,7 +57,7 @@ describe('the bars', () => {
     expect(h[9]).toBeGreaterThan(h[8] * 1.4); // the 10th went up to 20°
     expect(r.all('path.dr-avg')).toHaveLength(28);
     // Today so far: its 16:00 high is still to come.
-    expect(r.header()).toEqual([`13,2°C | High · ${r.day(28)}`, `4°C | Low · ${r.day(28)}`]);
+    expect(r.header()).toEqual([`${num(13.2)}°C | High · ${r.day(28)}`, `4°C | Low · ${r.day(28)}`]);
     const date = (d: number) => new Intl.DateTimeFormat('en', { day: 'numeric', month: 'short' }).format(new Date(2026, 9, d));
     expect(r.all('svg text').map(t => t.textContent)).toEqual(expect.arrayContaining([date(7), date(14)]));
   });

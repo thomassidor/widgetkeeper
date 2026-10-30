@@ -8,6 +8,9 @@ const HOUR = 60 * MIN;
 const NOW = new Date('2026-10-28T15:30:00').getTime(); // Europe/Copenhagen (vitest.config.ts)
 const MIDNIGHT = new Date('2026-10-28T00:00:00').getTime();
 
+/** A number as the widget writes it: in the system locale (the kit's `formatNumber()` doesn't take `opts.locale`). */
+const num = (v: number) => v.toLocaleString(undefined, { maximumFractionDigits: 2 });
+
 let win: any;
 beforeAll(() => { win = loadWidget('compare'); loadMount('compare'); });
 beforeEach(() => {
@@ -48,10 +51,10 @@ describe('the rows', () => {
   it('puts a row per value, highest first, each with its range today and its value now', () => {
     const r = widget({}, rooms());
     expect(r.names()).toEqual(['Bathroom', 'Kitchen', 'Hall']);
-    expect(r.nums()).toEqual(['23,5°C', '21,4°C', '18,3°C']); // the kit's number format
+    expect(r.nums()).toEqual([`${num(23.5)}°C`, `${num(21.4)}°C`, `${num(18.3)}°C`]); // the kit's number format
     expect(r.all('rect.cp-range')).toHaveLength(3);
     expect(r.all('circle.cp-dot')).toHaveLength(3);
-    expect(r.header()).toEqual(['23,5°C | Highest · Bathroom', '18,3°C | Lowest · Hall']);
+    expect(r.header()).toEqual([`${num(23.5)}°C | Highest · Bathroom`, `${num(18.3)}°C | Lowest · Hall`]);
     expect(r.all('.ew-chip').map(c => c.textContent)).toEqual(['Temperature – °C', 'Range']);
   });
 
@@ -64,7 +67,7 @@ describe('the rows', () => {
   it("shows a tapped row's value and its range", () => {
     const r = widget({}, rooms());
     r.tap(1);
-    expect(r.header()).toEqual(['21,4°C | Kitchen', '19,8–23,4°C | Range']);
+    expect(r.header()).toEqual([`${num(21.4)}°C | Kitchen`, `${num(19.8)}–${num(23.4)}°C | Range`]);
     expect(r.q('circle.dot-core')).not.toBeNull();
   });
 
