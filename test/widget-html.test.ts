@@ -32,7 +32,8 @@ describe('copied widget helpers', () => {
 
   it('no widget keeps a copy of a kit helper', () => {
     const kit = ['undoTextZoom', 'el', 'setMask', 'tileNames', 'timeFormatter', 'formatSince', 'baseTitle', 'lowestSlot', 'loadMarks', 'wireTileNames',
-      'wireFrame', 'getDeviceIds', 'perfParam', 'bodyHeight', 'frameHeight', 'touchGuard', 'messageLine', 'wireDeviceState'];
+      'wireFrame', 'getDeviceIds', 'perfParam', 'bodyHeight', 'frameHeight', 'touchGuard', 'messageLine', 'wireDeviceState',
+      'wireBar', 'setBlend', 'swatchList', 'roomTiles', 'optimistic'];
     for (const id of WIDGETS) {
       for (const file of ['widget.js', 'mount.js', 'index.html']) {
         if (!existsSync(`widgets/${id}/public/${file}`)) continue;
@@ -72,8 +73,12 @@ describe('copied widget helpers', () => {
     expectSame(['values', 'sparklines', 'variables'].map(id => source(id, 'nameKeys')));
   });
 
-  it('wireBar() is the same in Light Controls, Lights by Room and Curtains', () => {
-    expectSame(['lights', 'lightrooms', 'curtains'].map(id => source(id, 'wireBar')));
+  it("Light Controls and Lights by Room keep no copy of the kit's light state (lights.model())", () => {
+    for (const id of ['lights', 'lightrooms']) {
+      for (const fn of ['shown', 'hope', 'isOn', 'brightness', 'itemBrightness', 'colorsOf', 'isCurrent']) expect(source(id, fn), `${id}: ${fn}()`).toBeNull();
+      expect(read(id, 'widget.js'), `${id}: an optimistic map of its own`).not.toMatch(/const optimistic = new Map/);
+    }
+    expect(read('curtains', 'widget.js'), 'curtains: an optimistic map of its own').not.toMatch(/const optimistic = new Map/);
   });
 
 

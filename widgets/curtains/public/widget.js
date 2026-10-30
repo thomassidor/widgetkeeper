@@ -4,7 +4,7 @@
  * bottom sets the position (0 = closed, 1 = open). Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, applyColors, onTap: kitOnTap, touchGuard, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, applyColors, onTap: kitOnTap, touchGuard, messageLine, optimistic: hoped, wireBar, roomTiles } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const OPTIMISTIC_MS = 10e3; // how long a changed tile shows its new value while waiting for the device
@@ -152,7 +152,8 @@
      * @type {({id: string, name: string, kind: string, members: any[]} | {id: string, missing: true})[]}
      */
     let items = [];
-    const optimistic = new Map(); // `${deviceId}:${capabilityId}` → { value, until }
+    const optimistic = hoped(() => render(), OPTIMISTIC_MS); // values just sent, until the device confirms them
+    const { shown } = optimistic;
     /** Where a curtain was sent: deviceId → { value (0–1), dir (1 open, -1 close), until }. */
     const pending = new Map();
     /** The direction each curtain last moved: 1 (opening) or -1 (closing). */
@@ -190,7 +191,7 @@
       const old = d.caps[capabilityId].value;
       d.caps[capabilityId].value = value;
       // Any report replaces what was hoped for: a curtain reports where it is, also on its way.
-      optimistic.delete(`${deviceId}:${capabilityId}`);
+      optimistic.drop(deviceId, capabilityId);
       if (capabilityId === 'windowcoverings_state') {
         if (value === 'up' && motorSaysDirection(d)) lastDir.set(deviceId, 1);
         else if (value === 'down' && motorSaysDirection(d)) lastDir.set(deviceId, -1);
@@ -206,7 +207,7 @@
         const p = pending.get(deviceId);
         if (p && typeof value === 'number' && Math.abs(toOpen(d, value) - p.value) <= ARRIVE) {
           pending.delete(deviceId);
-          optimistic.delete(`${deviceId}:windowcoverings_state`);
+          optimistic.drop(deviceId, 'windowcoverings_state');
         }
       } else if (capabilityId === 'windowcoverings_closed') {
         pending.delete(deviceId);
@@ -218,15 +219,6 @@
     /** A message under the tiles. Persistent messages also clear the tiles. */
     function setMessage(text, transient) {
       message.set(text, transient);
-    }
-
-    /** A capability's value, or the one just sent while the device hasn't confirmed it. */
-    function shown(d, capabilityId) {
-      const key = `${d.id}:${capabilityId}`;
-      const o = optimistic.get(key);
-      if (o && Date.now() < o.until) return o.value;
-      optimistic.delete(key);
-      return d.caps[capabilityId] ? d.caps[capabilityId].value : null;
     }
 
     const settable = (d, id) => !!d.caps[id] && d.caps[id].setable !== false;
@@ -294,7 +286,7 @@
       } catch (err) {
         console.error(err);
         pending.delete(d.id);
-        for (const id of ALL_CAPS) optimistic.delete(`${d.id}:${id}`);
+        optimistic.drop(d.id, ALL_CAPS);
         shake(item.id);
         setMessage(t('failed', { name: item.id === d.id ? names.name(d.id, d.name) : d.name }), true);
       }
@@ -302,10 +294,7 @@
 
     function shake(id) {
       const tile = tiles.get(id);
-      if (!tile) return;
-      tile.tile.classList.remove('shake');
-      void tile.tile.offsetWidth; // restart the animation
-      tile.tile.classList.add('shake');
+      if (tile) window.WidgetkeeperKit.shake(tile.tile);
     }
 
     /** The tile with this id, if it shows curtains. */
@@ -335,11 +324,11 @@
         changes.push([d, canPosition(d) ? { position: fromOpen(d, open ? 1 : 0) } : { action }]);
         if (!posCap(d) && !settable(d, 'windowcoverings_state')) {
           // Only open/closed: it's there as soon as the device says so.
-          optimistic.set(`${d.id}:windowcoverings_closed`, { value: !open, until: Date.now() + OPTIMISTIC_MS });
+          optimistic.set(d.id, 'windowcoverings_closed', !open);
           lastDir.set(d.id, open ? 1 : -1);
         } else {
           // Also while it moves the other way: the motor's `up`/`down` is hoped over until it reports.
-          if (motorSaysDirection(d)) optimistic.set(`${d.id}:windowcoverings_state`, { value: open ? 'up' : 'down', until: Date.now() + OPTIMISTIC_MS });
+          if (motorSaysDirection(d)) optimistic.set(d.id, 'windowcoverings_state', open ? 'up' : 'down');
           expectMove(d, open ? 1 : 0, open ? 1 : -1);
         }
       }
@@ -368,69 +357,6 @@
     /** Taps on the tile body; `stop` keeps a control's taps (and keys) from also reaching the tile around it. */
     function onTap(node, fn, { stop = false } = {}) {
       kitOnTap(node, fn, { stop, guard: touches });
-    }
-
-    /**
-     * The bar: a drag sets the value live and sends it when let go; a tap sets it where it lands. The
-     * touches are taken (preventDefault, touch-action: none) so iOS doesn't scroll the dashboard. Homey's
-     * Android app takes the touch anyway after about 100 ms (touchcancel): that gesture is dropped, but a
-     * quick tap still gets through. As Light Controls' bar.
-     */
-    function wireBar(id, bar) {
-      const at = clientX => {
-        const r = bar.getBoundingClientRect();
-        return r.width ? clamp01((clientX - r.left) / r.width) : 0;
-      };
-      const move = (clientX) => {
-        drags.set(id, at(clientX));
-        render();
-      };
-      const end = (commitIt) => {
-        if (!drags.has(id)) return;
-        const x = drags.get(id);
-        drags.delete(id);
-        bar.classList.remove('dragging');
-        if (commitIt) commit(id, x);
-        else render();
-      };
-      bar.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        bar.classList.add('dragging');
-        move(e.changedTouches[0].clientX);
-      }, { passive: false });
-      bar.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        move(e.changedTouches[0].clientX);
-      }, { passive: false });
-      bar.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        touches.touched();
-        end(true);
-      });
-      bar.addEventListener('touchcancel', () => end(false));
-      // Mouse (and pen): pointer events with capture, ignored for touch (handled above).
-      bar.addEventListener('pointerdown', (e) => {
-        if (e.pointerType === 'touch') return;
-        e.preventDefault();
-        if (bar.setPointerCapture) bar.setPointerCapture(e.pointerId);
-        bar.classList.add('dragging');
-        move(e.clientX);
-      });
-      bar.addEventListener('pointermove', (e) => {
-        if (e.pointerType === 'touch' || !drags.has(id)) return;
-        move(e.clientX);
-      });
-      bar.addEventListener('pointerup', (e) => {
-        if (e.pointerType === 'touch') return;
-        end(true);
-      });
-      bar.addEventListener('pointercancel', (e) => {
-        if (e.pointerType === 'touch') return;
-        end(false);
-      });
-      bar.addEventListener('click', e => e.stopPropagation()); // not a tap on the tile
     }
 
     /**
@@ -475,38 +401,18 @@
         el('div', { class: 'ct-knob' }, bar);
         tile = { tile: node, icon, act, name, state, bar };
         onTap(node, () => tap(id));
-        wireBar(id, bar);
+        wireBar(bar, { id, drags, guard: touches, render: () => render(), commit });
         tiles.set(id, tile);
       }
       return tile;
     }
 
     /** The tiles for the curtains, grouped by room with `groupByZone`. */
-    function buildItems() {
-      const usable = d => !('missing' in d) && d.caps && Object.keys(d.caps).length > 0;
-      const rooms = new Map(); // zone id → its usable curtains
-      if (opts.groupByZone) {
-        for (const d of devices) {
-          if (!usable(d) || !d.zone) continue;
-          if (!rooms.has(d.zone.id)) rooms.set(d.zone.id, []);
-          rooms.get(d.zone.id).push(d);
-        }
-      }
-      const out = [];
-      const placed = new Set();
-      for (const d of devices) {
-        if (!usable(d)) { out.push({ id: d.id, missing: true }); continue; }
-        const room = d.zone ? rooms.get(d.zone.id) : null;
-        if (room && room.length > 1) {
-          if (placed.has(d.zone.id)) continue;
-          placed.add(d.zone.id);
-          out.push({ id: `zone:${d.zone.id}`, name: d.zone.name, kind: room[0].kind, members: room });
-        } else {
-          out.push({ id: d.id, name: d.name, kind: d.kind, members: [d] });
-        }
-      }
-      return out;
-    }
+    const buildItems = () => roomTiles(devices, {
+      byZone: opts.groupByZone,
+      usable: d => !('missing' in d) && d.caps && Object.keys(d.caps).length > 0,
+      extra: d => ({ kind: d.kind }),
+    });
 
     let lastHeight = 0;
     function render() {

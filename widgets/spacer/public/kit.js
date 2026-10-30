@@ -695,6 +695,152 @@
     };
   }
 
+  /** How long a changed value is shown while waiting for the device to confirm it. */
+  const OPTIMISTIC_MS = 10e3;
+
+  /**
+   * Values just sent, shown over the reported ones until the device confirms them or `ms` passes (Light Controls,
+   * Lights by Room, Curtains). Keyed by device and capability.
+   */
+  function optimistic(render, ms = OPTIMISTIC_MS) {
+    const map = new Map(); // `${deviceId}:${capabilityId}` → { value, until }
+    return {
+      /** A capability's value, or the one just sent while the device hasn't confirmed it. */
+      shown(d, capabilityId) {
+        const key = `${d.id}:${capabilityId}`;
+        const o = map.get(key);
+        if (o && Date.now() < o.until) return o.value;
+        map.delete(key);
+        return d.caps[capabilityId] ? d.caps[capabilityId].value : null;
+      },
+      /** One value, without a render when it runs out (the caller schedules that). */
+      set(deviceId, capabilityId, value) { map.set(`${deviceId}:${capabilityId}`, { value, until: Date.now() + ms }); },
+      /** `values` for each of `devices` that has the capability, and a render when they run out. */
+      hope(devices, values) {
+        const until = Date.now() + ms;
+        for (const x of devices) {
+          for (const [id, value] of Object.entries(values)) {
+            if (x.caps[id]) map.set(`${x.id}:${id}`, { value, until });
+          }
+        }
+        setTimeout(render, ms + 50);
+      },
+      /** A report: drops the value hoped for once the device says the same. */
+      confirm(deviceId, capabilityId, value) {
+        const key = `${deviceId}:${capabilityId}`;
+        const o = map.get(key);
+        if (o && o.value === value) map.delete(key);
+      },
+      /** Drops what was hoped for these capabilities (one or a list). */
+      drop(deviceId, capabilityIds) {
+        for (const id of [].concat(capabilityIds)) map.delete(`${deviceId}:${id}`);
+      },
+    };
+  }
+
+  /** Restarts a node's shake animation (a failed change). */
+  function shake(node) {
+    if (!node) return;
+    node.classList.remove('shake');
+    void node.offsetWidth; // restart the animation
+    node.classList.add('shake');
+  }
+
+  /**
+   * A bar (Light Controls', Lights by Room's, Curtains'): a drag sets the value live (`drags`, id → 0–1, then a
+   * render) and `commit(id, x)` sends it when let go; a tap sets it where it lands. The touches are taken
+   * (preventDefault, touch-action: none) so iOS doesn't scroll the dashboard. Homey's Android app takes the touch
+   * anyway after about 100 ms (touchcancel): that gesture is dropped, but a quick tap still gets through.
+   * @param {HTMLElement} bar
+   * @param {{ id: string, drags: Map<string, number>, guard: TouchGuard, render: () => void, commit: (id: string, x: number) => void }} opts
+   */
+  function wireBar(bar, { id, drags, guard, render, commit }) {
+    const at = clientX => {
+      const r = bar.getBoundingClientRect();
+      return r.width ? Math.min(1, Math.max(0, (clientX - r.left) / r.width)) : 0;
+    };
+    const move = (clientX) => {
+      drags.set(id, at(clientX));
+      render();
+    };
+    const end = (commitIt) => {
+      if (!drags.has(id)) return;
+      const x = drags.get(id);
+      drags.delete(id);
+      bar.classList.remove('dragging');
+      if (commitIt) commit(id, x);
+      else render();
+    };
+    bar.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      bar.classList.add('dragging');
+      move(e.changedTouches[0].clientX);
+    }, { passive: false });
+    bar.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      move(e.changedTouches[0].clientX);
+    }, { passive: false });
+    bar.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      guard.touched();
+      end(true);
+    });
+    bar.addEventListener('touchcancel', () => end(false));
+    // Mouse (and pen): pointer events with capture, ignored for touch (handled above).
+    bar.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'touch') return;
+      e.preventDefault();
+      if (bar.setPointerCapture) bar.setPointerCapture(e.pointerId);
+      bar.classList.add('dragging');
+      move(e.clientX);
+    });
+    bar.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'touch' || !drags.has(id)) return;
+      move(e.clientX);
+    });
+    bar.addEventListener('pointerup', (e) => {
+      if (e.pointerType === 'touch') return;
+      end(true);
+    });
+    bar.addEventListener('pointercancel', (e) => {
+      if (e.pointerType === 'touch') return;
+      end(false);
+    });
+    bar.addEventListener('click', e => e.stopPropagation()); // not a tap on the tile
+  }
+
+  /**
+   * The tiles for a widget's devices (Light Controls, Curtains): one per device, or with `byZone` one per room that
+   * has two or more usable ones, placed where its first is (id `zone:<zoneId>`, the room's name). A device that isn't
+   * `usable` gets `{id, missing: true}`. `extra(first)` adds a tile's own fields from its (first) device.
+   */
+  function roomTiles(devices, { byZone, usable, extra }) {
+    const rooms = new Map(); // zone id → its usable devices
+    if (byZone) {
+      for (const d of devices) {
+        if (!usable(d) || !d.zone) continue;
+        if (!rooms.has(d.zone.id)) rooms.set(d.zone.id, []);
+        rooms.get(d.zone.id).push(d);
+      }
+    }
+    const out = [];
+    const placed = new Set();
+    for (const d of devices) {
+      if (!usable(d)) { out.push({ id: d.id, missing: true }); continue; }
+      const room = d.zone ? rooms.get(d.zone.id) : null;
+      if (room && room.length > 1) {
+        if (placed.has(d.zone.id)) continue;
+        placed.add(d.zone.id);
+        out.push({ id: `zone:${d.zone.id}`, name: d.zone.name, ...extra(room[0]), members: room });
+      } else {
+        out.push({ id: d.id, name: d.name, ...extra(d), members: [d] });
+      }
+    }
+    return out;
+  }
+
   /**
    * Light colours, shared by Light Controls and Lights by Room: the chip glyphs, the swatch palettes and the colour
    * a light, a swatch or a Mood shows.
@@ -768,7 +914,152 @@
     return list.length === 1 ? list[0] : `linear-gradient(135deg, ${list.join(', ')})`;
   }
 
-  const LIGHTS = { get glyphs() { return LIGHT_GLYPHS(); }, PALETTES, temperatureColor, hueColor, lightColor, moodDot };
+  /** The swatches for a light (or tile) from `palette`: its colours with colour, then its whites, or a plain white without them. */
+  function swatchList(palette, color, temp) {
+    return [
+      ...(color ? palette.colors.map(([hue, sat]) => ({ hue, sat })) : []),
+      ...(temp ? palette.whites.map(k => ({ k })) : color ? [{ hue: 0, sat: 0 }] : []),
+    ];
+  }
+
+  /**
+   * The gradients of a tile or row whose lights shine in several colours, in the widget's CSS variables
+   * (`--<prefix>-tint-bg` …): the tint (at `angle`, mixed into the tile as one colour is), the bar's fill (left to
+   * right, mixed as the fill is) and the chip's pie. Null clears them.
+   */
+  function setBlend(node, colors, prefix, angle) {
+    const v = name => `--${prefix}-${name}`;
+    const props = colors ? {
+      [v('tint-bg')]: `linear-gradient(${angle}, ${colors.map(c => `color-mix(in srgb, ${c} var(${v('tint')}), var(${v('tile')}))`).join(', ')})`,
+      [v('fill-bg')]: `linear-gradient(to right, ${colors.map(c => `color-mix(in srgb, ${c} var(${v('fill-share')}), var(${v('fill-with')}))`).join(', ')})`,
+      [v('pie')]: `conic-gradient(${colors.map((c, i) => `color-mix(in srgb, ${c} var(${v('fill-share')}), var(${v('fill-with')})) ${(i / colors.length) * 100}% ${((i + 1) / colors.length) * 100}%`).join(', ')})`,
+    } : { [v('tint-bg')]: '', [v('fill-bg')]: '', [v('pie')]: '' };
+    for (const [k, val] of Object.entries(props)) {
+      if (node.style.getPropertyValue(k) === val) continue;
+      if (val) node.style.setProperty(k, val);
+      else node.style.removeProperty(k);
+    }
+  }
+
+  /** At most this many colours on a tile (or in a room's tint) whose lights shine in several. */
+  const MAX_LIGHT_COLORS = 4;
+  const LIGHT_CAPS = ['onoff', 'dim', 'light_temperature', 'light_mode', 'light_hue', 'light_saturation'];
+
+  /**
+   * The lights' state as Light Controls and Lights by Room show it: the reported values with the optimistic ones
+   * over them, and what follows from them (on, brightness, colours). A tile or room is an item `{id, members}`.
+   * @param {{ render: () => void, roomLevel?: string }} opts
+   */
+  function lightModel({ render, roomLevel }) {
+    const values = optimistic(render);
+    const { shown } = values;
+    /** Each light's last brightness above 0, which the app restores on a light without `onoff`. */
+    const lastDim = new Map();
+    const noteDim = (id, value) => { if (typeof value === 'number' && value > 0) lastDim.set(id, value); };
+    /** A light and, for a Homey group device, the lights in it (`groupLights`). */
+    const withGroup = d => [d, ...(Array.isArray(d.groupLights) ? d.groupLights : [])];
+
+    /** Whether the light is on: `onoff`, or a brightness above 0 without it. */
+    function isOn(d) {
+      const dim = shown(d, 'dim');
+      if (d.caps.onoff) return shown(d, 'onoff') === true;
+      return typeof dim === 'number' && dim > 0;
+    }
+    /** The brightness (0–1): a light without `dim` (a plug or a switch) is full while on. */
+    function brightness(d) {
+      if (!d.caps.dim) return isOn(d) ? 1 : 0;
+      const dim = shown(d, 'dim');
+      return isOn(d) && typeof dim === 'number' ? dim : 0;
+    }
+    /** The colour a light shines in, from its shown (optimistic) values. */
+    const colorOf = d => lightColor(Object.fromEntries(Object.keys(d.caps).map(k => [k, { value: shown(d, k) }])));
+
+    return {
+      shown, withGroup, isOn, brightness, colorOf,
+      settable: (d, id) => !!d.caps[id] && d.caps[id].setable !== false,
+      /** The lights from `/state`: notes their brightness. */
+      took(devices) { for (const d of devices) if (d.caps && d.caps.dim) noteDim(d.id, d.caps.dim.value); },
+      /** A realtime change into `devices` (the light itself, or one in a group device; both when it's picked too); false when none shows it. */
+      apply(devices, { deviceId, capabilityId, value }) {
+        let hit = false;
+        for (const d of devices) {
+          for (const x of 'missing' in d ? [] : withGroup(d)) {
+            if (x.id !== deviceId || !x.caps || !x.caps[capabilityId]) continue;
+            x.caps[capabilityId].value = value;
+            hit = true;
+          }
+        }
+        if (!hit) return false;
+        if (capabilityId === 'dim') noteDim(deviceId, value);
+        values.confirm(deviceId, capabilityId, value);
+        return true;
+      },
+      /** Shows `change` while the device confirms it; a group device's lights take it on too. */
+      hope: (d, change) => values.hope(withGroup(d), change),
+      /** A failed send: the light's own values again. */
+      forget: d => values.drop(d.id, LIGHT_CAPS),
+      /** A tap: hopes every light of `item` on or off (a light without `onoff` back to its last brightness, or 0). */
+      hopeOnOff(item, on) {
+        for (const d of item.members) {
+          if (d.caps.onoff) this.hope(d, { onoff: on });
+          else this.hope(d, { dim: on ? (shown(d, 'dim') || lastDim.get(d.id) || 1) : 0 });
+        }
+      },
+      /** The bar let go: hopes every light of `item` at `value` (0 is off). */
+      hopeLevel(item, value) {
+        for (const d of item.members) {
+          if (value === 0) this.hope(d, d.caps.onoff ? { onoff: false } : { dim: 0 });
+          else this.hope(d, { dim: value, onoff: true });
+        }
+      },
+      /** On while any of its lights is. */
+      itemOn: item => item.members.some(isOn),
+      /**
+       * Its light's brightness, or a room's: the average (the highest with `roomLevel: max`) of its lit lights that
+       * dim. A light that only switches counts only where none of them dims (the bar is hidden then).
+       */
+      itemBrightness(item) {
+        const lit = item.members.filter(isOn);
+        const levels = (item.members.some(d => d.caps.dim) ? lit.filter(d => d.caps.dim) : lit).map(brightness);
+        if (!levels.length) return 0;
+        return roomLevel === 'max' ? Math.max(...levels) : levels.reduce((sum, x) => sum + x, 0) / levels.length;
+      },
+      /**
+       * The colours the lit lights shine in, without repeats (at most MAX_LIGHT_COLORS): a Homey group device counts
+       * its lit lights (its own colour is only the last one set on the group; a Mood may have given them several),
+       * any other light itself while it's on. Empty while nothing is on.
+       */
+      colorsOf(members) {
+        const out = [];
+        for (const d of members) {
+          const group = Array.isArray(d.groupLights) ? d.groupLights.filter(isOn) : [];
+          for (const x of group.length ? group : isOn(d) ? [d] : []) {
+            const c = colorOf(x);
+            if (!out.includes(c)) out.push(c);
+          }
+        }
+        return out.slice(0, MAX_LIGHT_COLORS);
+      },
+      /** Whether a swatch is light `d`'s current colour or white. */
+      isCurrent(d, swatch) {
+        const v = id => shown(d, id);
+        const colourMode = v('light_mode') === 'color' || (!d.caps.light_mode && !d.caps.light_temperature);
+        if (swatch.k != null) {
+          const k = v('light_temperature');
+          return !colourMode && typeof k === 'number' && Math.abs(k - swatch.k) < 0.05;
+        }
+        const hue = v('light_hue');
+        if (!colourMode || typeof hue !== 'number') return false;
+        const sat = typeof v('light_saturation') === 'number' ? v('light_saturation') : 1;
+        if (Math.abs(sat - swatch.sat) >= 0.03) return false;
+        if (swatch.sat === 0) return true;
+        const dh = Math.abs(hue - swatch.hue / 360);
+        return Math.min(dh, 1 - dh) < 0.03;
+      },
+    };
+  }
+
+  const LIGHTS = { get glyphs() { return LIGHT_GLYPHS(); }, PALETTES, temperatureColor, hueColor, lightColor, moodDot, swatchList, setBlend, model: lightModel };
 
   /** The colour settings' names (Device Values', Flow Buttons' and Notes' Flow colours, `TILE_COLORS` in lib/tileColors.ts), in kit.css's palette. */
   const COLORS = ['blue', 'red', 'orange', 'yellow', 'green', 'purple'];
@@ -870,6 +1161,6 @@
   window.WidgetkeeperKit = {
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, undoTextZoom, el, setMask, tileNames, timeFormatter,
     formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, spanFields, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
-    onDeviceNames, colorStyle, applyColors, sound,
+    onDeviceNames, colorStyle, applyColors, sound, optimistic, shake, wireBar, roomTiles,
   };
 })();
