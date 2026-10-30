@@ -104,6 +104,7 @@ window.mountStackWidget = function (Homey, { root, frame }) {
     compare: ['electricity/chart'],
     timeline: ['electricity/chart'],
     stacked: ['electricity/chart'],
+    lines: ['electricity/chart'],
     thermostat: ['thermostat/presets'],
     varpresets: ['thermostat/presets'],
   };

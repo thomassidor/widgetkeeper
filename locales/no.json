@@ -376,6 +376,10 @@
     "countOpen": "Åpnet",
     "countMotion": "Registreringer",
     "countAlarm": "Utløst",
+    "timeAbove": "Over",
+    "timeBelow": "Under",
+    "countAbove": "Gikk over",
+    "countBelow": "Gikk under",
     "hours": "t",
     "minutes": "min"
   },
@@ -389,6 +393,15 @@
     "total": "Totalt",
     "other": "Annet",
     "largest": "Størst"
+  },
+  "lines": {
+    "selectValues": "Velg verdiene som skal vises i widgetinnstillingene.",
+    "error": "Kunne ikke laste diagrammet.",
+    "unavailable": "Utilgjengelig",
+    "noHistory": "Ingen historikk ennå.",
+    "otherUnits": "Annen enhet",
+    "now": "Nå",
+    "average": "snitt"
   },
   "lights": {
     "selectDevices": "Velg lys i widgetinnstillingene.",
@@ -926,8 +939,9 @@
       "typicalday": "Dagens linje over den typiske dagen og spredningen: er i dag uvanlig?",
       "dailyrange": "Hver dags laveste og høyeste som en søyle, snittet på tvers: hvor mye svingte det?",
       "compare": "Én verdi på tvers av enheter, nå og dagens spenn, sortert: hvilket rom er varmest?",
-      "timeline": "Når var det på, åpent eller i bevegelse? En rad per verdi gjennom dagen, bånd der det var slik.",
+      "timeline": "Når var det på, åpent, i bevegelse eller forbi en terskel? En rad per verdi gjennom dagen, bånd der det var slik.",
       "stacked": "Flere verdier stablet på én tidsakse, resten av en total som Annet: hvem bruker strømmen?",
+      "lines": "Opptil seks verdier over tid i ett diagram, en linje hver: hvert roms temperatur side om side.",
       "variables": "Variabler som rader du kan slå av og på eller endre.",
       "varpresets": "Knapper som setter en variabel til forhåndsvalgte verdier.",
       "keypad": "Knapper bak en valgfri kode som starter flyter eller setter en tilstand.",

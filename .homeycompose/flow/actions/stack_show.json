@@ -462,6 +462,24 @@
           }
         },
         {
+          "id": "lines",
+          "title": {
+            "en": "Chart · Lines",
+            "nl": "Grafiek · Lijnen",
+            "de": "Diagramm · Linien",
+            "fr": "Graphique · Courbes",
+            "it": "Grafico · Linee",
+            "sv": "Diagram · Linjer",
+            "no": "Diagram · Linjer",
+            "es": "Gráfico · Líneas",
+            "da": "Graf · Linjer",
+            "ru": "График · Линии",
+            "pl": "Wykres · Linie",
+            "ko": "차트 · 선",
+            "ar": "مخطط · خطوط"
+          }
+        },
+        {
           "id": "variables",
           "title": {
             "en": "Variables",

@@ -24,6 +24,7 @@ import dailyrange from '../dailyrange/api.js';
 import compare from '../compare/api.js';
 import timeline from '../timeline/api.js';
 import stacked from '../stacked/api.js';
+import lines from '../lines/api.js';
 import variables from '../variables/api.js';
 import varpresets from '../varpresets/api.js';
 import flows from '../flows/api.js';
@@ -42,7 +43,7 @@ type Homey = App['homey'];
 /** Each page widget's own API (its `api.ts`), by widget id: one for every `STACK_TYPES` (tsc checks). */
 export const PAGE_APIS: Record<StackType, WidgetApis[string]> = {
   electricity, thermostat, quickactions, sensoralarms, sensordots, roomhealth, valuematrix, weather, pollen, heatmap, cameras, values,
-  lights, sparklines, charts, totals, scatter, typicalday, dailyrange, compare, timeline, stacked, variables, varpresets, flows, price, timers, locks, curtains, media, clock, textline, dayssince,
+  lights, sparklines, charts, totals, scatter, typicalday, dailyrange, compare, timeline, stacked, lines, variables, varpresets, flows, price, timers, locks, curtains, media, clock, textline, dayssince,
 };
 
 export default {

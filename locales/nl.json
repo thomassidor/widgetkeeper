@@ -376,6 +376,10 @@
     "countOpen": "Geopend",
     "countMotion": "Detecties",
     "countAlarm": "Afgegaan",
+    "timeAbove": "Boven",
+    "timeBelow": "Onder",
+    "countAbove": "Erboven",
+    "countBelow": "Eronder",
     "hours": "u",
     "minutes": "min"
   },
@@ -389,6 +393,15 @@
     "total": "Totaal",
     "other": "Overig",
     "largest": "Grootste"
+  },
+  "lines": {
+    "selectValues": "Kies de waarden om te tonen in de widgetinstellingen.",
+    "error": "Kon de grafiek niet laden.",
+    "unavailable": "Niet beschikbaar",
+    "noHistory": "Nog geen geschiedenis.",
+    "otherUnits": "Andere eenheid",
+    "now": "Nu",
+    "average": "gem."
   },
   "lights": {
     "selectDevices": "Kies lampen in de widgetinstellingen.",
@@ -926,8 +939,9 @@
       "typicalday": "De lijn van vandaag over de normale dag en de spreiding: is vandaag anders?",
       "dailyrange": "Het laagste en hoogste van elke dag als staaf, met het gemiddelde erdoor: hoeveel schommelde het?",
       "compare": "Eén waarde over apparaten heen, nu en het bereik vandaag, gesorteerd: welke kamer is het warmst?",
-      "timeline": "Wanneer was het aan, open of in beweging? Een rij per waarde over de dag, balken waar het zo was.",
+      "timeline": "Wanneer was het aan, open, in beweging of voorbij een drempel? Een rij per waarde over de dag, balken waar het zo was.",
       "stacked": "Meerdere waarden gestapeld op één tijdas, de rest van een totaal als Overig: wie verbruikt de stroom?",
+      "lines": "Tot zes waarden in de tijd in één grafiek, elk een lijn: de temperatuur van elke kamer naast elkaar.",
       "variables": "Variabelen als rijen om te schakelen of te wijzigen.",
       "varpresets": "Knoppen die een variabele op vaste waarden zetten.",
       "keypad": "Knoppen achter een optionele code die flows starten of een status instellen.",

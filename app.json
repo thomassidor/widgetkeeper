@@ -3593,6 +3593,24 @@
                 }
               },
               {
+                "id": "lines",
+                "title": {
+                  "en": "Chart · Lines",
+                  "nl": "Grafiek · Lijnen",
+                  "de": "Diagramm · Linien",
+                  "fr": "Graphique · Courbes",
+                  "it": "Grafico · Linee",
+                  "sv": "Diagram · Linjer",
+                  "no": "Diagram · Linjer",
+                  "es": "Gráfico · Líneas",
+                  "da": "Graf · Linjer",
+                  "ru": "График · Линии",
+                  "pl": "Wykres · Linie",
+                  "ko": "차트 · 선",
+                  "ar": "مخطط · خطوط"
+                }
+              },
+              {
                 "id": "variables",
                 "title": {
                   "en": "Variables",
@@ -15395,6 +15413,1583 @@
       },
       "id": "lights"
     },
+    "lines": {
+      "name": {
+        "en": "Chart · Lines",
+        "nl": "Grafiek · Lijnen",
+        "de": "Diagramm · Linien",
+        "fr": "Graphique · Courbes",
+        "it": "Grafico · Linee",
+        "sv": "Diagram · Linjer",
+        "no": "Diagram · Linjer",
+        "es": "Gráfico · Líneas",
+        "da": "Graf · Linjer",
+        "ru": "График · Линии",
+        "pl": "Wykres · Linie",
+        "ko": "차트 · 선",
+        "ar": "مخطط · خطوط"
+      },
+      "height": 260,
+      "settings": [
+        {
+          "id": "slot1",
+          "type": "autocomplete",
+          "title": {
+            "en": "Value 1",
+            "nl": "Waarde 1",
+            "de": "Wert 1",
+            "fr": "Valeur 1",
+            "it": "Valore 1",
+            "sv": "Värde 1",
+            "no": "Verdi 1",
+            "es": "Valor 1",
+            "da": "Værdi 1",
+            "ru": "Значение 1",
+            "pl": "Wartość 1",
+            "ko": "값 1",
+            "ar": "القيمة 1"
+          },
+          "hint": {
+            "en": "Up to six values on one chart, such as each room's temperature. Empty ones are left out, and so is a value in other units than the first.",
+            "nl": "Tot zes waarden in één grafiek, zoals de temperatuur van elke kamer. Lege worden weggelaten, net als een waarde in een andere eenheid dan de eerste.",
+            "de": "Bis zu sechs Werte in einem Diagramm, etwa die Temperatur jedes Raums. Leere werden ausgelassen, ebenso ein Wert in anderen Einheiten als der erste.",
+            "fr": "Jusqu'à six valeurs sur un graphique, comme la température de chaque pièce. Les vides sont ignorées, tout comme une valeur dans une autre unité que la première.",
+            "it": "Fino a sei valori in un grafico, come la temperatura di ogni stanza. Quelli vuoti sono esclusi, come un valore in unità diverse dal primo.",
+            "sv": "Upp till sex värden i ett diagram, som varje rums temperatur. Tomma utelämnas, liksom ett värde i andra enheter än det första.",
+            "no": "Opptil seks verdier i ett diagram, som hvert roms temperatur. Tomme utelates, det samme gjør en verdi i andre enheter enn den første.",
+            "es": "Hasta seis valores en un gráfico, como la temperatura de cada habitación. Los vacíos se omiten, igual que un valor en otras unidades que el primero.",
+            "da": "Op til seks værdier i én graf, som hvert rums temperatur. Tomme udelades, det samme gør en værdi i andre enheder end den første.",
+            "ru": "До шести значений на одном графике, например температура каждой комнаты. Пустые пропускаются, как и значение в других единицах, чем первое.",
+            "pl": "Do sześciu wartości na jednym wykresie, np. temperatura każdego pokoju. Puste są pomijane, podobnie jak wartość w innych jednostkach niż pierwsza.",
+            "ko": "한 차트에 최대 6개 값(예: 방마다의 온도)을 보여줍니다. 빈 항목과 첫 번째 값과 단위가 다른 값은 빠집니다.",
+            "ar": "حتى ست قيم في مخطط واحد، مثل حرارة كل غرفة. تُستبعد الفارغة، وكذلك قيمة بوحدات غير وحدات الأولى."
+          }
+        },
+        {
+          "id": "color1",
+          "type": "dropdown",
+          "title": {
+            "en": "  – Colour",
+            "nl": "  – Kleur",
+            "de": "  – Farbe",
+            "fr": "  – Couleur",
+            "it": "  – Colore",
+            "sv": "  – Färg",
+            "no": "  – Farge",
+            "es": "  – Color",
+            "da": "  – Farve",
+            "ru": "  – Цвет",
+            "pl": "  – Kolor",
+            "ko": "  – 색상",
+            "ar": "  – اللون"
+          },
+          "value": "blue",
+          "values": [
+            {
+              "id": "blue",
+              "title": {
+                "en": "Blue",
+                "nl": "Blauw",
+                "de": "Blau",
+                "fr": "Bleu",
+                "it": "Blu",
+                "sv": "Blå",
+                "no": "Blå",
+                "es": "Azul",
+                "da": "Blå",
+                "ru": "Синий",
+                "pl": "Niebieski",
+                "ko": "파랑",
+                "ar": "أزرق"
+              }
+            },
+            {
+              "id": "red",
+              "title": {
+                "en": "Red",
+                "nl": "Rood",
+                "de": "Rot",
+                "fr": "Rouge",
+                "it": "Rosso",
+                "sv": "Röd",
+                "no": "Rød",
+                "es": "Rojo",
+                "da": "Rød",
+                "ru": "Красный",
+                "pl": "Czerwony",
+                "ko": "빨강",
+                "ar": "أحمر"
+              }
+            },
+            {
+              "id": "orange",
+              "title": {
+                "en": "Orange",
+                "nl": "Oranje",
+                "de": "Orange",
+                "fr": "Orange",
+                "it": "Arancione",
+                "sv": "Orange",
+                "no": "Oransje",
+                "es": "Naranja",
+                "da": "Orange",
+                "ru": "Оранжевый",
+                "pl": "Pomarańczowy",
+                "ko": "주황",
+                "ar": "برتقالي"
+              }
+            },
+            {
+              "id": "yellow",
+              "title": {
+                "en": "Yellow",
+                "nl": "Geel",
+                "de": "Gelb",
+                "fr": "Jaune",
+                "it": "Giallo",
+                "sv": "Gul",
+                "no": "Gul",
+                "es": "Amarillo",
+                "da": "Gul",
+                "ru": "Жёлтый",
+                "pl": "Żółty",
+                "ko": "노랑",
+                "ar": "أصفر"
+              }
+            },
+            {
+              "id": "green",
+              "title": {
+                "en": "Green",
+                "nl": "Groen",
+                "de": "Grün",
+                "fr": "Vert",
+                "it": "Verde",
+                "sv": "Grön",
+                "no": "Grønn",
+                "es": "Verde",
+                "da": "Grøn",
+                "ru": "Зелёный",
+                "pl": "Zielony",
+                "ko": "초록",
+                "ar": "أخضر"
+              }
+            },
+            {
+              "id": "purple",
+              "title": {
+                "en": "Purple",
+                "nl": "Paars",
+                "de": "Lila",
+                "fr": "Violet",
+                "it": "Viola",
+                "sv": "Lila",
+                "no": "Lilla",
+                "es": "Morado",
+                "da": "Lilla",
+                "ru": "Фиолетовый",
+                "pl": "Fioletowy",
+                "ko": "보라",
+                "ar": "بنفسجي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "slot2",
+          "type": "autocomplete",
+          "title": {
+            "en": "Value 2",
+            "nl": "Waarde 2",
+            "de": "Wert 2",
+            "fr": "Valeur 2",
+            "it": "Valore 2",
+            "sv": "Värde 2",
+            "no": "Verdi 2",
+            "es": "Valor 2",
+            "da": "Værdi 2",
+            "ru": "Значение 2",
+            "pl": "Wartość 2",
+            "ko": "값 2",
+            "ar": "القيمة 2"
+          }
+        },
+        {
+          "id": "color2",
+          "type": "dropdown",
+          "title": {
+            "en": "  – Colour",
+            "nl": "  – Kleur",
+            "de": "  – Farbe",
+            "fr": "  – Couleur",
+            "it": "  – Colore",
+            "sv": "  – Färg",
+            "no": "  – Farge",
+            "es": "  – Color",
+            "da": "  – Farve",
+            "ru": "  – Цвет",
+            "pl": "  – Kolor",
+            "ko": "  – 색상",
+            "ar": "  – اللون"
+          },
+          "value": "red",
+          "values": [
+            {
+              "id": "blue",
+              "title": {
+                "en": "Blue",
+                "nl": "Blauw",
+                "de": "Blau",
+                "fr": "Bleu",
+                "it": "Blu",
+                "sv": "Blå",
+                "no": "Blå",
+                "es": "Azul",
+                "da": "Blå",
+                "ru": "Синий",
+                "pl": "Niebieski",
+                "ko": "파랑",
+                "ar": "أزرق"
+              }
+            },
+            {
+              "id": "red",
+              "title": {
+                "en": "Red",
+                "nl": "Rood",
+                "de": "Rot",
+                "fr": "Rouge",
+                "it": "Rosso",
+                "sv": "Röd",
+                "no": "Rød",
+                "es": "Rojo",
+                "da": "Rød",
+                "ru": "Красный",
+                "pl": "Czerwony",
+                "ko": "빨강",
+                "ar": "أحمر"
+              }
+            },
+            {
+              "id": "orange",
+              "title": {
+                "en": "Orange",
+                "nl": "Oranje",
+                "de": "Orange",
+                "fr": "Orange",
+                "it": "Arancione",
+                "sv": "Orange",
+                "no": "Oransje",
+                "es": "Naranja",
+                "da": "Orange",
+                "ru": "Оранжевый",
+                "pl": "Pomarańczowy",
+                "ko": "주황",
+                "ar": "برتقالي"
+              }
+            },
+            {
+              "id": "yellow",
+              "title": {
+                "en": "Yellow",
+                "nl": "Geel",
+                "de": "Gelb",
+                "fr": "Jaune",
+                "it": "Giallo",
+                "sv": "Gul",
+                "no": "Gul",
+                "es": "Amarillo",
+                "da": "Gul",
+                "ru": "Жёлтый",
+                "pl": "Żółty",
+                "ko": "노랑",
+                "ar": "أصفر"
+              }
+            },
+            {
+              "id": "green",
+              "title": {
+                "en": "Green",
+                "nl": "Groen",
+                "de": "Grün",
+                "fr": "Vert",
+                "it": "Verde",
+                "sv": "Grön",
+                "no": "Grønn",
+                "es": "Verde",
+                "da": "Grøn",
+                "ru": "Зелёный",
+                "pl": "Zielony",
+                "ko": "초록",
+                "ar": "أخضر"
+              }
+            },
+            {
+              "id": "purple",
+              "title": {
+                "en": "Purple",
+                "nl": "Paars",
+                "de": "Lila",
+                "fr": "Violet",
+                "it": "Viola",
+                "sv": "Lila",
+                "no": "Lilla",
+                "es": "Morado",
+                "da": "Lilla",
+                "ru": "Фиолетовый",
+                "pl": "Fioletowy",
+                "ko": "보라",
+                "ar": "بنفسجي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "slot3",
+          "type": "autocomplete",
+          "title": {
+            "en": "Value 3",
+            "nl": "Waarde 3",
+            "de": "Wert 3",
+            "fr": "Valeur 3",
+            "it": "Valore 3",
+            "sv": "Värde 3",
+            "no": "Verdi 3",
+            "es": "Valor 3",
+            "da": "Værdi 3",
+            "ru": "Значение 3",
+            "pl": "Wartość 3",
+            "ko": "값 3",
+            "ar": "القيمة 3"
+          }
+        },
+        {
+          "id": "color3",
+          "type": "dropdown",
+          "title": {
+            "en": "  – Colour",
+            "nl": "  – Kleur",
+            "de": "  – Farbe",
+            "fr": "  – Couleur",
+            "it": "  – Colore",
+            "sv": "  – Färg",
+            "no": "  – Farge",
+            "es": "  – Color",
+            "da": "  – Farve",
+            "ru": "  – Цвет",
+            "pl": "  – Kolor",
+            "ko": "  – 색상",
+            "ar": "  – اللون"
+          },
+          "value": "orange",
+          "values": [
+            {
+              "id": "blue",
+              "title": {
+                "en": "Blue",
+                "nl": "Blauw",
+                "de": "Blau",
+                "fr": "Bleu",
+                "it": "Blu",
+                "sv": "Blå",
+                "no": "Blå",
+                "es": "Azul",
+                "da": "Blå",
+                "ru": "Синий",
+                "pl": "Niebieski",
+                "ko": "파랑",
+                "ar": "أزرق"
+              }
+            },
+            {
+              "id": "red",
+              "title": {
+                "en": "Red",
+                "nl": "Rood",
+                "de": "Rot",
+                "fr": "Rouge",
+                "it": "Rosso",
+                "sv": "Röd",
+                "no": "Rød",
+                "es": "Rojo",
+                "da": "Rød",
+                "ru": "Красный",
+                "pl": "Czerwony",
+                "ko": "빨강",
+                "ar": "أحمر"
+              }
+            },
+            {
+              "id": "orange",
+              "title": {
+                "en": "Orange",
+                "nl": "Oranje",
+                "de": "Orange",
+                "fr": "Orange",
+                "it": "Arancione",
+                "sv": "Orange",
+                "no": "Oransje",
+                "es": "Naranja",
+                "da": "Orange",
+                "ru": "Оранжевый",
+                "pl": "Pomarańczowy",
+                "ko": "주황",
+                "ar": "برتقالي"
+              }
+            },
+            {
+              "id": "yellow",
+              "title": {
+                "en": "Yellow",
+                "nl": "Geel",
+                "de": "Gelb",
+                "fr": "Jaune",
+                "it": "Giallo",
+                "sv": "Gul",
+                "no": "Gul",
+                "es": "Amarillo",
+                "da": "Gul",
+                "ru": "Жёлтый",
+                "pl": "Żółty",
+                "ko": "노랑",
+                "ar": "أصفر"
+              }
+            },
+            {
+              "id": "green",
+              "title": {
+                "en": "Green",
+                "nl": "Groen",
+                "de": "Grün",
+                "fr": "Vert",
+                "it": "Verde",
+                "sv": "Grön",
+                "no": "Grønn",
+                "es": "Verde",
+                "da": "Grøn",
+                "ru": "Зелёный",
+                "pl": "Zielony",
+                "ko": "초록",
+                "ar": "أخضر"
+              }
+            },
+            {
+              "id": "purple",
+              "title": {
+                "en": "Purple",
+                "nl": "Paars",
+                "de": "Lila",
+                "fr": "Violet",
+                "it": "Viola",
+                "sv": "Lila",
+                "no": "Lilla",
+                "es": "Morado",
+                "da": "Lilla",
+                "ru": "Фиолетовый",
+                "pl": "Fioletowy",
+                "ko": "보라",
+                "ar": "بنفسجي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "slot4",
+          "type": "autocomplete",
+          "title": {
+            "en": "Value 4",
+            "nl": "Waarde 4",
+            "de": "Wert 4",
+            "fr": "Valeur 4",
+            "it": "Valore 4",
+            "sv": "Värde 4",
+            "no": "Verdi 4",
+            "es": "Valor 4",
+            "da": "Værdi 4",
+            "ru": "Значение 4",
+            "pl": "Wartość 4",
+            "ko": "값 4",
+            "ar": "القيمة 4"
+          }
+        },
+        {
+          "id": "color4",
+          "type": "dropdown",
+          "title": {
+            "en": "  – Colour",
+            "nl": "  – Kleur",
+            "de": "  – Farbe",
+            "fr": "  – Couleur",
+            "it": "  – Colore",
+            "sv": "  – Färg",
+            "no": "  – Farge",
+            "es": "  – Color",
+            "da": "  – Farve",
+            "ru": "  – Цвет",
+            "pl": "  – Kolor",
+            "ko": "  – 색상",
+            "ar": "  – اللون"
+          },
+          "value": "yellow",
+          "values": [
+            {
+              "id": "blue",
+              "title": {
+                "en": "Blue",
+                "nl": "Blauw",
+                "de": "Blau",
+                "fr": "Bleu",
+                "it": "Blu",
+                "sv": "Blå",
+                "no": "Blå",
+                "es": "Azul",
+                "da": "Blå",
+                "ru": "Синий",
+                "pl": "Niebieski",
+                "ko": "파랑",
+                "ar": "أزرق"
+              }
+            },
+            {
+              "id": "red",
+              "title": {
+                "en": "Red",
+                "nl": "Rood",
+                "de": "Rot",
+                "fr": "Rouge",
+                "it": "Rosso",
+                "sv": "Röd",
+                "no": "Rød",
+                "es": "Rojo",
+                "da": "Rød",
+                "ru": "Красный",
+                "pl": "Czerwony",
+                "ko": "빨강",
+                "ar": "أحمر"
+              }
+            },
+            {
+              "id": "orange",
+              "title": {
+                "en": "Orange",
+                "nl": "Oranje",
+                "de": "Orange",
+                "fr": "Orange",
+                "it": "Arancione",
+                "sv": "Orange",
+                "no": "Oransje",
+                "es": "Naranja",
+                "da": "Orange",
+                "ru": "Оранжевый",
+                "pl": "Pomarańczowy",
+                "ko": "주황",
+                "ar": "برتقالي"
+              }
+            },
+            {
+              "id": "yellow",
+              "title": {
+                "en": "Yellow",
+                "nl": "Geel",
+                "de": "Gelb",
+                "fr": "Jaune",
+                "it": "Giallo",
+                "sv": "Gul",
+                "no": "Gul",
+                "es": "Amarillo",
+                "da": "Gul",
+                "ru": "Жёлтый",
+                "pl": "Żółty",
+                "ko": "노랑",
+                "ar": "أصفر"
+              }
+            },
+            {
+              "id": "green",
+              "title": {
+                "en": "Green",
+                "nl": "Groen",
+                "de": "Grün",
+                "fr": "Vert",
+                "it": "Verde",
+                "sv": "Grön",
+                "no": "Grønn",
+                "es": "Verde",
+                "da": "Grøn",
+                "ru": "Зелёный",
+                "pl": "Zielony",
+                "ko": "초록",
+                "ar": "أخضر"
+              }
+            },
+            {
+              "id": "purple",
+              "title": {
+                "en": "Purple",
+                "nl": "Paars",
+                "de": "Lila",
+                "fr": "Violet",
+                "it": "Viola",
+                "sv": "Lila",
+                "no": "Lilla",
+                "es": "Morado",
+                "da": "Lilla",
+                "ru": "Фиолетовый",
+                "pl": "Fioletowy",
+                "ko": "보라",
+                "ar": "بنفسجي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "slot5",
+          "type": "autocomplete",
+          "title": {
+            "en": "Value 5",
+            "nl": "Waarde 5",
+            "de": "Wert 5",
+            "fr": "Valeur 5",
+            "it": "Valore 5",
+            "sv": "Värde 5",
+            "no": "Verdi 5",
+            "es": "Valor 5",
+            "da": "Værdi 5",
+            "ru": "Значение 5",
+            "pl": "Wartość 5",
+            "ko": "값 5",
+            "ar": "القيمة 5"
+          }
+        },
+        {
+          "id": "color5",
+          "type": "dropdown",
+          "title": {
+            "en": "  – Colour",
+            "nl": "  – Kleur",
+            "de": "  – Farbe",
+            "fr": "  – Couleur",
+            "it": "  – Colore",
+            "sv": "  – Färg",
+            "no": "  – Farge",
+            "es": "  – Color",
+            "da": "  – Farve",
+            "ru": "  – Цвет",
+            "pl": "  – Kolor",
+            "ko": "  – 색상",
+            "ar": "  – اللون"
+          },
+          "value": "green",
+          "values": [
+            {
+              "id": "blue",
+              "title": {
+                "en": "Blue",
+                "nl": "Blauw",
+                "de": "Blau",
+                "fr": "Bleu",
+                "it": "Blu",
+                "sv": "Blå",
+                "no": "Blå",
+                "es": "Azul",
+                "da": "Blå",
+                "ru": "Синий",
+                "pl": "Niebieski",
+                "ko": "파랑",
+                "ar": "أزرق"
+              }
+            },
+            {
+              "id": "red",
+              "title": {
+                "en": "Red",
+                "nl": "Rood",
+                "de": "Rot",
+                "fr": "Rouge",
+                "it": "Rosso",
+                "sv": "Röd",
+                "no": "Rød",
+                "es": "Rojo",
+                "da": "Rød",
+                "ru": "Красный",
+                "pl": "Czerwony",
+                "ko": "빨강",
+                "ar": "أحمر"
+              }
+            },
+            {
+              "id": "orange",
+              "title": {
+                "en": "Orange",
+                "nl": "Oranje",
+                "de": "Orange",
+                "fr": "Orange",
+                "it": "Arancione",
+                "sv": "Orange",
+                "no": "Oransje",
+                "es": "Naranja",
+                "da": "Orange",
+                "ru": "Оранжевый",
+                "pl": "Pomarańczowy",
+                "ko": "주황",
+                "ar": "برتقالي"
+              }
+            },
+            {
+              "id": "yellow",
+              "title": {
+                "en": "Yellow",
+                "nl": "Geel",
+                "de": "Gelb",
+                "fr": "Jaune",
+                "it": "Giallo",
+                "sv": "Gul",
+                "no": "Gul",
+                "es": "Amarillo",
+                "da": "Gul",
+                "ru": "Жёлтый",
+                "pl": "Żółty",
+                "ko": "노랑",
+                "ar": "أصفر"
+              }
+            },
+            {
+              "id": "green",
+              "title": {
+                "en": "Green",
+                "nl": "Groen",
+                "de": "Grün",
+                "fr": "Vert",
+                "it": "Verde",
+                "sv": "Grön",
+                "no": "Grønn",
+                "es": "Verde",
+                "da": "Grøn",
+                "ru": "Зелёный",
+                "pl": "Zielony",
+                "ko": "초록",
+                "ar": "أخضر"
+              }
+            },
+            {
+              "id": "purple",
+              "title": {
+                "en": "Purple",
+                "nl": "Paars",
+                "de": "Lila",
+                "fr": "Violet",
+                "it": "Viola",
+                "sv": "Lila",
+                "no": "Lilla",
+                "es": "Morado",
+                "da": "Lilla",
+                "ru": "Фиолетовый",
+                "pl": "Fioletowy",
+                "ko": "보라",
+                "ar": "بنفسجي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "slot6",
+          "type": "autocomplete",
+          "title": {
+            "en": "Value 6",
+            "nl": "Waarde 6",
+            "de": "Wert 6",
+            "fr": "Valeur 6",
+            "it": "Valore 6",
+            "sv": "Värde 6",
+            "no": "Verdi 6",
+            "es": "Valor 6",
+            "da": "Værdi 6",
+            "ru": "Значение 6",
+            "pl": "Wartość 6",
+            "ko": "값 6",
+            "ar": "القيمة 6"
+          }
+        },
+        {
+          "id": "color6",
+          "type": "dropdown",
+          "title": {
+            "en": "  – Colour",
+            "nl": "  – Kleur",
+            "de": "  – Farbe",
+            "fr": "  – Couleur",
+            "it": "  – Colore",
+            "sv": "  – Färg",
+            "no": "  – Farge",
+            "es": "  – Color",
+            "da": "  – Farve",
+            "ru": "  – Цвет",
+            "pl": "  – Kolor",
+            "ko": "  – 색상",
+            "ar": "  – اللون"
+          },
+          "value": "purple",
+          "values": [
+            {
+              "id": "blue",
+              "title": {
+                "en": "Blue",
+                "nl": "Blauw",
+                "de": "Blau",
+                "fr": "Bleu",
+                "it": "Blu",
+                "sv": "Blå",
+                "no": "Blå",
+                "es": "Azul",
+                "da": "Blå",
+                "ru": "Синий",
+                "pl": "Niebieski",
+                "ko": "파랑",
+                "ar": "أزرق"
+              }
+            },
+            {
+              "id": "red",
+              "title": {
+                "en": "Red",
+                "nl": "Rood",
+                "de": "Rot",
+                "fr": "Rouge",
+                "it": "Rosso",
+                "sv": "Röd",
+                "no": "Rød",
+                "es": "Rojo",
+                "da": "Rød",
+                "ru": "Красный",
+                "pl": "Czerwony",
+                "ko": "빨강",
+                "ar": "أحمر"
+              }
+            },
+            {
+              "id": "orange",
+              "title": {
+                "en": "Orange",
+                "nl": "Oranje",
+                "de": "Orange",
+                "fr": "Orange",
+                "it": "Arancione",
+                "sv": "Orange",
+                "no": "Oransje",
+                "es": "Naranja",
+                "da": "Orange",
+                "ru": "Оранжевый",
+                "pl": "Pomarańczowy",
+                "ko": "주황",
+                "ar": "برتقالي"
+              }
+            },
+            {
+              "id": "yellow",
+              "title": {
+                "en": "Yellow",
+                "nl": "Geel",
+                "de": "Gelb",
+                "fr": "Jaune",
+                "it": "Giallo",
+                "sv": "Gul",
+                "no": "Gul",
+                "es": "Amarillo",
+                "da": "Gul",
+                "ru": "Жёлтый",
+                "pl": "Żółty",
+                "ko": "노랑",
+                "ar": "أصفر"
+              }
+            },
+            {
+              "id": "green",
+              "title": {
+                "en": "Green",
+                "nl": "Groen",
+                "de": "Grün",
+                "fr": "Vert",
+                "it": "Verde",
+                "sv": "Grön",
+                "no": "Grønn",
+                "es": "Verde",
+                "da": "Grøn",
+                "ru": "Зелёный",
+                "pl": "Zielony",
+                "ko": "초록",
+                "ar": "أخضر"
+              }
+            },
+            {
+              "id": "purple",
+              "title": {
+                "en": "Purple",
+                "nl": "Paars",
+                "de": "Lila",
+                "fr": "Violet",
+                "it": "Viola",
+                "sv": "Lila",
+                "no": "Lilla",
+                "es": "Morado",
+                "da": "Lilla",
+                "ru": "Фиолетовый",
+                "pl": "Fioletowy",
+                "ko": "보라",
+                "ar": "بنفسجي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "count",
+          "type": "number",
+          "value": 24,
+          "min": 1,
+          "max": 999,
+          "title": {
+            "en": "Time span",
+            "nl": "Periode",
+            "de": "Zeitraum",
+            "fr": "Période",
+            "it": "Periodo",
+            "sv": "Tidsperiod",
+            "no": "Tidsrom",
+            "es": "Periodo",
+            "da": "Tidsrum",
+            "ru": "Период",
+            "pl": "Okres",
+            "ko": "기간",
+            "ar": "الفترة الزمنية"
+          },
+          "hint": {
+            "en": "How many of the unit below, e.g. 24 hours or 3 months. At most two years.",
+            "nl": "Hoeveel van de eenheid hieronder, bijv. 24 uur of 3 maanden. Hoogstens twee jaar.",
+            "de": "Wie viele der Einheit darunter, z. B. 24 Stunden oder 3 Monate. Höchstens zwei Jahre.",
+            "fr": "Combien de l'unité ci-dessous, p. ex. 24 heures ou 3 mois. Deux ans au plus.",
+            "it": "Quante unità di quella qui sotto, ad es. 24 ore o 3 mesi. Al massimo due anni.",
+            "sv": "Hur många av enheten nedan, t.ex. 24 timmar eller 3 månader. Högst två år.",
+            "no": "Hvor mange av enheten under, f.eks. 24 timer eller 3 måneder. Høyst to år.",
+            "es": "Cuántas de la unidad de abajo, p. ej. 24 horas o 3 meses. Dos años como máximo.",
+            "da": "Hvor mange af enheden nedenfor, f.eks. 24 timer eller 3 måneder. Højst to år.",
+            "ru": "Сколько единиц, выбранных ниже, например 24 часа или 3 месяца. Не больше двух лет.",
+            "pl": "Ile jednostek wybranych poniżej, np. 24 godziny lub 3 miesiące. Najwyżej dwa lata.",
+            "ko": "아래 단위의 개수입니다(예: 24시간, 3개월). 최대 2년까지입니다.",
+            "ar": "عدد الوحدات المحددة أدناه، مثل 24 ساعة أو 3 أشهر. سنتان على الأكثر."
+          }
+        },
+        {
+          "id": "span",
+          "type": "dropdown",
+          "value": "hours",
+          "title": {
+            "en": "Unit",
+            "nl": "Eenheid",
+            "de": "Einheit",
+            "fr": "Unité",
+            "it": "Unità",
+            "sv": "Enhet",
+            "no": "Enhet",
+            "es": "Unidad",
+            "da": "Enhed",
+            "ru": "Единица",
+            "pl": "Jednostka",
+            "ko": "단위",
+            "ar": "الوحدة"
+          },
+          "hint": {
+            "en": "Minutes to years: the last so many, up to now. From midnight, Monday, the 1st or 1 January: whole days, weeks, months or years, the current one included.",
+            "nl": "Minuten tot jaren: de laatste zoveel, tot nu. Vanaf middernacht, maandag, de 1e of 1 januari: hele dagen, weken, maanden of jaren, de huidige meegerekend.",
+            "de": "Minuten bis Jahre: die letzten so viele, bis jetzt. Ab Mitternacht, Montag, dem 1. oder dem 1. Januar: ganze Tage, Wochen, Monate oder Jahre, der laufende eingeschlossen.",
+            "fr": "Minutes à années : les dernières, jusqu'à maintenant. Depuis minuit, lundi, le 1er ou le 1er janvier : des jours, semaines, mois ou années entiers, l'actuel compris.",
+            "it": "Da minuti ad anni: gli ultimi, fino ad ora. Da mezzanotte, lunedì, il 1° o il 1° gennaio: giorni, settimane, mesi o anni interi, quello in corso incluso.",
+            "sv": "Minuter till år: de senaste så många, fram till nu. Från midnatt, måndag, den 1:a eller 1 januari: hela dagar, veckor, månader eller år, den pågående medräknad.",
+            "no": "Minutter til år: de siste så mange, frem til nå. Fra midnatt, mandag, den 1. eller 1. januar: hele dager, uker, måneder eller år, den pågående medregnet.",
+            "es": "De minutos a años: los últimos, hasta ahora. Desde medianoche, el lunes, el día 1 o el 1 de enero: días, semanas, meses o años completos, el actual incluido.",
+            "da": "Minutter til år: de seneste så mange, frem til nu. Fra midnat, mandag, den 1. eller 1. januar: hele dage, uger, måneder eller år, den igangværende medregnet.",
+            "ru": "От минут до лет: последние столько-то, до текущего момента. С полуночи, понедельника, 1-го числа или 1 января: целые дни, недели, месяцы или годы, включая текущий.",
+            "pl": "Od minut do lat: ostatnie tyle, aż do teraz. Od północy, poniedziałku, 1. dnia lub 1 stycznia: pełne dni, tygodnie, miesiące lub lata, z bieżącym włącznie.",
+            "ko": "분~년: 지금까지의 최근 기간입니다. 자정, 월요일, 1일 또는 1월 1일부터: 현재 기간을 포함한 일, 주, 월 또는 연 단위 전체입니다.",
+            "ar": "من الدقائق إلى السنوات: آخر عدد منها حتى الآن. من منتصف الليل أو الاثنين أو اليوم الأول أو 1 يناير: أيام أو أسابيع أو أشهر أو سنوات كاملة، بما فيها الحالية."
+          },
+          "values": [
+            {
+              "id": "minutes",
+              "title": {
+                "en": "Minutes",
+                "nl": "Minuten",
+                "de": "Minuten",
+                "fr": "Minutes",
+                "it": "Minuti",
+                "sv": "Minuter",
+                "no": "Minutter",
+                "es": "Minutos",
+                "da": "Minutter",
+                "ru": "Минуты",
+                "pl": "Minuty",
+                "ko": "분",
+                "ar": "دقائق"
+              }
+            },
+            {
+              "id": "hours",
+              "title": {
+                "en": "Hours",
+                "nl": "Uren",
+                "de": "Stunden",
+                "fr": "Heures",
+                "it": "Ore",
+                "sv": "Timmar",
+                "no": "Timer",
+                "es": "Horas",
+                "da": "Timer",
+                "ru": "Часы",
+                "pl": "Godziny",
+                "ko": "시간",
+                "ar": "ساعات"
+              }
+            },
+            {
+              "id": "days",
+              "title": {
+                "en": "Days",
+                "nl": "Dagen",
+                "de": "Tage",
+                "fr": "Jours",
+                "it": "Giorni",
+                "sv": "Dagar",
+                "no": "Dager",
+                "es": "Días",
+                "da": "Dage",
+                "ru": "Дни",
+                "pl": "Dni",
+                "ko": "일",
+                "ar": "أيام"
+              }
+            },
+            {
+              "id": "weeks",
+              "title": {
+                "en": "Weeks",
+                "nl": "Weken",
+                "de": "Wochen",
+                "fr": "Semaines",
+                "it": "Settimane",
+                "sv": "Veckor",
+                "no": "Uker",
+                "es": "Semanas",
+                "da": "Uger",
+                "ru": "Недели",
+                "pl": "Tygodnie",
+                "ko": "주",
+                "ar": "أسابيع"
+              }
+            },
+            {
+              "id": "months",
+              "title": {
+                "en": "Months",
+                "nl": "Maanden",
+                "de": "Monate",
+                "fr": "Mois",
+                "it": "Mesi",
+                "sv": "Månader",
+                "no": "Måneder",
+                "es": "Meses",
+                "da": "Måneder",
+                "ru": "Месяцы",
+                "pl": "Miesiące",
+                "ko": "개월",
+                "ar": "أشهر"
+              }
+            },
+            {
+              "id": "years",
+              "title": {
+                "en": "Years",
+                "nl": "Jaren",
+                "de": "Jahre",
+                "fr": "Années",
+                "it": "Anni",
+                "sv": "År",
+                "no": "År",
+                "es": "Años",
+                "da": "År",
+                "ru": "Годы",
+                "pl": "Lata",
+                "ko": "년",
+                "ar": "سنوات"
+              }
+            },
+            {
+              "id": "calDays",
+              "title": {
+                "en": "Days from midnight",
+                "nl": "Dagen vanaf middernacht",
+                "de": "Tage ab Mitternacht",
+                "fr": "Jours depuis minuit",
+                "it": "Giorni da mezzanotte",
+                "sv": "Dagar från midnatt",
+                "no": "Dager fra midnatt",
+                "es": "Días desde medianoche",
+                "da": "Dage fra midnat",
+                "ru": "Дни с полуночи",
+                "pl": "Dni od północy",
+                "ko": "자정부터 일 단위",
+                "ar": "أيام من منتصف الليل"
+              }
+            },
+            {
+              "id": "calWeeks",
+              "title": {
+                "en": "Weeks from Monday",
+                "nl": "Weken vanaf maandag",
+                "de": "Wochen ab Montag",
+                "fr": "Semaines depuis lundi",
+                "it": "Settimane da lunedì",
+                "sv": "Veckor från måndag",
+                "no": "Uker fra mandag",
+                "es": "Semanas desde el lunes",
+                "da": "Uger fra mandag",
+                "ru": "Недели с понедельника",
+                "pl": "Tygodnie od poniedziałku",
+                "ko": "월요일부터 주 단위",
+                "ar": "أسابيع من الاثنين"
+              }
+            },
+            {
+              "id": "calMonths",
+              "title": {
+                "en": "Months from the 1st",
+                "nl": "Maanden vanaf de 1e",
+                "de": "Monate ab dem 1.",
+                "fr": "Mois depuis le 1er",
+                "it": "Mesi dal 1°",
+                "sv": "Månader från den 1:a",
+                "no": "Måneder fra den 1.",
+                "es": "Meses desde el día 1",
+                "da": "Måneder fra den 1.",
+                "ru": "Месяцы с 1-го числа",
+                "pl": "Miesiące od 1. dnia",
+                "ko": "1일부터 월 단위",
+                "ar": "أشهر من اليوم الأول"
+              }
+            },
+            {
+              "id": "calYears",
+              "title": {
+                "en": "Years from 1 January",
+                "nl": "Jaren vanaf 1 januari",
+                "de": "Jahre ab 1. Januar",
+                "fr": "Années depuis le 1er janvier",
+                "it": "Anni dal 1° gennaio",
+                "sv": "År från 1 januari",
+                "no": "År fra 1. januar",
+                "es": "Años desde el 1 de enero",
+                "da": "År fra 1. januar",
+                "ru": "Годы с 1 января",
+                "pl": "Lata od 1 stycznia",
+                "ko": "1월 1일부터 연 단위",
+                "ar": "سنوات من 1 يناير"
+              }
+            }
+          ]
+        },
+        {
+          "id": "leaveOut",
+          "type": "checkbox",
+          "value": false,
+          "title": {
+            "en": "Leave out the current period",
+            "nl": "Huidige periode weglaten",
+            "de": "Laufenden Zeitraum weglassen",
+            "fr": "Exclure la période en cours",
+            "it": "Escludi il periodo in corso",
+            "sv": "Utelämna pågående period",
+            "no": "Utelat pågående periode",
+            "es": "Excluir el periodo actual",
+            "da": "Udelad den igangværende periode",
+            "ru": "Без текущего периода",
+            "pl": "Pomiń bieżący okres",
+            "ko": "현재 기간 제외",
+            "ar": "استبعاد الفترة الحالية"
+          },
+          "hint": {
+            "en": "Whole periods only: 1 day from midnight is then yesterday, 1 week from Monday last week.",
+            "nl": "Alleen bij hele periodes: 1 dag vanaf middernacht is dan gisteren, 1 week vanaf maandag vorige week.",
+            "de": "Nur bei ganzen Zeiträumen: 1 Tag ab Mitternacht ist dann gestern, 1 Woche ab Montag letzte Woche.",
+            "fr": "Périodes entières uniquement : 1 jour depuis minuit devient hier, 1 semaine depuis lundi la semaine dernière.",
+            "it": "Solo per periodi interi: 1 giorno da mezzanotte diventa ieri, 1 settimana da lunedì la settimana scorsa.",
+            "sv": "Bara för hela perioder: 1 dag från midnatt blir då i går, 1 vecka från måndag förra veckan.",
+            "no": "Bare for hele perioder: 1 dag fra midnatt blir da i går, 1 uke fra mandag forrige uke.",
+            "es": "Solo con periodos completos: 1 día desde medianoche pasa a ser ayer, 1 semana desde el lunes la semana pasada.",
+            "da": "Kun ved hele perioder: 1 dag fra midnat er så i går, 1 uge fra mandag sidste uge.",
+            "ru": "Только для целых периодов: 1 день с полуночи — это тогда вчера, 1 неделя с понедельника — прошлая неделя.",
+            "pl": "Tylko dla pełnych okresów: 1 dzień od północy to wtedy wczoraj, 1 tydzień od poniedziałku – zeszły tydzień.",
+            "ko": "전체 기간 단위에만 적용됩니다. 자정부터 1일은 어제, 월요일부터 1주는 지난주가 됩니다.",
+            "ar": "للفترات الكاملة فقط: يصبح يوم واحد من منتصف الليل هو أمس، وأسبوع واحد من الاثنين هو الأسبوع الماضي."
+          }
+        },
+        {
+          "id": "style",
+          "type": "dropdown",
+          "value": "line",
+          "title": {
+            "en": "Style",
+            "nl": "Stijl",
+            "de": "Stil",
+            "fr": "Style",
+            "it": "Stile",
+            "sv": "Stil",
+            "no": "Stil",
+            "es": "Estilo",
+            "da": "Stil",
+            "ru": "Стиль",
+            "pl": "Styl",
+            "ko": "스타일",
+            "ar": "النمط"
+          },
+          "values": [
+            {
+              "id": "line",
+              "title": {
+                "en": "Lines",
+                "nl": "Lijnen",
+                "de": "Linien",
+                "fr": "Courbes",
+                "it": "Linee",
+                "sv": "Linjer",
+                "no": "Linjer",
+                "es": "Líneas",
+                "da": "Linjer",
+                "ru": "Линии",
+                "pl": "Linie",
+                "ko": "선",
+                "ar": "خطوط"
+              }
+            },
+            {
+              "id": "area",
+              "title": {
+                "en": "Lines with areas",
+                "nl": "Lijnen met vlakken",
+                "de": "Linien mit Flächen",
+                "fr": "Courbes avec aires",
+                "it": "Linee con aree",
+                "sv": "Linjer med ytor",
+                "no": "Linjer med flater",
+                "es": "Líneas con áreas",
+                "da": "Linjer med flader",
+                "ru": "Линии с заливкой",
+                "pl": "Linie z wypełnieniem",
+                "ko": "영역 포함 선",
+                "ar": "خطوط مع مساحات"
+              }
+            }
+          ]
+        },
+        {
+          "id": "range",
+          "type": "dropdown",
+          "title": {
+            "en": "Scale",
+            "nl": "Schaal",
+            "de": "Skala",
+            "fr": "Échelle",
+            "it": "Scala",
+            "sv": "Skala",
+            "no": "Skala",
+            "es": "Escala",
+            "da": "Skala",
+            "ru": "Шкала",
+            "pl": "Skala",
+            "ko": "눈금",
+            "ar": "المقياس"
+          },
+          "value": "fit",
+          "values": [
+            {
+              "id": "fit",
+              "title": {
+                "en": "Fit to the values",
+                "nl": "Passend bij de waarden",
+                "de": "An die Werte angepasst",
+                "fr": "Ajustée aux valeurs",
+                "it": "Adattata ai valori",
+                "sv": "Anpassad till värdena",
+                "no": "Tilpasset verdiene",
+                "es": "Ajustada a los valores",
+                "da": "Tilpasset værdierne",
+                "ru": "По значениям",
+                "pl": "Dopasowana do wartości",
+                "ko": "값에 맞춤",
+                "ar": "ملائم للقيم"
+              }
+            },
+            {
+              "id": "zero",
+              "title": {
+                "en": "Start at zero",
+                "nl": "Begin bij nul",
+                "de": "Bei null beginnen",
+                "fr": "Commencer à zéro",
+                "it": "Parti da zero",
+                "sv": "Börja på noll",
+                "no": "Start på null",
+                "es": "Empezar en cero",
+                "da": "Start ved nul",
+                "ru": "Начинать с нуля",
+                "pl": "Zaczynaj od zera",
+                "ko": "0부터 시작",
+                "ar": "البدء من الصفر"
+              }
+            }
+          ]
+        },
+        {
+          "id": "smooth",
+          "type": "checkbox",
+          "title": {
+            "en": "Smooth line",
+            "nl": "Vloeiende lijn",
+            "de": "Geglättete Linie",
+            "fr": "Ligne lissée",
+            "it": "Linea smussata",
+            "sv": "Utjämnad linje",
+            "no": "Glatt linje",
+            "es": "Línea suavizada",
+            "da": "Udglattet linje",
+            "ru": "Сглаженная линия",
+            "pl": "Wygładzona linia",
+            "ko": "부드러운 선",
+            "ar": "خط منعّم"
+          },
+          "value": false
+        },
+        {
+          "id": "legend",
+          "type": "dropdown",
+          "title": {
+            "en": "Legend",
+            "nl": "Legenda",
+            "de": "Legende",
+            "fr": "Légende",
+            "it": "Legenda",
+            "sv": "Teckenförklaring",
+            "no": "Tegnforklaring",
+            "es": "Leyenda",
+            "da": "Forklaring",
+            "ru": "Легенда",
+            "pl": "Legenda",
+            "ko": "범례",
+            "ar": "وسيلة الإيضاح"
+          },
+          "hint": {
+            "en": "Each chart's name and units.",
+            "nl": "De naam en eenheid van elke grafiek.",
+            "de": "Name und Einheit jedes Diagramms.",
+            "fr": "Le nom et l'unité de chaque graphique.",
+            "it": "Il nome e l'unità di ogni grafico.",
+            "sv": "Varje diagrams namn och enhet.",
+            "no": "Navnet og enheten til hvert diagram.",
+            "es": "El nombre y la unidad de cada gráfico.",
+            "da": "Hver grafs navn og enhed.",
+            "ru": "Название и единицы каждого графика.",
+            "pl": "Nazwa i jednostka każdego wykresu.",
+            "ko": "각 차트의 이름과 단위입니다.",
+            "ar": "اسم كل مخطط ووحدته."
+          },
+          "value": "above",
+          "values": [
+            {
+              "id": "above",
+              "title": {
+                "en": "Above the chart",
+                "nl": "Boven de grafiek",
+                "de": "Über dem Diagramm",
+                "fr": "Au-dessus du graphique",
+                "it": "Sopra il grafico",
+                "sv": "Ovanför diagrammet",
+                "no": "Over diagrammet",
+                "es": "Encima del gráfico",
+                "da": "Over grafen",
+                "ru": "Над графиком",
+                "pl": "Nad wykresem",
+                "ko": "차트 위",
+                "ar": "فوق المخطط"
+              }
+            },
+            {
+              "id": "below",
+              "title": {
+                "en": "Below the chart",
+                "nl": "Onder de grafiek",
+                "de": "Unter dem Diagramm",
+                "fr": "Sous le graphique",
+                "it": "Sotto il grafico",
+                "sv": "Under diagrammet",
+                "no": "Under diagrammet",
+                "es": "Debajo del gráfico",
+                "da": "Under grafen",
+                "ru": "Под графиком",
+                "pl": "Pod wykresem",
+                "ko": "차트 아래",
+                "ar": "أسفل المخطط"
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "text",
+          "title": {
+            "en": "Title",
+            "nl": "Titel",
+            "de": "Titel",
+            "fr": "Titre",
+            "it": "Titolo",
+            "sv": "Rubrik",
+            "no": "Tittel",
+            "es": "Título",
+            "da": "Titel",
+            "ru": "Заголовок",
+            "pl": "Tytuł",
+            "ko": "제목",
+            "ar": "العنوان"
+          },
+          "hint": {
+            "en": "Optional: a name shown above the chart.",
+            "nl": "Optioneel: een naam boven de grafiek.",
+            "de": "Optional: ein Name über dem Diagramm.",
+            "fr": "Facultatif : un nom au-dessus du graphique.",
+            "it": "Facoltativo: un nome sopra il grafico.",
+            "sv": "Valfritt: ett namn ovanför diagrammet.",
+            "no": "Valgfritt: et navn over diagrammet.",
+            "es": "Opcional: un nombre sobre el gráfico.",
+            "da": "Valgfri: et navn over grafen.",
+            "ru": "Необязательно: название над графиком.",
+            "pl": "Opcjonalnie: nazwa nad wykresem.",
+            "ko": "선택 사항입니다: 차트 위에 표시할 이름입니다.",
+            "ar": "اختياري: اسم يظهر فوق المخطط."
+          },
+          "value": ""
+        },
+        {
+          "id": "showHeader",
+          "type": "checkbox",
+          "title": {
+            "en": "Show the values at the top",
+            "nl": "Waarden bovenaan tonen",
+            "de": "Werte oben anzeigen",
+            "fr": "Afficher les valeurs en haut",
+            "it": "Mostra i valori in alto",
+            "sv": "Visa värdena överst",
+            "no": "Vis verdiene øverst",
+            "es": "Mostrar los valores arriba",
+            "da": "Vis værdierne øverst",
+            "ru": "Показывать значения вверху",
+            "pl": "Pokaż wartości u góry",
+            "ko": "맨 위에 값 표시",
+            "ar": "عرض القيم في الأعلى"
+          },
+          "hint": {
+            "en": "The first two values now, in their colours; over a finished span, their averages. Tap the chart for the nearest line at that time.",
+            "nl": "De eerste twee waarden van nu, in hun kleur; over een afgelopen periode hun gemiddelde. Tik op de grafiek voor de dichtstbijzijnde lijn op dat moment.",
+            "de": "Die ersten zwei Werte jetzt, in ihren Farben; über einen abgeschlossenen Zeitraum ihr Durchschnitt. Tippe auf das Diagramm für die nächste Linie zu dieser Zeit.",
+            "fr": "Les deux premières valeurs actuelles, dans leur couleur ; sur une période terminée, leur moyenne. Touchez le graphique pour la courbe la plus proche à ce moment.",
+            "it": "I primi due valori attuali, nei loro colori; su un periodo concluso, la loro media. Tocca il grafico per la linea più vicina in quel momento.",
+            "sv": "De två första värdena nu, i sina färger; över en avslutad period deras medelvärde. Tryck på diagrammet för närmaste linje vid den tiden.",
+            "no": "De to første verdiene nå, i fargene sine; over en avsluttet periode gjennomsnittet. Trykk på diagrammet for nærmeste linje på det tidspunktet.",
+            "es": "Los dos primeros valores actuales, en sus colores; en un periodo terminado, su media. Toca el gráfico para la línea más cercana en ese momento.",
+            "da": "De to første værdier nu, i deres farver; over en afsluttet periode deres gennemsnit. Tryk på grafen for den nærmeste linje på det tidspunkt.",
+            "ru": "Первые два значения сейчас, своим цветом; за завершённый период — их среднее. Коснитесь графика, чтобы увидеть ближайшую линию в тот момент.",
+            "pl": "Pierwsze dwie wartości teraz, w ich kolorach; za zakończony okres ich średnia. Dotknij wykresu, by zobaczyć najbliższą linię w tym momencie.",
+            "ko": "처음 두 값의 현재 값을 각 색상으로 보여주고, 끝난 기간이면 평균을 보여줍니다. 차트를 탭하면 그 시각에 가장 가까운 선의 값이 나옵니다.",
+            "ar": "أول قيمتين الآن بلونيهما؛ وفي فترة منتهية متوسطهما. المس المخطط لأقرب خط في ذلك الوقت."
+          },
+          "value": true
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid draws thicker lines and stronger areas.",
+            "nl": "Levendig tekent dikkere lijnen en sterkere vlakken.",
+            "de": "Kräftig zeichnet dickere Linien und kräftigere Flächen.",
+            "fr": "Vives dessine des courbes plus épaisses et des aires plus marquées.",
+            "it": "Vivaci disegna linee più spesse e aree più intense.",
+            "sv": "Livfulla ritar tjockare linjer och starkare ytor.",
+            "no": "Livlige tegner tykkere linjer og sterkere flater.",
+            "es": "Vivos dibuja líneas más gruesas y áreas más intensas.",
+            "da": "Livlige tegner tykkere linjer og stærkere flader.",
+            "ru": "Яркий рисует более толстые линии и насыщенную заливку.",
+            "pl": "Żywe rysuje grubsze linie i mocniejsze wypełnienia.",
+            "ko": "선명하게는 선을 더 굵게, 영역을 더 진하게 그립니다.",
+            "ar": "الزاهي يرسم خطوطًا أعرض ومساحات أقوى."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
+              }
+            }
+          ]
+        }
+      ],
+      "api": {
+        "getState": {
+          "method": "GET",
+          "path": "/state"
+        }
+      },
+      "id": "lines"
+    },
     "locks": {
       "name": {
         "en": "Locks and Doors",
@@ -26275,19 +27870,19 @@
             "ar": "القيمة 1"
           },
           "hint": {
-            "en": "Something that is on or off, open or closed, such as the heating, a door or motion. Empty ones are left out. The app records each from the first time it's shown and keeps about two weeks.",
-            "nl": "Iets dat aan of uit, open of dicht is, zoals de verwarming, een deur of beweging. Lege worden weggelaten. De app legt elk vast vanaf de eerste keer dat het getoond wordt en bewaart ongeveer twee weken.",
-            "de": "Etwas, das an oder aus, offen oder geschlossen ist, etwa die Heizung, eine Tür oder Bewegung. Leere werden ausgelassen. Die App zeichnet jeden ab der ersten Anzeige auf und behält etwa zwei Wochen.",
-            "fr": "Quelque chose d'allumé ou éteint, ouvert ou fermé, comme le chauffage, une porte ou un mouvement. Les vides sont ignorées. L'app enregistre chacune dès son premier affichage et garde environ deux semaines.",
-            "it": "Qualcosa che è acceso o spento, aperto o chiuso, come il riscaldamento, una porta o il movimento. Quelli vuoti sono esclusi. L'app registra ciascuno dalla prima volta che viene mostrato e conserva circa due settimane.",
-            "sv": "Något som är på eller av, öppet eller stängt, som värmen, en dörr eller rörelse. Tomma utelämnas. Appen registrerar var och en från första gången den visas och sparar ungefär två veckor.",
-            "no": "Noe som er på eller av, åpent eller lukket, som varmen, en dør eller bevegelse. Tomme utelates. Appen registrerer hver fra første gang den vises og tar vare på omtrent to uker.",
-            "es": "Algo que está encendido o apagado, abierto o cerrado, como la calefacción, una puerta o el movimiento. Los vacíos se omiten. La app registra cada uno desde la primera vez que se muestra y guarda unas dos semanas.",
-            "da": "Noget, der er tændt eller slukket, åbent eller lukket, som varmen, en dør eller bevægelse. Tomme udelades. Appen registrerer hver fra første gang, den vises, og gemmer omkring to uger.",
-            "ru": "То, что включено или выключено, открыто или закрыто: отопление, дверь, движение. Пустые пропускаются. Приложение записывает каждое с первого показа и хранит около двух недель.",
-            "pl": "Coś, co jest włączone lub wyłączone, otwarte lub zamknięte, np. ogrzewanie, drzwi lub ruch. Puste są pomijane. Aplikacja zapisuje każde od pierwszego wyświetlenia i przechowuje około dwóch tygodni.",
-            "ko": "켜짐/꺼짐, 열림/닫힘이 있는 값입니다(예: 난방, 문, 움직임). 빈 항목은 빠집니다. 앱은 처음 표시될 때부터 각 값을 기록하며 약 2주간 보관합니다.",
-            "ar": "شيء يعمل أو يتوقف، مفتوح أو مغلق، مثل التدفئة أو باب أو حركة. تُستبعد الفارغة. يسجل التطبيق كلًا منها منذ أول عرض له ويحتفظ بنحو أسبوعين."
+            "en": "Something that is on or off, open or closed, such as the heating, a door or motion, or a number, on above or below its threshold. Empty ones are left out. The app records on/off values from the first time they're shown and keeps about two weeks; numbers come from Insights.",
+            "nl": "Iets dat aan of uit, open of dicht is, zoals de verwarming, een deur of beweging, of een getal, aan boven of onder de drempel. Lege worden weggelaten. De app legt aan/uit-waarden vast vanaf de eerste keer dat ze getoond worden en bewaart ongeveer twee weken; getallen komen uit Insights.",
+            "de": "Etwas, das an oder aus, offen oder geschlossen ist, etwa die Heizung, eine Tür oder Bewegung, oder eine Zahl, an über oder unter ihrer Schwelle. Leere werden ausgelassen. Die App zeichnet An/Aus-Werte ab der ersten Anzeige auf und behält etwa zwei Wochen; Zahlen kommen aus Insights.",
+            "fr": "Quelque chose d'allumé ou éteint, ouvert ou fermé, comme le chauffage, une porte ou un mouvement, ou un nombre, allumé au-dessus ou en dessous de son seuil. Les vides sont ignorées. L'app enregistre les valeurs marche/arrêt dès leur premier affichage et garde environ deux semaines ; les nombres viennent d'Insights.",
+            "it": "Qualcosa che è acceso o spento, aperto o chiuso, come il riscaldamento, una porta o il movimento, oppure un numero, acceso sopra o sotto la sua soglia. Quelli vuoti sono esclusi. L'app registra i valori acceso/spento dalla prima volta che vengono mostrati e conserva circa due settimane; i numeri vengono da Insights.",
+            "sv": "Något som är på eller av, öppet eller stängt, som värmen, en dörr eller rörelse, eller ett tal, på över eller under sin gräns. Tomma utelämnas. Appen registrerar på/av-värden från första gången de visas och sparar ungefär två veckor; tal kommer från Insights.",
+            "no": "Noe som er på eller av, åpent eller lukket, som varmen, en dør eller bevegelse, eller et tall, på over eller under terskelen. Tomme utelates. Appen registrerer på/av-verdier fra første gang de vises og tar vare på omtrent to uker; tall kommer fra Insights.",
+            "es": "Algo que está encendido o apagado, abierto o cerrado, como la calefacción, una puerta o el movimiento, o un número, encendido por encima o por debajo de su umbral. Los vacíos se omiten. La app registra los valores de encendido/apagado desde la primera vez que se muestran y guarda unas dos semanas; los números vienen de Insights.",
+            "da": "Noget, der er tændt eller slukket, åbent eller lukket, som varmen, en dør eller bevægelse, eller et tal, tændt over eller under sin tærskel. Tomme udelades. Appen registrerer tænd/sluk-værdier fra første gang, de vises, og gemmer omkring to uger; tal kommer fra Insights.",
+            "ru": "То, что включено или выключено, открыто или закрыто: отопление, дверь, движение; или число, включённое выше или ниже порога. Пустые пропускаются. Значения вкл/выкл приложение записывает с первого показа и хранит около двух недель; числа берутся из Insights.",
+            "pl": "Coś, co jest włączone lub wyłączone, otwarte lub zamknięte, np. ogrzewanie, drzwi lub ruch, albo liczba, włączona powyżej lub poniżej progu. Puste są pomijane. Wartości wł./wył. aplikacja zapisuje od pierwszego wyświetlenia i przechowuje około dwóch tygodni; liczby pochodzą z Insights.",
+            "ko": "켜짐/꺼짐, 열림/닫힘이 있는 값(예: 난방, 문, 움직임)이나 기준값보다 높거나 낮을 때 켜지는 숫자 값입니다. 빈 항목은 빠집니다. 켜짐/꺼짐 값은 처음 표시될 때부터 앱이 기록하며 약 2주간 보관하고, 숫자 값은 Insights에서 가져옵니다.",
+            "ar": "شيء يعمل أو يتوقف، مفتوح أو مغلق، مثل التدفئة أو باب أو حركة، أو قيمة رقمية مفعّلة فوق عتبتها أو تحتها. تُستبعد الفارغة. يسجل التطبيق قيم التشغيل/الإيقاف منذ أول عرض لها ويحتفظ بنحو أسبوعين؛ وتأتي القيم الرقمية من Insights."
           }
         },
         {
@@ -26416,6 +28011,99 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "threshold1",
+          "type": "number",
+          "title": {
+            "en": "  – Threshold",
+            "nl": "  – Drempel",
+            "de": "  – Schwelle",
+            "fr": "  – Seuil",
+            "it": "  – Soglia",
+            "sv": "  – Gräns",
+            "no": "  – Terskel",
+            "es": "  – Umbral",
+            "da": "  – Tærskel",
+            "ru": "  – Порог",
+            "pl": "  – Próg",
+            "ko": "  – 기준값",
+            "ar": "  – العتبة"
+          },
+          "hint": {
+            "en": "For a number: where the row turns on, in the units it shows in. Ignored for on/off values.",
+            "nl": "Voor een getal: waar de rij aangaat, in de eenheid die het toont. Genegeerd voor aan/uit-waarden.",
+            "de": "Für eine Zahl: wo die Zeile an ist, in der angezeigten Einheit. Für An/Aus-Werte ignoriert.",
+            "fr": "Pour un nombre : où la ligne s’allume, dans l’unité affichée. Ignoré pour les valeurs marche/arrêt.",
+            "it": "Per un numero: dove la riga si accende, nell’unità mostrata. Ignorata per i valori acceso/spento.",
+            "sv": "För ett tal: där raden slås på, i den enhet det visas i. Ignoreras för på/av-värden.",
+            "no": "For et tall: der raden slås på, i enheten den vises i. Ignoreres for på/av-verdier.",
+            "es": "Para un número: dónde se enciende la fila, en la unidad que muestra. Se ignora para valores de encendido/apagado.",
+            "da": "For et tal: hvor rækken tænder, i den enhed, det vises i. Ignoreres for tænd/sluk-værdier.",
+            "ru": "Для числа: где строка включается, в показанных единицах. Для значений вкл/выкл не учитывается.",
+            "pl": "Dla liczby: gdzie wiersz się włącza, w wyświetlanej jednostce. Pomijany dla wartości wł./wył.",
+            "ko": "숫자 값일 때 행이 켜지는 기준이며, 표시되는 단위를 씁니다. 켜짐/꺼짐 값에는 쓰이지 않습니다.",
+            "ar": "لقيمة رقمية: حيث يصبح الصف مفعّلًا، بالوحدة المعروضة. يُتجاهل لقيم التشغيل/الإيقاف."
+          },
+          "value": 0
+        },
+        {
+          "id": "when1",
+          "type": "dropdown",
+          "title": {
+            "en": "  – On while",
+            "nl": "  – Aan zolang",
+            "de": "  – An, solange",
+            "fr": "  – Allumé tant que",
+            "it": "  – Acceso finché",
+            "sv": "  – På medan",
+            "no": "  – På mens",
+            "es": "  – Encendido mientras",
+            "da": "  – Tændt mens",
+            "ru": "  – Вкл., пока",
+            "pl": "  – Wł., gdy",
+            "ko": "  – 켜짐 조건",
+            "ar": "  – مفعّل طالما"
+          },
+          "value": "above",
+          "values": [
+            {
+              "id": "above",
+              "title": {
+                "en": "Above the threshold",
+                "nl": "Boven de drempel",
+                "de": "Über der Schwelle",
+                "fr": "Au-dessus du seuil",
+                "it": "Sopra la soglia",
+                "sv": "Över gränsen",
+                "no": "Over terskelen",
+                "es": "Por encima del umbral",
+                "da": "Over tærsklen",
+                "ru": "Выше порога",
+                "pl": "Powyżej progu",
+                "ko": "기준값보다 높음",
+                "ar": "فوق العتبة"
+              }
+            },
+            {
+              "id": "below",
+              "title": {
+                "en": "Below the threshold",
+                "nl": "Onder de drempel",
+                "de": "Unter der Schwelle",
+                "fr": "En dessous du seuil",
+                "it": "Sotto la soglia",
+                "sv": "Under gränsen",
+                "no": "Under terskelen",
+                "es": "Por debajo del umbral",
+                "da": "Under tærsklen",
+                "ru": "Ниже порога",
+                "pl": "Poniżej progu",
+                "ko": "기준값보다 낮음",
+                "ar": "تحت العتبة"
               }
             }
           ]
@@ -26570,6 +28258,99 @@
           ]
         },
         {
+          "id": "threshold2",
+          "type": "number",
+          "title": {
+            "en": "  – Threshold",
+            "nl": "  – Drempel",
+            "de": "  – Schwelle",
+            "fr": "  – Seuil",
+            "it": "  – Soglia",
+            "sv": "  – Gräns",
+            "no": "  – Terskel",
+            "es": "  – Umbral",
+            "da": "  – Tærskel",
+            "ru": "  – Порог",
+            "pl": "  – Próg",
+            "ko": "  – 기준값",
+            "ar": "  – العتبة"
+          },
+          "hint": {
+            "en": "For a number: where the row turns on, in the units it shows in. Ignored for on/off values.",
+            "nl": "Voor een getal: waar de rij aangaat, in de eenheid die het toont. Genegeerd voor aan/uit-waarden.",
+            "de": "Für eine Zahl: wo die Zeile an ist, in der angezeigten Einheit. Für An/Aus-Werte ignoriert.",
+            "fr": "Pour un nombre : où la ligne s’allume, dans l’unité affichée. Ignoré pour les valeurs marche/arrêt.",
+            "it": "Per un numero: dove la riga si accende, nell’unità mostrata. Ignorata per i valori acceso/spento.",
+            "sv": "För ett tal: där raden slås på, i den enhet det visas i. Ignoreras för på/av-värden.",
+            "no": "For et tall: der raden slås på, i enheten den vises i. Ignoreres for på/av-verdier.",
+            "es": "Para un número: dónde se enciende la fila, en la unidad que muestra. Se ignora para valores de encendido/apagado.",
+            "da": "For et tal: hvor rækken tænder, i den enhed, det vises i. Ignoreres for tænd/sluk-værdier.",
+            "ru": "Для числа: где строка включается, в показанных единицах. Для значений вкл/выкл не учитывается.",
+            "pl": "Dla liczby: gdzie wiersz się włącza, w wyświetlanej jednostce. Pomijany dla wartości wł./wył.",
+            "ko": "숫자 값일 때 행이 켜지는 기준이며, 표시되는 단위를 씁니다. 켜짐/꺼짐 값에는 쓰이지 않습니다.",
+            "ar": "لقيمة رقمية: حيث يصبح الصف مفعّلًا، بالوحدة المعروضة. يُتجاهل لقيم التشغيل/الإيقاف."
+          },
+          "value": 0
+        },
+        {
+          "id": "when2",
+          "type": "dropdown",
+          "title": {
+            "en": "  – On while",
+            "nl": "  – Aan zolang",
+            "de": "  – An, solange",
+            "fr": "  – Allumé tant que",
+            "it": "  – Acceso finché",
+            "sv": "  – På medan",
+            "no": "  – På mens",
+            "es": "  – Encendido mientras",
+            "da": "  – Tændt mens",
+            "ru": "  – Вкл., пока",
+            "pl": "  – Wł., gdy",
+            "ko": "  – 켜짐 조건",
+            "ar": "  – مفعّل طالما"
+          },
+          "value": "above",
+          "values": [
+            {
+              "id": "above",
+              "title": {
+                "en": "Above the threshold",
+                "nl": "Boven de drempel",
+                "de": "Über der Schwelle",
+                "fr": "Au-dessus du seuil",
+                "it": "Sopra la soglia",
+                "sv": "Över gränsen",
+                "no": "Over terskelen",
+                "es": "Por encima del umbral",
+                "da": "Over tærsklen",
+                "ru": "Выше порога",
+                "pl": "Powyżej progu",
+                "ko": "기준값보다 높음",
+                "ar": "فوق العتبة"
+              }
+            },
+            {
+              "id": "below",
+              "title": {
+                "en": "Below the threshold",
+                "nl": "Onder de drempel",
+                "de": "Unter der Schwelle",
+                "fr": "En dessous du seuil",
+                "it": "Sotto la soglia",
+                "sv": "Under gränsen",
+                "no": "Under terskelen",
+                "es": "Por debajo del umbral",
+                "da": "Under tærsklen",
+                "ru": "Ниже порога",
+                "pl": "Poniżej progu",
+                "ko": "기준값보다 낮음",
+                "ar": "تحت العتبة"
+              }
+            }
+          ]
+        },
+        {
           "id": "slot3",
           "type": "autocomplete",
           "title": {
@@ -26714,6 +28495,99 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "threshold3",
+          "type": "number",
+          "title": {
+            "en": "  – Threshold",
+            "nl": "  – Drempel",
+            "de": "  – Schwelle",
+            "fr": "  – Seuil",
+            "it": "  – Soglia",
+            "sv": "  – Gräns",
+            "no": "  – Terskel",
+            "es": "  – Umbral",
+            "da": "  – Tærskel",
+            "ru": "  – Порог",
+            "pl": "  – Próg",
+            "ko": "  – 기준값",
+            "ar": "  – العتبة"
+          },
+          "hint": {
+            "en": "For a number: where the row turns on, in the units it shows in. Ignored for on/off values.",
+            "nl": "Voor een getal: waar de rij aangaat, in de eenheid die het toont. Genegeerd voor aan/uit-waarden.",
+            "de": "Für eine Zahl: wo die Zeile an ist, in der angezeigten Einheit. Für An/Aus-Werte ignoriert.",
+            "fr": "Pour un nombre : où la ligne s’allume, dans l’unité affichée. Ignoré pour les valeurs marche/arrêt.",
+            "it": "Per un numero: dove la riga si accende, nell’unità mostrata. Ignorata per i valori acceso/spento.",
+            "sv": "För ett tal: där raden slås på, i den enhet det visas i. Ignoreras för på/av-värden.",
+            "no": "For et tall: der raden slås på, i enheten den vises i. Ignoreres for på/av-verdier.",
+            "es": "Para un número: dónde se enciende la fila, en la unidad que muestra. Se ignora para valores de encendido/apagado.",
+            "da": "For et tal: hvor rækken tænder, i den enhed, det vises i. Ignoreres for tænd/sluk-værdier.",
+            "ru": "Для числа: где строка включается, в показанных единицах. Для значений вкл/выкл не учитывается.",
+            "pl": "Dla liczby: gdzie wiersz się włącza, w wyświetlanej jednostce. Pomijany dla wartości wł./wył.",
+            "ko": "숫자 값일 때 행이 켜지는 기준이며, 표시되는 단위를 씁니다. 켜짐/꺼짐 값에는 쓰이지 않습니다.",
+            "ar": "لقيمة رقمية: حيث يصبح الصف مفعّلًا، بالوحدة المعروضة. يُتجاهل لقيم التشغيل/الإيقاف."
+          },
+          "value": 0
+        },
+        {
+          "id": "when3",
+          "type": "dropdown",
+          "title": {
+            "en": "  – On while",
+            "nl": "  – Aan zolang",
+            "de": "  – An, solange",
+            "fr": "  – Allumé tant que",
+            "it": "  – Acceso finché",
+            "sv": "  – På medan",
+            "no": "  – På mens",
+            "es": "  – Encendido mientras",
+            "da": "  – Tændt mens",
+            "ru": "  – Вкл., пока",
+            "pl": "  – Wł., gdy",
+            "ko": "  – 켜짐 조건",
+            "ar": "  – مفعّل طالما"
+          },
+          "value": "above",
+          "values": [
+            {
+              "id": "above",
+              "title": {
+                "en": "Above the threshold",
+                "nl": "Boven de drempel",
+                "de": "Über der Schwelle",
+                "fr": "Au-dessus du seuil",
+                "it": "Sopra la soglia",
+                "sv": "Över gränsen",
+                "no": "Over terskelen",
+                "es": "Por encima del umbral",
+                "da": "Over tærsklen",
+                "ru": "Выше порога",
+                "pl": "Powyżej progu",
+                "ko": "기준값보다 높음",
+                "ar": "فوق العتبة"
+              }
+            },
+            {
+              "id": "below",
+              "title": {
+                "en": "Below the threshold",
+                "nl": "Onder de drempel",
+                "de": "Unter der Schwelle",
+                "fr": "En dessous du seuil",
+                "it": "Sotto la soglia",
+                "sv": "Under gränsen",
+                "no": "Under terskelen",
+                "es": "Por debajo del umbral",
+                "da": "Under tærsklen",
+                "ru": "Ниже порога",
+                "pl": "Poniżej progu",
+                "ko": "기준값보다 낮음",
+                "ar": "تحت العتبة"
               }
             }
           ]
@@ -26868,6 +28742,99 @@
           ]
         },
         {
+          "id": "threshold4",
+          "type": "number",
+          "title": {
+            "en": "  – Threshold",
+            "nl": "  – Drempel",
+            "de": "  – Schwelle",
+            "fr": "  – Seuil",
+            "it": "  – Soglia",
+            "sv": "  – Gräns",
+            "no": "  – Terskel",
+            "es": "  – Umbral",
+            "da": "  – Tærskel",
+            "ru": "  – Порог",
+            "pl": "  – Próg",
+            "ko": "  – 기준값",
+            "ar": "  – العتبة"
+          },
+          "hint": {
+            "en": "For a number: where the row turns on, in the units it shows in. Ignored for on/off values.",
+            "nl": "Voor een getal: waar de rij aangaat, in de eenheid die het toont. Genegeerd voor aan/uit-waarden.",
+            "de": "Für eine Zahl: wo die Zeile an ist, in der angezeigten Einheit. Für An/Aus-Werte ignoriert.",
+            "fr": "Pour un nombre : où la ligne s’allume, dans l’unité affichée. Ignoré pour les valeurs marche/arrêt.",
+            "it": "Per un numero: dove la riga si accende, nell’unità mostrata. Ignorata per i valori acceso/spento.",
+            "sv": "För ett tal: där raden slås på, i den enhet det visas i. Ignoreras för på/av-värden.",
+            "no": "For et tall: der raden slås på, i enheten den vises i. Ignoreres for på/av-verdier.",
+            "es": "Para un número: dónde se enciende la fila, en la unidad que muestra. Se ignora para valores de encendido/apagado.",
+            "da": "For et tal: hvor rækken tænder, i den enhed, det vises i. Ignoreres for tænd/sluk-værdier.",
+            "ru": "Для числа: где строка включается, в показанных единицах. Для значений вкл/выкл не учитывается.",
+            "pl": "Dla liczby: gdzie wiersz się włącza, w wyświetlanej jednostce. Pomijany dla wartości wł./wył.",
+            "ko": "숫자 값일 때 행이 켜지는 기준이며, 표시되는 단위를 씁니다. 켜짐/꺼짐 값에는 쓰이지 않습니다.",
+            "ar": "لقيمة رقمية: حيث يصبح الصف مفعّلًا، بالوحدة المعروضة. يُتجاهل لقيم التشغيل/الإيقاف."
+          },
+          "value": 0
+        },
+        {
+          "id": "when4",
+          "type": "dropdown",
+          "title": {
+            "en": "  – On while",
+            "nl": "  – Aan zolang",
+            "de": "  – An, solange",
+            "fr": "  – Allumé tant que",
+            "it": "  – Acceso finché",
+            "sv": "  – På medan",
+            "no": "  – På mens",
+            "es": "  – Encendido mientras",
+            "da": "  – Tændt mens",
+            "ru": "  – Вкл., пока",
+            "pl": "  – Wł., gdy",
+            "ko": "  – 켜짐 조건",
+            "ar": "  – مفعّل طالما"
+          },
+          "value": "above",
+          "values": [
+            {
+              "id": "above",
+              "title": {
+                "en": "Above the threshold",
+                "nl": "Boven de drempel",
+                "de": "Über der Schwelle",
+                "fr": "Au-dessus du seuil",
+                "it": "Sopra la soglia",
+                "sv": "Över gränsen",
+                "no": "Over terskelen",
+                "es": "Por encima del umbral",
+                "da": "Over tærsklen",
+                "ru": "Выше порога",
+                "pl": "Powyżej progu",
+                "ko": "기준값보다 높음",
+                "ar": "فوق العتبة"
+              }
+            },
+            {
+              "id": "below",
+              "title": {
+                "en": "Below the threshold",
+                "nl": "Onder de drempel",
+                "de": "Unter der Schwelle",
+                "fr": "En dessous du seuil",
+                "it": "Sotto la soglia",
+                "sv": "Under gränsen",
+                "no": "Under terskelen",
+                "es": "Por debajo del umbral",
+                "da": "Under tærsklen",
+                "ru": "Ниже порога",
+                "pl": "Poniżej progu",
+                "ko": "기준값보다 낮음",
+                "ar": "تحت العتبة"
+              }
+            }
+          ]
+        },
+        {
           "id": "slot5",
           "type": "autocomplete",
           "title": {
@@ -27012,6 +28979,99 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "threshold5",
+          "type": "number",
+          "title": {
+            "en": "  – Threshold",
+            "nl": "  – Drempel",
+            "de": "  – Schwelle",
+            "fr": "  – Seuil",
+            "it": "  – Soglia",
+            "sv": "  – Gräns",
+            "no": "  – Terskel",
+            "es": "  – Umbral",
+            "da": "  – Tærskel",
+            "ru": "  – Порог",
+            "pl": "  – Próg",
+            "ko": "  – 기준값",
+            "ar": "  – العتبة"
+          },
+          "hint": {
+            "en": "For a number: where the row turns on, in the units it shows in. Ignored for on/off values.",
+            "nl": "Voor een getal: waar de rij aangaat, in de eenheid die het toont. Genegeerd voor aan/uit-waarden.",
+            "de": "Für eine Zahl: wo die Zeile an ist, in der angezeigten Einheit. Für An/Aus-Werte ignoriert.",
+            "fr": "Pour un nombre : où la ligne s’allume, dans l’unité affichée. Ignoré pour les valeurs marche/arrêt.",
+            "it": "Per un numero: dove la riga si accende, nell’unità mostrata. Ignorata per i valori acceso/spento.",
+            "sv": "För ett tal: där raden slås på, i den enhet det visas i. Ignoreras för på/av-värden.",
+            "no": "For et tall: der raden slås på, i enheten den vises i. Ignoreres for på/av-verdier.",
+            "es": "Para un número: dónde se enciende la fila, en la unidad que muestra. Se ignora para valores de encendido/apagado.",
+            "da": "For et tal: hvor rækken tænder, i den enhed, det vises i. Ignoreres for tænd/sluk-værdier.",
+            "ru": "Для числа: где строка включается, в показанных единицах. Для значений вкл/выкл не учитывается.",
+            "pl": "Dla liczby: gdzie wiersz się włącza, w wyświetlanej jednostce. Pomijany dla wartości wł./wył.",
+            "ko": "숫자 값일 때 행이 켜지는 기준이며, 표시되는 단위를 씁니다. 켜짐/꺼짐 값에는 쓰이지 않습니다.",
+            "ar": "لقيمة رقمية: حيث يصبح الصف مفعّلًا، بالوحدة المعروضة. يُتجاهل لقيم التشغيل/الإيقاف."
+          },
+          "value": 0
+        },
+        {
+          "id": "when5",
+          "type": "dropdown",
+          "title": {
+            "en": "  – On while",
+            "nl": "  – Aan zolang",
+            "de": "  – An, solange",
+            "fr": "  – Allumé tant que",
+            "it": "  – Acceso finché",
+            "sv": "  – På medan",
+            "no": "  – På mens",
+            "es": "  – Encendido mientras",
+            "da": "  – Tændt mens",
+            "ru": "  – Вкл., пока",
+            "pl": "  – Wł., gdy",
+            "ko": "  – 켜짐 조건",
+            "ar": "  – مفعّل طالما"
+          },
+          "value": "above",
+          "values": [
+            {
+              "id": "above",
+              "title": {
+                "en": "Above the threshold",
+                "nl": "Boven de drempel",
+                "de": "Über der Schwelle",
+                "fr": "Au-dessus du seuil",
+                "it": "Sopra la soglia",
+                "sv": "Över gränsen",
+                "no": "Over terskelen",
+                "es": "Por encima del umbral",
+                "da": "Over tærsklen",
+                "ru": "Выше порога",
+                "pl": "Powyżej progu",
+                "ko": "기준값보다 높음",
+                "ar": "فوق العتبة"
+              }
+            },
+            {
+              "id": "below",
+              "title": {
+                "en": "Below the threshold",
+                "nl": "Onder de drempel",
+                "de": "Unter der Schwelle",
+                "fr": "En dessous du seuil",
+                "it": "Sotto la soglia",
+                "sv": "Under gränsen",
+                "no": "Under terskelen",
+                "es": "Por debajo del umbral",
+                "da": "Under tærsklen",
+                "ru": "Ниже порога",
+                "pl": "Poniżej progu",
+                "ko": "기준값보다 낮음",
+                "ar": "تحت العتبة"
               }
             }
           ]
@@ -27166,6 +29226,99 @@
           ]
         },
         {
+          "id": "threshold6",
+          "type": "number",
+          "title": {
+            "en": "  – Threshold",
+            "nl": "  – Drempel",
+            "de": "  – Schwelle",
+            "fr": "  – Seuil",
+            "it": "  – Soglia",
+            "sv": "  – Gräns",
+            "no": "  – Terskel",
+            "es": "  – Umbral",
+            "da": "  – Tærskel",
+            "ru": "  – Порог",
+            "pl": "  – Próg",
+            "ko": "  – 기준값",
+            "ar": "  – العتبة"
+          },
+          "hint": {
+            "en": "For a number: where the row turns on, in the units it shows in. Ignored for on/off values.",
+            "nl": "Voor een getal: waar de rij aangaat, in de eenheid die het toont. Genegeerd voor aan/uit-waarden.",
+            "de": "Für eine Zahl: wo die Zeile an ist, in der angezeigten Einheit. Für An/Aus-Werte ignoriert.",
+            "fr": "Pour un nombre : où la ligne s’allume, dans l’unité affichée. Ignoré pour les valeurs marche/arrêt.",
+            "it": "Per un numero: dove la riga si accende, nell’unità mostrata. Ignorata per i valori acceso/spento.",
+            "sv": "För ett tal: där raden slås på, i den enhet det visas i. Ignoreras för på/av-värden.",
+            "no": "For et tall: der raden slås på, i enheten den vises i. Ignoreres for på/av-verdier.",
+            "es": "Para un número: dónde se enciende la fila, en la unidad que muestra. Se ignora para valores de encendido/apagado.",
+            "da": "For et tal: hvor rækken tænder, i den enhed, det vises i. Ignoreres for tænd/sluk-værdier.",
+            "ru": "Для числа: где строка включается, в показанных единицах. Для значений вкл/выкл не учитывается.",
+            "pl": "Dla liczby: gdzie wiersz się włącza, w wyświetlanej jednostce. Pomijany dla wartości wł./wył.",
+            "ko": "숫자 값일 때 행이 켜지는 기준이며, 표시되는 단위를 씁니다. 켜짐/꺼짐 값에는 쓰이지 않습니다.",
+            "ar": "لقيمة رقمية: حيث يصبح الصف مفعّلًا، بالوحدة المعروضة. يُتجاهل لقيم التشغيل/الإيقاف."
+          },
+          "value": 0
+        },
+        {
+          "id": "when6",
+          "type": "dropdown",
+          "title": {
+            "en": "  – On while",
+            "nl": "  – Aan zolang",
+            "de": "  – An, solange",
+            "fr": "  – Allumé tant que",
+            "it": "  – Acceso finché",
+            "sv": "  – På medan",
+            "no": "  – På mens",
+            "es": "  – Encendido mientras",
+            "da": "  – Tændt mens",
+            "ru": "  – Вкл., пока",
+            "pl": "  – Wł., gdy",
+            "ko": "  – 켜짐 조건",
+            "ar": "  – مفعّل طالما"
+          },
+          "value": "above",
+          "values": [
+            {
+              "id": "above",
+              "title": {
+                "en": "Above the threshold",
+                "nl": "Boven de drempel",
+                "de": "Über der Schwelle",
+                "fr": "Au-dessus du seuil",
+                "it": "Sopra la soglia",
+                "sv": "Över gränsen",
+                "no": "Over terskelen",
+                "es": "Por encima del umbral",
+                "da": "Over tærsklen",
+                "ru": "Выше порога",
+                "pl": "Powyżej progu",
+                "ko": "기준값보다 높음",
+                "ar": "فوق العتبة"
+              }
+            },
+            {
+              "id": "below",
+              "title": {
+                "en": "Below the threshold",
+                "nl": "Onder de drempel",
+                "de": "Unter der Schwelle",
+                "fr": "En dessous du seuil",
+                "it": "Sotto la soglia",
+                "sv": "Under gränsen",
+                "no": "Under terskelen",
+                "es": "Por debajo del umbral",
+                "da": "Under tærsklen",
+                "ru": "Ниже порога",
+                "pl": "Poniżej progu",
+                "ko": "기준값보다 낮음",
+                "ar": "تحت العتبة"
+              }
+            }
+          ]
+        },
+        {
           "id": "slot7",
           "type": "autocomplete",
           "title": {
@@ -27315,6 +29468,99 @@
           ]
         },
         {
+          "id": "threshold7",
+          "type": "number",
+          "title": {
+            "en": "  – Threshold",
+            "nl": "  – Drempel",
+            "de": "  – Schwelle",
+            "fr": "  – Seuil",
+            "it": "  – Soglia",
+            "sv": "  – Gräns",
+            "no": "  – Terskel",
+            "es": "  – Umbral",
+            "da": "  – Tærskel",
+            "ru": "  – Порог",
+            "pl": "  – Próg",
+            "ko": "  – 기준값",
+            "ar": "  – العتبة"
+          },
+          "hint": {
+            "en": "For a number: where the row turns on, in the units it shows in. Ignored for on/off values.",
+            "nl": "Voor een getal: waar de rij aangaat, in de eenheid die het toont. Genegeerd voor aan/uit-waarden.",
+            "de": "Für eine Zahl: wo die Zeile an ist, in der angezeigten Einheit. Für An/Aus-Werte ignoriert.",
+            "fr": "Pour un nombre : où la ligne s’allume, dans l’unité affichée. Ignoré pour les valeurs marche/arrêt.",
+            "it": "Per un numero: dove la riga si accende, nell’unità mostrata. Ignorata per i valori acceso/spento.",
+            "sv": "För ett tal: där raden slås på, i den enhet det visas i. Ignoreras för på/av-värden.",
+            "no": "For et tall: der raden slås på, i enheten den vises i. Ignoreres for på/av-verdier.",
+            "es": "Para un número: dónde se enciende la fila, en la unidad que muestra. Se ignora para valores de encendido/apagado.",
+            "da": "For et tal: hvor rækken tænder, i den enhed, det vises i. Ignoreres for tænd/sluk-værdier.",
+            "ru": "Для числа: где строка включается, в показанных единицах. Для значений вкл/выкл не учитывается.",
+            "pl": "Dla liczby: gdzie wiersz się włącza, w wyświetlanej jednostce. Pomijany dla wartości wł./wył.",
+            "ko": "숫자 값일 때 행이 켜지는 기준이며, 표시되는 단위를 씁니다. 켜짐/꺼짐 값에는 쓰이지 않습니다.",
+            "ar": "لقيمة رقمية: حيث يصبح الصف مفعّلًا، بالوحدة المعروضة. يُتجاهل لقيم التشغيل/الإيقاف."
+          },
+          "value": 0
+        },
+        {
+          "id": "when7",
+          "type": "dropdown",
+          "title": {
+            "en": "  – On while",
+            "nl": "  – Aan zolang",
+            "de": "  – An, solange",
+            "fr": "  – Allumé tant que",
+            "it": "  – Acceso finché",
+            "sv": "  – På medan",
+            "no": "  – På mens",
+            "es": "  – Encendido mientras",
+            "da": "  – Tændt mens",
+            "ru": "  – Вкл., пока",
+            "pl": "  – Wł., gdy",
+            "ko": "  – 켜짐 조건",
+            "ar": "  – مفعّل طالما"
+          },
+          "value": "above",
+          "values": [
+            {
+              "id": "above",
+              "title": {
+                "en": "Above the threshold",
+                "nl": "Boven de drempel",
+                "de": "Über der Schwelle",
+                "fr": "Au-dessus du seuil",
+                "it": "Sopra la soglia",
+                "sv": "Över gränsen",
+                "no": "Over terskelen",
+                "es": "Por encima del umbral",
+                "da": "Over tærsklen",
+                "ru": "Выше порога",
+                "pl": "Powyżej progu",
+                "ko": "기준값보다 높음",
+                "ar": "فوق العتبة"
+              }
+            },
+            {
+              "id": "below",
+              "title": {
+                "en": "Below the threshold",
+                "nl": "Onder de drempel",
+                "de": "Unter der Schwelle",
+                "fr": "En dessous du seuil",
+                "it": "Sotto la soglia",
+                "sv": "Under gränsen",
+                "no": "Under terskelen",
+                "es": "Por debajo del umbral",
+                "da": "Under tærsklen",
+                "ru": "Ниже порога",
+                "pl": "Poniżej progu",
+                "ko": "기준값보다 낮음",
+                "ar": "تحت العتبة"
+              }
+            }
+          ]
+        },
+        {
           "id": "slot8",
           "type": "autocomplete",
           "title": {
@@ -27459,6 +29705,99 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "threshold8",
+          "type": "number",
+          "title": {
+            "en": "  – Threshold",
+            "nl": "  – Drempel",
+            "de": "  – Schwelle",
+            "fr": "  – Seuil",
+            "it": "  – Soglia",
+            "sv": "  – Gräns",
+            "no": "  – Terskel",
+            "es": "  – Umbral",
+            "da": "  – Tærskel",
+            "ru": "  – Порог",
+            "pl": "  – Próg",
+            "ko": "  – 기준값",
+            "ar": "  – العتبة"
+          },
+          "hint": {
+            "en": "For a number: where the row turns on, in the units it shows in. Ignored for on/off values.",
+            "nl": "Voor een getal: waar de rij aangaat, in de eenheid die het toont. Genegeerd voor aan/uit-waarden.",
+            "de": "Für eine Zahl: wo die Zeile an ist, in der angezeigten Einheit. Für An/Aus-Werte ignoriert.",
+            "fr": "Pour un nombre : où la ligne s’allume, dans l’unité affichée. Ignoré pour les valeurs marche/arrêt.",
+            "it": "Per un numero: dove la riga si accende, nell’unità mostrata. Ignorata per i valori acceso/spento.",
+            "sv": "För ett tal: där raden slås på, i den enhet det visas i. Ignoreras för på/av-värden.",
+            "no": "For et tall: der raden slås på, i enheten den vises i. Ignoreres for på/av-verdier.",
+            "es": "Para un número: dónde se enciende la fila, en la unidad que muestra. Se ignora para valores de encendido/apagado.",
+            "da": "For et tal: hvor rækken tænder, i den enhed, det vises i. Ignoreres for tænd/sluk-værdier.",
+            "ru": "Для числа: где строка включается, в показанных единицах. Для значений вкл/выкл не учитывается.",
+            "pl": "Dla liczby: gdzie wiersz się włącza, w wyświetlanej jednostce. Pomijany dla wartości wł./wył.",
+            "ko": "숫자 값일 때 행이 켜지는 기준이며, 표시되는 단위를 씁니다. 켜짐/꺼짐 값에는 쓰이지 않습니다.",
+            "ar": "لقيمة رقمية: حيث يصبح الصف مفعّلًا، بالوحدة المعروضة. يُتجاهل لقيم التشغيل/الإيقاف."
+          },
+          "value": 0
+        },
+        {
+          "id": "when8",
+          "type": "dropdown",
+          "title": {
+            "en": "  – On while",
+            "nl": "  – Aan zolang",
+            "de": "  – An, solange",
+            "fr": "  – Allumé tant que",
+            "it": "  – Acceso finché",
+            "sv": "  – På medan",
+            "no": "  – På mens",
+            "es": "  – Encendido mientras",
+            "da": "  – Tændt mens",
+            "ru": "  – Вкл., пока",
+            "pl": "  – Wł., gdy",
+            "ko": "  – 켜짐 조건",
+            "ar": "  – مفعّل طالما"
+          },
+          "value": "above",
+          "values": [
+            {
+              "id": "above",
+              "title": {
+                "en": "Above the threshold",
+                "nl": "Boven de drempel",
+                "de": "Über der Schwelle",
+                "fr": "Au-dessus du seuil",
+                "it": "Sopra la soglia",
+                "sv": "Över gränsen",
+                "no": "Over terskelen",
+                "es": "Por encima del umbral",
+                "da": "Over tærsklen",
+                "ru": "Выше порога",
+                "pl": "Powyżej progu",
+                "ko": "기준값보다 높음",
+                "ar": "فوق العتبة"
+              }
+            },
+            {
+              "id": "below",
+              "title": {
+                "en": "Below the threshold",
+                "nl": "Onder de drempel",
+                "de": "Unter der Schwelle",
+                "fr": "En dessous du seuil",
+                "it": "Sotto la soglia",
+                "sv": "Under gränsen",
+                "no": "Under terskelen",
+                "es": "Por debajo del umbral",
+                "da": "Under tærsklen",
+                "ru": "Ниже порога",
+                "pl": "Poniżej progu",
+                "ko": "기준값보다 낮음",
+                "ar": "تحت العتبة"
               }
             }
           ]

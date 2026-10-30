@@ -63,9 +63,10 @@ export function widgetAutocompletes(app: WidgetkeeperApp): Record<string, Record
   for (const id of ['slot']) add('dailyrange', id, query => app.sparklines.listSlots(query));
   for (const id of ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'slot7', 'slot8']) add('compare', id, query => app.sparklines.listSlots(query));
   // Chart · Timeline: each row's logged boolean (on/off, open, motion).
-  for (const id of ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'slot7', 'slot8']) add('timeline', id, query => app.sparklines.listSlots(query, 'boolean'));
+  for (const id of ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'slot7', 'slot8']) add('timeline', id, query => app.sparklines.listSlots(query, 'timeline'));
   // Chart · Stacked: the total and each layer, power first.
   for (const id of ['total', 'slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6']) add('stacked', id, query => app.sparklines.listSlots(query, 'power'));
+  for (const id of ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6']) add('lines', id, query => app.sparklines.listSlots(query));
 
   // Variables: every slot lists all Logic variables.
   for (const n of VARIABLE_SLOTS) add('variables', `slot${n}`, query => app.variables.listVariables(query));

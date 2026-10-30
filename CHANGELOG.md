@@ -22,6 +22,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 ### New: Chart · Daily Profile
 - Today's line over the usual day: each hour's average over the last 7 (or 3) days, dashed, with its spread as a band, so a day that runs high or low shows at once. The value now and the usual one for this hour sit at the top; tap for another hour.
 
+### New: Chart · Lines
+- Up to six values over time on one chart, a line each in its own colour: every room's temperature, each radiator's power. One scale for all (W and kW together; a value in other units is left out, its chip saying so), the last 24 hours or any time span. The first two values now sit at the top; tap for the line nearest your finger at that time. Lines, or lines with areas.
+
 ### New: Chart · Min/Max
 - Each day's lowest to highest as a bar, with its average as a tick: how cold the nights and how warm the afternoons were. The last four weeks by default, or any time span (a bar an hour over a day, a month over a year). The latest bar's high and low sit at the top; tap a bar for its own.
 
@@ -30,6 +33,7 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 
 ### New: Chart · Timeline
 - When was it on, open or moving? A row for each of up to eight on/off values over the day (the heating, a motion sensor, a door, the TV), with a band where it was on, open or moving. How long the first was on and how often the second turned on sit at the top; tap a row or a band for its own. Homey keeps only a value's last 50 changes, so the app records them itself from the first time they're shown, shared with the Insights Heatmap.
+- **Numbers too:** a row can be a number, on while it's above or below a threshold you set (the heater above 50 W, the bedroom below 18 °C), from Insights' history.
 
 ### New: Chart · Stacked
 - Who uses the power? Up to six values stacked on one time axis, with a total (such as the house's meter) the rest as Other. Values below zero, such as solar, stack downwards. The total now and the largest part's share sit at the top; tap for a moment's. Areas or bars.

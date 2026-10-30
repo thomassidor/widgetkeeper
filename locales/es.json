@@ -376,6 +376,10 @@
     "countOpen": "Aperturas",
     "countMotion": "Detecciones",
     "countAlarm": "Disparos",
+    "timeAbove": "Por encima",
+    "timeBelow": "Por debajo",
+    "countAbove": "Superó",
+    "countBelow": "Bajó de",
     "hours": "h",
     "minutes": "min"
   },
@@ -389,6 +393,15 @@
     "total": "Total",
     "other": "Otros",
     "largest": "Mayor"
+  },
+  "lines": {
+    "selectValues": "Elige los valores que mostrar en los ajustes del widget.",
+    "error": "No se pudo cargar el gráfico.",
+    "unavailable": "No disponible",
+    "noHistory": "Aún no hay historial.",
+    "otherUnits": "Otra unidad",
+    "now": "Ahora",
+    "average": "media"
   },
   "lights": {
     "selectDevices": "Elige luces en los ajustes del widget.",
@@ -926,8 +939,9 @@
       "typicalday": "La línea de hoy sobre el día típico y su dispersión: ¿es hoy distinto?",
       "dailyrange": "El mínimo y el máximo de cada día como barra, la media a través: ¿cuánto osciló?",
       "compare": "Un valor entre dispositivos, ahora y su rango de hoy, ordenado: ¿qué habitación está más cálida?",
-      "timeline": "¿Cuándo estuvo encendido, abierto o en movimiento? Una fila por valor a lo largo del día, bandas donde lo estuvo.",
+      "timeline": "¿Cuándo estuvo encendido, abierto, en movimiento o más allá de un umbral? Una fila por valor a lo largo del día, bandas donde lo estuvo.",
       "stacked": "Varios valores apilados en un eje de tiempo, el resto de un total como Otros: ¿quién gasta la electricidad?",
+      "lines": "Hasta seis valores en el tiempo en un gráfico, una línea cada uno: la temperatura de cada habitación lado a lado.",
       "variables": "Variables como filas para cambiar o activar.",
       "varpresets": "Botones que ponen una variable en valores predefinidos.",
       "keypad": "Botones tras un código opcional que inician flujos o ponen un estado.",

@@ -376,6 +376,10 @@
     "countOpen": "Opened",
     "countMotion": "Detections",
     "countAlarm": "Triggered",
+    "timeAbove": "Above",
+    "timeBelow": "Below",
+    "countAbove": "Went above",
+    "countBelow": "Went below",
     "hours": "h",
     "minutes": "min"
   },
@@ -389,6 +393,15 @@
     "total": "Total",
     "other": "Other",
     "largest": "Largest"
+  },
+  "lines": {
+    "selectValues": "Pick the values to show in the widget settings.",
+    "error": "Could not load the chart.",
+    "unavailable": "Unavailable",
+    "noHistory": "No history yet.",
+    "otherUnits": "Other units",
+    "now": "Now",
+    "average": "avg"
   },
   "lights": {
     "selectDevices": "Select lights in the widget settings.",
@@ -926,8 +939,9 @@
       "typicalday": "Today's line over the usual day and its spread: is today unusual?",
       "dailyrange": "Each day's lowest and highest as a bar, its average across it: how much did it swing?",
       "compare": "One value across devices, now and its range today, sorted: which room is warmest?",
-      "timeline": "When was it on, open or moving? A row per value over the day, bands where it was true.",
+      "timeline": "When was it on, open, moving or past a threshold? A row per value over the day, bands where it was true.",
       "stacked": "Several values stacked on one time axis, the rest of a total as Other: who uses the power?",
+      "lines": "Up to six values over time on one chart, a line each: every room's temperature side by side.",
       "variables": "Variables as rows you can switch or change.",
       "varpresets": "Buttons that set a variable to preset values.",
       "keypad": "Buttons behind an optional code that start Flows or set a state.",

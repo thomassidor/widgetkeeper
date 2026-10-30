@@ -30,6 +30,7 @@ interface Window {
   createCompareWidget: (root: HTMLElement, opts?: object) => any;
   createTimelineWidget: ((root: HTMLElement, opts?: object) => any) & { kindOf: (capabilityId: string) => string };
   createStackedWidget: (root: HTMLElement, opts?: object) => any;
+  createLinesWidget: (root: HTMLElement, opts?: object) => any;
   createDailyRangeWidget: (root: HTMLElement, opts?: object) => any;
   createTypicalDayWidget: (root: HTMLElement, opts?: object) => any;
   chartBuckets: (points: [number, number][], from: number, to: number, bucketMs: number | 'month', current?: number | null) => { t: number, end: number, v: number | null }[];
@@ -195,6 +196,7 @@ interface Window {
   mountCompareWidget: MountWidget;
   mountTimelineWidget: MountWidget;
   mountStackedWidget: MountWidget;
+  mountLinesWidget: MountWidget;
   mountDailyRangeWidget: MountWidget;
   mountTypicalDayWidget: MountWidget;
   mountThermostatWidget: MountWidget;

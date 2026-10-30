@@ -767,6 +767,36 @@ function stackedChart(t, theme) {
   </div>`;
 }
 
+// Chart · Lines: four lines over a day (blue, orange, green and purple: four rooms' temperatures), each its own shape,
+// over a light grid, under a legend row of dots, with a dot on each line's latest point.
+function linesChart(t, theme) {
+  const card = theme === 'dark' ? '#1F2029' : '#FFFFFF';
+  const PURPLE = '#9B5CF6';
+  const COLORS = [BLUE, ORANGE, '#71D51B', PURPLE];
+  const LINES = [
+    [0.62, 0.6, 0.56, 0.52, 0.5, 0.52, 0.6, 0.7, 0.76, 0.78, 0.74, 0.7, 0.68, 0.7],
+    [0.44, 0.42, 0.4, 0.38, 0.37, 0.4, 0.5, 0.58, 0.6, 0.56, 0.5, 0.52, 0.58, 0.6],
+    [0.3, 0.28, 0.26, 0.25, 0.24, 0.24, 0.26, 0.3, 0.36, 0.42, 0.44, 0.4, 0.34, 0.3],
+    [0.16, 0.15, 0.14, 0.12, 0.12, 0.13, 0.15, 0.18, 0.2, 0.22, 0.26, 0.24, 0.2, 0.18],
+  ];
+  const H = 330, n = LINES[0].length, NOW = 0.86;
+  const x = j => (W * NOW * j / (n - 1)).toFixed(1);
+  const y = v => (H - 10 - v * (H - 20)).toFixed(1);
+  const paths = LINES.map((vs, i) => `<path d="M${vs.map((v, j) => `${x(j)} ${y(v)}`).join('L')}" fill="none" stroke="${COLORS[i]}" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>`
+    + `<circle cx="${x(n - 1)}" cy="${y(vs[n - 1])}" r="12" fill="${COLORS[i]}" stroke="${card}" stroke-width="5"/>`).join('');
+  const grid = Array.from({ length: 3 }, (_, j) => `M0 ${(H * j / 3 + 2).toFixed(1)}H${W}`).join('');
+  const chip = (c, w) => `<div class="pill" style="height:56px;padding:0 24px 0 20px;box-sizing:border-box;background:color-mix(in srgb, ${t.fg} 9%, ${card});display:flex;align-items:center;gap:14px">
+      <div style="width:22px;height:22px;border-radius:50%;background:${c}"></div>${pill(w, 24, t.fg, 'opacity:.85')}</div>`;
+  return `<div class="card" style="gap:30px">
+    <div style="display:flex;gap:16px;flex-wrap:wrap">${chip(BLUE, 90)}${chip(ORANGE, 70)}${chip('#71D51B', 100)}${chip(PURPLE, 60)}</div>
+    <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+      <path d="${grid}" fill="none" stroke="${t.grid}" stroke-width="3"/>
+      ${paths}
+      <path d="M0 ${H - 2}H${W}" fill="none" stroke="${t.grid}" stroke-width="4"/>
+    </svg>
+  </div>`;
+}
+
 // Sparklines: Device Values' tiles, 2 per row, each with a small blue line chart (and a faint area) between the
 // icon/value row and the name, and the min/max as two small muted labels at the chart's right edge.
 function sparklines(t, theme) {
@@ -1207,6 +1237,8 @@ const PREVIEWS = [
   { id: 'tln-light',    label: '4b · Timeline — preview-light.png',                    theme: 'light', render: timelineChart },
   { id: 'stk-dark',     label: '4c · Stacked — preview-dark.png',                      theme: 'dark',  render: stackedChart },
   { id: 'stk-light',    label: '4d · Stacked — preview-light.png',                     theme: 'light', render: stackedChart },
+  { id: 'lns-dark',     label: '4e · Lines — preview-dark.png',                        theme: 'dark',  render: linesChart },
+  { id: 'lns-light',    label: '4f · Lines — preview-light.png',                       theme: 'light', render: linesChart },
   { id: 'var-dark',     label: '1u · Variables — preview-dark.png',         theme: 'dark',  render: flowVariables },
   { id: 'var-light',    label: '1v · Variables — preview-light.png',        theme: 'light', render: flowVariables },
   { id: 'vp-dark',      label: '2y · Variable Presets — preview-dark.png',       theme: 'dark',  render: varPresets },

@@ -100,7 +100,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
             ...(typeof s.min === 'number' ? { min: s.min } : {}),
             ...(typeof s.max === 'number' ? { max: s.max } : {}),
             ...(s.values ? { values: s.values.map(v => ({ id: String(v.id), title: loc(v.title) || String(v.id) })) } : {}),
-            ...(((type === 'values' || type === 'sparklines') && /^slot\d+$/.test(s.id)) || (type === 'charts' && /^chart\d$/.test(s.id)) || (type === 'totals' && s.id === 'slot') || (type === 'scatter' && /^[xy]Value$/.test(s.id)) || (type === 'typicalday' && /^slot$/.test(s.id)) || (type === 'dailyrange' && /^slot$/.test(s.id)) || (type === 'compare' && /^slot\d$/.test(s.id)) || (type === 'timeline' && /^slot\d$/.test(s.id)) || (type === 'stacked' && /^(total|slot\d)$/.test(s.id)) ? { picker: 'capability' } : {}),
+            ...(((type === 'values' || type === 'sparklines') && /^slot\d+$/.test(s.id)) || (type === 'charts' && /^chart\d$/.test(s.id)) || (type === 'totals' && s.id === 'slot') || (type === 'scatter' && /^[xy]Value$/.test(s.id)) || (type === 'typicalday' && /^slot$/.test(s.id)) || (type === 'dailyrange' && /^slot$/.test(s.id)) || (type === 'compare' && /^slot\d$/.test(s.id)) || (type === 'timeline' && /^slot\d$/.test(s.id)) || (type === 'stacked' && /^(total|slot\d)$/.test(s.id)) || (type === 'lines' && /^slot\d$/.test(s.id)) ? { picker: 'capability' } : {}),
           })),
           sections,
         };

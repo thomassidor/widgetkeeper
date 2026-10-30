@@ -376,6 +376,10 @@
     "countOpen": "Aperture",
     "countMotion": "Rilevamenti",
     "countAlarm": "Attivazioni",
+    "timeAbove": "Sopra",
+    "timeBelow": "Sotto",
+    "countAbove": "Superamenti",
+    "countBelow": "Discese",
     "hours": "h",
     "minutes": "min"
   },
@@ -389,6 +393,15 @@
     "total": "Totale",
     "other": "Altro",
     "largest": "Il maggiore"
+  },
+  "lines": {
+    "selectValues": "Scegli i valori da mostrare nelle impostazioni del widget.",
+    "error": "Impossibile caricare il grafico.",
+    "unavailable": "Non disponibile",
+    "noHistory": "Ancora nessuna cronologia.",
+    "otherUnits": "Altra unità",
+    "now": "Ora",
+    "average": "media"
   },
   "lights": {
     "selectDevices": "Scegli le luci nelle impostazioni del widget.",
@@ -926,8 +939,9 @@
       "typicalday": "La linea di oggi sulla giornata tipo e la sua variazione: oggi è insolito?",
       "dailyrange": "Il minimo e il massimo di ogni giorno come barra, la media attraverso: quanto ha oscillato?",
       "compare": "Un valore su più dispositivi, ora e l'intervallo di oggi, in ordine: quale stanza è la più calda?",
-      "timeline": "Quando era acceso, aperto o in movimento? Una riga per valore lungo la giornata, bande dove lo era.",
+      "timeline": "Quando era acceso, aperto, in movimento o oltre una soglia? Una riga per valore lungo la giornata, bande dove lo era.",
       "stacked": "Più valori impilati su un asse del tempo, il resto di un totale come Altro: chi consuma la corrente?",
+      "lines": "Fino a sei valori nel tempo in un grafico, una linea ciascuno: la temperatura di ogni stanza a confronto.",
       "variables": "Variabili come righe da attivare o modificare.",
       "varpresets": "Pulsanti che impostano una variabile su valori predefiniti.",
       "keypad": "Pulsanti dietro un codice facoltativo che avviano flow o impostano uno stato.",

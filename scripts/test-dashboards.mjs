@@ -523,12 +523,38 @@ const BUILD = {
     ] };
   },
 
+  async lines() {
+    const items = await autocomplete('lines', 'slot1');
+    // Temperatures where there are (each room's), else whatever else is logged; a power value for other units.
+    const temps = pick(items, i => /:measure_temperature/.test(i.id), 6);
+    const values = temps.length >= 2 ? temps : pick(items, () => true, 6);
+    const [power] = pick(items, i => /:measure_power/.test(i.id));
+    const slots = list => Object.fromEntries(list.map((v, k) => [`slot${k + 1}`, v]));
+    const missing = { id: `${MISSING}:measure_temperature`, name: 'Deleted device · Temperature' };
+    return { cols: 3, widgets: [
+      wide(w('lines', 'Up to 6, 24 hours (defaults)', slots(values))),
+      w('lines', 'Areas · smooth · legend below', { ...slots(values.slice(0, 3)), style: 'area', smooth: true, legend: 'below' }),
+      w('lines', 'From zero · own colours · own title', { ...slots(values.slice(0, 3)), range: 'zero', color1: 'green', color2: 'purple', color3: 'yellow', title: 'Typed title' }),
+      w('lines', 'Last 7 days · Vivid', { ...slots(values.slice(0, 4)), count: 7, span: 'days', colorStyle: 'deep' }),
+      w('lines', 'Yesterday (averages)', { ...slots(values.slice(0, 3)), count: 1, span: 'calDays', leaveOut: true }),
+      w('lines', 'This year (6-hourly)', { ...slots(values.slice(0, 3)), count: 1, span: 'calYears' }),
+      w('lines', '40 minutes · no header', { ...slots(values.slice(0, 3)), count: 40, span: 'minutes', showHeader: false }),
+      power && w('lines', 'A value in other units', slots([...values.slice(0, 2), power])),
+      w('lines', 'With a deleted device', slots([missing, ...values.slice(0, 2)])),
+      w('lines', 'One value', slots(values.slice(0, 1))),
+      w('lines', 'Nothing picked'),
+    ].filter(Boolean) };
+  },
+
   async timeline() {
     const items = await autocomplete('timeline', 'slot1');
     // A contact, motion and on/off where there are, then whatever else is logged.
     const kinds = ['alarm_contact', 'alarm_motion', 'onoff'];
     const byKind = kinds.flatMap(c => pick(items, i => i.id.endsWith(`:${c}`), 3));
     const values = [...new Set([...byKind, ...pick(items, () => true, 8)])].slice(0, 8);
+    // Numbers held against a threshold (1.2.0): power above 50 W, a temperature below 20 °C.
+    const [power] = pick(items, i => /:measure_power$/.test(i.id));
+    const [temp] = pick(items, i => /:measure_temperature$/.test(i.id));
     const slots = list => Object.fromEntries(list.map((v, k) => [`slot${k + 1}`, v]));
     const missing = { id: `${MISSING}:alarm_contact`, name: 'Deleted device · Contact' };
     return { cols: 3, widgets: [
@@ -537,10 +563,15 @@ const BUILD = {
       w('timeline', 'Last 7 days · Vivid', { ...slots(values.slice(0, 4)), count: 7, span: 'days', colorStyle: 'deep' }),
       w('timeline', 'Yesterday', { ...slots(values.slice(0, 3)), count: 1, span: 'calDays', leaveOut: true }),
       w('timeline', 'Last 6 hours · no header', { ...slots(values.slice(0, 3)), count: 6, span: 'hours', showHeader: false }),
+      (power || temp) && w('timeline', 'Numbers · power above 50 W · temperature below 20', {
+        ...slots([power, temp, values[0]].filter(Boolean)),
+        ...(power ? { threshold1: 50 } : {}), ...(temp ? { [`threshold${power ? 2 : 1}`]: 20, [`when${power ? 2 : 1}`]: 'below' } : {}),
+      }),
+      power && w('timeline', 'Power above 50 W · last 7 days', { slot1: power, threshold1: 50, count: 7, span: 'days' }),
       w('timeline', 'With a deleted device', slots([missing, ...values.slice(0, 2)])),
       w('timeline', 'One value', slots(values.slice(0, 1))),
       w('timeline', 'Nothing picked'),
-    ] };
+    ].filter(Boolean) };
   },
 
   async dailyrange() {

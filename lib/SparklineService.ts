@@ -118,9 +118,14 @@ export function sparkCaps(device: any): string[] {
   return heatmapCaps(device).filter(c => c.type === 'number').map(c => c.id);
 }
 
-/** The device's logged booleans (on/off, open/closed, motion …): Chart · Timeline's values. */
+/** The device's logged booleans (on/off, open/closed, motion …). */
 export function booleanCaps(device: any): string[] {
   return heatmapCaps(device).filter(c => c.type === 'boolean').map(c => c.id);
+}
+
+/** Chart · Timeline's values: the device's logged booleans, then its logged numbers (held against a threshold). */
+export function timelineCaps(device: any): string[] {
+  return [...booleanCaps(device), ...sparkCaps(device)];
 }
 
 /**
@@ -221,10 +226,12 @@ export default class SparklineService {
   /**
    * Every logged number of every device, as `Device · Capability`, with `None` first; `counter` (Chart · Totals'
    * value that counts up) lists the meters (`meter_*`: kWh, m³, …) before the rest, `power` (Chart · Stacked's layers)
-   * the power values (`measure_power`) first, and `boolean` (Chart · Timeline's) the logged booleans instead.
+   * the power values (`measure_power`) first, `boolean` the logged booleans instead, and `timeline` (Chart ·
+   * Timeline's) both.
    */
-  listSlots(query: string, kind: 'number' | 'counter' | 'power' | 'boolean' = 'number'): Promise<AutocompleteItem[]> {
+  listSlots(query: string, kind: 'number' | 'counter' | 'power' | 'boolean' | 'timeline' = 'number'): Promise<AutocompleteItem[]> {
     if (kind === 'boolean') return listCapabilitySlots(this.homey, query, booleanCaps);
+    if (kind === 'timeline') return listCapabilitySlots(this.homey, query, timelineCaps);
     const first = kind === 'counter' ? (id: string) => id.startsWith('meter_') : kind === 'power' ? (id: string) => id.startsWith('measure_power') : undefined;
     return listCapabilitySlots(this.homey, query, sparkCaps, first);
   }

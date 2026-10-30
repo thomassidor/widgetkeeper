@@ -1719,6 +1719,157 @@
           }
         }
       ]
+    },
+    "timeline.threshold": {
+      "id": "threshold{n}",
+      "type": "number",
+      "title": {
+        "en": "  – Threshold",
+        "nl": "  – Drempel",
+        "de": "  – Schwelle",
+        "fr": "  – Seuil",
+        "it": "  – Soglia",
+        "sv": "  – Gräns",
+        "no": "  – Terskel",
+        "es": "  – Umbral",
+        "da": "  – Tærskel",
+        "ru": "  – Порог",
+        "pl": "  – Próg",
+        "ko": "  – 기준값",
+        "ar": "  – العتبة"
+      },
+      "hint": {
+        "en": "For a number: where the row turns on, in the units it shows in. Ignored for on/off values.",
+        "nl": "Voor een getal: waar de rij aangaat, in de eenheid die het toont. Genegeerd voor aan/uit-waarden.",
+        "de": "Für eine Zahl: wo die Zeile an ist, in der angezeigten Einheit. Für An/Aus-Werte ignoriert.",
+        "fr": "Pour un nombre : où la ligne s’allume, dans l’unité affichée. Ignoré pour les valeurs marche/arrêt.",
+        "it": "Per un numero: dove la riga si accende, nell’unità mostrata. Ignorata per i valori acceso/spento.",
+        "sv": "För ett tal: där raden slås på, i den enhet det visas i. Ignoreras för på/av-värden.",
+        "no": "For et tall: der raden slås på, i enheten den vises i. Ignoreres for på/av-verdier.",
+        "es": "Para un número: dónde se enciende la fila, en la unidad que muestra. Se ignora para valores de encendido/apagado.",
+        "da": "For et tal: hvor rækken tænder, i den enhed, det vises i. Ignoreres for tænd/sluk-værdier.",
+        "ru": "Для числа: где строка включается, в показанных единицах. Для значений вкл/выкл не учитывается.",
+        "pl": "Dla liczby: gdzie wiersz się włącza, w wyświetlanej jednostce. Pomijany dla wartości wł./wył.",
+        "ko": "숫자 값일 때 행이 켜지는 기준이며, 표시되는 단위를 씁니다. 켜짐/꺼짐 값에는 쓰이지 않습니다.",
+        "ar": "لقيمة رقمية: حيث يصبح الصف مفعّلًا، بالوحدة المعروضة. يُتجاهل لقيم التشغيل/الإيقاف."
+      },
+      "value": 0
+    },
+    "timeline.when": {
+      "id": "when{n}",
+      "type": "dropdown",
+      "title": {
+        "en": "  – On while",
+        "nl": "  – Aan zolang",
+        "de": "  – An, solange",
+        "fr": "  – Allumé tant que",
+        "it": "  – Acceso finché",
+        "sv": "  – På medan",
+        "no": "  – På mens",
+        "es": "  – Encendido mientras",
+        "da": "  – Tændt mens",
+        "ru": "  – Вкл., пока",
+        "pl": "  – Wł., gdy",
+        "ko": "  – 켜짐 조건",
+        "ar": "  – مفعّل طالما"
+      },
+      "value": "above",
+      "values": [
+        {
+          "id": "above",
+          "title": {
+            "en": "Above the threshold",
+            "nl": "Boven de drempel",
+            "de": "Über der Schwelle",
+            "fr": "Au-dessus du seuil",
+            "it": "Sopra la soglia",
+            "sv": "Över gränsen",
+            "no": "Over terskelen",
+            "es": "Por encima del umbral",
+            "da": "Over tærsklen",
+            "ru": "Выше порога",
+            "pl": "Powyżej progu",
+            "ko": "기준값보다 높음",
+            "ar": "فوق العتبة"
+          }
+        },
+        {
+          "id": "below",
+          "title": {
+            "en": "Below the threshold",
+            "nl": "Onder de drempel",
+            "de": "Unter der Schwelle",
+            "fr": "En dessous du seuil",
+            "it": "Sotto la soglia",
+            "sv": "Under gränsen",
+            "no": "Under terskelen",
+            "es": "Por debajo del umbral",
+            "da": "Under tærsklen",
+            "ru": "Ниже порога",
+            "pl": "Poniżej progu",
+            "ko": "기준값보다 낮음",
+            "ar": "تحت العتبة"
+          }
+        }
+      ]
+    },
+    "lines.style": {
+      "id": "style",
+      "type": "dropdown",
+      "value": "line",
+      "title": {
+        "en": "Style",
+        "nl": "Stijl",
+        "de": "Stil",
+        "fr": "Style",
+        "it": "Stile",
+        "sv": "Stil",
+        "no": "Stil",
+        "es": "Estilo",
+        "da": "Stil",
+        "ru": "Стиль",
+        "pl": "Styl",
+        "ko": "스타일",
+        "ar": "النمط"
+      },
+      "values": [
+        {
+          "id": "line",
+          "title": {
+            "en": "Lines",
+            "nl": "Lijnen",
+            "de": "Linien",
+            "fr": "Courbes",
+            "it": "Linee",
+            "sv": "Linjer",
+            "no": "Linjer",
+            "es": "Líneas",
+            "da": "Linjer",
+            "ru": "Линии",
+            "pl": "Linie",
+            "ko": "선",
+            "ar": "خطوط"
+          }
+        },
+        {
+          "id": "area",
+          "title": {
+            "en": "Lines with areas",
+            "nl": "Lijnen met vlakken",
+            "de": "Linien mit Flächen",
+            "fr": "Courbes avec aires",
+            "it": "Linee con aree",
+            "sv": "Linjer med ytor",
+            "no": "Linjer med flater",
+            "es": "Líneas con áreas",
+            "da": "Linjer med flader",
+            "ru": "Линии с заливкой",
+            "pl": "Linie z wypełnieniem",
+            "ko": "영역 포함 선",
+            "ar": "خطوط مع مساحات"
+          }
+        }
+      ]
     }
   },
   "hints": {
@@ -1903,19 +2054,19 @@
       "ar": "«زاهية» تلوّن مدى كل قيمة أيضًا."
     },
     "timeline.slot1": {
-      "en": "Something that is on or off, open or closed, such as the heating, a door or motion. Empty ones are left out. The app records each from the first time it's shown and keeps about two weeks.",
-      "nl": "Iets dat aan of uit, open of dicht is, zoals de verwarming, een deur of beweging. Lege worden weggelaten. De app legt elk vast vanaf de eerste keer dat het getoond wordt en bewaart ongeveer twee weken.",
-      "de": "Etwas, das an oder aus, offen oder geschlossen ist, etwa die Heizung, eine Tür oder Bewegung. Leere werden ausgelassen. Die App zeichnet jeden ab der ersten Anzeige auf und behält etwa zwei Wochen.",
-      "fr": "Quelque chose d'allumé ou éteint, ouvert ou fermé, comme le chauffage, une porte ou un mouvement. Les vides sont ignorées. L'app enregistre chacune dès son premier affichage et garde environ deux semaines.",
-      "it": "Qualcosa che è acceso o spento, aperto o chiuso, come il riscaldamento, una porta o il movimento. Quelli vuoti sono esclusi. L'app registra ciascuno dalla prima volta che viene mostrato e conserva circa due settimane.",
-      "sv": "Något som är på eller av, öppet eller stängt, som värmen, en dörr eller rörelse. Tomma utelämnas. Appen registrerar var och en från första gången den visas och sparar ungefär två veckor.",
-      "no": "Noe som er på eller av, åpent eller lukket, som varmen, en dør eller bevegelse. Tomme utelates. Appen registrerer hver fra første gang den vises og tar vare på omtrent to uker.",
-      "es": "Algo que está encendido o apagado, abierto o cerrado, como la calefacción, una puerta o el movimiento. Los vacíos se omiten. La app registra cada uno desde la primera vez que se muestra y guarda unas dos semanas.",
-      "da": "Noget, der er tændt eller slukket, åbent eller lukket, som varmen, en dør eller bevægelse. Tomme udelades. Appen registrerer hver fra første gang, den vises, og gemmer omkring to uger.",
-      "ru": "То, что включено или выключено, открыто или закрыто: отопление, дверь, движение. Пустые пропускаются. Приложение записывает каждое с первого показа и хранит около двух недель.",
-      "pl": "Coś, co jest włączone lub wyłączone, otwarte lub zamknięte, np. ogrzewanie, drzwi lub ruch. Puste są pomijane. Aplikacja zapisuje każde od pierwszego wyświetlenia i przechowuje około dwóch tygodni.",
-      "ko": "켜짐/꺼짐, 열림/닫힘이 있는 값입니다(예: 난방, 문, 움직임). 빈 항목은 빠집니다. 앱은 처음 표시될 때부터 각 값을 기록하며 약 2주간 보관합니다.",
-      "ar": "شيء يعمل أو يتوقف، مفتوح أو مغلق، مثل التدفئة أو باب أو حركة. تُستبعد الفارغة. يسجل التطبيق كلًا منها منذ أول عرض له ويحتفظ بنحو أسبوعين."
+      "en": "Something that is on or off, open or closed, such as the heating, a door or motion, or a number, on above or below its threshold. Empty ones are left out. The app records on/off values from the first time they're shown and keeps about two weeks; numbers come from Insights.",
+      "nl": "Iets dat aan of uit, open of dicht is, zoals de verwarming, een deur of beweging, of een getal, aan boven of onder de drempel. Lege worden weggelaten. De app legt aan/uit-waarden vast vanaf de eerste keer dat ze getoond worden en bewaart ongeveer twee weken; getallen komen uit Insights.",
+      "de": "Etwas, das an oder aus, offen oder geschlossen ist, etwa die Heizung, eine Tür oder Bewegung, oder eine Zahl, an über oder unter ihrer Schwelle. Leere werden ausgelassen. Die App zeichnet An/Aus-Werte ab der ersten Anzeige auf und behält etwa zwei Wochen; Zahlen kommen aus Insights.",
+      "fr": "Quelque chose d'allumé ou éteint, ouvert ou fermé, comme le chauffage, une porte ou un mouvement, ou un nombre, allumé au-dessus ou en dessous de son seuil. Les vides sont ignorées. L'app enregistre les valeurs marche/arrêt dès leur premier affichage et garde environ deux semaines ; les nombres viennent d'Insights.",
+      "it": "Qualcosa che è acceso o spento, aperto o chiuso, come il riscaldamento, una porta o il movimento, oppure un numero, acceso sopra o sotto la sua soglia. Quelli vuoti sono esclusi. L'app registra i valori acceso/spento dalla prima volta che vengono mostrati e conserva circa due settimane; i numeri vengono da Insights.",
+      "sv": "Något som är på eller av, öppet eller stängt, som värmen, en dörr eller rörelse, eller ett tal, på över eller under sin gräns. Tomma utelämnas. Appen registrerar på/av-värden från första gången de visas och sparar ungefär två veckor; tal kommer från Insights.",
+      "no": "Noe som er på eller av, åpent eller lukket, som varmen, en dør eller bevegelse, eller et tall, på over eller under terskelen. Tomme utelates. Appen registrerer på/av-verdier fra første gang de vises og tar vare på omtrent to uker; tall kommer fra Insights.",
+      "es": "Algo que está encendido o apagado, abierto o cerrado, como la calefacción, una puerta o el movimiento, o un número, encendido por encima o por debajo de su umbral. Los vacíos se omiten. La app registra los valores de encendido/apagado desde la primera vez que se muestran y guarda unas dos semanas; los números vienen de Insights.",
+      "da": "Noget, der er tændt eller slukket, åbent eller lukket, som varmen, en dør eller bevægelse, eller et tal, tændt over eller under sin tærskel. Tomme udelades. Appen registrerer tænd/sluk-værdier fra første gang, de vises, og gemmer omkring to uger; tal kommer fra Insights.",
+      "ru": "То, что включено или выключено, открыто или закрыто: отопление, дверь, движение; или число, включённое выше или ниже порога. Пустые пропускаются. Значения вкл/выкл приложение записывает с первого показа и хранит около двух недель; числа берутся из Insights.",
+      "pl": "Coś, co jest włączone lub wyłączone, otwarte lub zamknięte, np. ogrzewanie, drzwi lub ruch, albo liczba, włączona powyżej lub poniżej progu. Puste są pomijane. Wartości wł./wył. aplikacja zapisuje od pierwszego wyświetlenia i przechowuje około dwóch tygodni; liczby pochodzą z Insights.",
+      "ko": "켜짐/꺼짐, 열림/닫힘이 있는 값(예: 난방, 문, 움직임)이나 기준값보다 높거나 낮을 때 켜지는 숫자 값입니다. 빈 항목은 빠집니다. 켜짐/꺼짐 값은 처음 표시될 때부터 앱이 기록하며 약 2주간 보관하고, 숫자 값은 Insights에서 가져옵니다.",
+      "ar": "شيء يعمل أو يتوقف، مفتوح أو مغلق، مثل التدفئة أو باب أو حركة، أو قيمة رقمية مفعّلة فوق عتبتها أو تحتها. تُستبعد الفارغة. يسجل التطبيق قيم التشغيل/الإيقاف منذ أول عرض لها ويحتفظ بنحو أسبوعين؛ وتأتي القيم الرقمية من Insights."
     },
     "showHeader.timeline": {
       "en": "How long the first value was on and how often the second turned on. Tap a row or a band for its own.",
@@ -2006,6 +2157,51 @@
       "pl": "Suma teraz i udział największej części w okresie. Dotknij wykresu, by zobaczyć dany moment.",
       "ko": "지금의 합계와 기간 중 가장 큰 항목의 비율입니다. 차트를 탭하면 그 순간의 값을 볼 수 있습니다.",
       "ar": "الإجمالي الآن وحصة أكبر جزء من الفترة. المس المخطط لترى لحظة بعينها."
+    },
+    "lines.slot1": {
+      "en": "Up to six values on one chart, such as each room's temperature. Empty ones are left out, and so is a value in other units than the first.",
+      "nl": "Tot zes waarden in één grafiek, zoals de temperatuur van elke kamer. Lege worden weggelaten, net als een waarde in een andere eenheid dan de eerste.",
+      "de": "Bis zu sechs Werte in einem Diagramm, etwa die Temperatur jedes Raums. Leere werden ausgelassen, ebenso ein Wert in anderen Einheiten als der erste.",
+      "fr": "Jusqu'à six valeurs sur un graphique, comme la température de chaque pièce. Les vides sont ignorées, tout comme une valeur dans une autre unité que la première.",
+      "it": "Fino a sei valori in un grafico, come la temperatura di ogni stanza. Quelli vuoti sono esclusi, come un valore in unità diverse dal primo.",
+      "sv": "Upp till sex värden i ett diagram, som varje rums temperatur. Tomma utelämnas, liksom ett värde i andra enheter än det första.",
+      "no": "Opptil seks verdier i ett diagram, som hvert roms temperatur. Tomme utelates, det samme gjør en verdi i andre enheter enn den første.",
+      "es": "Hasta seis valores en un gráfico, como la temperatura de cada habitación. Los vacíos se omiten, igual que un valor en otras unidades que el primero.",
+      "da": "Op til seks værdier i én graf, som hvert rums temperatur. Tomme udelades, det samme gør en værdi i andre enheder end den første.",
+      "ru": "До шести значений на одном графике, например температура каждой комнаты. Пустые пропускаются, как и значение в других единицах, чем первое.",
+      "pl": "Do sześciu wartości na jednym wykresie, np. temperatura każdego pokoju. Puste są pomijane, podobnie jak wartość w innych jednostkach niż pierwsza.",
+      "ko": "한 차트에 최대 6개 값(예: 방마다의 온도)을 보여줍니다. 빈 항목과 첫 번째 값과 단위가 다른 값은 빠집니다.",
+      "ar": "حتى ست قيم في مخطط واحد، مثل حرارة كل غرفة. تُستبعد الفارغة، وكذلك قيمة بوحدات غير وحدات الأولى."
+    },
+    "showHeader.lines": {
+      "en": "The first two values now, in their colours; over a finished span, their averages. Tap the chart for the nearest line at that time.",
+      "nl": "De eerste twee waarden van nu, in hun kleur; over een afgelopen periode hun gemiddelde. Tik op de grafiek voor de dichtstbijzijnde lijn op dat moment.",
+      "de": "Die ersten zwei Werte jetzt, in ihren Farben; über einen abgeschlossenen Zeitraum ihr Durchschnitt. Tippe auf das Diagramm für die nächste Linie zu dieser Zeit.",
+      "fr": "Les deux premières valeurs actuelles, dans leur couleur ; sur une période terminée, leur moyenne. Touchez le graphique pour la courbe la plus proche à ce moment.",
+      "it": "I primi due valori attuali, nei loro colori; su un periodo concluso, la loro media. Tocca il grafico per la linea più vicina in quel momento.",
+      "sv": "De två första värdena nu, i sina färger; över en avslutad period deras medelvärde. Tryck på diagrammet för närmaste linje vid den tiden.",
+      "no": "De to første verdiene nå, i fargene sine; over en avsluttet periode gjennomsnittet. Trykk på diagrammet for nærmeste linje på det tidspunktet.",
+      "es": "Los dos primeros valores actuales, en sus colores; en un periodo terminado, su media. Toca el gráfico para la línea más cercana en ese momento.",
+      "da": "De to første værdier nu, i deres farver; over en afsluttet periode deres gennemsnit. Tryk på grafen for den nærmeste linje på det tidspunkt.",
+      "ru": "Первые два значения сейчас, своим цветом; за завершённый период — их среднее. Коснитесь графика, чтобы увидеть ближайшую линию в тот момент.",
+      "pl": "Pierwsze dwie wartości teraz, w ich kolorach; za zakończony okres ich średnia. Dotknij wykresu, by zobaczyć najbliższą linię w tym momencie.",
+      "ko": "처음 두 값의 현재 값을 각 색상으로 보여주고, 끝난 기간이면 평균을 보여줍니다. 차트를 탭하면 그 시각에 가장 가까운 선의 값이 나옵니다.",
+      "ar": "أول قيمتين الآن بلونيهما؛ وفي فترة منتهية متوسطهما. المس المخطط لأقرب خط في ذلك الوقت."
+    },
+    "colorStyle.lines": {
+      "en": "Vivid draws thicker lines and stronger areas.",
+      "nl": "Levendig tekent dikkere lijnen en sterkere vlakken.",
+      "de": "Kräftig zeichnet dickere Linien und kräftigere Flächen.",
+      "fr": "Vives dessine des courbes plus épaisses et des aires plus marquées.",
+      "it": "Vivaci disegna linee più spesse e aree più intense.",
+      "sv": "Livfulla ritar tjockare linjer och starkare ytor.",
+      "no": "Livlige tegner tykkere linjer og sterkere flater.",
+      "es": "Vivos dibuja líneas más gruesas y áreas más intensas.",
+      "da": "Livlige tegner tykkere linjer og stærkere flader.",
+      "ru": "Яркий рисует более толстые линии и насыщенную заливку.",
+      "pl": "Żywe rysuje grubsze linie i mocniejsze wypełnienia.",
+      "ko": "선명하게는 선을 더 굵게, 영역을 더 진하게 그립니다.",
+      "ar": "الزاهي يرسم خطوطًا أعرض ومساحات أقوى."
     }
   },
   "widgets": {
@@ -2237,41 +2433,57 @@
         "use": "color:1",
         "value": "blue"
       },
+      "timeline.threshold:1",
+      "timeline.when:1",
       "compare.slot:2",
       {
         "use": "color:2",
         "value": "red"
       },
+      "timeline.threshold:2",
+      "timeline.when:2",
       "compare.slot:3",
       {
         "use": "color:3",
         "value": "orange"
       },
+      "timeline.threshold:3",
+      "timeline.when:3",
       "compare.slot:4",
       {
         "use": "color:4",
         "value": "yellow"
       },
+      "timeline.threshold:4",
+      "timeline.when:4",
       "compare.slot:5",
       {
         "use": "color:5",
         "value": "green"
       },
+      "timeline.threshold:5",
+      "timeline.when:5",
       "compare.slot:6",
       {
         "use": "color:6",
         "value": "purple"
       },
+      "timeline.threshold:6",
+      "timeline.when:6",
       "compare.slot:7",
       {
         "use": "color:7",
         "value": "blue"
       },
+      "timeline.threshold:7",
+      "timeline.when:7",
       "compare.slot:8",
       {
         "use": "color:8",
         "value": "red"
       },
+      "timeline.threshold:8",
+      "timeline.when:8",
       {
         "use": "count",
         "top": true,
@@ -2362,6 +2574,78 @@
         "hint": "showHeader.stacked"
       },
       "colorStyle"
+    ],
+    "lines": [
+      {
+        "use": "compare.slot:1",
+        "hint": "lines.slot1"
+      },
+      {
+        "use": "color:1",
+        "value": "blue"
+      },
+      "compare.slot:2",
+      {
+        "use": "color:2",
+        "value": "red"
+      },
+      "compare.slot:3",
+      {
+        "use": "color:3",
+        "value": "orange"
+      },
+      "compare.slot:4",
+      {
+        "use": "color:4",
+        "value": "yellow"
+      },
+      "compare.slot:5",
+      {
+        "use": "color:5",
+        "value": "green"
+      },
+      "compare.slot:6",
+      {
+        "use": "color:6",
+        "value": "purple"
+      },
+      {
+        "use": "count",
+        "top": true,
+        "value": 24
+      },
+      {
+        "use": "span",
+        "top": true,
+        "value": "hours"
+      },
+      {
+        "use": "leaveOut",
+        "top": true
+      },
+      "lines.style",
+      {
+        "use": "range",
+        "top": true
+      },
+      {
+        "use": "smooth",
+        "top": true
+      },
+      "legend",
+      {
+        "use": "title",
+        "top": true,
+        "hint": "title.label"
+      },
+      {
+        "use": "showHeader.values",
+        "hint": "showHeader.lines"
+      },
+      {
+        "use": "colorStyle",
+        "hint": "colorStyle.lines"
+      }
     ]
   }
 }

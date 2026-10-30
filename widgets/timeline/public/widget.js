@@ -1,11 +1,13 @@
 /*
  * Chart · Timeline: when was it on, open or moving? A row per value over the time span (today by default), each its name
  * above a thin track with bands where the value was true: the heating's on-time, the hall's motion, the front door's
- * openings. Drawn by the shared chart module (../electricity/chart.js, `window.WidgetkeeperChart`, loaded first). The
- * changes are the app's own recording (Insights keeps only a boolean's last 50). Plain browser JS (served as-is).
+ * openings, or a number above or below its threshold (the heater over 50 W). Drawn by the shared chart module
+ * (../electricity/chart.js, `window.WidgetkeeperChart`, loaded first). A boolean's changes are the app's own recording
+ * (Insights keeps only a boolean's last 50); a number's are its Insights points held against the threshold. Plain
+ * browser JS (served as-is).
  */
 (function () {
-  const { COLORS, timeSpan, isTimeSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { COLORS, TIGHT_UNITS, scaled, formatNumber, timeSpan, isTimeSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart;
@@ -49,6 +51,10 @@
     countOpen: 'Opened',
     countMotion: 'Detections',
     countAlarm: 'Triggered',
+    timeAbove: 'Above',
+    timeBelow: 'Below',
+    countAbove: 'Went above',
+    countBelow: 'Went below',
     hours: 'h',
     minutes: 'min',
   };
@@ -56,7 +62,8 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, colors?: string[], t?: (key: string) => string, locale?: string, language?: string,
-   *   now?: () => number, span?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
+   *   now?: () => number, span?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void,
+   *   thresholds?: { at?: number, below?: boolean }[] }} opts
    */
   function createTimelineWidget(root, opts = {}) {
     // Any time span (the kit's `timeSpan()`); missing or unknown: today.
@@ -64,9 +71,15 @@
     const title = typeof opts.title === 'string' ? opts.title.trim() : '';
     // Each row's colour (its setting), else the kit's colours in order.
     const colorOf = i => (opts.colors && COLORS.includes(opts.colors[i]) ? opts.colors[i] : COLORS[i % COLORS.length]);
+    // Each row's threshold, used where its value is a number: on while above it (or below, with `below`), in the units
+    // the value shows in (a 0–1 `%` as 0–100); missing: above 0.
+    const thresholdOf = (i) => {
+      const th = (opts.thresholds && opts.thresholds[i]) || {};
+      return { at: typeof th.at === 'number' && isFinite(th.at) ? th.at : 0, below: th.below === true };
+    };
 
     const state = {
-      entries: [], // per value, as picked: {deviceId, capabilityId, name, capability, value, changes, since} | {missing}
+      entries: [], // per value, as picked: {deviceId, capabilityId, name, capability, value, changes, since, number?} | {missing}
       sel: null, // the tapped row's index (`{row}`), with a band's start (`{row, at}`)
     };
     let drawn = null; // the latest render's rows, for the header and the pointer
@@ -117,7 +130,8 @@
         if (!ok(s)) return { i, s, name: t('unavailable'), missing: true, kind: 'on', color: colorOf(i), known: null, bands: [], on: 0, count: 0 };
         const name = devices.size === 1 && state.entries.filter(ok).length > 1 ? s.capability.title
           : named.get(s.name) > 1 ? `${s.name} · ${s.capability.title}` : s.name;
-        return { i, s, name, kind: kindOf(s.capabilityId), color: colorOf(i), ...bandsOf(s, win.from, until) };
+        const kind = s.number ? (thresholdOf(i).below ? 'below' : 'above') : kindOf(s.capabilityId);
+        return { i, s, name, kind, color: colorOf(i), ...bandsOf(s, win.from, until) };
       });
     }
 
@@ -128,6 +142,15 @@
       return { value: `${nf(Math.floor(m / 60))}:${String(m % 60).padStart(2, '0')}`, units: t('hours') };
     }
 
+    /** A number row's threshold with its units, as the value shows: `50 W`, `18°C`, `70%`. */
+    function limitText(r) {
+      const cap = r.s.capability;
+      // To the value's decimals, not scaled again: the threshold is in the units shown.
+      const text = formatNumber({ ...cap, max: null }, thresholdOf(r.i).at);
+      if (!cap.units) return text;
+      return TIGHT_UNITS.test(cap.units) ? `${text}${cap.units}` : `${text} ${cap.units}`;
+    }
+
     /** A band's times: `16:05–17:30`, with the weekday over several days (`Mon 16:05 – Tue 01:00`). */
     function bandText(b, win) {
       const day = ms => frame.date(ms, { weekday: 'short' });
@@ -135,6 +158,30 @@
       if (win.end - win.from <= 24 * HOUR + HOUR && sameDay) return `${frame.hhmm(b.from)}–${frame.hhmm(b.to)}`;
       if (sameDay) return `${day(b.from)} ${frame.hhmm(b.from)}–${frame.hhmm(b.to)}`;
       return `${day(b.from)} ${frame.hhmm(b.from)} – ${day(b.to)} ${frame.hhmm(b.to)}`;
+    }
+
+    /** 1 where a number is on by its row's threshold (above it, or below it with `below`), else 0. */
+    function isOn(s, i, value) {
+      const th = thresholdOf(i);
+      const v = scaled(s.capability, value);
+      return (th.below ? v < th.at : v > th.at) ? 1 : 0;
+    }
+
+    /**
+     * A number row (`/state`'s Insights points, each its bucket's average at the bucket's middle) as a boolean's: a change
+     * where it crosses the threshold, at the start of the bucket it crossed in, known from the first bucket's start.
+     */
+    function numberRow(s, i) {
+      const points = s.points.filter(p => Array.isArray(p) && isFinite(p[0]) && isFinite(p[1]));
+      const half = points.length > 1 ? (points[1][0] - points[0][0]) / 2 : 0;
+      const changes = [];
+      for (const [at, v] of points) {
+        const on = isOn(s, i, v);
+        if (!changes.length || changes[changes.length - 1][1] !== on) changes.push([at - half, on]);
+      }
+      const row = { ...s, number: true, changes, since: changes.length ? changes[0][0] : null };
+      delete row.points;
+      return row;
     }
 
     // ------------------------------------------------------------------ render
@@ -152,7 +199,8 @@
       if (!known.length) { column({ value: null, sub: t(rows.some(r => !r.missing) ? 'noHistory' : 'unavailable') }); return; }
       const timeCol = r => {
         const d = duration(r.on);
-        column({ value: d.value, units: d.units, sub: `${t(word('time', r.kind))} · ${r.name}`, attrs: { 'data-wk-color': r.color } });
+        const what = r.s.number ? `${t(word('time', r.kind))} ${limitText(r)}` : t(word('time', r.kind));
+        column({ value: d.value, units: d.units, sub: `${what} · ${r.name}`, attrs: { 'data-wk-color': r.color } });
       };
       const countCol = (r, colCls) => column({ value: nf(r.count), sub: `${t(word('count', r.kind))} · ${r.name}`, colCls, attrs: { 'data-wk-color': r.color } });
       const tapped = state.sel != null ? known.find(r => r.i === state.sel.row) : null;
@@ -245,6 +293,7 @@
         const previous = state.entries;
         state.entries = (Array.isArray(list) ? list : []).slice(0, MAX).map((s, i) => {
           if (!ok(s)) return s || { missing: true };
+          if (Array.isArray(s.points)) s = numberRow(s, i);
           const old = previous[i];
           const changes = Array.isArray(s.changes) ? s.changes.slice() : [];
           const same = ok(old) && old.deviceId === s.deviceId && old.capabilityId === s.capabilityId;
@@ -256,21 +305,26 @@
       },
       /** A realtime value (Device Values' `values:state`): a change onto every row that shows it. */
       pushChange({ deviceId, capabilityId, value }) {
-        if (typeof value !== 'boolean') return;
+        if (typeof value !== 'boolean' && !(typeof value === 'number' && isFinite(value))) return;
         const at = now();
         let changed = false;
-        for (const s of state.entries) {
-          if (!ok(s) || s.deviceId !== deviceId || s.capabilityId !== capabilityId) continue;
+        state.entries.forEach((s, i) => {
+          if (!ok(s) || s.deviceId !== deviceId || s.capabilityId !== capabilityId) return;
+          if (!s.number !== (typeof value === 'boolean')) return;
           s.value = value;
+          const on = s.number ? isOn(s, i, value) : value ? 1 : 0;
           const last = s.changes[s.changes.length - 1];
-          if (!last || last[1] !== (value ? 1 : 0)) s.changes.push([at, value ? 1 : 0]);
+          if (!last || last[1] !== on) s.changes.push([at, on]);
           if (s.since == null) s.since = at;
           changed = true;
-        }
+        });
         if (changed) frame.renderIfSeen();
       },
-      /** The window's start now, as `/state` asks for it (lib/timelineState.ts). */
-      from: () => Math.floor(timeSpan(span, now()).from),
+      /** The window now, as `/state` asks for it (lib/timelineState.ts): its start, its end and a whole span's unit. */
+      window: () => {
+        const w = timeSpan(span, now());
+        return { from: Math.floor(w.from), end: Math.ceil(w.end), unit: w.unit || '', span };
+      },
     });
   }
 

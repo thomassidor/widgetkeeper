@@ -45,6 +45,8 @@ const MOUNT = {
   // Chart · Timeline and Chart · Stacked: `w.state` their `/state` (mock-timeline.js, mock-stacked.js).
   timeline: (el, w) => createTimelineWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
   stacked: (el, w) => createStackedWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
+  // Chart · Lines: `w.state` its `/state` (mock-lines.js).
+  lines: (el, w) => createLinesWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
   scatter: (el, w) => createScatterWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
   lights: (el, w) => createLightsWidget(el, w.opts || {}).setState(w.devices),
   curtains: (el, w) => createCurtainsWidget(el, w.opts || {}).setState(w.devices),

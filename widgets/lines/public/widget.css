@@ -1,0 +1,40 @@
+/*
+ * Chart · Lines: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`), each line in its own
+ * colour (the kit's `data-wk-color` on the line, its chip and its header column: the bright set).
+ */
+.ln { --ln-color: var(--ew-blue); }
+/* A custom property resolves where it's set, so on each coloured part, not on `.ln`. */
+.ln [data-wk-color] { --ln-color: var(--wk-c-bright, var(--ew-blue)); }
+
+/* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
+html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
+html, body { margin: 0; }
+
+.ln .ln-value { color: var(--ew-text); gap: 3px; }
+.ln .ln-value.tight { gap: 0; }
+.ln .ew-hcol[data-wk-color] .ln-value { color: var(--ln-color); }
+/* Yellow text is mixed with the text colour, as Charts' yellow, so it reads on a light card. */
+.ln .ew-hcol[data-wk-color="yellow"] .ln-value { color: color-mix(in srgb, var(--ln-color) 75%, var(--ew-text)); }
+
+/* The legend: a chip per line, wrapping onto a second line where they don't fit (as Chart · Stacked's). */
+.ln .ew-chips { position: static; gap: 4px 6px; flex-wrap: wrap; justify-content: flex-start; margin-bottom: 2px; }
+.ln .ew-chip.series { max-width: 100%; min-width: 0; }
+.ln .ew-chip.series > span { overflow: hidden; text-overflow: ellipsis; }
+.ln .ew-chip.series i { background: var(--ln-color); flex-shrink: 0; }
+.ln .ew-chip.series.missing > span { color: var(--ew-muted); }
+
+.ln .ln-line { stroke: var(--ln-color); stroke-width: 1.5; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+.ln .ln-area { fill: color-mix(in srgb, var(--ln-color) 12%, transparent); stroke: none; }
+.ln .ln-point { fill: var(--ln-color); }
+.ln .dot-ring.ln-dot { stroke: var(--ln-color); }
+.ln .dot-core.ln-dot { fill: var(--ln-color); }
+/* Vivid (kit.css, on the widget's root): thicker lines and stronger areas; the lines keep their colours. */
+.wk-deep .ln .ln-line { stroke-width: 2; }
+.wk-deep .ln .ln-area { fill: color-mix(in srgb, var(--ln-color) 24%, transparent); }
+
+/* The Legend setting's Below the chart: the chips under the time labels. */
+.ln.legend-below .ew-chips { margin: 8px 0 0; }
+
+/* A chart without anything to draw keeps its chips, with the reason under them. */
+.ln .ln-chart.empty { min-height: 0; }
+.ln .ln-note { padding-bottom: 0; }

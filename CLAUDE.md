@@ -31,6 +31,7 @@ This file holds what applies across the app. Each widget's notes, and those of t
 | Chart · Ranking (called Compare while it was built) | `compare` | `widgets/compare.md` |
 | Chart · Timeline | `timeline` | `widgets/timeline.md` |
 | Chart · Stacked | `stacked` | `widgets/stacked.md` |
+| Chart · Lines | `lines` | `widgets/lines.md` |
 | Sparklines | `sparklines` | `widgets/sparklines.md` |
 | Variables | `variables` | `widgets/variables.md` |
 | Variable Presets | `varpresets` | `widgets/varpresets.md` |

@@ -113,6 +113,58 @@ describe('taps and live changes', () => {
   });
 });
 
+/** A number's capability: its title, units and decimals. */
+const numCap = (title: string, units: string) => ({ title, type: 'number', units, decimals: 0, min: null, max: null, values: null, icon: null });
+/** Insights points from midnight to now, each its 5 minutes' average at their middle: `value(t)` at each 5 minutes' start. */
+const points = (value: (t: number) => number) => {
+  const out: [number, number][] = [];
+  for (let t = MIDNIGHT; t + 5 * MIN <= NOW; t += 5 * MIN) out.push([t + 2.5 * MIN, value(t)]);
+  return out;
+};
+/** The heater: 100 W from 06:00 to 08:00, else 10 W. */
+const heater = () => ({
+  deviceId: 'p', capabilityId: 'measure_power', name: 'Heater', capability: numCap('Power', 'W'), value: 10,
+  points: points(t => (t >= at('06:00:00') && t < at('08:00:00') ? 100 : 10)),
+});
+/** The bedroom: 19 °C from 03:00 to 04:00 and from 05:00 to 05:30, else 22 °C. */
+const bedroom = () => ({
+  deviceId: 'b', capabilityId: 'measure_temperature', name: 'Bedroom', capability: numCap('Temperature', '°C'), value: 22,
+  points: points(t => ((t >= at('03:00:00') && t < at('04:00:00')) || (t >= at('05:00:00') && t < at('05:30:00')) ? 19 : 22)),
+});
+
+describe('numbers against a threshold', () => {
+  it('draws a band where a number was above its threshold, from the 5 minutes it crossed in', () => {
+    const r = widget({ thresholds: [{ at: 50 }] }, [heater()]);
+    expect(r.all('.tl-row')[0].querySelectorAll('rect.tl-band')).toHaveLength(1);
+    expect(r.header()).toEqual(['2:00h | Above 50 W · Heater', '1 | Went above · Heater']);
+    r.tap(0, 368 * 7 / 24); // 07:00, in the band
+    expect(r.header()[0]).toBe('2:00h | 06:00–08:00');
+  });
+
+  it('draws a band where it was below, with `below`, and mixes with booleans', () => {
+    const r = widget({ thresholds: [{ at: 20, below: true }, {}] }, [bedroom(), door()]);
+    expect(r.all('.tl-row')[0].querySelectorAll('rect.tl-band')).toHaveLength(2);
+    expect(r.header()).toEqual(['1:30h | Below 20°C · Bedroom', '2 | Opened · Front door']);
+  });
+
+  it('is known from its first point, and above 0 without a threshold', () => {
+    const r = widget({}, [heater()]);
+    // 10 W is above 0 all day: one band from midnight.
+    expect(r.header()[0]).toBe('15:30h | Above 0 W · Heater');
+    expect(r.all('.tl-row')[0].querySelector('path.tl-unknown')).toBeNull();
+  });
+
+  it('turns a realtime number into a change by the threshold, and leaves booleans to boolean rows', () => {
+    const r = widget({ thresholds: [{ at: 50 }] }, [heater()]);
+    vi.setSystemTime(NOW + 10 * MIN);
+    r.w.pushChange({ deviceId: 'p', capabilityId: 'measure_power', value: 120 });
+    r.w.pushChange({ deviceId: 'p', capabilityId: 'measure_power', value: true });
+    vi.setSystemTime(NOW + 40 * MIN);
+    r.w.render();
+    expect(r.header()).toEqual(['2:30h | Above 50 W · Heater', '2 | Went above · Heater']);
+  });
+});
+
 describe('what true means', () => {
   it('is open for a contact, motion for motion, active for other alarms, else on', () => {
     const kind = win.createTimelineWidget.kindOf;
@@ -133,10 +185,24 @@ describe('the request', () => {
     };
     const asked = await ask({ slot1: { id: 'd:alarm_contact' }, slot3: { id: 'h:onoff' }, color3: 'green' });
     expect(asked.url).toMatch(new RegExp(`^/state\\?slots=d:alarm_contact,h:onoff&from=${MIDNIGHT}(&|$)`));
+    // The window's end and unit, for a number's Insights.
+    expect(asked.url).toContain(`&end=${NOW}&unit=day&span=1d!`);
     const week = await ask({ slot1: { id: 'd:alarm_contact' }, count: 7, span: 'days' });
     expect(week.url).toContain(`from=${NOW - 7 * 24 * HOUR}`);
     const none = await ask({});
     expect(none.url).toBeNull();
     expect(none.root.textContent).toContain('Pick the values to show in the widget settings.');
+  });
+
+  it("gives each row its threshold and side from the settings, a missing one above 0", async () => {
+    const api = vi.fn(async () => ({ rows: [bedroom(), heater()], language: 'en' }));
+    const settings = { slot1: { id: 'b:measure_temperature' }, threshold1: 20, when1: 'below', slot2: { id: 'p:measure_power' } };
+    const Homey = { getSettings: () => settings, api, on: () => {}, ready: () => {}, setHeight: () => {}, __: (k: string) => k };
+    const root = document.createElement('div');
+    document.body.append(root);
+    win.mountTimelineWidget(Homey, { root, frame: root });
+    await vi.advanceTimersByTimeAsync(0);
+    const subs = [...root.querySelectorAll('.ew-hsub')].map(e => e.textContent);
+    expect(subs).toEqual(['Below 20°C · Bedroom', 'Went above · Heater']);
   });
 });
