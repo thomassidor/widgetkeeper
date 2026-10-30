@@ -34,7 +34,7 @@
     "whats-next": "node scripts/render-whats-next.mjs"
   },
   "dependencies": {
-    "homey-api": "^3.21.0"
+    "homey-api": "^3.21.2"
   },
   "devDependencies": {
     "@tsconfig/node16": "^16.1.9",
