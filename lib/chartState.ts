@@ -1,13 +1,11 @@
 import type { App } from 'homey';
 import type WidgetkeeperApp from '../app.js';
-import type { CalendarUnit } from './logPlan.js';
+import { calendarUnit } from './logPlan.js';
 import type { SparklineSlot, WindowRequest } from './SparklineService.js';
 import { parseSlot } from './ValueService.js';
 import { idList, logged, logPerf } from './widgetApi.js';
 
 type Homey = App['homey'];
-
-const UNITS: CalendarUnit[] = ['day', 'week', 'month', 'year'];
 
 /**
  * A chart widget's request (`charts`: comma-separated): `<deviceId>:<capabilityId>~<span>~<from>~<end>~<unit>[~use|~fine]`,
@@ -25,7 +23,7 @@ export function parseChartRequests(list: string | undefined): ChartRequest[] {
     if (from === undefined || !Number.isFinite(f) || !Number.isFinite(e) || e < f) return { slot, span, window: false };
     return {
       slot, span, from: f, end: e, window: true,
-      unit: (UNITS as string[]).includes(unit) ? unit as CalendarUnit : null,
+      unit: calendarUnit(unit),
       use: flag === 'use',
       ...(flag === 'fine' ? { fine: true } : {}),
     };

@@ -1,12 +1,10 @@
 import type { App } from 'homey';
 import type WidgetkeeperApp from '../app.js';
-import type { CalendarUnit } from './logPlan.js';
+import { calendarUnit } from './logPlan.js';
 import { parseSlot, type ValueSlot } from './ValueService.js';
 import { idList, logged, logPerf } from './widgetApi.js';
 
 type Homey = App['homey'];
-
-const UNITS: CalendarUnit[] = ['day', 'week', 'month', 'year'];
 
 type Shown = Extract<ValueSlot, { name: string }>;
 
@@ -36,7 +34,7 @@ export async function timelineState(homey: Homey, query: Record<string, string>)
     const start = Number.isFinite(from) ? from : Date.now() - 24 * 3600e3;
     const end = Number(query.end);
     const stop = Number.isFinite(end) && end >= start ? end : Date.now();
-    const unit = (UNITS as string[]).includes(query.unit) ? query.unit as CalendarUnit : null;
+    const unit = calendarUnit(query.unit);
     const states = await app.values.getState(slots);
     const numbers = states.map((s, i) => ('missing' in s || s.capability.type !== 'number' ? null : slots[i]));
     const wanted = numbers.filter((s): s is string => s != null);

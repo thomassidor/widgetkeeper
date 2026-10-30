@@ -5,6 +5,12 @@ const DAY = 24 * HOUR;
 
 /** A calendar unit in the Homey's time zone (weeks from Monday, as Homey's). */
 export type CalendarUnit = 'day' | 'week' | 'month' | 'year';
+const CALENDAR_UNITS: readonly string[] = ['day', 'week', 'month', 'year'];
+
+/** A request's calendar unit (the chart widgets' `unit`), or null for a rolling window or anything else. */
+export function calendarUnit(unit: unknown): CalendarUnit | null {
+  return typeof unit === 'string' && CALENDAR_UNITS.includes(unit) ? unit as CalendarUnit : null;
+}
 
 /**
  * Every Insights log a chart's window can be read from: its resolution, its step (the bucket length `downsample()`

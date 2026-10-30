@@ -133,3 +133,23 @@ describe('the setting', () => {
     expect(homey.api.realtime).not.toHaveBeenCalled();
   });
 });
+
+describe('where the rule is applied', () => {
+  // Not in DeviceTracker, whose `name` stays full for logs and labels, but where each service builds a widget's answer. So
+  // a new service that tracks devices for a widget has to apply it too, or say here why it doesn't.
+  const NOT_SHOWN: Record<string, string> = {
+    'ElectricityService.ts': 'the Electricity Overview shows no device name',
+    'ThermostatService.ts': "its getState() keeps the full name for the Flow token; widgets/thermostat/api.ts' thermostatState() shortens it",
+  };
+
+  it('is applied by every service that tracks devices for a widget', async () => {
+    const { readdirSync, readFileSync } = await import('node:fs');
+    const tracked = readdirSync('lib').filter(f => f.endsWith('Service.ts') && readFileSync(`lib/${f}`, 'utf8').includes('new DeviceTracker'));
+    expect(tracked.length).toBeGreaterThan(5);
+    for (const f of tracked) {
+      if (NOT_SHOWN[f]) continue;
+      expect(readFileSync(`lib/${f}`, 'utf8'), f).toMatch(/shownName\(this\.homey, /);
+    }
+    expect(readFileSync('widgets/thermostat/api.ts', 'utf8')).toMatch(/shownName\(homey, /);
+  });
+});

@@ -1,4 +1,5 @@
 import type WidgetkeeperApp from '../app.js';
+import { VALUE_SETTINGS } from './SparklineService.js';
 
 /**
  * An item of an autocomplete setting: a `name`, and what the widget reads from the choice Homey keeps (usually an
@@ -48,25 +49,15 @@ export function widgetAutocompletes(app: WidgetkeeperApp): Record<string, Record
   for (const n of VALUE_SLOTS) {
     add('values', `slot${n}`, query => app.values.listSlots(query));
     add('values', `second${n}`, (query, settings) => app.values.listSecondValues(settings?.[`slot${n}`]?.id, query, n));
-    add('sparklines', `slot${n}`, query => app.sparklines.listSlots(query));
   }
   // Value matrix: each column's capability, from every number capability on the Homey.
   for (const n of MATRIX_COLUMNS) add('valuematrix', `col${n}`, query => app.valueMatrix.listColumns(query));
 
-  // Charts: each chart's value, from Sparklines' list (logged numbers).
-  for (const n of [1, 2]) add('charts', `chart${n}`, query => app.sparklines.listSlots(query));
-  // Chart · Totals: its value that counts up, from the same list, meters first.
-  add('totals', 'slot', query => app.sparklines.listSlots(query, 'counter'));
-  // Chart · Scatter (XY): its two values, from the same list.
-  for (const id of ['xValue', 'yValue']) add('scatter', id, query => app.sparklines.listSlots(query));
-  for (const id of ['slot']) add('typicalday', id, query => app.sparklines.listSlots(query));
-  for (const id of ['slot']) add('dailyrange', id, query => app.sparklines.listSlots(query));
-  for (const id of ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'slot7', 'slot8']) add('compare', id, query => app.sparklines.listSlots(query));
-  // Chart · Timeline: each row's logged boolean (on/off, open, motion).
-  for (const id of ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'slot7', 'slot8']) add('timeline', id, query => app.sparklines.listSlots(query, 'timeline'));
-  // Chart · Stacked: the total and each layer, power first.
-  for (const id of ['total', 'slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6']) add('stacked', id, query => app.sparklines.listSlots(query, 'power'));
-  for (const id of ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6']) add('lines', id, query => app.sparklines.listSlots(query));
+  // Sparklines and the chart widgets: each value from Sparklines' list (logged numbers; Chart · Totals' meters first,
+  // Chart · Stacked's power first, Chart · Timeline's booleans and numbers), by `VALUE_SETTINGS`.
+  for (const [widget, { ids, kind }] of Object.entries(VALUE_SETTINGS)) {
+    for (const id of ids) add(widget, id, query => app.sparklines.listSlots(query, kind));
+  }
 
   // Variables: every slot lists all Logic variables.
   for (const n of VARIABLE_SLOTS) add('variables', `slot${n}`, query => app.variables.listVariables(query));

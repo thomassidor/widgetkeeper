@@ -5,7 +5,7 @@ import { devicesAndZones, matches, withNone, type AutocompleteItem } from './aut
 import { describeCapability } from './capabilities.js';
 import { driverIconPath, libraryIconUrl } from './deviceIcon.js';
 import { deviceApp } from './MediaService.js';
-import { sparkCaps, timelineCaps } from './SparklineService.js';
+import { slotCaps, VALUE_SETTINGS } from './SparklineService.js';
 import { isReservedKey } from './storedSetting.js';
 import { valueCaps } from './ValueService.js';
 import type { AutocompleteListener, SettingItem } from './widgetAutocompletes.js';
@@ -165,18 +165,10 @@ export type WebValueDevice = WebDevice & {
  * The autocomplete settings that pick one device value (`<deviceId>:<capabilityId>`), by widget: which settings and
  * which capabilities they list (the same as their autocomplete's, `listSlots()`).
  */
-const CAPABILITY_SLOTS: Record<string, { setting: RegExp, caps: (device: any) => string[] }> = {
-  values: { setting: /^slot\d+$/, caps: valueCaps },
-  sparklines: { setting: /^slot\d+$/, caps: sparkCaps },
-  charts: { setting: /^chart\d$/, caps: sparkCaps },
-  totals: { setting: /^slot$/, caps: sparkCaps },
-  scatter: { setting: /^(xValue|yValue)$/, caps: sparkCaps },
-  typicalday: { setting: /^slot$/, caps: sparkCaps },
-  dailyrange: { setting: /^slot$/, caps: sparkCaps },
-  compare: { setting: /^slot\d$/, caps: sparkCaps },
-  timeline: { setting: /^slot\d$/, caps: timelineCaps },
-  stacked: { setting: /^(total|slot\d)$/, caps: sparkCaps },
-  lines: { setting: /^slot\d$/, caps: sparkCaps },
+const CAPABILITY_SLOTS: Record<string, { settings: string[], caps: (device: any) => string[] }> = {
+  values: { settings: [1, 2, 3, 4, 5, 6].map(n => `slot${n}`), caps: valueCaps },
+  // Sparklines' and the chart widgets', as their autocompletes list them (Chart · Stacked's power first, but every number).
+  ...Object.fromEntries(Object.entries(VALUE_SETTINGS).map(([type, { ids, kind }]) => [type, { settings: ids, caps: slotCaps(kind) }])),
 };
 
 /** A device's icon for the page, as the widgets pick it: the user-picked library icon, else the driver's (on the Homey). */
@@ -564,7 +556,7 @@ export default class WebDashboardService {
           ...(typeof s.min === 'number' ? { min: s.min } : {}),
           ...(typeof s.max === 'number' ? { max: s.max } : {}),
           ...(Array.isArray(s.values) ? { values: s.values.map((v: any) => ({ id: String(v.id), title: loc(v.title, language) || String(v.id) })) } : {}),
-          ...(s.type === 'autocomplete' && CAPABILITY_SLOTS[type]?.setting.test(s.id) ? { picker: 'capability' as const } : {}),
+          ...(s.type === 'autocomplete' && CAPABILITY_SLOTS[type]?.settings.includes(s.id) ? { picker: 'capability' as const } : {}),
         })),
         sections,
       };

@@ -111,6 +111,34 @@ export function timelineCaps(device: any): string[] {
   return [...booleanCaps(device), ...sparkCaps(device)];
 }
 
+/** What a value setting lists (`listSlots()`): logged numbers, meters first, power first, booleans, or both. */
+export type SlotKind = 'number' | 'counter' | 'power' | 'boolean' | 'timeline';
+
+/** A slot kind's capabilities of a device. */
+export function slotCaps(kind: SlotKind): (device: any) => string[] {
+  return kind === 'boolean' ? booleanCaps : kind === 'timeline' ? timelineCaps : sparkCaps;
+}
+
+const numbered = (count: number) => Array.from({ length: count }, (_, i) => `slot${i + 1}`);
+
+/**
+ * The settings of Sparklines and the chart widgets that pick one logged device value (`<deviceId>:<capabilityId>`), by
+ * widget, and what each lists. The widgets' autocompletes (lib/widgetAutocompletes.ts) and the web editor's value picker
+ * (WebDashboardService's `CAPABILITY_SLOTS`) both read it, so a new row is added once (and in scripts/chart-settings.json).
+ */
+export const VALUE_SETTINGS: Record<string, { ids: string[], kind: SlotKind }> = {
+  sparklines: { ids: numbered(6), kind: 'number' },
+  charts: { ids: ['chart1', 'chart2'], kind: 'number' },
+  totals: { ids: ['slot'], kind: 'counter' },
+  scatter: { ids: ['xValue', 'yValue'], kind: 'number' },
+  typicalday: { ids: ['slot'], kind: 'number' },
+  dailyrange: { ids: ['slot'], kind: 'number' },
+  compare: { ids: numbered(8), kind: 'number' },
+  timeline: { ids: numbered(8), kind: 'timeline' },
+  stacked: { ids: ['total', ...numbered(6)], kind: 'power' },
+  lines: { ids: numbered(6), kind: 'number' },
+};
+
 /**
  * Insights entries averaged into at most `MAX_POINTS` buckets over the span ending `now`, each at its
  * bucket's middle. Empty buckets carry the last value (Homey doesn't log unchanged values); buckets
@@ -206,11 +234,9 @@ export default class SparklineService {
    * the power values (`measure_power`) first, `boolean` the logged booleans instead, and `timeline` (Chart ·
    * Timeline's) both.
    */
-  listSlots(query: string, kind: 'number' | 'counter' | 'power' | 'boolean' | 'timeline' = 'number'): Promise<AutocompleteItem[]> {
-    if (kind === 'boolean') return listCapabilitySlots(this.homey, query, booleanCaps);
-    if (kind === 'timeline') return listCapabilitySlots(this.homey, query, timelineCaps);
+  listSlots(query: string, kind: SlotKind = 'number'): Promise<AutocompleteItem[]> {
     const first = kind === 'counter' ? (id: string) => id.startsWith('meter_') : kind === 'power' ? (id: string) => id.startsWith('measure_power') : undefined;
-    return listCapabilitySlots(this.homey, query, sparkCaps, first);
+    return listCapabilitySlots(this.homey, query, slotCaps(kind), first);
   }
 
   // ---------------------------------------------------------------- state
