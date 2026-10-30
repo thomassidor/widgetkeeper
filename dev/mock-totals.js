@@ -1,5 +1,5 @@
 /*
- * Made-up meter readings for Totals per Period's previews and renders: the showcase house's main meter (never a real one's),
+ * Made-up meter readings for Chart · Totals' previews and renders: the showcase house's main meter (never a real one's),
  * using more in the morning, the evening and winter, as `/state` gives it (the running total at each log step's middle,
  * the value now). Load after the kit (it uses `timeSpan()`).
  */
@@ -38,7 +38,7 @@
     };
   }
 
-  /** Totals per Period's `[current, previous]` for `period` at `now`, each in the step Insights logs it in (an hour for a day or week). */
+  /** Chart · Totals' `[current, previous]` for `period` at `now`, each in the step Insights logs it in (an hour for a day or week). */
   function totalsState(period, now = Date.now()) {
     const { timeSpan } = window.WidgetkeeperKit;
     const w = timeSpan(period, now), p = timeSpan(period, now, 1);

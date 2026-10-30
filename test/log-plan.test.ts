@@ -53,7 +53,7 @@ describe('planLogs', () => {
     expect(plan(at('2025-01-01T00:00'), at('2026-01-01T00:00'), 'year')).toEqual(['lastYear']);
   });
 
-  it('reads the period before as Totals per Period did (the logs reaching past it)', () => {
+  it('reads the period before as Chart · Totals did (the logs reaching past it)', () => {
     expect(plan(at('2026-10-26T00:00'), at('2026-10-27T00:00'), 'day')).toEqual(['last3Days']);
     expect(plan(at('2026-10-12T00:00'), at('2026-10-19T00:00'), 'week')).toEqual(['last31Days']);
     expect(plan(at('2026-08-01T00:00'), at('2026-09-01T00:00'), 'month')).toEqual(['last3Months']);

@@ -5,8 +5,8 @@ now. The user settled the open questions below: a colour setting per row and per
 order), per-capability words for true (open, motion, active, on), booleans only for now (no number thresholds), and a
 layer below zero stacking downwards (two stacks) rather than being left out. This is the plan as it was.
 
-Two chart types mocked up while planning 1.2.0's charts (2026-10-28) and kept for later; the user picked X against Y,
-Typical Day, Daily Range and Compare for 1.2.0, and wants these two too. Both build on what 1.2.0 made for chart
+Two chart types mocked up while planning 1.2.0's charts (2026-10-28) and kept for later; the user picked Chart · Scatter (XY),
+Chart · Daily Profile, Chart · Min/Max and Chart · Ranking for 1.2.0, and wants these two too. Both build on what 1.2.0 made for chart
 widgets, so each is mostly its own drawing:
 
 - **The chart frame and mount helper** (`createFrame()`, `wireChart()` in `widgets/electricity/public/chart.js`;
@@ -15,7 +15,7 @@ widgets, so each is mostly its own drawing:
   reads the Insights logs `planLogs()` picks (`lib/logPlan.ts`).
 - **The settings catalog** (`scripts/chart-settings.json`, `npm run chart-settings`): the value pickers, the time span
   block (count, unit, leave out the current period), colour, header, colour style, already in 13 languages.
-- **The four 1.2.0 chart widgets as patterns:** Compare (rows of devices) is the closest to Timeline; X against Y
+- **The four 1.2.0 chart widgets as patterns:** Chart · Ranking (rows of devices) is the closest to Timeline; Chart · Scatter (XY)
   (`alignSeries()`) to Stacked.
 
 ## Chart · Timeline (`timeline`)
@@ -42,7 +42,7 @@ today` and `4 · Front door opened`.
   from `heatmapCaps()`' booleans.
 
 **Settings** (catalog):
-- `slot1` … `slot8` ("Value 1" …, U+00A0 before the number, one slots card in the web editor, as Compare's).
+- `slot1` … `slot8` ("Value 1" …, U+00A0 before the number, one slots card in the web editor, as Chart · Ranking's).
 - The time span block, default today (`1d!`). Over days the bands get thin; the recording reaches about 14 days.
 - Colours, to decide when building:
   - a colour per row (eight more rows of settings), or
@@ -53,7 +53,7 @@ today` and `4 · Front door opened`.
 - `title`, `showHeader`, `colorStyle`.
 
 **Layout:**
-- About 32 px per row, as Compare sizes its height by its rows: the name, then a 10 px track (the text colour at 7 %),
+- About 32 px per row, as Chart · Ranking sizes its height by its rows: the name, then a 10 px track (the text colour at 7 %),
   bands in the row's colour.
 - The x axis from the chart kit's `timeLabels()` (0:00, 6:00, 12:00, Now), a dashed line at now, the future dimmed.
 - A short band (a door opened for seconds) is at least 2–3 px wide.
@@ -80,7 +80,7 @@ areas with a line on top, a legend row of dots and names. Header: `3.4 kW · Now
 
 **Data:**
 - Each value's window through `/state` (`lib/chartState.ts`, as Charts' several series), drawn on one grid with the
-  chart module's `alignSeries()` (by `barUnit()`, or finer as X against Y's `dotUnit()`), so the layers add up time by
+  chart module's `alignSeries()` (by `barUnit()`, or finer as Chart · Scatter (XY)'s `dotUnit()`), so the layers add up time by
   time.
 - An optional total (the house's meter or main power): Other is total minus the layers, at zero at least, never
   negative.
@@ -121,7 +121,7 @@ areas with a line on top, a legend row of dots and names. Header: `3.4 kW · Now
    - `public/mount.js` (`wireChart()`; the kit's `spanSetting()`)
    - `public/widget.js` (a type on `createFrame()`)
    - `public/widget.css` (a `.wk-deep` Vivid rule; the colour from `--wk-c-bright`)
-   - `public/index.html` (copy Compare's)
+   - `public/index.html` (copy Chart · Ranking's)
 2. **The catalog:** settings, hints and the widget's list in `scripts/chart-settings.json` (13 languages), then
    `npm run chart-settings` (writes `widget.compose.json`). Its name, height and `api` go in the compose file
    first.

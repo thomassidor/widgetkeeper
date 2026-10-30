@@ -9,6 +9,6 @@ export default {
    * `{charts, language}`: one entry per value.
    */
   async getState({ homey, query }: { homey: Homey, query: Record<string, string> }) {
-    return chartState(homey, query, 'Compare');
+    return chartState(homey, query, 'Ranking');
   },
 };

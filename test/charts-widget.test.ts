@@ -329,7 +329,7 @@ describe('weeks, months and years (wk-104)', () => {
   describe("the kit's timeSpan()", () => {
     const span = (s: string, now = NOW) => kit().timeSpan(s, now);
 
-    it('goes back by whole periods with `back` (Totals per Period\'s period before), across month lengths', () => {
+    it('goes back by whole periods with `back` (Chart · Totals\' period before), across month lengths', () => {
       const back = (s: string, n: number, now = NOW) => kit().timeSpan(s, now, n);
       expect(back('thisWeek', 1)).toEqual(span('lastWeek'));
       expect(back('thisMonth', 1)).toEqual(span('lastMonth'));

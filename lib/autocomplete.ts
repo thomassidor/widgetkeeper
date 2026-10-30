@@ -68,7 +68,7 @@ export async function listCapabilitySlots(
       items.push({ name, description: [zone, c.units].filter(Boolean).join(' · ') || undefined, id: `${d.id}:${id}`, first: first(id) });
     }
   }
-  // The capabilities `first` picks (a meter's for Totals per Period) before the rest, each alphabetically.
+  // The capabilities `first` picks (a meter's for Chart · Totals) before the rest, each alphabetically.
   items.sort((a, b) => Number(b.first) - Number(a.first) || a.name.localeCompare(b.name));
   for (const item of items) delete (item as Partial<typeof item>).first;
   return withNone(homey.__('values.none') || 'None', query, items);

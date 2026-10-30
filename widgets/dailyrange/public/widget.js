@@ -1,5 +1,5 @@
 /*
- * Chart · Daily Range: a value's lowest to highest in each day (or each bar of the time span: an hour over a day, a
+ * Chart · Min/Max: a value's lowest to highest in each day (or each bar of the time span: an hour over a day, a
  * month over a year) as a floating bar, its average as a tick across it: how much did it swing? Drawn by the shared
  * chart module (../electricity/chart.js, `window.WidgetkeeperChart`, loaded first). Plain browser JS (served as-is).
  */

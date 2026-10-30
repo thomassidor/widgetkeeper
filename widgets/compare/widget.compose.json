@@ -1,18 +1,18 @@
 {
   "name": {
-    "en": "Chart · Compare",
-    "nl": "Grafiek · Vergelijken",
-    "de": "Diagramm · Vergleich",
-    "fr": "Graphique · Comparaison",
-    "it": "Grafico · Confronto",
-    "sv": "Diagram · Jämförelse",
-    "no": "Diagram · Sammenligning",
-    "es": "Gráfico · Comparación",
-    "da": "Graf · Sammenligning",
-    "ru": "График · Сравнение",
-    "pl": "Wykres · Porównanie",
-    "ko": "차트 · 비교",
-    "ar": "مخطط · مقارنة"
+    "en": "Chart · Ranking",
+    "nl": "Grafiek · Ranglijst",
+    "de": "Diagramm · Rangliste",
+    "fr": "Graphique · Classement",
+    "it": "Grafico · Classifica",
+    "sv": "Diagram · Topplista",
+    "no": "Diagram · Rangering",
+    "es": "Gráfico · Clasificación",
+    "da": "Graf · Rangliste",
+    "ru": "График · Рейтинг",
+    "pl": "Wykres · Ranking",
+    "ko": "차트 · 순위",
+    "ar": "مخطط · الترتيب"
   },
   "height": 260,
   "settings": [

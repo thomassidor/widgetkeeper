@@ -137,7 +137,7 @@ describe('listSlots', () => {
     expect((await service.listSlots('temp')).map(i => i.id)).toEqual(['sensor:measure_temperature']);
   });
 
-  it("lists the meters first for a value that counts up (Totals per Period's)", async () => {
+  it("lists the meters first for a value that counts up (Chart · Totals')", async () => {
     const meter = fakeDevice({
       id: 'meter', name: 'Zähler', zone: 'z1',
       caps: { meter_power: { type: 'number', value: 1234, title: 'Energy', units: 'kWh', insights: true } },
@@ -176,7 +176,7 @@ describe('getState', () => {
     });
   });
 
-  it('asks for the periods before the calendar ones (Totals per Period, verified on the Homey, 2026-10-27)', async () => {
+  it('asks for the periods before the calendar ones (Chart · Totals, verified on the Homey, 2026-10-27)', async () => {
     const { service, api } = setup();
     for (const span of ['today', 'yesterday', 'thisWeek', 'lastWeek', 'thisMonth', 'lastMonth', 'thisYear', 'lastYear']) {
       await service.getState(['sensor:measure_humidity'], span, { prev: true });

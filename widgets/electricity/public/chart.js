@@ -1,7 +1,7 @@
 /*
- * The chart drawing shared by the Electricity Overview, Charts and Totals per Period widgets: scales, traces, bars, dots,
+ * The chart drawing shared by the Electricity Overview, Charts and Chart · Totals widgets: scales, traces, bars, dots,
  * chips, the export (below zero) split and the tap-to-inspect wiring, and the bars and labels on the local clock.
- * Plain browser JS (served as-is), on `window.WidgetkeeperChart`. Charts and Totals per Period load it from here
+ * Plain browser JS (served as-is), on `window.WidgetkeeperChart`. Charts and Chart · Totals load it from here
  * (`../electricity/chart.js`), as does the Smart Stack.
  * The class names are the Electricity Overview's (chart.css, scoped by `.ew`), so its markup didn't change.
  */
@@ -164,7 +164,7 @@
   }
 
   /**
-   * A value axis label (Charts' and Totals per Period's): `nf(v, decimals)` to the step's decimals, thousands as `1,5k` once
+   * A value axis label (Charts' and Chart · Totals'): `nf(v, decimals)` to the step's decimals, thousands as `1,5k` once
    * the step is that coarse, with the decimals the value needs (a 250 step's 1250 is `1,25k`, not `1,3k`).
    */
   function axisLabel(nf, v, step) {
@@ -238,7 +238,7 @@
   /**
    * Several series on one clock grid: `buckets()` of each over `[from, to]` by `unit`, as rows `{t, end, values}`, a
    * value per series (null before its first). `currents` (each series' value now) stand in for a last row without
-   * points, as in `buckets()`. Chart · X against Y's pairs.
+   * points, as in `buckets()`. Chart · Scatter (XY)'s pairs.
    * @param {[number, number][][]} list
    */
   function alignSeries(list, from, to, unit, currents = []) {
@@ -249,7 +249,7 @@
   /**
    * A value's usual day over `[from, to]`: for each local clock hour (0–23), the average, lowest and highest of its hourly
    * averages there (`buckets()` by the hour, the last value carried over gaps): `{hour, avg, min, max, n}`, the values
-   * null where there were none. Chart · Typical Day's band and dashed line.
+   * null where there were none. Chart · Daily Profile's band and dashed line.
    * @param {[number, number][]} points
    */
   function profile(points, from, to) {
@@ -536,7 +536,7 @@
     }
 
     /**
-     * A bottom value scale over a plot `pw` wide from `left` (`L`; Chart · X against Y's x, Chart · Compare's): vertical grid
+     * A bottom value scale over a plot `pw` wide from `left` (`L`; Chart · Scatter (XY)'s x, Chart · Ranking's): vertical grid
      * lines and labels (`format(v, step)`, at least 40 px apart, so with the decimals of the labels' own spacing) under
      * `base`, from `ticks()` (fitted unless `fit` is false); a line at zero where the range crosses it, and with `edge`
      * one at the left end too (where no value axis stands). Returns `x(v)` and the axis range.
@@ -704,7 +704,7 @@
   const pointerX = (e, svg) => e.clientX - svg.getBoundingClientRect().left;
 
   /**
-   * The frame a chart widget draws in (Charts, Totals per Period and the other `Chart · …` widgets; the Electricity Overview
+   * The frame a chart widget draws in (Charts, Chart · Totals and the other `Chart · …` widgets; the Electricity Overview
    * has its own): the `.ew` box (`ew <cls>`) with a message, the header, a plot box per `boxes` entry (its attributes;
    * each a chip row, the <svg> and a note, with `legendBelow` the chips under the svg) and a passing message under them.
    * It keeps the width (a ResizeObserver on `root`), tells `opts.onHeight` the height, redraws every `redrawMs` while

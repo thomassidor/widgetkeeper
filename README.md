@@ -17,17 +17,25 @@ Many motion, contact and vibration sensors at a glance, as dots that change colo
 <a href="#cameras"><b>Cameras</b></a><br>
 Two to six cameras in one grid of snapshots; tap one to watch it live<br clear="left"></p>
 
-<p><a href="#chart--compare"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/compare-dark.png"><img src="docs/previews/compare-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--compare"><b>Chart · Compare</b></a><br>
-One value across devices, now and its range today, sorted: which room is warmest?<br clear="left"></p>
+<p><a href="#chart--daily-profile"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/typicalday-dark.png"><img src="docs/previews/typicalday-light.png" alt="" width="120" align="left"></picture></a>
+<a href="#chart--daily-profile"><b>Chart · Daily Profile</b></a><br>
+Today's line over the usual day and its spread: is today unusual?<br clear="left"></p>
 
-<p><a href="#chart--daily-range"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/dailyrange-dark.png"><img src="docs/previews/dailyrange-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--daily-range"><b>Chart · Daily Range</b></a><br>
+<p><a href="#chart--history"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/charts-dark.png"><img src="docs/previews/charts-light.png" alt="" width="120" align="left"></picture></a>
+<a href="#chart--history"><b>Chart · History</b></a><br>
+One or two charts of any value over any span, from minutes to two years, drawn like Electricity Overview's<br clear="left"></p>
+
+<p><a href="#chart--minmax"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/dailyrange-dark.png"><img src="docs/previews/dailyrange-light.png" alt="" width="120" align="left"></picture></a>
+<a href="#chart--minmax"><b>Chart · Min/Max</b></a><br>
 Each day's lowest to highest as a bar, its average across it: how much did it swing?<br clear="left"></p>
 
-<p><a href="#chart--over-time"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/charts-dark.png"><img src="docs/previews/charts-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--over-time"><b>Chart · Over Time</b></a><br>
-One or two charts of any value over any span, from minutes to two years, drawn like Electricity Overview's<br clear="left"></p>
+<p><a href="#chart--ranking"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/compare-dark.png"><img src="docs/previews/compare-light.png" alt="" width="120" align="left"></picture></a>
+<a href="#chart--ranking"><b>Chart · Ranking</b></a><br>
+One value across devices, now and its range today, sorted: which room is warmest?<br clear="left"></p>
+
+<p><a href="#chart--scatter-xy"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/scatter-dark.png"><img src="docs/previews/scatter-light.png" alt="" width="120" align="left"></picture></a>
+<a href="#chart--scatter-xy"><b>Chart · Scatter (XY)</b></a><br>
+One value against another, a dot an hour, with the line that fits them: does the heat pump work harder when it's colder?<br clear="left"></p>
 
 <p><a href="#chart--stacked"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/stacked-dark.png"><img src="docs/previews/stacked-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--stacked"><b>Chart · Stacked</b></a><br>
@@ -37,17 +45,9 @@ Several values stacked on one time axis, the rest of a total as Other: who uses 
 <a href="#chart--timeline"><b>Chart · Timeline</b></a><br>
 When was it on, open or moving? A row per value over the day, bands where it was true<br clear="left"></p>
 
-<p><a href="#chart--totals-per-period"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/totals-dark.png"><img src="docs/previews/totals-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--totals-per-period"><b>Chart · Totals per Period</b></a><br>
+<p><a href="#chart--totals"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/totals-dark.png"><img src="docs/previews/totals-light.png" alt="" width="120" align="left"></picture></a>
+<a href="#chart--totals"><b>Chart · Totals</b></a><br>
 How much a value went up per hour, day or month (kWh, rain, hours of TV), like the Energy tab, over any span, beside the period before if you like<br clear="left"></p>
-
-<p><a href="#chart--typical-day"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/typicalday-dark.png"><img src="docs/previews/typicalday-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--typical-day"><b>Chart · Typical Day</b></a><br>
-Today's line over the usual day and its spread: is today unusual?<br clear="left"></p>
-
-<p><a href="#chart--x-against-y"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/scatter-dark.png"><img src="docs/previews/scatter-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--x-against-y"><b>Chart · X against Y</b></a><br>
-One value against another, a dot an hour, with the line that fits them: does the heat pump work harder when it's colder?<br clear="left"></p>
 
 <p><a href="#clock"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/clock-dark.png"><img src="docs/previews/clock-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#clock"><b>Clock</b></a><br>
@@ -185,15 +185,32 @@ Your cameras as a grid of snapshots that refresh every few seconds (cameras with
 
 **Settings:** cameras, layout (a large camera at the top or bottom, or one per row), refresh interval, how long live view stays on, time format, [rename tiles](#tile-names).
 
-## Chart · Compare
-<img src="docs/screenshots/compare.png" alt="Chart · Compare on a Homey dashboard: six rooms' temperatures, warmest first, each with today's range as a bar and the temperature now as a dot" width="358">
+## Chart · Daily Profile
+<img src="docs/screenshots/typicalday.png" alt="Chart · Daily Profile on a Homey dashboard: the house's power today as a line, a little over its usual day, which is dashed with its spread as a band, peaking in the morning and the evening" width="358">
 
-One value from up to eight devices side by side, a row each on one shared scale: the value now as a dot and its lowest to highest today (or over another [time span](#time-spans)) as a bar, warmest first (or coldest first, or as you picked them). The highest and the lowest sit at the top; tap a row for its value and range. A device with several values picked shows them by name.
+A value today against its usual day: each hour's average over the last 7 days (or 3), today left out, dashed, with their lowest to highest as a band, and today's line over it up to now. The value now and the usual one for this hour sit at the top; tap the chart for another hour.
 
-**Settings:** values 1 to 8, [time span](#time-spans) for the ranges, order (highest first, lowest first or as picked), show the range, title, the values at the top, colour, [colour style](#colour-style).
+It takes any value that Homey logs in Insights, read from its hourly log (which reaches a week back).
 
-## Chart · Daily Range
-<img src="docs/screenshots/dailyrange.png" alt="Chart · Daily Range on a Homey dashboard: the outdoor temperature's lowest to highest each day of the last four weeks as floating bars, each with its average" width="358">
+**Settings:** the value, usual day from (the last 7 or 3 days), show the spread, smooth line, scale (fitted or from zero), title, the values at the top, colour, [colour style](#colour-style).
+
+<a name="charts"></a>
+
+## Chart · History
+<img src="docs/screenshots/charts.png" alt="Chart · History on a Homey dashboard: the outdoor temperature as a line, and the power use as bars" width="358">
+
+One chart, two stacked, or two values on one chart (each with its own scale, or sharing one), of any value that Homey logs in Insights, drawn like Electricity Overview's charts. The value now sits at the top in the chart's colour. Tap a chart to see the value at that moment.
+
+**Settings:** one chart, two stacked or two on one chart (they share chart 1's time span, or compare whole periods of one unit: today with yesterday, this week with last, and so on), and on one chart one scale for both; per chart the value, [time span](#time-spans), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (a finished period shows its average there); the legend above or below the chart; [colour style](#colour-style).
+
+For how much a value went up in each hour, day or month (a meter's kWh, rain, hours of TV), as bars, see [Chart · Totals](#chart--totals).
+
+<a name="time-spans"></a>
+
+**Time spans** (both chart widgets): a number and a unit. Minutes, hours, days, weeks, months or years are the last so many up to now (40 minutes, 24 hours, 18 months). Days from midnight, weeks from Monday, months from the 1st and years from 1 January are whole periods, the current one included (1 day from midnight is today, 3 months from the 1st this month and the two before), or with *Leave out the current period* the ones before it (yesterday, last week, the three months before this one). Up to two years: Insights keeps no more. A chart set up before 1.2.0 keeps its span.
+
+## Chart · Min/Max
+<img src="docs/screenshots/dailyrange.png" alt="Chart · Min/Max on a Homey dashboard: the outdoor temperature's lowest to highest each day of the last four weeks as floating bars, each with its average" width="358">
 
 A value's lowest to highest in each day as a floating bar, its average as a tick across it: how cold the nights and how warm the afternoons were, how much the humidity swung. The last four weeks by default, a bar a day; another [time span](#time-spans) gets its own bars (an hour each over a day, a month each over a year). The latest bar's high and low sit at the top; tap a bar for its own.
 
@@ -201,20 +218,21 @@ It takes any value that Homey logs in Insights. Insights keeps spans over eight 
 
 **Settings:** the value, [time span](#time-spans), average tick, scale (fitted or from zero), title, the values at the top, colour, [colour style](#colour-style).
 
-<a name="charts"></a>
+## Chart · Ranking
+<img src="docs/screenshots/compare.png" alt="Chart · Ranking on a Homey dashboard: six rooms' temperatures, warmest first, each with today's range as a bar and the temperature now as a dot" width="358">
 
-## Chart · Over Time
-<img src="docs/screenshots/charts.png" alt="Chart · Over Time on a Homey dashboard: the outdoor temperature as a line, and the power use as bars" width="358">
+One value from up to eight devices side by side, a row each on one shared scale: the value now as a dot and its lowest to highest today (or over another [time span](#time-spans)) as a bar, warmest first (or coldest first, or as you picked them). The highest and the lowest sit at the top; tap a row for its value and range. A device with several values picked shows them by name.
 
-One chart, two stacked, or two values on one chart (each with its own scale, or sharing one), of any value that Homey logs in Insights, drawn like Electricity Overview's charts. The value now sits at the top in the chart's colour. Tap a chart to see the value at that moment.
+**Settings:** values 1 to 8, [time span](#time-spans) for the ranges, order (highest first, lowest first or as picked), show the range, title, the values at the top, colour, [colour style](#colour-style).
 
-**Settings:** one chart, two stacked or two on one chart (they share chart 1's time span, or compare whole periods of one unit: today with yesterday, this week with last, and so on), and on one chart one scale for both; per chart the value, [time span](#time-spans), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (a finished period shows its average there); the legend above or below the chart; [colour style](#colour-style).
+## Chart · Scatter (XY)
+<img src="docs/screenshots/scatter.png" alt="Chart · Scatter (XY) on a Homey dashboard: the heat pump's power against the outdoor temperature over a week, a dot an hour, falling as it gets warmer, with the trend line" width="358">
 
-For how much a value went up in each hour, day or month (a meter's kWh, rain, hours of TV), as bars, see [Chart · Totals per Period](#chart--totals-per-period).
+One value against another: each dot is where both were at the same time, their averages over an hour (or, by the [time span](#time-spans), a minute to a week). The newer dots are stronger, the newest is ringed, and a dashed line shows the trend through them, its slope at the top: how much more the heat pump draws for each degree colder, how much the humidity rises with the temperature. Tap a dot to see its values and when.
 
-<a name="time-spans"></a>
+It takes any two values that Homey logs in Insights. Over spans longer than eight days Insights keeps 6-hour steps, so a dot is at least 6 hours there.
 
-**Time spans** (both chart widgets): a number and a unit. Minutes, hours, days, weeks, months or years are the last so many up to now (40 minutes, 24 hours, 18 months). Days from midnight, weeks from Monday, months from the 1st and years from 1 January are whole periods, the current one included (1 day from midnight is today, 3 months from the 1st this month and the two before), or with *Leave out the current period* the ones before it (yesterday, last week, the three months before this one). Up to two years: Insights keeps no more. A chart set up before 1.2.0 keeps its span.
+**Settings:** the value across (x) and the value up (y), [time span](#time-spans), one dot per (automatic, hour or day), trend line, fade older dots, title, the values at the top, colour, [colour style](#colour-style).
 
 ## Chart · Stacked
 <img src="docs/screenshots/stacked.png" alt="Chart · Stacked on a Homey dashboard: the last 24 hours of the house's power as stacked areas, the rest at the bottom, then the heat pump, the oven and the EV charger" width="358">
@@ -234,32 +252,14 @@ Homey's Insights keeps only a value's last 50 changes, so the app records each o
 
 **Settings:** values 1 to 8 each with its colour, [time span](#time-spans), title, the values at the top, [colour style](#colour-style).
 
-## Chart · Totals per Period
-<img src="docs/screenshots/totals.png" alt="Chart · Totals per Period on a Homey dashboard: the main meter's kilowatt-hours a month this year, beside last year's, both years' totals at the top" width="358">
+## Chart · Totals
+<img src="docs/screenshots/totals.png" alt="Chart · Totals on a Homey dashboard: the main meter's kilowatt-hours a month this year, beside last year's, both years' totals at the top" width="358">
 
 How much a value went up in each hour, day or month, like the Homey app's Energy tab: a bar an hour for a day, a day for a week or a month, a month for a year, and for other spans about 12 to 28 bars on the clock. Turn on *Compare with the period before* for last week's, last month's or last year's bar beside each (the 3rd of the month beside the 3rd, March beside March). The totals sit at the top; tap a bar for its own.
 
 It takes any value that only counts up and that Homey logs in Insights: an electricity, water or gas meter's kWh or m³, a rain gauge's millimetres, hours of TV, a car's odometer, or a utility meter that starts again each week, month or year (it counts on across the reset). The bars come from Insights, which keeps a month or a year in 6-hour steps, so a day's bar in a month view can be off by an hour or two at its edges.
 
 **Settings:** the value (meters first), [time span](#time-spans) (any number of hours, days, weeks, months or years, or whole ones: this week, last month …), compare with the period before, title, the totals at the top, colour, [colour style](#colour-style).
-
-## Chart · Typical Day
-<img src="docs/screenshots/typicalday.png" alt="Chart · Typical Day on a Homey dashboard: the house's power today as a line, a little over its usual day, which is dashed with its spread as a band, peaking in the morning and the evening" width="358">
-
-A value today against its usual day: each hour's average over the last 7 days (or 3), today left out, dashed, with their lowest to highest as a band, and today's line over it up to now. The value now and the usual one for this hour sit at the top; tap the chart for another hour.
-
-It takes any value that Homey logs in Insights, read from its hourly log (which reaches a week back).
-
-**Settings:** the value, usual day from (the last 7 or 3 days), show the spread, smooth line, scale (fitted or from zero), title, the values at the top, colour, [colour style](#colour-style).
-
-## Chart · X against Y
-<img src="docs/screenshots/scatter.png" alt="Chart · X against Y on a Homey dashboard: the heat pump's power against the outdoor temperature over a week, a dot an hour, falling as it gets warmer, with the trend line" width="358">
-
-One value against another: each dot is where both were at the same time, their averages over an hour (or, by the [time span](#time-spans), a minute to a week). The newer dots are stronger, the newest is ringed, and a dashed line shows the trend through them, its slope at the top: how much more the heat pump draws for each degree colder, how much the humidity rises with the temperature. Tap a dot to see its values and when.
-
-It takes any two values that Homey logs in Insights. Over spans longer than eight days Insights keeps 6-hour steps, so a dot is at least 6 hours there.
-
-**Settings:** the value across (x) and the value up (y), [time span](#time-spans), one dot per (automatic, hour or day), trend line, fade older dots, title, the values at the top, colour, [colour style](#colour-style).
 
 ## Clock
 <img src="docs/screenshots/clock.png" alt="Clock on a Homey dashboard" width="358">

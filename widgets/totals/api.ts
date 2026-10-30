@@ -9,6 +9,6 @@ export default {
    * (`parseChartRequests()` in lib/chartState.ts). `{charts, language}`: `[current, previous?]`.
    */
   async getState({ homey, query }: { homey: Homey, query: Record<string, string> }) {
-    return chartState(homey, query, 'Totals per Period');
+    return chartState(homey, query, 'Totals');
   },
 };

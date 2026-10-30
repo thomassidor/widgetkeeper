@@ -39,15 +39,15 @@
     }),
   });
 
-  // Totals per Period: the main meter's year so far against last year, a month a bar (mock-totals.js, on the fixed clock).
+  // Chart · Totals: the main meter's year so far against last year, a month a bar (mock-totals.js, on the fixed clock).
   MOUNT.totals(el('w-totals'), { opts: { period: 'thisYear', compare: true }, state: mockTotals.totalsState('thisYear', SHOWCASE_NOW) });
 
-  // Chart · X against Y: the heat pump's power against the outdoor temperature over a week, a dot an hour (mock-scatter.js).
+  // Chart · Scatter (XY): the heat pump's power against the outdoor temperature over a week, a dot an hour (mock-scatter.js).
   // Chart · TypicalDay: the house's power today over its usual day, a little high (mock-typicalday.js).
   if (el('w-typicalday')) MOUNT.typicalday(el('w-typicalday'), { opts: {}, state: mockTypicalDay.typicalDayState(7, SHOWCASE_NOW) });
   // Chart · DailyRange: the outdoor temperature's low to high each day of the last 4 weeks (mock-dailyrange.js).
   if (el('w-dailyrange')) MOUNT.dailyrange(el('w-dailyrange'), { opts: {}, state: mockDailyRange.dailyRangeState('4w', SHOWCASE_NOW) });
-  // Chart · Compare: six rooms' temperatures now and today's range, warmest first (mock-compare.js).
+  // Chart · Ranking: six rooms' temperatures now and today's range, warmest first (mock-compare.js).
   if (el('w-compare')) MOUNT.compare(el('w-compare'), { opts: { count: 6 }, state: mockCompare.compareState('1d!', SHOWCASE_NOW) });
   // Chart · Timeline: the heating, hall motion, front door and TV today, in the mock-up's colours (mock-timeline.js).
   if (el('w-timeline')) MOUNT.timeline(el('w-timeline'), { opts: { colors: ['orange', 'yellow', 'red', 'blue'] }, state: mockTimeline.timelineState('1d!', SHOWCASE_NOW) });

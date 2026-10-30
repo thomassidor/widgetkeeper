@@ -1,5 +1,5 @@
 /*
- * Chart · X against Y: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`) in the widget's colour
+ * Chart · Scatter (XY): the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`) in the widget's colour
  * (the kit's `data-wk-color` on the root: its bright set, as Charts' colours).
  */
 .xy { --xy-color: var(--wk-c-bright, var(--ew-blue)); }

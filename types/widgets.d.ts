@@ -22,7 +22,7 @@ interface Window {
     place: (columns: any[][], heightOf: (entry: any) => number, gap: number) => { entry: any, top: number, margin: number, height: number, hidden: boolean }[][],
   };
   createElectricityWidget: (root: HTMLElement, opts?: object) => any;
-  /** The chart module shared by the Electricity Overview, Charts and Totals per Period (widgets/electricity/public/chart.js). */
+  /** The chart module shared by the Electricity Overview, Charts and Chart · Totals (widgets/electricity/public/chart.js). */
   WidgetkeeperChart: any;
   createChartsWidget: (root: HTMLElement, opts?: object) => any;
   createTotalsWidget: (root: HTMLElement, opts?: object) => any;

@@ -1,5 +1,5 @@
 /*
- * Chart · Compare: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`) in the widget's colour
+ * Chart · Ranking: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`) in the widget's colour
  * (the kit's `data-wk-color` on the root: its bright set, as Charts' colours): each row's range a soft bar, the value now a dot.
  */
 .cp { --cp-color: var(--wk-c-bright, var(--ew-blue)); }

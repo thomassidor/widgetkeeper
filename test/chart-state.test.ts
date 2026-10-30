@@ -47,7 +47,7 @@ describe('parseChartRequests', () => {
     ]);
   });
 
-  it('reads a request for more points (Daily Range)', () => {
+  it('reads a request for more points (Chart · Min/Max)', () => {
     expect(parseChartRequests('a:x~1mo!~100~200~month~fine')).toEqual([
       { slot: 'a:x', span: '1mo!', from: 100, end: 200, unit: 'month', use: false, fine: true, window: true },
     ]);

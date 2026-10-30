@@ -9,6 +9,6 @@ export default {
    * `{charts, language}`: `[value]`.
    */
   async getState({ homey, query }: { homey: Homey, query: Record<string, string> }) {
-    return chartState(homey, query, 'Daily Range');
+    return chartState(homey, query, 'Min/Max');
   },
 };

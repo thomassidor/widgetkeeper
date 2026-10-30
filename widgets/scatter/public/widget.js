@@ -1,5 +1,5 @@
 /*
- * Chart · X against Y: one value against another over a time span, a dot per hour (or a minute to a week, by the span),
+ * Chart · Scatter (XY): one value against another over a time span, a dot per hour (or a minute to a week, by the span),
  * each the two values' averages over its time, older dots fainter, with the straight line that fits them best: does the
  * heat pump work harder when it's colder? Drawn by the shared chart module (../electricity/chart.js,
  * `window.WidgetkeeperChart`, loaded first). Plain browser JS (served as-is).

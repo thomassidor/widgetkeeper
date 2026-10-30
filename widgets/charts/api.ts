@@ -9,6 +9,6 @@ export default {
    * over the window it draws. `{charts, language}`: one entry per series, in order.
    */
   async getState({ homey, query }: { homey: Homey, query: Record<string, string> }) {
-    return chartState(homey, query, 'Charts');
+    return chartState(homey, query, 'History');
   },
 };

@@ -1,5 +1,5 @@
 /*
- * Chart · Compare: one value across up to eight devices, a row each, sorted: the value now as a dot and its lowest to
+ * Chart · Ranking: one value across up to eight devices, a row each, sorted: the value now as a dot and its lowest to
  * highest over the time span (today by default) as a bar, on one shared scale. Which room is warmest? Drawn by the
  * shared chart module (../electricity/chart.js, `window.WidgetkeeperChart`, loaded first). Plain browser JS (served as-is).
  */

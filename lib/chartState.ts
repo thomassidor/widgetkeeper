@@ -12,8 +12,8 @@ const UNITS: CalendarUnit[] = ['day', 'week', 'month', 'year'];
 /**
  * A chart widget's request (`charts`: comma-separated): `<deviceId>:<capabilityId>~<span>~<from>~<end>~<unit>[~use|~fine]`,
  * the window the widget works out on the phone's clock (epoch ms; `unit` its span's calendar unit, or empty for a rolling
- * one), `span` its setting for the log line, `use` for the running total (Totals per Period), `fine` for up to 400 points
- * (Daily Range's lows and highs). The older
+ * one), `span` its setting for the log line, `use` for the running total (Chart · Totals), `fine` for up to 400 points
+ * (Chart · Min/Max's lows and highs). The older
  * `<slot>~<span>` (a page loaded before 1.2.0) asks Sparklines' span as before.
  */
 export type ChartRequest = (WindowRequest & { window: true }) | { slot: string, span?: string, window: false };

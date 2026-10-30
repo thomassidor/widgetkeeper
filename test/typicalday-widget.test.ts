@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-/* Chart · Typical Day (widgets/typicalday): today's line over the usual day and its spread. */
+/* Chart · Daily Profile (widgets/typicalday): today's line over the usual day and its spread. */
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { loadMount, loadWidget } from './helpers/loadWidget.js';
 

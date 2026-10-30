@@ -549,7 +549,7 @@ function charts(t, theme) {
   </div>`;
 }
 
-// Totals per Period: a week's use as the Homey app's Energy tab draws it, a pair of bars a day (last week light, this week
+// Chart · Totals: a week's use as the Homey app's Energy tab draws it, a pair of bars a day (last week light, this week
 // strong, the last day still under way), under its title chip, in orange (blue and green read as the Electricity
 // Overview, purple as Charts).
 function totalsChart(t, theme) {
@@ -578,9 +578,9 @@ function totalsChart(t, theme) {
   </div>`;
 }
 
-// Chart · X against Y: a falling cloud of dots, older ones fainter, the dashed trend line through them and the newest dot
+// Chart · Scatter (XY): a falling cloud of dots, older ones fainter, the dashed trend line through them and the newest dot
 // ringed, under its title chip, in red (blue and green read as the Electricity Overview, purple as Charts, orange as
-// Totals per Period).
+// Chart · Totals).
 function scatterChart(t, theme) {
   const RED = '#F25F5C';
   const card = theme === 'dark' ? '#1F2029' : '#FFFFFF';
@@ -612,7 +612,7 @@ function scatterChart(t, theme) {
   </div>`;
 }
 
-// Chart · Typical Day: the usual day as a soft band with its dashed average, today's line over it up to the afternoon
+// Chart · Daily Profile: the usual day as a soft band with its dashed average, today's line over it up to the afternoon
 // with the dot, under its title chip, in green: green as the Electricity Overview's usage, but a single soft line with a
 // band reads as its own.
 function typicalDayChart(t, theme) {
@@ -646,7 +646,7 @@ function typicalDayChart(t, theme) {
   </div>`;
 }
 
-// Chart · Daily Range: a floating bar a day from its low to its high, each with a tick at its average, under its title chip,
+// Chart · Min/Max: a floating bar a day from its low to its high, each with a tick at its average, under its title chip,
 // in yellow (the other chart widgets have blue, green, purple, orange and red).
 function dailyRangeChart(t, theme) {
   const YELLOW = '#F5C518';
@@ -676,7 +676,7 @@ function dailyRangeChart(t, theme) {
   </div>`;
 }
 
-// Chart · Compare: a row per room, sorted, each with its name, a soft bar for its range today and a blue dot for now, the
+// Chart · Ranking: a row per room, sorted, each with its name, a soft bar for its range today and a blue dot for now, the
 // value at the right, under its title chip (blue: rows read nothing like the Electricity Overview's charts).
 function compareChart(t, theme) {
   const card = theme === 'dark' ? '#1F2029' : '#FFFFFF';
@@ -1193,16 +1193,16 @@ const PREVIEWS = [
   { id: 'spark-light',  label: '1t · Sparklines — preview-light.png',            theme: 'light', render: sparklines },
   { id: 'chart-dark',   label: '2s · Charts — preview-dark.png',                 theme: 'dark',  render: charts },
   { id: 'chart-light',  label: '2t · Charts — preview-light.png',                theme: 'light', render: charts },
-  { id: 'tt-dark',      label: '3q · Totals per Period — preview-dark.png',            theme: 'dark',  render: totalsChart },
-  { id: 'tt-light',     label: '3r · Totals per Period — preview-light.png',           theme: 'light', render: totalsChart },
-  { id: 'xy-dark',      label: '3s · X against Y — preview-dark.png',                  theme: 'dark',  render: scatterChart },
-  { id: 'xy-light',     label: '3t · X against Y — preview-light.png',                 theme: 'light', render: scatterChart },
-  { id: 'td-dark',      label: '3u · Typical Day — preview-dark.png',                  theme: 'dark',  render: typicalDayChart },
-  { id: 'td-light',     label: '3v · Typical Day — preview-light.png',                 theme: 'light', render: typicalDayChart },
-  { id: 'dr-dark',      label: '3w · Daily Range — preview-dark.png',                  theme: 'dark',  render: dailyRangeChart },
-  { id: 'dr-light',     label: '3x · Daily Range — preview-light.png',                 theme: 'light', render: dailyRangeChart },
-  { id: 'cp-dark',      label: '3y · Compare — preview-dark.png',                      theme: 'dark',  render: compareChart },
-  { id: 'cp-light',     label: '3z · Compare — preview-light.png',                     theme: 'light', render: compareChart },
+  { id: 'tt-dark',      label: '3q · Totals — preview-dark.png',            theme: 'dark',  render: totalsChart },
+  { id: 'tt-light',     label: '3r · Totals — preview-light.png',           theme: 'light', render: totalsChart },
+  { id: 'xy-dark',      label: '3s · Scatter (XY) — preview-dark.png',                  theme: 'dark',  render: scatterChart },
+  { id: 'xy-light',     label: '3t · Scatter (XY) — preview-light.png',                 theme: 'light', render: scatterChart },
+  { id: 'td-dark',      label: '3u · Daily Profile — preview-dark.png',                  theme: 'dark',  render: typicalDayChart },
+  { id: 'td-light',     label: '3v · Daily Profile — preview-light.png',                 theme: 'light', render: typicalDayChart },
+  { id: 'dr-dark',      label: '3w · Min/Max — preview-dark.png',                  theme: 'dark',  render: dailyRangeChart },
+  { id: 'dr-light',     label: '3x · Min/Max — preview-light.png',                 theme: 'light', render: dailyRangeChart },
+  { id: 'cp-dark',      label: '3y · Ranking — preview-dark.png',                      theme: 'dark',  render: compareChart },
+  { id: 'cp-light',     label: '3z · Ranking — preview-light.png',                     theme: 'light', render: compareChart },
   { id: 'tln-dark',     label: '4a · Timeline — preview-dark.png',                     theme: 'dark',  render: timelineChart },
   { id: 'tln-light',    label: '4b · Timeline — preview-light.png',                    theme: 'light', render: timelineChart },
   { id: 'stk-dark',     label: '4c · Stacked — preview-dark.png',                      theme: 'dark',  render: stackedChart },

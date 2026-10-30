@@ -1,5 +1,5 @@
 /*
- * Made-up readings for Chart · X against Y's previews and renders: the showcase house's outdoor temperature and its heat
+ * Made-up readings for Chart · Scatter (XY)'s previews and renders: the showcase house's outdoor temperature and its heat
  * pump's power (never real ones), the pump working harder the colder it is, as `/state` gives them (a point every 30
  * minutes, the value now). Load after the kit (it uses `timeSpan()`).
  */
@@ -30,7 +30,7 @@
     return { value: points.length ? points[points.length - 1][1] : null, points, ...extra };
   }
 
-  /** Chart · X against Y's `[x, y]` over `span` at `now`. */
+  /** Chart · Scatter (XY)'s `[x, y]` over `span` at `now`. */
   function scatterState(span = '7d', now = Date.now()) {
     const w = window.WidgetkeeperKit.timeSpan(span, now);
     return [

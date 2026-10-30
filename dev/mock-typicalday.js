@@ -1,5 +1,5 @@
 /*
- * Made-up readings for Chart · Typical Day's previews and renders: the showcase house's power use (never a real meter's),
+ * Made-up readings for Chart · Daily Profile's previews and renders: the showcase house's power use (never a real meter's),
  * a morning and an evening peak each day, today a little higher, as `/state` gives it (a point every 10 minutes, the
  * value now). Load after the kit (it uses `timeSpan()`).
  */
@@ -25,7 +25,7 @@
     return { deviceId: 'house', capabilityId: 'measure_power', name: 'House', capability: power, value: points.length ? points[points.length - 1][1] : null, points };
   }
 
-  /** Chart · Typical Day's `[today, past]` at `now`: today's line runs a little high. */
+  /** Chart · Daily Profile's `[today, past]` at `now`: today's line runs a little high. */
   function typicalDayState(days = 7, now = Date.now()) {
     const today = window.WidgetkeeperKit.timeSpan('1d!', now);
     return [series(today.from, today.end, now, 0.35), series(now - days * DAY, today.from, now, 0)];

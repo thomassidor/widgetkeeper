@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * The chart widgets' settings (Chart · Over Time, Totals per Period and the other `Chart · …` widgets) from one catalog,
+ * The chart widgets' settings (Chart · History, Chart · Totals and the other `Chart · …` widgets) from one catalog,
  * scripts/chart-settings.json, so a setting they share is written once, in all 13 languages, and reads the same in each.
  * `settings` holds each setting as Homey's manifest has it, `{n}` in its id and texts for a numbered group's (`chart{n}`,
  * `Chart {n}: device value`); `widgets` lists each widget's, in order: `"<setting>"` or `"<setting>:<n>"`, or an object

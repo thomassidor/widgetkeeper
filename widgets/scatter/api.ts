@@ -9,6 +9,6 @@ export default {
    * `{charts, language}`: `[x, y]`.
    */
   async getState({ homey, query }: { homey: Homey, query: Record<string, string> }) {
-    return chartState(homey, query, 'X against Y');
+    return chartState(homey, query, 'Scatter (XY)');
   },
 };

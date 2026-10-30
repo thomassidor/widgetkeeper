@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-/* Chart · X against Y (widgets/scatter): one value against another, a dot per stretch of time, and the trend line. */
+/* Chart · Scatter (XY) (widgets/scatter): one value against another, a dot per stretch of time, and the trend line. */
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { loadMount, loadWidget } from './helpers/loadWidget.js';
 

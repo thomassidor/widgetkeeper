@@ -33,7 +33,7 @@
   const AVG_KEYS = { day: 'yesterdayAvg', week: 'lastWeekAvg', month: 'lastMonthAvg', year: 'lastYearAvg' };
 
 
-  /** Bars on the local clock: the chart module's (moved there for Totals per Period; tests and previews call it by this name). */
+  /** Bars on the local clock: the chart module's (moved there for Chart · Totals; tests and previews call it by this name). */
   const chartBuckets = C.buckets;
 
   /**

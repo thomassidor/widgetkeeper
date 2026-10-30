@@ -9,6 +9,6 @@ export default {
    * `{charts, language}`: `[today, past]`.
    */
   async getState({ homey, query }: { homey: Homey, query: Record<string, string> }) {
-    return chartState(homey, query, 'Typical Day');
+    return chartState(homey, query, 'Daily Profile');
   },
 };

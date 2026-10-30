@@ -1,5 +1,5 @@
 /*
- * Chart · Typical Day: a value's line today over its usual day, each hour's average over the last 7 (or 3) days dashed
+ * Chart · Daily Profile: a value's line today over its usual day, each hour's average over the last 7 (or 3) days dashed
  * and their lowest to highest as a band: is today unusual? Drawn by the shared chart module (../electricity/chart.js,
  * `window.WidgetkeeperChart`, loaded first). Plain browser JS (served as-is).
  */

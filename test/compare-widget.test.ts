@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-/* Chart · Compare (widgets/compare): one value across devices, a row each, sorted, with its range over the span. */
+/* Chart · Ranking (widgets/compare): one value across devices, a row each, sorted, with its range over the span. */
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { loadMount, loadWidget } from './helpers/loadWidget.js';
 

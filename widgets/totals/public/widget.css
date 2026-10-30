@@ -1,5 +1,5 @@
 /*
- * Chart · Totals per Period: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`) in the widget's colour
+ * Chart · Totals: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`) in the widget's colour
  * (the kit's `data-wk-color` on the root: its bright set, as Charts' colours), the period before in a lighter one.
  */
 .tt { --tt-color: var(--wk-c-bright, var(--ew-blue)); }

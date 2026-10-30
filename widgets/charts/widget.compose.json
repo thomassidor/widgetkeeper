@@ -1,18 +1,18 @@
 {
   "name": {
-    "en": "Chart · Over Time",
-    "nl": "Grafiek · Verloop",
+    "en": "Chart · History",
+    "nl": "Grafiek · Geschiedenis",
     "de": "Diagramm · Verlauf",
-    "fr": "Graphique · Évolution",
-    "it": "Grafico · Andamento",
-    "sv": "Diagram · Över tid",
-    "no": "Diagram · Over tid",
-    "es": "Gráfico · Evolución",
-    "da": "Graf · Over tid",
-    "ru": "График · Динамика",
-    "pl": "Wykres · Przebieg w czasie",
-    "ko": "차트 · 시간별 추이",
-    "ar": "مخطط · عبر الزمن"
+    "fr": "Graphique · Historique",
+    "it": "Grafico · Storico",
+    "sv": "Diagram · Historik",
+    "no": "Diagram · Historikk",
+    "es": "Gráfico · Historial",
+    "da": "Graf · Historik",
+    "ru": "График · История",
+    "pl": "Wykres · Historia",
+    "ko": "차트 · 기록",
+    "ar": "مخطط · السجل"
   },
   "height": 280,
   "settings": [

@@ -5,7 +5,7 @@ paths:
   - "dev/compare-preview.html"
   - "dev/mock-compare.js"
 ---
-# Chart · Compare widget (`compare`)
+# Chart · Ranking widget (`compare`, called Compare while it was built; renamed 2026-10-30, as the other chart widgets, by what it offers)
 
 - One value from up to eight devices side by side, a row each on one shared bottom scale (`kit.xValueScale()` with `left` past the names and `edge`): the name, its lowest to highest over the time span as a soft bar, the value now as a dot, the value with its units at the right (tight before °/%, as the header). Sorted highest first (or lowest first, or as picked); a missing value's row says Unavailable, last. One of the four chart types the user picked from the 1.2.0 mock-ups ("which room is warmest?"). Not transparent: `homey-widget`. On the chart frame and mount helper (Charts' note); its height follows its rows (26 px each).
 - Names: the device's; one device's several values by their capability; a device name twice, both parts. Cut with … to about 36 % of the width.

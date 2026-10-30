@@ -1,5 +1,5 @@
 /*
- * Made-up readings for Chart · Daily Range's previews and renders: the showcase house's outdoor temperature (never a real
+ * Made-up readings for Chart · Min/Max's previews and renders: the showcase house's outdoor temperature (never a real
  * sensor's), cold mornings and mild afternoons, each day its own swing, as `/state` gives it (a point an hour, the value
  * now). Load after the kit (it uses `timeSpan()`).
  */
@@ -19,7 +19,7 @@
     return mean + swing * Math.sin((h - 9) / 24 * 2 * Math.PI);
   }
 
-  /** Chart · Daily Range's `[value]` over `span` at `now`. */
+  /** Chart · Min/Max's `[value]` over `span` at `now`. */
   function dailyRangeState(span = '4w', now = Date.now()) {
     const w = window.WidgetkeeperKit.timeSpan(span, now);
     // A point an hour (on the step's clock marks, and the value now the last point's, so the renders' ticking clock can't change them).

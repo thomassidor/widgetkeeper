@@ -1,5 +1,5 @@
 /*
- * Chart · Totals per Period: how much a value that counts up (a meter's kWh, a rain gauge's mm, hours of TV) went up
+ * Chart · Totals: how much a value that counts up (a meter's kWh, a rain gauge's mm, hours of TV) went up
  * per hour, day or month over a day, week, month or year, like the Homey app's Energy tab, and optionally the period
  * before beside it. Drawn by the shared chart module (../electricity/chart.js, `window.WidgetkeeperChart`, loaded
  * first). Plain browser JS (served as-is).

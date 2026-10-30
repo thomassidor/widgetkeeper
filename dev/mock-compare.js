@@ -1,5 +1,5 @@
 /*
- * Made-up readings for Chart · Compare's previews and renders: the showcase house's room temperatures today (never real
+ * Made-up readings for Chart · Ranking's previews and renders: the showcase house's room temperatures today (never real
  * ones), each swinging between its own low and high, as `/state` gives them (a point every 20 minutes, the value now).
  * Load after the kit (it uses `timeSpan()`).
  */
@@ -19,7 +19,7 @@
     return lo + (hi - lo) * (0.5 + 0.5 * Math.sin((h - 9) / 24 * 2 * Math.PI));
   }
 
-  /** Chart · Compare's states over `span` at `now`, one per room (the first `count`). */
+  /** Chart · Ranking's states over `span` at `now`, one per room (the first `count`). */
   function compareState(span = '1d!', now = Date.now(), count = ROOMS.length) {
     const w = window.WidgetkeeperKit.timeSpan(span, now);
     return ROOMS.slice(0, count).map(([id, name, lo, hi]) => {

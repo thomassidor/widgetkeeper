@@ -1,5 +1,5 @@
 /*
- * Chart · Daily Range: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`) in the widget's colour
+ * Chart · Min/Max: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`) in the widget's colour
  * (the kit's `data-wk-color` on the root: its bright set, as Charts' colours); each bar's average in the text colour.
  */
 .dr { --dr-color: var(--wk-c-bright, var(--ew-blue)); }

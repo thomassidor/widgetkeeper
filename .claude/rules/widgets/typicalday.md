@@ -5,7 +5,7 @@ paths:
   - "dev/typicalday-preview.html"
   - "dev/mock-typicalday.js"
 ---
-# Chart · Typical Day widget (`typicalday`)
+# Chart · Daily Profile widget (`typicalday`, called Typical Day while it was built; renamed 2026-10-30, as the other chart widgets, by what it offers)
 
 - A value's line today over its usual day: each local clock hour's average over the last 7 (or 3) days, today left out, dashed, with their lowest to highest as a band (`C.profile()`: `buckets()` by the hour, the last value carried over gaps, grouped by `getHours()`). One of the four chart types the user picked from the 1.2.0 mock-ups ("is today unusual?"). Not transparent: `homey-widget`. On the chart frame and mount helper (Charts' note); Charts' one-chart layout (122 px), today's window as the x axis (00–24, the chart kit's `timeLabels()`), each usual hour at its half past today.
 - Settings (9, from `scripts/chart-settings.json`): `slot` ("Value", Sparklines' `listSlots`), `usual` ("Usual day from": `7` default, `3` — the days Insights' hourly logs reach: `last7Days`, `last3Days`; a longer one would be 6-hourly), `band` ("Show the spread", on), `smooth` and `range` (Charts' templates on their own rows), `title`, `showHeader` (its own hint), `color` (blue), `colorStyle` (Vivid: the band at 32 % instead of 16 %).

@@ -129,7 +129,7 @@ describe('shared files', () => {
     for (const f of [...js, ...css]) expect(existsSync(`widgets/${f.replace('/', '/public/')}`)).toBe(true);
   });
 
-  it('the chart module is loaded by the Electricity Overview, Charts and Totals per Period, the presets module by both preset widgets', () => {
+  it('the chart module is loaded by the Electricity Overview, Charts and Chart · Totals, the presets module by both preset widgets', () => {
     expect(Object.keys(stackDeps).sort()).toEqual(['charts', 'compare', 'dailyrange', 'electricity', 'scatter', 'stacked', 'thermostat', 'timeline', 'totals', 'typicalday', 'varpresets']);
   });
 });

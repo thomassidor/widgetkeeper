@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-/* Chart · Daily Range (widgets/dailyrange): each day's lowest to highest as a floating bar, its average as a tick. */
+/* Chart · Min/Max (widgets/dailyrange): each day's lowest to highest as a floating bar, its average as a tick. */
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { loadMount, loadWidget } from './helpers/loadWidget.js';
 

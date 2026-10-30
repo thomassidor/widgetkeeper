@@ -1,18 +1,18 @@
 {
   "name": {
-    "en": "Chart · Daily Range",
-    "nl": "Grafiek · Dagbereik",
-    "de": "Diagramm · Tagesspanne",
-    "fr": "Graphique · Écart journalier",
-    "it": "Grafico · Escursione giornaliera",
-    "sv": "Diagram · Dagsspann",
-    "no": "Diagram · Dagsspenn",
-    "es": "Gráfico · Rango diario",
-    "da": "Graf · Dagsspænd",
-    "ru": "График · Дневной диапазон",
-    "pl": "Wykres · Zakres dzienny",
-    "ko": "차트 · 일일 범위",
-    "ar": "مخطط · المدى اليومي"
+    "en": "Chart · Min/Max",
+    "nl": "Grafiek · Min/max",
+    "de": "Diagramm · Min/Max",
+    "fr": "Graphique · Min/max",
+    "it": "Grafico · Min/max",
+    "sv": "Diagram · Min/max",
+    "no": "Diagram · Min/maks",
+    "es": "Gráfico · Mín/máx",
+    "da": "Graf · Min/maks",
+    "ru": "График · Мин/макс",
+    "pl": "Wykres · Min/maks",
+    "ko": "차트 · 최소/최대",
+    "ar": "مخطط · الأدنى/الأقصى"
   },
   "height": 290,
   "settings": [

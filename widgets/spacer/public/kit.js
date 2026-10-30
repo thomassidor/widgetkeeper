@@ -227,7 +227,7 @@
   }
 
   /**
-   * The time spans of the chart widgets (Chart · Over Time, Totals per Period …) and Sparklines: `<count><unit>`, the last
+   * The time spans of the chart widgets (Chart · History, Chart · Totals …) and Sparklines: `<count><unit>`, the last
    * `count` minutes (`m`), hours (`h`), days (`d`), weeks (`w`), months (`mo`) or years (`y`) up to now; with `!` whole
    * local periods instead (days from midnight, weeks from Monday, as Homey's, months from the 1st, years from 1 January),
    * the current one included, or with `!-` left out (`1d!-` is yesterday). The names spans had before 1.2.0 are whole
@@ -279,7 +279,7 @@
    * A span's window at `at`: the axis `[from, to]` and `end`, where its data stops. A rolling span ends at `at` (months
    * and years back on the calendar); whole periods (`unit`: `day`, `week`, `month`, `year`) cover theirs entirely,
    * with data up to `at` when the current one is in, else up to their end. A DST day is 23 or 25 h. An unknown span is
-   * 24 h. `back`: that many windows before (Totals per Period's period before).
+   * 24 h. `back`: that many windows before (Chart · Totals' period before).
    */
   function timeSpan(span, at, back = 0) {
     const p = parseSpan(span) || parseSpan('24h');

@@ -7,7 +7,7 @@
   <!--
     The web dashboards page (settings/dashboard.js) with the made-up home of showcase-data.js, in a drawn desktop
     browser window: the showcase dashboards as web dashboards, their widgets mounted in place of the iframes (the
-    `mountWidget` hook) with the real widget code. `?v=dashboard|front|editor|settings|preview|light|wide|popup` picks the view (settings: the editor with Flow Buttons' settings dialog open; preview: Energy's editor with a Chart · X against Y's settings and its live preview (1.2.0); light: the Kitchen, a light dashboard, in a light browser; wide: Energy's chart across two columns; popup: Security with a Flow's question over it), `&d=<id>` the
+    `mountWidget` hook) with the real widget code. `?v=dashboard|front|editor|settings|preview|light|wide|popup` picks the view (settings: the editor with Flow Buttons' settings dialog open; preview: Energy's editor with a Chart · Scatter (XY)'s settings and its live preview (1.2.0); light: the Kitchen, a light dashboard, in a light browser; wide: Energy's chart across two columns; popup: Security with a Flow's question over it), `&d=<id>` the
     dashboard (default home). Serve the repo root (the page and mock-web-api.js fetch /app.json and /locales/en.json)
     and open /dev/web-showcase.html; scripts/render-web-showcase.mjs (`npm run web-showcase [-- <view>…]`) renders
     them to docs/web/<view>.png on a transparent background. The clock is fixed (fixed-clock.js), so every render is
@@ -132,7 +132,7 @@
     // The popup view: Security with a Flow's question over it, the hallway camera's made-up picture (cameras/door.webp)
     // as its picture.
     const POPUP_BOARD = 'security';
-    // The preview view (1.2.0's live preview): Energy in the editor with a Chart · X against Y on top of its last column,
+    // The preview view (1.2.0's live preview): Energy in the editor with a Chart · Scatter (XY) on top of its last column,
     // the heat pump's power against the outdoor temperature over 7 days (mock-scatter.js, as in the README screenshot),
     // its settings open beside its preview.
     const PREVIEW_BOARD = 'energy';
@@ -302,7 +302,7 @@
     // The settings and preview views: once the editor is there, open the widget's settings (and Flow Buttons' first button).
     if (VIEW === 'settings' || VIEW === 'preview') {
       document.querySelector('.viewport').classList.add('settings');
-      const name = VIEW === 'settings' ? 'Flow Buttons' : 'Chart · X against Y';
+      const name = VIEW === 'settings' ? 'Flow Buttons' : 'Chart · Scatter (XY)';
       const open = () => {
         const tools = [...document.querySelectorAll('.wd-tools')].find(x => x.querySelector('.wd-tools-name')?.textContent === name);
         if (!tools) { setTimeout(open, 50); return; }

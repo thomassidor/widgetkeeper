@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-/* The chart module shared by the Electricity Overview, Charts and Totals per Period (widgets/electricity/public/chart.js). */
+/* The chart module shared by the Electricity Overview, Charts and Chart · Totals (widgets/electricity/public/chart.js). */
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { loadWidget } from './helpers/loadWidget.js';
 

@@ -33,14 +33,14 @@ const MOUNT = {
   locks: (el, w) => createLocksWidget(el, w.opts || {}).setState({ devices: w.devices, language: 'en' }),
   sparklines: (el, w) => createSparklinesWidget(el, w.opts || {}).setState(w.slots),
   charts: (el, w) => createChartsWidget(el, { locale: LOCALE, language: 'en', ...w.opts }).setState(w.charts),
-  // Totals per Period: `w.state` its `/state` (`[current, previous]`, mock-totals.js's `totalsState()`).
+  // Chart · Totals: `w.state` its `/state` (`[current, previous]`, mock-totals.js's `totalsState()`).
   totals: (el, w) => createTotalsWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
-  // Chart · X against Y: `w.state` its `/state` (`[x, y]`, mock-scatter.js's `scatterState()`).
+  // Chart · Scatter (XY): `w.state` its `/state` (`[x, y]`, mock-scatter.js's `scatterState()`).
   // Chart · TypicalDay: `w.state` its `/state` (mock-typicalday.js).
   typicalday: (el, w) => createTypicalDayWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
   // Chart · DailyRange: `w.state` its `/state` (mock-dailyrange.js).
   dailyrange: (el, w) => createDailyRangeWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
-  // Chart · Compare: `w.state` its `/state` (mock-compare.js).
+  // Chart · Ranking: `w.state` its `/state` (mock-compare.js).
   compare: (el, w) => createCompareWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),
   // Chart · Timeline and Chart · Stacked: `w.state` their `/state` (mock-timeline.js, mock-stacked.js).
   timeline: (el, w) => createTimelineWidget(el, { locale: LOCALE, language: 'en', now: () => SHOWCASE_NOW, ...w.opts }).setState(w.state),

@@ -53,7 +53,7 @@ export const SPANS = {
 export type SpanId = keyof typeof SPANS;
 
 /**
- * Each calendar span's period before (Totals per Period's `compare`), as the log that holds it: Insights has no
+ * Each calendar span's period before (Chart · Totals' `compare`), as the log that holds it: Insights has no
  * resolution for the week, month or year before last, so `last31Days`, `last3Months` (ending at this month's start)
  * and `last2Years` (weekly, ending at this year's start) reach past it, and `last3Days` past the day before yesterday;
  * the widget cuts each to its own window. Verified on the Homey, 2026-10-27; `last14Days` doesn't reach the week
@@ -177,9 +177,9 @@ function logStep(res: any): number | null {
 }
 
 /**
- * A chart's request (Charts, Totals per Period and the other `Chart · …` widgets): the slot's history over `[from, end]`,
+ * A chart's request (Charts, Chart · Totals and the other `Chart · …` widgets): the slot's history over `[from, end]`,
  * which the widget works out on the phone's clock, with its span's calendar unit for a calendar one (`planLogs()`),
- * and with `use` the running total; `fine` keeps up to `MAX_METER_POINTS` of it (Chart · Daily Range's lows and highs). `span`
+ * and with `use` the running total; `fine` keeps up to `MAX_METER_POINTS` of it (Chart · Min/Max's lows and highs). `span`
  * is the setting, for the log line.
  */
 export type WindowRequest = { slot: string, from: number, end: number, unit?: CalendarUnit | null, use?: boolean, fine?: boolean, span?: string };
@@ -219,7 +219,7 @@ export default class SparklineService {
   // ---------------------------------------------------------------- settings autocomplete
 
   /**
-   * Every logged number of every device, as `Device · Capability`, with `None` first; `counter` (Totals per Period's
+   * Every logged number of every device, as `Device · Capability`, with `None` first; `counter` (Chart · Totals'
    * value that counts up) lists the meters (`meter_*`: kWh, m³, …) before the rest, `power` (Chart · Stacked's layers)
    * the power values (`measure_power`) first, and `boolean` (Chart · Timeline's) the logged booleans instead.
    */
