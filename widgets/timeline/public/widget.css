@@ -2,18 +2,14 @@
  * Chart · Timeline: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`), each row in its own
  * colour (the kit's `data-wk-color` on the row: its bright set): a thin track with bands where the value was true.
  */
-.tl { --tl-color: var(--ew-blue); }
+.tl { --ew-c: var(--ew-blue); }
 /* On each row and header column: its colour (a custom property resolves where it's set, so not on `.tl`). */
-.tl [data-wk-color] { --tl-color: var(--wk-c-bright, var(--ew-blue)); }
+.tl [data-wk-color] { --ew-c: var(--wk-c-bright, var(--ew-blue)); }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
 html, body { margin: 0; }
 
-.tl .tl-value { color: var(--tl-color); gap: 3px; }
-.tl .tl-value.tight { gap: 0; }
-/* Yellow text is mixed with the text colour, as Charts' yellow, so it reads on a light card. */
-.tl [data-wk-color="yellow"] .tl-value { color: color-mix(in srgb, var(--tl-color) 75%, var(--ew-text)); }
 .tl .ew-hcol.low .tl-value { color: var(--ew-text); }
 
 .tl .ew-chip.series i { background: var(--ew-muted); }
@@ -23,10 +19,8 @@ html, body { margin: 0; }
 .tl .tl-track { fill: color-mix(in srgb, var(--ew-text) 7%, transparent); }
 /* Before the first change known, the state isn't: a dashed line, not a guess. */
 .tl .tl-unknown { stroke: color-mix(in srgb, var(--ew-text) 18%, transparent); stroke-width: 1; stroke-dasharray: 2 3; fill: none; }
-.tl .tl-band { fill: color-mix(in srgb, var(--tl-color) 70%, var(--ew-card)); }
-.tl .tl-band.selected { fill: var(--tl-color); }
+.tl .tl-band { fill: color-mix(in srgb, var(--ew-c) 70%, var(--ew-card)); }
+.tl .tl-band.selected { fill: var(--ew-c); }
 /* Vivid (kit.css, on the widget's root): the bands in their full colour. */
-.wk-deep .tl .tl-band { fill: var(--tl-color); }
-.wk-deep .tl .tl-band.selected { fill: color-mix(in srgb, var(--tl-color) 75%, var(--ew-text)); }
-
-.tl .tl-note { padding-bottom: 0; }
+.wk-deep .tl .tl-band { fill: var(--ew-c); }
+.wk-deep .tl .tl-band.selected { fill: color-mix(in srgb, var(--ew-c) 75%, var(--ew-text)); }

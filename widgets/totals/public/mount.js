@@ -4,11 +4,10 @@
  * page and a Homey of its own. `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountTotalsWidget = function (Homey, { root, frame }) {
-  const { spanSetting } = window.WidgetkeeperKit;
+  const { spanSetting, slotId } = window.WidgetkeeperKit;
   const settings = Homey.getSettings() || {};
   // The value is an autocomplete item whose id is `<deviceId>:<capabilityId>`.
-  const slot = settings.slot && settings.slot.id;
-  const picked = typeof slot === 'string' && slot.indexOf(':') > 0 && !slot.endsWith(':'); // as parseSlot()
+  const slot = slotId(settings.slot);
   const period = spanSetting(settings, '', { count: 1, unit: 'calWeeks' }); // a number of a unit; missing: this week
   const compare = settings.compare === true;
 
@@ -26,7 +25,7 @@ window.mountTotalsWidget = function (Homey, { root, frame }) {
     })),
     need: 'selectValue',
     // The period's running total, and with compare the period before's.
-    query: () => (picked ? `charts=${widget.windows().map(w => `${encodeURIComponent(slot)}~${encodeURIComponent(w)}`).join(',')}` : null),
+    query: () => (slot ? `charts=${widget.windows().map(w => `${encodeURIComponent(slot)}~${encodeURIComponent(w)}`).join(',')}` : null),
     state: res => [res && res.charts, res && res.language],
   });
 };

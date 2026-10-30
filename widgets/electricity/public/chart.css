@@ -71,3 +71,22 @@
 .ew .midnight { stroke: var(--ew-axis); stroke-width: 1; stroke-dasharray: 2 3; fill: none; shape-rendering: crispEdges; }
 
 .ew-message { font-size: var(--ew-fs-small); line-height: var(--ew-lh-small); color: var(--ew-muted); padding: var(--homey-su-2, 8px) 0; }
+
+/*
+ * The chart widgets on the frame (`createFrame()` in chart.js: `ew-frame` on the box, `ew-fval` on each header value,
+ * `ew-fnote` on a chart's note), what they all had in their own widget.css. Each sets its colour as `--ew-c`, on its
+ * root or on each coloured part, and its own CSS (loaded after this) adds or overrides.
+ */
+.ew-frame .ew-fval { color: var(--ew-c, var(--ew-text)); gap: 3px; }
+.ew-frame .ew-fval.tight { gap: 0; }
+/* Yellow text is mixed with the text colour, so it reads on a light card. */
+.wk[data-wk-color="yellow"] .ew-frame .ew-fval, .ew-frame [data-wk-color="yellow"] .ew-fval { color: color-mix(in srgb, var(--ew-c) 75%, var(--ew-text)); }
+/* Two or more chips share the row and shorten to fit. */
+.ew-frame .ew-chips { gap: 6px; }
+.ew-frame .ew-chip.series { max-width: 100%; min-width: 0; }
+.ew-frame .ew-chip.series > span { overflow: hidden; text-overflow: ellipsis; }
+.ew-frame .ew-chip.series i { background: var(--ew-c); flex-shrink: 0; }
+/* A chart without anything to draw keeps its chips, with the reason under them. */
+.ew-frame .ew-chart.empty { min-height: 0; }
+.ew-frame .ew-chart.empty .ew-chips { position: static; }
+.ew-frame .ew-fnote { padding-bottom: 0; }

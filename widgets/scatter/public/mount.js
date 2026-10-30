@@ -4,11 +4,10 @@
  * page and a Homey of its own. `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountScatterWidget = function (Homey, { root, frame }) {
-  const { spanSetting } = window.WidgetkeeperKit;
+  const { spanSetting, slotId } = window.WidgetkeeperKit;
   const settings = Homey.getSettings() || {};
   // Each value is an autocomplete item whose id is `<deviceId>:<capabilityId>`.
-  const slot = item => (item && typeof item.id === 'string' && item.id.indexOf(':') > 0 && !item.id.endsWith(':') ? item.id : null); // as parseSlot()
-  const x = slot(settings.xValue), y = slot(settings.yValue);
+  const x = slotId(settings.xValue), y = slotId(settings.yValue);
 
   let widget;
   return window.WidgetkeeperChart.wireChart(Homey, { frame }, {

@@ -6,21 +6,20 @@
 window.mountValuesWidget = function (Homey, { root, frame }) {
   const REFRESH_MS = 5 * 60e3; // keeps the app's device subscriptions alive and resyncs state
 
-  const { wireFrame, wireTileNames, onDeviceNames } = window.WidgetkeeperKit;
+  const { wireFrame, wireTileNames, onDeviceNames, slotId } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
   const settings = Homey.getSettings() || {};
   // Each slot setting is an autocomplete item whose id is `<deviceId>:<capabilityId>`, and so is its second value (`secondN`),
   // which counts only while it's another value of the same device: Tile N may have been changed since.
-  const valid = id => typeof id === 'string' && id.indexOf(':') > 0 && !id.endsWith(':'); // as parseSlot()
   const pairs = [1, 2, 3, 4, 5, 6]
-    .map(n => ({ slot: settings[`slot${n}`] && settings[`slot${n}`].id, second: settings[`second${n}`] && settings[`second${n}`].id }))
-    .filter(p => valid(p.slot));
+    .map(n => ({ slot: slotId(settings[`slot${n}`]), second: slotId(settings[`second${n}`]) }))
+    .filter(p => p.slot);
   const slots = pairs.map(p => p.slot);
   const seconds = pairs.map(({ slot, second }) => {
     const device = slot.slice(0, slot.indexOf(':'));
-    return valid(second) && second !== slot && second.startsWith(`${device}:`) ? second.slice(device.length + 1) : '';
+    return second && second !== slot && second.startsWith(`${device}:`) ? second.slice(device.length + 1) : '';
   });
   let loaded = false;
 

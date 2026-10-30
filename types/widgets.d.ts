@@ -99,6 +99,7 @@ interface Window {
       perfParam: (sep?: string) => string,
     },
     getDeviceIds: (Homey: any) => Promise<string[]>,
+    slotId: (item: unknown) => string | null,
     wireTileNames: (Homey: any, setNames: (names: any) => void) => { state: (path: string) => Promise<any>, rename: (key: string, name: string) => Promise<any> },
     touchGuard: () => TouchGuard,
     onTap: (node: Element, fn: (e: Event) => void, opts?: {

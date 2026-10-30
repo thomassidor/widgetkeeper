@@ -432,6 +432,17 @@
     };
   }
 
+  /**
+   * A device value setting's pick (an autocomplete item whose id is `<deviceId>:<capabilityId>`): the id, or null for none
+   * or one that isn't a value (as lib/ValueService.ts' `parseSlot()`).
+   * @param {unknown} item
+   * @returns {string | null}
+   */
+  function slotId(item) {
+    const id = item && typeof item === 'object' ? /** @type {{ id?: unknown }} */ (item).id : null;
+    return typeof id === 'string' && id.indexOf(':') > 0 && !id.endsWith(':') ? id : null;
+  }
+
   /** The widget's `devices` setting (`Homey.getDeviceIds()`), always a list: empty without one or on a failure. */
   function getDeviceIds(Homey) {
     return Promise.resolve(typeof Homey.getDeviceIds === 'function' ? Homey.getDeviceIds() : [])
@@ -858,7 +869,7 @@
 
   window.WidgetkeeperKit = {
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, undoTextZoom, el, setMask, tileNames, timeFormatter,
-    formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, spanFields, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
+    formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, spanFields, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     onDeviceNames, colorStyle, applyColors, sound,
   };
 })();

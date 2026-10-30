@@ -6,15 +6,13 @@
 window.mountSparklinesWidget = function (Homey, { root, frame }) {
   const REFRESH_MS = 5 * 60e3; // keeps the app's device subscriptions alive and resyncs state
 
-  const { wireFrame, wireTileNames, onDeviceNames } = window.WidgetkeeperKit;
+  const { wireFrame, wireTileNames, onDeviceNames, slotId } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
   const settings = Homey.getSettings() || {};
   // Each slot setting is an autocomplete item whose id is `<deviceId>:<capabilityId>`.
-  const slots = [1, 2, 3, 4, 5, 6]
-    .map(n => settings[`slot${n}`] && settings[`slot${n}`].id)
-    .filter(id => typeof id === 'string' && id.indexOf(':') > 0 && !id.endsWith(':')); // as parseSlot()
+  const slots = [1, 2, 3, 4, 5, 6].map(n => slotId(settings[`slot${n}`])).filter(Boolean);
   let loaded = false;
 
   const tileNames = wireTileNames(Homey, names => widget.setNames(names));

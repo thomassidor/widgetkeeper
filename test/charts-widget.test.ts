@@ -577,7 +577,7 @@ describe('legend', () => {
     const r = widget([{}, { color: 'green' }], [entry(series(24 * HOUR, x => 20 + x)), entry(series(24 * HOUR, x => 30 + x), { deviceId: 'd2' })], { legend: 'below' });
     expect(r.q('.ch')!.classList.contains('legend-below')).toBe(true);
     for (const box of r.all('.ch-chart')) {
-      expect([...box.children].map(c => c.tagName.toLowerCase() === 'svg' ? 'svg' : c.className)).toEqual(['svg', 'ew-chips', 'ew-message ch-note']);
+      expect([...box.children].map(c => c.tagName.toLowerCase() === 'svg' ? 'svg' : c.className)).toEqual(['svg', 'ew-chips', 'ew-message ew-fnote ch-note']);
     }
     expect(topLabel(r)).toBeLessThan(15);
   });

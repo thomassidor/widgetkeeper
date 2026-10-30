@@ -2,34 +2,21 @@
  * Chart · Daily Profile: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`) in the widget's colour
  * (the kit's `data-wk-color` on the root: its bright set, as Charts' colours); the usual day in the text colour.
  */
-.td { --td-color: var(--wk-c-bright, var(--ew-blue)); }
+.td { --ew-c: var(--wk-c-bright, var(--ew-blue)); }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
 html, body { margin: 0; }
 
-.td .td-value { color: var(--td-color); gap: 3px; }
-.td .td-value.tight { gap: 0; }
-/* Yellow text is mixed with the text colour, as Charts' yellow, so it reads on a light card. */
-.wk[data-wk-color="yellow"] .td .td-value { color: color-mix(in srgb, var(--td-color) 75%, var(--ew-text)); }
 .td .ew-hcol.usual .td-value { color: var(--ew-muted); }
 
-.td .ew-chips { gap: 6px; }
-.td .ew-chip.series { max-width: 100%; min-width: 0; }
-.td .ew-chip.series > span { overflow: hidden; text-overflow: ellipsis; }
-.td .ew-chip.series i { background: var(--td-color); flex-shrink: 0; }
 .td .ew-chip.series.usual { flex-shrink: 0; }
-.td .ew-chip.series.usual i { background: color-mix(in srgb, var(--td-color) 25%, transparent); box-shadow: inset 0 0 0 1px var(--ew-muted); }
+.td .ew-chip.series.usual i { background: color-mix(in srgb, var(--ew-c) 25%, transparent); box-shadow: inset 0 0 0 1px var(--ew-muted); }
 
-.td .td-band { fill: color-mix(in srgb, var(--td-color) 16%, transparent); }
+.td .td-band { fill: color-mix(in srgb, var(--ew-c) 16%, transparent); }
 .td .td-usual { stroke: var(--ew-muted); stroke-width: 1.5; stroke-dasharray: 4 4; fill: none; }
-.td .series-line { stroke: var(--td-color); stroke-width: 2; fill: none; stroke-linejoin: round; stroke-linecap: round; }
-.td .dot-ring.series { stroke: var(--td-color); }
-.td .dot-core.series { fill: var(--td-color); }
+.td .series-line { stroke: var(--ew-c); stroke-width: 2; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+.td .dot-ring.series { stroke: var(--ew-c); }
+.td .dot-core.series { fill: var(--ew-c); }
 /* Vivid (kit.css, on the widget's root): a stronger band. */
-.wk-deep .td .td-band { fill: color-mix(in srgb, var(--td-color) 32%, transparent); }
-
-/* A chart without anything to draw keeps its chips, with the reason under them. */
-.td .td-chart.empty { min-height: 0; }
-.td .td-chart.empty .ew-chips { position: static; }
-.td .td-note { padding-bottom: 0; }
+.wk-deep .td .td-band { fill: color-mix(in srgb, var(--ew-c) 32%, transparent); }

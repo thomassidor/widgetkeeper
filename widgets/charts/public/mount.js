@@ -4,14 +4,14 @@
  * page and a Homey of its own. `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountChartsWidget = function (Homey, { root, frame }) {
-  const { spanSetting } = window.WidgetkeeperKit;
+  const { spanSetting, slotId } = window.WidgetkeeperKit;
   const settings = Homey.getSettings() || {};
   // '2': stacked; 'overlay': both on one chart, over chart 1's time span (or two periods of a kind: today with yesterday …).
   const overlay = settings.charts === 'overlay';
   const count = settings.charts === '2' || overlay ? 2 : 1;
   // Each chart setting is an autocomplete item whose id is `<deviceId>:<capabilityId>`; empty ones are left out.
   const charts = [1, 2].slice(0, count).map(n => ({
-    slot: settings[`chart${n}`] && settings[`chart${n}`].id,
+    slot: slotId(settings[`chart${n}`]),
     span: spanSetting(settings, n), // a number of a unit, or the span set before 1.2.0
     style: settings[`style${n}`],
     color: settings[`color${n}`] || (n === 2 ? 'green' : 'blue'),
@@ -19,7 +19,7 @@ window.mountChartsWidget = function (Homey, { root, frame }) {
     negative: settings[`negative${n}`] === true,
     smooth: settings[`smooth${n}`] === true,
     title: settings[`title${n}`],
-  })).filter(c => typeof c.slot === 'string' && c.slot.indexOf(':') > 0 && !c.slot.endsWith(':')); // as parseSlot()
+  })).filter(c => c.slot);
 
   let widget;
   return window.WidgetkeeperChart.wireChart(Homey, { frame }, {

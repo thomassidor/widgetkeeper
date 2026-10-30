@@ -739,7 +739,7 @@
     const pad2 = n => String(n).padStart(2, '0');
 
     applyColors(root, spec.colors || { style: opts.colorStyle }); // on the root, so the chart markup stays as it was
-    const wrap = el('div', { class: `ew ${cls}${legendBelow ? ' legend-below' : ''}` }, root);
+    const wrap = el('div', { class: `ew ew-frame ${cls}${legendBelow ? ' legend-below' : ''}` }, root);
     const message = el('div', { class: 'ew-message', dir: 'auto' }, wrap);
     const header = el('div', { class: 'ew-header' }, wrap);
     const boxes = (spec.boxes || [{}]).map((attrs) => {
@@ -747,7 +747,7 @@
       const chips = el('div', { class: 'ew-chips' }, box);
       const svg = el('svg:svg', null, box);
       if (legendBelow) box.appendChild(chips);
-      const note = el('div', { class: `ew-message ${cls}-note`, dir: 'auto' }, box);
+      const note = el('div', { class: `ew-message ew-fnote ${cls}-note`, dir: 'auto' }, box);
       return { box, chips, svg, note };
     });
     const transient = el('div', { class: `ew-message ${cls}-transient`, dir: 'auto' }, wrap);
@@ -758,7 +758,7 @@
     /** A header column: the value (`–` without one), its units (`units`; `tightUnits` decides the spacing) and the sub line. */
     function column({ value, units = '', tightUnits = units, sub, colCls = '', valueCls = '', attrs = {} }) {
       const col = el('div', { class: `ew-hcol${colCls}`, ...attrs }, header);
-      const hv = el('div', { class: `ew-hval ${cls}-value${valueCls}${TIGHT_UNITS.test(tightUnits || '') ? ' tight' : ''}` }, col);
+      const hv = el('div', { class: `ew-hval ew-fval ${cls}-value${valueCls}${TIGHT_UNITS.test(tightUnits || '') ? ' tight' : ''}` }, col);
       el('span', { class: 'v ew-num', text: value == null ? '–' : value }, hv);
       if (units) el('span', { class: 'u', text: units }, hv);
       el('div', { class: 'ew-hsub', dir: 'auto', text: sub }, col);

@@ -2,32 +2,19 @@
  * Chart · Totals: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`) in the widget's colour
  * (the kit's `data-wk-color` on the root: its bright set, as Charts' colours), the period before in a lighter one.
  */
-.tt { --tt-color: var(--wk-c-bright, var(--ew-blue)); }
+.tt { --ew-c: var(--wk-c-bright, var(--ew-blue)); }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
 html, body { margin: 0; }
 
-.tt .tt-value { color: var(--tt-color); gap: 3px; }
-.tt .tt-value.tight { gap: 0; }
-/* Yellow text is mixed with the text colour, as Charts' yellow, so it reads on a light card. */
-.wk[data-wk-color="yellow"] .tt .tt-value { color: color-mix(in srgb, var(--tt-color) 75%, var(--ew-text)); }
 .tt .ew-hcol.prev .tt-value { color: var(--ew-muted); }
 
-.tt .ew-chips { gap: 6px; }
-.tt .ew-chip.series { max-width: 100%; min-width: 0; }
-.tt .ew-chip.series > span { overflow: hidden; text-overflow: ellipsis; }
-.tt .ew-chip.series i { background: var(--tt-color); flex-shrink: 0; }
-.tt .ew-chip.series.prev i { background: color-mix(in srgb, var(--tt-color) 35%, transparent); }
-.tt .series-bars { fill: color-mix(in srgb, var(--tt-color) 70%, transparent); }
-.tt .series-bars .bar.selected { fill: var(--tt-color); }
-.tt .series-bars.prev { fill: color-mix(in srgb, var(--tt-color) 30%, transparent); }
-.tt .series-bars.prev .bar.selected { fill: color-mix(in srgb, var(--tt-color) 55%, transparent); }
+.tt .ew-chip.series.prev i { background: color-mix(in srgb, var(--ew-c) 35%, transparent); }
+.tt .series-bars { fill: color-mix(in srgb, var(--ew-c) 70%, transparent); }
+.tt .series-bars .bar.selected { fill: var(--ew-c); }
+.tt .series-bars.prev { fill: color-mix(in srgb, var(--ew-c) 30%, transparent); }
+.tt .series-bars.prev .bar.selected { fill: color-mix(in srgb, var(--ew-c) 55%, transparent); }
 /* Vivid (kit.css, on the widget's root): stronger bars, the period before too. */
-.wk-deep .tt .series-bars { fill: color-mix(in srgb, var(--tt-color) 90%, transparent); }
-.wk-deep .tt .series-bars.prev { fill: color-mix(in srgb, var(--tt-color) 45%, transparent); }
-
-/* A chart without anything to draw keeps its chip, with the reason under it. */
-.tt .tt-chart.empty { min-height: 0; }
-.tt .tt-chart.empty .ew-chips { position: static; }
-.tt .tt-note { padding-bottom: 0; }
+.wk-deep .tt .series-bars { fill: color-mix(in srgb, var(--ew-c) 90%, transparent); }
+.wk-deep .tt .series-bars.prev { fill: color-mix(in srgb, var(--ew-c) 45%, transparent); }

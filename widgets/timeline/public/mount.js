@@ -4,16 +4,16 @@
  * page and a Homey of its own. `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountTimelineWidget = function (Homey, { root, frame }) {
-  const { spanSetting } = window.WidgetkeeperKit;
+  const { spanSetting, slotId } = window.WidgetkeeperKit;
   const settings = Homey.getSettings() || {};
   // Each value is an autocomplete item whose id is `<deviceId>:<capabilityId>`; empty ones are left out, with their colours.
   // A number's threshold and side come with it (`thresholdN`, `whenN`); a boolean's are ignored.
   const rows = [1, 2, 3, 4, 5, 6, 7, 8].map(n => ({
-    id: settings[`slot${n}`] && settings[`slot${n}`].id,
+    id: slotId(settings[`slot${n}`]),
     color: settings[`color${n}`],
     threshold: { at: Number(settings[`threshold${n}`]), below: settings[`when${n}`] === 'below' }, // missing: above 0
   }))
-    .filter(r => typeof r.id === 'string' && r.id.indexOf(':') > 0 && !r.id.endsWith(':')); // as parseSlot()
+    .filter(r => r.id);
 
   let widget;
   return window.WidgetkeeperChart.wireChart(Homey, { frame }, {

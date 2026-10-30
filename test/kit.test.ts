@@ -474,3 +474,11 @@ describe('formatSince()', () => {
     expect(() => kit.formatSince(at(17, 23), now, 'not a tag!', 'en-GB', '24')).not.toThrow();
   });
 });
+
+describe('slotId()', () => {
+  it("is a device value setting's id, as the app's parseSlot() reads it, or null", () => {
+    expect(kit.slotId({ id: 'dev:measure_power', name: 'Meter · Power' })).toBe('dev:measure_power');
+    expect([undefined, null, '', 'dev:x', {}, { id: '' }, { id: 'dev' }, { id: 'dev:' }, { id: ':cap' }, { id: 7 }].map(kit.slotId))
+      .toEqual([null, null, null, null, null, null, null, null, null, null]);
+  });
+});

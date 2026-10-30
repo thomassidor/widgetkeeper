@@ -6,8 +6,7 @@
 window.mountTypicalDayWidget = function (Homey, { root, frame }) {
   const settings = Homey.getSettings() || {};
   // The value is an autocomplete item whose id is `<deviceId>:<capabilityId>`.
-  const slot = settings.slot && settings.slot.id;
-  const picked = typeof slot === 'string' && slot.indexOf(':') > 0 && !slot.endsWith(':'); // as parseSlot()
+  const slot = window.WidgetkeeperKit.slotId(settings.slot);
 
   let widget;
   return window.WidgetkeeperChart.wireChart(Homey, { frame }, {
@@ -25,7 +24,7 @@ window.mountTypicalDayWidget = function (Homey, { root, frame }) {
     })),
     need: 'selectValue',
     // Today, and the days before it.
-    query: () => (picked ? `charts=${widget.windows().map(w => `${encodeURIComponent(slot)}~${encodeURIComponent(w)}`).join(',')}` : null),
+    query: () => (slot ? `charts=${widget.windows().map(w => `${encodeURIComponent(slot)}~${encodeURIComponent(w)}`).join(',')}` : null),
     state: res => [res && res.charts, res && res.language],
   });
 };

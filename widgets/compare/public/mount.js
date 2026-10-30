@@ -4,11 +4,10 @@
  * page and a Homey of its own. `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountCompareWidget = function (Homey, { root, frame }) {
-  const { spanSetting } = window.WidgetkeeperKit;
+  const { spanSetting, slotId } = window.WidgetkeeperKit;
   const settings = Homey.getSettings() || {};
   // Each value is an autocomplete item whose id is `<deviceId>:<capabilityId>`; empty ones are left out.
-  const slots = [1, 2, 3, 4, 5, 6, 7, 8].map(n => settings[`slot${n}`] && settings[`slot${n}`].id)
-    .filter(id => typeof id === 'string' && id.indexOf(':') > 0 && !id.endsWith(':')); // as parseSlot()
+  const slots = [1, 2, 3, 4, 5, 6, 7, 8].map(n => slotId(settings[`slot${n}`])).filter(Boolean);
 
   let widget;
   return window.WidgetkeeperChart.wireChart(Homey, { frame }, {

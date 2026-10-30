@@ -4,11 +4,10 @@
  * page and a Homey of its own. `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountLinesWidget = function (Homey, { root, frame }) {
-  const { spanSetting } = window.WidgetkeeperKit;
+  const { spanSetting, slotId } = window.WidgetkeeperKit;
   const settings = Homey.getSettings() || {};
   // Each value is an autocomplete item whose id is `<deviceId>:<capabilityId>`; empty ones are left out, with their colours.
-  const slotOf = s => (s && typeof s.id === 'string' && s.id.indexOf(':') > 0 && !s.id.endsWith(':') ? s.id : null); // as parseSlot()
-  const lines = [1, 2, 3, 4, 5, 6].map(n => ({ id: slotOf(settings[`slot${n}`]), color: settings[`color${n}`] })).filter(l => l.id);
+  const lines = [1, 2, 3, 4, 5, 6].map(n => ({ id: slotId(settings[`slot${n}`]), color: settings[`color${n}`] })).filter(l => l.id);
 
   let widget;
   return window.WidgetkeeperChart.wireChart(Homey, { frame }, {
