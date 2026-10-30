@@ -120,6 +120,7 @@ export default class CameraService {
         const last = this.last.get(id);
         if (last && isTransientError(err)) return last;
         this.last.delete(id);
+        this.imageUrls.delete(id);
         return { id, missing: true };
       }
     }));

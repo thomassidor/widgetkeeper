@@ -303,11 +303,11 @@ export default class MediaService {
    * volume, so a widget's limit holds however the value was sent.
    */
   async set(deviceId: string, capabilityId: string, value: unknown, maxVolume?: unknown) {
-    const kind = SETTABLE[capabilityId];
+    const kind = Object.prototype.hasOwnProperty.call(SETTABLE, capabilityId) ? SETTABLE[capabilityId] : undefined;
     if (!kind) throw new Error(`Not a media control: ${capabilityId}`);
     const api = await getAppApi(this.homey);
     const device = await api.devices.getDevice({ id: deviceId });
-    const cap = device.capabilitiesObj?.[capabilityId];
+    const cap = device.capabilitiesObj && Object.prototype.hasOwnProperty.call(device.capabilitiesObj, capabilityId) ? device.capabilitiesObj[capabilityId] : undefined;
     if (!cap || cap.setable === false) throw new Error(`${device.name} has no settable ${capabilityId}`);
     if (kind === 'boolean' && typeof value !== 'boolean') throw new Error(`Invalid ${capabilityId} ${JSON.stringify(value)}`);
     if (kind === 'true') value = true;

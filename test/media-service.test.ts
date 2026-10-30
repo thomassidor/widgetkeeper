@@ -177,6 +177,7 @@ describe('set', () => {
   it('refuses anything else', async () => {
     const { service } = setup();
     await expect(service.set('tv', 'sonos_group', 'x')).rejects.toThrow(/Not a media control/);
+    await expect(service.set('tv', 'constructor', 'x')).rejects.toThrow(/Not a media control/);
     await expect(service.set('tv', 'speaker_playing', 'yes')).rejects.toThrow(/Invalid/);
     await expect(service.set('tv', 'speaker_repeat', 'forever')).rejects.toThrow(/Invalid/);
     await expect(service.set('tv', 'speaker_shuffle', true)).rejects.toThrow(/no settable/);

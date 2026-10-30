@@ -2,7 +2,7 @@ import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
 import { listDevicesWhere, matches, type AutocompleteItem } from './autocomplete.js';
 import { capabilityValues, describeCapability } from './capabilities.js';
-import DeviceTracker, { type TrackedEntry } from './DeviceTracker.js';
+import DeviceTracker, { isTransientError, type TrackedEntry } from './DeviceTracker.js';
 import Timings from './Timings.js';
 
 const CONFIRM_TIMEOUT = 4000; // wait for a value to be reported before sending the next
@@ -123,15 +123,18 @@ export default class ThermostatService {
     if (!isThermostat(device)) throw new Error(`${device?.name ?? 'Device'} is not a thermostat`);
   }
 
-  /** The device's state, or `missing` when a tracked device can no longer be read (e.g. deleted). */
+  /**
+   * The device's state, or `missing` when it can't be read (e.g. deleted), whether it was tracked or not yet (after a
+   * restart or the idle drop). Homey busy or slow throws, so the widget keeps its buttons.
+   */
   async getState(deviceId: string): Promise<ThermostatState | { missing: true }> {
     const tm = new Timings();
     let t: Tracked;
     try {
       t = await this.tracker.current(deviceId, tm);
     } catch (err) {
-      if (!(err instanceof MissingError)) throw err;
-      this.log(`Thermostat ${deviceId} unavailable:`, err.reason);
+      if (!(err instanceof MissingError) && isTransientError(err)) throw err;
+      this.log(`Thermostat ${deviceId} unavailable:`, err instanceof MissingError ? err.reason : err);
       return { missing: true };
     }
     this.debug(`Thermostat state ${t.name}: ${tm.summary()}`);

@@ -536,6 +536,10 @@ export default class KeypadService {
    * with the dashboard's name.
    */
   unlock(codeId: unknown, code: unknown, where = ''): UnlockResult {
+    // While the secrets file can't be read every code reads as gone, which would let anyone on.
+    if (typeof codeId === 'string' && codeId && codeId !== 'none' && !this.secrets.readable) {
+      return { ok: false, reason: 'locked', retryAfter: 5 };
+    }
     const info = this.codeInfo(codeId);
     if (!info || 'missing' in info) return { ok: true };
     const wrong = this.wrongCodes;

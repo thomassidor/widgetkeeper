@@ -111,6 +111,16 @@ describe('secrets', () => {
     }
   });
 
+  it('keeps the secrets as the file has them when a write fails', () => {
+    const homey = fakeHomey(fakeApi({}));
+    const storage = memoryStorage(JSON.stringify({ [MOVED_MARK]: true, webPassword: 'old' }));
+    const secrets = new Secrets(homey, vi.fn(), storage);
+    storage.write = () => { throw Object.assign(new Error('ENOSPC'), { code: 'ENOSPC' }); };
+    expect(() => secrets.set('webPassword', 'new')).toThrow(/ENOSPC/);
+    expect(() => secrets.unset('webPassword')).toThrow(/ENOSPC/);
+    expect(secrets.get('webPassword')).toBe('old');
+  });
+
   it('puts a damaged file aside, and takes no setting for a secret after it', () => {
     const homey = fakeHomey(fakeApi({}));
     homey.settings.set('webPassword', { salt: 'aa', hash: 'bb' });

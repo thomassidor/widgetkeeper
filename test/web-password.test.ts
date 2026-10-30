@@ -86,6 +86,43 @@ describe('web dashboards password', () => {
     await expect(password.login('new password')).resolves.toMatchObject({ ok: true });
   });
 
+  it('lets no sign-in with the old password through while it changes', async () => {
+    const { password } = setup();
+    await password.setPassword('first password');
+    const change = password.setPassword('second password', 'first password');
+    const login = password.login('first password');
+    await expect(change).resolves.toEqual({ ok: true });
+    await expect(login).resolves.toEqual({ ok: false, reason: 'wrong' });
+  });
+
+  // Every secret reads as missing while the file can't be read, which turned the password off.
+  it("counts as set and lets nobody in while the secrets file can't be read, then finds its browsers again", async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    try {
+      const { homey, password } = setup();
+      await password.setPassword('correct horse');
+      const { token } = (await password.login('correct horse')) as any;
+      // The app starts again with the file unreadable.
+      const stored = JSON.stringify(Object.fromEntries(['settingsMoved', WEB_PASSWORD_SETTING, WEB_SESSIONS_SETTING]
+        .map(k => [k, Secrets.for(homey).get(k)])));
+      let failing = true;
+      const restarted = { ...homey };
+      Secrets.for(restarted, vi.fn(), {
+        read: () => { if (failing) throw Object.assign(new Error('EIO'), { code: 'EIO' }); return stored; },
+        write: () => {},
+      });
+      const after = new WebPassword(restarted, vi.fn());
+      expect(after.isSet).toBe(true);
+      expect(after.check(token)).toBe(false);
+      await expect(after.login('correct horse')).resolves.toEqual({ ok: false, reason: 'wrong' });
+      failing = false;
+      vi.setSystemTime(Date.now() + 5e3);
+      expect(after.check(token)).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('is removed by the Flow card without the current one, signing every browser out', async () => {
     const { password } = setup();
     await password.setPassword('correct horse');

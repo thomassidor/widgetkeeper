@@ -87,17 +87,29 @@ export default class Secrets {
     return Object.prototype.hasOwnProperty.call(this.values, key) ? this.values[key] : null;
   }
 
+  /** Whether the file has been read: false while it can't be, when every secret reads as missing. */
+  get readable(): boolean {
+    this.retry();
+    return this.unreadable === null;
+  }
+
   set(key: string, value: unknown) {
     this.writable();
-    this.values[key] = JSON.parse(JSON.stringify(value));
-    this.save();
+    this.commit({ ...this.values, [key]: JSON.parse(JSON.stringify(value)) });
   }
 
   unset(key: string) {
     this.writable();
     if (!Object.prototype.hasOwnProperty.call(this.values, key)) return;
-    delete this.values[key];
-    this.save();
+    const next = { ...this.values };
+    delete next[key];
+    this.commit(next);
+  }
+
+  /** Writes `next`, then keeps it: a failed write leaves the secrets in memory as the file still has them. */
+  private commit(next: Record<string, unknown>) {
+    this.storage.write(JSON.stringify(next));
+    this.values = next;
   }
 
   private save() {

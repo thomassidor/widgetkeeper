@@ -48,7 +48,7 @@ export default class WebPassword {
   private lockedUntil = 0;
   /** The password checks, one at a time (`queued()`). */
   private attempts: Promise<unknown> = Promise.resolve();
-  private sessions: Session[];
+  private loaded: Session[] | null = null;
   private secrets: Secrets;
 
   constructor(
@@ -57,11 +57,25 @@ export default class WebPassword {
     private now: () => number = Date.now,
   ) {
     this.secrets = Secrets.for(homey, log);
-    const saved = this.secrets.get(WEB_SESSIONS_SETTING);
-    this.sessions = Array.isArray(saved) ? saved.filter(s => s && typeof s.hash === 'string') : [];
   }
 
+  /** The signed-in browsers, read once the secrets file can be (read while it can't, there'd be none for good). */
+  private get sessions(): Session[] {
+    if (!this.loaded) {
+      if (!this.secrets.readable) return [];
+      const saved = this.secrets.get(WEB_SESSIONS_SETTING);
+      this.loaded = Array.isArray(saved) ? saved.filter(s => s && typeof s.hash === 'string') : [];
+    }
+    return this.loaded;
+  }
+
+  private set sessions(list: Session[]) {
+    this.loaded = list;
+  }
+
+  /** Whether a password is set; while the secrets file can't be read it may be, so it counts as set and none matches. */
   get isSet(): boolean {
+    if (!this.secrets.readable) return true;
     const stored = this.secrets.get(WEB_PASSWORD_SETTING) as Stored | null;
     return !!(stored && typeof stored.salt === 'string' && typeof stored.hash === 'string');
   }
@@ -75,17 +89,20 @@ export default class WebPassword {
   async setPassword(password: string, current?: unknown): Promise<SetResult> {
     if (password && password.length < MIN_PASSWORD) return { ok: false, reason: 'tooShort' };
     if (password.length > MAX_PASSWORD) return { ok: false, reason: 'tooLong' };
-    if (this.isSet) {
-      const checked = await this.queued(() => this.verify(current));
-      if (!checked.ok) return checked;
-    }
-    await this.store(password);
-    return { ok: true };
+    // The check and the change in one turn of the queue, so no sign-in with the old password lands after it.
+    return this.queued(async (): Promise<SetResult> => {
+      if (this.isSet) {
+        const checked = await this.verify(current);
+        if (!checked.ok) return checked;
+      }
+      await this.store(password);
+      return { ok: true };
+    });
   }
 
   /** The Flow card *Remove the web dashboards password*: the way back for a forgotten one. */
   async clear() {
-    await this.store('');
+    await this.queued(() => this.store(''));
   }
 
   /**
@@ -168,7 +185,7 @@ export default class WebPassword {
   }
 
   logout(token: unknown) {
-    if (typeof token !== 'string') return;
+    if (typeof token !== 'string' || !this.secrets.readable) return;
     const hash = sha256(token);
     const before = this.sessions.length;
     this.sessions = this.sessions.filter(s => s.hash !== hash);

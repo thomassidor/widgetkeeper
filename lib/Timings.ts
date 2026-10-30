@@ -29,7 +29,7 @@ export default class Timings {
  */
 export function describeWidgetPerf(perf: string | undefined): string | null {
   const [origin, html, sdk, request] = (perf || '').split(',').map(Number);
-  if (![origin, html, sdk, request].every(Number.isFinite)) return null;
+  if (![origin, html, sdk, request].every(Number.isFinite) || Number.isNaN(new Date(origin).getTime())) return null;
   return `frame started ${new Date(origin).toISOString().slice(11, 23)} (${((Date.now() - origin) / 1000).toFixed(1)} s ago), `
     + `html ${Math.round(html)} ms, SDK ready ${Math.round(sdk)} ms, request ${Math.round(request)} ms`;
 }

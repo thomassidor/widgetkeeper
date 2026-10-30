@@ -296,6 +296,13 @@ describe('state tracking', () => {
     expect(device.listenerCount('onoff')).toBe(0);
   });
 
+  it('reports a deleted device as missing on its first read too (after a restart or the idle drop)', async () => {
+    const devices = [aircon()];
+    const { service } = setup(devices);
+    devices.length = 0;
+    expect(await service.getState('dev1')).toEqual({ missing: true });
+  });
+
   it('tracks each device once, even with concurrent requests', async () => {
     const { service, device } = setup();
     await Promise.all([service.getState('dev1'), service.getState('dev1')]);

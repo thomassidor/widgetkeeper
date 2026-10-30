@@ -116,6 +116,19 @@ describe('DeviceTracker', () => {
     expect(debug).toHaveBeenCalledWith('Kept plug Plug after a failed re-read:', 'Too many requests.');
   });
 
+  it('gives a re-read that failed the entry another request tracked meanwhile', async () => {
+    const { api, tracker } = setup();
+    const first = await tracker.current('d1', new Timings());
+    let fail: ((err: unknown) => void) | undefined;
+    api.devices.getDevice.mockImplementationOnce(() => new Promise((_, reject) => { fail = reject; }));
+    const pending = tracker.current('d1', new Timings());
+    await vi.waitFor(() => expect(fail).toBeDefined());
+    tracker.dispose(first);
+    const second = await tracker.current('d1', new Timings());
+    fail!(Object.assign(new Error('Too many requests.'), { statusCode: 429 }));
+    expect(await pending).toBe(second);
+  });
+
   it('tells a passing failure from a device that is gone', () => {
     expect(isTransientError(Object.assign(new Error('Bad Gateway'), { statusCode: 502 }))).toBe(true);
     expect(isTransientError(Object.assign(new Error('socket hang up'), { code: 'ECONNRESET' }))).toBe(true);
@@ -461,7 +474,7 @@ describe('images', () => {
     const fetch = vi.fn(async (_url: string) => new Response(new Uint8Array([1, 2, 3]), { headers: { 'content-type': 'image/png' } }));
     vi.stubGlobal('fetch', fetch);
     expect(await fetchImageBase64(api, '/api/image/m', 'Art')).toEqual({ type: 'image/png', data: 'AQID' });
-    expect(fetch).toHaveBeenCalledWith('http://homey/api/image/m');
+    expect(fetch).toHaveBeenCalledWith('http://homey/api/image/m', { signal: expect.any(AbortSignal) });
     fetch.mockResolvedValueOnce(new Response('<html>', { headers: { 'content-type': 'text/html' } }));
     await expect(fetchImageBase64(api, '/api/image/m', 'Art')).rejects.toThrow('Art is text/html');
     fetch.mockResolvedValueOnce(new Response('', { status: 404 }));
@@ -479,6 +492,8 @@ describe('widget API helpers', () => {
     logPerf(a, 'Lights', { perf: `${Date.now()},140,1900,1950` });
     expect(a.debug).toHaveBeenCalledWith(expect.stringMatching(/^Lights widget: frame started .* request 1950 ms$/));
     logPerf(a, 'Lights', {});
+    // A start no Date can hold is left out, not thrown (it failed the widget's request).
+    logPerf(a, 'Lights', { perf: '1e20,1,1,1' });
     expect(a.debug).toHaveBeenCalledTimes(1);
   });
 

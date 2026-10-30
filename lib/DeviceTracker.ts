@@ -157,6 +157,8 @@ export default class DeviceTracker<T extends TrackedEntry> {
     try {
       device = await tm.time('getDevice', () => readFresh(api.devices, this.deviceId(key)));
     } catch (err) {
+      // Another request's re-read replaced it meanwhile: that one read the device, so use what it left.
+      if (!this.isCurrent(t) && (this.tracked.has(key) || this.trackPromises.has(key))) return this.ensureTracked(key, tm);
       if (isTransientError(err) && this.isCurrent(t)) {
         this.opts.debug(`Kept ${this.opts.label(t)} after a failed re-read:`, (err as Error)?.message ?? err);
         return t;
