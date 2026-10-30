@@ -227,7 +227,7 @@
   }
 
   /**
-   * The time spans of the chart widgets (Chart · History, Chart · Totals …) and Sparklines: `<count><unit>`, the last
+   * The time spans of the chart widgets (Chart · Basic, Chart · Totals …) and Sparklines: `<count><unit>`, the last
    * `count` minutes (`m`), hours (`h`), days (`d`), weeks (`w`), months (`mo`) or years (`y`) up to now; with `!` whole
    * local periods instead (days from midnight, weeks from Monday, as Homey's, months from the 1st, years from 1 January),
    * the current one included, or with `!-` left out (`1d!-` is yesterday). The names spans had before 1.2.0 are whole

@@ -7,7 +7,7 @@
   <!--
     A teaser of 1.2.0 (CHANGELOG.md), in the look of the 1.0.0 and 1.1.0 posters (whats-new.html, whats-next-1.1.0.html):
     the five new chart widgets (Totals, Scatter (XY), Daily Profile, Min/Max, Ranking) as the real widgets
-    with the README screenshots' made-up readings (mock-*.js), Chart · History's free time spans (two stacked charts of
+    with the README screenshots' made-up readings (mock-*.js), Chart · Basic's free time spans (two stacked charts of
     6 months and 40 minutes, drawn here), the Device names setting (its card drawn, Quick Actions with the full and the
     short names) and the web editor's live preview (docs/web/preview.png, `npm run web-showcase -- preview`).
     scripts/render-whats-next.mjs (`npm run whats-next`) renders it to docs/whats-next-1.2.0.png at 2x; the clock is
@@ -130,7 +130,7 @@
     </div>
     <div class="chips">
       <span>Totals</span><span>Scatter (XY)</span><span>Daily Profile</span><span>Min/Max</span><span>Ranking</span>
-      <span>Charts → <b>Chart · History</b></span><span>Live preview</span><span>Device names</span>
+      <span>Charts → <b>Chart · Basic</b></span><span>Live preview</span><span>Device names</span>
     </div>
   </header>
 
@@ -203,13 +203,13 @@
 
     <div class="column">
       <section class="feat">
-        <span class="tag">Chart · History</span>
+        <span class="tag">Chart · Basic</span>
         <h2>Any time span</h2>
         <p>A number and a unit instead of a fixed list, up to two years. Or whole periods: days from midnight, weeks from Monday, months from the 1st.</p>
         <div class="spans"><span>40 minutes</span><span>18 hours</span><span>10 days</span><span>6 months</span><span>This week</span><span>Last month</span></div>
         <div class="card chart"><div id="w-charts"></div></div>
         <ul class="more">
-          <li><b>Charts is now Chart · History</b>, beside the other charts in Homey's list. Widgets already on your dashboards keep their span.</li>
+          <li><b>Charts is now Chart · Basic</b>, beside the other charts in Homey's list. Widgets already on your dashboards keep their span.</li>
         </ul>
       </section>
     </div>
@@ -276,7 +276,7 @@
       MOUNT.dailyrange(el('w-dailyrange'), { opts: {}, state: mockDailyRange.dailyRangeState('4w', NOW) });
       MOUNT.compare(el('w-compare'), { opts: { count: 6 }, state: mockCompare.compareState('1d!', NOW) });
 
-      // Chart · History: two stacked charts of very different spans. The outdoor temperature over the last 6 months
+      // Chart · Basic: two stacked charts of very different spans. The outdoor temperature over the last 6 months
       // (a Danish year's curve with the weather's ups and downs, each point a day and a half's average) and the house's
       // power over the last 40 minutes (the oven keeping its heat while dinner cooks), both made up; their values now
       // as the showcase's (11.6 °C, 3,536 W).

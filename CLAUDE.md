@@ -1,6 +1,6 @@
 # Widgetkeeper — notes for Claude
 
-Homey Pro app (`com.thomassidor.widgetkeeper`) of custom dashboard widgets. Never rename a widget id: it breaks widgets already on dashboards. 1.0.0 renamed Price Badge, Thermostat Shortcuts, Sensor Dots and Flow Variables to Energy Price Strip, Thermostat Presets, Activity Dots and Variables; the 0.9.0 changelog and posts keep the old names, and README.md their old anchors (`<a name>`); 1.2.0 renamed Charts to Chart · History. The electricity design spec is `temp/Homey electricity dashboard widget.zip` (`temp/` is gitignored).
+Homey Pro app (`com.thomassidor.widgetkeeper`) of custom dashboard widgets. Never rename a widget id: it breaks widgets already on dashboards. 1.0.0 renamed Price Badge, Thermostat Shortcuts, Sensor Dots and Flow Variables to Energy Price Strip, Thermostat Presets, Activity Dots and Variables; the 0.9.0 changelog and posts keep the old names, and README.md their old anchors (`<a name>`); 1.2.0 renamed Charts to Chart · Basic. The electricity design spec is `temp/Homey electricity dashboard widget.zip` (`temp/` is gitignored).
 
 ## Notes per widget and area (`.claude/rules/`)
 This file holds what applies across the app. Each widget's notes, and those of the larger areas, are in `.claude/rules/`; Claude Code loads a note when you read a file its `paths:` cover (the widget's folder, service, tests and dev pages).
@@ -23,7 +23,7 @@ This file holds what applies across the app. Each widget's notes, and those of t
 | Device Values | `values` | `widgets/values.md` |
 | Light Controls | `lights` | `widgets/lights.md` |
 | Lights by Room | `lightrooms` | `widgets/lightrooms.md` |
-| Chart · History, called Charts until 1.2.0 and Chart · Over Time while it was built (and the shared chart module, frame and settings catalog) | `charts` | `widgets/charts.md` |
+| Chart · Basic, called Charts until 1.2.0, and Chart · Over Time and Chart · History while it was built (and the shared chart module, frame and settings catalog) | `charts` | `widgets/charts.md` |
 | Chart · Totals (called Totals per Period while it was built) | `totals` | `widgets/totals.md` |
 | Chart · Scatter (XY) (called X against Y while it was built) | `scatter` | `widgets/scatter.md` |
 | Chart · Daily Profile (called Typical Day while it was built) | `typicalday` | `widgets/typicalday.md` |

@@ -320,19 +320,19 @@
         {
           "id": "charts",
           "title": {
-            "en": "Chart · History",
-            "nl": "Grafiek · Geschiedenis",
-            "de": "Diagramm · Verlauf",
-            "fr": "Graphique · Historique",
-            "it": "Grafico · Storico",
-            "sv": "Diagram · Historik",
-            "no": "Diagram · Historikk",
-            "es": "Gráfico · Historial",
-            "da": "Graf · Historik",
-            "ru": "График · История",
-            "pl": "Wykres · Historia",
-            "ko": "차트 · 기록",
-            "ar": "مخطط · السجل"
+            "en": "Chart · Basic",
+            "nl": "Grafiek · Basis",
+            "de": "Diagramm · Basis",
+            "fr": "Graphique · Standard",
+            "it": "Grafico · Base",
+            "sv": "Diagram · Bas",
+            "no": "Diagram · Basis",
+            "es": "Gráfico · Básico",
+            "da": "Graf · Basis",
+            "ru": "График · Базовый",
+            "pl": "Wykres · Podstawowy",
+            "ko": "차트 · 기본",
+            "ar": "مخطط · أساسي"
           }
         },
         {

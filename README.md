@@ -17,13 +17,13 @@ Many motion, contact and vibration sensors at a glance, as dots that change colo
 <a href="#cameras"><b>Cameras</b></a><br>
 Two to six cameras in one grid of snapshots; tap one to watch it live<br clear="left"></p>
 
+<p><a href="#chart--basic"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/charts-dark.png"><img src="docs/previews/charts-light.png" alt="" width="120" align="left"></picture></a>
+<a href="#chart--basic"><b>Chart · Basic</b></a><br>
+How did it go? One value over any span, from minutes to two years, or against the period before or a second value<br clear="left"></p>
+
 <p><a href="#chart--daily-profile"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/typicalday-dark.png"><img src="docs/previews/typicalday-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--daily-profile"><b>Chart · Daily Profile</b></a><br>
 Today's line over the usual day and its spread: is today unusual?<br clear="left"></p>
-
-<p><a href="#chart--history"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/charts-dark.png"><img src="docs/previews/charts-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--history"><b>Chart · History</b></a><br>
-How did it go? One value over any span, from minutes to two years, or against the period before or a second value<br clear="left"></p>
 
 <p><a href="#chart--lines"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/lines-dark.png"><img src="docs/previews/lines-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--lines"><b>Chart · Lines</b></a><br>
@@ -189,19 +189,10 @@ Your cameras as a grid of snapshots that refresh every few seconds (cameras with
 
 **Settings:** cameras, layout (a large camera at the top or bottom, or one per row), refresh interval, how long live view stays on, time format, [rename tiles](#tile-names).
 
-## Chart · Daily Profile
-<img src="docs/screenshots/typicalday.png" alt="Chart · Daily Profile on a Homey dashboard: the house's power today as a line, a little over its usual day, which is dashed with its spread as a band, peaking in the morning and the evening" width="358">
-
-A value today against its usual day: each hour's average over the last 7 days (or 3), today left out, dashed, with their lowest to highest as a band, and today's line over it up to now. The value now and the usual one for this hour sit at the top; tap the chart for another hour.
-
-It takes any value that Homey logs in Insights, read from its hourly log (which reaches a week back).
-
-**Settings:** the value, usual day from (the last 7 or 3 days), show the spread, smooth line, scale (fitted or from zero), title, the values at the top, colour, [colour style](#colour-style).
-
 <a name="charts"></a>
 
-## Chart · History
-<img src="docs/screenshots/charts.png" alt="Chart · History on a Homey dashboard: the outdoor temperature as a line, and the power use as bars" width="358">
+## Chart · Basic
+<img src="docs/screenshots/charts.png" alt="Chart · Basic on a Homey dashboard: the outdoor temperature as a line, and the power use as bars" width="358">
 
 How did it go? Any value that Homey logs in Insights, over any [time span](#time-spans) from minutes to two years, as a line, an area or bars, drawn like Electricity Overview's charts. The value now sits at the top in the chart's colour; tap the chart to see the value at that moment.
 
@@ -215,12 +206,21 @@ For how much a value went up in each hour, day or month (a meter's kWh, rain, ho
 
 **Time spans** (both chart widgets): a number and a unit. Minutes, hours, days, weeks, months or years are the last so many up to now (40 minutes, 24 hours, 18 months). Days from midnight, weeks from Monday, months from the 1st and years from 1 January are whole periods, the current one included (1 day from midnight is today, 3 months from the 1st this month and the two before), or with *Leave out the current period* the ones before it (yesterday, last week, the three months before this one). Up to two years: Insights keeps no more. A chart set up before 1.2.0 keeps its span.
 
+## Chart · Daily Profile
+<img src="docs/screenshots/typicalday.png" alt="Chart · Daily Profile on a Homey dashboard: the house's power today as a line, a little over its usual day, which is dashed with its spread as a band, peaking in the morning and the evening" width="358">
+
+A value today against its usual day: each hour's average over the last 7 days (or 3), today left out, dashed, with their lowest to highest as a band, and today's line over it up to now. The value now and the usual one for this hour sit at the top; tap the chart for another hour.
+
+It takes any value that Homey logs in Insights, read from its hourly log (which reaches a week back).
+
+**Settings:** the value, usual day from (the last 7 or 3 days), show the spread, smooth line, scale (fitted or from zero), title, the values at the top, colour, [colour style](#colour-style).
+
 ## Chart · Lines
 <img src="docs/screenshots/lines.png" alt="Chart · Lines on a Homey dashboard: the last 24 hours of four rooms' temperatures, a line each in blue, red, orange and yellow, the living room's and the kitchen's now at the top" width="358">
 
 Up to six values over time on one chart, a line each in its own colour: every room's temperature, each radiator's power, the outdoor and indoor humidity, or the heat pump's power among the temperatures. The last 24 hours by default, or any other [time span](#time-spans). The first two values now sit at the top (over a finished span, such as yesterday, their averages); tap the chart for the line nearest your finger at that time, with a dot on each line there.
 
-The first value's kind sets the scale on the left (W and kW go on one scale), and a second kind of value, such as power beside temperatures, gets a scale on the right; each kind's units show on its first chip. A value in a third kind of units is left out, its chip saying so. To compare one value with the period before it (today over yesterday), use [Chart · History](#chart--history).
+The first value's kind sets the scale on the left (W and kW go on one scale), and a second kind of value, such as power beside temperatures, gets a scale on the right; each kind's units show on its first chip. A value in a third kind of units is left out, its chip saying so. To compare one value with the period before it (today over yesterday), use [Chart · Basic](#chart--basic).
 
 **Settings:** values 1 to 6 each with its colour, [time span](#time-spans), style (lines, or lines with areas), scale (fit to the values or from zero), smooth lines, the legend above or below the chart, title, the values at the top, [colour style](#colour-style).
 
