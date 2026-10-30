@@ -529,6 +529,7 @@ const BUILD = {
     const temps = pick(items, i => /:measure_temperature/.test(i.id), 6);
     const values = temps.length >= 2 ? temps : pick(items, () => true, 6);
     const [power] = pick(items, i => /:measure_power/.test(i.id));
+    const [humidity] = pick(items, i => /:measure_humidity/.test(i.id));
     const slots = list => Object.fromEntries(list.map((v, k) => [`slot${k + 1}`, v]));
     const missing = { id: `${MISSING}:measure_temperature`, name: 'Deleted device · Temperature' };
     return { cols: 3, widgets: [
@@ -539,7 +540,8 @@ const BUILD = {
       w('lines', 'Yesterday (averages)', { ...slots(values.slice(0, 3)), count: 1, span: 'calDays', leaveOut: true }),
       w('lines', 'This year (6-hourly)', { ...slots(values.slice(0, 3)), count: 1, span: 'calYears' }),
       w('lines', '40 minutes · no header', { ...slots(values.slice(0, 3)), count: 40, span: 'minutes', showHeader: false }),
-      power && w('lines', 'A value in other units', slots([...values.slice(0, 2), power])),
+      power && w('lines', 'A second kind on the right', slots([...values.slice(0, 2), power])),
+      power && humidity && w('lines', 'A third kind left out', slots([...values.slice(0, 2), power, humidity])),
       w('lines', 'With a deleted device', slots([missing, ...values.slice(0, 2)])),
       w('lines', 'One value', slots(values.slice(0, 1))),
       w('lines', 'Nothing picked'),

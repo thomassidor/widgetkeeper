@@ -933,7 +933,7 @@
       "lights": "Fichas de luces con brillo y color a mano.",
       "lightrooms": "Las luces de cada habitación en una tarjeta: enciende una habitación o ábrela para ver sus luces y Moods.",
       "sparklines": "Valores con un pequeño gráfico de su historial reciente.",
-      "charts": "Uno o dos gráficos de cualquier valor, como los de electricidad.",
+      "charts": "¿Cómo fue? Un valor en cualquier periodo, o frente al periodo anterior o a un segundo valor.",
       "totals": "Cuánto subió un valor por hora, día o mes: kWh, lluvia, horas de tele.",
       "scatter": "Un valor frente a otro, un punto por hora: ¿trabaja más la bomba de calor cuando hace frío?",
       "typicalday": "La línea de hoy sobre el día típico y su dispersión: ¿es hoy distinto?",

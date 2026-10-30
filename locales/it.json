@@ -933,7 +933,7 @@
       "lights": "Tessere delle luci con luminosità e colore a portata di mano.",
       "lightrooms": "Le luci di ogni stanza in una scheda: accendi una stanza o aprila per le sue luci e i Mood.",
       "sparklines": "Valori con un piccolo grafico del loro andamento recente.",
-      "charts": "Uno o due grafici di qualsiasi valore, come quelli dell'elettricità.",
+      "charts": "Com'è andata? Un valore su qualsiasi periodo, o a confronto con il periodo precedente o un secondo valore.",
       "totals": "Di quanto è cresciuto un valore per ora, giorno o mese: kWh, pioggia, ore di TV.",
       "scatter": "Un valore contro un altro, un punto all'ora: la pompa di calore lavora di più quando fa freddo?",
       "typicalday": "La linea di oggi sulla giornata tipo e la sua variazione: oggi è insolito?",

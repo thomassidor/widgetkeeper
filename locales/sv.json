@@ -933,7 +933,7 @@
       "lights": "Ljusrutor med ljusstyrka och färg nära till hands.",
       "lightrooms": "Varje rums lampor på ett kort: tänd ett rum eller öppna det för dess lampor och Moods.",
       "sparklines": "Värden med ett litet diagram över deras senaste historik.",
-      "charts": "Ett eller två diagram över valfritt värde, som elens.",
+      "charts": "Hur gick det? Ett värde över valfri period, eller mot perioden före eller ett andra värde.",
       "totals": "Hur mycket ett värde ökat per timme, dag eller månad: kWh, regn, timmar tv.",
       "scatter": "Ett värde mot ett annat, en punkt per timme: jobbar värmepumpen hårdare när det är kallt?",
       "typicalday": "Dagens linje över den typiska dagen och dess spridning: är i dag ovanlig?",

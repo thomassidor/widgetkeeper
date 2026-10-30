@@ -23,7 +23,7 @@ Today's line over the usual day and its spread: is today unusual?<br clear="left
 
 <p><a href="#chart--history"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/charts-dark.png"><img src="docs/previews/charts-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--history"><b>Chart · History</b></a><br>
-One or two charts of any value over any span, from minutes to two years, drawn like Electricity Overview's<br clear="left"></p>
+How did it go? One value over any span, from minutes to two years, or against the period before or a second value<br clear="left"></p>
 
 <p><a href="#chart--lines"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/lines-dark.png"><img src="docs/previews/lines-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--lines"><b>Chart · Lines</b></a><br>
@@ -203,11 +203,13 @@ It takes any value that Homey logs in Insights, read from its hourly log (which 
 ## Chart · History
 <img src="docs/screenshots/charts.png" alt="Chart · History on a Homey dashboard: the outdoor temperature as a line, and the power use as bars" width="358">
 
-One chart, two stacked, or two values on one chart (each with its own scale, or sharing one), of any value that Homey logs in Insights, drawn like Electricity Overview's charts. The value now sits at the top in the chart's colour. Tap a chart to see the value at that moment.
+How did it go? Any value that Homey logs in Insights, over any [time span](#time-spans) from minutes to two years, as a line, an area or bars, drawn like Electricity Overview's charts. The value now sits at the top in the chart's colour; tap the chart to see the value at that moment.
 
-**Settings:** one chart, two stacked or two on one chart (they share chart 1's time span, or compare whole periods of one unit: today with yesterday, this week with last, and so on), and on one chart one scale for both; per chart the value, [time span](#time-spans), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (a finished period shows its average there); the legend above or below the chart; [colour style](#colour-style).
+It also compares. Put two values on one chart to see a value against the period before it (today over yesterday, this month over last, of the same value), or against a second value with its own scale (the power use against the outdoor temperature). Or stack two charts in one widget.
 
-For how much a value went up in each hour, day or month (a meter's kWh, rain, hours of TV), as bars, see [Chart · Totals](#chart--totals). For more than two values of one kind on one chart (every room's temperature), see [Chart · Lines](#chart--lines).
+**Settings:** one value, two values stacked or two values on one chart (they share chart 1's time span, or compare whole periods of one unit: today with yesterday, this week with last, and so on), and on one chart one scale for both; per chart the value, [time span](#time-spans), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (a finished period shows its average there); the legend above or below the chart; [colour style](#colour-style).
+
+For how much a value went up in each hour, day or month (a meter's kWh, rain, hours of TV), as bars, see [Chart · Totals](#chart--totals). For more than two values on one chart (every room's temperature), see [Chart · Lines](#chart--lines).
 
 <a name="time-spans"></a>
 
@@ -216,9 +218,9 @@ For how much a value went up in each hour, day or month (a meter's kWh, rain, ho
 ## Chart · Lines
 <img src="docs/screenshots/lines.png" alt="Chart · Lines on a Homey dashboard: the last 24 hours of four rooms' temperatures, a line each in blue, red, orange and yellow, the living room's and the kitchen's now at the top" width="358">
 
-Up to six values over time on one chart, a line each in its own colour: every room's temperature, each radiator's power, the outdoor and indoor humidity. The last 24 hours by default, or any other [time span](#time-spans). The first two values now sit at the top (over a finished span, such as yesterday, their averages); tap the chart for the line nearest your finger at that time, with a dot on each line there.
+Up to six values over time on one chart, a line each in its own colour: every room's temperature, each radiator's power, the outdoor and indoor humidity, or the heat pump's power among the temperatures. The last 24 hours by default, or any other [time span](#time-spans). The first two values now sit at the top (over a finished span, such as yesterday, their averages); tap the chart for the line nearest your finger at that time, with a dot on each line there.
 
-They share one scale, so they must be the same kind of value: W and kW are put on one scale, and a value in other units is left out, its chip saying so. For two values in different units, each with its own scale, use [Chart · History](#chart--history)'s two on one chart.
+The first value's kind sets the scale on the left (W and kW go on one scale), and a second kind of value, such as power beside temperatures, gets a scale on the right; each kind's units show on its first chip. A value in a third kind of units is left out, its chip saying so. To compare one value with the period before it (today over yesterday), use [Chart · History](#chart--history).
 
 **Settings:** values 1 to 6 each with its colour, [time span](#time-spans), style (lines, or lines with areas), scale (fit to the values or from zero), smooth lines, the legend above or below the chart, title, the values at the top, [colour style](#colour-style).
 

@@ -1,6 +1,7 @@
 /*
  * Chart · Lines: up to six values over time on one chart, a line each in its own colour: every room's temperature, each
- * radiator's power. One value scale; a value in other units than the first is left out, its chip saying so. Drawn by
+ * radiator's power. A value scale on the left for the first value's units and one on the right for a second kind (power
+ * against the outdoor temperature); a value in a third kind of units is left out, its chip saying so. Drawn by
  * the shared chart module (../electricity/chart.js, `window.WidgetkeeperChart`, loaded first). Plain browser JS
  * (served as-is).
  */
@@ -11,6 +12,7 @@
   const C = window.WidgetkeeperChart;
   const { L, X_LABEL_GAP, X_LABEL_H, HOUR, clear, show, f1, smoothValues } = C;
 
+  const R = 34; // right gutter for the second scale, as Charts' two on one chart
   const TOP_PAD = 10; // the top grid line: room for the top scale label (the legend is in the page's flow, above or below)
   const PLOT_H = 122; // Charts' one-chart plot
   const MAX = 6;
@@ -69,7 +71,7 @@
     const ok = s => !!s && !('missing' in s);
     const num = v => typeof v === 'number' && isFinite(v);
 
-    /** The factor from a slot's units to `units` (the first value's), or null when they can't be compared. */
+    /** The factor from a slot's units to `units` (its side's), or null when they can't be compared. */
     function factor(s, units) {
       const from = s.capability.units || '', to = units || '';
       if (from === to) return 1;
@@ -77,16 +79,21 @@
       return a && b && a[0] === b[0] ? a[1] / b[1] : null;
     }
 
-    /** The values that can be drawn, each with its factor to the shared units; the first readable value sets them. */
+    /**
+     * The values that can be drawn, each on its side with its factor to that side's units: the first readable value sets
+     * the left scale's units, the first one that can't go on it the right's (`sides`, each `{first, units}`); a value
+     * that fits neither is `other`.
+     */
     function plan() {
-      const first = state.series.find(ok);
-      const units = first ? first.capability.units || '' : '';
+      const sides = [];
       const all = state.series.map((s, i) => {
         if (!ok(s)) return { i, s, missing: true, color: colorOf(i) };
-        const f = factor(s, units);
-        return { i, s, color: colorOf(i), f, other: f == null };
+        let side = sides.findIndex(sd => factor(s, sd.units) != null);
+        if (side < 0 && sides.length < 2) { sides.push({ first: s, units: s.capability.units || '' }); side = sides.length - 1; }
+        if (side < 0) return { i, s, color: colorOf(i), other: true };
+        return { i, s, color: colorOf(i), side, f: factor(s, sides[side].units), other: false };
       });
-      return { first, units, all, drawable: all.filter(l => !l.missing && !l.other) };
+      return { sides, all, drawable: all.filter(l => !l.missing && !l.other) };
     }
 
     /**
@@ -121,8 +128,8 @@
       return len > 0 ? sum / len : q[0][1];
     }
 
-    /** A value as the header writes it, to the first value's decimals (`averaged`: three significant digits within them). */
-    const valueText = (p, v, averaged) => (p.first ? formatNumber({ ...p.first.capability, max: null }, v, averaged) : nf(v));
+    /** A value as the header writes it, to its side's first value's decimals (`averaged`: three significant digits within them). */
+    const valueText = (p, l, v, averaged) => formatNumber({ ...p.sides[l.side].first.capability, max: null }, v, averaged);
 
     /** A point's time: `14:00`, with the weekday over several days, the date over more than a week. */
     function timeText(ms, win) {
@@ -146,14 +153,14 @@
       if (!p.drawable.length) { column({ value: null, sub: t('unavailable') }); return; }
       const d = drawn || { ...linesAt(now(), p), p };
       const colOf = (line, v, sub, colCls, averaged) => column({
-        value: v == null ? null : valueText(p, v, averaged), units: v == null ? '' : p.units, sub: `${line.s.name} · ${sub}`, colCls,
+        value: v == null ? null : valueText(p, line, v, averaged), units: v == null ? '' : p.sides[line.side].units, sub: `${line.s.name} · ${sub}`, colCls,
         attrs: { 'data-wk-color': line.color },
       });
       if (state.sel != null && d.known.length) {
         // The line nearest the pointer at the tapped time, then the next nearest.
         const at = d.known.map(l => ({ l, q: pointAt(l, state.sel) })).filter(a => a.q);
-        const y = drawn && drawn.y;
-        at.sort((a, b) => (y && state.selY != null ? Math.abs(y(a.q[1]) - state.selY) - Math.abs(y(b.q[1]) - state.selY) : 0));
+        const y = drawn && drawn.yOf;
+        at.sort((a, b) => (y && state.selY != null ? Math.abs(y(a.l)(a.q[1]) - state.selY) - Math.abs(y(b.l)(b.q[1]) - state.selY) : 0));
         at.slice(0, 2).forEach((a, k) => colOf(a.l, a.q[1], timeText(a.q[0], d.win), k ? ' low' : '', a.q[0] !== now()));
         return;
       }
@@ -172,11 +179,13 @@
       const at = now();
 
       clear(chips);
-      if (title) kit.chip(chips, 'series', title, p.units || null);
+      // Each side's units once: with one side on the title, else on the first line drawn on each side.
+      const oneSide = p.sides.length < 2;
+      if (title) kit.chip(chips, 'series', title, oneSide && p.sides.length ? p.sides[0].units || null : null);
       for (const l of p.all) {
+        const firstOfSide = !l.missing && !l.other && l === p.drawable.find(m => m.side === l.side);
         kit.chip(chips, `series${l.missing || l.other ? ' missing' : ''}`, l.missing ? t('unavailable') : l.s.name,
-          // The shared units once: on the title, else on the first line drawn.
-          l.other ? t('otherUnits') : !title && l === p.drawable[0] ? p.units || null : null);
+          l.other ? t('otherUnits') : firstOfSide && !(title && oneSide) ? p.sides[l.side].units || null : null);
         chips.lastChild.setAttribute('data-wk-color', l.color);
       }
 
@@ -189,28 +198,34 @@
       if (!drawable) return;
 
       const { win } = d;
-      const pw = Math.max(40, w - L - 4);
+      // A second scale on the right only when a line drawn is on it.
+      const two = d.known.some(l => l.side === 1) && d.known.some(l => l.side === 0);
+      const pw = Math.max(40, w - L - (two ? R : 4));
       const top = TOP_PAD, base = top + PLOT_H;
       kit.prepareSvg(svg, w, base + X_LABEL_GAP + X_LABEL_H);
-      const values = d.known.flatMap(l => l.pts.map(q => q[1]));
-      const max = Math.max(...values), min = Math.min(...values);
-      const scale = kit.valueScale(svg, {
-        max: fromZero ? Math.max(max, 0) : max, min: fromZero ? Math.min(min, 0) : min, h: PLOT_H, top, pw,
-        fit: !fromZero, format: (v, step) => C.axisLabel(nf, v, step),
-      });
+      const range = (side) => {
+        const values = d.known.filter(l => two ? l.side === side : true).flatMap(l => l.pts.map(q => q[1]));
+        const max = Math.max(...values), min = Math.min(...values);
+        return { max: fromZero ? Math.max(max, 0) : max, min: fromZero ? Math.min(min, 0) : min, format: (v, step) => C.axisLabel(nf, v, step) };
+      };
+      const scales = two
+        ? kit.dualScale(svg, { a: range(0), b: range(1), h: PLOT_H, top, pw, fit: !fromZero })
+        : (() => { const one = kit.valueScale(svg, { ...range(0), h: PLOT_H, top, pw, fit: !fromZero }); return { a: one, b: one }; })();
       kit.timeLabels(svg, win, { pw, top, base, nf, date: frame.date, now: t('now') });
       kit.axis(svg, top, base, pw);
       const x = ms => L + pw * (ms - win.from) / (win.to - win.from);
-      const y = scale.y;
+      const scaleOf = l => (l.side === 1 ? scales.b : scales.a);
+      const yOf = l => scaleOf(l).y;
 
       // The lines in their order, each with its area under it with `area`; the last picked on top.
       for (const l of d.known) {
         const vs = smooth ? smoothValues(l.pts.map(q => q[1])) : l.pts.map(q => q[1]);
+        const y = yOf(l);
         const xy = l.pts.map((q, j) => [x(q[0]), y(vs[j])]);
         const g = C.el('svg:g', { class: 'ln-series', 'data-wk-color': l.color }, svg);
         if (xy.length === 1) { C.el('svg:circle', { class: 'ln-point', cx: f1(xy[0][0]), cy: f1(xy[0][1]), r: 2 }, g); continue; }
         const line = C.linePath(xy, smooth);
-        if (areas) C.el('svg:path', { class: 'ln-area', d: `${line}L${f1(xy[xy.length - 1][0])} ${f1(scale.baseY)}L${f1(xy[0][0])} ${f1(scale.baseY)}Z` }, g);
+        if (areas) C.el('svg:path', { class: 'ln-area', d: `${line}L${f1(xy[xy.length - 1][0])} ${f1(scaleOf(l).baseY)}L${f1(xy[0][0])} ${f1(scaleOf(l).baseY)}Z` }, g);
         C.el('svg:path', { class: 'ln-line', d: line }, g);
       }
       if (win.end < win.to) C.el('svg:rect', { class: 'future', x: f1(x(win.end)), y: top - 6, width: f1(x(win.to) - x(win.end)), height: f1(base - top + 6) }, svg);
@@ -218,7 +233,7 @@
       // A dot on each line's latest point while live; at the tapped time, a cursor and a dot on each line.
       const dotsAt = list => list.forEach(([l, q]) => {
         const g = C.el('svg:g', { class: 'ln-series', 'data-wk-color': l.color }, svg);
-        kit.dot(g, x(q[0]), y(q[1]), 'ln-dot', true);
+        kit.dot(g, x(q[0]), yOf(l)(q[1]), 'ln-dot', true);
       });
       if (state.sel != null && state.sel >= win.from && state.sel <= win.end) {
         C.el('svg:path', { class: 'cursor', d: `M${f1(x(state.sel))} ${top}V${base}` }, svg);
@@ -226,7 +241,7 @@
       } else if (d.live) {
         dotsAt(d.known.map(l => [l, l.pts[l.pts.length - 1]]));
       }
-      drawn = { ...d, p, x, y };
+      drawn = { ...d, p, x, yOf };
     }
 
     // ------------------------------------------------------------------ interaction

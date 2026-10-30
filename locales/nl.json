@@ -933,7 +933,7 @@
       "lights": "Lichttegels met helderheid en kleur bij de hand.",
       "lightrooms": "De lampen van elke kamer op een kaart: schakel een kamer, of open hem voor zijn lampen en Moods.",
       "sparklines": "Waarden met een kleine grafiek van hun recente verloop.",
-      "charts": "Eén of twee grafieken van elke waarde, zoals die van stroom.",
+      "charts": "Hoe ging het? Eén waarde over elke periode, of tegen de periode ervoor of een tweede waarde.",
       "totals": "Hoeveel een waarde per uur, dag of maand opliep: kWh, regen, uren tv.",
       "scatter": "Eén waarde tegen een andere, een stip per uur: werkt de warmtepomp harder als het kouder is?",
       "typicalday": "De lijn van vandaag over de normale dag en de spreiding: is vandaag anders?",

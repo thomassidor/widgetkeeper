@@ -933,7 +933,7 @@
       "lights": "Lysfliser med lysstyrke og farge for hånden.",
       "lightrooms": "Hvert roms lys på et kort: slå et rom av og på, eller åpne det for lysene og Moods.",
       "sparklines": "Verdier med et lite diagram over den siste historikken.",
-      "charts": "Ett eller to diagrammer over en hvilken som helst verdi, som strømmens.",
+      "charts": "Hvordan gikk det? Én verdi over en hvilken som helst periode, eller mot perioden før eller en annen verdi.",
       "totals": "Hvor mye en verdi har økt per time, dag eller måned: kWh, regn, timer TV.",
       "scatter": "Én verdi mot en annen, ett punkt per time: jobber varmepumpen hardere når det er kaldt?",
       "typicalday": "Dagens linje over den typiske dagen og spredningen: er i dag uvanlig?",

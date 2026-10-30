@@ -35,19 +35,19 @@
         "ar": "القيمة 1"
       },
       "hint": {
-        "en": "Up to six values on one chart, such as each room's temperature. Empty ones are left out, and so is a value in other units than the first.",
-        "nl": "Tot zes waarden in één grafiek, zoals de temperatuur van elke kamer. Lege worden weggelaten, net als een waarde in een andere eenheid dan de eerste.",
-        "de": "Bis zu sechs Werte in einem Diagramm, etwa die Temperatur jedes Raums. Leere werden ausgelassen, ebenso ein Wert in anderen Einheiten als der erste.",
-        "fr": "Jusqu'à six valeurs sur un graphique, comme la température de chaque pièce. Les vides sont ignorées, tout comme une valeur dans une autre unité que la première.",
-        "it": "Fino a sei valori in un grafico, come la temperatura di ogni stanza. Quelli vuoti sono esclusi, come un valore in unità diverse dal primo.",
-        "sv": "Upp till sex värden i ett diagram, som varje rums temperatur. Tomma utelämnas, liksom ett värde i andra enheter än det första.",
-        "no": "Opptil seks verdier i ett diagram, som hvert roms temperatur. Tomme utelates, det samme gjør en verdi i andre enheter enn den første.",
-        "es": "Hasta seis valores en un gráfico, como la temperatura de cada habitación. Los vacíos se omiten, igual que un valor en otras unidades que el primero.",
-        "da": "Op til seks værdier i én graf, som hvert rums temperatur. Tomme udelades, det samme gør en værdi i andre enheder end den første.",
-        "ru": "До шести значений на одном графике, например температура каждой комнаты. Пустые пропускаются, как и значение в других единицах, чем первое.",
-        "pl": "Do sześciu wartości na jednym wykresie, np. temperatura każdego pokoju. Puste są pomijane, podobnie jak wartość w innych jednostkach niż pierwsza.",
-        "ko": "한 차트에 최대 6개 값(예: 방마다의 온도)을 보여줍니다. 빈 항목과 첫 번째 값과 단위가 다른 값은 빠집니다.",
-        "ar": "حتى ست قيم في مخطط واحد، مثل حرارة كل غرفة. تُستبعد الفارغة، وكذلك قيمة بوحدات غير وحدات الأولى."
+        "en": "Up to six values on one chart, such as each room's temperature. Empty ones are left out. A second kind of value, such as power beside temperatures, gets a scale on the right; a third is left out.",
+        "nl": "Tot zes waarden in één grafiek, zoals de temperatuur van elke kamer. Lege worden weggelaten. Een tweede soort waarde, zoals vermogen naast temperaturen, krijgt een schaal rechts; een derde wordt weggelaten.",
+        "de": "Bis zu sechs Werte in einem Diagramm, etwa die Temperatur jedes Raums. Leere werden ausgelassen. Eine zweite Art von Wert, etwa Leistung neben Temperaturen, bekommt eine Skala rechts; eine dritte wird ausgelassen.",
+        "fr": "Jusqu'à six valeurs sur un graphique, comme la température de chaque pièce. Les vides sont ignorées. Un deuxième type de valeur, comme une puissance à côté de températures, a une échelle à droite ; un troisième est ignoré.",
+        "it": "Fino a sei valori in un grafico, come la temperatura di ogni stanza. Quelli vuoti sono esclusi. Un secondo tipo di valore, come la potenza accanto alle temperature, ha una scala a destra; un terzo è escluso.",
+        "sv": "Upp till sex värden i ett diagram, som varje rums temperatur. Tomma utelämnas. En andra sorts värde, som effekt bredvid temperaturer, får en skala till höger; en tredje utelämnas.",
+        "no": "Opptil seks verdier i ett diagram, som hvert roms temperatur. Tomme utelates. En annen type verdi, som effekt ved siden av temperaturer, får en skala til høyre; en tredje utelates.",
+        "es": "Hasta seis valores en un gráfico, como la temperatura de cada habitación. Los vacíos se omiten. Un segundo tipo de valor, como la potencia junto a temperaturas, tiene una escala a la derecha; un tercero se omite.",
+        "da": "Op til seks værdier i én graf, som hvert rums temperatur. Tomme udelades. En anden slags værdi, som effekt ved siden af temperaturer, får en skala til højre; en tredje udelades.",
+        "ru": "До шести значений на одном графике, например температура каждой комнаты. Пустые пропускаются. Второй вид значений, например мощность рядом с температурами, получает шкалу справа; третий пропускается.",
+        "pl": "Do sześciu wartości na jednym wykresie, np. temperatura każdego pokoju. Puste są pomijane. Drugi rodzaj wartości, np. moc obok temperatur, dostaje skalę po prawej; trzeci jest pomijany.",
+        "ko": "한 차트에 최대 6개 값(예: 방마다의 온도)을 보여줍니다. 빈 항목은 빠집니다. 온도 옆의 전력처럼 두 번째 종류의 값은 오른쪽 눈금을 쓰고, 세 번째 종류는 빠집니다.",
+        "ar": "حتى ست قيم في مخطط واحد، مثل حرارة كل غرفة. تُستبعد الفارغة. نوع ثانٍ من القيم، مثل القدرة بجانب درجات الحرارة، يأخذ مقياسًا على اليمين؛ ويُستبعد نوع ثالث."
       }
     },
     {

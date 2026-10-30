@@ -933,7 +933,7 @@
       "lights": "Kafelki świateł z jasnością i kolorem pod ręką.",
       "lightrooms": "Światła każdego pokoju na karcie: przełącz cały pokój albo otwórz go, by sterować lampami i Moods.",
       "sparklines": "Wartości z małym wykresem ich niedawnej historii.",
-      "charts": "Jeden lub dwa wykresy dowolnej wartości, jak te dla prądu.",
+      "charts": "Jak to szło? Jedna wartość w dowolnym okresie albo na tle poprzedniego okresu lub drugiej wartości.",
       "totals": "O ile wzrosła wartość w ciągu godziny, dnia lub miesiąca: kWh, deszcz, godziny TV.",
       "scatter": "Jedna wartość względem drugiej, punkt na godzinę: czy pompa ciepła pracuje więcej, gdy jest zimno?",
       "typicalday": "Linia z dzisiaj na tle typowego dnia i jego rozrzutu: czy dziś jest nietypowo?",

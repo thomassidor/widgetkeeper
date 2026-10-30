@@ -66,14 +66,26 @@ describe('the lines', () => {
     expect(zero.labels()).toContain('0');
   });
 
-  it('scales kW onto W, and leaves out a value in other units, saying so', () => {
+  it('scales kW onto W, puts a second kind of value on a scale on the right, and leaves out a third, saying so', () => {
     const power = (id: string, name: string, units: string, v: number) => (
       { deviceId: id, capabilityId: 'measure_power', name, capability: cap('Power', units, 0), value: v, points: hourly(FROM, () => v) });
     const humidity = { ...room('h', 'Bathroom', () => 60, 60), capabilityId: 'measure_humidity', capability: cap('Humidity', '%', 0) };
-    const r = widget({}, [power('a', 'Heat pump', 'W', 400), power('b', 'Oven', 'kW', 0.2), humidity]);
+    const r = widget({}, [power('a', 'Heat pump', 'W', 400), power('b', 'Oven', 'kW', 0.2), kitchen(), humidity]);
     expect(r.header()).toEqual(['400W | Heat pump · Now', '200W | Oven · Now']);
+    // Each side's units on its first line's chip; the humidity in a third kind of units is left out.
+    expect(r.chips()).toEqual(['Heat pump – W', 'Oven', 'Kitchen – °C', 'Bathroom – Other units']);
     expect(r.all('.ew-chip.missing').map(c => c.textContent)).toEqual(['Bathroom – Other units']);
-    expect(r.all('path.ln-line')).toHaveLength(2);
+    expect(r.all('path.ln-line')).toHaveLength(3);
+    // Two scales: the plot leaves room on the right, where the temperatures' labels are.
+    const right = r.all('svg text').filter(t => t.getAttribute('text-anchor') === 'start').map(t => t.textContent);
+    expect(right.length).toBeGreaterThan(1);
+    expect(right.some(v => /^2\d/.test(v!))).toBe(true);
+  });
+
+  it('keeps one scale while only one kind of value is drawn, its units on the title', () => {
+    const r = widget({ title: 'Rooms' }, [kitchen(), bedroom()]);
+    expect(r.chips()).toEqual(['Rooms – °C', 'Kitchen', 'Bedroom']);
+    expect(r.all('svg text').filter(t => t.getAttribute('text-anchor') === 'start')).toHaveLength(0);
   });
 
   it("shows a finished span's averages, without dots, and Unavailable for a gone value", () => {

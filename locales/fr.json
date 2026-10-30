@@ -933,7 +933,7 @@
       "lights": "Des tuiles de lumières avec luminosité et couleur à portée.",
       "lightrooms": "Les lumières de chaque pièce sur une carte : allumez une pièce, ou ouvrez-la pour ses lampes et ses Moods.",
       "sparklines": "Des valeurs avec un petit graphique de leur historique.",
-      "charts": "Un ou deux graphiques de n'importe quelle valeur, comme ceux de l'électricité.",
+      "charts": "Comment ça s'est passé ? Une valeur sur n'importe quelle période, ou face à la période précédente ou à une deuxième valeur.",
       "totals": "De combien une valeur a augmenté par heure, jour ou mois : kWh, pluie, heures de télé.",
       "scatter": "Une valeur face à une autre, un point par heure : la pompe à chaleur travaille-t-elle plus quand il fait froid ?",
       "typicalday": "La courbe d'aujourd'hui sur la journée type et son écart : aujourd'hui sort-il de l'ordinaire ?",

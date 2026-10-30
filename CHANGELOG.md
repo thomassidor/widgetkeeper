@@ -11,7 +11,7 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **A live preview while you set up a widget:** the settings show the widget as it will look, beside them (above them on a narrow screen), and it follows each change you make. Cancel leaves the widget as it was.
 
 ### Charts: any time span
-- **Charts is now Chart · History**, so it sits beside the other chart widgets in Homey's list. Widgets already on your dashboards stay as they are.
+- **Charts is now Chart · History**, so it sits beside the other chart widgets in Homey's list: the one for how a value went, or how it compares with the period before or a second value. Its first setting now reads *One value*, *Two values, stacked* or *Two values on one chart*. Widgets already on your dashboards stay as they are.
 - **Any time span:** pick a number and a unit instead of a fixed list: the last 40 minutes, 18 hours, 10 days or 6 months, up to two years. Or whole periods: days from midnight, weeks from Monday, months from the 1st or years from 1 January, such as this week or this month and the two before, and with *Leave out the current period* the ones before it (yesterday, last week, the three months before this one). The time labels and bars fit whatever span you pick. Charts set up before keep their span until you pick a unit.
 - On one chart, two whole periods of one unit still compare (today over yesterday, this month over last).
 - Longer spans read Homey's history from the logs that hold them, stitched together where one doesn't, so a span of two weeks or six months comes out as detailed as Homey keeps it.
@@ -23,7 +23,7 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - Today's line over the usual day: each hour's average over the last 7 (or 3) days, dashed, with its spread as a band, so a day that runs high or low shows at once. The value now and the usual one for this hour sit at the top; tap for another hour.
 
 ### New: Chart · Lines
-- Up to six values over time on one chart, a line each in its own colour: every room's temperature, each radiator's power. One scale for all (W and kW together; a value in other units is left out, its chip saying so), the last 24 hours or any time span. The first two values now sit at the top; tap for the line nearest your finger at that time. Lines, or lines with areas.
+- Up to six values over time on one chart, a line each in its own colour: every room's temperature, each radiator's power. The first kind of value has its scale on the left (W and kW together), a second kind its own on the right, such as the heat pump's power among the room temperatures; a third kind is left out, its chip saying so. The last 24 hours or any time span. The first two values now sit at the top; tap for the line nearest your finger at that time. Lines, or lines with areas.
 
 ### New: Chart · Min/Max
 - Each day's lowest to highest as a bar, with its average as a tick: how cold the nights and how warm the afternoons were. The last four weeks by default, or any time span (a bar an hour over a day, a month over a year). The latest bar's high and low sit at the top; tap a bar for its own.

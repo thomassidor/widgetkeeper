@@ -25,6 +25,7 @@
   <div class="col"><span>300 px · dark · Vivid · six rooms · tapped on load</span><div class="card homey-dark-mode" style="width:300px"><div id="u3"></div></div></div>
   <div class="col"><span>358 px · dark · yesterday (averages) · from zero</span><div class="card homey-dark-mode" style="width:358px"><div id="u4"></div></div></div>
   <div class="col"><span>358 px · dark · 7 days · a missing value</span><div class="card homey-dark-mode" style="width:358px"><div id="u5"></div></div></div>
+  <div class="col"><span>358 px · dark · a second kind on the right (the heat pump's power) · from zero</span><div class="card homey-dark-mode" style="width:358px"><div id="u7"></div></div></div>
   <div class="col"><span>358 px · nothing picked</span><div class="card homey-dark-mode" style="width:358px"><div id="u6"></div></div></div>
 
   <script>
@@ -42,6 +43,12 @@
     svg.dispatchEvent(new PointerEvent('pointerdown', { clientX: r.left + 38 + 258 * 0.8, clientY: r.top + 50, pointerType: 'mouse' }));
     make('u4', { span: '1d!-', range: 'zero' }, mockLines.linesState('1d!-'));
     make('u5', { count: 3, span: '7d' }, (() => { const s = mockLines.linesState('7d', Date.now(), 3); s[1] = { deviceId: 'gone', capabilityId: 'measure_temperature', missing: true }; return s; })());
+    // The heat pump's power among the rooms (made up: more when it's cold at night), on a scale of its own.
+    const rooms = mockLines.linesState('24h', Date.now(), 2);
+    const pump = { deviceId: 'heatpump', capabilityId: 'measure_power', name: 'Heat pump', capability: { title: 'Power', type: 'number', units: 'W', decimals: 0, min: null, max: null, values: null, icon: null },
+      points: rooms[0].points.map(([t]) => { const h = new Date(t).getHours(); return [t, h < 6 || h >= 22 ? 1400 : 600]; }) };
+    pump.value = pump.points[pump.points.length - 1][1];
+    make('u7', { range: 'zero', colors: ['blue', 'red', 'orange'] }, [...rooms, pump]);
     const empty = make('u6', {});
     empty.setMessage(empty.t('selectValues'));
   </script>

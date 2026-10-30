@@ -194,7 +194,7 @@
       lights: 'Light tiles with brightness and colour at hand.',
       lightrooms: "Every room's lights on a card: switch a room, or open it for its lights and Moods.",
       sparklines: 'Values with a small chart of their recent history.',
-      charts: 'One or two charts of any value, like the electricity ones.',
+      charts: 'How did it go? One value over any span, or against the period before or a second value.',
       totals: 'How much a value went up per hour, day or month: kWh, rain, hours of TV.',
       scatter: "One value against another, a dot per hour: does the heat pump work harder when it's colder?",
       typicalday: "Today's line over the usual day and its spread: is today unusual?",
