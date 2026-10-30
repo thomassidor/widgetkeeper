@@ -5,6 +5,7 @@ import { spyApp, type ServiceCall } from './helpers/spyApp.js';
 import { WEB_APIS } from '../api.js';
 import { callWidgetRoute } from '../lib/widgetRoutes.js';
 import { widgetAutocompletes } from '../lib/widgetAutocompletes.js';
+import { webPageSource } from './helpers/webPage.js';
 
 const manifest = JSON.parse(readFileSync('app.json', 'utf8'));
 
@@ -235,7 +236,7 @@ describe('the pages call routes that exist', () => {
   const route = (method: string, path: string) => `${method} ${path.replace(/\$\{[^}]*\}/g, '*')}`;
 
   it('the web dashboards page (`request()`)', () => {
-    const js = readFileSync('settings/dashboard.js', 'utf8');
+    const js = webPageSource();
     const used = [...js.matchAll(/\brequest\('(GET|POST|PUT|DELETE)', [`'](\/[^`'?]*)/g)].map(m => route(m[1], m[2]));
     expect(used.length).toBeGreaterThanOrEqual(15);
     expect(used.filter(r => !routes.includes(r))).toEqual([]);

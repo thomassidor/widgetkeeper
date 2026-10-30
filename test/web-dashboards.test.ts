@@ -10,6 +10,7 @@ import WebPassword from '../lib/WebPassword.js';
 import PopupService from '../lib/PopupService.js';
 import KeypadService from '../lib/KeypadService.js';
 import api from '../api.js';
+import { webPageSource } from './helpers/webPage.js';
 
 vi.mock('homey-api', () => homeyApiMock);
 
@@ -965,7 +966,7 @@ describe('web dashboards page', () => {
   });
 
   it("keeps Keep screen on's silent video a small MP4", () => {
-    const js = readFileSync('settings/dashboard.js', 'utf8');
+    const js = webPageSource();
     const m = js.match(/const KEEP_AWAKE_VIDEO = 'data:video\/mp4;base64,([A-Za-z0-9+/=]+)';/);
     expect(m).toBeTruthy();
     const mp4 = Buffer.from(m![1], 'base64');

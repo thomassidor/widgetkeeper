@@ -1,16 +1,16 @@
-import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
+import { webPageSource } from './helpers/webPage.js';
 
 /**
- * The web dashboards page's pure helpers, run from `settings/dashboard.js`'s own source: the page is one closure
+ * The web dashboards page's pure helpers, run from its own source (settings/dashboard.js and its parts): the page is one closure
  * (no module to import), so each function is read out by name, with what it uses from around it given in.
  */
-const SOURCE = readFileSync('settings/dashboard.js', 'utf8').replace(/\r\n/g, '\n');
+const SOURCE = webPageSource();
 
 /** A function's whole source (`function name(…) {…}`), found by its name. */
 function fn(name: string): string {
   const start = SOURCE.indexOf(`function ${name}(`);
-  expect(start, `function ${name} in settings/dashboard.js`).toBeGreaterThanOrEqual(0);
+  expect(start, `function ${name} in the web dashboards page`).toBeGreaterThanOrEqual(0);
   let depth = 0;
   for (let i = SOURCE.indexOf('{', SOURCE.indexOf(')', start)); i < SOURCE.length; i++) {
     if (SOURCE[i] === '{') depth++;
@@ -22,7 +22,7 @@ function fn(name: string): string {
 /** A `const NAME = …;` line. */
 function constant(name: string): string {
   const m = SOURCE.match(new RegExp(`\\n\\s*(const ${name} = [^\\n]*;)\\n`));
-  expect(m, `const ${name} in settings/dashboard.js`).toBeTruthy();
+  expect(m, `const ${name} in the web dashboards page`).toBeTruthy();
   return m![1];
 }
 
