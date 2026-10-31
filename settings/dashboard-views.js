@@ -99,11 +99,14 @@
     function renderKey(message) {
       clearRoot();
       applyTheme('auto');
+      // A code (8 characters) shows as it's typed; anything longer is a pasted key, hidden.
       const input = el('input', 'wd-input');
-      input.type = 'password';
+      input.type = 'text';
       input.autocomplete = 'off';
+      input.autocapitalize = 'characters';
       input.spellcheck = false;
-      input.placeholder = t('keyPlaceholder');
+      input.placeholder = t('codeOrKey');
+      input.addEventListener('input', () => { input.type = input.value.trim().length > 9 ? 'password' : 'text'; });
       const error = el('p', 'wd-error', message || '');
       const go = button('wd-btn primary', t('connect'), async () => {
         const value = input.value.trim();
@@ -133,8 +136,7 @@
       form.append(input, go);
       // The home address is plain HTTP: the key (sent with every request) can be read on the network.
       const plain = location.protocol === 'http:' ? [el('p', 'wd-muted', t('keyPlain'))] : [];
-      root.append(centered(el('h1', 'wd-h1', t('keyTitle')), el('p', 'wd-muted', t('keyText')), ...plain, form,
-        el('p', 'wd-muted', t('keyOrCode')), error));
+      root.append(centered(el('h1', 'wd-h1', t('keyTitle')), el('p', 'wd-muted', t('keyText')), ...plain, form, error));
       input.focus();
     }
 

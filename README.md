@@ -551,7 +551,7 @@ Your Widgetkeeper widgets in any browser at home, or [away from home](#away-from
 ### Getting started
 1. Open **Apps → Widgetkeeper → Configure** in the Homey app and turn on **Web dashboards**.
 2. Open the address shown there in a browser on your home network: `http://<your Homey's address>/app/com.thomassidor.widgetkeeper/settings/dashboard.html`.
-3. Paste a Homey API key ([which permissions](#web-dashboards-key)), and the web dashboards password if you set one.
+3. Add the browser under **Screens** on the same page and type the code it gets ([how](#screens)), or paste a Homey API key ([which permissions](#web-dashboards-key)). Then the web dashboards password, if you set one.
 
 ### Your dashboards
 <img src="docs/web/front.png" alt="The web dashboards front page in a browser window: seven dashboards as cards, and the widgets you can add" width="100%">
@@ -589,13 +589,13 @@ Turn on **Remote access** under **Apps → Widgetkeeper → Configure** for a se
 ### Password
 On top of the API key, you can set a password under **Apps → Widgetkeeper → Configure**; every browser then asks for it once. Setting, changing or removing it signs every browser out, and repeated wrong passwords lock the sign-in for a while. Changing or removing it asks for the current one; if you forget it, the Flow card **Remove the web dashboards password** removes it.
 
-### Screens without a keyboard
-A screen you can't type a key on, such as a Google Nest Hub you cast a dashboard to, or a wall tablet without a keyboard, can sign in with a short code instead. Under **Apps → Widgetkeeper → Configure → Web dashboards → Screens without a keyboard**, tap **Add screen**, give it a name and a personal API key made just for that screen (and the current password, if you've set one). You get a code like `K7QM-3XPA`, the dashboards' address with the code in it, and that address as a QR code:
+### Screens
+A browser or screen can sign in with a short code instead of a long API key: a wall tablet, a phone, a computer, or a screen you can't type on, such as a Google Nest Hub you cast a dashboard to. Under **Apps → Widgetkeeper → Configure → Web dashboards → Screens**, tap **Add screen**, give it a name and a personal API key made just for it (and the current password, if you've set one). You get a code like `K7QM-3XPA`, the dashboards' address with the code in it, and that address as a QR code:
 
-- Type the code on the screen's key screen in place of the key, or
-- open the address on the screen (cast it, scan the QR code or bookmark it): `…/dashboard.html#code=K7QM-3XPA`, or `…/dashboard.html#/d/<dashboard>?code=K7QM-3XPA` to open one dashboard. The screen swaps the code for the key on every load, so a screen that forgets what it stored, as a cast one does, still gets in.
+- Type the code on the page in place of a key, or
+- open the address on the screen (scan the QR code, cast it or bookmark it): `…/dashboard.html#code=K7QM-3XPA`, or `…/dashboard.html#/d/<dashboard>?code=K7QM-3XPA` to open one dashboard. The page swaps the code for the key on every load, so a screen that forgets what it stored, as a cast one does, still gets in.
 
-The code is shown only when you add the screen; if it's lost, remove the screen and add it again. Anyone with the code can use the screen's key, so make a key for that screen alone, with no more permission than it needs. **Remove** stops the code and signs that screen out the next time it opens the address; deleting the key under **Settings → API Keys** stops it everywhere. Repeated wrong codes lock every code for a while. Changing the password asks to sign each screen in again with the new one (**Sign in** beside it). Widgetkeeper keeps the screens' keys on the Homey with its other secrets, never in the app settings.
+**Screens** lists every one with when it was last used. The code is shown only when you add the screen; if it's lost, remove the screen and add it again. Anyone with the code can use that screen's key, so make a key for each screen with no more permission than it needs. **Remove** stops the code, and a screen that opens its address again is signed out; one that already stored the key keeps it, so for a lost or stolen device, delete its key in the Homey web app under **Settings → API Keys** too. Repeated wrong codes lock every code for a while. Changing the password asks to sign each screen in again with the new one (**Sign in** beside it). Widgetkeeper keeps the screens' keys on the Homey with its other secrets, never in the app settings.
 
 ### Code
 A dashboard can take a [Keypad](#keypad) code: in its editor, pick one (or Any code) under the lock. Editing it and going back to the dashboards then take the code, so a wall tablet stays on its dashboard and nobody there can change its widgets, a Keypad's code included. The page asks for it and Widgetkeeper checks it; wrong ones lock as at a Keypad. Removing the code under **Keypad codes** opens the dashboard again. Like the Keypad's, it guards the screen, not your Homey: someone with the browser's API key and its developer tools can still get past it.
@@ -604,7 +604,7 @@ A dashboard can take a [Keypad](#keypad) code: in its editor, pick one (or Any c
 In the front page's **Settings**, **Download backup** saves the dashboards you tick in one file: the layouts, the widgets, their settings and tile names. **Restore backup** lists a file's dashboards; after a second tap, the ones you tick replace those they were saved from (or come back, if deleted), and the others stay as they are. Notes' texts and Days Since's counters aren't included, as Homey's own dashboards share them.
 
 ### Web dashboards' key
-Each browser connects with a key of its own, kept in that browser:
+Each browser connects with a key of its own, kept in that browser, typed as a [code](#screens) or pasted:
 
 - A key with the **Homey** permission works. A narrower one hasn't been tried, as Homey doesn't document which permission an app's own API takes.
 - A widget that changes something needs that permission in the browser's key too, as in the [API key](#api-key) table, even though the app's key makes the change.

@@ -259,10 +259,11 @@
           <p class="help status" id="pwStatus" role="status"></p>
           <p class="help" id="pwForgot" data-i18n="webPasswordForgot" hidden></p>
         </div>
-        <!-- Screens that can't type a key (a Nest Hub cast to, a wall tablet): a key made for each, swapped for a short
-             code the page takes typed or in its address (#code=). The code is shown once, when it's made. -->
+        <!-- Screens: any browser or screen signs in with a short code instead of a key (a wall tablet, a phone, a Nest
+             Hub cast to): a key made for each, swapped for the code the page takes typed or in its address (#code=).
+             The code is shown once, when it's made. -->
         <div class="sub">
-          <p class="sub-title" data-i18n="webScreens">Screens without a keyboard</p>
+          <p class="sub-title" data-i18n="webScreens">Screens</p>
           <p class="help" data-i18n="webScreensHelp"></p>
           <ul class="kp-codes scr-list" id="scrList"></ul>
           <div id="scrForm" hidden>
@@ -803,7 +804,7 @@
       $('pwCancel').addEventListener('click', () => openPasswordForm(null));
       showPasswordState();
 
-      // ---- Screens without a keyboard: a key made for each, swapped for a code the web dashboards page takes. The
+      // ---- Screens: a key made for each browser or screen, swapped for a code the web dashboards page takes. The
       // code comes back once, when the screen is added; the list has names only. ----
       const scrName = $('scrName');
       const scrKey = $('scrKey');
