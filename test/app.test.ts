@@ -139,7 +139,7 @@ describe('the app: Flow cards', () => {
 describe('the app: Thermostat Presets cards', () => {
   it("says when a Thermostat Presets button was tapped, for that button's Flows, and whether one is active", async () => {
     const { app, flow } = await bootApp();
-    vi.spyOn(app.thermostat, 'getState').mockResolvedValue({ name: 'Aircon', icon: null, values: {}, caps: {} });
+    vi.spyOn(app.thermostat, 'getState').mockResolvedValue({ name: 'Aircon', zone: null, icon: null, values: {}, caps: {} });
     await app.thermostatPresets.tapped({ instance: 'w1', button: 2, deviceId: 'd1', values: [{ capabilityId: 'target_temperature', value: 21 }] });
     const card = flow.cards.get('triggers:thermostat_preset_tapped')!;
     expect(card.trigger).toHaveBeenCalledWith({ device: 'Aircon', preset: '21°', button: 2 }, { id: 'w1:2' });
