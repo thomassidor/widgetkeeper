@@ -1,6 +1,6 @@
 // Shared by the render scripts: headless Edge, the repo served over HTTP, and the Homey library icons the mock devices use.
 import { execFileSync, spawn } from 'node:child_process';
-import { createReadStream, mkdirSync, mkdtempSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { createReadStream, existsSync, mkdirSync, mkdtempSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import { extname, join, resolve, sep } from 'node:path';
@@ -71,14 +71,28 @@ const ICONS = ['climate', 'christmas-lights', 'lock', 'light-standing', 'speaker
   'washing-machine', 'door', 'motion-sensor', 'light-spot', 'light-table', 'light-outdoor', 'coffee-machine', 'tv', 'inverter',
   'car-charger', 'dryer', 'socket', 'fridge', 'kettle', 'oven', 'garage-door', 'doorbell', 'router', 'thermostat'];
 
-/** Downloads the icons into temp/screenshot-icons.js (`window.ICONS`), which the dev pages load. */
+/**
+ * Downloads the icons into temp/screenshot-icons.js (`window.ICONS`), which the dev pages load. When my.homey.app
+ * can't be reached (offline, or a network that blocks it) it warns and keeps the icons fetched before, or writes
+ * none, so the render goes on without them.
+ */
 export async function downloadIcons() {
+  const file = 'temp/screenshot-icons.js';
   const icons = {};
   for (const name of ICONS) {
-    const res = await fetch(`https://my.homey.app/img/devices/${name}.svg`);
+    let res;
+    try {
+      res = await fetch(`https://my.homey.app/img/devices/${name}.svg`);
+    } catch (err) {
+      const kept = existsSync(file);
+      console.warn(`Homey's icon library (my.homey.app) can't be reached (${err.cause?.code || err.message}): `
+        + (kept ? `keeping the icons in ${file}.` : 'rendering without device icons.'));
+      if (kept) return;
+      break;
+    }
     if (!res.ok) { console.warn(`icon ${name}: HTTP ${res.status}`); continue; }
     icons[name] = `data:image/svg+xml;base64,${Buffer.from(await res.text()).toString('base64')}`;
   }
   mkdirSync('temp', { recursive: true });
-  writeFileSync('temp/screenshot-icons.js', `window.ICONS = ${JSON.stringify(icons)};\n`);
+  writeFileSync(file, `window.ICONS = ${JSON.stringify(icons)};\n`);
 }
