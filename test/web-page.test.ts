@@ -127,3 +127,66 @@ describe("web dashboards page: a widget's link to a dashboard (dashboardLink)", 
     expect(dashboardLink(url, frame)).toBeNull();
   });
 });
+
+describe("web dashboards page: a screen's code (takeCode, useCode)", () => {
+  /** The page's code helpers, on an address, with `fetch` answering `answer` (status 200 unless given). */
+  function codePage(hash: string, answer: unknown = null, status = 200) {
+    const location = new URL(`${PAGE}${hash}`);
+    const history = { replaceState: vi.fn((_s: unknown, _t: string, url: string) => { location.href = new URL(url, location.href).href; }) };
+    const stored = new Map<string, string | null>([['widgetkeeper.web.key', 'old-key'], ['widgetkeeper.web.session', 'old-session']]);
+    const fetch = vi.fn(async () => ({ ok: status < 400, json: async () => answer }));
+    const wd: any = { key: 'old-key', session: 'old-session' };
+    const forgetKey = vi.fn(() => { wd.key = null; stored.set('widgetkeeper.web.key', null); });
+    const helpers = new Function('location', 'history', 'fetch', 'wd', 'storageSet', 'forgetKey', 't', 'APP_ID', 'AWAY',
+      'KEY_STORAGE', 'SESSION_STORAGE', [
+        constant('isScreenCode'), fn('takeCode'), `async ${fn('useCode')}`, 'return { isScreenCode, takeCode, useCode };',
+      ].join('\n'))(location, history, fetch, wd, (k: string, v: string | null) => stored.set(k, v), forgetKey,
+      (k: string, tokens?: object) => `${k}${tokens ? JSON.stringify(tokens) : ''}`, 'com.thomassidor.widgetkeeper', false,
+      'widgetkeeper.web.key', 'widgetkeeper.web.session');
+    return { ...helpers, location, fetch, wd, stored, forgetKey };
+  }
+
+  it('takes the code out of the address, alone or after a dashboard', () => {
+    const alone = codePage('#code=ABCD-EFGH');
+    expect(alone.takeCode()).toBe('ABCD-EFGH');
+    expect(alone.location.hash).toBe('');
+    const after = codePage('#/d/kitchen?code=abcdefgh');
+    expect(after.takeCode()).toBe('abcdefgh');
+    expect(after.location.hash).toBe('#/d/kitchen');
+    expect(codePage('#/d/kitchen').takeCode()).toBeNull();
+  });
+
+  it('tells a typed code from an API key', () => {
+    const { isScreenCode } = codePage('#/');
+    expect(['ABCD-EFGH', 'abcdefgh', 'abcd efgh'].map(isScreenCode)).toEqual([true, true, true]);
+    expect(['3b1c7d0e-1111-2222-3333-444455556666:aaaa:bbbb', 'ABCDEFG', ''].map(isScreenCode)).toEqual([false, false, false]);
+  });
+
+  it('swaps a code for the key and session without a key of its own', async () => {
+    const page = codePage('#/', { ok: true, key: 'screen-key', session: 'screen-session' });
+    await expect(page.useCode('ABCD-EFGH')).resolves.toBeNull();
+    expect(page.fetch).toHaveBeenCalledWith('/api/app/com.thomassidor.widgetkeeper/web/screen-code', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{"code":"ABCD-EFGH"}',
+    });
+    expect([page.wd.key, page.wd.session]).toEqual(['screen-key', 'screen-session']);
+    expect(page.stored.get('widgetkeeper.web.key')).toBe('screen-key');
+    // Without a session (no password, or one the screen needs again), the one stored stays.
+    const noSession = codePage('#/', { ok: true, key: 'screen-key' });
+    await noSession.useCode('ABCD-EFGH');
+    expect(noSession.wd.session).toBe('old-session');
+  });
+
+  it('forgets what this browser stored for a removed code, but not for the lock or a failure', async () => {
+    const wrong = codePage('#/', { ok: false, reason: 'wrong' });
+    await expect(wrong.useCode('ABCD-EFGH')).resolves.toBe('screenCodeWrong');
+    expect([wrong.forgetKey.mock.calls.length, wrong.wd.session, wrong.stored.get('widgetkeeper.web.session')]).toEqual([1, null, null]);
+    const locked = codePage('#/', { ok: false, reason: 'locked', retryAfter: 60 });
+    await expect(locked.useCode('ABCD-EFGH')).resolves.toBe('screenCodeLocked{"seconds":60}');
+    expect(locked.forgetKey).not.toHaveBeenCalled();
+    const off = codePage('#/', { error: 'Web dashboards are turned off' }, 500);
+    await expect(off.useCode('ABCD-EFGH')).resolves.toBe('off');
+    const down = codePage('#/', null, 502);
+    await expect(down.useCode('ABCD-EFGH')).resolves.toBe('loadFailed');
+    expect(down.wd.key).toBe('old-key');
+  });
+});

@@ -974,6 +974,12 @@ describe('web dashboards page', () => {
     expect(mp4.length).toBeLessThan(4096);
   });
 
+  it('bundles the qrcode-generator version installed, for the settings page\'s screen codes', () => {
+    const { version } = JSON.parse(readFileSync('node_modules/qrcode-generator/package.json', 'utf8'));
+    expect(readFileSync('settings/qrcode.js', 'utf8').slice(0, 200)).toContain(`qrcode-generator ${version} `);
+    expect(readFileSync('settings/index.html', 'utf8')).toContain('<script type="text/javascript" src="qrcode.js"></script>');
+  });
+
   it('bundles the socket.io-client version installed', () => {
     const { version } = JSON.parse(readFileSync('node_modules/socket.io-client/package.json', 'utf8'));
     expect(readFileSync('settings/socket.io.js', 'utf8').slice(0, 200)).toContain(`socket.io-client ${version} `);
@@ -1028,9 +1034,9 @@ describe('web dashboards: popups (wk-084)', () => {
     await expect(api.postPopupAnswer({ homey, params: { id }, body: { answer: true } })).rejects.toThrow('Not found');
   });
 
-  it('marks exactly the prompt page routes public', () => {
+  it('marks exactly the prompt page routes and a screen\'s code public', () => {
     const publicRoutes = Object.entries(app.api).filter(([, r]: [string, any]) => r.public).map(([name]) => name).sort();
-    expect(publicRoutes).toEqual(['postPopup', 'postPopupAnswer', 'postPopupImage']);
+    expect(publicRoutes).toEqual(['postPopup', 'postPopupAnswer', 'postPopupImage', 'postWebScreenCode']);
   });
 });
 

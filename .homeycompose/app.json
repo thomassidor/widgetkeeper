@@ -160,6 +160,27 @@
       "method": "POST",
       "path": "/web/login"
     },
+    "getWebScreens": {
+      "method": "GET",
+      "path": "/web/screens"
+    },
+    "postWebScreen": {
+      "method": "POST",
+      "path": "/web/screens"
+    },
+    "putWebScreen": {
+      "method": "PUT",
+      "path": "/web/screens/:id"
+    },
+    "deleteWebScreen": {
+      "method": "DELETE",
+      "path": "/web/screens/:id"
+    },
+    "postWebScreenCode": {
+      "method": "POST",
+      "path": "/web/screen-code",
+      "public": true
+    },
     "postWebLogout": {
       "method": "POST",
       "path": "/web/logout"

@@ -13,11 +13,13 @@ const routes: Record<string, { method: string, path: string, public?: boolean }>
 
 /**
  * The `/web/…` routes that answer without a web session: the setup (which answers `passwordRequired` itself), the
- * settings page's own (address and password) and signing in and out. Every other `/web/…` route is the page's and
+ * settings page's own (address, password and screens), signing in and out, and a screen's code (which gives the
+ * session; tested in test/web-screens.test.ts). Every other `/web/…` route is the page's and
  * must refuse while the web dashboards are off, away from home without remote access, and without the session
  * while a password is set; a new route lands in the table below by itself.
  */
-const OPEN = ['getWebSetup', 'getWebAddress', 'getWebPassword', 'putWebPassword', 'postWebLogin', 'postWebLogout'];
+const OPEN = ['getWebSetup', 'getWebAddress', 'getWebPassword', 'putWebPassword', 'postWebLogin', 'postWebLogout',
+  'getWebScreens', 'postWebScreen', 'putWebScreen', 'deleteWebScreen', 'postWebScreenCode'];
 const GUARDED = Object.entries(routes).filter(([name, r]) => r.path.startsWith('/web/') && !OPEN.includes(name)).map(([name]) => name);
 
 /** A route's call with the arguments every handler takes; `query` carries `away` and `session`. */

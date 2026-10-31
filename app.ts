@@ -37,6 +37,7 @@ import VariableService from './lib/VariableService.js';
 import WeatherService from './lib/WeatherService.js';
 import WebDashboardService from './lib/WebDashboardService.js';
 import WebPassword, { WEB_PASSWORD_REMOVE_CARD } from './lib/WebPassword.js';
+import WebScreens from './lib/WebScreens.js';
 import { widgetAutocompletes } from './lib/widgetAutocompletes.js';
 
 export default class WidgetkeeperApp extends Homey.App {
@@ -75,6 +76,7 @@ export default class WidgetkeeperApp extends Homey.App {
   web!: WebDashboardService;
   /** The web dashboards' optional password and the browsers signed in with it. */
   webPassword!: WebPassword;
+  webScreens!: WebScreens;
   /** Messages and questions that Flows show on web dashboards and Popups widgets. */
   popups!: PopupService;
   /** The user's personal API key, shared by Variables, Flow Buttons, Media and the Smart Stack (the app's token may only read). */
@@ -154,6 +156,7 @@ export default class WidgetkeeperApp extends Homey.App {
     this.registerThermostatFlows();
     this.webPassword = new WebPassword(this.homey, log);
     this.homey.flow.getActionCard(WEB_PASSWORD_REMOVE_CARD).registerRunListener(async () => this.webPassword.clear());
+    this.webScreens = new WebScreens(this.homey, this.webPassword, log);
     this.popups = new PopupService(this.homey, { cameras: this.cameras, web: this.web }, log, debug);
     this.registerPopupFlows();
     this.registerAutocompletes();

@@ -10,8 +10,8 @@
 
   window.WidgetkeeperWeb.part('views', (wd) => {
     const { appWidget, BACKGROUNDS, button, clone, confirmButton, darkQuery, DEFAULT_STRINGS, el, failed, HOMEY_WIDTH,
-      icon, KEY_STORAGE, LAYOUT, loadAll, persist, request, root, route, SESSION_STORAGE, start, STAY_STORAGE,
-      storageSet, t, THEME_STORAGE, unlocked } = wd;
+      icon, isScreenCode, KEY_STORAGE, LAYOUT, loadAll, persist, request, root, route, SESSION_STORAGE, start, STAY_STORAGE,
+      storageSet, t, THEME_STORAGE, unlocked, useCode } = wd;
 
     /** The app's logomark (assets/icon.svg): three rounded squares and a sparkle, stroked and filled in currentColor. */
     const LOGO = '<svg viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3">'
@@ -108,8 +108,16 @@
       const go = button('wd-btn primary', t('connect'), async () => {
         const value = input.value.trim();
         if (!value) return;
-        wd.key = value;
         go.disabled = true;
+        // A screen's code from the app settings, in place of a key.
+        if (isScreenCode(value)) {
+          const problem = await useCode(value);
+          go.disabled = false;
+          if (problem) { error.textContent = problem; input.select(); return; }
+          start();
+          return;
+        }
+        wd.key = value;
         try {
           await loadAll();
           storageSet(KEY_STORAGE, wd.key);
@@ -125,7 +133,8 @@
       form.append(input, go);
       // The home address is plain HTTP: the key (sent with every request) can be read on the network.
       const plain = location.protocol === 'http:' ? [el('p', 'wd-muted', t('keyPlain'))] : [];
-      root.append(centered(el('h1', 'wd-h1', t('keyTitle')), el('p', 'wd-muted', t('keyText')), ...plain, form, error));
+      root.append(centered(el('h1', 'wd-h1', t('keyTitle')), el('p', 'wd-muted', t('keyText')), ...plain, form,
+        el('p', 'wd-muted', t('keyOrCode')), error));
       input.focus();
     }
 

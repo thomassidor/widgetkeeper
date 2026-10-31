@@ -40,7 +40,12 @@ function isAway(query: Record<string, string> | undefined) {
  */
 function assertWebSession(app: WidgetkeeperApp, query: Record<string, string> | undefined) {
   app.web.assertEnabled(isAway(query));
-  if (app.webPassword.isSet && !app.webPassword.check(query?.session)) throw new Error('Web dashboards password required');
+  if (!signedIn(app, query)) throw new Error('Web dashboards password required');
+}
+
+/** No password, or a browser signed in with it, or a screen added with it (`WebScreens`). */
+function signedIn(app: WidgetkeeperApp, query: Record<string, string> | undefined) {
+  return !app.webPassword.isSet || app.webPassword.check(query?.session) || !!app.webScreens?.checkSession(query?.session);
 }
 
 export default {
@@ -106,7 +111,7 @@ export default {
       return { appId: homey.manifest.id, disabled: true, away: true, language, strings: await app.web.appStrings(language) };
     }
     // A password set and this browser not signed in with it: only what the page needs to ask for it.
-    if (app.webPassword.isSet && !app.webPassword.check(query?.session)) {
+    if (!signedIn(app, query)) {
       return { appId: homey.manifest.id, passwordRequired: true, language, strings: await app.web.appStrings(language) };
     }
     // The Homey id is for the realtime socket's handshake (`handshakeClient {token, homeyId}`).
@@ -245,7 +250,6 @@ export default {
     return callWidgetRoute(homey, WEB_APIS, type, method, path, body?.query, body?.body);
   },
 
-  /** Used by the app settings page: whether the web dashboards have a password, never the password. */
   /** The app settings page: the Keypad's codes by name and length (`{codes}`), never their digits or hashes. */
   async getKeypadCodes({ homey }: { homey: Homey }) {
     const app = homey.app as WidgetkeeperApp;
@@ -276,6 +280,7 @@ export default {
     return app.keypad.removeCode(params?.id);
   },
 
+  /** Used by the app settings page: whether the web dashboards have a password, never the password. */
   async getWebPassword({ homey }: { homey: Homey }) {
     const app = homey.app as WidgetkeeperApp;
     return { set: app.webPassword.isSet };
@@ -298,6 +303,46 @@ export default {
     const app = homey.app as WidgetkeeperApp;
     app.web.assertEnabled(isAway(query));
     return app.webPassword.login(body?.password);
+  },
+
+  /** The app settings page: the screens added with a code (`WebScreens`), by name, never their codes or keys. */
+  async getWebScreens({ homey }: { homey: Homey }) {
+    const app = homey.app as WidgetkeeperApp;
+    return { screens: app.webScreens.list() };
+  },
+
+  /**
+   * The app settings page: a new screen, `{name, key, current}` → `{ok, code, devices, screens}` (the code only this
+   * once) or `{ok: false, reason: name | keyInvalid | full | wrong | locked}`. While the password is set, `current`
+   * must be it: anyone whose API key may call the app reaches this route.
+   */
+  async postWebScreen({ homey, body }: { homey: Homey, body: { name?: unknown, key?: unknown, current?: unknown } }) {
+    const app = homey.app as WidgetkeeperApp;
+    return app.webScreens.add(body?.name, body?.key, body?.current);
+  },
+
+  /** The app settings page: a screen added before the password was set or changed, signed in with the current one. */
+  async putWebScreen({ homey, params, body }: { homey: Homey, params: Record<string, string>, body: { current?: unknown } }) {
+    const app = homey.app as WidgetkeeperApp;
+    return app.webScreens.signIn(params?.id, body?.current);
+  },
+
+  /** The app settings page: removes a screen (its code stops working; the page forgets the key it got from it). */
+  async deleteWebScreen({ homey, params }: { homey: Homey, params: Record<string, string> }) {
+    const app = homey.app as WidgetkeeperApp;
+    return app.webScreens.remove(params?.id);
+  },
+
+  /**
+   * The web dashboards page on a screen without a key yet: its code (`{code}`, from `#code=` or typed) → `{ok, key,
+   * session?}` or `{ok: false, reason: wrong | locked, retryAfter}`. Public, as the screen has no key to call the app
+   * with; wrong codes lock every code for a while. Only while the web dashboards are on (and away from home, Remote
+   * access; as for the rest, Homey doesn't say where a request came from, so that's the page's `away=1`).
+   */
+  async postWebScreenCode({ homey, query, body }: { homey: Homey, query?: Record<string, string>, body: { code?: unknown } }) {
+    const app = homey.app as WidgetkeeperApp;
+    app.web.assertEnabled(isAway(query));
+    return app.webScreens.redeem(body?.code);
   },
 
   /** The web dashboards page: signs the browser out (`?session=`). */

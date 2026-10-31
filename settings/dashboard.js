@@ -42,6 +42,9 @@
     keyPlaceholder: 'API key',
     connect: 'Connect',
     keyRejected: 'Homey didn\'t accept this key.',
+    keyOrCode: 'Added this screen in the Widgetkeeper app settings? Type its code instead.',
+    screenCodeWrong: 'That screen code doesn\'t work. It may have been removed in the Widgetkeeper app settings.',
+    screenCodeLocked: 'Too many wrong codes. Try again in __seconds__ s.',
     forgetKey: 'Forget the key',
     loadFailed: 'Could not reach Widgetkeeper on your Homey.',
     retry: 'Try again',
@@ -732,6 +735,50 @@
       return wd.saving;
     }
 
+    /**
+     * A screen's code (Web dashboards, Screens, in the app settings), from the address or typed on the key screen: the
+     * app swaps it for the screen's key, and its password session while the password it was added with is set. The
+     * route is public, as the screen has no key yet. Answers null once the key is in, else why not. A code that doesn't
+     * work (removed) forgets what this browser stored, as that came from it.
+     */
+    async function useCode(code) {
+      let res;
+      try {
+        const r = await fetch(`/api/app/${APP_ID}/web/screen-code${AWAY ? '?away=1' : ''}`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code }),
+        });
+        res = await r.json().catch(() => null);
+        if (!r.ok) return /turned off/.test(String(res && (res.error || res.message))) ? t(AWAY ? 'offAway' : 'off') : t('loadFailed');
+      } catch (err) {
+        return t('loadFailed');
+      }
+      if (res && res.ok && typeof res.key === 'string') {
+        wd.key = res.key;
+        storageSet(KEY_STORAGE, wd.key);
+        if (res.session) { wd.session = res.session; storageSet(SESSION_STORAGE, wd.session); }
+        return null;
+      }
+      if (res && res.reason === 'locked') return t('screenCodeLocked', { seconds: res.retryAfter || 30 });
+      forgetKey();
+      wd.session = null;
+      storageSet(SESSION_STORAGE, null);
+      return t('screenCodeWrong');
+    }
+
+    /** Whether typed text is a screen's code (8 letters and digits, a dash between the fours), not an API key. */
+    const isScreenCode = (text) => /^[A-Za-z0-9]{4}-?[A-Za-z0-9]{4}$/.test(text.replace(/\s/g, ''));
+
+    /**
+     * A screen's code in the address, `#code=ABCD-EFGH` (or after a route: `#/d/<id>?code=…`), taken out of it, so it
+     * isn't left in the address bar or a bookmark. The cast or bookmarked address keeps it, so every load uses it.
+     */
+    function takeCode() {
+      const m = location.hash.match(/^#(\/[^?]*)?\??code=([A-Za-z0-9-]{1,20})$/);
+      if (!m) return null;
+      history.replaceState(null, '', `${location.pathname}${location.search}${m[1] ? `#${m[1]}` : ''}`);
+      return m[2];
+    }
+
     /** A key Homey no longer accepts: not kept, and the socket that used it stops. */
     function forgetKey() {
       wd.key = null;
@@ -757,9 +804,9 @@
     // ---- The parts (settings/dashboard-<part>.js), each run once with `wd` ------------------------------------------
     Object.assign(wd, { APP_ID, applyDim, appWidget, AWAKE_STORAGE, BACKGROUNDS, bracketQuery, button, clone,
       confirmButton, darkQuery, DEFAULT_STRINGS, deleted, DIM_STORAGE, dimLevel, DRAG_SLOP, EDGE_PX, el, failed,
-      frames, HOMEY_WIDTH, homeyRequest, icon, keepAwake, KEY_STORAGE, LAYOUT, listeners, loadAll, loadSetup, MAX_DIM,
+      frames, HOMEY_WIDTH, homeyRequest, icon, isScreenCode, keepAwake, KEY_STORAGE, LAYOUT, listeners, loadAll, loadSetup, MAX_DIM,
       newId, opts, persist, request, root, route, SESSION_STORAGE, start, STAY_STORAGE, storageGet, storageSet,
-      stringsOf, t, THEME_STORAGE, toast, typeOf, unlocked });
+      stringsOf, t, THEME_STORAGE, toast, typeOf, unlocked, useCode });
     for (const name of PARTS) {
       const part = window.WidgetkeeperWeb.parts.get(name);
       if (!part) throw new Error(`settings/dashboard-${name}.js isn't loaded`);
@@ -805,6 +852,11 @@
     }
 
     async function start() {
+      const code = takeCode();
+      if (code) {
+        const problem = await useCode(code);
+        if (problem) { wd.renderKey(problem); return; }
+      }
       if (!wd.key) { wd.renderKey(); return; }
       try {
         await loadAll();
@@ -820,6 +872,8 @@
     }
 
     window.addEventListener('hashchange', async () => {
+      // A screen's code opened in a page already open: used as at a load.
+      if (/code=/.test(location.hash)) { start(); return; }
       // Leaving the editor: wait for the last save, so the view shows what was saved.
       await wd.saving;
       route();

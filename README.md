@@ -589,6 +589,14 @@ Turn on **Remote access** under **Apps → Widgetkeeper → Configure** for a se
 ### Password
 On top of the API key, you can set a password under **Apps → Widgetkeeper → Configure**; every browser then asks for it once. Setting, changing or removing it signs every browser out, and repeated wrong passwords lock the sign-in for a while. Changing or removing it asks for the current one; if you forget it, the Flow card **Remove the web dashboards password** removes it.
 
+### Screens without a keyboard
+A screen you can't type a key on, such as a Google Nest Hub you cast a dashboard to, or a wall tablet without a keyboard, can sign in with a short code instead. Under **Apps → Widgetkeeper → Configure → Web dashboards → Screens without a keyboard**, tap **Add screen**, give it a name and a personal API key made just for that screen (and the current password, if you've set one). You get a code like `K7QM-3XPA`, the dashboards' address with the code in it, and that address as a QR code:
+
+- Type the code on the screen's key screen in place of the key, or
+- open the address on the screen (cast it, scan the QR code or bookmark it): `…/dashboard.html#code=K7QM-3XPA`, or `…/dashboard.html#/d/<dashboard>?code=K7QM-3XPA` to open one dashboard. The screen swaps the code for the key on every load, so a screen that forgets what it stored, as a cast one does, still gets in.
+
+The code is shown only when you add the screen; if it's lost, remove the screen and add it again. Anyone with the code can use the screen's key, so make a key for that screen alone, with no more permission than it needs. **Remove** stops the code and signs that screen out the next time it opens the address; deleting the key under **Settings → API Keys** stops it everywhere. Repeated wrong codes lock every code for a while. Changing the password asks to sign each screen in again with the new one (**Sign in** beside it). Widgetkeeper keeps the screens' keys on the Homey with its other secrets, never in the app settings.
+
 ### Code
 A dashboard can take a [Keypad](#keypad) code: in its editor, pick one (or Any code) under the lock. Editing it and going back to the dashboards then take the code, so a wall tablet stays on its dashboard and nobody there can change its widgets, a Keypad's code included. The page asks for it and Widgetkeeper checks it; wrong ones lock as at a Keypad. Removing the code under **Keypad codes** opens the dashboard again. Like the Keypad's, it guards the screen, not your Homey: someone with the browser's API key and its developer tools can still get past it.
 

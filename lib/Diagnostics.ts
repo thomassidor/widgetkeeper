@@ -63,6 +63,7 @@ export default class Diagnostics {
       stack: await (this.homey.app as any)?.stack?.describe?.().catch((err: unknown) => String(err)) ?? null,
       web: (this.homey.app as any)?.web?.describe?.() ?? null,
       webPassword: (this.homey.app as any)?.webPassword?.describe?.() ?? null,
+      webScreens: (this.homey.app as any)?.webScreens?.describe?.() ?? null,
       popups: (this.homey.app as any)?.popups?.describe?.() ?? null,
     };
     try {

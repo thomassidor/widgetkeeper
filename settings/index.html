@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+  <!-- qrcode-generator (MIT), bundled by `npm run qr-code`: a screen's address as a QR code. -->
+  <script type="text/javascript" src="qrcode.js"></script>
   <style>
     /* Homey's settings stylesheet frames no section and has no help-text style (no `homey-form-help`), so the page
        draws its own: each section a card folded to its title and a line of where it stands. */
@@ -71,6 +73,15 @@
     .names-examples li:last-child { border-bottom: 0; }
     .names-from { color: var(--homey-color-mono-50, #7A7B7D); }
     .names-to { font-weight: var(--homey-font-weight-medium, 500); }
+    /* A screen's code, shown once, and its address as a QR code (dark modules on white, whatever the theme). */
+    .scr-code { margin: 12px 0 0; font: 700 28px/36px ui-monospace, Menlo, Consolas, monospace; letter-spacing: 2px; }
+    .scr-qr { margin: 12px 0 0; width: 180px; padding: 8px; background: #FFFFFF; border-radius: 5px; }
+    .scr-qr svg { display: block; width: 100%; height: auto; }
+    .scr-address { margin-top: 12px; }
+    /* A screen's row wraps its buttons under the name rather than squeezing it. */
+    .scr-list li { flex-wrap: wrap; }
+    .scr-list .kp-code-name { flex-basis: 8em; }
+    .scr-address .sub-title { font-size: 14px; }
     .web-url { display: block; margin-top: 4px; font-size: 14px; line-height: 20px; word-break: break-all; text-decoration: none; color: var(--homey-color-blue, #0082FA); }
     #report {
       display: block; width: 100%; box-sizing: border-box; height: 40vh; min-height: 180px; margin-top: 12px;
@@ -244,6 +255,44 @@
           </div>
           <p class="help status" id="pwStatus" role="status"></p>
           <p class="help" id="pwForgot" data-i18n="webPasswordForgot" hidden></p>
+        </div>
+        <!-- Screens that can't type a key (a Nest Hub cast to, a wall tablet): a key made for each, swapped for a short
+             code the page takes typed or in its address (#code=). The code is shown once, when it's made. -->
+        <div class="sub">
+          <p class="sub-title" data-i18n="webScreens">Screens without a keyboard</p>
+          <p class="help" data-i18n="webScreensHelp"></p>
+          <ul class="kp-codes scr-list" id="scrList"></ul>
+          <div id="scrForm" hidden>
+            <p class="kp-changing" id="scrSigning" hidden></p>
+            <div class="homey-form-group" id="scrNameGroup">
+              <input class="homey-form-input" id="scrName" type="text" maxlength="40" autocomplete="off" data-i18n-label="webScreenName">
+            </div>
+            <div class="homey-form-group" id="scrKeyGroup">
+              <input class="homey-form-input" id="scrKey" type="password" autocomplete="off" spellcheck="false" data-i18n-label="webScreenKey">
+            </div>
+            <div class="homey-form-group" id="scrCurrentGroup" hidden>
+              <input class="homey-form-input" id="scrCurrent" type="password" autocomplete="current-password" spellcheck="false" data-i18n-label="webPasswordCurrent">
+            </div>
+            <div class="row">
+              <button class="homey-button-primary-small-shadow" id="scrSave" data-i18n="webScreenSave" disabled>Add screen</button>
+              <button class="homey-button-secondary-small-shadow" id="scrCancel" data-i18n="cancel">Cancel</button>
+            </div>
+          </div>
+          <div id="scrShown" hidden>
+            <p class="state" id="scrShownTitle"></p>
+            <p class="scr-code" id="scrCode"></p>
+            <p class="help" data-i18n="webScreenOnce"></p>
+            <p class="help" id="scrNoDevices" data-i18n="webScreenNoDevices" hidden></p>
+            <div class="scr-qr" id="scrQr" hidden></div>
+            <div id="scrAddresses"></div>
+            <div class="row">
+              <button class="homey-button-primary-small-shadow" id="scrDone" data-i18n="webScreenDone">Done</button>
+            </div>
+          </div>
+          <div class="row" id="scrActions">
+            <button class="homey-button-secondary-small-shadow" id="scrNew" data-i18n="webScreenAdd">Add screen</button>
+          </div>
+          <p class="help status" id="scrStatus" role="status"></p>
         </div>
       </div>
       <!-- The backup is on the web dashboards page: my.homey.app runs this page in a frame that can't download a file. -->
@@ -595,6 +644,7 @@
       const webRemote = $('webRemote');
       const webAddresses = [...document.querySelectorAll('.web-address')];
       let webLoaded = false;
+      let webUrls = null; // the page's addresses, once read: {url, remoteUrl}
       let pwSet = false;
       // Off, or on at home (and away), and whether a password is set.
       function showWebLine() {
@@ -618,6 +668,7 @@
           webLoaded = true;
           Homey.api('GET', '/web/address', null, (err, res) => {
             if (err || !res) { webLoaded = false; return; }
+            webUrls = res;
             for (const block of webAddresses) {
               const url = res[block.dataset.address];
               const link = block.querySelector('.web-url');
@@ -698,6 +749,8 @@
       }
       function showPasswordState() {
         Homey.api('GET', '/web/password', null, (err, res) => {
+          // The screens, after the password: which need it again changes with it.
+          queueMicrotask(loadScreens);
           if (err) return;
           pwSet = !!(res && res.set);
           $('pwRemove').hidden = !pwSet;
@@ -747,6 +800,177 @@
       $('pwRemove').addEventListener('click', () => openPasswordForm('remove'));
       $('pwCancel').addEventListener('click', () => openPasswordForm(null));
       showPasswordState();
+
+      // ---- Screens without a keyboard: a key made for each, swapped for a code the web dashboards page takes. The
+      // code comes back once, when the screen is added; the list has names only. ----
+      const scrName = $('scrName');
+      const scrKey = $('scrKey');
+      const scrCurrent = $('scrCurrent');
+      const scrSave = $('scrSave');
+      const scrStatus = $('scrStatus');
+      let scrBusy = false;
+      let scrSigning = null; // the screen signing in again with the current password, while its form is open
+      const syncScreenButtons = () => {
+        scrSave.disabled = scrBusy || (pwSet && !scrCurrent.value)
+          || (!scrSigning && (!scrName.value.trim() || !scrKey.value.trim()));
+      };
+      // Add screen opens the name, key and (with a password) the current one; Sign in only the current one.
+      function openScreenForm(open, screen) {
+        scrSigning = open ? screen || null : null;
+        scrName.value = scrKey.value = scrCurrent.value = '';
+        $('scrNameGroup').hidden = $('scrKeyGroup').hidden = !!scrSigning;
+        $('scrCurrentGroup').hidden = !pwSet;
+        $('scrSigning').hidden = !scrSigning;
+        $('scrSigning').textContent = scrSigning ? t('webScreenSigning', { name: scrSigning.name }) : '';
+        scrSave.textContent = t(scrSigning ? 'webScreenSignIn' : 'webScreenSave');
+        showForm($('scrForm'), $('scrActions'), open);
+        if (open) (scrSigning ? scrCurrent : scrName).focus();
+        syncScreenButtons();
+      }
+      function screenRow(screen) {
+        const row = document.createElement('li');
+        const name = document.createElement('span');
+        name.className = 'kp-code-name';
+        name.textContent = screen.name;
+        const info = document.createElement('span');
+        info.className = 'kp-code-digits';
+        info.textContent = screen.needsPassword ? t('webScreenNeedsPassword')
+          : screen.used ? t('webScreenUsed', { date: new Date(screen.used).toLocaleDateString() }) : t('webScreenNotUsed');
+        row.append(name, info);
+        if (screen.needsPassword) {
+          const signIn = document.createElement('button');
+          signIn.className = 'homey-button-secondary-small-shadow';
+          signIn.textContent = t('webScreenSignIn');
+          signIn.addEventListener('click', () => { scrStatus.textContent = ''; $('scrShown').hidden = true; openScreenForm(true, screen); });
+          row.append(signIn);
+        }
+        // Remove takes a second tap within 3 s: the screen's code stops working.
+        const remove = document.createElement('button');
+        remove.className = 'homey-button-danger-small-shadow';
+        remove.textContent = t('kpRemove');
+        let armed = 0;
+        remove.addEventListener('click', () => {
+          if (Date.now() - armed > 3000) {
+            armed = Date.now();
+            remove.textContent = t('kpRemoveAgain');
+            setTimeout(() => { if (remove.isConnected) remove.textContent = t('kpRemove'); }, 3000);
+            return;
+          }
+          Homey.api('DELETE', `/web/screens/${encodeURIComponent(screen.id)}`, null, (err, res) => {
+            if (err) { scrStatus.textContent = err.message || String(err); return; }
+            if (scrSigning && scrSigning.id === screen.id) openScreenForm(false);
+            showScreens((res && res.screens) || []);
+            scrStatus.textContent = t('webScreenRemoved');
+          });
+        });
+        row.append(remove);
+        return row;
+      }
+      function showScreens(screens) {
+        $('scrList').replaceChildren(...screens.map(screenRow));
+      }
+      function loadScreens() {
+        Homey.api('GET', '/web/screens', null, (err, res) => { if (!err && res) showScreens(res.screens || []); });
+      }
+      /** The address as a QR code: an SVG of dark modules (qrcode-generator, settings/qrcode.js). */
+      function qrSvg(text) {
+        if (typeof window.qrcode !== 'function') return null;
+        const qr = window.qrcode(0, 'M');
+        qr.addData(text);
+        qr.make();
+        const n = qr.getModuleCount();
+        let d = '';
+        for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (qr.isDark(y, x)) d += `M${x} ${y}h1v1h-1z`;
+        const ns = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(ns, 'svg');
+        svg.setAttribute('viewBox', `0 0 ${n} ${n}`);
+        svg.setAttribute('shape-rendering', 'crispEdges');
+        svg.setAttribute('role', 'img');
+        svg.setAttribute('aria-label', text);
+        const path = document.createElementNS(ns, 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('fill', '#000000');
+        svg.append(path);
+        return svg;
+      }
+      /** A screen just added: its code, and the page's addresses with it (#code=), the home one as a QR code. */
+      function showCode(name, res) {
+        $('scrShownTitle').textContent = t('webScreenAdded', { name });
+        $('scrCode').textContent = res.code;
+        $('scrNoDevices').hidden = res.devices !== false;
+        const urls = [['url', 'webAddressHome'], ['remoteUrl', 'webAddressAway']]
+          .filter(([key]) => webUrls && webUrls[key] && (key === 'url' || webRemote.checked))
+          .map(([key, title]) => [`${webUrls[key].split('#')[0]}#code=${res.code}`, title]);
+        const qr = urls.length ? qrSvg(urls[0][0]) : null;
+        $('scrQr').replaceChildren(...(qr ? [qr] : []));
+        $('scrQr').hidden = !qr;
+        $('scrAddresses').replaceChildren(...urls.map(([url, title]) => {
+          const block = document.createElement('div');
+          block.className = 'scr-address';
+          const head = document.createElement('p');
+          head.className = 'sub-title';
+          head.textContent = t(title);
+          const link = document.createElement('span');
+          link.className = 'web-url';
+          link.textContent = url;
+          const row = document.createElement('div');
+          row.className = 'row';
+          const copy = document.createElement('button');
+          copy.className = 'homey-button-secondary-small-shadow';
+          copy.textContent = t('copy');
+          copy.addEventListener('click', async () => { scrStatus.textContent = (await copyText(url)) ? t('copied') : ''; });
+          row.append(copy);
+          block.append(head, link, row);
+          return block;
+        }));
+        $('scrShown').hidden = false;
+        $('scrActions').hidden = true;
+      }
+      /** Why the app didn't take it. */
+      function screenRefused(res) {
+        switch (res && res.reason) {
+          case 'name': return t('webScreenNeedName', { max: 40 });
+          case 'keyInvalid': return t('webScreenKeyInvalid');
+          case 'full': return t('webScreenFull', { max: 20 });
+          case 'missing': return t('webScreenGone');
+          default: return passwordRefused(res);
+        }
+      }
+      function saveScreen() {
+        scrBusy = true;
+        syncScreenButtons();
+        scrStatus.textContent = t('varChecking');
+        const signing = scrSigning;
+        const name = scrName.value.trim();
+        const done = (err, res) => {
+          scrBusy = false;
+          syncScreenButtons();
+          if (err) { scrStatus.textContent = err.message || String(err); return; }
+          if (!res || !res.ok) { scrStatus.textContent = screenRefused(res); return; }
+          openScreenForm(false);
+          showScreens(res.screens || []);
+          scrStatus.textContent = signing ? t('webScreenSignedIn') : '';
+          if (!signing) showCode(name, res);
+        };
+        if (signing) Homey.api('PUT', `/web/screens/${encodeURIComponent(signing.id)}`, { current: scrCurrent.value }, done);
+        else Homey.api('POST', '/web/screens', { name, key: scrKey.value.trim(), current: scrCurrent.value }, done);
+      }
+      for (const field of [scrName, scrKey, scrCurrent]) {
+        field.addEventListener('input', syncScreenButtons);
+        field.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !scrSave.disabled) scrSave.click(); });
+      }
+      scrSave.addEventListener('click', () => { if (!scrSave.disabled) saveScreen(); });
+      $('scrNew').addEventListener('click', () => { scrStatus.textContent = ''; openScreenForm(true); });
+      $('scrCancel').addEventListener('click', () => { scrStatus.textContent = ''; openScreenForm(false); });
+      // The code isn't shown again: Done clears it from the page.
+      $('scrDone').addEventListener('click', () => {
+        $('scrCode').textContent = '';
+        $('scrQr').replaceChildren();
+        $('scrAddresses').replaceChildren();
+        $('scrShown').hidden = true;
+        $('scrActions').hidden = false;
+        scrStatus.textContent = '';
+      });
 
       // ---- Diagnostics: read when its card is first opened. ----
       const select = $('device');

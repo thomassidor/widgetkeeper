@@ -25,7 +25,7 @@ const MAX_LOCK_MS = 15 * 60e3;
 type Session = { hash: string, created: number, used: number };
 type Stored = { salt: string, hash: string };
 type Refused = { ok: false, reason: 'wrong' | 'locked', retryAfter?: number };
-type Checked = { ok: true } | Refused;
+export type Checked = { ok: true } | Refused;
 type LoginResult = { ok: true, token: string } | Refused | { ok: false, reason: 'notSet' };
 type SetResult = { ok: true } | Refused | { ok: false, reason: 'tooShort' | 'tooLong' };
 
@@ -64,6 +64,24 @@ export default class WebPassword {
   get isSet(): boolean {
     const stored = this.secrets.get(WEB_PASSWORD_SETTING) as Stored | null;
     return !!(stored && typeof stored.salt === 'string' && typeof stored.hash === 'string');
+  }
+
+  /**
+   * Which password is set, for whatever was granted with it (a screen's session, `WebScreens`): its salt, new with
+   * every set or change, or null without one.
+   */
+  get stamp(): string | null {
+    const stored = this.secrets.get(WEB_PASSWORD_SETTING) as Stored | null;
+    return this.isSet && stored ? stored.salt : null;
+  }
+
+  /**
+   * Whether `current` is the password set (ok without one), one check at a time and counting toward the lock like a
+   * sign-in: for a route anyone whose key may call the app reaches (adding a screen).
+   */
+  confirm(current: unknown): Promise<Checked> {
+    if (!this.isSet) return Promise.resolve({ ok: true });
+    return this.queued(() => this.verify(current));
   }
 
   /**

@@ -225,3 +225,57 @@ it('Device names: the line, the separator only for its two choices, the examples
   expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'lastWord', separator: ' - ' }]);
   expect([$('namesLine').textContent, $('namesSepGroup').hidden, $('namesStatus').textContent]).toEqual(['namesLastWord', true, '']);
 });
+
+it('Screens: adds one with a key, shows its code and address once, signs one in again and removes one', () => {
+  let screens: any[] = [{ id: 's0', name: 'Hall', created: 1, used: 0, needsPassword: true }];
+  const { calls, $, typeIn, click } = loadPage((method, path, body) => {
+    if (path === '/web/password') return { set: true };
+    if (path === '/web/address') return { url: 'http://192.168.1.20/app/x/settings/dashboard.html', remoteUrl: 'https://h.connect.athom.com/app/x/settings/dashboard.html' };
+    if (path === '/web/screens' && method === 'GET') return { screens };
+    if (path === '/web/screens' && method === 'POST') {
+      if (body.current !== 'correct horse') return { ok: false, reason: 'wrong' };
+      screens = [...screens, { id: 's1', name: body.name, created: 2, used: 0, needsPassword: false }];
+      return { ok: true, id: 's1', code: 'ABCD-EFGH', devices: false, screens };
+    }
+    if (path === '/web/screens/s0' && method === 'PUT') { screens = screens.map(s => ({ ...s, needsPassword: false })); return { ok: true, screens }; }
+    if (path.startsWith('/web/screens/') && method === 'DELETE') { screens = screens.filter(s => `/web/screens/${s.id}` !== path); return { ok: true, screens }; }
+  }, { webDashboardsEnabled: true });
+  return Promise.resolve().then(() => {
+    expect(document.querySelector('#scrList li')!.textContent).toBe('HallwebScreenNeedsPasswordwebScreenSignInkpRemove');
+    // Add screen: a name, the key and (a password is set) the current password.
+    click('scrNew');
+    expect([$('scrForm').hidden, $('scrCurrentGroup').hidden, $('scrSave').disabled]).toEqual([false, false, true]);
+    typeIn('scrName', 'Kitchen');
+    typeIn('scrKey', 'the-key');
+    expect($('scrSave').disabled).toBe(true);
+    typeIn('scrCurrent', 'nope');
+    click('scrSave');
+    expect($('scrStatus').textContent).toBe('webPasswordWrong');
+    typeIn('scrCurrent', 'correct horse');
+    click('scrSave');
+    expect(calls.at(-1)).toEqual(['POST', '/web/screens', { name: 'Kitchen', key: 'the-key', current: 'correct horse' }]);
+    expect([$('scrForm').hidden, $('scrShown').hidden, $('scrCode').textContent, $('scrNoDevices').hidden]).toEqual([true, false, 'ABCD-EFGH', false]);
+    // The home address with the code (remote access is off, so not the away one).
+    expect([...document.querySelectorAll('#scrAddresses .web-url')].map(n => n.textContent))
+      .toEqual(['http://192.168.1.20/app/x/settings/dashboard.html#code=ABCD-EFGH']);
+    expect(document.querySelectorAll('#scrList li')).toHaveLength(2);
+    // Done takes the code off the page.
+    click('scrDone');
+    expect([$('scrShown').hidden, $('scrCode').textContent, $('scrActions').hidden]).toEqual([true, '', false]);
+    // Sign in again: the current password only.
+    (document.querySelectorAll('#scrList li')[0].querySelector('button') as HTMLButtonElement).click();
+    expect([$('scrNameGroup').hidden, $('scrKeyGroup').hidden, $('scrSigning').textContent]).toEqual([true, true, 'webScreenSigning{"name":"Hall"}']);
+    typeIn('scrCurrent', 'correct horse');
+    click('scrSave');
+    expect(calls.at(-1)).toEqual(['PUT', '/web/screens/s0', { current: 'correct horse' }]);
+    expect($('scrStatus').textContent).toBe('webScreenSignedIn');
+    // Remove: a second tap.
+    const remove = () => document.querySelectorAll('#scrList li')[0].querySelector('button') as HTMLButtonElement;
+    remove().click();
+    expect(remove().textContent).toBe('kpRemoveAgain');
+    remove().click();
+    expect(calls.at(-1)).toEqual(['DELETE', '/web/screens/s0', null]);
+    expect(document.querySelectorAll('#scrList li')).toHaveLength(1);
+    expect($('scrStatus').textContent).toBe('webScreenRemoved');
+  });
+});
