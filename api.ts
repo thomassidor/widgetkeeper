@@ -12,6 +12,7 @@ import popups from './widgets/popups/api.js';
 import shortcuts from './widgets/shortcuts/api.js';
 import stack, { PAGE_APIS } from './widgets/stack/api.js';
 import webpage from './widgets/webpage/api.js';
+import { readEnergyReport } from './lib/energyReport.js';
 
 type Homey = App['homey'];
 
@@ -64,6 +65,8 @@ export default {
         report.heatmapHistory = { error: err instanceof Error ? err.message : String(err) };
       }
     }
+    // Homey Energy's own report for a period, as it comes, to learn its shape (lib/energyReport.ts).
+    if (query.energyReport) report.energyReport = await readEnergyReport(homey, query.energyReport);
     return report;
   },
 

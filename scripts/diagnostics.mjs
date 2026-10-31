@@ -6,6 +6,8 @@
 //   npm run diagnostics -- --devices        plus the device list (quick actions, thermostats)
 //   npm run diagnostics -- --json           the whole report as JSON
 //   npm run diagnostics -- --heatmap <deviceId>:<capabilityId>[:<days>]   plus the heatmap widget's history for it (JSON)
+//   npm run diagnostics -- --energy-report day:2026-10-30   plus Homey Energy's own report for that day (or week:2026-W44,
+//                                           month:2026-10, year:2026) as it comes, and the reports it has (JSON)
 //   npm run diagnostics -- --debug on|off   turns routine (debug) logging on or off first
 
 import { execFileSync } from 'node:child_process';
@@ -24,6 +26,7 @@ const { values: opts } = parseArgs({
     json: { type: 'boolean' },
     debug: { type: 'string' },
     heatmap: { type: 'string' },
+    'energy-report': { type: 'string' },
   },
 });
 
@@ -54,13 +57,14 @@ if (opts.debug !== undefined) {
 const params = new URLSearchParams();
 if (opts.device) params.set('device', opts.device);
 if (opts.heatmap) params.set('heatmap', opts.heatmap);
+if (opts['energy-report']) params.set('energyReport', opts['energy-report']);
 const query = params.size ? `?${params}` : '';
 const report = homeyApi('GET', `/api/app/${APP_ID}/diagnostics${query}`);
 
 if (opts.json) {
   console.log(JSON.stringify(report, null, 2));
 } else {
-  const { log = [], devices, thermostats, device, heatmapHistory, ...status } = report;
+  const { log = [], devices, thermostats, device, heatmapHistory, energyReport, ...status } = report;
   console.log(Object.entries(status).map(([k, v]) => `${k}: ${typeof v === 'string' ? v : JSON.stringify(v)}`).join('\n'));
   if (opts.devices) {
     console.log('\nthermostats:', JSON.stringify(thermostats, null, 2));
@@ -68,6 +72,7 @@ if (opts.json) {
   }
   if (device) console.log('\ndevice:', JSON.stringify(device, null, 2));
   if (heatmapHistory) console.log('\nheatmapHistory:', JSON.stringify(heatmapHistory));
+  if (energyReport) console.log('\nenergyReport:', JSON.stringify(energyReport, null, 2));
   console.log(`\nlog (${log.length} lines):`);
   for (const line of log) console.log(line);
 }
