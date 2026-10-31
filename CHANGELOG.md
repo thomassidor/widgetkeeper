@@ -5,44 +5,26 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 ## 1.2.0
 
 ### New: Device names
-- **Show only part of a device's name on every widget:** under **Apps → Widgetkeeper → Configure → Device names**, choose the full name, the part before or after a separator you type (such as `|`, so *Ceiling lamp | Kitchen* shows as *Ceiling lamp*), or the last word. The page shows a few of your own names as they'll look, and open widgets change at once. The device lists in widget settings, Flow tokens and names typed on tiles stay as they are.
+- **Show only part of each device's name**, such as the part before `|` (*Ceiling lamp | Kitchen* becomes *Ceiling lamp*), or the last word: **Apps → Widgetkeeper → Configure → Device names**. Widget settings, Flows and names typed on tiles stay as they are.
 
 ### Web dashboards
-- **A live preview while you set up a widget:** the settings show the widget as it will look, beside them (above them on a narrow screen), and it follows each change you make. Cancel leaves the widget as it was.
+- **Screens:** sign a wall tablet, phone or Nest Hub in with a short code or QR code instead of an API key, each with a key of its own.
+- **A live preview** beside a widget's settings while you edit it.
 
-### Charts: any time span
-- **Charts is now Chart · Basic**, so it sits beside the other chart widgets in Homey's list: the one for how a value went, or how it compares with the period before or a second value. Its first setting now reads *One value*, *Two values, stacked* or *Two values on one chart*. Widgets already on your dashboards stay as they are.
-- **Any time span:** pick a number and a unit instead of a fixed list: the last 40 minutes, 18 hours, 10 days or 6 months, up to two years. Or whole periods: days from midnight, weeks from Monday, months from the 1st or years from 1 January, such as this week or this month and the two before, and with *Leave out the current period* the ones before it (yesterday, last week, the three months before this one). The time labels and bars fit whatever span you pick. Charts set up before keep their span until you pick a unit.
-- On one chart, two whole periods of one unit still compare (today over yesterday, this month over last).
-- Longer spans read Homey's history from the logs that hold them, stitched together where one doesn't, so a span of two weeks or six months comes out as detailed as Homey keeps it.
+### Charts
+- **Charts is now Chart · Basic**, beside the other chart widgets in Homey's list. Its first setting reads *One value*, *Two values, stacked* or *Two values on one chart*. Widgets already on your dashboards stay as they are.
+- **Any time span:** a number and a unit, up to two years, or whole days, weeks, months or years: today, this month and the two before, or with *Leave out the current period* yesterday or last week. Charts set up before keep their span.
+- Each chart widget shows its key numbers at the top; tap the chart for any point's.
 
-### New: Chart · Scatter (XY)
-- One value against another, a dot per hour (or a minute to a week, by the time span): the heat pump's power against the outdoor temperature, the humidity against the temperature. The newest dots are strongest, and a trend line shows how the one moves with the other, its slope at the top. Tap a dot for its values and time.
-
-### New: Chart · Daily Profile
-- Today's line over the usual day: each hour's average over the last 7 (or 3) days, dashed, with its spread as a band, so a day that runs high or low shows at once. The value now and the usual one for this hour sit at the top; tap for another hour.
-
-### New: Chart · Lines
-- Up to six values over time on one chart, a line each in its own colour: every room's temperature, each radiator's power. The first kind of value has its scale on the left (W and kW together), a second kind its own on the right, such as the heat pump's power among the room temperatures; a third kind is left out, its chip saying so. The last 24 hours or any time span. The first two values now sit at the top; tap for the line nearest your finger at that time. Lines, or lines with areas.
-
-### New: Chart · Min/Max
-- Each day's lowest to highest as a bar, with its average as a tick: how cold the nights and how warm the afternoons were. The last four weeks by default, or any time span (a bar an hour over a day, a month over a year). The latest bar's high and low sit at the top; tap a bar for its own.
-
-### New: Chart · Ranking
-- One value from up to eight devices side by side, sorted: each room's temperature now as a dot and its range today as a bar, warmest first. The highest and the lowest sit at the top; tap a row for its own.
-
-### New: Chart · Timeline
-- When was it on, open or moving? A row for each of up to eight on/off values over the day (the heating, a motion sensor, a door, the TV), with a band where it was on, open or moving. How long the first was on and how often the second turned on sit at the top; tap a row or a band for its own. Homey keeps only a value's last 50 changes, so the app records them itself from the first time they're shown, shared with the Insights Heatmap.
-- **Numbers too:** a row can be a number, on while it's above or below a threshold you set (the heater above 50 W, the bedroom below 18 °C), from Insights' history.
-
-### New: Chart · Stacked
-- Who uses the power? Up to six values stacked on one time axis, with a total (such as the house's meter) the rest as Other. Values below zero, such as solar, stack downwards. The total now and the largest part's share sit at the top; tap for a moment's. Areas or bars.
-
-### New: Chart · Totals
-- How much a value went up in each hour, day or month, like the Homey app's Energy tab: a bar an hour for today or yesterday, a day for this or last week or month, a month for this or last year, or any other span (the last 30 days, the three months from the 1st). The period's total sits at the top; tap a bar for its own.
-- Its value list puts meters first.
-- **Compare with the period before:** last week's, last month's or last year's bars beside this one's, day by day or month by month, with both totals at the top.
-- Any value that only counts up and has Insights history: a meter's kWh or m³, a rain gauge's millimetres, hours of TV, and utility meters that start again each week, month or year (the bars count on across the reset).
+### New chart widgets
+- **Chart · Totals:** how much a value went up per hour, day or month, like the Energy tab, beside the period before if you like. Any meter, rain gauge or counter, including ones that start again each month or year.
+- **Chart · Scatter (XY):** one value against another, a dot an hour, with a trend line: does the heat pump work harder when it's colder?
+- **Chart · Daily Profile:** today's line over the usual day (the last 7 or 3 days) and its spread: is today unusual?
+- **Chart · Lines:** up to six values as lines on one chart, such as every room's temperature, with a second scale on the right for a different kind of value.
+- **Chart · Min/Max:** each day's low to high as a bar, with its average: how cold the nights, how warm the afternoons.
+- **Chart · Ranking:** one value across up to eight devices, sorted: each room's temperature now and its range today.
+- **Chart · Timeline:** when was it on, open or moving? A row per value over the day; a number can be a row too, on above or below a threshold. On/off history starts the first time the widget shows it.
+- **Chart · Stacked:** who uses the power? Up to six values stacked over time, the rest of a total (such as the main meter) as Other. Values below zero, such as solar, stack downwards.
 
 ## 1.1.2
 

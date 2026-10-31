@@ -19,7 +19,7 @@ Two to six cameras in one grid of snapshots; tap one to watch it live<br clear="
 
 <p><a href="#chart--basic"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/charts-dark.png"><img src="docs/previews/charts-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--basic"><b>Chart · Basic</b></a><br>
-How did it go? One value over any span, from minutes to two years, or against the period before or a second value<br clear="left"></p>
+How did it go? One value over any span up to two years, or against the period before or a second value<br clear="left"></p>
 
 <p><a href="#chart--daily-profile"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/typicalday-dark.png"><img src="docs/previews/typicalday-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--daily-profile"><b>Chart · Daily Profile</b></a><br>
@@ -31,7 +31,7 @@ Up to six values over time on one chart, a line each: every room's temperature s
 
 <p><a href="#chart--minmax"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/dailyrange-dark.png"><img src="docs/previews/dailyrange-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--minmax"><b>Chart · Min/Max</b></a><br>
-Each day's lowest to highest as a bar, its average across it: how much did it swing?<br clear="left"></p>
+Each day's lowest to highest as a bar: how much did it swing?<br clear="left"></p>
 
 <p><a href="#chart--ranking"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/compare-dark.png"><img src="docs/previews/compare-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--ranking"><b>Chart · Ranking</b></a><br>
@@ -39,7 +39,7 @@ One value across devices, now and its range today, sorted: which room is warmest
 
 <p><a href="#chart--scatter-xy"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/scatter-dark.png"><img src="docs/previews/scatter-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--scatter-xy"><b>Chart · Scatter (XY)</b></a><br>
-One value against another, a dot an hour, with the line that fits them: does the heat pump work harder when it's colder?<br clear="left"></p>
+One value against another, a dot an hour: does the heat pump work harder when it's colder?<br clear="left"></p>
 
 <p><a href="#chart--stacked"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/stacked-dark.png"><img src="docs/previews/stacked-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--stacked"><b>Chart · Stacked</b></a><br>
@@ -47,11 +47,11 @@ Several values stacked on one time axis, the rest of a total as Other: who uses 
 
 <p><a href="#chart--timeline"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/timeline-dark.png"><img src="docs/previews/timeline-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--timeline"><b>Chart · Timeline</b></a><br>
-When was it on, open, moving or past a threshold? A row per value over the day, bands where it was true<br clear="left"></p>
+When was it on, open or moving? A row per value over the day<br clear="left"></p>
 
 <p><a href="#chart--totals"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/totals-dark.png"><img src="docs/previews/totals-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--totals"><b>Chart · Totals</b></a><br>
-How much a value went up per hour, day or month (kWh, rain, hours of TV), like the Energy tab, over any span, beside the period before if you like<br clear="left"></p>
+How much a value went up per hour, day or month (kWh, rain, hours of TV), like the Energy tab<br clear="left"></p>
 
 <p><a href="#clock"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/clock-dark.png"><img src="docs/previews/clock-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#clock"><b>Clock</b></a><br>
@@ -194,89 +194,75 @@ Your cameras as a grid of snapshots that refresh every few seconds (cameras with
 ## Chart · Basic
 <img src="docs/screenshots/charts.png" alt="Chart · Basic on a Homey dashboard: the outdoor temperature as a line, and the power use as bars" width="358">
 
-How did it go? Any value that Homey logs in Insights, over any [time span](#time-spans) from minutes to two years, as a line, an area or bars, drawn like Electricity Overview's charts. The value now sits at the top in the chart's colour; tap the chart to see the value at that moment.
+How did it go? A value over any [time span](#time-spans), as a line, an area or bars, drawn like Electricity Overview's charts. Two values can share one chart, to compare a value with the period before it (today over yesterday) or with a second value on its own scale (the power use against the outdoor temperature), or stack as two charts in one widget.
 
-It also compares. Put two values on one chart to see a value against the period before it (today over yesterday, this month over last, of the same value), or against a second value with its own scale (the power use against the outdoor temperature). Or stack two charts in one widget.
+**Settings:** one value, two stacked or two on one chart (sharing chart 1's span, unless both are whole periods of one unit, such as today and yesterday), one scale for both; per chart the value, [time span](#time-spans), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (a finished period's average); the legend; [colour style](#colour-style).
 
-**Settings:** one value, two values stacked or two values on one chart (they share chart 1's time span, or compare whole periods of one unit: today with yesterday, this week with last, and so on), and on one chart one scale for both; per chart the value, [time span](#time-spans), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (a finished period shows its average there); the legend above or below the chart; [colour style](#colour-style).
-
-For how much a value went up in each hour, day or month (a meter's kWh, rain, hours of TV), as bars, see [Chart · Totals](#chart--totals). For more than two values on one chart (every room's temperature), see [Chart · Lines](#chart--lines).
+For totals per hour, day or month, see [Chart · Totals](#chart--totals); for more than two values, [Chart · Lines](#chart--lines).
 
 <a name="time-spans"></a>
 
-**Time spans** (both chart widgets): a number and a unit. Minutes, hours, days, weeks, months or years are the last so many up to now (40 minutes, 24 hours, 18 months). Days from midnight, weeks from Monday, months from the 1st and years from 1 January are whole periods, the current one included (1 day from midnight is today, 3 months from the 1st this month and the two before), or with *Leave out the current period* the ones before it (yesterday, last week, the three months before this one). Up to two years: Insights keeps no more. A chart set up before 1.2.0 keeps its span.
+**All chart widgets** show their key numbers at the top; tap the chart for any point's. They take any value Homey logs in Insights, which keeps 5-minute steps for a day, hourly ones for about a week and 6-hour averages beyond that, so over longer spans short peaks are smoothed.
+
+**Time spans:** a number and a unit. Minutes to years count back from now (40 minutes, 24 hours, 18 months). Days from midnight, weeks from Monday, months from the 1st and years from 1 January are whole periods, the current one included (3 months from the 1st is this month and the two before); with *Leave out the current period*, the ones before it (yesterday, last week). Up to two years: Insights keeps no more. Charts set up before 1.2.0 keep their span.
 
 ## Chart · Daily Profile
 <img src="docs/screenshots/typicalday.png" alt="Chart · Daily Profile on a Homey dashboard: the house's power today as a line, a little over its usual day, which is dashed with its spread as a band, peaking in the morning and the evening" width="358">
 
-A value today against its usual day: each hour's average over the last 7 days (or 3), today left out, dashed, with their lowest to highest as a band, and today's line over it up to now. The value now and the usual one for this hour sit at the top; tap the chart for another hour.
-
-It takes any value that Homey logs in Insights, read from its hourly log (which reaches a week back).
+Is today unusual? Today's line over the usual day: each hour's average over the last 7 (or 3) days, dashed, with their lowest to highest as a band.
 
 **Settings:** the value, usual day from (the last 7 or 3 days), show the spread, smooth line, scale (fitted or from zero), title, the values at the top, colour, [colour style](#colour-style).
 
 ## Chart · Lines
 <img src="docs/screenshots/lines.png" alt="Chart · Lines on a Homey dashboard: the last 24 hours of four rooms' temperatures, a line each in blue, red, orange and yellow, the living room's and the kitchen's now at the top" width="358">
 
-Up to six values over time on one chart, a line each in its own colour: every room's temperature, each radiator's power, the outdoor and indoor humidity, or the heat pump's power among the temperatures. The last 24 hours by default, or any other [time span](#time-spans). The first two values now sit at the top (over a finished span, such as yesterday, their averages); tap the chart for the line nearest your finger at that time, with a dot on each line there.
+Up to six values over time on one chart, a line each: every room's temperature, each radiator's power. The last 24 hours by default. The first value's kind of units gets the scale on the left (W and kW share one), a second kind, such as power among temperatures, a scale on the right; a third kind is left out.
 
-The first value's kind sets the scale on the left (W and kW go on one scale), and a second kind of value, such as power beside temperatures, gets a scale on the right; each kind's units show on its first chip. A value in a third kind of units is left out, its chip saying so. To compare one value with the period before it (today over yesterday), use [Chart · Basic](#chart--basic).
-
-**Settings:** values 1 to 6 each with its colour, [time span](#time-spans), style (lines, or lines with areas), scale (fit to the values or from zero), smooth lines, the legend above or below the chart, title, the values at the top, [colour style](#colour-style).
+**Settings:** values 1 to 6 each with its colour, [time span](#time-spans), style (lines, or lines with areas), scale (fitted or from zero), smooth lines, the legend, title, the values at the top, [colour style](#colour-style).
 
 ## Chart · Min/Max
 <img src="docs/screenshots/dailyrange.png" alt="Chart · Min/Max on a Homey dashboard: the outdoor temperature's lowest to highest each day of the last four weeks as floating bars, each with its average" width="358">
 
-A value's lowest to highest in each day as a floating bar, its average as a tick across it: how cold the nights and how warm the afternoons were, how much the humidity swung. The last four weeks by default, a bar a day; another [time span](#time-spans) gets its own bars (an hour each over a day, a month each over a year). The latest bar's high and low sit at the top; tap a bar for its own.
-
-It takes any value that Homey logs in Insights. Insights keeps spans over eight days in 6-hour averages, so a day's low and high there are those of its 6-hour steps, a little milder than the real ones.
+Each day's lowest to highest as a bar, its average as a tick: how cold the nights and how warm the afternoons were. The last four weeks by default; other spans get their own bars (an hour each over a day, a month each over a year). Past eight days, Insights' 6-hour averages make the lows and highs a little milder than the real ones.
 
 **Settings:** the value, [time span](#time-spans), average tick, scale (fitted or from zero), title, the values at the top, colour, [colour style](#colour-style).
 
 ## Chart · Ranking
 <img src="docs/screenshots/compare.png" alt="Chart · Ranking on a Homey dashboard: six rooms' temperatures, warmest first, each with today's range as a bar and the temperature now as a dot" width="358">
 
-One value from up to eight devices side by side, a row each on one shared scale: the value now as a dot and its lowest to highest today (or over another [time span](#time-spans)) as a bar, warmest first (or coldest first, or as you picked them). The highest and the lowest sit at the top; tap a row for its value and range. A device with several values picked shows them by name.
+One value from up to eight devices on one scale, sorted: each room's temperature now as a dot and its range today (or over another [time span](#time-spans)) as a bar.
 
 **Settings:** values 1 to 8, [time span](#time-spans) for the ranges, order (highest first, lowest first or as picked), show the range, title, the values at the top, colour, [colour style](#colour-style).
 
 ## Chart · Scatter (XY)
 <img src="docs/screenshots/scatter.png" alt="Chart · Scatter (XY) on a Homey dashboard: the heat pump's power against the outdoor temperature over a week, a dot an hour, falling as it gets warmer, with the trend line" width="358">
 
-One value against another: each dot is where both were at the same time, their averages over an hour (or, by the [time span](#time-spans), a minute to a week). The newer dots are stronger, the newest is ringed, and a dashed line shows the trend through them, its slope at the top: how much more the heat pump draws for each degree colder, how much the humidity rises with the temperature. Tap a dot to see its values and when.
-
-It takes any two values that Homey logs in Insights. Over spans longer than eight days Insights keeps 6-hour steps, so a dot is at least 6 hours there.
+One value against another, a dot an hour (a minute to a week, by the [time span](#time-spans)), newest strongest, with a trend line whose slope shows at the top: how much more the heat pump draws for each degree colder.
 
 **Settings:** the value across (x) and the value up (y), [time span](#time-spans), one dot per (automatic, hour or day), trend line, fade older dots, title, the values at the top, colour, [colour style](#colour-style).
 
 ## Chart · Stacked
 <img src="docs/screenshots/stacked.png" alt="Chart · Stacked on a Homey dashboard: the last 24 hours of the house's power as stacked areas, the rest at the bottom, then the heat pump, the oven and the EV charger" width="358">
 
-Who uses the power? Up to six values stacked on one time axis, the last 24 hours by default (or any other [time span](#time-spans)): the heat pump, the oven, the EV charger. Pick a total too, such as the house's meter, and what the others don't cover shows as Other at the bottom. A value below zero, such as solar or a battery charging, stacks downwards from the zero line. The total now and the largest part's share of the span sit at the top; tap the chart for a moment's total and the part under your finger.
+Who uses the power? Up to six values of one kind stacked over time, the last 24 hours by default: the heat pump, the oven, the EV charger. With a total, such as the house's meter, the rest shows as Other. Values below zero, such as solar, stack downwards.
 
-The values must be the same kind, such as power: W and kW are put on one scale, and a value in other units is left out, its chip saying so.
-
-**Settings:** the total (optional), values 1 to 6 each with its colour, [time span](#time-spans), style (areas or bars), the legend above or below the chart, title, the values at the top, [colour style](#colour-style).
+**Settings:** the total (optional), values 1 to 6 each with its colour, [time span](#time-spans), style (areas or bars), the legend, title, the values at the top, [colour style](#colour-style).
 
 ## Chart · Timeline
 <img src="docs/screenshots/timeline.png" alt="Chart · Timeline on a Homey dashboard: today's heating, hall motion, front door and TV as rows with coloured bands where each was on, open or moving" width="358">
 
-When was it on, open or moving? A row for each of up to eight on/off values (the heating, a motion sensor, a door, the TV) over today, or any other [time span](#time-spans) up to about two weeks, with a band where it was on, open or moving. The time the first was on and how often the second turned on sit at the top; tap a row for its own, or a band for when it was.
+When was it on, open or moving? A row for each of up to eight on/off values (the heating, a motion sensor, a door), over today or up to about two weeks, with a band where it was. Homey keeps only a value's last 50 changes, so the app records them itself from the first time they're shown, shared with the [Insights Heatmap](#insights-heatmap); before that, a row is dotted.
 
-Homey's Insights keeps only a value's last 50 changes, so the app records each one itself from the first time it's shown, as the [Insights Heatmap](#insights-heatmap) does (the two share it). Before the first change it knows of, a row is a dotted line rather than a guess.
+A row can also be a number, on above or below a threshold (the heater above 50 W, the bedroom below 18 °C), from Insights' history.
 
-A row can also be a number, on while it's above (or below) a threshold you set: the heater above 50 W, the bedroom below 18 °C, the humidity above 70 %. Its history comes from Insights, so it's there from the start, but Insights keeps averages (5 minutes over a day, an hour over a week), so a peak of a minute or two over a week may not show.
-
-**Settings:** values 1 to 8 each with its colour, and for a number its threshold and whether it's on above or below it, [time span](#time-spans), title, the values at the top, [colour style](#colour-style).
+**Settings:** values 1 to 8 each with its colour, and for a number its threshold and above or below, [time span](#time-spans), title, the values at the top, [colour style](#colour-style).
 
 ## Chart · Totals
 <img src="docs/screenshots/totals.png" alt="Chart · Totals on a Homey dashboard: the main meter's kilowatt-hours a month this year, beside last year's, both years' totals at the top" width="358">
 
-How much a value went up in each hour, day or month, like the Homey app's Energy tab: a bar an hour for a day, a day for a week or a month, a month for a year, and for other spans about 12 to 28 bars on the clock. Turn on *Compare with the period before* for last week's, last month's or last year's bar beside each (the 3rd of the month beside the 3rd, March beside March). The totals sit at the top; tap a bar for its own.
+How much a value went up per hour, day or month, like the Homey app's Energy tab, optionally beside the period before (March beside last year's March). Any value that only counts up: a meter's kWh or m³, a rain gauge, hours of TV, or a meter that starts again each month or year.
 
-It takes any value that only counts up and that Homey logs in Insights: an electricity, water or gas meter's kWh or m³, a rain gauge's millimetres, hours of TV, a car's odometer, or a utility meter that starts again each week, month or year (it counts on across the reset). The bars come from Insights, which keeps a month or a year in 6-hour steps, so a day's bar in a month view can be off by an hour or two at its edges.
-
-**Settings:** the value (meters first), [time span](#time-spans) (any number of hours, days, weeks, months or years, or whole ones: this week, last month …), compare with the period before, title, the totals at the top, colour, [colour style](#colour-style).
+**Settings:** the value (meters first), [time span](#time-spans), compare with the period before, title, the totals at the top, colour, [colour style](#colour-style).
 
 ## Clock
 <img src="docs/screenshots/clock.png" alt="Clock on a Homey dashboard" width="358">
@@ -590,12 +576,12 @@ Turn on **Remote access** under **Apps → Widgetkeeper → Configure** for a se
 On top of the API key, you can set a password under **Apps → Widgetkeeper → Configure**; every browser then asks for it once. Setting, changing or removing it signs every browser out, and repeated wrong passwords lock the sign-in for a while. Changing or removing it asks for the current one; if you forget it, the Flow card **Remove the web dashboards password** removes it.
 
 ### Screens
-A browser or screen can sign in with a short code instead of a long API key: a wall tablet, a phone, a computer, or a screen you can't type on, such as a Google Nest Hub you cast a dashboard to. Under **Apps → Widgetkeeper → Configure → Web dashboards → Screens**, tap **Add screen**, give it a name and a personal API key made just for it (and the current password, if you've set one). You get a code like `K7QM-3XPA`, the dashboards' address with the code in it, and that address as a QR code:
+A tablet, phone or a screen you can't type on, such as a Google Nest Hub you cast to, can sign in with a short code instead of an API key. Under **Apps → Widgetkeeper → Configure → Web dashboards → Screens**, tap **Add screen** and give it a name and a personal API key of its own (and the password, if you've set one). You get a code like `K7QM-3XPA`, shown only once, and an address with it, also as a QR code:
 
-- Type the code on the page in place of a key, or
-- open the address on the screen (scan the QR code, cast it or bookmark it): `…/dashboard.html#code=K7QM-3XPA`, or `…/dashboard.html#/d/<dashboard>?code=K7QM-3XPA` to open one dashboard. The page swaps the code for the key on every load, so a screen that forgets what it stored, as a cast one does, still gets in.
+- type the code on the page in place of a key, or
+- open the address on the screen: `…/dashboard.html#code=K7QM-3XPA`, or `…/dashboard.html#/d/<dashboard>?code=K7QM-3XPA` for one dashboard. It works on every load, so a cast screen that forgets everything still gets in.
 
-**Screens** lists every one with when it was last used. The code is shown only when you add the screen; if it's lost, remove the screen and add it again. Anyone with the code can use that screen's key, so make a key for each screen with no more permission than it needs. **Remove** stops the code, and a screen that opens its address again is signed out; one that already stored the key keeps it, so for a lost or stolen device, delete its key in the Homey web app under **Settings → API Keys** too. Repeated wrong codes lock every code for a while. Changing the password asks to sign each screen in again with the new one (**Sign in** beside it). Widgetkeeper keeps the screens' keys on the Homey with its other secrets, never in the app settings.
+Anyone with a code can use its key, so give each screen only the permissions it needs. **Remove** stops the code; for a lost device, also delete its key in the Homey web app (**Settings → API Keys**). Repeated wrong codes lock every code for a while. After a password change, sign each screen in again (**Sign in** beside it).
 
 ### Code
 A dashboard can take a [Keypad](#keypad) code: in its editor, pick one (or Any code) under the lock. Editing it and going back to the dashboards then take the code, so a wall tablet stays on its dashboard and nobody there can change its widgets, a Keypad's code included. The page asks for it and Widgetkeeper checks it; wrong ones lock as at a Keypad. Removing the code under **Keypad codes** opens the dashboard again. Like the Keypad's, it guards the screen, not your Homey: someone with the browser's API key and its developer tools can still get past it.

@@ -35,19 +35,19 @@
         "ar": "القيمة 1"
       },
       "hint": {
-        "en": "Something that is on or off, open or closed, such as the heating, a door or motion, or a number, on above or below its threshold. Empty ones are left out. The app records on/off values from the first time they're shown and keeps about two weeks; numbers come from Insights.",
-        "nl": "Iets dat aan of uit, open of dicht is, zoals de verwarming, een deur of beweging, of een getal, aan boven of onder de drempel. Lege worden weggelaten. De app legt aan/uit-waarden vast vanaf de eerste keer dat ze getoond worden en bewaart ongeveer twee weken; getallen komen uit Insights.",
-        "de": "Etwas, das an oder aus, offen oder geschlossen ist, etwa die Heizung, eine Tür oder Bewegung, oder eine Zahl, an über oder unter ihrer Schwelle. Leere werden ausgelassen. Die App zeichnet An/Aus-Werte ab der ersten Anzeige auf und behält etwa zwei Wochen; Zahlen kommen aus Insights.",
-        "fr": "Quelque chose d'allumé ou éteint, ouvert ou fermé, comme le chauffage, une porte ou un mouvement, ou un nombre, allumé au-dessus ou en dessous de son seuil. Les vides sont ignorées. L'app enregistre les valeurs marche/arrêt dès leur premier affichage et garde environ deux semaines ; les nombres viennent d'Insights.",
-        "it": "Qualcosa che è acceso o spento, aperto o chiuso, come il riscaldamento, una porta o il movimento, oppure un numero, acceso sopra o sotto la sua soglia. Quelli vuoti sono esclusi. L'app registra i valori acceso/spento dalla prima volta che vengono mostrati e conserva circa due settimane; i numeri vengono da Insights.",
-        "sv": "Något som är på eller av, öppet eller stängt, som värmen, en dörr eller rörelse, eller ett tal, på över eller under sin gräns. Tomma utelämnas. Appen registrerar på/av-värden från första gången de visas och sparar ungefär två veckor; tal kommer från Insights.",
-        "no": "Noe som er på eller av, åpent eller lukket, som varmen, en dør eller bevegelse, eller et tall, på over eller under terskelen. Tomme utelates. Appen registrerer på/av-verdier fra første gang de vises og tar vare på omtrent to uker; tall kommer fra Insights.",
-        "es": "Algo que está encendido o apagado, abierto o cerrado, como la calefacción, una puerta o el movimiento, o un número, encendido por encima o por debajo de su umbral. Los vacíos se omiten. La app registra los valores de encendido/apagado desde la primera vez que se muestran y guarda unas dos semanas; los números vienen de Insights.",
-        "da": "Noget, der er tændt eller slukket, åbent eller lukket, som varmen, en dør eller bevægelse, eller et tal, tændt over eller under sin tærskel. Tomme udelades. Appen registrerer tænd/sluk-værdier fra første gang, de vises, og gemmer omkring to uger; tal kommer fra Insights.",
-        "ru": "То, что включено или выключено, открыто или закрыто: отопление, дверь, движение; или число, включённое выше или ниже порога. Пустые пропускаются. Значения вкл/выкл приложение записывает с первого показа и хранит около двух недель; числа берутся из Insights.",
-        "pl": "Coś, co jest włączone lub wyłączone, otwarte lub zamknięte, np. ogrzewanie, drzwi lub ruch, albo liczba, włączona powyżej lub poniżej progu. Puste są pomijane. Wartości wł./wył. aplikacja zapisuje od pierwszego wyświetlenia i przechowuje około dwóch tygodni; liczby pochodzą z Insights.",
-        "ko": "켜짐/꺼짐, 열림/닫힘이 있는 값(예: 난방, 문, 움직임)이나 기준값보다 높거나 낮을 때 켜지는 숫자 값입니다. 빈 항목은 빠집니다. 켜짐/꺼짐 값은 처음 표시될 때부터 앱이 기록하며 약 2주간 보관하고, 숫자 값은 Insights에서 가져옵니다.",
-        "ar": "شيء يعمل أو يتوقف، مفتوح أو مغلق، مثل التدفئة أو باب أو حركة، أو قيمة رقمية مفعّلة فوق عتبتها أو تحتها. تُستبعد الفارغة. يسجل التطبيق قيم التشغيل/الإيقاف منذ أول عرض لها ويحتفظ بنحو أسبوعين؛ وتأتي القيم الرقمية من Insights."
+        "en": "On or off, open or closed, or motion, such as the heating or a door; or a number, on above or below its threshold. Empty ones are left out. The app keeps about two weeks of on/off changes, from the first time they're shown.",
+        "nl": "Aan of uit, open of dicht, of beweging, zoals de verwarming of een deur; of een getal, aan boven of onder de drempel. Lege worden weggelaten. De app bewaart ongeveer twee weken aan/uit-wijzigingen, vanaf de eerste keer dat ze getoond worden.",
+        "de": "An oder aus, offen oder geschlossen oder Bewegung, etwa die Heizung oder eine Tür; oder eine Zahl, an über oder unter ihrer Schwelle. Leere werden ausgelassen. Die App behält etwa zwei Wochen An/Aus-Änderungen, ab der ersten Anzeige.",
+        "fr": "Allumé ou éteint, ouvert ou fermé, ou un mouvement, comme le chauffage ou une porte ; ou un nombre, allumé au-dessus ou en dessous de son seuil. Les vides sont ignorées. L'app garde environ deux semaines de changements marche/arrêt, dès leur premier affichage.",
+        "it": "Acceso o spento, aperto o chiuso, o movimento, come il riscaldamento o una porta; oppure un numero, acceso sopra o sotto la sua soglia. Quelli vuoti sono esclusi. L'app conserva circa due settimane di cambiamenti acceso/spento, dalla prima volta che vengono mostrati.",
+        "sv": "På eller av, öppet eller stängt, eller rörelse, som värmen eller en dörr; eller ett tal, på över eller under sin gräns. Tomma utelämnas. Appen sparar ungefär två veckors på/av-ändringar, från första gången de visas.",
+        "no": "På eller av, åpent eller lukket, eller bevegelse, som varmen eller en dør; eller et tall, på over eller under terskelen. Tomme utelates. Appen tar vare på omtrent to uker med på/av-endringer, fra første gang de vises.",
+        "es": "Encendido o apagado, abierto o cerrado, o movimiento, como la calefacción o una puerta; o un número, encendido por encima o por debajo de su umbral. Los vacíos se omiten. La app guarda unas dos semanas de cambios de encendido/apagado, desde la primera vez que se muestran.",
+        "da": "Tændt eller slukket, åbent eller lukket eller bevægelse, som varmen eller en dør; eller et tal, tændt over eller under sin tærskel. Tomme udelades. Appen gemmer omkring to ugers tænd/sluk-ændringer, fra første gang de vises.",
+        "ru": "Вкл/выкл, открыто/закрыто или движение: отопление, дверь; или число, включённое выше или ниже порога. Пустые пропускаются. Изменения вкл/выкл приложение хранит около двух недель, с первого показа.",
+        "pl": "Wł./wył., otwarte/zamknięte lub ruch, np. ogrzewanie albo drzwi; albo liczba, włączona powyżej lub poniżej progu. Puste są pomijane. Zmiany wł./wył. aplikacja przechowuje około dwóch tygodni, od pierwszego wyświetlenia.",
+        "ko": "켜짐/꺼짐, 열림/닫힘, 움직임(예: 난방, 문)이나 기준값보다 높거나 낮을 때 켜지는 숫자 값입니다. 빈 항목은 빠집니다. 켜짐/꺼짐 변경은 처음 표시될 때부터 약 2주간 보관합니다.",
+        "ar": "تشغيل أو إيقاف، مفتوح أو مغلق، أو حركة، مثل التدفئة أو باب؛ أو قيمة رقمية مفعّلة فوق عتبتها أو تحتها. تُستبعد الفارغة. يحتفظ التطبيق بنحو أسبوعين من تغييرات التشغيل/الإيقاف منذ أول عرض لها."
       }
     },
     {
@@ -1989,19 +1989,19 @@
         "ar": "الفترة الزمنية"
       },
       "hint": {
-        "en": "How many of the unit below, e.g. 1 day or 7 days. The app keeps about two weeks of changes.",
-        "nl": "Hoeveel van de eenheid hieronder, bijv. 1 dag of 7 dagen. De app bewaart ongeveer twee weken aan wijzigingen.",
-        "de": "Wie viele der Einheit darunter, z. B. 1 Tag oder 7 Tage. Die App behält etwa zwei Wochen an Änderungen.",
-        "fr": "Combien de l'unité ci-dessous, p. ex. 1 jour ou 7 jours. L'app garde environ deux semaines de changements.",
-        "it": "Quante unità di quella qui sotto, ad es. 1 giorno o 7 giorni. L'app conserva circa due settimane di cambiamenti.",
-        "sv": "Hur många av enheten nedan, t.ex. 1 dag eller 7 dagar. Appen sparar ungefär två veckors ändringar.",
-        "no": "Hvor mange av enheten under, f.eks. 1 dag eller 7 dager. Appen tar vare på omtrent to uker med endringer.",
-        "es": "Cuántas de la unidad de abajo, p. ej. 1 día o 7 días. La app guarda unas dos semanas de cambios.",
-        "da": "Hvor mange af enheden nedenfor, f.eks. 1 dag eller 7 dage. Appen gemmer omkring to ugers ændringer.",
-        "ru": "Сколько единиц, выбранных ниже, например 1 день или 7 дней. Приложение хранит около двух недель изменений.",
-        "pl": "Ile jednostek wybranych poniżej, np. 1 dzień lub 7 dni. Aplikacja przechowuje około dwóch tygodni zmian.",
-        "ko": "아래 단위의 개수입니다(예: 1일, 7일). 앱은 약 2주간의 변경을 보관합니다.",
-        "ar": "عدد الوحدات المحددة أدناه، مثل يوم واحد أو 7 أيام. يحتفظ التطبيق بنحو أسبوعين من التغييرات."
+        "en": "E.g. 1 day or 7 days. The app keeps about two weeks of changes.",
+        "nl": "Bijv. 1 dag of 7 dagen. De app bewaart ongeveer twee weken aan wijzigingen.",
+        "de": "Z. B. 1 Tag oder 7 Tage. Die App behält etwa zwei Wochen an Änderungen.",
+        "fr": "P. ex. 1 jour ou 7 jours. L'app garde environ deux semaines de changements.",
+        "it": "Ad es. 1 giorno o 7 giorni. L'app conserva circa due settimane di cambiamenti.",
+        "sv": "T.ex. 1 dag eller 7 dagar. Appen sparar ungefär två veckors ändringar.",
+        "no": "F.eks. 1 dag eller 7 dager. Appen tar vare på omtrent to uker med endringer.",
+        "es": "P. ej. 1 día o 7 días. La app guarda unas dos semanas de cambios.",
+        "da": "F.eks. 1 dag eller 7 dage. Appen gemmer omkring to ugers ændringer.",
+        "ru": "Например, 1 день или 7 дней. Приложение хранит около двух недель изменений.",
+        "pl": "Np. 1 dzień lub 7 dni. Aplikacja przechowuje około dwóch tygodni zmian.",
+        "ko": "예: 1일, 7일. 앱은 약 2주간의 변경을 보관합니다.",
+        "ar": "مثل يوم واحد أو 7 أيام. يحتفظ التطبيق بنحو أسبوعين من التغييرات."
       }
     },
     {
@@ -2024,19 +2024,19 @@
         "ar": "الوحدة"
       },
       "hint": {
-        "en": "Minutes to years: the last so many, up to now. From midnight, Monday, the 1st or 1 January: whole days, weeks, months or years, the current one included.",
-        "nl": "Minuten tot jaren: de laatste zoveel, tot nu. Vanaf middernacht, maandag, de 1e of 1 januari: hele dagen, weken, maanden of jaren, de huidige meegerekend.",
-        "de": "Minuten bis Jahre: die letzten so viele, bis jetzt. Ab Mitternacht, Montag, dem 1. oder dem 1. Januar: ganze Tage, Wochen, Monate oder Jahre, der laufende eingeschlossen.",
-        "fr": "Minutes à années : les dernières, jusqu'à maintenant. Depuis minuit, lundi, le 1er ou le 1er janvier : des jours, semaines, mois ou années entiers, l'actuel compris.",
-        "it": "Da minuti ad anni: gli ultimi, fino ad ora. Da mezzanotte, lunedì, il 1° o il 1° gennaio: giorni, settimane, mesi o anni interi, quello in corso incluso.",
-        "sv": "Minuter till år: de senaste så många, fram till nu. Från midnatt, måndag, den 1:a eller 1 januari: hela dagar, veckor, månader eller år, den pågående medräknad.",
-        "no": "Minutter til år: de siste så mange, frem til nå. Fra midnatt, mandag, den 1. eller 1. januar: hele dager, uker, måneder eller år, den pågående medregnet.",
-        "es": "De minutos a años: los últimos, hasta ahora. Desde medianoche, el lunes, el día 1 o el 1 de enero: días, semanas, meses o años completos, el actual incluido.",
-        "da": "Minutter til år: de seneste så mange, frem til nu. Fra midnat, mandag, den 1. eller 1. januar: hele dage, uger, måneder eller år, den igangværende medregnet.",
-        "ru": "От минут до лет: последние столько-то, до текущего момента. С полуночи, понедельника, 1-го числа или 1 января: целые дни, недели, месяцы или годы, включая текущий.",
-        "pl": "Od minut do lat: ostatnie tyle, aż do teraz. Od północy, poniedziałku, 1. dnia lub 1 stycznia: pełne dni, tygodnie, miesiące lub lata, z bieżącym włącznie.",
-        "ko": "분~년: 지금까지의 최근 기간입니다. 자정, 월요일, 1일 또는 1월 1일부터: 현재 기간을 포함한 일, 주, 월 또는 연 단위 전체입니다.",
-        "ar": "من الدقائق إلى السنوات: آخر عدد منها حتى الآن. من منتصف الليل أو الاثنين أو اليوم الأول أو 1 يناير: أيام أو أسابيع أو أشهر أو سنوات كاملة، بما فيها الحالية."
+        "en": "Minutes to years count back from now. From midnight, Monday, the 1st or 1 January: whole periods, the current one included.",
+        "nl": "Minuten tot jaren tellen terug vanaf nu. Vanaf middernacht, maandag, de 1e of 1 januari: hele periodes, de huidige meegerekend.",
+        "de": "Minuten bis Jahre zählen ab jetzt zurück. Ab Mitternacht, Montag, dem 1. oder dem 1. Januar: ganze Zeiträume, der laufende eingeschlossen.",
+        "fr": "Minutes à années : en remontant depuis maintenant. Depuis minuit, lundi, le 1er ou le 1er janvier : des périodes entières, l'actuelle comprise.",
+        "it": "Da minuti ad anni: a ritroso da ora. Da mezzanotte, lunedì, il 1° o il 1° gennaio: periodi interi, quello in corso incluso.",
+        "sv": "Minuter till år räknas bakåt från nu. Från midnatt, måndag, den 1:a eller 1 januari: hela perioder, den pågående medräknad.",
+        "no": "Minutter til år telles bakover fra nå. Fra midnatt, mandag, den 1. eller 1. januar: hele perioder, den pågående medregnet.",
+        "es": "De minutos a años: hacia atrás desde ahora. Desde medianoche, el lunes, el día 1 o el 1 de enero: periodos completos, el actual incluido.",
+        "da": "Minutter til år tælles tilbage fra nu. Fra midnat, mandag, den 1. eller 1. januar: hele perioder, den igangværende medregnet.",
+        "ru": "От минут до лет: назад от текущего момента. С полуночи, понедельника, 1-го числа или 1 января: целые периоды, включая текущий.",
+        "pl": "Od minut do lat: wstecz od teraz. Od północy, poniedziałku, 1. dnia lub 1 stycznia: pełne okresy, z bieżącym włącznie.",
+        "ko": "분~년: 지금부터 거슬러 셉니다. 자정, 월요일, 1일 또는 1월 1일부터: 현재 기간을 포함한 전체 기간입니다.",
+        "ar": "من الدقائق إلى السنوات: رجوعًا من الآن. من منتصف الليل أو الاثنين أو اليوم الأول أو 1 يناير: فترات كاملة، بما فيها الحالية."
       },
       "values": [
         {
@@ -2241,19 +2241,19 @@
         "ar": "استبعاد الفترة الحالية"
       },
       "hint": {
-        "en": "Whole periods only: 1 day from midnight is then yesterday, 1 week from Monday last week.",
-        "nl": "Alleen bij hele periodes: 1 dag vanaf middernacht is dan gisteren, 1 week vanaf maandag vorige week.",
-        "de": "Nur bei ganzen Zeiträumen: 1 Tag ab Mitternacht ist dann gestern, 1 Woche ab Montag letzte Woche.",
-        "fr": "Périodes entières uniquement : 1 jour depuis minuit devient hier, 1 semaine depuis lundi la semaine dernière.",
-        "it": "Solo per periodi interi: 1 giorno da mezzanotte diventa ieri, 1 settimana da lunedì la settimana scorsa.",
-        "sv": "Bara för hela perioder: 1 dag från midnatt blir då i går, 1 vecka från måndag förra veckan.",
-        "no": "Bare for hele perioder: 1 dag fra midnatt blir da i går, 1 uke fra mandag forrige uke.",
-        "es": "Solo con periodos completos: 1 día desde medianoche pasa a ser ayer, 1 semana desde el lunes la semana pasada.",
-        "da": "Kun ved hele perioder: 1 dag fra midnat er så i går, 1 uge fra mandag sidste uge.",
-        "ru": "Только для целых периодов: 1 день с полуночи — это тогда вчера, 1 неделя с понедельника — прошлая неделя.",
-        "pl": "Tylko dla pełnych okresów: 1 dzień od północy to wtedy wczoraj, 1 tydzień od poniedziałku – zeszły tydzień.",
-        "ko": "전체 기간 단위에만 적용됩니다. 자정부터 1일은 어제, 월요일부터 1주는 지난주가 됩니다.",
-        "ar": "للفترات الكاملة فقط: يصبح يوم واحد من منتصف الليل هو أمس، وأسبوع واحد من الاثنين هو الأسبوع الماضي."
+        "en": "Whole periods only: 1 day from midnight becomes yesterday.",
+        "nl": "Alleen bij hele periodes: 1 dag vanaf middernacht wordt gisteren.",
+        "de": "Nur bei ganzen Zeiträumen: 1 Tag ab Mitternacht wird gestern.",
+        "fr": "Périodes entières uniquement : 1 jour depuis minuit devient hier.",
+        "it": "Solo per periodi interi: 1 giorno da mezzanotte diventa ieri.",
+        "sv": "Bara för hela perioder: 1 dag från midnatt blir i går.",
+        "no": "Bare for hele perioder: 1 dag fra midnatt blir i går.",
+        "es": "Solo con periodos completos: 1 día desde medianoche pasa a ser ayer.",
+        "da": "Kun ved hele perioder: 1 dag fra midnat bliver i går.",
+        "ru": "Только для целых периодов: 1 день с полуночи становится вчера.",
+        "pl": "Tylko dla pełnych okresów: 1 dzień od północy staje się wczoraj.",
+        "ko": "전체 기간 단위에만 적용됩니다. 자정부터 1일은 어제가 됩니다.",
+        "ar": "للفترات الكاملة فقط: يصبح يوم واحد من منتصف الليل هو أمس."
       }
     },
     {
