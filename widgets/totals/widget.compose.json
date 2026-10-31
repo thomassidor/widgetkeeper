@@ -51,6 +51,79 @@
       }
     },
     {
+      "id": "show",
+      "type": "dropdown",
+      "value": "use",
+      "title": {
+        "en": "Show",
+        "nl": "Tonen",
+        "de": "Anzeigen",
+        "fr": "Afficher",
+        "it": "Mostra",
+        "sv": "Visa",
+        "no": "Vis",
+        "es": "Mostrar",
+        "da": "Vis",
+        "ru": "Показывать",
+        "pl": "Pokaż",
+        "ko": "표시",
+        "ar": "عرض"
+      },
+      "hint": {
+        "en": "Cost: each hour's use at that hour's electricity price in Homey Energy, with your tariffs and taxes. Needs a value in kWh.",
+        "nl": "Kosten: het verbruik van elk uur tegen de elektriciteitsprijs van dat uur in Homey Energy, met je tarieven en belastingen. Vereist een waarde in kWh.",
+        "de": "Kosten: der Verbrauch jeder Stunde zum Strompreis dieser Stunde in Homey Energy, mit deinen Tarifen und Steuern. Braucht einen Wert in kWh.",
+        "fr": "Coût : la consommation de chaque heure au prix de l'électricité de cette heure dans Homey Energy, avec vos tarifs et taxes. Nécessite une valeur en kWh.",
+        "it": "Costo: il consumo di ogni ora al prezzo dell'elettricità di quell'ora in Homey Energy, con le tue tariffe e tasse. Serve un valore in kWh.",
+        "sv": "Kostnad: varje timmes förbrukning till den timmens elpris i Homey Energy, med dina avgifter och skatter. Kräver ett värde i kWh.",
+        "no": "Kostnad: hver times forbruk til timens strømpris i Homey Energy, med dine tariffer og avgifter. Krever en verdi i kWh.",
+        "es": "Coste: el consumo de cada hora al precio de la electricidad de esa hora en Homey Energy, con tus tarifas e impuestos. Necesita un valor en kWh.",
+        "da": "Udgift: hver times forbrug til timens elpris i Homey Energy, med dine tariffer og afgifter. Kræver en værdi i kWh.",
+        "ru": "Стоимость: потребление каждого часа по цене электроэнергии этого часа в Homey Energy, с вашими тарифами и налогами. Нужна величина в кВт·ч.",
+        "pl": "Koszt: zużycie każdej godziny po cenie prądu z tej godziny w Homey Energy, z Twoimi taryfami i podatkami. Wymaga wartości w kWh.",
+        "ko": "비용: 각 시간의 사용량에 Homey Energy의 해당 시간 전기 요금(요금제와 세금 포함)을 곱합니다. kWh 단위 값이 필요합니다.",
+        "ar": "التكلفة: استهلاك كل ساعة بسعر الكهرباء لتلك الساعة في Homey Energy، مع تعريفاتك وضرائبك. تحتاج إلى قيمة بوحدة kWh."
+      },
+      "values": [
+        {
+          "id": "use",
+          "title": {
+            "en": "Amount",
+            "nl": "Hoeveelheid",
+            "de": "Menge",
+            "fr": "Quantité",
+            "it": "Quantità",
+            "sv": "Mängd",
+            "no": "Mengde",
+            "es": "Cantidad",
+            "da": "Mængde",
+            "ru": "Количество",
+            "pl": "Ilość",
+            "ko": "양",
+            "ar": "الكمية"
+          }
+        },
+        {
+          "id": "cost",
+          "title": {
+            "en": "Cost (electricity)",
+            "nl": "Kosten (elektriciteit)",
+            "de": "Kosten (Strom)",
+            "fr": "Coût (électricité)",
+            "it": "Costo (elettricità)",
+            "sv": "Kostnad (el)",
+            "no": "Kostnad (strøm)",
+            "es": "Coste (electricidad)",
+            "da": "Udgift (strøm)",
+            "ru": "Стоимость (электроэнергия)",
+            "pl": "Koszt (prąd)",
+            "ko": "비용(전기)",
+            "ar": "التكلفة (الكهرباء)"
+          }
+        }
+      ]
+    },
+    {
       "id": "count",
       "type": "number",
       "value": 1,

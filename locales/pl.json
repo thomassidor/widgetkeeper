@@ -352,7 +352,12 @@
     "dayBefore": "Przedwczoraj",
     "weekBefore": "Przedostatni tydzień",
     "monthBefore": "Przedostatni miesiąc",
-    "yearBefore": "Przedostatni rok"
+    "yearBefore": "Przedostatni rok",
+    "costNeedsKwh": "Koszt wymaga wartości w kWh, Wh lub MWh.",
+    "noPrices": "Brak cen prądu w Homey Energy dla tego okresu.",
+    "somePrices": "Niektóre godziny nie mają ceny.",
+    "readingPrices": "Wczytywanie cen…",
+    "pricesError": "Nie udało się odczytać cen prądu."
   },
   "scatter": {
     "selectValues": "Wybierz wartość w poziomie (x) i w pionie (y) w ustawieniach widżetu.",

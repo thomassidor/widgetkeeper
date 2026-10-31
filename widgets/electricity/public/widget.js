@@ -41,16 +41,7 @@
     error: 'Could not load data.',
   };
 
-  function currencyUnits(code) {
-    switch ((code || '').toUpperCase()) {
-      case '':
-      case 'DKK': return { value: 'kr.', chip: 'kr' };
-      case 'NOK':
-      case 'SEK': return { value: 'kr', chip: 'kr' };
-      case 'EUR': return { value: '€', chip: '€' };
-      default: return { value: code, chip: code };
-    }
-  }
+  const { currencyUnits } = C; // chart.js, shared with Chart · Totals' cost
 
   /**
    * Resample raw meter readings into LIVE_POINTS buckets ending at `now`. Buckets are aligned

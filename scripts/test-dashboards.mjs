@@ -665,6 +665,11 @@ const BUILD = {
       w('totals', '30 days', { slot: meter, count: 30, span: 'days' }),
       w('totals', '3 months from the 1st against the 3 before', { slot: meter, count: 3, span: 'calMonths', compare: true }),
       w('totals', 'Another value · no totals · own title', { slot: meter2 || meter, ...PERIODS.thisMonth, showHeader: false, title: 'Typed title' }),
+      // Show: Cost (1.2.0): a kWh meter's use at Homey Energy's prices; a year and a compare read many past days' prices.
+      w('totals', 'Cost · today', { slot: meter, show: 'cost', ...PERIODS.today }),
+      w('totals', 'Cost · this month against last month', { slot: meter, show: 'cost', ...PERIODS.thisMonth, compare: true }),
+      w('totals', 'Cost · this year', { slot: meter, show: 'cost', ...PERIODS.thisYear }),
+      w('totals', 'Cost · another value (needs kWh)', { slot: meter2 || meter, show: 'cost', ...PERIODS.thisWeek }),
       w('totals', 'Deleted device', { slot: missing, compare: true }),
       w('totals', 'Nothing picked'),
     ] };

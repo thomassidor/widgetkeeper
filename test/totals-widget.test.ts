@@ -206,3 +206,81 @@ describe('mount', () => {
     expect(r.root.textContent).toContain('Pick a value that counts up in the widget settings.');
   });
 });
+
+describe('cost (Show: Cost, 1.2.0)', () => {
+  const midnight = new Date('2026-10-28T00:00:00').getTime();
+  /** Today's hours at 2 kr until noon and 3 kr after, as `/state`'s prices. */
+  const prices = (extra: Record<string, unknown> = {}) => ({
+    currency: 'DKK', fixed: null, missing: 0, pending: 0,
+    hours: Array.from({ length: 24 }, (_, i) => [midnight + i * HOUR, i < 12 ? 2 : 3]),
+    ...extra,
+  });
+  function costWidget(opts: Record<string, unknown>, state: any[], p: unknown = prices()) {
+    const r = widget({ period: 'today', show: 'cost', ...opts }, []);
+    r.w.setState(state, 'en', p);
+    return r;
+  }
+
+  it("prices each hour's use at that hour's price, in the currency", () => {
+    // 1 kWh an hour since midnight: 12 h at 2 kr, 3.5 h at 3 kr.
+    const r = costWidget({}, [meter(midnight, NOW)]);
+    expect(r.header()).toEqual(['34.50kr. | Today']);
+    expect(r.q('.ew-chip')!.textContent).toBe('Meter · Energy – kr');
+    const h = r.heights();
+    expect(h).toHaveLength(16);
+    expect(h[12] / h[0]).toBeCloseTo(1.5, 2);
+    expect(r.shown(r.q('.tt-note'))).toBe(false);
+    // A tapped hour: its cost.
+    r.tap(13, 24);
+    expect(r.header()[0]).toMatch(/^3\.00kr\. \| /);
+  });
+
+  it('scales Wh and MWh to kWh, and needs energy', () => {
+    expect(costWidget({}, [meter(midnight, NOW, 1000, { capability: { ...cap, units: 'Wh' } })]).header()).toEqual(['34.50kr. | Today']);
+    const r = costWidget({}, [meter(midnight, NOW, 1, { capability: { ...cap, units: 'm³' } })]);
+    expect(r.q('.tt-note')!.textContent).toBe('Cost needs a value in kWh, Wh or MWh.');
+  });
+
+  it('a fixed price prices every hour', () => {
+    expect(costWidget({}, [meter(midnight, NOW)], prices({ fixed: 2, hours: [] })).header()).toEqual(['31.00kr. | Today']);
+  });
+
+  it('says when some hours have no price, and counts the others', () => {
+    const p = prices();
+    p.hours = p.hours.filter(([t]) => t !== midnight + 13 * HOUR);
+    const r = costWidget({}, [meter(midnight, NOW)], p);
+    expect(r.header()).toEqual(['31.50kr. | Today']);
+    expect(r.q('.tt-note')!.textContent).toBe('Some hours have no price.');
+    expect(r.shown(r.q('.tt-note'))).toBe(true);
+  });
+
+  it('says while prices are being read, when there are none, and when they could not be read', () => {
+    expect(costWidget({}, [meter(midnight, NOW)], prices({ pending: 4 })).q('.tt-note')!.textContent).toBe('Reading prices…');
+    const none = costWidget({}, [meter(midnight, NOW)], prices({ hours: [] }));
+    expect(none.q('.tt-note')!.textContent).toBe('No electricity prices in Homey Energy for this period.');
+    expect(costWidget({}, [meter(midnight, NOW)], null).q('.tt-note')!.textContent).toBe('Could not read the electricity prices.');
+  });
+
+  it('asks for the prices over both periods with compare', () => {
+    const r = widget({ period: 'today', show: 'cost', compare: true }, []);
+    expect(r.w.priceSpan()).toBe(`${midnight - 24 * HOUR}~${NOW}`);
+    expect(widget({ period: 'today' }, []).w.priceSpan()).toBeNull();
+  });
+
+  it('the mount asks for prices and again in 10 s while some are still coming', async () => {
+    const api = vi.fn(async () => ({ charts: [meter(midnight, NOW)], language: 'en', prices: prices({ pending: 2 }) }));
+    const Homey = { getSettings: () => ({ slot: { id: 'm1:meter_power' }, count: 1, span: 'calDays', show: 'cost' }), api, on: () => {}, ready: () => {}, setHeight: () => {}, __: (k: string) => k };
+    const root = document.createElement('div');
+    document.body.append(root);
+    win.mountTotalsWidget(Homey, { root, frame: root });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(decodeURIComponent((api.mock.calls[0] as any)[1])).toMatch(new RegExp(`&prices=${midnight}~${NOW}(&|$)`));
+    await vi.advanceTimersByTimeAsync(10e3);
+    expect(api).toHaveBeenCalledTimes(2);
+    api.mockResolvedValue({ charts: [meter(midnight, NOW)], language: 'en', prices: prices() });
+    await vi.advanceTimersByTimeAsync(10e3);
+    expect(api).toHaveBeenCalledTimes(3);
+    await vi.advanceTimersByTimeAsync(60e3);
+    expect(api).toHaveBeenCalledTimes(3);
+  });
+});

@@ -352,7 +352,12 @@
     "dayBefore": "أول أمس",
     "weekBefore": "الأسبوع قبل الماضي",
     "monthBefore": "الشهر قبل الماضي",
-    "yearBefore": "العام قبل الماضي"
+    "yearBefore": "العام قبل الماضي",
+    "costNeedsKwh": "تحتاج التكلفة إلى قيمة بوحدة kWh أو Wh أو MWh.",
+    "noPrices": "لا توجد أسعار كهرباء في Homey Energy لهذه الفترة.",
+    "somePrices": "بعض الساعات بلا سعر.",
+    "readingPrices": "جارٍ قراءة الأسعار…",
+    "pricesError": "تعذّرت قراءة أسعار الكهرباء."
   },
   "scatter": {
     "selectValues": "اختر قيمة أفقية (x) وقيمة رأسية (y) في إعدادات الأداة.",

@@ -352,7 +352,12 @@
     "dayBefore": "L'altro ieri",
     "weekBefore": "Settimana prima",
     "monthBefore": "Mese prima",
-    "yearBefore": "Anno prima"
+    "yearBefore": "Anno prima",
+    "costNeedsKwh": "Il costo richiede un valore in kWh, Wh o MWh.",
+    "noPrices": "Nessun prezzo dell'elettricità in Homey Energy per questo periodo.",
+    "somePrices": "Alcune ore non hanno un prezzo.",
+    "readingPrices": "Lettura dei prezzi…",
+    "pricesError": "Impossibile leggere i prezzi dell'elettricità."
   },
   "scatter": {
     "selectValues": "Scegli un valore orizzontale (x) e uno verticale (y) nelle impostazioni del widget.",

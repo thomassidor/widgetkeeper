@@ -38,22 +38,33 @@
     weekBefore: 'Week before last',
     monthBefore: 'Month before last',
     yearBefore: 'Year before last',
+    costNeedsKwh: 'Cost needs a value in kWh, Wh or MWh.',
+    noPrices: 'No electricity prices in Homey Energy for this period.',
+    somePrices: 'Some hours have no price.',
+    readingPrices: 'Reading prices…',
+    pricesError: 'Could not read the electricity prices.',
   };
+  /** An energy value's units in kWh, for its cost (Show: Cost). */
+  const KWH = { kwh: 1, wh: 1e-3, mwh: 1e3 };
 
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, t?: (key: string) => string, locale?: string, language?: string, now?: () => number,
-   *   period?: string, compare?: boolean, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
+   *   period?: string, compare?: boolean, show?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createTotalsWidget(root, opts = {}) {
     // Any time span (the kit's `timeSpan()`: `1w!` is this week, `30d` the last 30 days); missing or unknown: this week.
     const period = isTimeSpan(opts.period) ? opts.period : '1w!';
     const compare = opts.compare === true;
+    // `cost` (1.2.0): each hour's use at that hour's electricity price, from `setState()`'s prices.
+    const cost = opts.show === 'cost';
     const title = typeof opts.title === 'string' ? opts.title.trim() : '';
 
     const state = {
       current: null, // Sparklines' slot state with the value's running total ({deviceId, capabilityId, name, capability, value, points, meter} | {missing})
       previous: null, // the same over the period before (with `compare`)
+      // With `cost`: `{currency, fixed, hours: Map<hour start, price>, missing, pending}`, or `false` when they couldn't be read.
+      prices: null,
       sel: null, // the tapped slot's start: a time, so it's dropped once the period moves on
     };
     let drawn = null; // the latest render's slots and their x, for the header and the pointer
@@ -65,7 +76,7 @@
       colors: { style: opts.colorStyle, color: opts.color, fallback: 'blue' },
       redrawMs: 60e3,
       has: () => state.current != null,
-      clear: () => { state.current = state.previous = null; },
+      clear: () => { state.current = state.previous = state.prices = null; },
       draw, header: renderHeader,
     });
     const { t, nf, hhmm, date: dateText, now, kit } = frame;
@@ -93,16 +104,57 @@
       const win = timeSpan(period, at);
       const unit = C.barUnit(win.from, win.to, win.unit);
       const live = win.end === at;
-      const cur = C.useBuckets(pointsOf(state.current), win.from, win.end, unit, live ? totalNow(state.current) : null);
+      const use = cost ? costBuckets : C.useBuckets;
+      const cur = use(pointsOf(state.current), win.from, win.end, unit, live ? totalNow(state.current) : null);
       let prev = [];
       if (compare) {
         const p = timeSpan(period, at, 1);
-        prev = C.useBuckets(pointsOf(state.previous), p.from, p.to, unit);
+        prev = use(pointsOf(state.previous), p.from, p.to, unit);
       }
       const slots = C.buckets([], win.from, win.to, unit).map((s, k) => ({
-        t: s.t, end: s.end, v: cur[k] ? cur[k].v : null, prev: prev[k] || null,
+        t: s.t, end: s.end, v: cur[k] ? cur[k].v : null, prev: prev[k] || null, partial: !!(cur[k] && cur[k].partial),
       }));
       return { win, slots };
+    }
+
+    /** The value's units in kWh (1 for kWh, 0.001 for Wh), or null for a value that isn't energy. */
+    function kwhFactor() {
+      const s = state.current;
+      const units = ok(s) && typeof s.capability.units === 'string' ? s.capability.units.trim().toLowerCase() : '';
+      return Object.prototype.hasOwnProperty.call(KWH, units) ? KWH[units] : null;
+    }
+
+    /** An hour's price: the fixed one, else the hour's, or null. */
+    function priceAt(t) {
+      const p = state.prices;
+      if (!p) return null;
+      if (p.fixed != null) return p.fixed;
+      const v = p.hours.get(t);
+      return v == null ? null : v;
+    }
+
+    /**
+     * `C.useBuckets()` in money: each hour's use (on the same line through the running total) at that hour's price,
+     * summed per bar. A bar with use in an hour without a price is `partial`; one without a priced hour has none.
+     */
+    function costBuckets(points, from, to, unit, current = null) {
+      const factor = kwhFactor();
+      const bars = C.buckets([], from, to, unit);
+      if (factor == null || !state.prices) return bars.map(b => ({ t: b.t, end: b.end, v: null }));
+      const hours = C.useBuckets(points, from, to, C.HOUR, current);
+      const out = bars.map(b => ({ t: b.t, end: b.end, v: null, partial: false }));
+      let k = 0;
+      for (const h of hours) {
+        while (k < out.length - 1 && h.t >= out[k].end) k++;
+        if (h.v == null) continue;
+        const price = priceAt(Math.floor(h.t / C.HOUR) * C.HOUR);
+        if (price == null) {
+          if (h.v > 0) out[k].partial = true;
+          continue;
+        }
+        out[k].v = (out[k].v || 0) + h.v * factor * price;
+      }
+      return out;
     }
 
     function titleText() {
@@ -114,6 +166,7 @@
 
     /** A use as the header shows it: up to two decimals under 10, one under 1000, none above (the capability's at most). */
     function useText(v) {
+      if (cost) return nf(v, Math.abs(v) < 1000 ? 2 : 0);
       const s = state.current;
       const most = ok(s) && s.capability.decimals != null ? Math.max(0, Math.min(s.capability.decimals, 4)) : 2;
       const a = Math.abs(v);
@@ -163,9 +216,16 @@
       return k < 0 ? null : k;
     }
 
+    /** The units shown: the capability's, or with `cost` the currency's (`kr.` in the header, `kr` on the chip). */
+    function unitsOf(chip) {
+      const s = state.current;
+      if (cost) return state.prices ? C.currencyUnits(state.prices.currency)[chip ? 'chip' : 'value'] : null;
+      return ok(s) && s.capability.units ? s.capability.units : null;
+    }
+
     function renderHeader(col) {
       const s = state.current;
-      const units = ok(s) && s.capability.units ? s.capability.units : '';
+      const units = unitsOf(false) || '';
       const slots = drawn ? drawn.slots : [];
       const k = drawn ? drawn.sel : null;
       const sum = vs => (vs.some(v => v != null) ? vs.reduce((a, v) => a + (v || 0), 0) : null);
@@ -188,7 +248,7 @@
       const top = CHIP_H, base = top + PLOT_H;
       const H = base + X_LABEL_GAP + X_LABEL_H;
       const s = state.current;
-      const units = ok(s) && s.capability.units ? s.capability.units : null;
+      const units = unitsOf(true);
 
       clear(chips);
       kit.chip(chips, 'series', titleText(), units);
@@ -202,9 +262,11 @@
       });
       const drawable = ok(s) && values.length > 0;
       show(svg, drawable);
-      // A missing device's chip already says Unavailable, unless the chart has a title of its own.
-      show(note, ok(s) ? !drawable : !!title);
-      note.textContent = ok(s) ? t('noHistory') : t('unavailable');
+      // A missing device's chip already says Unavailable, unless the chart has a title of its own. With `cost`, why
+      // there's none, or under the bars that some hours had no price (or are still being read).
+      const why = costNote(drawable, slots);
+      show(note, ok(s) ? !drawable || !!why : !!title);
+      note.textContent = !ok(s) ? t('unavailable') : why || t('noHistory');
       box.classList.toggle('empty', !drawable);
       if (!drawable) return;
 
@@ -236,6 +298,18 @@
       if (compare) draw('series-bars prev', 0, slot => (slot.prev ? slot.prev.v : null));
       draw('series-bars', compare ? 1 : null, slot => slot.v);
       drawn = { slots, sel, xs: slots.map(slot => [x(slot.t), x(slot.end)]) };
+    }
+
+    /** With `cost`, what the note says, or '' (nothing to say: the cost is complete). */
+    function costNote(drawable, slots) {
+      if (!cost || !ok(state.current)) return '';
+      if (kwhFactor() == null) return t('costNeedsKwh');
+      const p = state.prices;
+      if (p === false) return t('pricesError');
+      if (!p) return t('readingPrices');
+      if (p.pending) return t('readingPrices');
+      if (!drawable) return p.fixed == null && !p.hours.size ? t('noPrices') : '';
+      return slots.some(x => x.partial) ? t('somePrices') : '';
     }
 
     /**
@@ -277,8 +351,13 @@
        * This period's state and, with `compare`, the period before's (`/state`'s `current` and `previous`). Live totals
        * newer than a refreshed history are kept (it's cached up to 5 min).
        */
-      setState(list, lang) {
+      setState(list, lang, prices) {
         if (lang) frame.language = lang;
+        if (cost) {
+          state.prices = prices && typeof prices === 'object'
+            ? { ...prices, hours: new Map(Array.isArray(prices.hours) ? prices.hours : []) }
+            : prices === null ? false : state.prices;
+        }
         const [current, previous] = Array.isArray(list) ? list : [];
         const kept = C.keepLive(current, state.current);
         state.current = ok(kept) ? { ...kept, meter: { offset: 0, high: null, ...kept.meter } } : kept;
@@ -307,6 +386,14 @@
         const w = timeSpan(period, now(), back);
         return `${period}~${Math.floor(w.from)}~${Math.ceil(w.end)}~${w.unit || ''}~use`;
       }),
+      /** With `cost`, the prices to ask for: `<from>~<to>`, over the period before too with `compare`; else null. */
+      priceSpan: () => {
+        if (!cost) return null;
+        const at = now();
+        const w = timeSpan(period, at, 0);
+        const from = compare ? timeSpan(period, at, 1).from : w.from;
+        return `${Math.floor(from)}~${Math.ceil(w.end)}`;
+      },
     });
   }
 

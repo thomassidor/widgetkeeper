@@ -352,7 +352,12 @@
     "dayBefore": "I forgårs",
     "weekBefore": "Ugen før",
     "monthBefore": "Måneden før",
-    "yearBefore": "Året før"
+    "yearBefore": "Året før",
+    "costNeedsKwh": "Udgift kræver en værdi i kWh, Wh eller MWh.",
+    "noPrices": "Ingen elpriser i Homey Energy for denne periode.",
+    "somePrices": "Nogle timer har ingen pris.",
+    "readingPrices": "Læser priser…",
+    "pricesError": "Kunne ikke læse elpriserne."
   },
   "scatter": {
     "selectValues": "Vælg en værdi i bredden (x) og en i højden (y) i widgetindstillingerne.",

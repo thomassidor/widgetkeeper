@@ -9,6 +9,8 @@ import {
   bucketAverage, floorTo, hourlyPrices, parseInsightsEntries, parsePriceResponse, priceStep, quarterPrices,
 } from './series.js';
 import { parsePriceCosts } from './priceCosts.js';
+import PriceHistory from './PriceHistory.js';
+import type { SecretStorage } from './secrets.js';
 
 const LIVE_KEEP = HOUR + 2 * MINUTE; // raw readings kept (the widget's longest live window is 60 min)
 const LIVE_PUSH_THROTTLE = SECOND;
@@ -19,6 +21,21 @@ const PRICE_PAST_HOURS = 24;
 const PRICE_FUTURE_HOURS = 24; // the chart shows 12; the lowest-price footer can look 24 ahead
 const PRICE_FUTURE_HOURS_MAX = 36; // the Energy Price Strip's longest window
 const PRICE_TYPE_TTL = 5 * MINUTE; // a change in Homey's Energy settings shows within this
+const HISTORY_WAIT = 8e3; // a price history answers with what it has after this; the rest goes on being read
+const HISTORY_MAX_DAYS = 2 * 366 + 2; // two years: Insights keeps no more use to price
+
+/**
+ * Hourly prices over a span, for Chart · Totals' cost (`getPriceHistory()`): `[hour start, price]`, with Homey Energy's
+ * costs unless asked without; `fixed` with a fixed price (no hours then). `missing`: days Homey had no prices for;
+ * `pending`: days still being read (ask again soon).
+ */
+export type PriceHistoryAnswer = {
+  currency: string | null,
+  fixed: number | null,
+  hours: [number, number][],
+  missing: number,
+  pending: number,
+};
 
 export const LIVE_EVENT = 'electricity:live';
 
@@ -77,12 +94,15 @@ export default class ElectricityService {
   private priceTypePending: Promise<PriceSettings> | null = null;
   private tickTimer: NodeJS.Timeout | null = null;
   private loggedPriceSample = false;
+  private history: PriceHistory;
 
   constructor(
     private homey: Homey.App['homey'],
     private log: (...args: any[]) => void, // errors and warnings: always kept
     private debug: (...args: any[]) => void = () => {}, // routine detail: only with the `debugLog` setting on
+    priceStorage?: SecretStorage, // the price history's file (memory in the tests)
   ) {
+    this.history = new PriceHistory(homey, day => this.fetchPriceDay(day), log, priceStorage);
     // Re-read on each snapshot, so a deleted meter shows as unavailable instead of a frozen line.
     this.meters = new DeviceTracker<Meter>({
       homey,
@@ -115,6 +135,7 @@ export default class ElectricityService {
     if (this.tickTimer) this.homey.clearInterval(this.tickTimer);
     this.tickTimer = null;
     this.meters.stop();
+    this.history.stop();
   }
 
   /** Connects to Homey's API and fetches the prices at app start, so the first widget doesn't wait for them. */
@@ -338,6 +359,37 @@ export default class ElectricityService {
     return this.priceTypePending;
   }
 
+  /**
+   * The hourly prices from `from` to `to` (at most now, and two years), for Chart · Totals' cost: past days from the price
+   * history (`PriceHistory`, kept in a file once read), today through the snapshot's own cache. Waits at most 8 s for
+   * days not read before; `pending` says how many are still coming.
+   */
+  async getPriceHistory(from: number, to: number, { costs = true }: { costs?: boolean } = {}): Promise<PriceHistoryAnswer> {
+    const tm = new Timings();
+    const [settings] = await Promise.all([
+      tm.time('settings', () => this.getPriceSettings()),
+      this.currency == null ? tm.time('currency', () => this.loadCurrency()) : null,
+    ]);
+    if (settings.fixed != null) return { currency: this.currency, fixed: settings.fixed, hours: [], missing: 0, pending: 0 };
+    const now = Date.now();
+    const end = Math.min(to, now);
+    const start = floorTo(Math.max(from, end - HISTORY_MAX_DAYS * 24 * HOUR), HOUR);
+    const today = this.localDate(now);
+    const days = new Set<string>();
+    for (let t = start; t < end; t += HOUR) days.add(this.localDate(t));
+    const past = [...days].filter(d => d < today);
+    const [kept, recent] = await Promise.all([
+      tm.time('history', () => this.history.hours(past, HISTORY_WAIT)),
+      Promise.all([...days].filter(d => d >= today).map(d => tm.time(d, () => this.getPriceDay(d)).catch(() => null))),
+    ]);
+    const hours = new Map(kept.hours);
+    for (const day of recent) for (const [h, p] of day?.hours ?? []) hours.set(h, p);
+    const withCosts = (spot: number) => (costs && settings.costs ? round4(settings.costs(spot)) : spot);
+    const list = [...hours].filter(([h]) => h >= start && h < end).sort((a, b) => a[0] - b[0]).map(([h, p]): [number, number] => [h, withCosts(p)]);
+    this.debug(`Price history ${new Date(start).toISOString()} – ${new Date(end).toISOString()}: ${list.length} hours, ${kept.missing} days missing, ${kept.pending} pending: ${tm.summary()}`);
+    return { currency: this.currency, fixed: null, hours: list, missing: kept.missing + recent.filter(d => !d).length, pending: kept.pending };
+  }
+
   /** Price type, fixed price and costs, for the diagnostics report. */
   async describe() {
     const { fixed, costsExpression } = await this.getPriceSettings();
@@ -347,6 +399,7 @@ export default class ElectricityService {
     const interval = !today?.hours.size ? null : today.interval ?? 60;
     return {
       priceType: fixed == null ? 'dynamic' : 'fixed', fixedPrice: fixed, priceCosts: costsExpression, priceInterval: interval, currency: this.currency,
+      priceHistoryDays: this.history.size(),
     };
   }
 

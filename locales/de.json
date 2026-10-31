@@ -352,7 +352,12 @@
     "dayBefore": "Vorgestern",
     "weekBefore": "Vorletzte Woche",
     "monthBefore": "Vorletzter Monat",
-    "yearBefore": "Vorletztes Jahr"
+    "yearBefore": "Vorletztes Jahr",
+    "costNeedsKwh": "Kosten brauchen einen Wert in kWh, Wh oder MWh.",
+    "noPrices": "Keine Strompreise in Homey Energy für diesen Zeitraum.",
+    "somePrices": "Einige Stunden haben keinen Preis.",
+    "readingPrices": "Preise werden gelesen…",
+    "pricesError": "Die Strompreise konnten nicht gelesen werden."
   },
   "scatter": {
     "selectValues": "Wähle einen Wert für die Breite (x) und einen für die Höhe (y) in den Widget-Einstellungen.",

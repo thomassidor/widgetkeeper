@@ -10,6 +10,7 @@ window.mountTotalsWidget = function (Homey, { root, frame }) {
   const slot = slotId(settings.slot);
   const period = spanSetting(settings, '', { count: 1, unit: 'calWeeks' }); // a number of a unit; missing: this week
   const compare = settings.compare === true;
+  const show = settings.show === 'cost' ? 'cost' : 'use'; // missing: the amount, as before 1.2.0
 
   let widget;
   return window.WidgetkeeperChart.wireChart(Homey, { frame }, {
@@ -19,14 +20,22 @@ window.mountTotalsWidget = function (Homey, { root, frame }) {
       t: key => Homey.__(key),
       period,
       compare,
+      show,
       title: settings.title,
       showHeader: settings.showHeader !== false, // missing: on
       onHeight: link.setHeight,
     })),
     need: 'selectValue',
     // The period's running total, and with compare the period before's.
-    query: () => (slot ? `charts=${widget.windows().map(w => `${encodeURIComponent(slot)}~${encodeURIComponent(w)}`).join(',')}` : null),
-    state: res => [res && res.charts, res && res.language],
+    // With Show: Cost, the prices over them too.
+    query: () => {
+      if (!slot) return null;
+      const prices = widget.priceSpan();
+      return `charts=${widget.windows().map(w => `${encodeURIComponent(slot)}~${encodeURIComponent(w)}`).join(',')}${prices ? `&prices=${prices}` : ''}`;
+    },
+    state: res => [res && res.charts, res && res.language, res ? res.prices : undefined],
+    // A long span's first read of past prices answers with what came within 8 s: the rest in 10 s.
+    again: res => (res && res.prices && res.prices.pending ? 10e3 : null),
   });
 };
 /** The classes index.html puts on its body; the Smart Stack puts them on the slide. */

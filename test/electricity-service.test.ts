@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { fakeApi, FakeApiOptions, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
+import { fakeApi, FakeApiOptions, fakeDevice, fakeHomey, homeyApiMock, memoryStorage } from './helpers/fakeHomey.js';
 import ElectricityService, { LIVE_EVENT, priceInterval } from '../lib/ElectricityService.js';
 import { HOUR, MINUTE } from '../lib/series.js';
 
@@ -523,5 +523,81 @@ describe('15-minute prices', () => {
     expect(await hourly.service.describe()).toMatchObject({ priceInterval: 60 });
     const fixed = setup({ prices: ({ date }) => quarterDayPrices(date), priceType: 'fixed', fixedPrice: { value: { costs: { user_fixed_base: { value: 2 } } } } });
     expect((await fixed.service.getSnapshot(null)).quarters).toBeNull();
+  });
+});
+
+describe('price history (Chart · Totals\' cost, 1.2.0)', () => {
+  const day = (iso: string) => new Date(`${iso}T00:00:00`).getTime();
+  function history(opts: FakeApiOptions = {}, storage = memoryStorage()) {
+    const api = fakeApi({ devices: [], prices: ({ date }) => dayPrices(date), ...opts });
+    const homey = fakeHomey(api);
+    const log = vi.fn();
+    const service = new ElectricityService(homey, log, () => {}, storage);
+    return { api, homey, service, storage, log };
+  }
+
+  it('gives every hour from the start to now, with the costs, and keeps finished days in its file', async () => {
+    const storage = memoryStorage();
+    const { api, service } = history({ priceCosts: { mathExpression: '{{[[price]]*2}}' } }, storage);
+    const from = day('2026-01-05');
+    const res = await service.getPriceHistory(from, NOW);
+    expect(res).toMatchObject({ currency: 'DKK', fixed: null, missing: 0, pending: 0 });
+    expect(res.hours).toHaveLength(10 * 24 + 11); // ten whole days and today's hours up to the current one, 10:00
+    expect(res.hours[0]).toEqual([from, 0]);
+    expect(res.hours[13]).toEqual([from + 13 * HOUR, 2.6]); // 13:00 at 1.3, doubled
+    expect(res.hours.at(-1)).toEqual([HOUR_START, 2]);
+    expect(api.energy.fetchDynamicElectricityPrices).toHaveBeenCalledTimes(11);
+    // Written 30 s later, the ten finished days only; another start reads them from there.
+    await vi.advanceTimersByTimeAsync(30e3);
+    expect(Object.keys(JSON.parse(storage.text!).days)).toHaveLength(10);
+    const again = history({}, storage);
+    expect((await again.service.getPriceHistory(from, NOW)).hours).toHaveLength(251);
+    expect(again.api.energy.fetchDynamicElectricityPrices.mock.calls.map(([a]) => a.date)).toEqual(['2026-01-15']);
+    expect(await again.service.describe()).toMatchObject({ priceHistoryDays: 10 });
+  });
+
+  it('counts a day without prices as missing, and asks for it again only after 6 hours', async () => {
+    const { api, service } = history({ prices: ({ date }) => (date === '2026-01-10' ? { pricesPerInterval: [] } : dayPrices(date)) });
+    const res = await service.getPriceHistory(day('2026-01-09'), day('2026-01-12'));
+    expect([res.hours.length, res.missing, res.pending]).toEqual([2 * 24, 1, 0]);
+    await service.getPriceHistory(day('2026-01-09'), day('2026-01-12'));
+    expect(fetchesFor(api, '2026-01-10')).toBe(1);
+    vi.setSystemTime(NOW + 6 * HOUR);
+    await service.getPriceHistory(day('2026-01-09'), day('2026-01-12'));
+    expect(fetchesFor(api, '2026-01-10')).toBe(2);
+    expect(fetchesFor(api, '2026-01-09')).toBe(1);
+  });
+
+  it('answers within 8 s with the days read so far, reading three at a time', async () => {
+    let running = 0, most = 0;
+    const { service } = history({
+      prices: async ({ date }) => {
+        running++;
+        most = Math.max(most, running);
+        await new Promise(r => setTimeout(r, 1000));
+        running--;
+        return dayPrices(date);
+      },
+    });
+    const p = service.getPriceHistory(day('2025-12-01'), day('2026-01-01'));
+    await vi.advanceTimersByTimeAsync(8e3);
+    const res = await p;
+    expect(res.hours.length / 24).toBeGreaterThan(20); // 24 days read
+    expect(res.pending).toBeGreaterThan(0);
+    expect(most).toBe(3);
+    await vi.advanceTimersByTimeAsync(5e3);
+    const done = await service.getPriceHistory(day('2025-12-01'), day('2026-01-01'));
+    expect([done.hours.length, done.missing, done.pending]).toEqual([31 * 24, 0, 0]);
+  });
+
+  it('gives the fixed price instead of hours', async () => {
+    const { service } = history({ priceType: 'fixed', fixedPrice: { value: { costs: { user_fixed_base: { value: 2 } } } } });
+    expect(await service.getPriceHistory(day('2026-01-01'), NOW)).toEqual({ currency: 'DKK', fixed: 2, hours: [], missing: 0, pending: 0 });
+  });
+
+  it('reads a damaged file as empty and logs it', async () => {
+    const { service, log } = history({}, memoryStorage('{not json'));
+    expect((await service.getPriceHistory(day('2026-01-14'), day('2026-01-15'))).hours).toHaveLength(24);
+    expect(log).toHaveBeenCalledWith('The price history file could not be read:', expect.any(String));
   });
 });

@@ -907,13 +907,15 @@
    * keeps the chart with a passing message; only a failed first load replaces it with the error.
    * @param {any} Homey
    * @param {{ frame: HTMLElement }} where
-   * @param {{ create: (link: any) => any, query: () => string | null, need: string, state: (res: any) => any[] }} spec
+   * `again(res)`, optional: milliseconds after which to ask again early, when part of the answer is still coming.
+   * @param {{ create: (link: any) => any, query: () => string | null, need: string, state: (res: any) => any[], again?: (res: any) => number | null }} spec
    */
-  function wireChart(Homey, { frame }, { create, query, need, state }) {
+  function wireChart(Homey, { frame }, { create, query, need, state, again }) {
     const { wireFrame, onDeviceNames } = window.WidgetkeeperKit;
     const link = wireFrame(Homey, frame);
     const widget = create(link);
     let loaded = false;
+    let soon = null; // `again`'s one early load
 
     async function load() {
       const q = query();
@@ -926,6 +928,10 @@
         const res = await Homey.api('GET', `/state?${q}${link.perfParam()}`);
         widget.setState(...state(res));
         loaded = true;
+        // Something in the answer is still coming (Chart · Totals' prices): asked for again that soon, once.
+        const ms = again ? again(res) : null;
+        clearTimeout(soon);
+        soon = ms ? setTimeout(load, ms) : null;
       } catch (err) {
         console.error(err);
         widget.setMessage(widget.t('error'), loaded);
@@ -946,10 +952,22 @@
     };
   }
 
+  /** A currency code as the price charts write it: the value's units (`kr.`, `€`) and the chip's (`kr`). */
+  function currencyUnits(code) {
+    switch ((code || '').toUpperCase()) {
+      case '':
+      case 'DKK': return { value: 'kr.', chip: 'kr' };
+      case 'NOK':
+      case 'SEK': return { value: 'kr', chip: 'kr' };
+      case 'EUR': return { value: '€', chip: '€' };
+      default: return { value: code, chip: code };
+    }
+  }
+
   window.WidgetkeeperChart = {
     MIN, HOUR, L, X_LABEL_GAP, X_LABEL_H, LABEL_PAD, LABEL_MIN_GAP,
     niceStep, ticks, el, clear, show, f1, smoothValues, linePath, stepPath, p985, p015,
     compactNumber, ago, stepDecimals, axisLabel, buckets, alignSeries, profile, trendLine, barUnit, useBuckets, meterTotal, calendarLabels, createKit, attachScrub, pointerX,
-    createFrame, wireChart, keepLive, pushLive,
+    createFrame, wireChart, keepLive, pushLive, currencyUnits,
   };
 })();

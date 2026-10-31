@@ -352,7 +352,12 @@
     "dayBefore": "Eergisteren",
     "weekBefore": "Week daarvoor",
     "monthBefore": "Maand daarvoor",
-    "yearBefore": "Jaar daarvoor"
+    "yearBefore": "Jaar daarvoor",
+    "costNeedsKwh": "Kosten vereisen een waarde in kWh, Wh of MWh.",
+    "noPrices": "Geen elektriciteitsprijzen in Homey Energy voor deze periode.",
+    "somePrices": "Sommige uren hebben geen prijs.",
+    "readingPrices": "Prijzen lezen…",
+    "pricesError": "Kon de elektriciteitsprijzen niet lezen."
   },
   "scatter": {
     "selectValues": "Kies een waarde in de breedte (x) en een in de hoogte (y) in de widgetinstellingen.",

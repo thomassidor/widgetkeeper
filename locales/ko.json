@@ -352,7 +352,12 @@
     "dayBefore": "그저께",
     "weekBefore": "지지난주",
     "monthBefore": "지지난달",
-    "yearBefore": "재작년"
+    "yearBefore": "재작년",
+    "costNeedsKwh": "비용에는 kWh, Wh 또는 MWh 단위 값이 필요합니다.",
+    "noPrices": "이 기간에 대한 Homey Energy 전기 요금이 없습니다.",
+    "somePrices": "일부 시간에는 요금이 없습니다.",
+    "readingPrices": "요금을 읽는 중…",
+    "pricesError": "전기 요금을 읽을 수 없습니다."
   },
   "scatter": {
     "selectValues": "위젯 설정에서 가로 값(x)과 세로 값(y)을 선택하세요.",
