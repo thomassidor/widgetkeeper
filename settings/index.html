@@ -78,9 +78,12 @@
     .scr-qr { margin: 12px 0 0; width: 180px; padding: 8px; background: #FFFFFF; border-radius: 5px; }
     .scr-qr svg { display: block; width: 100%; height: auto; }
     .scr-address { margin-top: 12px; }
-    /* A screen's row wraps its buttons under the name rather than squeezing it. */
+    /* A screen's row: its name with how it stands under it, then its buttons together; they wrap under as one. */
     .scr-list li { flex-wrap: wrap; }
-    .scr-list .kp-code-name { flex-basis: 8em; }
+    .scr-info { flex: 1 1 9em; min-width: 0; }
+    .scr-info .kp-code-name, .scr-info .kp-code-digits { display: block; }
+    .scr-info .scr-warn { color: #A85700; font-weight: var(--homey-font-weight-medium, 500); }
+    .scr-buttons { display: flex; flex: none; gap: 8px; margin-left: auto; }
     .scr-address .sub-title { font-size: 14px; }
     .web-url { display: block; margin-top: 4px; font-size: 14px; line-height: 20px; word-break: break-all; text-decoration: none; color: var(--homey-color-blue, #0082FA); }
     #report {
@@ -283,7 +286,6 @@
             <p class="scr-code" id="scrCode"></p>
             <p class="help" data-i18n="webScreenOnce"></p>
             <p class="help" id="scrNoDevices" data-i18n="webScreenNoDevices" hidden></p>
-            <div class="scr-qr" id="scrQr" hidden></div>
             <div id="scrAddresses"></div>
             <div class="row">
               <button class="homey-button-primary-small-shadow" id="scrDone" data-i18n="webScreenDone">Done</button>
@@ -836,13 +838,19 @@
         info.className = 'kp-code-digits';
         info.textContent = screen.needsPassword ? t('webScreenNeedsPassword')
           : screen.used ? t('webScreenUsed', { date: new Date(screen.used).toLocaleDateString() }) : t('webScreenNotUsed');
-        row.append(name, info);
+        info.classList.toggle('scr-warn', !!screen.needsPassword);
+        const about = document.createElement('div');
+        about.className = 'scr-info';
+        about.append(name, info);
+        const buttons = document.createElement('div');
+        buttons.className = 'scr-buttons';
+        row.append(about, buttons);
         if (screen.needsPassword) {
           const signIn = document.createElement('button');
           signIn.className = 'homey-button-secondary-small-shadow';
           signIn.textContent = t('webScreenSignIn');
           signIn.addEventListener('click', () => { scrStatus.textContent = ''; $('scrShown').hidden = true; openScreenForm(true, screen); });
-          row.append(signIn);
+          buttons.append(signIn);
         }
         // Remove takes a second tap within 3 s: the screen's code stops working.
         const remove = document.createElement('button');
@@ -863,7 +871,7 @@
             scrStatus.textContent = t('webScreenRemoved');
           });
         });
-        row.append(remove);
+        buttons.append(remove);
         return row;
       }
       function showScreens(screens) {
@@ -901,10 +909,9 @@
         const urls = [['url', 'webAddressHome'], ['remoteUrl', 'webAddressAway']]
           .filter(([key]) => webUrls && webUrls[key] && (key === 'url' || webRemote.checked))
           .map(([key, title]) => [`${webUrls[key].split('#')[0]}#code=${res.code}`, title]);
+        // The home address as a QR code, under its heading, so it's clear which one it holds.
         const qr = urls.length ? qrSvg(urls[0][0]) : null;
-        $('scrQr').replaceChildren(...(qr ? [qr] : []));
-        $('scrQr').hidden = !qr;
-        $('scrAddresses').replaceChildren(...urls.map(([url, title]) => {
+        $('scrAddresses').replaceChildren(...urls.map(([url, title], i) => {
           const block = document.createElement('div');
           block.className = 'scr-address';
           const head = document.createElement('p');
@@ -920,7 +927,14 @@
           copy.textContent = t('copy');
           copy.addEventListener('click', async () => { scrStatus.textContent = (await copyText(url)) ? t('copied') : ''; });
           row.append(copy);
-          block.append(head, link, row);
+          block.append(head, link);
+          if (i === 0 && qr) {
+            const pad = document.createElement('div');
+            pad.className = 'scr-qr';
+            pad.append(qr);
+            block.append(pad);
+          }
+          block.append(row);
           return block;
         }));
         $('scrShown').hidden = false;
@@ -965,7 +979,6 @@
       // The code isn't shown again: Done clears it from the page.
       $('scrDone').addEventListener('click', () => {
         $('scrCode').textContent = '';
-        $('scrQr').replaceChildren();
         $('scrAddresses').replaceChildren();
         $('scrShown').hidden = true;
         $('scrActions').hidden = false;
