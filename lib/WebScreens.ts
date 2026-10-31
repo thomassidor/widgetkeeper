@@ -61,9 +61,9 @@ function newCode() {
  * the app settings page adds one with a name and a key made for it, and shows its short code once. The web dashboards
  * page swaps the code for the key (`redeem()`, a public route: the screen has no key yet) on every load, so a screen
  * that forgets what it stored (a cast) still gets in. While the web password is set, adding a screen takes it, and
- * the screen gets a session of its own, valid while that password stays (a changed one asks for it again on the
- * settings page). Wrong codes lock every code for a while, like wrong passwords. Kept with the secrets: the code only
- * as a hash, never sent back after it's made.
+ * the screen gets a session of its own, valid while that password stays (setting or changing it on the settings page
+ * gives every screen a new one, `grantAll()`). Wrong codes lock every code for a while, like wrong passwords. Kept
+ * with the secrets: the code only as a hash, never sent back after it's made.
  */
 export default class WebScreens {
 
@@ -140,17 +140,40 @@ export default class WebScreens {
     if (stamp) Object.assign(screen, { session: randomBytes(32).toString('base64url'), stamp });
   }
 
-  /** A screen added before the password was set or changed: signed in again with the current one. */
-  async signIn(id: unknown, current: unknown): Promise<{ ok: true, screens: ScreenItem[] } | Refused | { ok: false, reason: 'missing' }> {
+  /**
+   * New code (the settings page's row): a new code for a screen, with its key pasted again or a new one (a lost device:
+   * its key deleted in Homey, a new one made). The key is asked for, not kept: else anyone whose key may call the app
+   * could get a new code, and with it the screen's key. While the password is set, `current` must be it. The old code
+   * stops working; the screen gets a session for the password set now.
+   */
+  async renew(id: unknown, key: unknown, current?: unknown): Promise<AddResult | { ok: false, reason: 'missing' }> {
     if (!this.screens.some(s => s.id === id)) return { ok: false, reason: 'missing' };
+    const token = typeof key === 'string' ? key.trim() : '';
+    const scopes = token && token.length <= 500 ? await this.apiKey.scopesOf(token) : null;
+    if (!scopes) return { ok: false, reason: 'keyInvalid' };
     const checked: Checked = await this.password.confirm(current);
     if (!checked.ok) return checked;
     const screens = this.screens;
     const screen = screens.find(s => s.id === id);
     if (!screen) return { ok: false, reason: 'missing' };
+    let code = newCode();
+    while (screens.some(s => s.code === sha256(code))) code = newCode();
+    Object.assign(screen, { code: sha256(code), key: token });
     this.grant(screen);
     this.save(screens);
-    return { ok: true, screens: this.list() };
+    this.log(`Web dashboards: screen "${screen.name}" has a new code`);
+    return { ok: true, id: screen.id, code: showCode(code), devices: scopesAllow(scopes, 'devices'), screens: this.list() };
+  }
+
+  /**
+   * The password was just set or changed by someone who knew it (`PUT /web/password`): every screen gets a session for
+   * it, so the owner's own screens stay signed in. Browsers signed in with the old one sign in again.
+   */
+  grantAll() {
+    const screens = this.screens;
+    if (!screens.length) return;
+    for (const screen of screens) this.grant(screen);
+    this.save(screens);
   }
 
   remove(id: unknown): { ok: boolean, screens: ScreenItem[] } {

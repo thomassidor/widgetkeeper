@@ -96,23 +96,34 @@
       return wrap;
     }
 
-    function renderKey(message) {
+    /**
+     * Signing a browser in: a screen's sign-in code first (Web dashboards → Screens and browsers in the app settings),
+     * or, behind *Use an API key instead*, a personal API key, with the plain-HTTP warning that only a key needs. Either
+     * field takes either (`isScreenCode()`), so a code pasted in key mode still works.
+     */
+    function renderKey(message, mode = 'code') {
       clearRoot();
       applyTheme('auto');
-      // A code (8 characters) shows as it's typed; anything longer is a pasted key, hidden.
+      const keyMode = mode === 'key';
       const input = el('input', 'wd-input');
-      input.type = 'text';
       input.autocomplete = 'off';
-      input.autocapitalize = 'characters';
       input.spellcheck = false;
-      input.placeholder = t('codeOrKey');
-      input.addEventListener('input', () => { input.type = input.value.trim().length > 9 ? 'password' : 'text'; });
+      if (keyMode) {
+        input.type = 'password';
+        input.placeholder = t('keyPlaceholder');
+      } else {
+        // A code (8 characters) shows as it's typed; anything longer is a pasted key, hidden.
+        input.type = 'text';
+        input.autocapitalize = 'characters';
+        input.placeholder = t('signInCode');
+        input.addEventListener('input', () => { input.type = input.value.trim().length > 9 ? 'password' : 'text'; });
+      }
       const error = el('p', 'wd-error', message || '');
-      const go = button('wd-btn primary', t('connect'), async () => {
+      const go = button('wd-btn primary', t('signIn'), async () => {
         const value = input.value.trim();
         if (!value) return;
         go.disabled = true;
-        // A screen's code from the app settings, in place of a key.
+        error.textContent = '';
         if (isScreenCode(value)) {
           const problem = await useCode(value);
           go.disabled = false;
@@ -134,13 +145,23 @@
       input.addEventListener('keydown', (e) => { if (e.key === 'Enter') go.click(); });
       const form = el('div', 'wd-row');
       form.append(input, go);
-      // The home address is plain HTTP: the key (sent with every request) can be read on the network.
-      const plain = location.protocol === 'http:' ? [el('p', 'wd-muted', t('keyPlain'))] : [];
-      root.append(centered(el('h1', 'wd-h1', t('keyTitle')), el('p', 'wd-muted', t('keyText')), ...plain, form, error));
+      // The home address is plain HTTP: a key (sent with every request) can be read on the network.
+      const plain = keyMode && location.protocol === 'http:' ? [el('p', 'wd-muted', t('keyPlain'))] : [];
+      const other = button('wd-btn quiet', t(keyMode ? 'codeUse' : 'keyUse'), () => renderKey('', keyMode ? 'code' : 'key'));
+      root.append(centered(el('h1', 'wd-h1', brandName()), el('p', 'wd-muted', t(keyMode ? 'keyModeText' : 'keyText')),
+        ...plain, form, error, other));
       input.focus();
     }
 
-    /** The web dashboards password (set in the app settings): asked after the key, before anything else. */
+    /** Signs this browser out: its password session ended, its key and session forgotten, then the sign-in screen. */
+    async function signOut() {
+      if (wd.session) await request('POST', '/web/logout', {}).catch(() => {});
+      storageSet(KEY_STORAGE, null);
+      storageSet(SESSION_STORAGE, null);
+      location.reload();
+    }
+
+    /** The web dashboards password (set in the app settings): asked after the code or key, before anything else. */
     function renderPassword(message) {
       clearRoot();
       applyTheme('auto');
@@ -176,11 +197,8 @@
       input.addEventListener('keydown', (e) => { if (e.key === 'Enter') go.click(); });
       const form = el('div', 'wd-row');
       form.append(input, go);
-      const forget = button('wd-btn quiet', t('forgetKey'), () => {
-        storageSet(KEY_STORAGE, null);
-        location.reload();
-      });
-      root.append(centered(el('h1', 'wd-h1', t('title')), el('p', 'wd-muted', t('passwordText')), form, error, forget));
+      const out = button('wd-btn quiet', t('forgetKey'), () => { out.disabled = true; signOut(); });
+      root.append(centered(el('h1', 'wd-h1', brandName()), el('p', 'wd-muted', t('passwordText')), form, error, out));
       input.focus();
     }
 
@@ -188,7 +206,7 @@
       clearRoot();
       applyTheme('auto');
       root.append(centered(
-        el('h1', 'wd-h1', t('title')),
+        el('h1', 'wd-h1', brandName()),
         el('p', 'wd-muted', t(wd.setup && wd.setup.away ? 'offAway' : 'off')),
         button('wd-btn', t('retry'), () => start()),
       ));
@@ -692,7 +710,7 @@
     }
 
     Object.assign(wd, { about, applyTheme, askCode, bar, brand, clearRoot, editable, liveNote, lockOf, preview,
-      renderDashboard, renderFailed, renderKey, renderMissing, renderOff, renderPassword, stored, syncGrid,
+      renderDashboard, renderFailed, renderKey, renderMissing, renderOff, renderPassword, signOut, stored, syncGrid,
       widgetFolder });
   });
 })();

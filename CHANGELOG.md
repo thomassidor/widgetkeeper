@@ -8,7 +8,8 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Show only part of each device's name**, such as the part before `|` (*Ceiling lamp | Kitchen* becomes *Ceiling lamp*), or the last word: **Apps → Widgetkeeper → Configure → Device names**. Widget settings, Flows and names typed on tiles stay as they are.
 
 ### Web dashboards
-- **Screens:** sign a wall tablet, phone or Nest Hub in with a short code or QR code instead of an API key, each with a key of its own.
+- **Sign-in codes:** sign a wall tablet, phone, computer or Nest Hub in with a short code or QR code instead of an API key, each with a key of its own (**Screens and browsers** in the app settings, with the steps to make the key). The page asks for the code first, with the API key behind *Use an API key instead*; **Forget the key** is now **Sign out**.
+- The app settings' Web dashboards card reads in the order you set it up: the address, screens and browsers, then away from home with the password. Setting or changing the password keeps your screens signed in.
 - **A live preview** beside a widget's settings while you edit it.
 
 ### Charts

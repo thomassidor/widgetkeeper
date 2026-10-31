@@ -117,28 +117,45 @@ describe('web dashboards: a screen and the password', () => {
     expect(screens.checkSession('nope')).toBe(false);
   });
 
-  it('asks for the password again on the settings page once it changes, or is set after the screen', async () => {
+  it('keeps the screens signed in when the password is set or changed on the settings page', async () => {
     const { homey, screens, password } = setup();
-    const { code, id } = await screens.add('Kitchen', KEY) as any;
+    const { code } = await screens.add('Kitchen', KEY) as any;
     // No password: the key is enough.
     await expect(screens.redeem(code)).resolves.toEqual({ ok: true, key: KEY });
-    await password.setPassword('correct horse');
-    expect(screens.list()[0].needsPassword).toBe(true);
-    await expect(screens.redeem(code)).resolves.toEqual({ ok: true, key: KEY });
-    await expect(api.putWebScreen({ homey, params: { id }, body: { current: 'wrong' } })).resolves.toEqual({ ok: false, reason: 'wrong' });
-    await expect(api.putWebScreen({ homey, params: { id: 'nope' }, body: { current: 'correct horse' } })).resolves.toEqual({ ok: false, reason: 'missing' });
-    await expect(api.putWebScreen({ homey, params: { id }, body: { current: 'correct horse' } })).resolves.toMatchObject({ ok: true, screens: [{ needsPassword: false }] });
+    await expect(api.putWebPassword({ homey, body: { password: 'correct horse' } })).resolves.toEqual({ ok: true });
+    expect(screens.list()[0].needsPassword).toBe(false);
     const { session } = await screens.redeem(code) as any;
     await expect(api.getWebSetup({ homey, query: { session } })).resolves.toHaveProperty('dashboards');
-    // A changed password: the screen's session no longer counts, and the screen asks for it.
-    await password.setPassword('battery staple', 'correct horse');
+    // Changed: the old session stops, a new one comes with the code.
+    await expect(api.putWebPassword({ homey, body: { password: 'battery staple', current: 'nope' } })).resolves.toEqual({ ok: false, reason: 'wrong' });
+    await expect(api.putWebPassword({ homey, body: { password: 'battery staple', current: 'correct horse' } })).resolves.toEqual({ ok: true });
     expect(screens.checkSession(session)).toBe(false);
     await expect(api.getWebSetup({ homey, query: { session } })).resolves.toMatchObject({ passwordRequired: true });
+    const renewed = await screens.redeem(code) as any;
+    expect(renewed.session).toEqual(expect.any(String));
+    expect(screens.checkSession(renewed.session)).toBe(true);
+    // Set elsewhere (the service itself, as the Flow card's removal and a set by the app do): the screen needs a new code.
+    await password.setPassword('third password', 'battery staple');
     expect(screens.describe()).toMatchObject({ screens: 1, needPassword: 1 });
-    await expect(screens.redeem(code)).resolves.toEqual({ ok: true, key: KEY });
     // Removed: no session is needed at all.
-    await password.setPassword('', 'battery staple');
+    await expect(api.putWebPassword({ homey, body: { password: '', current: 'third password' } })).resolves.toEqual({ ok: true });
     expect(screens.list()[0].needsPassword).toBe(false);
+  });
+
+  it('gives a screen a new code with its key pasted again, and the old code stops', async () => {
+    const { homey, screens, password } = setup();
+    const { code, id } = await screens.add('Kitchen', KEY) as any;
+    await password.setPassword('correct horse');
+    expect(screens.list()[0].needsPassword).toBe(true);
+    // The key is asked for: else any key that may call the app could get the screen's key through a new code.
+    await expect(api.putWebScreen({ homey, params: { id }, body: { current: 'correct horse' } })).resolves.toEqual({ ok: false, reason: 'keyInvalid' });
+    await expect(api.putWebScreen({ homey, params: { id }, body: { key: KEY, current: 'wrong' } })).resolves.toEqual({ ok: false, reason: 'wrong' });
+    await expect(api.putWebScreen({ homey, params: { id: 'nope' }, body: { key: KEY, current: 'correct horse' } })).resolves.toEqual({ ok: false, reason: 'missing' });
+    const res = await api.putWebScreen({ homey, params: { id }, body: { key: KEY, current: 'correct horse' } }) as any;
+    expect(res).toMatchObject({ ok: true, id, code: expect.stringMatching(/^[A-Z2-9]{4}-[A-Z2-9]{4}$/), devices: true, screens: [{ name: 'Kitchen', needsPassword: false }] });
+    await expect(screens.redeem(code)).resolves.toEqual({ ok: false, reason: 'wrong' });
+    const { session } = await screens.redeem(res.code) as any;
+    await expect(api.getWebSetup({ homey, query: { session } })).resolves.toHaveProperty('dashboards');
   });
 });
 

@@ -9,7 +9,7 @@
 
   window.WidgetkeeperWeb.part('front', (wd) => {
     const { applyDim, AWAKE_STORAGE, button, confirmButton, deleted, DIM_STORAGE, dimLevel, DRAG_SLOP, EDGE_PX, el,
-      failed, icon, keepAwake, KEY_STORAGE, LAYOUT, loadSetup, MAX_DIM, newId, request, root, route, SESSION_STORAGE,
+      failed, icon, keepAwake, LAYOUT, loadSetup, MAX_DIM, newId, request, root, route,
       storageSet, t, THEME_STORAGE, toast } = wd;
 
     /**
@@ -170,18 +170,12 @@
       });
     }
 
-    /** The front page's edit mode: Settings in its bar, a dialog with the backup, then this browser's Keep screen on, Dim and Forget the key. */
+    /** The front page's edit mode: Settings in its bar, a dialog with the backup, then this browser's Keep screen on, Dim and Sign out. */
     function pageSettings() {
       const { d, body } = wd.dialog(t('pageSettings'));
       d.classList.add('wd-page-settings');
       const browser = el('section', 'wd-page-section');
-      const forget = button('wd-btn', t('forgetKey'), async () => {
-        forget.disabled = true;
-        if (wd.session) await request('POST', '/web/logout', {}).catch(() => {});
-        storageSet(KEY_STORAGE, null);
-        storageSet(SESSION_STORAGE, null);
-        location.reload();
-      });
+      const forget = button('wd-btn', t('forgetKey'), () => { forget.disabled = true; wd.signOut(); });
       // This browser's settings as the editor's rows: the label and a hint on the left, the control on the right.
       const setRow = (label, hint, control, id) => {
         const row = el('div', 'wd-set-row inline');
@@ -237,7 +231,7 @@
       }, false);
       mode.setAttribute('aria-label', t('darkLight'));
       const card = el('div', 'wd-set-card');
-      card.append(setRow(t('darkLight'), t('darkLightText'), mode), awake, dim, setRow(t('keyPlaceholder'), t('forgetKeyText'), forget));
+      card.append(setRow(t('darkLight'), t('darkLightText'), mode), awake, dim, setRow(t('signedIn'), t('forgetKeyText'), forget));
       browser.append(el('h3', 'wd-h2', t('thisBrowser')), card);
       body.append(backupSection(), browser);
       d.showModal();

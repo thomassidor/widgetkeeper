@@ -36,6 +36,16 @@
     .row { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 0; }
     .row > * { flex: 1 1 auto; }
     .status:empty { display: none; }
+    /* A part inside a part (the password under Away from home): space above, no line. */
+    .sub-part { margin-top: 20px; }
+    /* Making a screen's key, step by step. */
+    .steps { margin: 12px 0 0; padding-left: 22px; font-size: 14px; line-height: 20px; }
+    .steps li { margin: 4px 0 0; }
+    .steps .help { display: block; margin: 2px 0 0; }
+    .tick {
+      padding: 0 8px; border-radius: 5px; font-weight: var(--homey-font-weight-medium, 500);
+      background: var(--homey-color-mono-02, #F1F2F6);
+    }
     label.homey-form-checkbox { margin: 12px 0 0; }
     .homey-form-group { margin: 12px 0 0; }
     [hidden] { display: none !important; }
@@ -202,8 +212,9 @@
         <span class="homey-form-checkbox-text" data-i18n="webEnable">Turn on web dashboards</span>
       </label>
       <p class="help status" id="webStatus" role="status"></p>
+      <!-- In the order a person sets it up: the address, a browser or screen signed in, then away from home with the
+           password that guards it, and where the backup is. -->
       <div id="webOn" hidden>
-        <!-- The page's two addresses: on the home network, and away from home through Homey's cloud. -->
         <div class="sub">
           <p class="sub-title" data-i18n="webAddressHome">On your home network</p>
           <div class="web-address" data-address="url" hidden>
@@ -215,6 +226,52 @@
             <p class="help status" role="status"></p>
           </div>
         </div>
+        <!-- Screens and browsers: the way any browser signs in (a wall tablet, a phone, a Nest Hub cast to): a key made
+             for each, swapped for a short sign-in code the page takes typed or in its address (#code=). The code is shown
+             once; New code makes another (with the key pasted again: the app never hands a stored key to a caller). -->
+        <div class="sub">
+          <p class="sub-title" data-i18n="webScreens">Screens and browsers</p>
+          <p class="help" data-i18n="webScreensHelp"></p>
+          <ul class="kp-codes scr-list" id="scrList"></ul>
+          <div id="scrForm" hidden>
+            <p class="kp-changing" id="scrRenewing" hidden></p>
+            <!-- Making the key, step by step: the screen's key needs Devices, which the API key card's list doesn't. -->
+            <ol class="steps">
+              <li data-i18n="webScreenStep1"></li>
+              <li><span data-i18n="webScreenStep2"></span> <strong class="tick" data-i18n="webScreenTickDevices"></strong><span class="help" data-i18n="webScreenStep2More"></span></li>
+              <li data-i18n="webScreenStep3"></li>
+            </ol>
+            <div class="homey-form-group" id="scrNameGroup">
+              <input class="homey-form-input" id="scrName" type="text" maxlength="40" autocomplete="off" data-i18n-label="webScreenName">
+            </div>
+            <div class="homey-form-group">
+              <input class="homey-form-input" id="scrKey" type="password" autocomplete="off" spellcheck="false" data-i18n-label="webScreenKey">
+            </div>
+            <div class="homey-form-group" id="scrCurrentGroup" hidden>
+              <input class="homey-form-input" id="scrCurrent" type="password" autocomplete="current-password" spellcheck="false" data-i18n-label="webPasswordCurrent">
+            </div>
+            <div class="row">
+              <button class="homey-button-primary-small-shadow" id="scrSave" data-i18n="webScreenSave" disabled>Add</button>
+              <button class="homey-button-secondary-small-shadow" id="scrCancel" data-i18n="cancel">Cancel</button>
+            </div>
+          </div>
+          <div id="scrShown" hidden>
+            <p class="state" id="scrShownTitle"></p>
+            <p class="scr-code" id="scrCode"></p>
+            <p class="help" data-i18n="webScreenOnce"></p>
+            <p class="help" id="scrNoDevices" data-i18n="webScreenNoDevices" hidden></p>
+            <div id="scrAddresses"></div>
+            <div class="row">
+              <button class="homey-button-primary-small-shadow" id="scrDone" data-i18n="webScreenDone">Done</button>
+            </div>
+          </div>
+          <div class="row" id="scrActions">
+            <button class="homey-button-secondary-small-shadow" id="scrNew" data-i18n="webScreenAdd">Add a screen or browser</button>
+          </div>
+          <p class="help status" id="scrStatus" role="status"></p>
+        </div>
+        <!-- Away from home through Homey's cloud, and the password: an extra sign-in every browser makes once, most worth
+             it with remote access on. Setting or changing it keeps the screens above signed in. -->
         <div class="sub">
           <p class="sub-title" data-i18n="webAddressAway">Away from home</p>
           <label class="homey-form-checkbox">
@@ -232,76 +289,34 @@
             </div>
             <p class="help status" role="status"></p>
           </div>
+          <div class="sub-part">
+            <p class="sub-title" data-i18n="webPassword">Password</p>
+            <p class="help" data-i18n="webPasswordHelp"></p>
+            <p class="state" id="pwState" role="status" data-i18n="webPasswordIsSet" hidden></p>
+            <!-- Set or Change password opens it for a new one; Remove password for the current one only. While one is set,
+                 both take the current one: anyone whose key may call the app reaches the route. -->
+            <div id="pwForm" hidden>
+              <div class="homey-form-group" id="pwCurrentGroup" hidden>
+                <input class="homey-form-input" id="pwCurrent" type="password" autocomplete="current-password" spellcheck="false" data-i18n-label="webPasswordCurrent">
+              </div>
+              <div class="homey-form-group" id="pwNewGroup">
+                <input class="homey-form-input" id="webPassword" type="password" autocomplete="new-password" spellcheck="false" data-i18n-label="webPassword">
+              </div>
+              <div class="row">
+                <button class="homey-button-primary-small-shadow" id="pwSave" data-i18n="webPasswordSave" disabled>Set password</button>
+                <button class="homey-button-secondary-small-shadow" id="pwCancel" data-i18n="cancel">Cancel</button>
+              </div>
+            </div>
+            <div class="row" id="pwActions">
+              <button class="homey-button-secondary-small-shadow" id="pwSet" data-i18n="webPasswordSave">Set password</button>
+              <button class="homey-button-danger-small-shadow" id="pwRemove" data-i18n="webPasswordRemove" hidden>Remove password</button>
+            </div>
+            <p class="help status" id="pwStatus" role="status"></p>
+            <p class="help" id="pwForgot" data-i18n="webPasswordForgot" hidden></p>
+          </div>
         </div>
-        <!-- Optional: a password browsers sign in with after their personal API key. -->
-        <div class="sub">
-          <p class="sub-title" data-i18n="webPassword">Password</p>
-          <p class="help" data-i18n="webPasswordHelp"></p>
-          <p class="state" id="pwState" role="status" data-i18n="webPasswordIsSet" hidden></p>
-          <!-- Set or Change password opens it for a new one; Remove password for the current one only. While one is set,
-               both take the current one: anyone whose key may call the app reaches the route. -->
-          <div id="pwForm" hidden>
-            <div class="homey-form-group" id="pwCurrentGroup" hidden>
-              <input class="homey-form-input" id="pwCurrent" type="password" autocomplete="current-password" spellcheck="false" data-i18n-label="webPasswordCurrent">
-            </div>
-            <div class="homey-form-group" id="pwNewGroup">
-              <input class="homey-form-input" id="webPassword" type="password" autocomplete="new-password" spellcheck="false" data-i18n-label="webPassword">
-            </div>
-            <div class="row">
-              <button class="homey-button-primary-small-shadow" id="pwSave" data-i18n="webPasswordSave" disabled>Set password</button>
-              <button class="homey-button-secondary-small-shadow" id="pwCancel" data-i18n="cancel">Cancel</button>
-            </div>
-          </div>
-          <div class="row" id="pwActions">
-            <button class="homey-button-secondary-small-shadow" id="pwSet" data-i18n="webPasswordSave">Set password</button>
-            <button class="homey-button-danger-small-shadow" id="pwRemove" data-i18n="webPasswordRemove" hidden>Remove password</button>
-          </div>
-          <p class="help status" id="pwStatus" role="status"></p>
-          <p class="help" id="pwForgot" data-i18n="webPasswordForgot" hidden></p>
-        </div>
-        <!-- Screens: any browser or screen signs in with a short code instead of a key (a wall tablet, a phone, a Nest
-             Hub cast to): a key made for each, swapped for the code the page takes typed or in its address (#code=).
-             The code is shown once, when it's made. -->
-        <div class="sub">
-          <p class="sub-title" data-i18n="webScreens">Screens</p>
-          <p class="help" data-i18n="webScreensHelp"></p>
-          <ul class="kp-codes scr-list" id="scrList"></ul>
-          <div id="scrForm" hidden>
-            <p class="kp-changing" id="scrSigning" hidden></p>
-            <div class="homey-form-group" id="scrNameGroup">
-              <input class="homey-form-input" id="scrName" type="text" maxlength="40" autocomplete="off" data-i18n-label="webScreenName">
-            </div>
-            <div class="homey-form-group" id="scrKeyGroup">
-              <input class="homey-form-input" id="scrKey" type="password" autocomplete="off" spellcheck="false" data-i18n-label="webScreenKey">
-            </div>
-            <div class="homey-form-group" id="scrCurrentGroup" hidden>
-              <input class="homey-form-input" id="scrCurrent" type="password" autocomplete="current-password" spellcheck="false" data-i18n-label="webPasswordCurrent">
-            </div>
-            <div class="row">
-              <button class="homey-button-primary-small-shadow" id="scrSave" data-i18n="webScreenSave" disabled>Add screen</button>
-              <button class="homey-button-secondary-small-shadow" id="scrCancel" data-i18n="cancel">Cancel</button>
-            </div>
-          </div>
-          <div id="scrShown" hidden>
-            <p class="state" id="scrShownTitle"></p>
-            <p class="scr-code" id="scrCode"></p>
-            <p class="help" data-i18n="webScreenOnce"></p>
-            <p class="help" id="scrNoDevices" data-i18n="webScreenNoDevices" hidden></p>
-            <div id="scrAddresses"></div>
-            <div class="row">
-              <button class="homey-button-primary-small-shadow" id="scrDone" data-i18n="webScreenDone">Done</button>
-            </div>
-          </div>
-          <div class="row" id="scrActions">
-            <button class="homey-button-secondary-small-shadow" id="scrNew" data-i18n="webScreenAdd">Add screen</button>
-          </div>
-          <p class="help status" id="scrStatus" role="status"></p>
-        </div>
-      </div>
-      <!-- The backup is on the web dashboards page: my.homey.app runs this page in a frame that can't download a file. -->
-      <div class="sub">
-        <p class="sub-title" data-i18n="webBackupTitle">Backup</p>
-        <p class="help" data-i18n="webBackupHelp"></p>
+        <!-- The backup is on the web dashboards page: my.homey.app runs this page in a frame that can't download a file. -->
+        <div class="sub"><p class="help" data-i18n="webBackupHelp"></p></div>
       </div>
     </div>
   </details>
@@ -804,30 +819,31 @@
       $('pwCancel').addEventListener('click', () => openPasswordForm(null));
       showPasswordState();
 
-      // ---- Screens: a key made for each browser or screen, swapped for a code the web dashboards page takes. The
-      // code comes back once, when the screen is added; the list has names only. ----
+      // ---- Screens and browsers: a key made for each, swapped for a sign-in code the web dashboards page takes. The
+      // code comes back once, when the screen is added or given a new code; the list has names only. ----
       const scrName = $('scrName');
       const scrKey = $('scrKey');
       const scrCurrent = $('scrCurrent');
       const scrSave = $('scrSave');
       const scrStatus = $('scrStatus');
       let scrBusy = false;
-      let scrSigning = null; // the screen signing in again with the current password, while its form is open
+      let scrRenewing = null; // the screen getting a new code, while its form is open
       const syncScreenButtons = () => {
-        scrSave.disabled = scrBusy || (pwSet && !scrCurrent.value)
-          || (!scrSigning && (!scrName.value.trim() || !scrKey.value.trim()));
+        scrSave.disabled = scrBusy || (pwSet && !scrCurrent.value) || !scrKey.value.trim()
+          || (!scrRenewing && !scrName.value.trim());
       };
-      // Add screen opens the name, key and (with a password) the current one; Sign in only the current one.
+      // Add opens the steps, the name, the key and (with a password) the current one; New code all but the name.
       function openScreenForm(open, screen) {
-        scrSigning = open ? screen || null : null;
+        scrRenewing = open ? screen || null : null;
         scrName.value = scrKey.value = scrCurrent.value = '';
-        $('scrNameGroup').hidden = $('scrKeyGroup').hidden = !!scrSigning;
+        $('scrNameGroup').hidden = !!scrRenewing;
         $('scrCurrentGroup').hidden = !pwSet;
-        $('scrSigning').hidden = !scrSigning;
-        $('scrSigning').textContent = scrSigning ? t('webScreenSigning', { name: scrSigning.name }) : '';
-        scrSave.textContent = t(scrSigning ? 'webScreenSignIn' : 'webScreenSave');
+        $('scrRenewing').hidden = !scrRenewing;
+        $('scrRenewing').textContent = scrRenewing ? t('webScreenRenewing', { name: scrRenewing.name }) : '';
+        scrSave.textContent = t(scrRenewing ? 'webScreenNewCode' : 'webScreenSave');
+        if (open) { $('scrShown').hidden = true; scrStatus.textContent = ''; }
         showForm($('scrForm'), $('scrActions'), open);
-        if (open) (scrSigning ? scrCurrent : scrName).focus();
+        if (open) (scrRenewing ? scrKey : scrName).focus();
         syncScreenButtons();
       }
       function screenRow(screen) {
@@ -846,14 +862,13 @@
         const buttons = document.createElement('div');
         buttons.className = 'scr-buttons';
         row.append(about, buttons);
-        if (screen.needsPassword) {
-          const signIn = document.createElement('button');
-          signIn.className = 'homey-button-secondary-small-shadow';
-          signIn.textContent = t('webScreenSignIn');
-          signIn.addEventListener('click', () => { scrStatus.textContent = ''; $('scrShown').hidden = true; openScreenForm(true, screen); });
-          buttons.append(signIn);
-        }
-        // Remove takes a second tap within 3 s: the screen's code stops working.
+        // New code: a lost code, or a lost device whose key was deleted in Homey and replaced.
+        const renew = document.createElement('button');
+        renew.className = 'homey-button-secondary-small-shadow';
+        renew.textContent = t('webScreenNewCode');
+        renew.addEventListener('click', () => openScreenForm(true, screen));
+        // Remove takes a second tap within 3 s: the screen's code stops working. The device keeps the key it was given
+        // until it next loads the page with the code, so the status says to delete the key in Homey too.
         const remove = document.createElement('button');
         remove.className = 'homey-button-danger-small-shadow';
         remove.textContent = t('kpRemove');
@@ -867,12 +882,12 @@
           }
           Homey.api('DELETE', `/web/screens/${encodeURIComponent(screen.id)}`, null, (err, res) => {
             if (err) { scrStatus.textContent = err.message || String(err); return; }
-            if (scrSigning && scrSigning.id === screen.id) openScreenForm(false);
+            if (scrRenewing && scrRenewing.id === screen.id) openScreenForm(false);
             showScreens((res && res.screens) || []);
             scrStatus.textContent = t('webScreenRemoved');
           });
         });
-        buttons.append(remove);
+        buttons.append(renew, remove);
         return row;
       }
       function showScreens(screens) {
@@ -902,9 +917,9 @@
         svg.append(path);
         return svg;
       }
-      /** A screen just added: its code, and the page's addresses with it (#code=), the home one as a QR code. */
-      function showCode(name, res) {
-        $('scrShownTitle').textContent = t('webScreenAdded', { name });
+      /** A screen just added or given a new code: the code, and the page's addresses with it (#code=), the home one as a QR code. */
+      function showCode(name, res, renewed) {
+        $('scrShownTitle').textContent = t(renewed ? 'webScreenRenewed' : 'webScreenAdded', { name });
         $('scrCode').textContent = res.code;
         $('scrNoDevices').hidden = res.devices !== false;
         const urls = [['url', 'webAddressHome'], ['remoteUrl', 'webAddressAway']]
@@ -955,8 +970,9 @@
         scrBusy = true;
         syncScreenButtons();
         scrStatus.textContent = t('varChecking');
-        const signing = scrSigning;
-        const name = scrName.value.trim();
+        const renewing = scrRenewing;
+        const name = renewing ? renewing.name : scrName.value.trim();
+        const body = { name, key: scrKey.value.trim(), current: scrCurrent.value };
         const done = (err, res) => {
           scrBusy = false;
           syncScreenButtons();
@@ -964,18 +980,18 @@
           if (!res || !res.ok) { scrStatus.textContent = screenRefused(res); return; }
           openScreenForm(false);
           showScreens(res.screens || []);
-          scrStatus.textContent = signing ? t('webScreenSignedIn') : '';
-          if (!signing) showCode(name, res);
+          scrStatus.textContent = '';
+          showCode(name, res, !!renewing);
         };
-        if (signing) Homey.api('PUT', `/web/screens/${encodeURIComponent(signing.id)}`, { current: scrCurrent.value }, done);
-        else Homey.api('POST', '/web/screens', { name, key: scrKey.value.trim(), current: scrCurrent.value }, done);
+        if (renewing) Homey.api('PUT', `/web/screens/${encodeURIComponent(renewing.id)}`, { key: body.key, current: body.current }, done);
+        else Homey.api('POST', '/web/screens', body, done);
       }
       for (const field of [scrName, scrKey, scrCurrent]) {
         field.addEventListener('input', syncScreenButtons);
         field.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !scrSave.disabled) scrSave.click(); });
       }
       scrSave.addEventListener('click', () => { if (!scrSave.disabled) saveScreen(); });
-      $('scrNew').addEventListener('click', () => { scrStatus.textContent = ''; openScreenForm(true); });
+      $('scrNew').addEventListener('click', () => openScreenForm(true));
       $('scrCancel').addEventListener('click', () => { scrStatus.textContent = ''; openScreenForm(false); });
       // The code isn't shown again: Done clears it from the page.
       $('scrDone').addEventListener('click', () => {

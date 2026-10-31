@@ -226,7 +226,7 @@ it('Device names: the line, the separator only for its two choices, the examples
   expect([$('namesLine').textContent, $('namesSepGroup').hidden, $('namesStatus').textContent]).toEqual(['namesLastWord', true, '']);
 });
 
-it('Screens: adds one with a key, shows its code and address once, signs one in again and removes one', () => {
+it('Screens and browsers: adds one with a key, shows its code and address once, gives one a new code and removes one', () => {
   let screens: any[] = [{ id: 's0', name: 'Hall', created: 1, used: 0, needsPassword: true }];
   const { calls, $, typeIn, click } = loadPage((method, path, body) => {
     if (path === '/web/password') return { set: true };
@@ -237,14 +237,18 @@ it('Screens: adds one with a key, shows its code and address once, signs one in 
       screens = [...screens, { id: 's1', name: body.name, created: 2, used: 0, needsPassword: false }];
       return { ok: true, id: 's1', code: 'ABCD-EFGH', devices: false, screens };
     }
-    if (path === '/web/screens/s0' && method === 'PUT') { screens = screens.map(s => ({ ...s, needsPassword: false })); return { ok: true, screens }; }
+    if (path === '/web/screens/s0' && method === 'PUT') {
+      screens = screens.map(s => ({ ...s, needsPassword: false }));
+      return { ok: true, id: 's0', code: 'JKMN-PQRS', devices: true, screens };
+    }
     if (path.startsWith('/web/screens/') && method === 'DELETE') { screens = screens.filter(s => `/web/screens/${s.id}` !== path); return { ok: true, screens }; }
   }, { webDashboardsEnabled: true });
   return Promise.resolve().then(() => {
-    expect(document.querySelector('#scrList li')!.textContent).toBe('HallwebScreenNeedsPasswordwebScreenSignInkpRemove');
-    // Add screen: a name, the key and (a password is set) the current password.
+    expect(document.querySelector('#scrList li')!.textContent).toBe('HallwebScreenNeedsPasswordwebScreenNewCodekpRemove');
+    // Add: the steps, a name, the key and (a password is set) the current password.
     click('scrNew');
-    expect([$('scrForm').hidden, $('scrCurrentGroup').hidden, $('scrSave').disabled]).toEqual([false, false, true]);
+    expect([$('scrForm').hidden, $('scrNameGroup').hidden, $('scrCurrentGroup').hidden, $('scrSave').disabled]).toEqual([false, false, false, true]);
+    expect([...document.querySelectorAll('#scrForm .steps > li')]).toHaveLength(3);
     typeIn('scrName', 'Kitchen');
     typeIn('scrKey', 'the-key');
     expect($('scrSave').disabled).toBe(true);
@@ -254,7 +258,8 @@ it('Screens: adds one with a key, shows its code and address once, signs one in 
     typeIn('scrCurrent', 'correct horse');
     click('scrSave');
     expect(calls.at(-1)).toEqual(['POST', '/web/screens', { name: 'Kitchen', key: 'the-key', current: 'correct horse' }]);
-    expect([$('scrForm').hidden, $('scrShown').hidden, $('scrCode').textContent, $('scrNoDevices').hidden]).toEqual([true, false, 'ABCD-EFGH', false]);
+    expect([$('scrForm').hidden, $('scrShown').hidden, $('scrShownTitle').textContent, $('scrCode').textContent, $('scrNoDevices').hidden])
+      .toEqual([true, false, 'webScreenAdded{"name":"Kitchen"}', 'ABCD-EFGH', false]);
     // The home address with the code (remote access is off, so not the away one).
     expect([...document.querySelectorAll('#scrAddresses .web-url')].map(n => n.textContent))
       .toEqual(['http://192.168.1.20/app/x/settings/dashboard.html#code=ABCD-EFGH']);
@@ -262,15 +267,18 @@ it('Screens: adds one with a key, shows its code and address once, signs one in 
     // Done takes the code off the page.
     click('scrDone');
     expect([$('scrShown').hidden, $('scrCode').textContent, $('scrActions').hidden]).toEqual([true, '', false]);
-    // Sign in again: the current password only.
+    // New code: the key again (never the stored one) and the current password, not the name.
     (document.querySelectorAll('#scrList li')[0].querySelector('button') as HTMLButtonElement).click();
-    expect([$('scrNameGroup').hidden, $('scrKeyGroup').hidden, $('scrSigning').textContent]).toEqual([true, true, 'webScreenSigning{"name":"Hall"}']);
+    expect([$('scrNameGroup').hidden, $('scrRenewing').textContent, $('scrSave').textContent]).toEqual([true, 'webScreenRenewing{"name":"Hall"}', 'webScreenNewCode']);
     typeIn('scrCurrent', 'correct horse');
+    expect($('scrSave').disabled).toBe(true);
+    typeIn('scrKey', 'hall-key');
     click('scrSave');
-    expect(calls.at(-1)).toEqual(['PUT', '/web/screens/s0', { current: 'correct horse' }]);
-    expect($('scrStatus').textContent).toBe('webScreenSignedIn');
+    expect(calls.at(-1)).toEqual(['PUT', '/web/screens/s0', { key: 'hall-key', current: 'correct horse' }]);
+    expect([$('scrShownTitle').textContent, $('scrCode').textContent, $('scrNoDevices').hidden]).toEqual(['webScreenRenewed{"name":"Hall"}', 'JKMN-PQRS', true]);
+    click('scrDone');
     // Remove: a second tap.
-    const remove = () => document.querySelectorAll('#scrList li')[0].querySelector('button') as HTMLButtonElement;
+    const remove = () => document.querySelectorAll('#scrList li')[0].querySelectorAll('button')[1] as HTMLButtonElement;
     remove().click();
     expect(remove().textContent).toBe('kpRemoveAgain');
     remove().click();

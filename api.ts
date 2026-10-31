@@ -292,7 +292,11 @@ export default {
    */
   async putWebPassword({ homey, body }: { homey: Homey, body: { password?: unknown, current?: unknown } }) {
     const app = homey.app as WidgetkeeperApp;
-    return app.webPassword.setPassword(typeof body?.password === 'string' ? body.password : '', body?.current);
+    const password = typeof body?.password === 'string' ? body.password : '';
+    const res = await app.webPassword.setPassword(password, body?.current);
+    // Set by someone who knew it: the screens stay signed in (browsers sign in again).
+    if (res.ok && password) app.webScreens.grantAll();
+    return res;
   },
 
   /**
@@ -321,10 +325,13 @@ export default {
     return app.webScreens.add(body?.name, body?.key, body?.current);
   },
 
-  /** The app settings page: a screen added before the password was set or changed, signed in with the current one. */
-  async putWebScreen({ homey, params, body }: { homey: Homey, params: Record<string, string>, body: { current?: unknown } }) {
+  /**
+   * The app settings page's New code: `{key, current}` (the screen's key pasted again, or a new one) → as adding one,
+   * or `{ok: false, reason: 'missing'}`. The old code stops working.
+   */
+  async putWebScreen({ homey, params, body }: { homey: Homey, params: Record<string, string>, body: { key?: unknown, current?: unknown } }) {
     const app = homey.app as WidgetkeeperApp;
-    return app.webScreens.signIn(params?.id, body?.current);
+    return app.webScreens.renew(params?.id, body?.key, body?.current);
   },
 
   /** The app settings page: removes a screen (its code stops working; the page forgets the key it got from it). */
