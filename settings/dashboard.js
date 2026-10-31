@@ -220,7 +220,7 @@
       timeline: 'When was it on, open or moving? A row per value over the day.',
       stacked: 'Several values stacked on one time axis, the rest of a total as Other: who uses the power?',
       lines: 'Up to six values over time on one chart, a line each: every room\'s temperature side by side.',
-      gauge: 'One value now on a dial, green to red by level if you like: is the air still good?',
+      gauge: 'One value now on a bar or dial, green to red by level if you like: is the air still good?',
       variables: 'Variables as rows you can switch or change.',
       varpresets: 'Buttons that set a variable to preset values.',
       keypad: 'Buttons behind an optional code that start Flows or set a state.',

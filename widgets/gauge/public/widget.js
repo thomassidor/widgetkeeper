@@ -1,7 +1,7 @@
 /*
- * Chart · Gauge: one value now on a dial, a 240° arc on a scale of its own (0–100 for a `%`, else fitted to the time
- * span, or as set), optionally in green, yellow and red by level, with its lowest to highest over the time span (today by
- * default) as a band inside the arc. Drawn by the shared chart module (../electricity/chart.js, `window.WidgetkeeperChart`,
+ * Chart · Gauge: one value now on a bar (the default) or a dial (a 240° arc), on a scale of its own (0–100 for a `%`,
+ * else fitted to the time span, or as set), optionally in green, yellow and red by level, with its lowest to highest over
+ * the time span (today by default) as a thin band beside the track. Drawn by the shared chart module (../electricity/chart.js, `window.WidgetkeeperChart`,
  * loaded first). Plain browser JS (served as-is).
  */
 (function () {
@@ -18,6 +18,8 @@
   const CHIP_H = 36; // the chip row, over the svg's top (as every chart widget's)
   const PAD = 6; // above the arc, and room for its round caps
   const ZONES = ['none', 'rising', 'falling'];
+  const LAYOUTS = ['bar', 'dial'];
+  const NUM_H = 40; // the bar's value line (32 px bold)
 
   const DEFAULT_STRINGS = {
     selectValue: 'Pick a value in the widget settings.',
@@ -56,7 +58,7 @@
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, t?: (key: string) => string, locale?: string, language?: string, now?: () => number,
    *   span?: string, scale?: string, scaleMin?: number, scaleMax?: number, zones?: string, yellowAt?: number, redAt?: number,
-   *   showRange?: boolean, title?: string, onHeight?: (h: number) => void }} opts
+   *   showRange?: boolean, title?: string, layout?: string, onHeight?: (h: number) => void }} opts
    */
   function createGaugeWidget(root, opts = {}) {
     // Any time span for the range (the kit's `timeSpan()`); missing or unknown: today.
@@ -70,6 +72,7 @@
     const withZones = levels.zones !== 'none';
     const showRange = opts.showRange !== false;
     const title = typeof opts.title === 'string' ? opts.title.trim() : '';
+    const layout = LAYOUTS.includes(opts.layout) ? opts.layout : 'bar'; // missing or unknown: the bar
 
     const state = {
       entry: null, // Sparklines' slot state ({deviceId, capabilityId, name, capability, value, points} | {missing})
@@ -101,7 +104,7 @@
       return { s, value, min: vs.length ? Math.min(...vs) : null, max: vs.length ? Math.max(...vs) : null };
     }
 
-    /** The dial's scale: as set, 0–100 for a `%`, else whole steps around the span's values (and the zones' limits). */
+    /** The scale: as set, 0–100 for a `%`, else whole steps around the span's values (and the zones' limits). */
     function scaleOf(r) {
       if (custom) return { lo: opts.scaleMin, hi: opts.scaleMax };
       if ((r.s.capability.units || '') === '%') return { lo: 0, hi: 100 };
@@ -113,13 +116,13 @@
 
     // ------------------------------------------------------------------ render
 
-    /** The dial, shown (`on`) or hidden; the frame draws the message and the passing message around it. */
+    /** The gauge, shown (`on`) or hidden; the frame draws the message and the passing message around it. */
     function draw(on) {
       show(box, on);
-      if (on) renderDial();
+      if (on) renderGauge();
     }
 
-    function renderDial() {
+    function renderGauge() {
       const w = frame.width;
       const r = reading(now());
 
@@ -137,61 +140,92 @@
       box.classList.toggle('empty', !drawable);
       if (!drawable) return;
 
-      const radius = Math.max(40, Math.min(MAX_R, w / 2 - STROKE));
-      const cx = w / 2, cy = CHIP_H + PAD + STROKE / 2 + radius;
-      const endY = cy + radius * Math.cos((180 - SWEEP) * Math.PI / 180);
-      const H = Math.ceil(endY + STROKE / 2 + 22);
-      kit.prepareSvg(svg, w, H);
-
       const { lo, hi } = scaleOf(r);
-      const angle = v => -SWEEP + 2 * SWEEP * Math.max(0, Math.min(1, (v - lo) / (hi - lo)));
-      const arc = (rr, a0, a1, cls) => C.el('svg:path', { class: cls, d: arcPath(cx, cy, rr, a0, a1) }, svg);
+      const frac = v => Math.max(0, Math.min(1, (v - lo) / (hi - lo)));
+      const g = layout === 'dial' ? dialShape(w) : barShape(w);
+      kit.prepareSvg(svg, w, g.H);
+      box.classList.toggle('gg-zoned', withZones);
+      box.dataset.layout = layout;
+      const stroke = (a, b, cls, inside = 0) => C.el('svg:path', { class: cls, d: g.path(a, b, inside) }, svg);
+      const dot = (f, cls, rr) => { const [x, y] = g.point(f); return C.el('svg:circle', { class: cls, cx: f1(x), cy: f1(y), r: rr }, svg); };
 
       // The track, or with zones a stretch of it per level (opaque, butt-ended, its round ends as dots in their level's colour).
-      box.classList.toggle('gg-zoned', withZones);
-      if (!withZones) arc(radius, -SWEEP, SWEEP, 'gg-track');
+      if (!withZones) stroke(0, 1, 'gg-track');
       else {
         const cuts = [lo, hi, levels.yellowAt, levels.redAt].filter(v => v >= lo && v <= hi).sort((a, b) => a - b);
         for (let i = 0; i < cuts.length - 1; i++) {
           if (cuts[i + 1] - cuts[i] <= 0) continue;
-          arc(radius, angle(cuts[i]), angle(cuts[i + 1]), `gg-zone ${zoneOf((cuts[i] + cuts[i + 1]) / 2, levels)}`);
+          stroke(frac(cuts[i]), frac(cuts[i + 1]), `gg-zone ${zoneOf((cuts[i] + cuts[i + 1]) / 2, levels)}`);
         }
-        for (const [v, a] of [[lo, -SWEEP], [hi, SWEEP]]) {
-          const [ex, ey] = polar(cx, cy, radius, a);
-          C.el('svg:circle', { class: `gg-cap ${zoneOf(v, levels)}`, cx: f1(ex), cy: f1(ey), r: STROKE / 2 }, svg);
-        }
+        dot(0, `gg-cap ${zoneOf(lo, levels)}`, STROKE / 2);
+        dot(1, `gg-cap ${zoneOf(hi, levels)}`, STROKE / 2);
       }
-      // The span's lowest to highest, inside the track.
+      // The span's lowest to highest, inside the dial or under the bar.
       if (showRange && r.min != null) {
-        const a0 = angle(r.min), a1 = Math.max(angle(r.max), a0 + 1.5);
-        arc(radius - STROKE / 2 - RANGE_W / 2 - 3, a0, a1, 'gg-range');
+        const f0 = frac(r.min), fEnd = Math.max(frac(r.max), f0 + 0.006);
+        stroke(f0, fEnd, 'gg-range', STROKE / 2 + RANGE_W / 2 + 3);
       }
       // The value now, from the scale's start, in its level's colour with zones.
       const zone = level;
       if (r.value != null) {
-        const a = angle(r.value);
-        const path = arc(radius, -SWEEP, Math.max(a, -SWEEP + 0.5), `gg-value${zone ? ` ${zone}` : ''}`);
-        path.setAttribute('data-value', String(r.value));
-        const [kx, ky] = polar(cx, cy, radius, a);
-        C.el('svg:circle', { class: `gg-knob${zone ? ` ${zone}` : ''}`, cx: f1(kx), cy: f1(ky), r: STROKE / 2 + 2 }, svg);
+        const f = frac(r.value);
+        stroke(0, Math.max(f, 0.002), `gg-value${zone ? ` ${zone}` : ''}`).setAttribute('data-value', String(r.value));
+        dot(f, `gg-knob${zone ? ` ${zone}` : ''}`, STROKE / 2 + 2);
       }
 
-      // The scale's ends under the arc's.
+      // The scale's ends, the value with its units, and the range.
       const fmt = v => formatNumber({ ...s.capability, units: '', min: null, max: null }, v, true);
-      const [lx] = polar(cx, cy, radius, -SWEEP), [rx] = polar(cx, cy, radius, SWEEP);
-      kit.text(svg, lx, endY + STROKE / 2 + 14, fmt(lo), 'middle', 'auto').setAttribute('class', 'gg-end');
-      kit.text(svg, rx, endY + STROKE / 2 + 14, fmt(hi), 'middle', 'auto').setAttribute('class', 'gg-end');
-
-      // The value in the middle, its units after it, and the range under it.
+      kit.text(svg, g.endX[0], g.endY, fmt(lo), g.endAnchor[0], 'auto').setAttribute('class', 'gg-end');
+      kit.text(svg, g.endX[1], g.endY, fmt(hi), g.endAnchor[1], 'auto').setAttribute('class', 'gg-end');
       const shown = r.value != null ? formatNumber(s.capability, s.value) : '–';
-      const big = kit.text(svg, cx, cy + 4, '', 'middle', 'central');
+      const big = kit.text(svg, g.numX, g.numY, '', g.numAnchor, 'central');
       big.setAttribute('class', `gg-num${zone ? ` ${zone}` : ''}`);
       C.el('svg:tspan', { text: shown }, big);
       if (units && r.value != null) C.el('svg:tspan', { class: 'gg-unit', dx: TIGHT_UNITS.test(units) ? 0 : 3, text: units }, big);
       if (showRange && r.min != null) {
         const range = `${t('range')} ${fmt(r.min)}–${fmt(r.max)}`;
-        kit.text(svg, cx, cy + 34, range, 'middle', 'central').setAttribute('class', 'gg-sub');
+        kit.text(svg, g.subX, g.subY, range, g.subAnchor, 'central').setAttribute('class', 'gg-sub');
       }
+    }
+
+    /**
+     * The dial: a 240° arc under the chip row, a fraction `f` of the scale at `-SWEEP + 2·SWEEP·f` degrees; `inside`
+     * moves a stroke toward the centre. The value in the middle, the range under it, the scale's ends under the arc's.
+     */
+    function dialShape(w) {
+      const radius = Math.max(40, Math.min(MAX_R, w / 2 - STROKE));
+      const cx = w / 2, cy = CHIP_H + PAD + STROKE / 2 + radius;
+      const endY = cy + radius * Math.cos((180 - SWEEP) * Math.PI / 180);
+      const deg = f => -SWEEP + 2 * SWEEP * f;
+      const [lx] = polar(cx, cy, radius, -SWEEP), [rx] = polar(cx, cy, radius, SWEEP);
+      return {
+        H: Math.ceil(endY + STROKE / 2 + 22),
+        path: (a, b, inside) => arcPath(cx, cy, radius - inside, deg(a), deg(b)),
+        point: f => polar(cx, cy, radius, deg(f)),
+        endX: [lx, rx], endY: endY + STROKE / 2 + 14, endAnchor: ['middle', 'middle'],
+        numX: cx, numY: cy + 4, numAnchor: 'middle',
+        subX: cx, subY: cy + 34, subAnchor: 'middle',
+      };
+    }
+
+    /**
+     * The bar: the value and the range on one line under the chip row, then the track across the width (inset by its
+     * round caps), `inside` moving a stroke below it, and the scale's ends under it at either side.
+     */
+    function barShape(w) {
+      const x0 = STROKE / 2 + 2, x1 = w - STROKE / 2 - 2;
+      const numY = CHIP_H + NUM_H / 2;
+      const y = CHIP_H + NUM_H + 8 + STROKE / 2;
+      const x = f => x0 + (x1 - x0) * f;
+      const endY = y + STROKE / 2 + 3 + RANGE_W + 3 + 14;
+      return {
+        H: Math.ceil(endY + 6),
+        path: (a, b, inside) => `M${f1(x(a))} ${f1(y + inside)}H${f1(x(b))}`,
+        point: f => [x(f), y],
+        endX: [0, w], endY, endAnchor: ['start', 'end'],
+        numX: 0, numY, numAnchor: 'start',
+        subX: w, subY: numY + 4, subAnchor: 'end',
+      };
     }
 
     // ------------------------------------------------------------------ public API

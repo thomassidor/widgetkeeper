@@ -989,7 +989,7 @@
       "timeline": "Når var det på, åpent eller i bevegelse? En rad per verdi gjennom dagen.",
       "stacked": "Flere verdier stablet på én tidsakse, resten av en total som Annet: hvem bruker strømmen?",
       "lines": "Opptil seks verdier over tid i ett diagram, en linje hver: hvert roms temperatur side om side.",
-      "gauge": "Én verdi nå på en måler, grønt til rødt etter nivå om du vil: er luften fortsatt god?",
+      "gauge": "Én verdi nå på en søyle eller måler, grønt til rødt etter nivå om du vil: er luften fortsatt god?",
       "variables": "Variabler som rader du kan slå av og på eller endre.",
       "varpresets": "Knapper som setter en variabel til forhåndsvalgte verdier.",
       "keypad": "Knapper bak en valgfri kode som starter flyter eller setter en tilstand.",

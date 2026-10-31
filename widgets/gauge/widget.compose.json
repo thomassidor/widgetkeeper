@@ -51,6 +51,64 @@
       }
     },
     {
+      "id": "layout",
+      "type": "dropdown",
+      "value": "bar",
+      "title": {
+        "en": "Layout",
+        "nl": "Weergave",
+        "de": "Darstellung",
+        "fr": "Disposition",
+        "it": "Aspetto",
+        "sv": "Utseende",
+        "no": "Utseende",
+        "es": "Diseño",
+        "da": "Udseende",
+        "ru": "Вид",
+        "pl": "Układ",
+        "ko": "레이아웃",
+        "ar": "التخطيط"
+      },
+      "values": [
+        {
+          "id": "bar",
+          "title": {
+            "en": "Bar",
+            "nl": "Balk",
+            "de": "Balken",
+            "fr": "Barre",
+            "it": "Barra",
+            "sv": "Stapel",
+            "no": "Søyle",
+            "es": "Barra",
+            "da": "Bjælke",
+            "ru": "Полоса",
+            "pl": "Pasek",
+            "ko": "막대",
+            "ar": "شريط"
+          }
+        },
+        {
+          "id": "dial",
+          "title": {
+            "en": "Dial",
+            "nl": "Meter",
+            "de": "Skala",
+            "fr": "Cadran",
+            "it": "Quadrante",
+            "sv": "Mätare",
+            "no": "Måler",
+            "es": "Indicador",
+            "da": "Måler",
+            "ru": "Шкала",
+            "pl": "Tarcza",
+            "ko": "게이지",
+            "ar": "قرص"
+          }
+        }
+      ]
+    },
+    {
       "id": "scale",
       "type": "dropdown",
       "value": "auto",
@@ -198,19 +256,19 @@
         "ar": "اللون حسب المستوى"
       },
       "hint": {
-        "en": "Green, yellow and red on the dial, and the value in its level's colour: CO₂ or power (higher is worse), a battery (lower is worse).",
-        "nl": "Groen, geel en rood op de meter, en de waarde in de kleur van het niveau: CO₂ of vermogen (hoger is slechter), een batterij (lager is slechter).",
-        "de": "Grün, Gelb und Rot auf der Skala, der Wert in der Farbe seiner Stufe: CO₂ oder Leistung (höher ist schlechter), ein Akku (niedriger ist schlechter).",
-        "fr": "Vert, jaune et rouge sur le cadran, et la valeur dans la couleur de son niveau : CO₂ ou puissance (plus haut est pire), une batterie (plus bas est pire).",
-        "it": "Verde, giallo e rosso sul quadrante, e il valore nel colore del suo livello: CO₂ o potenza (più alto è peggio), una batteria (più basso è peggio).",
-        "sv": "Grönt, gult och rött på mätaren, och värdet i nivåns färg: koldioxid eller effekt (högre är sämre), ett batteri (lägre är sämre).",
-        "no": "Grønt, gult og rødt på måleren, og verdien i nivåets farge: CO₂ eller effekt (høyere er verre), et batteri (lavere er verre).",
-        "es": "Verde, amarillo y rojo en el indicador, y el valor en el color de su nivel: CO₂ o potencia (más alto es peor), una batería (más bajo es peor).",
-        "da": "Grøn, gul og rød på måleren, og værdien i niveauets farve: CO₂ eller effekt (højere er værre), et batteri (lavere er værre).",
-        "ru": "Зелёный, жёлтый и красный на шкале, значение — цветом своего уровня: CO₂ или мощность (выше — хуже), батарея (ниже — хуже).",
-        "pl": "Zielony, żółty i czerwony na tarczy, a wartość w kolorze swojego poziomu: CO₂ lub moc (wyżej gorzej), bateria (niżej gorzej).",
-        "ko": "게이지에 초록·노랑·빨강을 표시하고 값은 해당 단계의 색으로 표시합니다: CO₂나 전력(높을수록 나쁨), 배터리(낮을수록 나쁨).",
-        "ar": "أخضر وأصفر وأحمر على المقياس، والقيمة بلون مستواها: ثاني أكسيد الكربون أو القدرة (الأعلى أسوأ)، بطارية (الأدنى أسوأ)."
+        "en": "Green, yellow and red on the track, and the value in its level's colour: CO₂ or power (higher is worse), a battery (lower is worse).",
+        "nl": "Groen, geel en rood op de baan, en de waarde in de kleur van het niveau: CO₂ of vermogen (hoger is slechter), een batterij (lager is slechter).",
+        "de": "Grün, Gelb und Rot auf der Spur, der Wert in der Farbe seiner Stufe: CO₂ oder Leistung (höher ist schlechter), ein Akku (niedriger ist schlechter).",
+        "fr": "Vert, jaune et rouge sur la piste, et la valeur dans la couleur de son niveau : CO₂ ou puissance (plus haut est pire), une batterie (plus bas est pire).",
+        "it": "Verde, giallo e rosso sulla traccia, e il valore nel colore del suo livello: CO₂ o potenza (più alto è peggio), una batteria (più basso è peggio).",
+        "sv": "Grönt, gult och rött på spåret, och värdet i nivåns färg: koldioxid eller effekt (högre är sämre), ett batteri (lägre är sämre).",
+        "no": "Grønt, gult og rødt på sporet, og verdien i nivåets farge: CO₂ eller effekt (høyere er verre), et batteri (lavere er verre).",
+        "es": "Verde, amarillo y rojo en la pista, y el valor en el color de su nivel: CO₂ o potencia (más alto es peor), una batería (más bajo es peor).",
+        "da": "Grøn, gul og rød på sporet, og værdien i niveauets farve: CO₂ eller effekt (højere er værre), et batteri (lavere er værre).",
+        "ru": "Зелёный, жёлтый и красный на дорожке, значение — цветом своего уровня: CO₂ или мощность (выше — хуже), батарея (ниже — хуже).",
+        "pl": "Zielony, żółty i czerwony na ścieżce, a wartość w kolorze swojego poziomu: CO₂ lub moc (wyżej gorzej), bateria (niżej gorzej).",
+        "ko": "트랙에 초록·노랑·빨강을 표시하고 값은 해당 단계의 색으로 표시합니다: CO₂나 전력(높을수록 나쁨), 배터리(낮을수록 나쁨).",
+        "ar": "أخضر وأصفر وأحمر على المسار، والقيمة بلون مستواها: ثاني أكسيد الكربون أو القدرة (الأعلى أسوأ)، بطارية (الأدنى أسوأ)."
       },
       "values": [
         {
@@ -613,19 +671,19 @@
         "ar": "إظهار المدى"
       },
       "hint": {
-        "en": "A band inside the dial from the lowest to the highest over the time span.",
-        "nl": "Een band in de meter van het laagste tot het hoogste over de periode.",
-        "de": "Ein Band in der Skala vom Tiefst- bis zum Höchstwert im Zeitraum.",
-        "fr": "Une bande dans le cadran du minimum au maximum sur la période.",
-        "it": "Una fascia nel quadrante dal minimo al massimo nel periodo.",
-        "sv": "Ett band i mätaren från lägsta till högsta under tidsperioden.",
-        "no": "Et bånd i måleren fra laveste til høyeste i tidsrommet.",
-        "es": "Una banda en el indicador del mínimo al máximo en el periodo.",
-        "da": "Et bånd i måleren fra laveste til højeste i tidsrummet.",
-        "ru": "Полоса на шкале от минимума до максимума за период.",
-        "pl": "Pasek na tarczy od najniższej do najwyższej wartości w okresie.",
-        "ko": "기간 동안의 최저~최고를 게이지 안쪽 띠로 보여줍니다.",
-        "ar": "شريط داخل المقياس من الأدنى إلى الأعلى خلال الفترة."
+        "en": "A thin band beside the bar or dial from the lowest to the highest over the time span.",
+        "nl": "Een dunne band naast de balk of meter van het laagste tot het hoogste over de periode.",
+        "de": "Ein schmales Band neben Balken oder Skala vom Tiefst- bis zum Höchstwert im Zeitraum.",
+        "fr": "Une fine bande le long de la barre ou du cadran, du minimum au maximum sur la période.",
+        "it": "Una sottile fascia accanto alla barra o al quadrante dal minimo al massimo nel periodo.",
+        "sv": "Ett smalt band vid stapeln eller mätaren från lägsta till högsta under tidsperioden.",
+        "no": "Et smalt bånd ved søylen eller måleren fra laveste til høyeste i tidsrommet.",
+        "es": "Una banda fina junto a la barra o el indicador, del mínimo al máximo en el periodo.",
+        "da": "Et smalt bånd ved bjælken eller måleren fra laveste til højeste i tidsrummet.",
+        "ru": "Тонкая полоса у полосы или шкалы от минимума до максимума за период.",
+        "pl": "Cienki pasek przy pasku lub tarczy od najniższej do najwyższej wartości w okresie.",
+        "ko": "기간 동안의 최저~최고를 막대나 게이지 옆의 얇은 띠로 보여줍니다.",
+        "ar": "شريط رفيع بجانب الشريط أو القرص من الأدنى إلى الأعلى خلال الفترة."
       }
     },
     {
@@ -920,19 +978,19 @@
         "ar": "نمط الألوان"
       },
       "hint": {
-        "en": "Vivid tints the dial and its range with the colour, and the levels more strongly.",
-        "nl": "Levendig kleurt de meter en het bereik met de kleur, en de niveaus sterker.",
-        "de": "Kräftig färbt die Skala und die Spanne in der Farbe, die Stufen stärker.",
-        "fr": "Vives teinte le cadran et l'écart de la couleur, et les niveaux plus fort.",
-        "it": "Vivaci tinge il quadrante e l'intervallo del colore, e i livelli più intensi.",
-        "sv": "Livfulla tonar mätaren och spannet i färgen, och nivåerna starkare.",
-        "no": "Livlige farger måleren og spennet med fargen, og nivåene sterkere.",
-        "es": "Vivos tiñe el indicador y el rango con el color, y los niveles con más fuerza.",
-        "da": "Livlige farver måleren og spændet med farven, og niveauerne stærkere.",
-        "ru": "«Яркие» окрашивают шкалу и диапазон цветом, а уровни — сильнее.",
-        "pl": "Żywe barwią tarczę i zakres kolorem, a poziomy mocniej.",
-        "ko": "선명하게는 게이지와 범위에 색을 입히고 단계 색을 더 진하게 합니다.",
-        "ar": "«زاهية» تلوّن المقياس والمدى باللون، والمستويات بقوة أكبر."
+        "en": "Vivid tints the track and its range with the colour, and the levels more strongly.",
+        "nl": "Levendig kleurt de baan en het bereik met de kleur, en de niveaus sterker.",
+        "de": "Kräftig färbt die Spur und die Spanne in der Farbe, die Stufen stärker.",
+        "fr": "Vives teinte la piste et l'écart de la couleur, et les niveaux plus fort.",
+        "it": "Vivaci tinge la traccia e l'intervallo del colore, e i livelli più intensi.",
+        "sv": "Livfulla tonar spåret och spannet i färgen, och nivåerna starkare.",
+        "no": "Livlige farger sporet og spennet med fargen, og nivåene sterkere.",
+        "es": "Vivos tiñe la pista y el rango con el color, y los niveles con más fuerza.",
+        "da": "Livlige farver sporet og spændet med farven, og niveauerne stærkere.",
+        "ru": "«Яркие» окрашивают дорожку и диапазон цветом, а уровни — сильнее.",
+        "pl": "Żywe barwią ścieżkę i zakres kolorem, a poziomy mocniej.",
+        "ko": "선명하게는 트랙과 범위에 색을 입히고 단계 색을 더 진하게 합니다.",
+        "ar": "«زاهية» تلوّن المسار والمدى باللون، والمستويات بقوة أكبر."
       },
       "value": "soft",
       "values": [

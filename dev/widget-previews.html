@@ -700,34 +700,36 @@ function compareChart(t, theme) {
   </div>`;
 }
 
-// Chart · Gauge: the title chip, then a 240° dial in green, yellow and red stretches with the value's arc in green up to
-// its knob, the range a thin muted band inside, and the value as a bar in the middle (no words, as the other previews).
+// Chart · Gauge: its default layout, the bar. The title chip, the value as a big bar with its units, then a thick track in
+// green, yellow and red stretches with the value's green fill up to its knob, the range a thin muted band under it, and
+// the scale's ends as two small bars (no words, as the other previews).
 function gaugeChart(t, theme) {
   const card = theme === 'dark' ? '#1F2029' : '#FFFFFF';
   const muted = theme === 'dark' ? 'rgba(237,238,240,.45)' : 'rgba(31,32,41,.4)';
   const GREEN = t.green, YELLOW = '#F5C518', RED = '#F25F5C';
-  const R = 230, SW = 40, cx = W / 2, cy = R + SW / 2 + 10, H = Math.round(cy + R / 2 + SW / 2 + 10);
-  const at = a => [cx + R * Math.sin(a * Math.PI / 180), cy - R * Math.cos(a * Math.PI / 180)];
-  const arc = (a0, a1) => { const [x0, y0] = at(a0), [x1, y1] = at(a1); return `M${x0.toFixed(1)} ${y0.toFixed(1)}A${R} ${R} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`; };
+  const SW = 44, H = 150, y = SW / 2 + 4, x0 = SW / 2, x1 = W - SW / 2;
+  const x = f => (x0 + (x1 - x0) * f).toFixed(1);
   const mix = (c, p) => `color-mix(in srgb, ${c} ${p}%, ${card})`;
-  const zones = [[-120, 40, GREEN], [40, 88, YELLOW], [88, 120, RED]];
-  const caps = [[-120, GREEN], [120, RED]].map(([a, c]) => { const [x, y] = at(a); return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${SW / 2}" fill="${mix(c, 28)}"/>`; }).join('');
-  const value = 8, [kx, ky] = at(value);
-  const ir = R - SW / 2 - 18, inner = (a0, a1) => { const p = a => [cx + ir * Math.sin(a * Math.PI / 180), cy - ir * Math.cos(a * Math.PI / 180)]; const [x0, y0] = p(a0), [x1, y1] = p(a1); return `M${x0.toFixed(1)} ${y0.toFixed(1)}A${ir} ${ir} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`; };
+  const zones = [[0, 0.66, GREEN], [0.66, 0.9, YELLOW], [0.9, 1, RED]];
+  const value = 0.6;
   return `<div class="card" style="gap:30px">
     <div class="pill" style="align-self:flex-start;height:64px;padding:0 30px 0 24px;box-sizing:border-box;background:color-mix(in srgb, ${t.fg} 9%, ${card});display:flex;align-items:center;gap:18px">
       <div style="width:24px;height:24px;border-radius:50%;background:${GREEN}"></div>
       ${pill(200, 30, t.fg, 'opacity:.85')}${pill(56, 30, muted)}
     </div>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:flex-end;gap:14px">${pill(190, 80, t.fg)}${pill(80, 36, muted)}</div>
+      ${pill(190, 30, muted)}
+    </div>
     <div style="position:relative;width:${W}px;height:${H}px">
       <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="position:absolute;inset:0">
-        ${zones.map(([a0, a1, c]) => `<path d="${arc(a0, a1)}" fill="none" stroke="${mix(c, 28)}" stroke-width="${SW}"/>`).join('')}${caps}
-        <path d="${inner(-70, 40)}" fill="none" stroke="color-mix(in srgb, ${t.fg} 45%, transparent)" stroke-width="12" stroke-linecap="round"/>
-        <path d="${arc(-120, value)}" fill="none" stroke="${GREEN}" stroke-width="${SW}" stroke-linecap="round"/>
-        <circle cx="${kx.toFixed(1)}" cy="${ky.toFixed(1)}" r="${SW / 2 + 6}" fill="${card}" stroke="${GREEN}" stroke-width="9"/>
+        ${zones.map(([a, b, c]) => `<path d="M${x(a)} ${y}H${x(b)}" fill="none" stroke="${mix(c, 28)}" stroke-width="${SW}"/>`).join('')}
+        <circle cx="${x(0)}" cy="${y}" r="${SW / 2}" fill="${mix(GREEN, 28)}"/><circle cx="${x(1)}" cy="${y}" r="${SW / 2}" fill="${mix(RED, 28)}"/>
+        <path d="M${x(0.28)} ${y + SW / 2 + 22}H${x(0.74)}" fill="none" stroke="color-mix(in srgb, ${t.fg} 45%, transparent)" stroke-width="12" stroke-linecap="round"/>
+        <path d="M${x(0)} ${y}H${x(value)}" fill="none" stroke="${GREEN}" stroke-width="${SW}" stroke-linecap="round"/>
+        <circle cx="${x(value)}" cy="${y}" r="${SW / 2 + 6}" fill="${card}" stroke="${GREEN}" stroke-width="9"/>
       </svg>
-      ${pill(170, 64, t.fg, `position:absolute;left:${cx - 85}px;top:${cy - 40}px`)}
-      ${pill(140, 24, muted, `position:absolute;left:${cx - 70}px;top:${cy + 50}px`)}
+      ${pill(40, 24, muted, `position:absolute;left:0;bottom:0`)}${pill(90, 24, muted, `position:absolute;right:0;bottom:0`)}
     </div>
   </div>`;
 }

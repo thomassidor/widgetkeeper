@@ -83,6 +83,31 @@ describe('the dial', () => {
     expect(r.all('.ew-chip').map(c => c.textContent)).toEqual(['Office · CO2 – ppm']);
   });
 
+  it('draws a bar by default, a dial when asked', () => {
+    const bar = widget({}, [entry(co2Cap, 420, 980, 760)]);
+    expect(bar.q('.gg-chart')!.dataset.layout).toBe('bar');
+    expect(bar.q('path.gg-track')!.getAttribute('d')).toMatch(/^M[\d.]+ [\d.]+H[\d.]+$/);
+    expect(bar.q('text.gg-num')!.getAttribute('text-anchor')).toBe('start');
+    const dial = widget({ layout: 'dial' }, [entry(co2Cap, 420, 980, 760)]);
+    expect(dial.q('.gg-chart')!.dataset.layout).toBe('dial');
+    expect(dial.q('path.gg-track')!.getAttribute('d')).toMatch(/A/);
+    expect(dial.q('text.gg-num')!.getAttribute('text-anchor')).toBe('middle');
+    expect(widget({ layout: 'pie' }, [entry(co2Cap, 420, 980, 760)]).q('.gg-chart')!.dataset.layout).toBe('bar');
+  });
+
+  it.each(['bar', 'dial'])('%s: puts the value at its place on the scale', (layout) => {
+    const r = widget({ layout, scale: 'custom', scaleMin: 0, scaleMax: 1000 }, [entry(co2Cap, 420, 980, 500)]);
+    const knob = r.q('circle.gg-knob')!;
+    if (layout === 'bar') {
+      const [x0, x1] = r.q('path.gg-track')!.getAttribute('d')!.match(/[\d.]+/g)!.map(Number).filter((_, i) => i !== 1);
+      expect(Number(knob.getAttribute('cx'))).toBeCloseTo((x0 + x1) / 2, 0);
+    } else {
+      // Half the scale is the top of the arc: straight above the centre.
+      const cx = Number(r.q('svg')!.getAttribute('width')) / 2;
+      expect(Number(knob.getAttribute('cx'))).toBeCloseTo(cx, 0);
+    }
+  });
+
   it('names the chart by its title', () => {
     expect(widget({ title: ' Air ' }, [entry(co2Cap, 420, 980, 760)]).all('.ew-chip')[0].textContent).toBe('Air – ppm');
   });

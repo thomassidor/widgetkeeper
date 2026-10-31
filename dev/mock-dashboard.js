@@ -1,6 +1,6 @@
 // The widgets of dev/screenshots.html: the real widget code with the made-up home of showcase-data.js ("Solbakken",
 // the showcase dashboards' data, so no real home's names or readings end up in the README), mounted into the elements
-// with the ids w-elec, w-thermo, w-qa, w-sa, w-roomhealth, w-valuematrix, w-weather, w-heatmap, w-cameras, w-values, w-sparklines, w-charts, w-totals, w-scatter, w-compare, w-timeline, w-stacked, w-lines, w-gauge, w-dailyrange, w-typicalday, w-variables,
+// with the ids w-elec, w-thermo, w-qa, w-sa, w-roomhealth, w-valuematrix, w-weather, w-heatmap, w-cameras, w-values, w-sparklines, w-charts, w-totals, w-scatter, w-compare, w-timeline, w-stacked, w-lines, w-gauge, w-gaugedial, w-dailyrange, w-typicalday, w-variables,
 // w-varpresets, w-keypad, w-flows, w-price, w-locks, w-clock, w-textline(-note), w-dayssince, w-shortcuts, w-lightrooms,
 // w-pollen and w-webpage, and the Popups prompt page into the frame w-popup. Most go through showcase-mount.js's MOUNT with a
 // showcase entry (`findWidget()`); only the README's own changes are here. Needs the widget scripts,
@@ -55,8 +55,10 @@
   if (el('w-stacked')) MOUNT.stacked(el('w-stacked'), { opts: { total: true, count: 3, colors: ['orange', 'red', 'green'] }, state: mockStacked.stackedState('24h', SHOWCASE_NOW) });
   // Chart · Lines: four rooms' temperatures over the last 24 hours (mock-lines.js).
   if (el('w-lines')) MOUNT.lines(el('w-lines'), { opts: { count: 4 }, state: mockLines.linesState('24h', SHOWCASE_NOW) });
-  // Chart · Gauge: the office's CO₂ today, green to red as it rises (mock-gauge.js).
-  if (el('w-gauge')) MOUNT.gauge(el('w-gauge'), { opts: { zones: 'rising', yellowAt: 1000, redAt: 1400 }, state: mockGauge.gaugeState('co2', '1d!', SHOWCASE_NOW) });
+  // Chart · Gauge: the office's CO₂ today, green to red as it rises (mock-gauge.js), as a bar (the default) and a dial.
+  const co2Levels = { zones: 'rising', yellowAt: 1000, redAt: 1400 };
+  if (el('w-gauge')) MOUNT.gauge(el('w-gauge'), { opts: co2Levels, state: mockGauge.gaugeState('co2', '1d!', SHOWCASE_NOW) });
+  if (el('w-gaugedial')) MOUNT.gauge(el('w-gaugedial'), { opts: { ...co2Levels, layout: 'dial' }, state: mockGauge.gaugeState('co2', '1d!', SHOWCASE_NOW) });
   if (el('w-scatter')) MOUNT.scatter(el('w-scatter'), { opts: { span: '7d' }, state: mockScatter.scatterState('7d', SHOWCASE_NOW) });
 
   // The Climate dashboard's rooms, with the kitchen humid after dinner, a stuffy bedroom and the office's radon far over.

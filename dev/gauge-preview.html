@@ -19,14 +19,17 @@
   </style>
 </head>
 <body>
-  <div class="col"><span>358 px (phone) · dark · office CO₂ today · higher is worse</span><div class="card homey-dark-mode" style="width:358px"><div id="u1"></div></div></div>
-  <div class="col"><span>358 px · light · the same</span><div class="card light" style="width:358px"><div id="u2"></div></div></div>
-  <div class="col"><span>300 px · dark · Vivid · the same</span><div class="card homey-dark-mode" style="width:300px"><div id="u3"></div></div></div>
-  <div class="col"><span>358 px · dark · kitchen humidity · one colour · teal</span><div class="card homey-dark-mode" style="width:358px"><div id="u4"></div></div></div>
-  <div class="col"><span>358 px · dark · battery · lower is worse (yellow 30, red 15) · no range</span><div class="card homey-dark-mode" style="width:358px"><div id="u5"></div></div></div>
-  <div class="col"><span>358 px · dark · CO₂ on 0–2000 as set · own title</span><div class="card homey-dark-mode" style="width:358px"><div id="u6"></div></div></div>
-  <div class="col"><span>358 px · dark · a missing value</span><div class="card homey-dark-mode" style="width:358px"><div id="u7"></div></div></div>
-  <div class="col"><span>358 px · nothing picked</span><div class="card homey-dark-mode" style="width:358px"><div id="u8"></div></div></div>
+  <div class="col"><span>358 px (phone) · dark · bar · office CO₂ today · higher is worse</span><div class="card homey-dark-mode" style="width:358px"><div id="u1"></div></div></div>
+  <div class="col"><span>358 px · light · bar · the same</span><div class="card light" style="width:358px"><div id="u2"></div></div></div>
+  <div class="col"><span>300 px · dark · bar · Vivid · the same</span><div class="card homey-dark-mode" style="width:300px"><div id="u3"></div></div></div>
+  <div class="col"><span>358 px · dark · bar · kitchen humidity · one colour · teal</span><div class="card homey-dark-mode" style="width:358px"><div id="u4"></div></div></div>
+  <div class="col"><span>358 px · dark · bar · battery · lower is worse (yellow 30, red 15) · no range</span><div class="card homey-dark-mode" style="width:358px"><div id="u5"></div></div></div>
+  <div class="col"><span>358 px · dark · dial · office CO₂ · higher is worse</span><div class="card homey-dark-mode" style="width:358px"><div id="u6"></div></div></div>
+  <div class="col"><span>358 px · light · dial · the same</span><div class="card light" style="width:358px"><div id="u7"></div></div></div>
+  <div class="col"><span>300 px · dark · dial · Vivid · humidity · teal</span><div class="card homey-dark-mode" style="width:300px"><div id="u8"></div></div></div>
+  <div class="col"><span>358 px · dark · dial · CO₂ on 0–2000 as set · own title</span><div class="card homey-dark-mode" style="width:358px"><div id="u9"></div></div></div>
+  <div class="col"><span>358 px · dark · a missing value</span><div class="card homey-dark-mode" style="width:358px"><div id="u10"></div></div></div>
+  <div class="col"><span>358 px · nothing picked</span><div class="card homey-dark-mode" style="width:358px"><div id="u11"></div></div></div>
 
   <script>
     const make = (id, opts, state) => {
@@ -40,9 +43,12 @@
     make('u3', { ...co2, colorStyle: 'deep' }, mockGauge.gaugeState('co2'));
     make('u4', { color: 'teal' }, mockGauge.gaugeState('humidity'));
     make('u5', { zones: 'falling', yellowAt: 30, redAt: 15, showRange: false }, mockGauge.gaugeState('battery'));
-    make('u6', { ...co2, scale: 'custom', scaleMin: 0, scaleMax: 2000, title: 'Air in the office' }, mockGauge.gaugeState('co2'));
-    make('u7', {}, [{ deviceId: 'gone', capabilityId: 'measure_co2', missing: true }]);
-    const empty = make('u8', {});
+    make('u6', { ...co2, layout: 'dial' }, mockGauge.gaugeState('co2'));
+    make('u7', { ...co2, layout: 'dial' }, mockGauge.gaugeState('co2'));
+    make('u8', { layout: 'dial', color: 'teal', colorStyle: 'deep' }, mockGauge.gaugeState('humidity'));
+    make('u9', { ...co2, layout: 'dial', scale: 'custom', scaleMin: 0, scaleMax: 2000, title: 'Air in the office' }, mockGauge.gaugeState('co2'));
+    make('u10', {}, [{ deviceId: 'gone', capabilityId: 'measure_co2', missing: true }]);
+    const empty = make('u11', {});
     empty.setMessage(empty.t('selectValue'));
   </script>
 </body>

@@ -16,6 +16,7 @@ window.mountGaugeWidget = function (Homey, { root, frame }) {
       colorStyle: settings.colorStyle,
       color: settings.color,
       t: key => Homey.__(key),
+      layout: settings.layout, // missing: the bar
       span: spanSetting(settings, '', { count: 1, unit: 'calDays' }), // a number of a unit; missing: today
       scale: settings.scale, // missing: automatic
       scaleMin: number(settings.scaleMin),

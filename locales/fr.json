@@ -989,7 +989,7 @@
       "timeline": "Quand était-ce allumé, ouvert ou en mouvement ? Une ligne par valeur sur la journée.",
       "stacked": "Plusieurs valeurs empilées sur un axe du temps, le reste d'un total en Autre : qui consomme l'électricité ?",
       "lines": "Jusqu'à six valeurs dans le temps sur un graphique, une courbe chacune : la température de chaque pièce côte à côte.",
-      "gauge": "Une valeur actuelle sur un cadran, du vert au rouge selon le niveau si vous voulez : l'air est-il encore bon ?",
+      "gauge": "Une valeur actuelle sur une barre ou un cadran, du vert au rouge selon le niveau si vous voulez : l'air est-il encore bon ?",
       "variables": "Les variables en lignes à basculer ou modifier.",
       "varpresets": "Des boutons qui donnent des valeurs prédéfinies à une variable.",
       "keypad": "Des boutons derrière un code facultatif qui lancent des flows ou règlent un état.",

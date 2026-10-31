@@ -520,7 +520,10 @@ const BUILD = {
     const temp = first(/:measure_temperature$/) || any;
     const missing = { id: `${MISSING}:measure_temperature`, name: 'Deleted device · Temperature' };
     return { cols: 3, widgets: [
-      w('gauge', 'Today, fitted scale, one colour (defaults)', { slot: temp }),
+      w('gauge', 'Bar, today, fitted scale, one colour (defaults)', { slot: temp }),
+      w('gauge', 'Dial', { slot: temp, layout: 'dial' }),
+      w('gauge', 'Dial · higher is worse · Vivid', { slot: co2, layout: 'dial', zones: 'rising', yellowAt: 1000, redAt: 1400, colorStyle: 'deep' }),
+      w('gauge', 'Dial · lower is worse · no range', { slot: battery, layout: 'dial', zones: 'falling', yellowAt: 30, redAt: 15, showRange: false }),
       w('gauge', 'Higher is worse · 1000/1400', { slot: co2, zones: 'rising', yellowAt: 1000, redAt: 1400 }),
       w('gauge', 'Lower is worse · 30/15 · no range', { slot: battery, zones: 'falling', yellowAt: 30, redAt: 15, showRange: false }),
       w('gauge', 'A percentage on 0–100 · teal', { slot: percent, color: 'teal' }),
