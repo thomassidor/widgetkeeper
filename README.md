@@ -25,6 +25,10 @@ How did it go? One value over any span up to two years, or against the period be
 <a href="#chart--daily-profile"><b>Chart · Daily Profile</b></a><br>
 Today's line over the usual day and its spread: is today unusual?<br clear="left"></p>
 
+<p><a href="#chart--gauge"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/gauge-dark.png"><img src="docs/previews/gauge-light.png" alt="" width="120" align="left"></picture></a>
+<a href="#chart--gauge"><b>Chart · Gauge</b></a><br>
+One value now on a dial, green to red by level if you like: is the air still good?<br clear="left"></p>
+
 <p><a href="#chart--lines"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/lines-dark.png"><img src="docs/previews/lines-light.png" alt="" width="120" align="left"></picture></a>
 <a href="#chart--lines"><b>Chart · Lines</b></a><br>
 Up to six values over time on one chart, a line each: every room's temperature side by side<br clear="left"></p>
@@ -212,6 +216,15 @@ For totals per hour, day or month, see [Chart · Totals](#chart--totals); for mo
 Is today unusual? Today's line over the usual day: each hour's average over the last 7 (or 3) days, dashed, with their lowest to highest as a band.
 
 **Settings:** the value, usual day from (the last 7 or 3 days), show the spread, smooth line, scale (fitted or from zero), title, the values at the top, colour, [colour style](#colour-style).
+
+## Chart · Gauge
+<img src="docs/screenshots/gauge.png" alt="Chart · Gauge on a Homey dashboard: the office's CO₂ at 950 ppm on a dial from 0 to 1,500, green up to 1,000, yellow to 1,400 and red above, with today's range of 430 to 1,110 ppm as a thin band inside" width="358">
+
+One value now on a dial: a room's CO₂ or humidity, a battery, the house's power. A percentage goes from 0 to 100; anything else gets a scale fitted around today's values (or another [time span](#time-spans)), or one you set. A thin band inside the dial shows the lowest to the highest over the time span.
+
+**Colour by level** paints the dial green, yellow and red and the value in its level's colour: *Higher is worse* for CO₂ or power (yellow from 1,000 and red from 1,400 by default, CO₂'s usual limits in ppm), *Lower is worse* for a battery.
+
+**Settings:** the value, scale (automatic, or from and to), colour by level with where yellow and red start, [time span](#time-spans) for the range, show the range, title, colour, [colour style](#colour-style).
 
 ## Chart · Lines
 <img src="docs/screenshots/lines.png" alt="Chart · Lines on a Homey dashboard: the last 24 hours of four rooms' temperatures, a line each in blue, red, orange and yellow, the living room's and the kitchen's now at the top" width="358">

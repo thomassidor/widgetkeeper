@@ -438,6 +438,13 @@
     "now": "Nu",
     "average": "gem."
   },
+  "gauge": {
+    "selectValue": "Kies een waarde in de widgetinstellingen.",
+    "error": "Kon de grafiek niet laden.",
+    "unavailable": "Niet beschikbaar",
+    "noHistory": "Nog geen geschiedenis.",
+    "range": "Bereik"
+  },
   "lights": {
     "selectDevices": "Kies lampen in de widgetinstellingen.",
     "error": "Kon de lampen niet laden.",
@@ -982,6 +989,7 @@
       "timeline": "Wanneer was het aan, open of in beweging? Een rij per waarde over de dag.",
       "stacked": "Meerdere waarden gestapeld op één tijdas, de rest van een totaal als Overig: wie verbruikt de stroom?",
       "lines": "Tot zes waarden in de tijd in één grafiek, elk een lijn: de temperatuur van elke kamer naast elkaar.",
+      "gauge": "Eén waarde nu op een meter, desgewenst groen tot rood per niveau: is de lucht nog goed?",
       "variables": "Variabelen als rijen om te schakelen of te wijzigen.",
       "varpresets": "Knoppen die een variabele op vaste waarden zetten.",
       "keypad": "Knoppen achter een optionele code die flows starten of een status instellen.",

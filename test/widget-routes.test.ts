@@ -116,6 +116,8 @@ const ROUTES: Route[] = [
     [['sparklines.getWindows', [[{ slot: 'm:measure_power', span: '24h', from: 100, end: 200, unit: null, use: false, window: true }, { slot: 'a:measure_power', span: '24h', from: 100, end: 200, unit: null, use: false, window: true }]]]]],
   ['lines', 'GET', '/state', { charts: 'a:measure_temperature~24h~100~200~,b:measure_temperature~24h~100~200~' }, {},
     [['sparklines.getWindows', [[{ slot: 'a:measure_temperature', span: '24h', from: 100, end: 200, unit: null, use: false, window: true }, { slot: 'b:measure_temperature', span: '24h', from: 100, end: 200, unit: null, use: false, window: true }]]]]],
+  ['gauge', 'GET', '/state', { charts: 'a:measure_co2~1d!~100~200~day' }, {},
+    [['sparklines.getWindows', [[{ slot: 'a:measure_co2', span: '1d!', from: 100, end: 200, unit: 'day', use: false, window: true }]]]]],
   ['totals', 'GET', '/state', { charts: 'd1:meter_power~thisMonth~100~200~month~use,d1:meter_power~thisMonth~50~100~month~use' }, {},
     [['sparklines.getWindows', [[{ slot: 'd1:meter_power', span: 'thisMonth', from: 100, end: 200, unit: 'month', use: true, window: true }, { slot: 'd1:meter_power', span: 'thisMonth', from: 50, end: 100, unit: 'month', use: true, window: true }]]]]],
   ['valuematrix', 'GET', '/state', { deviceIds: 'a,b', capabilityIds: 'measure_temperature,measure_humidity' }, {},

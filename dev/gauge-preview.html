@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gauge widget preview</title>
+  <link rel="stylesheet" href="../widgets/spacer/public/kit.css">
+  <link rel="stylesheet" href="../widgets/electricity/public/chart.css">
+  <link rel="stylesheet" href="../widgets/gauge/public/widget.css">
+  <script src="../widgets/spacer/public/kit.js"></script>
+  <script src="../widgets/electricity/public/chart.js"></script>
+  <script src="../widgets/gauge/public/widget.js"></script>
+  <script src="mock-gauge.js"></script>
+  <script src="i18n.js"></script>
+  <link rel="stylesheet" href="preview.css">
+  <style>
+    .card { background: var(--homey-background-color, #1F2029); border-radius: 20px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.3); box-sizing: border-box; }
+    .light { color: var(--ew-text); }
+  </style>
+</head>
+<body>
+  <div class="col"><span>358 px (phone) · dark · office CO₂ today · higher is worse</span><div class="card homey-dark-mode" style="width:358px"><div id="u1"></div></div></div>
+  <div class="col"><span>358 px · light · the same</span><div class="card light" style="width:358px"><div id="u2"></div></div></div>
+  <div class="col"><span>300 px · dark · Vivid · the same</span><div class="card homey-dark-mode" style="width:300px"><div id="u3"></div></div></div>
+  <div class="col"><span>358 px · dark · kitchen humidity · one colour · teal</span><div class="card homey-dark-mode" style="width:358px"><div id="u4"></div></div></div>
+  <div class="col"><span>358 px · dark · battery · lower is worse (yellow 30, red 15) · no range</span><div class="card homey-dark-mode" style="width:358px"><div id="u5"></div></div></div>
+  <div class="col"><span>358 px · dark · CO₂ on 0–2000 as set · own title</span><div class="card homey-dark-mode" style="width:358px"><div id="u6"></div></div></div>
+  <div class="col"><span>358 px · dark · a missing value</span><div class="card homey-dark-mode" style="width:358px"><div id="u7"></div></div></div>
+  <div class="col"><span>358 px · nothing picked</span><div class="card homey-dark-mode" style="width:358px"><div id="u8"></div></div></div>
+
+  <script>
+    const make = (id, opts, state) => {
+      const w = createGaugeWidget(document.getElementById(id), { t: devT, language: 'en', ...opts });
+      if (state) w.setState(state);
+      return w;
+    };
+    const co2 = { zones: 'rising', yellowAt: 1000, redAt: 1400 };
+    make('u1', co2, mockGauge.gaugeState('co2'));
+    make('u2', co2, mockGauge.gaugeState('co2'));
+    make('u3', { ...co2, colorStyle: 'deep' }, mockGauge.gaugeState('co2'));
+    make('u4', { color: 'teal' }, mockGauge.gaugeState('humidity'));
+    make('u5', { zones: 'falling', yellowAt: 30, redAt: 15, showRange: false }, mockGauge.gaugeState('battery'));
+    make('u6', { ...co2, scale: 'custom', scaleMin: 0, scaleMax: 2000, title: 'Air in the office' }, mockGauge.gaugeState('co2'));
+    make('u7', {}, [{ deviceId: 'gone', capabilityId: 'measure_co2', missing: true }]);
+    const empty = make('u8', {});
+    empty.setMessage(empty.t('selectValue'));
+  </script>
+</body>
+</html>

@@ -438,6 +438,13 @@
     "now": "Teraz",
     "average": "śr."
   },
+  "gauge": {
+    "selectValue": "Wybierz wartość w ustawieniach widżetu.",
+    "error": "Nie udało się wczytać wykresu.",
+    "unavailable": "Niedostępne",
+    "noHistory": "Brak historii.",
+    "range": "Zakres"
+  },
   "lights": {
     "selectDevices": "Wybierz światła w ustawieniach widżetu.",
     "error": "Nie udało się wczytać świateł.",
@@ -982,6 +989,7 @@
       "timeline": "Kiedy było włączone, otwarte lub był ruch? Wiersz na wartość przez cały dzień.",
       "stacked": "Kilka wartości ułożonych na jednej osi czasu, reszta sumy jako Inne: kto zużywa prąd?",
       "lines": "Do sześciu wartości w czasie na jednym wykresie, każda jako linia: temperatura każdego pokoju obok siebie.",
+      "gauge": "Jedna bieżąca wartość na tarczy, w razie potrzeby od zielonego do czerwonego wg poziomu: czy powietrze jest jeszcze dobre?",
       "variables": "Zmienne jako wiersze do przełączania lub zmiany.",
       "varpresets": "Przyciski ustawiające zmienną na wybrane wartości.",
       "keypad": "Przyciski za opcjonalnym kodem, które uruchamiają Flow lub ustawiają stan.",

@@ -480,6 +480,24 @@
           }
         },
         {
+          "id": "gauge",
+          "title": {
+            "en": "Chart · Gauge",
+            "nl": "Grafiek · Meter",
+            "de": "Diagramm · Anzeige",
+            "fr": "Graphique · Jauge",
+            "it": "Grafico · Indicatore",
+            "sv": "Diagram · Mätare",
+            "no": "Diagram · Måler",
+            "es": "Gráfico · Indicador",
+            "da": "Graf · Måler",
+            "ru": "График · Шкала",
+            "pl": "Wykres · Wskaźnik",
+            "ko": "차트 · 게이지",
+            "ar": "مخطط · مقياس"
+          }
+        },
+        {
           "id": "variables",
           "title": {
             "en": "Variables",

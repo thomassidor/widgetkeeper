@@ -438,6 +438,13 @@
     "now": "Nu",
     "average": "snitt"
   },
+  "gauge": {
+    "selectValue": "Välj ett värde i widgetens inställningar.",
+    "error": "Kunde inte läsa in diagrammet.",
+    "unavailable": "Inte tillgänglig",
+    "noHistory": "Ingen historik än.",
+    "range": "Spann"
+  },
   "lights": {
     "selectDevices": "Välj lampor i widgetinställningarna.",
     "error": "Kunde inte läsa in lamporna.",
@@ -982,6 +989,7 @@
       "timeline": "När var det på, öppet eller i rörelse? En rad per värde över dagen.",
       "stacked": "Flera värden staplade på en tidsaxel, resten av en total som Övrigt: vem använder strömmen?",
       "lines": "Upp till sex värden över tid i ett diagram, en linje var: varje rums temperatur sida vid sida.",
+      "gauge": "Ett värde nu på en mätare, grönt till rött efter nivå om du vill: är luften fortfarande bra?",
       "variables": "Variabler som rader att slå om eller ändra.",
       "varpresets": "Knappar som sätter en variabel till förinställda värden.",
       "keypad": "Knappar bakom en valfri kod som startar flöden eller ställer in ett läge.",

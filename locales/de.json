@@ -438,6 +438,13 @@
     "now": "Jetzt",
     "average": "Ø"
   },
+  "gauge": {
+    "selectValue": "Wähle einen Wert in den Widget-Einstellungen.",
+    "error": "Das Diagramm konnte nicht geladen werden.",
+    "unavailable": "Nicht verfügbar",
+    "noHistory": "Noch kein Verlauf.",
+    "range": "Spanne"
+  },
   "lights": {
     "selectDevices": "Wähle Lampen in den Widget-Einstellungen.",
     "error": "Lampen konnten nicht geladen werden.",
@@ -982,6 +989,7 @@
       "timeline": "Wann war es an, offen oder in Bewegung? Eine Zeile pro Wert über den Tag.",
       "stacked": "Mehrere Werte gestapelt auf einer Zeitachse, der Rest einer Summe als Sonstiges: Wer verbraucht den Strom?",
       "lines": "Bis zu sechs Werte im Zeitverlauf in einem Diagramm, je eine Linie: die Temperatur jedes Raums nebeneinander.",
+      "gauge": "Ein Wert jetzt auf einer Skala, auf Wunsch grün bis rot nach Stufe: Ist die Luft noch gut?",
       "variables": "Variablen als Zeilen zum Schalten oder Ändern.",
       "varpresets": "Tasten, die eine Variable auf feste Werte setzen.",
       "keypad": "Tasten hinter einem optionalen Code, die Flows starten oder einen Zustand setzen.",

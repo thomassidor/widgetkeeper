@@ -1,0 +1,53 @@
+/*
+ * Chart · Gauge: the shared chart look (../electricity/chart.css, loaded first, scoped by `.ew`) in the widget's colour
+ * (the kit's `data-wk-color` on the root: its bright set, as Charts' colours), or with zones in the palette's green,
+ * yellow and red (their bright set, as the charts').
+ */
+.gg {
+  --ew-c: var(--wk-c-bright, var(--ew-blue));
+  --gg-green: var(--wk-green-bright, #71D51B);
+  --gg-yellow: var(--wk-yellow-bright, #F5C518);
+  --gg-red: var(--wk-red-bright, #F25F5C);
+  --gg-track: color-mix(in srgb, var(--ew-text) 9%, var(--ew-card));
+  --gg-zone-mix: 28%;
+}
+
+/* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
+html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
+html, body { margin: 0; }
+
+.gg .ew-chip.series.range { flex-shrink: 0; }
+.gg .ew-chip.series.green i { background: var(--gg-green); }
+.gg .ew-chip.series.yellow i { background: var(--gg-yellow); }
+.gg .ew-chip.series.red i { background: var(--gg-red); }
+.gg .ew-chip.series.range i { background: color-mix(in srgb, var(--ew-text) 45%, transparent); }
+
+.gg path.gg-track, .gg path.gg-zone, .gg path.gg-value { fill: none; stroke-width: 12px; stroke-linecap: round; }
+.gg path.gg-track { stroke: var(--gg-track); }
+.gg path.gg-zone { stroke-linecap: butt; }
+.gg .gg-zone.green, .gg .gg-cap.green { --gg-z: var(--gg-green); }
+.gg .gg-zone.yellow, .gg .gg-cap.yellow { --gg-z: var(--gg-yellow); }
+.gg .gg-zone.red, .gg .gg-cap.red { --gg-z: var(--gg-red); }
+/* Opaque mixes with the card, so a zone's end and the dot rounding it don't double up. */
+.gg path.gg-zone { stroke: color-mix(in srgb, var(--gg-z) var(--gg-zone-mix), var(--ew-card)); }
+.gg circle.gg-cap { fill: color-mix(in srgb, var(--gg-z) var(--gg-zone-mix), var(--ew-card)); }
+.gg path.gg-value { stroke: var(--ew-c); }
+.gg path.gg-value.green { stroke: var(--gg-green); }
+.gg path.gg-value.yellow { stroke: var(--gg-yellow); }
+.gg path.gg-value.red { stroke: var(--gg-red); }
+.gg path.gg-range { fill: none; stroke-width: 4px; stroke-linecap: round; stroke: color-mix(in srgb, var(--ew-text) 45%, transparent); }
+.gg circle.gg-knob { fill: var(--ew-card); stroke: var(--ew-c); stroke-width: 3px; }
+.gg circle.gg-knob.green { stroke: var(--gg-green); }
+.gg circle.gg-knob.yellow { stroke: var(--gg-yellow); }
+.gg circle.gg-knob.red { stroke: var(--gg-red); }
+
+.gg svg text.gg-num { fill: var(--ew-text); font-size: var(--homey-font-size-xxlarge, 32px); font-weight: var(--homey-font-weight-bold, 700); }
+.gg svg text.gg-num .gg-unit { fill: var(--ew-muted); font-size: var(--homey-font-size-default, 17px); font-weight: var(--homey-font-weight-regular, 400); }
+.gg svg text.gg-sub, .gg svg text.gg-end { fill: var(--ew-muted); font-size: var(--ew-fs-label); }
+
+/* Vivid (kit.css, on the widget's root): the zones stronger on the track, without zones the track and the range in the widget's colour. */
+.wk-deep .gg {
+  --gg-zone-mix: 50%;
+  --gg-track: color-mix(in srgb, var(--ew-c) 22%, var(--ew-card));
+}
+.wk-deep .gg .gg-chart:not(.gg-zoned) path.gg-range { stroke: color-mix(in srgb, var(--ew-c) 70%, var(--ew-text)); }

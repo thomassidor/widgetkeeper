@@ -509,6 +509,28 @@ const BUILD = {
       w('compare', 'Nothing picked'),
     ] };
   },
+  async gauge() {
+    const items = await autocomplete('gauge', 'slot');
+    // A CO₂ value where there is one (levels that rise), a battery (levels that fall), a percentage (0–100), a temperature.
+    const first = re => pick(items, i => re.test(i.id), 1)[0];
+    const any = pick(items, () => true, 1)[0];
+    const co2 = first(/:measure_co2$/) || any;
+    const battery = first(/:measure_battery$/) || any;
+    const percent = first(/:measure_humidity$/) || battery;
+    const temp = first(/:measure_temperature$/) || any;
+    const missing = { id: `${MISSING}:measure_temperature`, name: 'Deleted device · Temperature' };
+    return { cols: 3, widgets: [
+      w('gauge', 'Today, fitted scale, one colour (defaults)', { slot: temp }),
+      w('gauge', 'Higher is worse · 1000/1400', { slot: co2, zones: 'rising', yellowAt: 1000, redAt: 1400 }),
+      w('gauge', 'Lower is worse · 30/15 · no range', { slot: battery, zones: 'falling', yellowAt: 30, redAt: 15, showRange: false }),
+      w('gauge', 'A percentage on 0–100 · teal', { slot: percent, color: 'teal' }),
+      w('gauge', 'Scale 0–40 as set · 24 hours · own title', { slot: temp, scale: 'custom', scaleMin: 0, scaleMax: 40, count: 24, span: 'hours', title: 'Typed title' }),
+      w('gauge', 'This week · Vivid · purple', { slot: temp, count: 1, span: 'calWeeks', colorStyle: 'deep', color: 'purple' }),
+      w('gauge', 'Vivid with levels', { slot: co2, zones: 'rising', yellowAt: 1000, redAt: 1400, colorStyle: 'deep' }),
+      w('gauge', 'Deleted device', { slot: missing }),
+      w('gauge', 'Nothing picked'),
+    ].filter(Boolean) };
+  },
   async stacked() {
     const items = await autocomplete('stacked', 'slot1');
     // Power values where there are (power is listed first), a meter-like one as the total, else whatever else is logged.

@@ -137,6 +137,7 @@ export const VALUE_SETTINGS: Record<string, { ids: string[], kind: SlotKind }> =
   timeline: { ids: numbered(8), kind: 'timeline' },
   stacked: { ids: ['total', ...numbered(6)], kind: 'power' },
   lines: { ids: numbered(6), kind: 'number' },
+  gauge: { ids: ['slot'], kind: 'number' },
 };
 
 /**

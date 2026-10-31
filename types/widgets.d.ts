@@ -214,6 +214,8 @@ interface Window {
   mountTimelineWidget: MountWidget;
   mountStackedWidget: MountWidget;
   mountLinesWidget: MountWidget;
+  createGaugeWidget: ((root: HTMLElement, opts?: object) => any) & { zoneOf: (v: number, levels: object) => string | null };
+  mountGaugeWidget: MountWidget;
   mountDailyRangeWidget: MountWidget;
   mountTypicalDayWidget: MountWidget;
   mountThermostatWidget: MountWidget;

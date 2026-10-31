@@ -32,6 +32,7 @@ This file holds what applies across the app. Each widget's notes, and those of t
 | Chart · Timeline | `timeline` | `widgets/timeline.md` |
 | Chart · Stacked | `stacked` | `widgets/stacked.md` |
 | Chart · Lines | `lines` | `widgets/lines.md` |
+| Chart · Gauge | `gauge` | `widgets/gauge.md` |
 | Sparklines | `sparklines` | `widgets/sparklines.md` |
 | Variables | `variables` | `widgets/variables.md` |
 | Variable Presets | `varpresets` | `widgets/varpresets.md` |

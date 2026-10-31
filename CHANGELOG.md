@@ -24,6 +24,7 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Chart · Totals:** how much a value went up per hour, day or month, like the Energy tab, beside the period before if you like. Any meter, rain gauge or counter, including ones that start again each month or year. **Or what it cost:** each hour's kWh at that hour's electricity price in Homey Energy, with your tariffs and taxes.
 - **Chart · Scatter (XY):** one value against another, a dot an hour, with a trend line: does the heat pump work harder when it's colder?
 - **Chart · Daily Profile:** today's line over the usual day (the last 7 or 3 days) and its spread: is today unusual?
+- **Chart · Gauge:** one value now on a dial, such as a room's CO₂ or a battery, green to red by level if you like, with its range today as a band inside.
 - **Chart · Lines:** up to six values as lines on one chart, such as every room's temperature, with a second scale on the right for a different kind of value.
 - **Chart · Min/Max:** each day's low to high as a bar, with its average: how cold the nights, how warm the afternoons.
 - **Chart · Ranking:** one value across up to eight devices, sorted: each room's temperature now and its range today.

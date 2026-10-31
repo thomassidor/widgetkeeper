@@ -2251,6 +2251,364 @@
           }
         }
       ]
+    },
+    "gauge.slot": {
+      "id": "slot",
+      "type": "autocomplete",
+      "title": {
+        "en": "Value",
+        "nl": "Waarde",
+        "de": "Wert",
+        "fr": "Valeur",
+        "it": "Valore",
+        "sv": "Värde",
+        "no": "Verdi",
+        "es": "Valor",
+        "da": "Værdi",
+        "ru": "Значение",
+        "pl": "Wartość",
+        "ko": "값",
+        "ar": "القيمة"
+      },
+      "hint": {
+        "en": "Shown now on a dial, such as a room's CO₂ or humidity, or the house's power. Only numbers with Insights history are listed.",
+        "nl": "Nu getoond op een meter, zoals de CO₂ of luchtvochtigheid van een kamer, of het vermogen van het huis. Alleen getallen met Insights-geschiedenis staan in de lijst.",
+        "de": "Jetzt auf einer Skala angezeigt, etwa das CO₂ oder die Luftfeuchte eines Raums oder die Leistung des Hauses. Nur Zahlen mit Insights-Verlauf stehen zur Auswahl.",
+        "fr": "Affichée maintenant sur un cadran, comme le CO₂ ou l'humidité d'une pièce, ou la puissance de la maison. Seuls les nombres avec un historique Insights sont proposés.",
+        "it": "Mostrato ora su un quadrante, come la CO₂ o l'umidità di una stanza, o la potenza della casa. Sono elencati solo i numeri con cronologia Insights.",
+        "sv": "Visas nu på en mätare, som ett rums koldioxid eller luftfuktighet, eller husets effekt. Bara tal med Insights-historik visas.",
+        "no": "Vises nå på en måler, som CO₂ eller fuktighet i et rom, eller husets effekt. Bare tall med Insights-historikk vises.",
+        "es": "Se muestra ahora en un indicador, como el CO₂ o la humedad de una habitación, o la potencia de la casa. Solo aparecen números con historial de Insights.",
+        "da": "Vises nu på en måler, som CO₂ eller fugtighed i et rum, eller husets effekt. Kun tal med Insights-historik vises.",
+        "ru": "Показывается сейчас на шкале, например CO₂ или влажность в комнате или мощность дома. В списке только числа с историей Insights.",
+        "pl": "Pokazywana teraz na tarczy, np. CO₂ lub wilgotność w pokoju albo moc domu. Lista zawiera tylko liczby z historią Insights.",
+        "ko": "지금 값을 게이지로 보여줍니다(예: 방의 CO₂나 습도, 집의 전력). Insights 기록이 있는 숫자만 나열됩니다.",
+        "ar": "تُعرض الآن على مقياس، مثل ثاني أكسيد الكربون أو الرطوبة في غرفة، أو قدرة المنزل. تظهر فقط الأرقام التي لها سجل في Insights."
+      }
+    },
+    "gauge.scale": {
+      "id": "scale",
+      "type": "dropdown",
+      "value": "auto",
+      "title": {
+        "en": "Scale",
+        "nl": "Schaal",
+        "de": "Skala",
+        "fr": "Échelle",
+        "it": "Scala",
+        "sv": "Skala",
+        "no": "Skala",
+        "es": "Escala",
+        "da": "Skala",
+        "ru": "Шкала",
+        "pl": "Skala",
+        "ko": "눈금",
+        "ar": "المقياس"
+      },
+      "hint": {
+        "en": "Automatic: 0–100 for a percentage, else fitted to the value over the time span (and the colour levels).",
+        "nl": "Automatisch: 0–100 voor een percentage, anders passend bij de waarde over de periode (en de kleurniveaus).",
+        "de": "Automatisch: 0–100 bei Prozent, sonst passend zum Wert im Zeitraum (und den Farbstufen).",
+        "fr": "Automatique : 0–100 pour un pourcentage, sinon ajustée à la valeur sur la période (et aux niveaux de couleur).",
+        "it": "Automatica: 0–100 per una percentuale, altrimenti adattata al valore nel periodo (e ai livelli di colore).",
+        "sv": "Automatisk: 0–100 för procent, annars anpassad till värdet under tidsperioden (och färgnivåerna).",
+        "no": "Automatisk: 0–100 for prosent, ellers tilpasset verdien i tidsrommet (og fargenivåene).",
+        "es": "Automática: 0–100 para un porcentaje; si no, ajustada al valor en el periodo (y a los niveles de color).",
+        "da": "Automatisk: 0–100 for procent, ellers tilpasset værdien i tidsrummet (og farveniveauerne).",
+        "ru": "Автоматически: 0–100 для процентов, иначе по значению за период (и цветовым уровням).",
+        "pl": "Automatycznie: 0–100 dla procentów, w innym razie dopasowana do wartości w okresie (i poziomów kolorów).",
+        "ko": "자동: 퍼센트는 0–100, 그 외에는 기간 동안의 값(및 색상 단계)에 맞춥니다.",
+        "ar": "تلقائي: 0–100 للنسبة المئوية، وإلا فيُلاءَم مع القيمة خلال الفترة (ومستويات الألوان)."
+      },
+      "values": [
+        {
+          "id": "auto",
+          "title": {
+            "en": "Automatic",
+            "nl": "Automatisch",
+            "de": "Automatisch",
+            "fr": "Automatique",
+            "it": "Automatica",
+            "sv": "Automatisk",
+            "no": "Automatisk",
+            "es": "Automática",
+            "da": "Automatisk",
+            "ru": "Автоматически",
+            "pl": "Automatycznie",
+            "ko": "자동",
+            "ar": "تلقائي"
+          }
+        },
+        {
+          "id": "custom",
+          "title": {
+            "en": "From and to below",
+            "nl": "Van en tot hieronder",
+            "de": "Von und bis unten",
+            "fr": "De et à ci-dessous",
+            "it": "Da e a qui sotto",
+            "sv": "Från och till nedan",
+            "no": "Fra og til nedenfor",
+            "es": "Desde y hasta abajo",
+            "da": "Fra og til nedenfor",
+            "ru": "От и до ниже",
+            "pl": "Od i do poniżej",
+            "ko": "아래의 시작과 끝",
+            "ar": "من وإلى أدناه"
+          }
+        }
+      ]
+    },
+    "gauge.scaleMin": {
+      "id": "scaleMin",
+      "type": "number",
+      "value": 0,
+      "title": {
+        "en": "  – From",
+        "nl": "  – Van",
+        "de": "  – Von",
+        "fr": "  – De",
+        "it": "  – Da",
+        "sv": "  – Från",
+        "no": "  – Fra",
+        "es": "  – Desde",
+        "da": "  – Fra",
+        "ru": "  – От",
+        "pl": "  – Od",
+        "ko": "  – 시작",
+        "ar": "  – من"
+      }
+    },
+    "gauge.scaleMax": {
+      "id": "scaleMax",
+      "type": "number",
+      "value": 100,
+      "title": {
+        "en": "  – To",
+        "nl": "  – Tot",
+        "de": "  – Bis",
+        "fr": "  – À",
+        "it": "  – A",
+        "sv": "  – Till",
+        "no": "  – Til",
+        "es": "  – Hasta",
+        "da": "  – Til",
+        "ru": "  – До",
+        "pl": "  – Do",
+        "ko": "  – 끝",
+        "ar": "  – إلى"
+      },
+      "hint": {
+        "en": "Only with From and to below.",
+        "nl": "Alleen met Van en tot hieronder.",
+        "de": "Nur mit Von und bis unten.",
+        "fr": "Seulement avec De et à ci-dessous.",
+        "it": "Solo con Da e a qui sotto.",
+        "sv": "Bara med Från och till nedan.",
+        "no": "Bare med Fra og til nedenfor.",
+        "es": "Solo con Desde y hasta abajo.",
+        "da": "Kun med Fra og til nedenfor.",
+        "ru": "Только с «От и до ниже».",
+        "pl": "Tylko z „Od i do poniżej”.",
+        "ko": "'아래의 시작과 끝'에서만 사용됩니다.",
+        "ar": "فقط مع «من وإلى أدناه»."
+      }
+    },
+    "gauge.zones": {
+      "id": "zones",
+      "type": "dropdown",
+      "value": "none",
+      "title": {
+        "en": "Colour by level",
+        "nl": "Kleur per niveau",
+        "de": "Farbe nach Stufe",
+        "fr": "Couleur par niveau",
+        "it": "Colore per livello",
+        "sv": "Färg efter nivå",
+        "no": "Farge etter nivå",
+        "es": "Color por nivel",
+        "da": "Farve efter niveau",
+        "ru": "Цвет по уровню",
+        "pl": "Kolor wg poziomu",
+        "ko": "단계별 색상",
+        "ar": "اللون حسب المستوى"
+      },
+      "hint": {
+        "en": "Green, yellow and red on the dial, and the value in its level's colour: CO₂ or power (higher is worse), a battery (lower is worse).",
+        "nl": "Groen, geel en rood op de meter, en de waarde in de kleur van het niveau: CO₂ of vermogen (hoger is slechter), een batterij (lager is slechter).",
+        "de": "Grün, Gelb und Rot auf der Skala, der Wert in der Farbe seiner Stufe: CO₂ oder Leistung (höher ist schlechter), ein Akku (niedriger ist schlechter).",
+        "fr": "Vert, jaune et rouge sur le cadran, et la valeur dans la couleur de son niveau : CO₂ ou puissance (plus haut est pire), une batterie (plus bas est pire).",
+        "it": "Verde, giallo e rosso sul quadrante, e il valore nel colore del suo livello: CO₂ o potenza (più alto è peggio), una batteria (più basso è peggio).",
+        "sv": "Grönt, gult och rött på mätaren, och värdet i nivåns färg: koldioxid eller effekt (högre är sämre), ett batteri (lägre är sämre).",
+        "no": "Grønt, gult og rødt på måleren, og verdien i nivåets farge: CO₂ eller effekt (høyere er verre), et batteri (lavere er verre).",
+        "es": "Verde, amarillo y rojo en el indicador, y el valor en el color de su nivel: CO₂ o potencia (más alto es peor), una batería (más bajo es peor).",
+        "da": "Grøn, gul og rød på måleren, og værdien i niveauets farve: CO₂ eller effekt (højere er værre), et batteri (lavere er værre).",
+        "ru": "Зелёный, жёлтый и красный на шкале, значение — цветом своего уровня: CO₂ или мощность (выше — хуже), батарея (ниже — хуже).",
+        "pl": "Zielony, żółty i czerwony na tarczy, a wartość w kolorze swojego poziomu: CO₂ lub moc (wyżej gorzej), bateria (niżej gorzej).",
+        "ko": "게이지에 초록·노랑·빨강을 표시하고 값은 해당 단계의 색으로 표시합니다: CO₂나 전력(높을수록 나쁨), 배터리(낮을수록 나쁨).",
+        "ar": "أخضر وأصفر وأحمر على المقياس، والقيمة بلون مستواها: ثاني أكسيد الكربون أو القدرة (الأعلى أسوأ)، بطارية (الأدنى أسوأ)."
+      },
+      "values": [
+        {
+          "id": "none",
+          "title": {
+            "en": "One colour",
+            "nl": "Eén kleur",
+            "de": "Eine Farbe",
+            "fr": "Une couleur",
+            "it": "Un colore",
+            "sv": "En färg",
+            "no": "Én farge",
+            "es": "Un color",
+            "da": "Én farve",
+            "ru": "Один цвет",
+            "pl": "Jeden kolor",
+            "ko": "한 가지 색",
+            "ar": "لون واحد"
+          }
+        },
+        {
+          "id": "rising",
+          "title": {
+            "en": "Higher is worse",
+            "nl": "Hoger is slechter",
+            "de": "Höher ist schlechter",
+            "fr": "Plus haut est pire",
+            "it": "Più alto è peggio",
+            "sv": "Högre är sämre",
+            "no": "Høyere er verre",
+            "es": "Más alto es peor",
+            "da": "Højere er værre",
+            "ru": "Выше — хуже",
+            "pl": "Wyżej gorzej",
+            "ko": "높을수록 나쁨",
+            "ar": "الأعلى أسوأ"
+          }
+        },
+        {
+          "id": "falling",
+          "title": {
+            "en": "Lower is worse",
+            "nl": "Lager is slechter",
+            "de": "Niedriger ist schlechter",
+            "fr": "Plus bas est pire",
+            "it": "Più basso è peggio",
+            "sv": "Lägre är sämre",
+            "no": "Lavere er verre",
+            "es": "Más bajo es peor",
+            "da": "Lavere er værre",
+            "ru": "Ниже — хуже",
+            "pl": "Niżej gorzej",
+            "ko": "낮을수록 나쁨",
+            "ar": "الأدنى أسوأ"
+          }
+        }
+      ]
+    },
+    "gauge.yellowAt": {
+      "id": "yellowAt",
+      "type": "number",
+      "value": 1000,
+      "title": {
+        "en": "  – Yellow at",
+        "nl": "  – Geel bij",
+        "de": "  – Gelb ab",
+        "fr": "  – Jaune à",
+        "it": "  – Giallo a",
+        "sv": "  – Gult vid",
+        "no": "  – Gul ved",
+        "es": "  – Amarillo en",
+        "da": "  – Gul ved",
+        "ru": "  – Жёлтый с",
+        "pl": "  – Żółty od",
+        "ko": "  – 노랑 기준",
+        "ar": "  – أصفر عند"
+      },
+      "hint": {
+        "en": "Yellow from this value up (Higher is worse) or down (Lower is worse).",
+        "nl": "Geel vanaf deze waarde omhoog (Hoger is slechter) of omlaag (Lager is slechter).",
+        "de": "Gelb ab diesem Wert aufwärts (Höher ist schlechter) oder abwärts (Niedriger ist schlechter).",
+        "fr": "Jaune à partir de cette valeur en montant (Plus haut est pire) ou en descendant (Plus bas est pire).",
+        "it": "Giallo da questo valore in su (Più alto è peggio) o in giù (Più basso è peggio).",
+        "sv": "Gult från detta värde och uppåt (Högre är sämre) eller nedåt (Lägre är sämre).",
+        "no": "Gul fra denne verdien og oppover (Høyere er verre) eller nedover (Lavere er verre).",
+        "es": "Amarillo desde este valor hacia arriba (Más alto es peor) o hacia abajo (Más bajo es peor).",
+        "da": "Gul fra denne værdi og opefter (Højere er værre) eller nedefter (Lavere er værre).",
+        "ru": "Жёлтый от этого значения вверх («Выше — хуже») или вниз («Ниже — хуже»).",
+        "pl": "Żółty od tej wartości w górę („Wyżej gorzej”) lub w dół („Niżej gorzej”).",
+        "ko": "이 값부터 위로('높을수록 나쁨') 또는 아래로('낮을수록 나쁨') 노랑입니다.",
+        "ar": "أصفر من هذه القيمة صعودًا (الأعلى أسوأ) أو نزولًا (الأدنى أسوأ)."
+      }
+    },
+    "gauge.redAt": {
+      "id": "redAt",
+      "type": "number",
+      "value": 1400,
+      "title": {
+        "en": "  – Red at",
+        "nl": "  – Rood bij",
+        "de": "  – Rot ab",
+        "fr": "  – Rouge à",
+        "it": "  – Rosso a",
+        "sv": "  – Rött vid",
+        "no": "  – Rød ved",
+        "es": "  – Rojo en",
+        "da": "  – Rød ved",
+        "ru": "  – Красный с",
+        "pl": "  – Czerwony od",
+        "ko": "  – 빨강 기준",
+        "ar": "  – أحمر عند"
+      },
+      "hint": {
+        "en": "Red from this value, the same way.",
+        "nl": "Rood vanaf deze waarde, op dezelfde manier.",
+        "de": "Rot ab diesem Wert, in dieselbe Richtung.",
+        "fr": "Rouge à partir de cette valeur, de la même façon.",
+        "it": "Rosso da questo valore, allo stesso modo.",
+        "sv": "Rött från detta värde, på samma sätt.",
+        "no": "Rød fra denne verdien, på samme måte.",
+        "es": "Rojo desde este valor, de la misma forma.",
+        "da": "Rød fra denne værdi, på samme måde.",
+        "ru": "Красный от этого значения, так же.",
+        "pl": "Czerwony od tej wartości, tak samo.",
+        "ko": "이 값부터 같은 방식으로 빨강입니다.",
+        "ar": "أحمر من هذه القيمة، بالطريقة نفسها."
+      }
+    },
+    "gauge.range": {
+      "id": "showRange",
+      "type": "checkbox",
+      "value": true,
+      "title": {
+        "en": "Show the range",
+        "nl": "Bereik tonen",
+        "de": "Spanne zeigen",
+        "fr": "Afficher l'écart",
+        "it": "Mostra l'intervallo",
+        "sv": "Visa spannet",
+        "no": "Vis spennet",
+        "es": "Mostrar el rango",
+        "da": "Vis spændet",
+        "ru": "Показывать диапазон",
+        "pl": "Pokaż zakres",
+        "ko": "범위 표시",
+        "ar": "إظهار المدى"
+      },
+      "hint": {
+        "en": "A band inside the dial from the lowest to the highest over the time span.",
+        "nl": "Een band in de meter van het laagste tot het hoogste over de periode.",
+        "de": "Ein Band in der Skala vom Tiefst- bis zum Höchstwert im Zeitraum.",
+        "fr": "Une bande dans le cadran du minimum au maximum sur la période.",
+        "it": "Una fascia nel quadrante dal minimo al massimo nel periodo.",
+        "sv": "Ett band i mätaren från lägsta till högsta under tidsperioden.",
+        "no": "Et bånd i måleren fra laveste til høyeste i tidsrommet.",
+        "es": "Una banda en el indicador del mínimo al máximo en el periodo.",
+        "da": "Et bånd i måleren fra laveste til højeste i tidsrummet.",
+        "ru": "Полоса на шкале от минимума до максимума за период.",
+        "pl": "Pasek na tarczy od najniższej do najwyższej wartości w okresie.",
+        "ko": "기간 동안의 최저~최고를 게이지 안쪽 띠로 보여줍니다.",
+        "ar": "شريط داخل المقياس من الأدنى إلى الأعلى خلال الفترة."
+      }
     }
   },
   "hints": {
@@ -2598,6 +2956,36 @@
       "pl": "Nazwa i jednostka każdej wartości.",
       "ko": "각 값의 이름과 단위입니다.",
       "ar": "اسم كل قيمة ووحدتها."
+    },
+    "count.gauge": {
+      "en": "For the range: e.g. 1 from midnight (today) or 24 hours.",
+      "nl": "Voor het bereik: bijv. 1 vanaf middernacht (vandaag) of 24 uur.",
+      "de": "Für die Spanne: z. B. 1 ab Mitternacht (heute) oder 24 Stunden.",
+      "fr": "Pour l'écart : p. ex. 1 depuis minuit (aujourd'hui) ou 24 heures.",
+      "it": "Per l'intervallo: ad es. 1 da mezzanotte (oggi) o 24 ore.",
+      "sv": "För spannet: t.ex. 1 från midnatt (i dag) eller 24 timmar.",
+      "no": "For spennet: f.eks. 1 fra midnatt (i dag) eller 24 timer.",
+      "es": "Para el rango: p. ej. 1 desde medianoche (hoy) o 24 horas.",
+      "da": "For spændet: f.eks. 1 fra midnat (i dag) eller 24 timer.",
+      "ru": "Для диапазона: например, 1 с полуночи (сегодня) или 24 часа.",
+      "pl": "Dla zakresu: np. 1 od północy (dziś) lub 24 godziny.",
+      "ko": "범위용: 예) 자정부터 1(오늘) 또는 24시간.",
+      "ar": "للمدى: مثل 1 من منتصف الليل (اليوم) أو 24 ساعة."
+    },
+    "colorStyle.gauge": {
+      "en": "Vivid tints the dial and its range with the colour, and the levels more strongly.",
+      "nl": "Levendig kleurt de meter en het bereik met de kleur, en de niveaus sterker.",
+      "de": "Kräftig färbt die Skala und die Spanne in der Farbe, die Stufen stärker.",
+      "fr": "Vives teinte le cadran et l'écart de la couleur, et les niveaux plus fort.",
+      "it": "Vivaci tinge il quadrante e l'intervallo del colore, e i livelli più intensi.",
+      "sv": "Livfulla tonar mätaren och spannet i färgen, och nivåerna starkare.",
+      "no": "Livlige farger måleren og spennet med fargen, og nivåene sterkere.",
+      "es": "Vivos tiñe el indicador y el rango con el color, y los niveles con más fuerza.",
+      "da": "Livlige farver måleren og spændet med farven, og niveauerne stærkere.",
+      "ru": "«Яркие» окрашивают шкалу и диапазон цветом, а уровни — сильнее.",
+      "pl": "Żywe barwią tarczę i zakres kolorem, a poziomy mocniej.",
+      "ko": "선명하게는 게이지와 범위에 색을 입히고 단계 색을 더 진하게 합니다.",
+      "ar": "«زاهية» تلوّن المقياس والمدى باللون، والمستويات بقوة أكبر."
     }
   },
   "widgets": {
@@ -3088,6 +3476,39 @@
       {
         "use": "sparklines.slot:6",
         "hint": null
+      }
+    ],
+    "gauge": [
+      "gauge.slot",
+      "gauge.scale",
+      "gauge.scaleMin",
+      "gauge.scaleMax",
+      "gauge.zones",
+      "gauge.yellowAt",
+      "gauge.redAt",
+      {
+        "use": "count",
+        "top": true,
+        "value": 1,
+        "hint": "count.gauge"
+      },
+      {
+        "use": "span",
+        "top": true,
+        "value": "calDays"
+      },
+      "gauge.range",
+      {
+        "use": "title",
+        "top": true
+      },
+      {
+        "use": "color",
+        "top": true
+      },
+      {
+        "use": "colorStyle",
+        "hint": "colorStyle.gauge"
       }
     ]
   }

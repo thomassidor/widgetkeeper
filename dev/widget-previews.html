@@ -6,7 +6,7 @@
 <title>Widget Previews</title>
 <!--
   Source for the widget preview PNGs (from the "Widget Previews" Claude Design project).
-  Without a query it shows them all on a canvas; `?p=elec-dark|elec-light|thermo-dark|thermo-light|qa-dark|qa-light|sa-dark|sa-light|sd-dark|sd-light|rh-dark|rh-light|weather-dark|weather-light|hm-dark|hm-light|cam-dark|cam-light|val-dark|val-light|lc-dark|lc-light|lr-dark|lr-light|spark-dark|spark-light|chart-dark|chart-light|var-dark|var-light|vp-dark|vp-light|sd-dark|sd-light|fb-dark|fb-light|pb-dark|pb-light|tm-dark|tm-light|lk-dark|lk-light|ct-dark|ct-light|mw-dark|mw-light|sk-dark|sk-light|ck-dark|ck-light|sp-dark|sp-light|tl-dark|tl-light|ds-dark|ds-light|sc-dark|sc-light|wp-dark|wp-light|pw-dark|pw-light|pu-dark|pu-light|kp-dark|kp-light|tt-dark|tt-light|xy-dark|xy-light|td-dark|td-light|dr-dark|dr-light|cp-dark|cp-light|tln-dark|tln-light|stk-dark|stk-light`
+  Without a query it shows them all on a canvas; `?p=elec-dark|elec-light|thermo-dark|thermo-light|qa-dark|qa-light|sa-dark|sa-light|sd-dark|sd-light|rh-dark|rh-light|weather-dark|weather-light|hm-dark|hm-light|cam-dark|cam-light|val-dark|val-light|lc-dark|lc-light|lr-dark|lr-light|spark-dark|spark-light|chart-dark|chart-light|var-dark|var-light|vp-dark|vp-light|sd-dark|sd-light|fb-dark|fb-light|pb-dark|pb-light|tm-dark|tm-light|lk-dark|lk-light|ct-dark|ct-light|mw-dark|mw-light|sk-dark|sk-light|ck-dark|ck-light|sp-dark|sp-light|tl-dark|tl-light|ds-dark|ds-light|sc-dark|sc-light|wp-dark|wp-light|pw-dark|pw-light|pu-dark|pu-light|kp-dark|kp-light|tt-dark|tt-light|xy-dark|xy-light|td-dark|td-light|dr-dark|dr-light|cp-dark|cp-light|tln-dark|tln-light|stk-dark|stk-light|lns-dark|lns-light|gg-dark|gg-light`
   renders that one 1024×1024 frame alone on a transparent page, for scripts/render-previews.mjs.
 -->
 <style>
@@ -700,6 +700,38 @@ function compareChart(t, theme) {
   </div>`;
 }
 
+// Chart · Gauge: the title chip, then a 240° dial in green, yellow and red stretches with the value's arc in green up to
+// its knob, the range a thin muted band inside, and the value as a bar in the middle (no words, as the other previews).
+function gaugeChart(t, theme) {
+  const card = theme === 'dark' ? '#1F2029' : '#FFFFFF';
+  const muted = theme === 'dark' ? 'rgba(237,238,240,.45)' : 'rgba(31,32,41,.4)';
+  const GREEN = t.green, YELLOW = '#F5C518', RED = '#F25F5C';
+  const R = 230, SW = 40, cx = W / 2, cy = R + SW / 2 + 10, H = Math.round(cy + R / 2 + SW / 2 + 10);
+  const at = a => [cx + R * Math.sin(a * Math.PI / 180), cy - R * Math.cos(a * Math.PI / 180)];
+  const arc = (a0, a1) => { const [x0, y0] = at(a0), [x1, y1] = at(a1); return `M${x0.toFixed(1)} ${y0.toFixed(1)}A${R} ${R} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`; };
+  const mix = (c, p) => `color-mix(in srgb, ${c} ${p}%, ${card})`;
+  const zones = [[-120, 40, GREEN], [40, 88, YELLOW], [88, 120, RED]];
+  const caps = [[-120, GREEN], [120, RED]].map(([a, c]) => { const [x, y] = at(a); return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${SW / 2}" fill="${mix(c, 28)}"/>`; }).join('');
+  const value = 8, [kx, ky] = at(value);
+  const ir = R - SW / 2 - 18, inner = (a0, a1) => { const p = a => [cx + ir * Math.sin(a * Math.PI / 180), cy - ir * Math.cos(a * Math.PI / 180)]; const [x0, y0] = p(a0), [x1, y1] = p(a1); return `M${x0.toFixed(1)} ${y0.toFixed(1)}A${ir} ${ir} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`; };
+  return `<div class="card" style="gap:30px">
+    <div class="pill" style="align-self:flex-start;height:64px;padding:0 30px 0 24px;box-sizing:border-box;background:color-mix(in srgb, ${t.fg} 9%, ${card});display:flex;align-items:center;gap:18px">
+      <div style="width:24px;height:24px;border-radius:50%;background:${GREEN}"></div>
+      ${pill(200, 30, t.fg, 'opacity:.85')}${pill(56, 30, muted)}
+    </div>
+    <div style="position:relative;width:${W}px;height:${H}px">
+      <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="position:absolute;inset:0">
+        ${zones.map(([a0, a1, c]) => `<path d="${arc(a0, a1)}" fill="none" stroke="${mix(c, 28)}" stroke-width="${SW}"/>`).join('')}${caps}
+        <path d="${inner(-70, 40)}" fill="none" stroke="color-mix(in srgb, ${t.fg} 45%, transparent)" stroke-width="12" stroke-linecap="round"/>
+        <path d="${arc(-120, value)}" fill="none" stroke="${GREEN}" stroke-width="${SW}" stroke-linecap="round"/>
+        <circle cx="${kx.toFixed(1)}" cy="${ky.toFixed(1)}" r="${SW / 2 + 6}" fill="${card}" stroke="${GREEN}" stroke-width="9"/>
+      </svg>
+      ${pill(170, 64, t.fg, `position:absolute;left:${cx - 85}px;top:${cy - 40}px`)}
+      ${pill(140, 24, muted, `position:absolute;left:${cx - 70}px;top:${cy + 50}px`)}
+    </div>
+  </div>`;
+}
+
 // Chart · Timeline: four rows, each its name over a thin track with bands where it was on (orange, yellow, red, blue,
 // as the mock-up's heating, motion, front door and TV), the hours to come dimmed and a dashed line at now.
 function timelineChart(t, theme) {
@@ -1239,6 +1271,8 @@ const PREVIEWS = [
   { id: 'stk-light',    label: '4d · Stacked — preview-light.png',                     theme: 'light', render: stackedChart },
   { id: 'lns-dark',     label: '4e · Lines — preview-dark.png',                        theme: 'dark',  render: linesChart },
   { id: 'lns-light',    label: '4f · Lines — preview-light.png',                       theme: 'light', render: linesChart },
+  { id: 'gg-dark',      label: '4g · Gauge — preview-dark.png',                        theme: 'dark',  render: gaugeChart },
+  { id: 'gg-light',     label: '4h · Gauge — preview-light.png',                       theme: 'light', render: gaugeChart },
   { id: 'var-dark',     label: '1u · Variables — preview-dark.png',         theme: 'dark',  render: flowVariables },
   { id: 'var-light',    label: '1v · Variables — preview-light.png',        theme: 'light', render: flowVariables },
   { id: 'vp-dark',      label: '2y · Variable Presets — preview-dark.png',       theme: 'dark',  render: varPresets },

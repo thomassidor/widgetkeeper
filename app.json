@@ -3744,6 +3744,24 @@
                 }
               },
               {
+                "id": "gauge",
+                "title": {
+                  "en": "Chart · Gauge",
+                  "nl": "Grafiek · Meter",
+                  "de": "Diagramm · Anzeige",
+                  "fr": "Graphique · Jauge",
+                  "it": "Grafico · Indicatore",
+                  "sv": "Diagram · Mätare",
+                  "no": "Diagram · Måler",
+                  "es": "Gráfico · Indicador",
+                  "da": "Graf · Måler",
+                  "ru": "График · Шкала",
+                  "pl": "Wykres · Wskaźnik",
+                  "ko": "차트 · 게이지",
+                  "ar": "مخطط · مقياس"
+                }
+              },
+              {
                 "id": "variables",
                 "title": {
                   "en": "Variables",
@@ -14320,6 +14338,991 @@
         }
       },
       "id": "flows"
+    },
+    "gauge": {
+      "name": {
+        "en": "Chart · Gauge",
+        "nl": "Grafiek · Meter",
+        "de": "Diagramm · Anzeige",
+        "fr": "Graphique · Jauge",
+        "it": "Grafico · Indicatore",
+        "sv": "Diagram · Mätare",
+        "no": "Diagram · Måler",
+        "es": "Gráfico · Indicador",
+        "da": "Graf · Måler",
+        "ru": "График · Шкала",
+        "pl": "Wykres · Wskaźnik",
+        "ko": "차트 · 게이지",
+        "ar": "مخطط · مقياس"
+      },
+      "height": 200,
+      "settings": [
+        {
+          "id": "slot",
+          "type": "autocomplete",
+          "title": {
+            "en": "Value",
+            "nl": "Waarde",
+            "de": "Wert",
+            "fr": "Valeur",
+            "it": "Valore",
+            "sv": "Värde",
+            "no": "Verdi",
+            "es": "Valor",
+            "da": "Værdi",
+            "ru": "Значение",
+            "pl": "Wartość",
+            "ko": "값",
+            "ar": "القيمة"
+          },
+          "hint": {
+            "en": "Shown now on a dial, such as a room's CO₂ or humidity, or the house's power. Only numbers with Insights history are listed.",
+            "nl": "Nu getoond op een meter, zoals de CO₂ of luchtvochtigheid van een kamer, of het vermogen van het huis. Alleen getallen met Insights-geschiedenis staan in de lijst.",
+            "de": "Jetzt auf einer Skala angezeigt, etwa das CO₂ oder die Luftfeuchte eines Raums oder die Leistung des Hauses. Nur Zahlen mit Insights-Verlauf stehen zur Auswahl.",
+            "fr": "Affichée maintenant sur un cadran, comme le CO₂ ou l'humidité d'une pièce, ou la puissance de la maison. Seuls les nombres avec un historique Insights sont proposés.",
+            "it": "Mostrato ora su un quadrante, come la CO₂ o l'umidità di una stanza, o la potenza della casa. Sono elencati solo i numeri con cronologia Insights.",
+            "sv": "Visas nu på en mätare, som ett rums koldioxid eller luftfuktighet, eller husets effekt. Bara tal med Insights-historik visas.",
+            "no": "Vises nå på en måler, som CO₂ eller fuktighet i et rom, eller husets effekt. Bare tall med Insights-historikk vises.",
+            "es": "Se muestra ahora en un indicador, como el CO₂ o la humedad de una habitación, o la potencia de la casa. Solo aparecen números con historial de Insights.",
+            "da": "Vises nu på en måler, som CO₂ eller fugtighed i et rum, eller husets effekt. Kun tal med Insights-historik vises.",
+            "ru": "Показывается сейчас на шкале, например CO₂ или влажность в комнате или мощность дома. В списке только числа с историей Insights.",
+            "pl": "Pokazywana teraz na tarczy, np. CO₂ lub wilgotność w pokoju albo moc domu. Lista zawiera tylko liczby z historią Insights.",
+            "ko": "지금 값을 게이지로 보여줍니다(예: 방의 CO₂나 습도, 집의 전력). Insights 기록이 있는 숫자만 나열됩니다.",
+            "ar": "تُعرض الآن على مقياس، مثل ثاني أكسيد الكربون أو الرطوبة في غرفة، أو قدرة المنزل. تظهر فقط الأرقام التي لها سجل في Insights."
+          }
+        },
+        {
+          "id": "scale",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "Scale",
+            "nl": "Schaal",
+            "de": "Skala",
+            "fr": "Échelle",
+            "it": "Scala",
+            "sv": "Skala",
+            "no": "Skala",
+            "es": "Escala",
+            "da": "Skala",
+            "ru": "Шкала",
+            "pl": "Skala",
+            "ko": "눈금",
+            "ar": "المقياس"
+          },
+          "hint": {
+            "en": "Automatic: 0–100 for a percentage, else fitted to the value over the time span (and the colour levels).",
+            "nl": "Automatisch: 0–100 voor een percentage, anders passend bij de waarde over de periode (en de kleurniveaus).",
+            "de": "Automatisch: 0–100 bei Prozent, sonst passend zum Wert im Zeitraum (und den Farbstufen).",
+            "fr": "Automatique : 0–100 pour un pourcentage, sinon ajustée à la valeur sur la période (et aux niveaux de couleur).",
+            "it": "Automatica: 0–100 per una percentuale, altrimenti adattata al valore nel periodo (e ai livelli di colore).",
+            "sv": "Automatisk: 0–100 för procent, annars anpassad till värdet under tidsperioden (och färgnivåerna).",
+            "no": "Automatisk: 0–100 for prosent, ellers tilpasset verdien i tidsrommet (og fargenivåene).",
+            "es": "Automática: 0–100 para un porcentaje; si no, ajustada al valor en el periodo (y a los niveles de color).",
+            "da": "Automatisk: 0–100 for procent, ellers tilpasset værdien i tidsrummet (og farveniveauerne).",
+            "ru": "Автоматически: 0–100 для процентов, иначе по значению за период (и цветовым уровням).",
+            "pl": "Automatycznie: 0–100 dla procentów, w innym razie dopasowana do wartości w okresie (i poziomów kolorów).",
+            "ko": "자동: 퍼센트는 0–100, 그 외에는 기간 동안의 값(및 색상 단계)에 맞춥니다.",
+            "ar": "تلقائي: 0–100 للنسبة المئوية، وإلا فيُلاءَم مع القيمة خلال الفترة (ومستويات الألوان)."
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatica",
+                "sv": "Automatisk",
+                "no": "Automatisk",
+                "es": "Automática",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "custom",
+              "title": {
+                "en": "From and to below",
+                "nl": "Van en tot hieronder",
+                "de": "Von und bis unten",
+                "fr": "De et à ci-dessous",
+                "it": "Da e a qui sotto",
+                "sv": "Från och till nedan",
+                "no": "Fra og til nedenfor",
+                "es": "Desde y hasta abajo",
+                "da": "Fra og til nedenfor",
+                "ru": "От и до ниже",
+                "pl": "Od i do poniżej",
+                "ko": "아래의 시작과 끝",
+                "ar": "من وإلى أدناه"
+              }
+            }
+          ]
+        },
+        {
+          "id": "scaleMin",
+          "type": "number",
+          "value": 0,
+          "title": {
+            "en": "  – From",
+            "nl": "  – Van",
+            "de": "  – Von",
+            "fr": "  – De",
+            "it": "  – Da",
+            "sv": "  – Från",
+            "no": "  – Fra",
+            "es": "  – Desde",
+            "da": "  – Fra",
+            "ru": "  – От",
+            "pl": "  – Od",
+            "ko": "  – 시작",
+            "ar": "  – من"
+          }
+        },
+        {
+          "id": "scaleMax",
+          "type": "number",
+          "value": 100,
+          "title": {
+            "en": "  – To",
+            "nl": "  – Tot",
+            "de": "  – Bis",
+            "fr": "  – À",
+            "it": "  – A",
+            "sv": "  – Till",
+            "no": "  – Til",
+            "es": "  – Hasta",
+            "da": "  – Til",
+            "ru": "  – До",
+            "pl": "  – Do",
+            "ko": "  – 끝",
+            "ar": "  – إلى"
+          },
+          "hint": {
+            "en": "Only with From and to below.",
+            "nl": "Alleen met Van en tot hieronder.",
+            "de": "Nur mit Von und bis unten.",
+            "fr": "Seulement avec De et à ci-dessous.",
+            "it": "Solo con Da e a qui sotto.",
+            "sv": "Bara med Från och till nedan.",
+            "no": "Bare med Fra og til nedenfor.",
+            "es": "Solo con Desde y hasta abajo.",
+            "da": "Kun med Fra og til nedenfor.",
+            "ru": "Только с «От и до ниже».",
+            "pl": "Tylko z „Od i do poniżej”.",
+            "ko": "'아래의 시작과 끝'에서만 사용됩니다.",
+            "ar": "فقط مع «من وإلى أدناه»."
+          }
+        },
+        {
+          "id": "zones",
+          "type": "dropdown",
+          "value": "none",
+          "title": {
+            "en": "Colour by level",
+            "nl": "Kleur per niveau",
+            "de": "Farbe nach Stufe",
+            "fr": "Couleur par niveau",
+            "it": "Colore per livello",
+            "sv": "Färg efter nivå",
+            "no": "Farge etter nivå",
+            "es": "Color por nivel",
+            "da": "Farve efter niveau",
+            "ru": "Цвет по уровню",
+            "pl": "Kolor wg poziomu",
+            "ko": "단계별 색상",
+            "ar": "اللون حسب المستوى"
+          },
+          "hint": {
+            "en": "Green, yellow and red on the dial, and the value in its level's colour: CO₂ or power (higher is worse), a battery (lower is worse).",
+            "nl": "Groen, geel en rood op de meter, en de waarde in de kleur van het niveau: CO₂ of vermogen (hoger is slechter), een batterij (lager is slechter).",
+            "de": "Grün, Gelb und Rot auf der Skala, der Wert in der Farbe seiner Stufe: CO₂ oder Leistung (höher ist schlechter), ein Akku (niedriger ist schlechter).",
+            "fr": "Vert, jaune et rouge sur le cadran, et la valeur dans la couleur de son niveau : CO₂ ou puissance (plus haut est pire), une batterie (plus bas est pire).",
+            "it": "Verde, giallo e rosso sul quadrante, e il valore nel colore del suo livello: CO₂ o potenza (più alto è peggio), una batteria (più basso è peggio).",
+            "sv": "Grönt, gult och rött på mätaren, och värdet i nivåns färg: koldioxid eller effekt (högre är sämre), ett batteri (lägre är sämre).",
+            "no": "Grønt, gult og rødt på måleren, og verdien i nivåets farge: CO₂ eller effekt (høyere er verre), et batteri (lavere er verre).",
+            "es": "Verde, amarillo y rojo en el indicador, y el valor en el color de su nivel: CO₂ o potencia (más alto es peor), una batería (más bajo es peor).",
+            "da": "Grøn, gul og rød på måleren, og værdien i niveauets farve: CO₂ eller effekt (højere er værre), et batteri (lavere er værre).",
+            "ru": "Зелёный, жёлтый и красный на шкале, значение — цветом своего уровня: CO₂ или мощность (выше — хуже), батарея (ниже — хуже).",
+            "pl": "Zielony, żółty i czerwony na tarczy, a wartość w kolorze swojego poziomu: CO₂ lub moc (wyżej gorzej), bateria (niżej gorzej).",
+            "ko": "게이지에 초록·노랑·빨강을 표시하고 값은 해당 단계의 색으로 표시합니다: CO₂나 전력(높을수록 나쁨), 배터리(낮을수록 나쁨).",
+            "ar": "أخضر وأصفر وأحمر على المقياس، والقيمة بلون مستواها: ثاني أكسيد الكربون أو القدرة (الأعلى أسوأ)، بطارية (الأدنى أسوأ)."
+          },
+          "values": [
+            {
+              "id": "none",
+              "title": {
+                "en": "One colour",
+                "nl": "Eén kleur",
+                "de": "Eine Farbe",
+                "fr": "Une couleur",
+                "it": "Un colore",
+                "sv": "En färg",
+                "no": "Én farge",
+                "es": "Un color",
+                "da": "Én farve",
+                "ru": "Один цвет",
+                "pl": "Jeden kolor",
+                "ko": "한 가지 색",
+                "ar": "لون واحد"
+              }
+            },
+            {
+              "id": "rising",
+              "title": {
+                "en": "Higher is worse",
+                "nl": "Hoger is slechter",
+                "de": "Höher ist schlechter",
+                "fr": "Plus haut est pire",
+                "it": "Più alto è peggio",
+                "sv": "Högre är sämre",
+                "no": "Høyere er verre",
+                "es": "Más alto es peor",
+                "da": "Højere er værre",
+                "ru": "Выше — хуже",
+                "pl": "Wyżej gorzej",
+                "ko": "높을수록 나쁨",
+                "ar": "الأعلى أسوأ"
+              }
+            },
+            {
+              "id": "falling",
+              "title": {
+                "en": "Lower is worse",
+                "nl": "Lager is slechter",
+                "de": "Niedriger ist schlechter",
+                "fr": "Plus bas est pire",
+                "it": "Più basso è peggio",
+                "sv": "Lägre är sämre",
+                "no": "Lavere er verre",
+                "es": "Más bajo es peor",
+                "da": "Lavere er værre",
+                "ru": "Ниже — хуже",
+                "pl": "Niżej gorzej",
+                "ko": "낮을수록 나쁨",
+                "ar": "الأدنى أسوأ"
+              }
+            }
+          ]
+        },
+        {
+          "id": "yellowAt",
+          "type": "number",
+          "value": 1000,
+          "title": {
+            "en": "  – Yellow at",
+            "nl": "  – Geel bij",
+            "de": "  – Gelb ab",
+            "fr": "  – Jaune à",
+            "it": "  – Giallo a",
+            "sv": "  – Gult vid",
+            "no": "  – Gul ved",
+            "es": "  – Amarillo en",
+            "da": "  – Gul ved",
+            "ru": "  – Жёлтый с",
+            "pl": "  – Żółty od",
+            "ko": "  – 노랑 기준",
+            "ar": "  – أصفر عند"
+          },
+          "hint": {
+            "en": "Yellow from this value up (Higher is worse) or down (Lower is worse).",
+            "nl": "Geel vanaf deze waarde omhoog (Hoger is slechter) of omlaag (Lager is slechter).",
+            "de": "Gelb ab diesem Wert aufwärts (Höher ist schlechter) oder abwärts (Niedriger ist schlechter).",
+            "fr": "Jaune à partir de cette valeur en montant (Plus haut est pire) ou en descendant (Plus bas est pire).",
+            "it": "Giallo da questo valore in su (Più alto è peggio) o in giù (Più basso è peggio).",
+            "sv": "Gult från detta värde och uppåt (Högre är sämre) eller nedåt (Lägre är sämre).",
+            "no": "Gul fra denne verdien og oppover (Høyere er verre) eller nedover (Lavere er verre).",
+            "es": "Amarillo desde este valor hacia arriba (Más alto es peor) o hacia abajo (Más bajo es peor).",
+            "da": "Gul fra denne værdi og opefter (Højere er værre) eller nedefter (Lavere er værre).",
+            "ru": "Жёлтый от этого значения вверх («Выше — хуже») или вниз («Ниже — хуже»).",
+            "pl": "Żółty od tej wartości w górę („Wyżej gorzej”) lub w dół („Niżej gorzej”).",
+            "ko": "이 값부터 위로('높을수록 나쁨') 또는 아래로('낮을수록 나쁨') 노랑입니다.",
+            "ar": "أصفر من هذه القيمة صعودًا (الأعلى أسوأ) أو نزولًا (الأدنى أسوأ)."
+          }
+        },
+        {
+          "id": "redAt",
+          "type": "number",
+          "value": 1400,
+          "title": {
+            "en": "  – Red at",
+            "nl": "  – Rood bij",
+            "de": "  – Rot ab",
+            "fr": "  – Rouge à",
+            "it": "  – Rosso a",
+            "sv": "  – Rött vid",
+            "no": "  – Rød ved",
+            "es": "  – Rojo en",
+            "da": "  – Rød ved",
+            "ru": "  – Красный с",
+            "pl": "  – Czerwony od",
+            "ko": "  – 빨강 기준",
+            "ar": "  – أحمر عند"
+          },
+          "hint": {
+            "en": "Red from this value, the same way.",
+            "nl": "Rood vanaf deze waarde, op dezelfde manier.",
+            "de": "Rot ab diesem Wert, in dieselbe Richtung.",
+            "fr": "Rouge à partir de cette valeur, de la même façon.",
+            "it": "Rosso da questo valore, allo stesso modo.",
+            "sv": "Rött från detta värde, på samma sätt.",
+            "no": "Rød fra denne verdien, på samme måte.",
+            "es": "Rojo desde este valor, de la misma forma.",
+            "da": "Rød fra denne værdi, på samme måde.",
+            "ru": "Красный от этого значения, так же.",
+            "pl": "Czerwony od tej wartości, tak samo.",
+            "ko": "이 값부터 같은 방식으로 빨강입니다.",
+            "ar": "أحمر من هذه القيمة، بالطريقة نفسها."
+          }
+        },
+        {
+          "id": "count",
+          "type": "number",
+          "value": 1,
+          "min": 1,
+          "max": 999,
+          "title": {
+            "en": "Time span",
+            "nl": "Periode",
+            "de": "Zeitraum",
+            "fr": "Période",
+            "it": "Periodo",
+            "sv": "Tidsperiod",
+            "no": "Tidsrom",
+            "es": "Periodo",
+            "da": "Tidsrum",
+            "ru": "Период",
+            "pl": "Okres",
+            "ko": "기간",
+            "ar": "الفترة الزمنية"
+          },
+          "hint": {
+            "en": "For the range: e.g. 1 from midnight (today) or 24 hours.",
+            "nl": "Voor het bereik: bijv. 1 vanaf middernacht (vandaag) of 24 uur.",
+            "de": "Für die Spanne: z. B. 1 ab Mitternacht (heute) oder 24 Stunden.",
+            "fr": "Pour l'écart : p. ex. 1 depuis minuit (aujourd'hui) ou 24 heures.",
+            "it": "Per l'intervallo: ad es. 1 da mezzanotte (oggi) o 24 ore.",
+            "sv": "För spannet: t.ex. 1 från midnatt (i dag) eller 24 timmar.",
+            "no": "For spennet: f.eks. 1 fra midnatt (i dag) eller 24 timer.",
+            "es": "Para el rango: p. ej. 1 desde medianoche (hoy) o 24 horas.",
+            "da": "For spændet: f.eks. 1 fra midnat (i dag) eller 24 timer.",
+            "ru": "Для диапазона: например, 1 с полуночи (сегодня) или 24 часа.",
+            "pl": "Dla zakresu: np. 1 od północy (dziś) lub 24 godziny.",
+            "ko": "범위용: 예) 자정부터 1(오늘) 또는 24시간.",
+            "ar": "للمدى: مثل 1 من منتصف الليل (اليوم) أو 24 ساعة."
+          }
+        },
+        {
+          "id": "span",
+          "type": "dropdown",
+          "value": "calDays",
+          "title": {
+            "en": "Unit",
+            "nl": "Eenheid",
+            "de": "Einheit",
+            "fr": "Unité",
+            "it": "Unità",
+            "sv": "Enhet",
+            "no": "Enhet",
+            "es": "Unidad",
+            "da": "Enhed",
+            "ru": "Единица",
+            "pl": "Jednostka",
+            "ko": "단위",
+            "ar": "الوحدة"
+          },
+          "hint": {
+            "en": "Minutes to years count back from now. From midnight, Monday, the 1st or 1 January: whole periods, the current one included.",
+            "nl": "Minuten tot jaren tellen terug vanaf nu. Vanaf middernacht, maandag, de 1e of 1 januari: hele periodes, de huidige meegerekend.",
+            "de": "Minuten bis Jahre zählen ab jetzt zurück. Ab Mitternacht, Montag, dem 1. oder dem 1. Januar: ganze Zeiträume, der laufende eingeschlossen.",
+            "fr": "Minutes à années : en remontant depuis maintenant. Depuis minuit, lundi, le 1er ou le 1er janvier : des périodes entières, l'actuelle comprise.",
+            "it": "Da minuti ad anni: a ritroso da ora. Da mezzanotte, lunedì, il 1° o il 1° gennaio: periodi interi, quello in corso incluso.",
+            "sv": "Minuter till år räknas bakåt från nu. Från midnatt, måndag, den 1:a eller 1 januari: hela perioder, den pågående medräknad.",
+            "no": "Minutter til år telles bakover fra nå. Fra midnatt, mandag, den 1. eller 1. januar: hele perioder, den pågående medregnet.",
+            "es": "De minutos a años: hacia atrás desde ahora. Desde medianoche, el lunes, el día 1 o el 1 de enero: periodos completos, el actual incluido.",
+            "da": "Minutter til år tælles tilbage fra nu. Fra midnat, mandag, den 1. eller 1. januar: hele perioder, den igangværende medregnet.",
+            "ru": "От минут до лет: назад от текущего момента. С полуночи, понедельника, 1-го числа или 1 января: целые периоды, включая текущий.",
+            "pl": "Od minut do lat: wstecz od teraz. Od północy, poniedziałku, 1. dnia lub 1 stycznia: pełne okresy, z bieżącym włącznie.",
+            "ko": "분~년: 지금부터 거슬러 셉니다. 자정, 월요일, 1일 또는 1월 1일부터: 현재 기간을 포함한 전체 기간입니다.",
+            "ar": "من الدقائق إلى السنوات: رجوعًا من الآن. من منتصف الليل أو الاثنين أو اليوم الأول أو 1 يناير: فترات كاملة، بما فيها الحالية."
+          },
+          "values": [
+            {
+              "id": "minutes",
+              "title": {
+                "en": "Minutes",
+                "nl": "Minuten",
+                "de": "Minuten",
+                "fr": "Minutes",
+                "it": "Minuti",
+                "sv": "Minuter",
+                "no": "Minutter",
+                "es": "Minutos",
+                "da": "Minutter",
+                "ru": "Минуты",
+                "pl": "Minuty",
+                "ko": "분",
+                "ar": "دقائق"
+              }
+            },
+            {
+              "id": "hours",
+              "title": {
+                "en": "Hours",
+                "nl": "Uren",
+                "de": "Stunden",
+                "fr": "Heures",
+                "it": "Ore",
+                "sv": "Timmar",
+                "no": "Timer",
+                "es": "Horas",
+                "da": "Timer",
+                "ru": "Часы",
+                "pl": "Godziny",
+                "ko": "시간",
+                "ar": "ساعات"
+              }
+            },
+            {
+              "id": "days",
+              "title": {
+                "en": "Days",
+                "nl": "Dagen",
+                "de": "Tage",
+                "fr": "Jours",
+                "it": "Giorni",
+                "sv": "Dagar",
+                "no": "Dager",
+                "es": "Días",
+                "da": "Dage",
+                "ru": "Дни",
+                "pl": "Dni",
+                "ko": "일",
+                "ar": "أيام"
+              }
+            },
+            {
+              "id": "weeks",
+              "title": {
+                "en": "Weeks",
+                "nl": "Weken",
+                "de": "Wochen",
+                "fr": "Semaines",
+                "it": "Settimane",
+                "sv": "Veckor",
+                "no": "Uker",
+                "es": "Semanas",
+                "da": "Uger",
+                "ru": "Недели",
+                "pl": "Tygodnie",
+                "ko": "주",
+                "ar": "أسابيع"
+              }
+            },
+            {
+              "id": "months",
+              "title": {
+                "en": "Months",
+                "nl": "Maanden",
+                "de": "Monate",
+                "fr": "Mois",
+                "it": "Mesi",
+                "sv": "Månader",
+                "no": "Måneder",
+                "es": "Meses",
+                "da": "Måneder",
+                "ru": "Месяцы",
+                "pl": "Miesiące",
+                "ko": "개월",
+                "ar": "أشهر"
+              }
+            },
+            {
+              "id": "years",
+              "title": {
+                "en": "Years",
+                "nl": "Jaren",
+                "de": "Jahre",
+                "fr": "Années",
+                "it": "Anni",
+                "sv": "År",
+                "no": "År",
+                "es": "Años",
+                "da": "År",
+                "ru": "Годы",
+                "pl": "Lata",
+                "ko": "년",
+                "ar": "سنوات"
+              }
+            },
+            {
+              "id": "calDays",
+              "title": {
+                "en": "Days from midnight",
+                "nl": "Dagen vanaf middernacht",
+                "de": "Tage ab Mitternacht",
+                "fr": "Jours depuis minuit",
+                "it": "Giorni da mezzanotte",
+                "sv": "Dagar från midnatt",
+                "no": "Dager fra midnatt",
+                "es": "Días desde medianoche",
+                "da": "Dage fra midnat",
+                "ru": "Дни с полуночи",
+                "pl": "Dni od północy",
+                "ko": "자정부터 일 단위",
+                "ar": "أيام من منتصف الليل"
+              }
+            },
+            {
+              "id": "calWeeks",
+              "title": {
+                "en": "Weeks from Monday",
+                "nl": "Weken vanaf maandag",
+                "de": "Wochen ab Montag",
+                "fr": "Semaines depuis lundi",
+                "it": "Settimane da lunedì",
+                "sv": "Veckor från måndag",
+                "no": "Uker fra mandag",
+                "es": "Semanas desde el lunes",
+                "da": "Uger fra mandag",
+                "ru": "Недели с понедельника",
+                "pl": "Tygodnie od poniedziałku",
+                "ko": "월요일부터 주 단위",
+                "ar": "أسابيع من الاثنين"
+              }
+            },
+            {
+              "id": "calMonths",
+              "title": {
+                "en": "Months from the 1st",
+                "nl": "Maanden vanaf de 1e",
+                "de": "Monate ab dem 1.",
+                "fr": "Mois depuis le 1er",
+                "it": "Mesi dal 1°",
+                "sv": "Månader från den 1:a",
+                "no": "Måneder fra den 1.",
+                "es": "Meses desde el día 1",
+                "da": "Måneder fra den 1.",
+                "ru": "Месяцы с 1-го числа",
+                "pl": "Miesiące od 1. dnia",
+                "ko": "1일부터 월 단위",
+                "ar": "أشهر من اليوم الأول"
+              }
+            },
+            {
+              "id": "calYears",
+              "title": {
+                "en": "Years from 1 January",
+                "nl": "Jaren vanaf 1 januari",
+                "de": "Jahre ab 1. Januar",
+                "fr": "Années depuis le 1er janvier",
+                "it": "Anni dal 1° gennaio",
+                "sv": "År från 1 januari",
+                "no": "År fra 1. januar",
+                "es": "Años desde el 1 de enero",
+                "da": "År fra 1. januar",
+                "ru": "Годы с 1 января",
+                "pl": "Lata od 1 stycznia",
+                "ko": "1월 1일부터 연 단위",
+                "ar": "سنوات من 1 يناير"
+              }
+            }
+          ]
+        },
+        {
+          "id": "showRange",
+          "type": "checkbox",
+          "value": true,
+          "title": {
+            "en": "Show the range",
+            "nl": "Bereik tonen",
+            "de": "Spanne zeigen",
+            "fr": "Afficher l'écart",
+            "it": "Mostra l'intervallo",
+            "sv": "Visa spannet",
+            "no": "Vis spennet",
+            "es": "Mostrar el rango",
+            "da": "Vis spændet",
+            "ru": "Показывать диапазон",
+            "pl": "Pokaż zakres",
+            "ko": "범위 표시",
+            "ar": "إظهار المدى"
+          },
+          "hint": {
+            "en": "A band inside the dial from the lowest to the highest over the time span.",
+            "nl": "Een band in de meter van het laagste tot het hoogste over de periode.",
+            "de": "Ein Band in der Skala vom Tiefst- bis zum Höchstwert im Zeitraum.",
+            "fr": "Une bande dans le cadran du minimum au maximum sur la période.",
+            "it": "Una fascia nel quadrante dal minimo al massimo nel periodo.",
+            "sv": "Ett band i mätaren från lägsta till högsta under tidsperioden.",
+            "no": "Et bånd i måleren fra laveste til høyeste i tidsrommet.",
+            "es": "Una banda en el indicador del mínimo al máximo en el periodo.",
+            "da": "Et bånd i måleren fra laveste til højeste i tidsrummet.",
+            "ru": "Полоса на шкале от минимума до максимума за период.",
+            "pl": "Pasek na tarczy od najniższej do najwyższej wartości w okresie.",
+            "ko": "기간 동안의 최저~최고를 게이지 안쪽 띠로 보여줍니다.",
+            "ar": "شريط داخل المقياس من الأدنى إلى الأعلى خلال الفترة."
+          }
+        },
+        {
+          "id": "title",
+          "type": "text",
+          "title": {
+            "en": "Title",
+            "nl": "Titel",
+            "de": "Titel",
+            "fr": "Titre",
+            "it": "Titolo",
+            "sv": "Rubrik",
+            "no": "Tittel",
+            "es": "Título",
+            "da": "Titel",
+            "ru": "Заголовок",
+            "pl": "Tytuł",
+            "ko": "제목",
+            "ar": "العنوان"
+          },
+          "hint": {
+            "en": "Optional. Without one, the device and value name the chart.",
+            "nl": "Optioneel. Zonder titel heet de grafiek naar het apparaat en de waarde.",
+            "de": "Optional. Ohne Titel benennen Gerät und Wert das Diagramm.",
+            "fr": "Facultatif. Sans titre, le graphique porte le nom de l'appareil et de la valeur.",
+            "it": "Facoltativo. Senza titolo, il grafico prende il nome da dispositivo e valore.",
+            "sv": "Valfritt. Utan rubrik namnges diagrammet efter enheten och värdet.",
+            "no": "Valgfritt. Uten tittel får diagrammet navn etter enheten og verdien.",
+            "es": "Opcional. Sin título, el gráfico toma el nombre del dispositivo y el valor.",
+            "da": "Valgfri. Uden titel får grafen navn efter enheden og værdien.",
+            "ru": "Необязательно. Без него график называется по устройству и значению.",
+            "pl": "Opcjonalnie. Bez tytułu wykres nazywa się od urządzenia i wartości.",
+            "ko": "선택 사항입니다. 없으면 기기와 값 이름이 사용됩니다.",
+            "ar": "اختياري. بدونه يُسمّى المخطط باسم الجهاز والقيمة."
+          },
+          "value": ""
+        },
+        {
+          "id": "color",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour",
+            "nl": "Kleur",
+            "de": "Farbe",
+            "fr": "Couleur",
+            "it": "Colore",
+            "sv": "Färg",
+            "no": "Farge",
+            "es": "Color",
+            "da": "Farve",
+            "ru": "Цвет",
+            "pl": "Kolor",
+            "ko": "색상",
+            "ar": "اللون"
+          },
+          "value": "blue",
+          "values": [
+            {
+              "id": "blue",
+              "title": {
+                "en": "Blue",
+                "nl": "Blauw",
+                "de": "Blau",
+                "fr": "Bleu",
+                "it": "Blu",
+                "sv": "Blå",
+                "no": "Blå",
+                "es": "Azul",
+                "da": "Blå",
+                "ru": "Синий",
+                "pl": "Niebieski",
+                "ko": "파랑",
+                "ar": "أزرق"
+              }
+            },
+            {
+              "id": "red",
+              "title": {
+                "en": "Red",
+                "nl": "Rood",
+                "de": "Rot",
+                "fr": "Rouge",
+                "it": "Rosso",
+                "sv": "Röd",
+                "no": "Rød",
+                "es": "Rojo",
+                "da": "Rød",
+                "ru": "Красный",
+                "pl": "Czerwony",
+                "ko": "빨강",
+                "ar": "أحمر"
+              }
+            },
+            {
+              "id": "orange",
+              "title": {
+                "en": "Orange",
+                "nl": "Oranje",
+                "de": "Orange",
+                "fr": "Orange",
+                "it": "Arancione",
+                "sv": "Orange",
+                "no": "Oransje",
+                "es": "Naranja",
+                "da": "Orange",
+                "ru": "Оранжевый",
+                "pl": "Pomarańczowy",
+                "ko": "주황",
+                "ar": "برتقالي"
+              }
+            },
+            {
+              "id": "yellow",
+              "title": {
+                "en": "Yellow",
+                "nl": "Geel",
+                "de": "Gelb",
+                "fr": "Jaune",
+                "it": "Giallo",
+                "sv": "Gul",
+                "no": "Gul",
+                "es": "Amarillo",
+                "da": "Gul",
+                "ru": "Жёлтый",
+                "pl": "Żółty",
+                "ko": "노랑",
+                "ar": "أصفر"
+              }
+            },
+            {
+              "id": "green",
+              "title": {
+                "en": "Green",
+                "nl": "Groen",
+                "de": "Grün",
+                "fr": "Vert",
+                "it": "Verde",
+                "sv": "Grön",
+                "no": "Grønn",
+                "es": "Verde",
+                "da": "Grøn",
+                "ru": "Зелёный",
+                "pl": "Zielony",
+                "ko": "초록",
+                "ar": "أخضر"
+              }
+            },
+            {
+              "id": "purple",
+              "title": {
+                "en": "Purple",
+                "nl": "Paars",
+                "de": "Lila",
+                "fr": "Violet",
+                "it": "Viola",
+                "sv": "Lila",
+                "no": "Lilla",
+                "es": "Morado",
+                "da": "Lilla",
+                "ru": "Фиолетовый",
+                "pl": "Fioletowy",
+                "ko": "보라",
+                "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid tints the dial and its range with the colour, and the levels more strongly.",
+            "nl": "Levendig kleurt de meter en het bereik met de kleur, en de niveaus sterker.",
+            "de": "Kräftig färbt die Skala und die Spanne in der Farbe, die Stufen stärker.",
+            "fr": "Vives teinte le cadran et l'écart de la couleur, et les niveaux plus fort.",
+            "it": "Vivaci tinge il quadrante e l'intervallo del colore, e i livelli più intensi.",
+            "sv": "Livfulla tonar mätaren och spannet i färgen, och nivåerna starkare.",
+            "no": "Livlige farger måleren og spennet med fargen, og nivåene sterkere.",
+            "es": "Vivos tiñe el indicador y el rango con el color, y los niveles con más fuerza.",
+            "da": "Livlige farver måleren og spændet med farven, og niveauerne stærkere.",
+            "ru": "«Яркие» окрашивают шкалу и диапазон цветом, а уровни — сильнее.",
+            "pl": "Żywe barwią tarczę i zakres kolorem, a poziomy mocniej.",
+            "ko": "선명하게는 게이지와 범위에 색을 입히고 단계 색을 더 진하게 합니다.",
+            "ar": "«زاهية» تلوّن المقياس والمدى باللون، والمستويات بقوة أكبر."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
+              }
+            }
+          ]
+        }
+      ],
+      "api": {
+        "getState": {
+          "method": "GET",
+          "path": "/state"
+        }
+      },
+      "id": "gauge"
     },
     "heatmap": {
       "name": {
