@@ -53,6 +53,11 @@ html, body { margin: 0; }
 .kp-tint-frame[data-kp-tint="yellow"] { --kp-tint: var(--wk-yellow-bright); }
 .kp-tint-frame[data-kp-tint="green"] { --kp-tint: var(--wk-green-bright); }
 .kp-tint-frame[data-kp-tint="purple"] { --kp-tint: var(--wk-purple-bright); }
+.kp-tint-frame[data-kp-tint="teal"] { --kp-tint: var(--wk-teal-bright); }
+.kp-tint-frame[data-kp-tint="cyan"] { --kp-tint: var(--wk-cyan-bright); }
+.kp-tint-frame[data-kp-tint="indigo"] { --kp-tint: var(--wk-indigo-bright); }
+.kp-tint-frame[data-kp-tint="pink"] { --kp-tint: var(--wk-pink-bright); }
+.kp-tint-frame[data-kp-tint="brown"] { --kp-tint: var(--wk-brown-bright); }
 .kp-tint-frame[data-kp-tint] {
   --kp-tinted: color-mix(in srgb, var(--kp-tint) var(--kp-mix), var(--kp-base));
   background-color: var(--kp-tinted);

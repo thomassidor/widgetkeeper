@@ -1062,7 +1062,7 @@
   const LIGHTS = { get glyphs() { return LIGHT_GLYPHS(); }, PALETTES, temperatureColor, hueColor, lightColor, moodDot, swatchList, setBlend, model: lightModel };
 
   /** The colour settings' names (Device Values', Flow Buttons' and Notes' Flow colours, `TILE_COLORS` in lib/tileColors.ts), in kit.css's palette. */
-  const COLORS = ['blue', 'red', 'orange', 'yellow', 'green', 'purple'];
+  const COLORS = ['blue', 'red', 'orange', 'yellow', 'green', 'purple', 'teal', 'cyan', 'indigo', 'pink', 'brown', 'grey'];
 
   /**
    * The `colorStyle` setting ("Colour style"): 'deep' ("Vivid": Homey's darker shades as solid fills, white text) or

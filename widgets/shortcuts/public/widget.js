@@ -16,7 +16,7 @@
     renameFailed: 'Could not save the name.',
   };
 
-  const COLORS = ['blue', 'red', 'orange', 'yellow', 'green', 'purple', 'grey'];
+  const COLORS = ['blue', 'red', 'orange', 'yellow', 'green', 'purple', 'teal', 'cyan', 'indigo', 'pink', 'brown', 'grey'];
 
   /** The icons (the kit's): the ids are the `icon` setting's. */
   const ICONS = window.WidgetkeeperKit.icons;

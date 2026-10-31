@@ -76,7 +76,7 @@ describe('kit.js colours', () => {
     expect(kit.applyColors(root, { style: 'deep', color: 'purple', fallback: 'blue' })).toBe('deep');
     expect([...root.classList]).toEqual(['wk', 'wk-deep']);
     expect(root.dataset.wkColor).toBe('purple');
-    expect(kit.applyColors(root, { style: 'soft', color: 'pink', fallback: 'blue' })).toBe('soft');
+    expect(kit.applyColors(root, { style: 'soft', color: 'magenta', fallback: 'blue' })).toBe('soft');
     expect([...root.classList]).toEqual(['wk']);
     expect(root.dataset.wkColor).toBe('blue');
     kit.applyColors(root, {});
@@ -129,5 +129,30 @@ describe('a mounted widget', () => {
     expect(root.classList.contains('wk')).toBe(true);
     expect(root.classList.contains('wk-deep')).toBe(false);
     if (PICKERS.includes(id)) expect(root.dataset.wkColor).toBe('blue');
+  });
+});
+
+describe('the colour dropdowns (1.2.0: teal, cyan, indigo, pink, brown and grey)', () => {
+  const kitColors = (): string[] => JSON.parse(readFileSync('widgets/spacer/public/kit.js', 'utf8').match(/const COLORS = (\[[^\]]*\]);/)![1].replace(/'/g, '"'));
+  const widgetIds = SCHEME_WIDGETS.filter(id => settings(id).some(s => s.values?.some(v => v.id === 'purple') && s.values.some(v => v.id === 'blue')));
+
+  it.each(widgetIds)("%s: every colour setting offers the kit's whole palette, named alike", (id) => {
+    const named = new Map<string, Record<string, string>>();
+    for (const s of settings(id).filter(x => x.values?.some(v => v.id === 'purple') && x.values.some(v => v.id === 'blue'))) {
+      const ids = s.values!.map(v => v.id);
+      for (const c of kitColors()) expect(ids, `${id}.${s.id}`).toContain(c);
+      expect(new Set(ids).size).toBe(ids.length);
+      for (const v of s.values!) {
+        if (!named.has(v.id)) named.set(v.id, v.title);
+        expect(v.title, `${id}.${s.id}.${v.id}`).toEqual(named.get(v.id));
+      }
+    }
+  });
+
+  it('every widget CSS that lists purple by name lists the new colours too', () => {
+    for (const id of ['values', 'textline', 'flows', 'shortcuts', 'heatmap', 'charts', 'sensordots', 'keypad']) {
+      const sheet = css(id);
+      for (const c of ['teal', 'cyan', 'indigo', 'pink', 'brown']) expect(sheet, `${id}: ${c}`).toContain(`="${c}"]`);
+    }
   });
 });

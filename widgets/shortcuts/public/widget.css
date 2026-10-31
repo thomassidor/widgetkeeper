@@ -16,8 +16,13 @@
   --sc-c-yellow: var(--wk-yellow);
   --sc-c-green: var(--wk-green);
   --sc-c-purple: var(--wk-purple);
+  --sc-c-teal: var(--wk-teal);
+  --sc-c-cyan: var(--wk-cyan);
+  --sc-c-indigo: var(--wk-indigo);
+  --sc-c-pink: var(--wk-pink);
+  --sc-c-brown: var(--wk-brown);
   --sc-on-color: #FFFFFF; /* the glyph on a coloured icon */
-  --sc-on-light: #1A1B21; /* the glyph on yellow and green, which are too light for white */
+  --sc-on-light: #1A1B21; /* the glyph on yellow, green and the 1.2.0 colours, which are too light for white */
   /* Homey's type scale: only these size/line-height pairs are used natively. */
   --sc-fs-small: var(--homey-font-size-small, 14px); --sc-lh-small: var(--homey-line-height-small, 20px);
   --sc-fs: var(--homey-font-size-default, 17px); --sc-lh: var(--homey-line-height-default, 24px);
@@ -60,6 +65,11 @@ html, body { background: transparent !important; }
 .sc-row[data-color="yellow"] { --sc-color: var(--sc-c-yellow); }
 .sc-row[data-color="green"] { --sc-color: var(--sc-c-green); }
 .sc-row[data-color="purple"] { --sc-color: var(--sc-c-purple); }
+.sc-row[data-color="teal"] { --sc-color: var(--sc-c-teal); }
+.sc-row[data-color="cyan"] { --sc-color: var(--sc-c-cyan); }
+.sc-row[data-color="indigo"] { --sc-color: var(--sc-c-indigo); }
+.sc-row[data-color="pink"] { --sc-color: var(--sc-c-pink); }
+.sc-row[data-color="brown"] { --sc-color: var(--sc-c-brown); }
 .sc-row[data-color="grey"] { --sc-color: var(--sc-neutral); --sc-ring: var(--sc-muted); }
 /* The native tiles' 1px rim, brightest along the top. */
 .homey-dark-mode .sc-row::after, .sc.homey-dark-mode .sc-row::after {
@@ -79,7 +89,12 @@ html, body { background: transparent !important; }
   background: var(--sc-color); color: var(--sc-on-color);
   display: flex; align-items: center; justify-content: center; transition: transform .1s;
 }
-.sc-row[data-color="yellow"] .sc-icon, .sc-row[data-color="green"] .sc-icon { color: var(--sc-on-light); }
+.sc-row[data-color="yellow"] .sc-icon, .sc-row[data-color="green"] .sc-icon,
+.sc-row[data-color="teal"] .sc-icon,
+.sc-row[data-color="cyan"] .sc-icon,
+.sc-row[data-color="indigo"] .sc-icon,
+.sc-row[data-color="pink"] .sc-icon,
+.sc-row[data-color="brown"] .sc-icon { color: var(--sc-on-light); }
 .sc-row[data-color="grey"] .sc-icon { color: var(--sc-text); }
 .sc-row.pressing .sc-icon { transform: scale(.9); }
 .sc-row.missing .sc-icon { background: none; box-shadow: inset 0 0 0 1.5px var(--sc-muted); color: var(--sc-muted); }
@@ -93,6 +108,11 @@ html, body { background: transparent !important; }
 .sc.wk-deep .sc-row[data-color="yellow"] { --sc-row: var(--wk-yellow); --sc-row-on: var(--wk-on-yellow); --wk-on-muted: rgb(26 27 33 / .75); }
 .sc.wk-deep .sc-row[data-color="green"] { --sc-row: var(--wk-green); --sc-row-on: var(--wk-on-green); }
 .sc.wk-deep .sc-row[data-color="purple"] { --sc-row: var(--wk-purple); --sc-row-on: var(--wk-on-purple); }
+.sc.wk-deep .sc-row[data-color="teal"] { --sc-row: var(--wk-teal); --sc-row-on: var(--wk-on-teal); }
+.sc.wk-deep .sc-row[data-color="cyan"] { --sc-row: var(--wk-cyan); --sc-row-on: var(--wk-on-cyan); }
+.sc.wk-deep .sc-row[data-color="indigo"] { --sc-row: var(--wk-indigo); --sc-row-on: var(--wk-on-indigo); }
+.sc.wk-deep .sc-row[data-color="pink"] { --sc-row: var(--wk-pink); --sc-row-on: var(--wk-on-pink); }
+.sc.wk-deep .sc-row[data-color="brown"] { --sc-row: var(--wk-brown); --sc-row-on: var(--wk-on-brown); }
 .sc.wk-deep .sc-row:not([data-color="grey"]):not(.missing) {
   background: var(--sc-row); --sc-text: var(--sc-row-on); --sc-muted: var(--wk-on-muted); --sc-ring: var(--sc-row-on);
 }

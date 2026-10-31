@@ -48,7 +48,7 @@
     const hasTotal = opts.total === true;
     const count = Math.max(1, Math.min(MAX, Number(opts.count) || 1)); // layers
     // Each layer's colour (its setting), else the kit's colours in order.
-    const colorOf = i => (opts.colors && COLORS.includes(opts.colors[i]) ? opts.colors[i] : COLORS[i % COLORS.length]);
+    const colorOf = i => (opts.colors && COLORS.includes(opts.colors[i]) ? opts.colors[i] : COLORS[i % 6]); // the first six in order by default (the kit's later colours came in 1.2.0)
     const plotTop = TOP_PAD;
 
     const state = {

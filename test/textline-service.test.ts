@@ -36,7 +36,7 @@ describe('set and clear (the Flow cards)', () => {
     expect(service.get('Kitchen').color).toBe('red');
     service.set('Kitchen', 'Dryer done');
     expect(service.get('Kitchen').color).toBeNull();
-    expect(() => service.set('Kitchen', 'x', 'pink')).toThrow();
+    expect(() => service.set('Kitchen', 'x', 'magenta')).toThrow();
   });
 
   it('survives a restart', () => {

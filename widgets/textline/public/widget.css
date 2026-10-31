@@ -34,6 +34,12 @@
   --tl-green: var(--wk-green);
   --tl-blue: var(--wk-blue);
   --tl-purple: var(--wk-purple);
+  --tl-teal: var(--wk-teal);
+  --tl-cyan: var(--wk-cyan);
+  --tl-indigo: var(--wk-indigo);
+  --tl-pink: var(--wk-pink);
+  --tl-brown: var(--wk-brown);
+  --tl-grey: var(--wk-grey);
   --tl-fill-mix: 22%; /* Device Values' Flow colour tint */
   /* Homey's type scale: only these size/line-height pairs are used natively. */
   --tl-fs-small: var(--homey-font-size-small, 14px); --tl-lh-small: var(--homey-line-height-small, 20px);
@@ -122,6 +128,12 @@ html, body { background: transparent !important; }
 .tl-tile[data-color="green"] { --tl-color: var(--tl-green); }
 .tl-tile[data-color="blue"] { --tl-color: var(--tl-blue); }
 .tl-tile[data-color="purple"] { --tl-color: var(--tl-purple); }
+.tl-tile[data-color="teal"] { --tl-color: var(--tl-teal); }
+.tl-tile[data-color="cyan"] { --tl-color: var(--tl-cyan); }
+.tl-tile[data-color="indigo"] { --tl-color: var(--tl-indigo); }
+.tl-tile[data-color="pink"] { --tl-color: var(--tl-pink); }
+.tl-tile[data-color="brown"] { --tl-color: var(--tl-brown); }
+.tl-tile[data-color="grey"] { --tl-color: var(--tl-grey); }
 .tl-tile[data-color] { background: color-mix(in srgb, var(--tl-color) var(--tl-fill-mix), var(--tl-tile)); }
 /* Vivid (kit.css): the colour's darker shade, solid, with white text (dark on yellow). The Post-it keeps its paper. */
 .tl.wk-deep .tl-tile[data-color] { --tl-fill-mix: 100%; color: var(--wk-on-blue); }
@@ -185,3 +197,9 @@ html, body { background: transparent !important; }
 .tl-note[data-color="purple"] { --tl-paper: #D6C1FF; --tl-paper-top: #E5D8FF; --tl-paper-low: #C8ADFB; }
 .tl-note[data-color="blue"] { --tl-paper: #A8D8FF; --tl-paper-top: #C6E6FF; --tl-paper-low: #92CCFB; }
 .tl-note[data-color="green"] { --tl-paper: #BDEDA0; --tl-paper-top: #D3F4BF; --tl-paper-low: #A9E486; }
+.tl-note[data-color="teal"] { --tl-paper: #9FE8DC; --tl-paper-top: #C0F0E8; --tl-paper-low: #86DCCD; }
+.tl-note[data-color="cyan"] { --tl-paper: #A6E6F7; --tl-paper-top: #C5EFFA; --tl-paper-low: #8DDCF2; }
+.tl-note[data-color="indigo"] { --tl-paper: #C3C6FF; --tl-paper-top: #D8DAFF; --tl-paper-low: #AFB3FB; }
+.tl-note[data-color="pink"] { --tl-paper: #FFB8D9; --tl-paper-top: #FFD2E7; --tl-paper-low: #FBA0CA; }
+.tl-note[data-color="brown"] { --tl-paper: #DDC2A3; --tl-paper-top: #E9D5BE; --tl-paper-low: #D2B08C; }
+.tl-note[data-color="grey"] { --tl-paper: #D3D5DB; --tl-paper-top: #E2E3E8; --tl-paper-low: #C4C6CE; }

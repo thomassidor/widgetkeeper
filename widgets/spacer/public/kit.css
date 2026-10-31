@@ -5,9 +5,12 @@
  *
  * Every colour comes in two sets, both always defined:
  * - bright (`--wk-<name>-bright`): Homey's colour tokens (the fallbacks are the dark-theme values outside Homey). Yellow
- *   and purple have no Homey token: Device Values' yellow and Homey's web-app purple.
+ *   and purple have no Homey token: Device Values' yellow and Homey's web-app purple. Teal, cyan, indigo, pink, brown and
+ *   grey (1.2.0, the user's pick of six candidates in temp/colors-preview.html) have none either: chosen to read as their
+ *   name at 22 % on a dark tile, with dark text on them (5.3–8.2:1).
  * - shade (`--wk-<name>-shade`): Homey's darker palette shades, with white text 5.2–7.2:1. Orange has no shades in
  *   Homey's palette and purple none at all; yellow has no dark shade that still reads as yellow, so it stays, with dark text.
+ *   The six added in 1.2.0 have no Homey shades: theirs give white text 5.7–8.0:1.
  * `--wk-on-<name>-<set>` is the text or icon on a solid fill of it.
  *
  * `--wk-<name>` is the one the scheme picks for tinted tiles: bright, mixed 22 % into a tile (Muted), or the shade as a
@@ -21,12 +24,24 @@
   --wk-yellow-bright: #F5C518;
   --wk-green-bright: var(--homey-color-green, #71D51B);
   --wk-purple-bright: #9033FC;
+  --wk-teal-bright: #1FC7B0;
+  --wk-cyan-bright: #2CC3E8;
+  --wk-indigo-bright: #7C83F7;
+  --wk-pink-bright: #F2549E;
+  --wk-brown-bright: #B9875A;
+  --wk-grey-bright: #9A9CA6;
   --wk-on-blue-bright: #FFFFFF;
   --wk-on-red-bright: #FFFFFF;
   --wk-on-orange-bright: #FFFFFF;
   --wk-on-yellow-bright: #1A1B21;
   --wk-on-green-bright: #1A1B21;
   --wk-on-purple-bright: #FFFFFF;
+  --wk-on-teal-bright: #1A1B21;
+  --wk-on-cyan-bright: #1A1B21;
+  --wk-on-indigo-bright: #1A1B21;
+  --wk-on-pink-bright: #1A1B21;
+  --wk-on-brown-bright: #1A1B21;
+  --wk-on-grey-bright: #1A1B21;
 
   --wk-blue-shade: var(--homey-color-blue-600, #0068C8);
   --wk-red-shade: var(--homey-color-red-600, #AD1617);
@@ -34,12 +49,24 @@
   --wk-yellow-shade: #F5C518;
   --wk-green-shade: var(--homey-color-green-700, #267700);
   --wk-purple-shade: #7500FB;
+  --wk-teal-shade: #0B7468;
+  --wk-cyan-shade: #0A6E8C;
+  --wk-indigo-shade: #3F3BC4;
+  --wk-pink-shade: #B8155F;
+  --wk-brown-shade: #7A4B24;
+  --wk-grey-shade: #53555F;
   --wk-on-blue-shade: #FFFFFF;
   --wk-on-red-shade: #FFFFFF;
   --wk-on-orange-shade: #FFFFFF;
   --wk-on-yellow-shade: #1A1B21;
   --wk-on-green-shade: #FFFFFF;
   --wk-on-purple-shade: #FFFFFF;
+  --wk-on-teal-shade: #FFFFFF;
+  --wk-on-cyan-shade: #FFFFFF;
+  --wk-on-indigo-shade: #FFFFFF;
+  --wk-on-pink-shade: #FFFFFF;
+  --wk-on-brown-shade: #FFFFFF;
+  --wk-on-grey-shade: #FFFFFF;
 
   --wk-blue: var(--wk-blue-bright);
   --wk-red: var(--wk-red-bright);
@@ -47,12 +74,24 @@
   --wk-yellow: var(--wk-yellow-bright);
   --wk-green: var(--wk-green-bright);
   --wk-purple: var(--wk-purple-bright);
+  --wk-teal: var(--wk-teal-bright);
+  --wk-cyan: var(--wk-cyan-bright);
+  --wk-indigo: var(--wk-indigo-bright);
+  --wk-pink: var(--wk-pink-bright);
+  --wk-brown: var(--wk-brown-bright);
+  --wk-grey: var(--wk-grey-bright);
   --wk-on-blue: var(--wk-on-blue-bright);
   --wk-on-red: var(--wk-on-red-bright);
   --wk-on-orange: var(--wk-on-orange-bright);
   --wk-on-yellow: var(--wk-on-yellow-bright);
   --wk-on-green: var(--wk-on-green-bright);
   --wk-on-purple: var(--wk-on-purple-bright);
+  --wk-on-teal: var(--wk-on-teal-bright);
+  --wk-on-cyan: var(--wk-on-cyan-bright);
+  --wk-on-indigo: var(--wk-on-indigo-bright);
+  --wk-on-pink: var(--wk-on-pink-bright);
+  --wk-on-brown: var(--wk-on-brown-bright);
+  --wk-on-grey: var(--wk-on-grey-bright);
   /* The muted text on a Vivid fill. */
   --wk-on-muted: rgb(255 255 255 / .78);
 }
@@ -63,12 +102,24 @@
   --wk-yellow: var(--wk-yellow-shade);
   --wk-green: var(--wk-green-shade);
   --wk-purple: var(--wk-purple-shade);
+  --wk-teal: var(--wk-teal-shade);
+  --wk-cyan: var(--wk-cyan-shade);
+  --wk-indigo: var(--wk-indigo-shade);
+  --wk-pink: var(--wk-pink-shade);
+  --wk-brown: var(--wk-brown-shade);
+  --wk-grey: var(--wk-grey-shade);
   --wk-on-blue: var(--wk-on-blue-shade);
   --wk-on-red: var(--wk-on-red-shade);
   --wk-on-orange: var(--wk-on-orange-shade);
   --wk-on-yellow: var(--wk-on-yellow-shade);
   --wk-on-green: var(--wk-on-green-shade);
   --wk-on-purple: var(--wk-on-purple-shade);
+  --wk-on-teal: var(--wk-on-teal-shade);
+  --wk-on-cyan: var(--wk-on-cyan-shade);
+  --wk-on-indigo: var(--wk-on-indigo-shade);
+  --wk-on-pink: var(--wk-on-pink-shade);
+  --wk-on-brown: var(--wk-on-brown-shade);
+  --wk-on-grey: var(--wk-on-grey-shade);
 }
 
 /* A colour setting (`data-wk-color`, on the root or on a tile): `--wk-c` and the text on it, `--wk-on`, and both sets. */
@@ -95,6 +146,30 @@
 .wk [data-wk-color="purple"], .wk[data-wk-color="purple"] {
   --wk-c: var(--wk-purple); --wk-on: var(--wk-on-purple);
   --wk-c-bright: var(--wk-purple-bright); --wk-on-bright: var(--wk-on-purple-bright); --wk-c-shade: var(--wk-purple-shade); --wk-on-shade: var(--wk-on-purple-shade);
+}
+.wk [data-wk-color="teal"], .wk[data-wk-color="teal"] {
+  --wk-c: var(--wk-teal); --wk-on: var(--wk-on-teal);
+  --wk-c-bright: var(--wk-teal-bright); --wk-on-bright: var(--wk-on-teal-bright); --wk-c-shade: var(--wk-teal-shade); --wk-on-shade: var(--wk-on-teal-shade);
+}
+.wk [data-wk-color="cyan"], .wk[data-wk-color="cyan"] {
+  --wk-c: var(--wk-cyan); --wk-on: var(--wk-on-cyan);
+  --wk-c-bright: var(--wk-cyan-bright); --wk-on-bright: var(--wk-on-cyan-bright); --wk-c-shade: var(--wk-cyan-shade); --wk-on-shade: var(--wk-on-cyan-shade);
+}
+.wk [data-wk-color="indigo"], .wk[data-wk-color="indigo"] {
+  --wk-c: var(--wk-indigo); --wk-on: var(--wk-on-indigo);
+  --wk-c-bright: var(--wk-indigo-bright); --wk-on-bright: var(--wk-on-indigo-bright); --wk-c-shade: var(--wk-indigo-shade); --wk-on-shade: var(--wk-on-indigo-shade);
+}
+.wk [data-wk-color="pink"], .wk[data-wk-color="pink"] {
+  --wk-c: var(--wk-pink); --wk-on: var(--wk-on-pink);
+  --wk-c-bright: var(--wk-pink-bright); --wk-on-bright: var(--wk-on-pink-bright); --wk-c-shade: var(--wk-pink-shade); --wk-on-shade: var(--wk-on-pink-shade);
+}
+.wk [data-wk-color="brown"], .wk[data-wk-color="brown"] {
+  --wk-c: var(--wk-brown); --wk-on: var(--wk-on-brown);
+  --wk-c-bright: var(--wk-brown-bright); --wk-on-bright: var(--wk-on-brown-bright); --wk-c-shade: var(--wk-brown-shade); --wk-on-shade: var(--wk-on-brown-shade);
+}
+.wk [data-wk-color="grey"], .wk[data-wk-color="grey"] {
+  --wk-c: var(--wk-grey); --wk-on: var(--wk-on-grey);
+  --wk-c-bright: var(--wk-grey-bright); --wk-on-bright: var(--wk-on-grey-bright); --wk-c-shade: var(--wk-grey-shade); --wk-on-shade: var(--wk-on-grey-shade);
 }
 /* Text on yellow stays dark in Vivid; its muted text too. */
 .wk.wk-deep[data-wk-color="yellow"], .wk.wk-deep [data-wk-color="yellow"] { --wk-on-muted: rgb(26 27 33 / .75); }

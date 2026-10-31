@@ -73,7 +73,7 @@ describe('dots', () => {
     win.createSensorDotsWidget(root, { idleColor: 'green', activeColor: 'red' });
     expect(root.dataset).toMatchObject({ idle: 'green', active: 'red' });
     const unknown = document.createElement('div');
-    win.createSensorDotsWidget(unknown, { idleColor: 'pink', activeColor: '' });
+    win.createSensorDotsWidget(unknown, { idleColor: 'magenta', activeColor: '' });
     expect(unknown.dataset).toMatchObject({ idle: 'grey', active: 'blue' });
   });
 

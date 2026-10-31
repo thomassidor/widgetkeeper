@@ -50,8 +50,8 @@
   const ICONS = window.WidgetkeeperKit.icons;
   const SVG = 'http://www.w3.org/2000/svg';
 
-  /** The `colorN` settings: kit.css's palette, and grey, which keeps the key's own colours. */
-  const COLORS = [...window.WidgetkeeperKit.COLORS, 'grey'];
+  /** The `colorN` settings: kit.css's palette; grey (in it since 1.2.0) keeps the key's own colours here. */
+  const COLORS = window.WidgetkeeperKit.COLORS;
   /** A value's types; `typeof` a value of each is the type's name. */
   const TYPES = ['boolean', 'number', 'string'];
 

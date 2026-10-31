@@ -70,7 +70,7 @@
     const span = isTimeSpan(opts.span) ? opts.span : '1d!';
     const title = typeof opts.title === 'string' ? opts.title.trim() : '';
     // Each row's colour (its setting), else the kit's colours in order.
-    const colorOf = i => (opts.colors && COLORS.includes(opts.colors[i]) ? opts.colors[i] : COLORS[i % COLORS.length]);
+    const colorOf = i => (opts.colors && COLORS.includes(opts.colors[i]) ? opts.colors[i] : COLORS[i % 6]); // the first six in order by default (the kit's later colours came in 1.2.0)
     // Each row's threshold, used where its value is a number: on while above it (or below, with `below`), in the units
     // the value shows in (a 0–1 `%` as 0–100); missing: above 0.
     const thresholdOf = (i) => {

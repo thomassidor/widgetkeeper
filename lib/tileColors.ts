@@ -5,7 +5,7 @@ import type Homey from 'homey';
  * `color` argument, which also has `default`; `test/locales.test.ts` checks the three cards list these). The kit's
  * `COLORS` are the same names.
  */
-export const TILE_COLORS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'] as const;
+export const TILE_COLORS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'teal', 'cyan', 'indigo', 'pink', 'brown', 'grey'] as const;
 export type TileColor = typeof TILE_COLORS[number];
 
 /** A Flow card's `color` argument: a tile colour, or null for `default` (the widget's own). Anything else throws. */

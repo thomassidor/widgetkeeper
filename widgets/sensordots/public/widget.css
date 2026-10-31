@@ -18,6 +18,11 @@
   --sd-c-yellow: var(--wk-yellow-shade);
   --sd-c-green: var(--wk-green-shade);
   --sd-c-purple: var(--wk-purple-shade);
+  --sd-c-teal: var(--wk-teal-shade);
+  --sd-c-cyan: var(--wk-cyan-shade);
+  --sd-c-indigo: var(--wk-indigo-shade);
+  --sd-c-pink: var(--wk-pink-shade);
+  --sd-c-brown: var(--wk-brown-shade);
   --sd-idle: var(--sd-c-grey);
   --sd-active: var(--sd-c-blue);
   --sd-fs-small: var(--homey-font-size-small, 14px);
@@ -32,6 +37,7 @@
 .sd.wk-deep {
   --sd-c-blue: var(--wk-blue-bright); --sd-c-red: var(--wk-red-bright); --sd-c-orange: var(--wk-orange-bright);
   --sd-c-yellow: var(--wk-yellow-bright); --sd-c-green: var(--wk-green-bright); --sd-c-purple: var(--wk-purple-bright);
+  --sd-c-teal: var(--wk-teal-bright); --sd-c-cyan: var(--wk-cyan-bright); --sd-c-indigo: var(--wk-indigo-bright); --sd-c-pink: var(--wk-pink-bright); --sd-c-brown: var(--wk-brown-bright);
 }
 .sd[data-idle="blue"] { --sd-idle: var(--sd-c-blue); }
 .sd[data-idle="red"] { --sd-idle: var(--sd-c-red); }
@@ -39,12 +45,22 @@
 .sd[data-idle="yellow"] { --sd-idle: var(--sd-c-yellow); }
 .sd[data-idle="green"] { --sd-idle: var(--sd-c-green); }
 .sd[data-idle="purple"] { --sd-idle: var(--sd-c-purple); }
+.sd[data-idle="teal"] { --sd-idle: var(--sd-c-teal); }
+.sd[data-idle="cyan"] { --sd-idle: var(--sd-c-cyan); }
+.sd[data-idle="indigo"] { --sd-idle: var(--sd-c-indigo); }
+.sd[data-idle="pink"] { --sd-idle: var(--sd-c-pink); }
+.sd[data-idle="brown"] { --sd-idle: var(--sd-c-brown); }
 .sd[data-active="grey"] { --sd-active: var(--sd-c-grey); }
 .sd[data-active="red"] { --sd-active: var(--sd-c-red); }
 .sd[data-active="orange"] { --sd-active: var(--sd-c-orange); }
 .sd[data-active="yellow"] { --sd-active: var(--sd-c-yellow); }
 .sd[data-active="green"] { --sd-active: var(--sd-c-green); }
 .sd[data-active="purple"] { --sd-active: var(--sd-c-purple); }
+.sd[data-active="teal"] { --sd-active: var(--sd-c-teal); }
+.sd[data-active="cyan"] { --sd-active: var(--sd-c-cyan); }
+.sd[data-active="indigo"] { --sd-active: var(--sd-c-indigo); }
+.sd[data-active="pink"] { --sd-active: var(--sd-c-pink); }
+.sd[data-active="brown"] { --sd-active: var(--sd-c-brown); }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }

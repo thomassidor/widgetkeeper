@@ -103,7 +103,7 @@ describe('render', () => {
     const color = (t: HTMLElement) => t.dataset.color ?? null;
 
     it('marks the tiles with their colour, ignoring unknown ones and missing slots', () => {
-      const { tiles } = widget([{ ...temp(), color: 'red' }, { ...lamp(), color: 'pink' }, temp(), { deviceId: 'x', capabilityId: 'onoff', missing: true, color: 'red' }]);
+      const { tiles } = widget([{ ...temp(), color: 'red' }, { ...lamp(), color: 'magenta' }, temp(), { deviceId: 'x', capabilityId: 'onoff', missing: true, color: 'red' }]);
       expect(tiles().map(color)).toEqual(['red', null, null, null]);
     });
 

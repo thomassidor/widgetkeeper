@@ -73,12 +73,21 @@ describe('colour from a Flow', () => {
     expect(rows()[0].classList.contains('flow-color')).toBe(false);
   });
 
-  it('ignores a colour the card has not (grey, unknown) and a missing flow', () => {
+  it('ignores an unknown colour and a missing flow', () => {
     const { w, rows } = widget([{ id: 'flow:1', missing: true }, flow('flow:2', 'B')], { buttons: [{ id: 'flow:1' }, { id: 'flow:2', color: 'red' }] });
     w.pushColor({ id: 'flow:1', color: 'green' });
-    w.pushColor({ id: 'flow:2', color: 'grey' });
+    w.pushColor({ id: 'flow:2', color: 'magenta' });
     expect(rows().map(r => r.dataset.color)).toEqual(['blue', 'red']);
     expect(rows().some(r => r.classList.contains('flow-color'))).toBe(false);
+  });
+
+  it('takes the 1.2.0 colours from the card, grey too (the neutral button, the row tinted in Muted)', () => {
+    const { w, rows } = widget([flow('flow:1', 'A')], { buttons: [{ id: 'flow:1', color: 'red' }] });
+    w.pushColor({ id: 'flow:1', color: 'teal' });
+    expect(rows()[0].dataset.color).toBe('teal');
+    w.pushColor({ id: 'flow:1', color: 'grey' });
+    expect(rows()[0].dataset.color).toBe('grey');
+    expect(rows()[0].classList.contains('flow-color')).toBe(true);
   });
 });
 

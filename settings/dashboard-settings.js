@@ -12,11 +12,12 @@
 
     /**
      * A colour setting's values drawn as swatches: the widgets' palette (kit.css's bright colours, which `swatch()`'s `wk`
-     * class defines), plus Flow Buttons' grey. `default` and `neutral` are the widget's own colour, an outlined swatch.
+     * class defines; grey too, also for Flow Buttons' own grey). `default` and `neutral` are the widget's own colour, an
+     * outlined swatch.
      */
     const SWATCHES = {
       ...Object.fromEntries(window.WidgetkeeperKit.COLORS.map(c => [c, `var(--wk-${c}-bright)`])),
-      grey: '#8E8F99', default: null, neutral: null,
+      default: null, neutral: null,
     };
 
     // ---- Dialogs: choose a widget, a widget's settings -------------------------------------------------------

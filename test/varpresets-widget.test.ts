@@ -134,7 +134,7 @@ describe('Variable Presets: header', () => {
   it('has the colour picked, blue when missing or unknown, and the compact layout', () => {
     expect(widget(away, mode('Away'), { color: 'green' }).root.dataset.wkColor).toBe('green');
     expect(widget(away).root.dataset.wkColor).toBe('blue');
-    expect(widget(away, mode('Away'), { color: 'grey' }).root.dataset.wkColor).toBe('blue');
+    expect(widget(away, mode('Away'), { color: 'magenta' }).root.dataset.wkColor).toBe('blue');
     const compact = widget(away, mode('Away'), { layout: 'compact' });
     expect(compact.root.classList.contains('tw-compact')).toBe(true);
     expect(compact.root.classList.contains('vp')).toBe(true);

@@ -20,6 +20,12 @@
   --vt-orange: var(--wk-orange);
   --vt-blue: var(--wk-blue);
   --vt-purple: var(--wk-purple);
+  --vt-teal: var(--wk-teal);
+  --vt-cyan: var(--wk-cyan);
+  --vt-indigo: var(--wk-indigo);
+  --vt-pink: var(--wk-pink);
+  --vt-brown: var(--wk-brown);
+  --vt-grey: var(--wk-grey);
   --vt-fill-mix: 22%;
   --vt-ink: var(--wk-on-blue); /* the text on a Vivid colour: white, dark on yellow */
   --vt-radius: 10px; /* Homey's native device tiles, measured from a phone screenshot */
@@ -103,6 +109,12 @@ html, body { background: transparent !important; }
 .vt-tile[data-color="green"] { --vt-color: var(--vt-green); }
 .vt-tile[data-color="blue"] { --vt-color: var(--vt-blue); }
 .vt-tile[data-color="purple"] { --vt-color: var(--vt-purple); }
+.vt-tile[data-color="teal"] { --vt-color: var(--vt-teal); }
+.vt-tile[data-color="cyan"] { --vt-color: var(--vt-cyan); }
+.vt-tile[data-color="indigo"] { --vt-color: var(--vt-indigo); }
+.vt-tile[data-color="pink"] { --vt-color: var(--vt-pink); }
+.vt-tile[data-color="brown"] { --vt-color: var(--vt-brown); }
+.vt-tile[data-color="grey"] { --vt-color: var(--vt-grey); }
 .vt-tile[data-color] { background: color-mix(in srgb, var(--vt-color) var(--vt-fill-mix), var(--vt-tile)); }
 .vt-tile[data-color] .vt-icon { color: var(--vt-text); }
 .vt-tile.filled[data-color] { --vt-level: var(--vt-color);

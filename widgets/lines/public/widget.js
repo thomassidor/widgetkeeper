@@ -46,7 +46,7 @@
     const title = typeof opts.title === 'string' ? opts.title.trim() : '';
     const count = Math.max(1, Math.min(MAX, Number(opts.count) || 1));
     // Each value's colour (its setting), else the kit's colours in order.
-    const colorOf = i => (opts.colors && COLORS.includes(opts.colors[i]) ? opts.colors[i] : COLORS[i % COLORS.length]);
+    const colorOf = i => (opts.colors && COLORS.includes(opts.colors[i]) ? opts.colors[i] : COLORS[i % 6]); // the first six in order by default (the kit's later colours came in 1.2.0)
 
     const state = {
       series: [], // per value, as picked: Sparklines' slot state with its points, or {missing}

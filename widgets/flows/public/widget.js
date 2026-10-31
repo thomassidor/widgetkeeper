@@ -22,9 +22,9 @@
     keyInvalid: 'The API key was not accepted.',
   };
 
-  const COLORS = ['blue', 'red', 'orange', 'yellow', 'green', 'purple', 'grey'];
-  /** The colours the Flow card can set (Device Values' `TILE_COLORS`): no grey. */
-  const FLOW_COLORS = COLORS.filter(c => c !== 'grey');
+  const COLORS = ['blue', 'red', 'orange', 'yellow', 'green', 'purple', 'teal', 'cyan', 'indigo', 'pink', 'brown', 'grey'];
+  /** The colours the Flow card can set (Device Values' `TILE_COLORS`): all of them, grey too since 1.2.0. */
+  const FLOW_COLORS = COLORS;
 
   /** The button icons (the kit's): the ids are the `icon` setting's. */
   const ICONS = window.WidgetkeeperKit.icons;

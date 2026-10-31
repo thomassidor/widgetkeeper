@@ -24,7 +24,7 @@
     since: 'since __time__',
   };
 
-  const COLORS = ['grey', 'blue', 'red', 'orange', 'yellow', 'green', 'purple'];
+  const COLORS = ['grey', 'blue', 'red', 'orange', 'yellow', 'green', 'purple', 'teal', 'cyan', 'indigo', 'pink', 'brown'];
   /** A colour setting's id, or the fallback when it's unknown. */
   const colorOf = (id, fallback) => (COLORS.includes(id) ? id : fallback);
 

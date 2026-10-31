@@ -30,6 +30,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Chart · Timeline:** when was it on, open or moving? A row per value over the day; a number can be a row too, on above or below a threshold. On/off history starts the first time the widget shows it.
 - **Chart · Stacked:** who uses the power? Up to six values stacked over time, the rest of a total (such as the main meter) as Other. Values below zero, such as solar, stack downwards.
 
+### Colours
+- **Six more colours** wherever you pick one: teal, cyan, indigo, pink, brown and grey, in Muted and Vivid. The Flow cards that colour a Device Values tile, a Flow Button or a note offer them too.
+
 ## 1.1.2
 
 ### Charts

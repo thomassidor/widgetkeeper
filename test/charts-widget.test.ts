@@ -76,7 +76,7 @@ describe('charts', () => {
   });
 
   it('falls back on unknown settings', () => {
-    const { q } = widget([{ span: 'x', style: 'pie', color: 'pink', range: 'odd' }], [entry(series(24 * HOUR, x => 20 + x))]);
+    const { q } = widget([{ span: 'x', style: 'pie', color: 'magenta', range: 'odd' }], [entry(series(24 * HOUR, x => 20 + x))]);
     expect(q('.ch-chart')!.dataset.color).toBe('blue');
     expect(q('.series-line')).not.toBeNull();
     expect([...q('.ch-chart')!.querySelectorAll('text')].map(t => t.textContent)).not.toContain('0'); // fit

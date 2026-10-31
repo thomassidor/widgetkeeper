@@ -15,8 +15,13 @@
   --fb-c-yellow: var(--wk-yellow);
   --fb-c-green: var(--wk-green);
   --fb-c-purple: var(--wk-purple);
+  --fb-c-teal: var(--wk-teal);
+  --fb-c-cyan: var(--wk-cyan);
+  --fb-c-indigo: var(--wk-indigo);
+  --fb-c-pink: var(--wk-pink);
+  --fb-c-brown: var(--wk-brown);
   --fb-on-color: #FFFFFF; /* the icon on a coloured button */
-  --fb-on-light: #1A1B21; /* the icon on yellow and green, which are too light for white */
+  --fb-on-light: #1A1B21; /* the icon on yellow, green and the 1.2.0 colours, which are too light for white */
   /* Homey's type scale: only these size/line-height pairs are used natively. */
   --fb-fs-small: var(--homey-font-size-small, 14px); --fb-lh-small: var(--homey-line-height-small, 20px);
   --fb-bold: var(--homey-font-weight-bold, 700);
@@ -74,6 +79,11 @@ html, body { background: transparent !important; }
 .fb-row[data-color="yellow"] .fb-button { --fb-color: var(--fb-c-yellow); color: var(--fb-on-light); }
 .fb-row[data-color="green"] .fb-button { --fb-color: var(--fb-c-green); color: var(--fb-on-light); }
 .fb-row[data-color="purple"] .fb-button { --fb-color: var(--fb-c-purple); }
+.fb-row[data-color="teal"] .fb-button { --fb-color: var(--fb-c-teal); color: var(--fb-on-light); }
+.fb-row[data-color="cyan"] .fb-button { --fb-color: var(--fb-c-cyan); color: var(--fb-on-light); }
+.fb-row[data-color="indigo"] .fb-button { --fb-color: var(--fb-c-indigo); color: var(--fb-on-light); }
+.fb-row[data-color="pink"] .fb-button { --fb-color: var(--fb-c-pink); color: var(--fb-on-light); }
+.fb-row[data-color="brown"] .fb-button { --fb-color: var(--fb-c-brown); color: var(--fb-on-light); }
 .fb-row[data-color="grey"] .fb-button { --fb-color: var(--fb-neutral); color: var(--fb-text); }
 .fb-row.pressing .fb-button { transform: scale(.9); }
 /* A colour set by a Flow (.flow-color, a user's request): in Muted the row is also tinted, as Device Values' tiles are. */
@@ -83,6 +93,12 @@ html, body { background: transparent !important; }
 .fb-row.flow-color[data-color="yellow"] { --fb-tint: var(--fb-c-yellow); }
 .fb-row.flow-color[data-color="green"] { --fb-tint: var(--fb-c-green); }
 .fb-row.flow-color[data-color="purple"] { --fb-tint: var(--fb-c-purple); }
+.fb-row.flow-color[data-color="teal"] { --fb-tint: var(--fb-c-teal); }
+.fb-row.flow-color[data-color="cyan"] { --fb-tint: var(--fb-c-cyan); }
+.fb-row.flow-color[data-color="indigo"] { --fb-tint: var(--fb-c-indigo); }
+.fb-row.flow-color[data-color="pink"] { --fb-tint: var(--fb-c-pink); }
+.fb-row.flow-color[data-color="brown"] { --fb-tint: var(--fb-c-brown); }
+.fb-row.flow-color[data-color="grey"] { --fb-tint: var(--fb-muted); }
 .fb:not(.wk-deep) .fb-row.flow-color:not(.missing) { background: color-mix(in srgb, var(--fb-tint) 22%, var(--fb-tile)); }
 .fb-row.missing .fb-button { background: none; box-shadow: inset 0 0 0 1.5px var(--fb-muted); color: var(--fb-muted); }
 /*
@@ -95,6 +111,11 @@ html, body { background: transparent !important; }
 .fb.wk-deep .fb-row[data-color="yellow"] { --fb-row: var(--wk-yellow); --fb-row-on: var(--wk-on-yellow); --wk-on-muted: rgb(26 27 33 / .75); }
 .fb.wk-deep .fb-row[data-color="green"] { --fb-row: var(--wk-green); --fb-row-on: var(--wk-on-green); }
 .fb.wk-deep .fb-row[data-color="purple"] { --fb-row: var(--wk-purple); --fb-row-on: var(--wk-on-purple); }
+.fb.wk-deep .fb-row[data-color="teal"] { --fb-row: var(--wk-teal); --fb-row-on: var(--wk-on-teal); }
+.fb.wk-deep .fb-row[data-color="cyan"] { --fb-row: var(--wk-cyan); --fb-row-on: var(--wk-on-cyan); }
+.fb.wk-deep .fb-row[data-color="indigo"] { --fb-row: var(--wk-indigo); --fb-row-on: var(--wk-on-indigo); }
+.fb.wk-deep .fb-row[data-color="pink"] { --fb-row: var(--wk-pink); --fb-row-on: var(--wk-on-pink); }
+.fb.wk-deep .fb-row[data-color="brown"] { --fb-row: var(--wk-brown); --fb-row-on: var(--wk-on-brown); }
 .fb.wk-deep .fb-row:not([data-color="grey"]):not(.missing) {
   background: var(--fb-row); --fb-text: var(--fb-row-on); --fb-muted: var(--wk-on-muted);
 }

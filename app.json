@@ -1558,6 +1558,114 @@
                   "ko": "보라",
                   "ar": "بنفسجي"
                 }
+              },
+              {
+                "id": "teal",
+                "title": {
+                  "en": "Teal",
+                  "nl": "Blauwgroen",
+                  "de": "Petrol",
+                  "fr": "Bleu canard",
+                  "it": "Verde acqua",
+                  "sv": "Blågrön",
+                  "no": "Blågrønn",
+                  "es": "Verde azulado",
+                  "da": "Blågrøn",
+                  "ru": "Бирюзовый",
+                  "pl": "Morski",
+                  "ko": "청록",
+                  "ar": "أزرق مخضر"
+                }
+              },
+              {
+                "id": "cyan",
+                "title": {
+                  "en": "Cyan",
+                  "nl": "Cyaan",
+                  "de": "Cyan",
+                  "fr": "Cyan",
+                  "it": "Ciano",
+                  "sv": "Cyan",
+                  "no": "Cyan",
+                  "es": "Cian",
+                  "da": "Cyan",
+                  "ru": "Голубой",
+                  "pl": "Cyjan",
+                  "ko": "하늘",
+                  "ar": "سماوي"
+                }
+              },
+              {
+                "id": "indigo",
+                "title": {
+                  "en": "Indigo",
+                  "nl": "Indigo",
+                  "de": "Indigo",
+                  "fr": "Indigo",
+                  "it": "Indaco",
+                  "sv": "Indigo",
+                  "no": "Indigo",
+                  "es": "Índigo",
+                  "da": "Indigo",
+                  "ru": "Индиго",
+                  "pl": "Indygo",
+                  "ko": "남색",
+                  "ar": "نيلي"
+                }
+              },
+              {
+                "id": "pink",
+                "title": {
+                  "en": "Pink",
+                  "nl": "Roze",
+                  "de": "Rosa",
+                  "fr": "Rose",
+                  "it": "Rosa",
+                  "sv": "Rosa",
+                  "no": "Rosa",
+                  "es": "Rosa",
+                  "da": "Lyserød",
+                  "ru": "Розовый",
+                  "pl": "Różowy",
+                  "ko": "분홍",
+                  "ar": "وردي"
+                }
+              },
+              {
+                "id": "brown",
+                "title": {
+                  "en": "Brown",
+                  "nl": "Bruin",
+                  "de": "Braun",
+                  "fr": "Marron",
+                  "it": "Marrone",
+                  "sv": "Brun",
+                  "no": "Brun",
+                  "es": "Marrón",
+                  "da": "Brun",
+                  "ru": "Коричневый",
+                  "pl": "Brązowy",
+                  "ko": "갈색",
+                  "ar": "بني"
+                }
+              },
+              {
+                "id": "grey",
+                "title": {
+                  "en": "Grey",
+                  "nl": "Grijs",
+                  "de": "Grau",
+                  "fr": "Gris",
+                  "it": "Grigio",
+                  "sv": "Grå",
+                  "no": "Grå",
+                  "es": "Gris",
+                  "da": "Grå",
+                  "ru": "Серый",
+                  "pl": "Szary",
+                  "ko": "회색",
+                  "ar": "رمادي"
+                }
               }
             ]
           }
@@ -4336,6 +4444,114 @@
                   "ko": "보라",
                   "ar": "بنفسجي"
                 }
+              },
+              {
+                "id": "teal",
+                "title": {
+                  "en": "Teal",
+                  "nl": "Blauwgroen",
+                  "de": "Petrol",
+                  "fr": "Bleu canard",
+                  "it": "Verde acqua",
+                  "sv": "Blågrön",
+                  "no": "Blågrønn",
+                  "es": "Verde azulado",
+                  "da": "Blågrøn",
+                  "ru": "Бирюзовый",
+                  "pl": "Morski",
+                  "ko": "청록",
+                  "ar": "أزرق مخضر"
+                }
+              },
+              {
+                "id": "cyan",
+                "title": {
+                  "en": "Cyan",
+                  "nl": "Cyaan",
+                  "de": "Cyan",
+                  "fr": "Cyan",
+                  "it": "Ciano",
+                  "sv": "Cyan",
+                  "no": "Cyan",
+                  "es": "Cian",
+                  "da": "Cyan",
+                  "ru": "Голубой",
+                  "pl": "Cyjan",
+                  "ko": "하늘",
+                  "ar": "سماوي"
+                }
+              },
+              {
+                "id": "indigo",
+                "title": {
+                  "en": "Indigo",
+                  "nl": "Indigo",
+                  "de": "Indigo",
+                  "fr": "Indigo",
+                  "it": "Indaco",
+                  "sv": "Indigo",
+                  "no": "Indigo",
+                  "es": "Índigo",
+                  "da": "Indigo",
+                  "ru": "Индиго",
+                  "pl": "Indygo",
+                  "ko": "남색",
+                  "ar": "نيلي"
+                }
+              },
+              {
+                "id": "pink",
+                "title": {
+                  "en": "Pink",
+                  "nl": "Roze",
+                  "de": "Rosa",
+                  "fr": "Rose",
+                  "it": "Rosa",
+                  "sv": "Rosa",
+                  "no": "Rosa",
+                  "es": "Rosa",
+                  "da": "Lyserød",
+                  "ru": "Розовый",
+                  "pl": "Różowy",
+                  "ko": "분홍",
+                  "ar": "وردي"
+                }
+              },
+              {
+                "id": "brown",
+                "title": {
+                  "en": "Brown",
+                  "nl": "Bruin",
+                  "de": "Braun",
+                  "fr": "Marron",
+                  "it": "Marrone",
+                  "sv": "Brun",
+                  "no": "Brun",
+                  "es": "Marrón",
+                  "da": "Brun",
+                  "ru": "Коричневый",
+                  "pl": "Brązowy",
+                  "ko": "갈색",
+                  "ar": "بني"
+                }
+              },
+              {
+                "id": "grey",
+                "title": {
+                  "en": "Grey",
+                  "nl": "Grijs",
+                  "de": "Grau",
+                  "fr": "Gris",
+                  "it": "Grigio",
+                  "sv": "Grå",
+                  "no": "Grå",
+                  "es": "Gris",
+                  "da": "Grå",
+                  "ru": "Серый",
+                  "pl": "Szary",
+                  "ko": "회색",
+                  "ar": "رمادي"
+                }
               }
             ]
           }
@@ -4650,6 +4866,114 @@
                   "pl": "Fioletowy",
                   "ko": "보라",
                   "ar": "بنفسجي"
+                }
+              },
+              {
+                "id": "teal",
+                "title": {
+                  "en": "Teal",
+                  "nl": "Blauwgroen",
+                  "de": "Petrol",
+                  "fr": "Bleu canard",
+                  "it": "Verde acqua",
+                  "sv": "Blågrön",
+                  "no": "Blågrønn",
+                  "es": "Verde azulado",
+                  "da": "Blågrøn",
+                  "ru": "Бирюзовый",
+                  "pl": "Morski",
+                  "ko": "청록",
+                  "ar": "أزرق مخضر"
+                }
+              },
+              {
+                "id": "cyan",
+                "title": {
+                  "en": "Cyan",
+                  "nl": "Cyaan",
+                  "de": "Cyan",
+                  "fr": "Cyan",
+                  "it": "Ciano",
+                  "sv": "Cyan",
+                  "no": "Cyan",
+                  "es": "Cian",
+                  "da": "Cyan",
+                  "ru": "Голубой",
+                  "pl": "Cyjan",
+                  "ko": "하늘",
+                  "ar": "سماوي"
+                }
+              },
+              {
+                "id": "indigo",
+                "title": {
+                  "en": "Indigo",
+                  "nl": "Indigo",
+                  "de": "Indigo",
+                  "fr": "Indigo",
+                  "it": "Indaco",
+                  "sv": "Indigo",
+                  "no": "Indigo",
+                  "es": "Índigo",
+                  "da": "Indigo",
+                  "ru": "Индиго",
+                  "pl": "Indygo",
+                  "ko": "남색",
+                  "ar": "نيلي"
+                }
+              },
+              {
+                "id": "pink",
+                "title": {
+                  "en": "Pink",
+                  "nl": "Roze",
+                  "de": "Rosa",
+                  "fr": "Rose",
+                  "it": "Rosa",
+                  "sv": "Rosa",
+                  "no": "Rosa",
+                  "es": "Rosa",
+                  "da": "Lyserød",
+                  "ru": "Розовый",
+                  "pl": "Różowy",
+                  "ko": "분홍",
+                  "ar": "وردي"
+                }
+              },
+              {
+                "id": "brown",
+                "title": {
+                  "en": "Brown",
+                  "nl": "Bruin",
+                  "de": "Braun",
+                  "fr": "Marron",
+                  "it": "Marrone",
+                  "sv": "Brun",
+                  "no": "Brun",
+                  "es": "Marrón",
+                  "da": "Brun",
+                  "ru": "Коричневый",
+                  "pl": "Brązowy",
+                  "ko": "갈색",
+                  "ar": "بني"
+                }
+              },
+              {
+                "id": "grey",
+                "title": {
+                  "en": "Grey",
+                  "nl": "Grijs",
+                  "de": "Grau",
+                  "fr": "Gris",
+                  "it": "Grigio",
+                  "sv": "Grå",
+                  "no": "Grå",
+                  "es": "Gris",
+                  "da": "Grå",
+                  "ru": "Серый",
+                  "pl": "Szary",
+                  "ko": "회색",
+                  "ar": "رمادي"
                 }
               }
             ]
@@ -6018,6 +6342,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ]
         },
@@ -6679,6 +7111,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -7776,6 +8316,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ]
         },
@@ -8444,6 +9092,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ],
@@ -9183,6 +9939,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -11209,6 +12073,96 @@
               }
             },
             {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
               "id": "grey",
               "title": {
                 "en": "Grey",
@@ -11430,6 +12384,96 @@
               }
             },
             {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
               "id": "grey",
               "title": {
                 "en": "Grey",
@@ -11633,6 +12677,96 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
               }
             },
             {
@@ -11842,6 +12976,96 @@
               }
             },
             {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
               "id": "grey",
               "title": {
                 "en": "Grey",
@@ -12045,6 +13269,96 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
               }
             },
             {
@@ -12254,6 +13568,96 @@
               }
             },
             {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
               "id": "grey",
               "title": {
                 "en": "Grey",
@@ -12460,6 +13864,96 @@
               }
             },
             {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
               "id": "grey",
               "title": {
                 "en": "Grey",
@@ -12663,6 +14157,96 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
               }
             },
             {
@@ -13158,6 +14742,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -13964,6 +15656,96 @@
               }
             },
             {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
               "id": "grey",
               "title": {
                 "en": "Grey",
@@ -14224,6 +16006,96 @@
               }
             },
             {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
               "id": "grey",
               "title": {
                 "en": "Grey",
@@ -14466,6 +16338,96 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
               }
             },
             {
@@ -15617,6 +17579,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ]
         },
@@ -15765,6 +17835,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -15915,6 +18093,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ]
         },
@@ -16063,6 +18349,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -16213,6 +18607,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ]
         },
@@ -16361,6 +18863,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -17675,6 +20285,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ],
@@ -19604,6 +22322,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ],
           "hint": {
@@ -21213,6 +24039,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ]
         },
@@ -21683,6 +24617,96 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
             }
           ]
         },
@@ -21830,6 +24854,96 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
               }
             }
           ]
@@ -22356,6 +25470,96 @@
               }
             },
             {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
               "id": "grey",
               "title": {
                 "en": "Grey",
@@ -22539,6 +25743,96 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
               }
             },
             {
@@ -22728,6 +26022,96 @@
               }
             },
             {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
               "id": "grey",
               "title": {
                 "en": "Grey",
@@ -22911,6 +26295,96 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
               }
             },
             {
@@ -23100,6 +26574,96 @@
               }
             },
             {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
               "id": "grey",
               "title": {
                 "en": "Grey",
@@ -23283,6 +26847,96 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
               }
             },
             {
@@ -23472,6 +27126,96 @@
               }
             },
             {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
               "id": "grey",
               "title": {
                 "en": "Grey",
@@ -23655,6 +27399,96 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
               }
             },
             {
@@ -25076,6 +28910,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ]
         },
@@ -25224,6 +29166,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -25374,6 +29424,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ]
         },
@@ -25522,6 +29680,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -25672,6 +29938,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ]
         },
@@ -25820,6 +30194,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -27056,6 +31538,114 @@
               }
             },
             {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
+            },
+            {
               "id": "blue",
               "title": {
                 "en": "Blue",
@@ -28034,6 +32624,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ]
         },
@@ -28275,6 +32973,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -28518,6 +33324,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ]
         },
@@ -28759,6 +33673,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -29002,6 +34024,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ]
         },
@@ -29243,6 +34373,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -29486,6 +34724,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ]
         },
@@ -29727,6 +35073,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -30410,6 +35864,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ],
@@ -31398,6 +36960,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ]
         },
@@ -31902,6 +37572,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -33501,6 +39279,114 @@
                 "ko": "보라",
                 "ar": "بنفسجي"
               }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
             }
           ],
           "hint": {
@@ -34245,6 +40131,114 @@
                 "pl": "Fioletowy",
                 "ko": "보라",
                 "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ],

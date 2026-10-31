@@ -8,6 +8,12 @@
 .ch [data-color="yellow"] { --ew-c: #F5C518; }
 .ch [data-color="green"] { --ew-c: var(--ew-green); }
 .ch [data-color="purple"] { --ew-c: #9033FC; }
+.ch [data-color="teal"] { --ew-c: var(--wk-teal-bright); }
+.ch [data-color="cyan"] { --ew-c: var(--wk-cyan-bright); }
+.ch [data-color="indigo"] { --ew-c: var(--wk-indigo-bright); }
+.ch [data-color="pink"] { --ew-c: var(--wk-pink-bright); }
+.ch [data-color="brown"] { --ew-c: var(--wk-brown-bright); }
+.ch [data-color="grey"] { --ew-c: var(--wk-grey-bright); }
 .ch [data-color="blue"] { --ew-c: var(--ew-blue); }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */

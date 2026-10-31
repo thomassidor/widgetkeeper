@@ -84,7 +84,7 @@ describe('tile', () => {
   });
 
   it('falls back for unknown settings and has no colour by default', () => {
-    const { root, box } = widget({ align: 'up', size: 'huge', icon: 'nope', color: 'pink' });
+    const { root, box } = widget({ align: 'up', size: 'huge', icon: 'nope', color: 'magenta' });
     expect(root.dataset).toMatchObject({ align: 'left', size: 'default' });
     expect(root.querySelector('.tl-icon')).toBeNull();
     expect(box().dataset.color).toBeUndefined();

@@ -198,7 +198,7 @@ describe('setColor (the Flow card)', () => {
 
   it('rejects an unknown colour or an id that is no flow', () => {
     const { service } = setup();
-    expect(() => service.setColor('flow:f1', 'grey')).toThrow();
+    expect(() => service.setColor('flow:f1', 'magenta')).toThrow();
     expect(() => service.setColor('none', 'red')).toThrow();
   });
 

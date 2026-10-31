@@ -34,12 +34,24 @@
 .hm[data-color="yellow"] { --hm-accent: var(--wk-yellow-shade); }
 .hm[data-color="green"] { --hm-accent: var(--wk-green-shade); }
 .hm[data-color="purple"] { --hm-accent: var(--wk-purple-shade); }
+.hm[data-color="teal"] { --hm-accent: var(--wk-teal-shade); }
+.hm[data-color="cyan"] { --hm-accent: var(--wk-cyan-shade); }
+.hm[data-color="indigo"] { --hm-accent: var(--wk-indigo-shade); }
+.hm[data-color="pink"] { --hm-accent: var(--wk-pink-shade); }
+.hm[data-color="brown"] { --hm-accent: var(--wk-brown-shade); }
+.hm[data-color="grey"] { --hm-accent: var(--wk-grey-shade); }
 .hm.wk-deep { --hm-accent: var(--wk-blue-bright); }
 .hm.wk-deep[data-color="red"] { --hm-accent: var(--wk-red-bright); }
 .hm.wk-deep[data-color="orange"] { --hm-accent: var(--wk-orange-bright); }
 .hm.wk-deep[data-color="yellow"] { --hm-accent: var(--wk-yellow-bright); }
 .hm.wk-deep[data-color="green"] { --hm-accent: var(--wk-green-bright); }
 .hm.wk-deep[data-color="purple"] { --hm-accent: var(--wk-purple-bright); }
+.hm.wk-deep[data-color="teal"] { --hm-accent: var(--wk-teal-bright); }
+.hm.wk-deep[data-color="cyan"] { --hm-accent: var(--wk-cyan-bright); }
+.hm.wk-deep[data-color="indigo"] { --hm-accent: var(--wk-indigo-bright); }
+.hm.wk-deep[data-color="pink"] { --hm-accent: var(--wk-pink-bright); }
+.hm.wk-deep[data-color="brown"] { --hm-accent: var(--wk-brown-bright); }
+.hm.wk-deep[data-color="grey"] { --hm-accent: var(--wk-grey-bright); }
 .hm.wk-deep {
   --hm-l0: color-mix(in oklab, var(--hm-accent) 20%, var(--hm-empty));
   --hm-l1: color-mix(in oklab, var(--hm-accent) 44%, var(--hm-empty));
