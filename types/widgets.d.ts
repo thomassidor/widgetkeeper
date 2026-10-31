@@ -10,6 +10,8 @@ type MountWidget =((Homey: any, el: { root: HTMLElement, frame: HTMLElement }) =
 interface Window {
   /** settings/dashboard.js, the web dashboards page; `io` is the vendored socket.io-client (settings/socket.io.js). */
   mountWebDashboards: (root: HTMLElement) => void;
+  /** The web dashboards page's parts (settings/dashboard-<part>.js), which mountWebDashboards() runs with the page's shared `wd`. */
+  WidgetkeeperWeb: { parts: Map<string, (wd: any) => void>, part: (name: string, fn: (wd: any) => void) => void };
   io: (url: string, opts?: object) => any;
   /** settings/popup.js, the prompt page a Popups widget opens: its fallback strings and its mount. */
   POPUP_PAGE_STRINGS: Record<string, string>;
@@ -72,7 +74,22 @@ interface Window {
       hueColor: (hue: number, sat: number) => string,
       lightColor: (caps: Record<string, { value: unknown }>) => string,
       moodDot: (colors: ({ hue: number, saturation: number } | { temperature: number })[]) => string | null,
+      swatchList: (palette: { colors: number[][], whites: number[] }, color: boolean, temp: boolean) => { hue?: number, sat?: number, k?: number }[],
+      setBlend: (node: HTMLElement, colors: string[] | null, prefix: string, angle: string) => void,
+      /** The lights' shown state (optimistic over reported) and what follows from it, for Light Controls and Lights by Room. */
+      model: (opts: { render: () => void, roomLevel?: string }) => any,
     },
+    /** Values just sent, shown until the device confirms them (`ms`, 10 s by default). */
+    optimistic: (render: () => void, ms?: number) => {
+      shown: (d: any, capabilityId: string) => any,
+      set: (deviceId: string, capabilityId: string, value: unknown) => void,
+      hope: (devices: any[], values: Record<string, unknown>) => void,
+      confirm: (deviceId: string, capabilityId: string, value: unknown) => void,
+      drop: (deviceId: string, capabilityIds: string | string[]) => void,
+    },
+    shake: (node: Element | null | undefined) => void,
+    wireBar: (bar: HTMLElement, opts: { id: string, drags: Map<string, number>, guard: TouchGuard, render: () => void, commit: (id: string, x: number) => void }) => void,
+    roomTiles: (devices: any[], opts: { byZone?: boolean, usable: (d: any) => boolean, extra: (d: any) => object }) => any[],
     TIGHT_UNITS: RegExp,
     KEY_PROBLEMS: string[],
     scaled: (cap: any, value: number) => number,

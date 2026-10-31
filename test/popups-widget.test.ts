@@ -2,6 +2,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { loadMount, loadWidget, runFile } from './helpers/loadWidget.js';
+import { webPageSource } from './helpers/webPage.js';
 
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date('2026-10-22T12:00:00Z')); });
 afterEach(() => { vi.useRealTimers(); document.body.innerHTML = ''; localStorage.clear(); });
@@ -340,6 +341,6 @@ describe("sounds (the kit's `sound`)", () => {
 
   it("the prompt page loads the kit, and the web dashboards page plays a popup's sound once", () => {
     expect(readFileSync('settings/popup.html', 'utf8')).toMatch(/<script src="\.\.\/widgets\/spacer\/kit\.js"><\/script>\s*<script src="popup\.js"><\/script>/);
-    expect(readFileSync('settings/dashboard.js', 'utf8')).toMatch(/if \(p\.sound && !sounded\.has\(p\.id\)\) \{\s*sounded\.add\(p\.id\);\s*window\.WidgetkeeperKit\.sound\.play\(p\.sound\);/);
+    expect(webPageSource()).toMatch(/if \(p\.sound && !sounded\.has\(p\.id\)\) \{\s*sounded\.add\(p\.id\);\s*window\.WidgetkeeperKit\.sound\.play\(p\.sound\);/);
   });
 });

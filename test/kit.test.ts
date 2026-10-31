@@ -482,3 +482,86 @@ describe('slotId()', () => {
       .toEqual([null, null, null, null, null, null, null, null, null, null]);
   });
 });
+
+describe('optimistic()', () => {
+  const dev = (id: string, caps: Record<string, unknown>) => ({ id, caps: Object.fromEntries(Object.entries(caps).map(([k, value]) => [k, { value }])) });
+
+  it('shows a value hoped for until it runs out, then renders once', () => {
+    const render = vi.fn();
+    const values = kit.optimistic(render);
+    const d = dev('a', { onoff: false, dim: 0.2 });
+    values.hope([d], { onoff: true, light_hue: 0.5 }); // light_hue isn't the device's: left out
+    expect(values.shown(d, 'onoff')).toBe(true);
+    expect(values.shown(d, 'light_hue')).toBeNull();
+    vi.advanceTimersByTime(10e3 + 50);
+    expect(render).toHaveBeenCalledTimes(1);
+    expect(values.shown(d, 'onoff')).toBe(false);
+  });
+
+  it('drops a value on a matching report (confirm) or on drop(), and set() schedules no render', () => {
+    const render = vi.fn();
+    const values = kit.optimistic(render, 1000);
+    const d = dev('a', { dim: 0.2, onoff: false });
+    values.set('a', 'dim', 0.8);
+    values.set('a', 'onoff', true);
+    values.confirm('a', 'dim', 0.5); // not what was hoped for: kept
+    expect(values.shown(d, 'dim')).toBe(0.8);
+    values.confirm('a', 'dim', 0.8);
+    expect(values.shown(d, 'dim')).toBe(0.2);
+    values.drop('a', ['onoff']);
+    expect(values.shown(d, 'onoff')).toBe(false);
+    vi.advanceTimersByTime(2000);
+    expect(render).not.toHaveBeenCalled();
+  });
+});
+
+describe('roomTiles()', () => {
+  const usable = (d: any) => !d.missing;
+  const extra = (d: any) => ({ icon: d.icon });
+  const devices = [
+    { id: 'a', name: 'A', icon: 'ia', zone: { id: 'z1', name: 'Kitchen' } },
+    { id: 'x', missing: true },
+    { id: 'b', name: 'B', icon: 'ib', zone: { id: 'z2', name: 'Hall' } },
+    { id: 'c', name: 'C', icon: 'ic', zone: { id: 'z1', name: 'Kitchen' } },
+    { id: 'd', name: 'D', icon: 'id', zone: null },
+  ];
+
+  it('is a tile per device, a missing one as missing', () => {
+    expect(kit.roomTiles(devices, { byZone: false, usable, extra }).map((t: any) => [t.id, t.missing ? 'missing' : t.members.length]))
+      .toEqual([['a', 1], ['x', 'missing'], ['b', 1], ['c', 1], ['d', 1]]);
+  });
+
+  it('with byZone, a room of two or more where its first is, named and drawn from its first', () => {
+    const tiles = kit.roomTiles(devices, { byZone: true, usable, extra });
+    expect(tiles.map((t: any) => t.id)).toEqual(['zone:z1', 'x', 'b', 'd']);
+    expect(tiles[0]).toMatchObject({ name: 'Kitchen', icon: 'ia' });
+    expect(tiles[0].members.map((d: any) => d.id)).toEqual(['a', 'c']);
+  });
+});
+
+describe('lights.model()', () => {
+  const light = (id: string, caps: Record<string, unknown>, extra = {}) =>
+    ({ id, ...extra, caps: Object.fromEntries(Object.entries(caps).map(([k, value]) => [k, { value, setable: true }])) });
+
+  it("a room's brightness counts its lit lights that dim (the highest with roomLevel max), on/off ones only without them", () => {
+    const lights = [light('a', { onoff: true, dim: 0.3 }), light('b', { onoff: true }), light('c', { onoff: false, dim: 0.9 })];
+    expect(kit.lights.model({ render() {} }).itemBrightness({ members: lights })).toBeCloseTo(0.3);
+    const max = kit.lights.model({ render() {}, roomLevel: 'max' });
+    expect(max.itemBrightness({ members: [light('a', { onoff: true, dim: 0.3 }), light('d', { onoff: true, dim: 0.6 })] })).toBeCloseTo(0.6);
+    expect(max.itemBrightness({ members: [light('b', { onoff: true })] })).toBe(1);
+  });
+
+  it("a tap back on restores a light without onoff to its last brightness; a report into a group's light is applied", () => {
+    const model = kit.lights.model({ render() {} });
+    const dimOnly = light('a', { dim: 0.4 });
+    const group = light('g', { onoff: true }, { groupLights: [light('m', { onoff: false })] });
+    model.took([dimOnly, group]);
+    model.hopeOnOff({ members: [dimOnly] }, false);
+    expect(model.shown(dimOnly, 'dim')).toBe(0);
+    model.hopeOnOff({ members: [dimOnly] }, true);
+    expect(model.shown(dimOnly, 'dim')).toBe(0.4);
+    expect(model.apply([dimOnly, group], { deviceId: 'm', capabilityId: 'onoff', value: true })).toBe(true);
+    expect(model.apply([dimOnly, group], { deviceId: 'zzz', capabilityId: 'onoff', value: true })).toBe(false);
+    expect(model.colorsOf([group])).toHaveLength(1); // the group's lit light, not the group itself
+  });
+});

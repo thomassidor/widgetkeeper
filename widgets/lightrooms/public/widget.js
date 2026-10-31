@@ -6,14 +6,11 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, applyColors, KEY_PROBLEMS, onTap: kitOnTap, touchGuard, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
-  const { glyphs, PALETTES, temperatureColor, hueColor, lightColor, moodDot } = window.WidgetkeeperKit.lights;
+  const { el, tileNames, applyColors, KEY_PROBLEMS, onTap: kitOnTap, touchGuard, messageLine, wireBar } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { glyphs, PALETTES, temperatureColor, hueColor, moodDot, swatchList, setBlend, model } = window.WidgetkeeperKit.lights;
   'use strict';
 
-  const OPTIMISTIC_MS = 10e3; // how long a changed light shows its new value while waiting for the device
   const PANEL_MS = 8e3; // the swatch panel closes after this long without a touch
-  /** At most this many colours in a room's tint (or a group's chip). */
-  const MAX_COLORS = 4;
   /** The room of lights without a known room, and of missing ones. */
   const OTHER = 'other';
 
@@ -77,7 +74,9 @@
      * @type {{key: string, zone: string | null, name: string, members: any[], rows: any[]}[]}
      */
     let rooms = [];
-    const optimistic = new Map(); // `${deviceId}:${capabilityId}` → { value, until }
+    // The shown values (optimistic over reported) and what follows from them: on, brightness, colours.
+    const lights = model({ render: () => render(), roomLevel: opts.roomLevel });
+    const { isOn, colorOf, colorsOf, settable, itemOn, itemBrightness } = lights;
     const drags = new Map(); // a room key or light id → fraction, while a finger or the mouse is on its bar
     /** The rooms open on this screen (their keys); every room starts closed. */
     const open = new Set((opts.open || []).map(z => `zone:${z}`));
@@ -112,19 +111,12 @@
     const cards = new Map();
     /** @type {Map<string, any>} the light rows by light id */
     const rows = new Map();
-    /** Each light's last brightness above 0, which the app restores on a light without `onoff`. */
-    const lastDim = new Map();
-
-    function noteDim(id, value) {
-      if (typeof value === 'number' && value > 0) lastDim.set(id, value);
-    }
-
     /** The lights (`/state`'s `lights`) and their rooms' icons (`zoneIcons`). */
-    function setState(lights, icons) {
-      devices = Array.isArray(lights) ? lights : [];
+    function setState(lightList, icons) {
+      devices = Array.isArray(lightList) ? lightList : [];
       if (icons && typeof icons === 'object') zoneIcons = icons;
       message.reset();
-      for (const d of devices) if (d.caps && d.caps.dim) noteDim(d.id, d.caps.dim.value);
+      lights.took(devices);
       render();
     }
 
@@ -134,64 +126,13 @@
       render();
     }
 
-    /** A light and, for a Homey group device, the lights in it (`groupLights`). */
-    const withGroup = d => [d, ...(Array.isArray(d.groupLights) ? d.groupLights : [])];
-
-    function pushChange({ deviceId, capabilityId, value }) {
-      // The device itself, or a light in a group device (both, when it's picked too).
-      let hit = false;
-      for (const d of devices) {
-        for (const x of 'missing' in d ? [] : withGroup(d)) {
-          if (x.id !== deviceId || !x.caps || !x.caps[capabilityId]) continue;
-          x.caps[capabilityId].value = value;
-          hit = true;
-        }
-      }
-      if (!hit) return;
-      if (capabilityId === 'dim') noteDim(deviceId, value);
-      const key = `${deviceId}:${capabilityId}`;
-      const o = optimistic.get(key);
-      if (o && o.value === value) optimistic.delete(key);
-      render();
+    function pushChange(change) {
+      if (lights.apply(devices, change)) render();
     }
 
     /** A message under the rooms. Persistent messages also clear the rooms. */
     function setMessage(text, transient) {
       message.set(text, transient);
-    }
-
-    /** A capability's value, or the one just sent while the device hasn't confirmed it. */
-    function shown(d, capabilityId) {
-      const key = `${d.id}:${capabilityId}`;
-      const o = optimistic.get(key);
-      if (o && Date.now() < o.until) return o.value;
-      optimistic.delete(key);
-      return d.caps[capabilityId] ? d.caps[capabilityId].value : null;
-    }
-
-    /** Shows `values` while the device confirms them; a group device's lights take them on too. */
-    function hope(d, values) {
-      const until = Date.now() + OPTIMISTIC_MS;
-      for (const x of withGroup(d)) {
-        for (const [id, value] of Object.entries(values)) {
-          if (x.caps[id]) optimistic.set(`${x.id}:${id}`, { value, until });
-        }
-      }
-      setTimeout(render, OPTIMISTIC_MS + 50);
-    }
-
-    /** Whether the light is on: `onoff`, or a brightness above 0 without it. */
-    function isOn(d) {
-      const dim = shown(d, 'dim');
-      if (d.caps.onoff) return shown(d, 'onoff') === true;
-      return typeof dim === 'number' && dim > 0;
-    }
-
-    /** The brightness (0–1): a light without `dim` (a plug or a switch) is full while on. */
-    function brightness(d) {
-      if (!d.caps.dim) return isOn(d) ? 1 : 0;
-      const dim = shown(d, 'dim');
-      return isOn(d) && typeof dim === 'number' ? dim : 0;
     }
 
     /**
@@ -205,37 +146,6 @@
       return d ? { id, name: d.name, members: [d] } : null;
     }
 
-    /** On while any of its lights is. */
-    const itemOn = item => item.members.some(isOn);
-    /**
-     * Its light's brightness, or a room's: the average (the highest with `roomLevel: max`) of its lit lights that
-     * dim. A light that only switches counts only where none of them dims (the bar is hidden then).
-     */
-    function itemBrightness(item) {
-      const lit = item.members.filter(isOn);
-      const levels = (item.members.some(d => d.caps.dim) ? lit.filter(d => d.caps.dim) : lit).map(brightness);
-      if (!levels.length) return 0;
-      return opts.roomLevel === 'max' ? Math.max(...levels) : levels.reduce((sum, x) => sum + x, 0) / levels.length;
-    }
-
-    /** The colour a light shines in, from its shown (optimistic) values. */
-    const colorOf = d => lightColor(Object.fromEntries(Object.keys(d.caps).map(k => [k, { value: shown(d, k) }])));
-    /**
-     * The colours the lit lights shine in, without repeats (at most MAX_COLORS): a Homey group device counts its lit
-     * lights (its own colour is only the last one set on the group), any other light itself while it's on.
-     */
-    function colorsOf(members) {
-      const out = [];
-      for (const d of members) {
-        const group = Array.isArray(d.groupLights) ? d.groupLights.filter(isOn) : [];
-        for (const x of group.length ? group : isOn(d) ? [d] : []) {
-          const c = colorOf(x);
-          if (!out.includes(c)) out.push(c);
-        }
-      }
-      return out.slice(0, MAX_COLORS);
-    }
-
     /** Sends one light's change; a failure shakes the room or the row (`item`) and shows a message. */
     async function send(item, d, change) {
       if (!opts.onSet) return;
@@ -243,7 +153,7 @@
         await opts.onSet(d.id, change);
       } catch (err) {
         console.error(err);
-        for (const id of ['onoff', 'dim', 'light_temperature', 'light_mode', 'light_hue', 'light_saturation']) optimistic.delete(`${d.id}:${id}`);
+        lights.forget(d);
         shake(item.id);
         setMessage(t('failed', { name: names.name(d.id, d.name) }), true);
       }
@@ -251,10 +161,7 @@
 
     function shake(id) {
       const node = cards.has(id) ? cards.get(id).card : rows.has(id) ? rows.get(id).row : null;
-      if (!node) return;
-      node.classList.remove('shake');
-      void node.offsetWidth; // restart the animation
-      node.classList.add('shake');
+      window.WidgetkeeperKit.shake(node);
     }
 
     /** A tap on a room's switch or a light's row: turns all its lights off when any is on, else all on. */
@@ -262,10 +169,7 @@
       const item = itemOf(id);
       if (!item || names.renaming) return;
       const on = !itemOn(item);
-      for (const d of item.members) {
-        if (d.caps.onoff) hope(d, { onoff: on });
-        else hope(d, { dim: on ? (shown(d, 'dim') || lastDim.get(d.id) || 1) : 0 });
-      }
+      lights.hopeOnOff(item, on);
       render();
       for (const d of item.members) send(item, d, { onoff: on });
     }
@@ -275,15 +179,11 @@
       const item = itemOf(id);
       if (!item) return;
       const value = level(x);
-      for (const d of item.members) {
-        if (value === 0) hope(d, d.caps.onoff ? { onoff: false } : { dim: 0 });
-        else hope(d, { dim: value, onoff: true });
-      }
+      lights.hopeLevel(item, value);
       render();
       for (const d of item.members) send(item, d, { dim: value });
     }
 
-    const settable = (d, id) => !!d.caps[id] && d.caps[id].setable !== false;
     /** Whether a light has the chip (colour or colour temperature), which opens the swatches. */
     const hasChip = d => settable(d, 'light_hue') || settable(d, 'light_temperature');
 
@@ -295,10 +195,10 @@
       const d = item.members[0];
       let change = null;
       if (swatch.k != null && settable(d, 'light_temperature')) {
-        hope(d, { light_temperature: swatch.k, light_mode: 'temperature', onoff: true });
+        lights.hope(d, { light_temperature: swatch.k, light_mode: 'temperature', onoff: true });
         change = { temperature: swatch.k };
       } else if (settable(d, 'light_hue') && swatch.k == null) {
-        hope(d, { light_hue: swatch.hue / 360, light_saturation: swatch.sat, light_mode: 'color', onoff: true });
+        lights.hope(d, { light_hue: swatch.hue / 360, light_saturation: swatch.sat, light_mode: 'color', onoff: true });
         change = { hue: swatch.hue / 360, saturation: swatch.sat };
       }
       render();
@@ -365,11 +265,7 @@
       panel.textContent = '';
       swatches = [];
       /** @type {{hue?: number, sat?: number, k?: number}[]} */
-      const swatchList = [
-        ...(color ? palette.colors.map(([hue, sat]) => ({ hue, sat })) : []),
-        ...(temp ? palette.whites.map(k => ({ k })) : color ? [{ hue: 0, sat: 0 }] : []),
-      ];
-      for (const swatch of swatchList) {
+      for (const swatch of swatchList(palette, color, temp)) {
         const node = el('button', { type: 'button', class: 'lr-swatch' }, panel);
         node.style.setProperty('--lr-swatch', swatch.k != null ? temperatureColor(swatch.k) : hueColor(swatch.hue / 360, swatch.sat));
         onTap(node, () => { if (panelFor != null) pick(panelFor, swatch); });
@@ -380,89 +276,9 @@
       onTap(close, closePanel);
     }
 
-    /** Whether a swatch is the light's current colour or white. */
-    function isCurrent(d, swatch) {
-      const v = id => shown(d, id);
-      const colourMode = v('light_mode') === 'color' || (!d.caps.light_mode && !d.caps.light_temperature);
-      if (swatch.k != null) {
-        const k = v('light_temperature');
-        return !colourMode && typeof k === 'number' && Math.abs(k - swatch.k) < 0.05;
-      }
-      const hue = v('light_hue');
-      if (!colourMode || typeof hue !== 'number') return false;
-      const sat = typeof v('light_saturation') === 'number' ? v('light_saturation') : 1;
-      if (Math.abs(sat - swatch.sat) >= 0.03) return false;
-      if (swatch.sat === 0) return true;
-      const dh = Math.abs(hue - swatch.hue / 360);
-      return Math.min(dh, 1 - dh) < 0.03;
-    }
-
     /** Taps on the tile body; `stop` keeps a control's taps (and keys) from also reaching the tile around it. */
     function onTap(node, fn, { stop = false } = {}) {
       kitOnTap(node, fn, { stop, guard: touches });
-    }
-
-    /**
-     * The bar: a drag sets the value live and sends it when let go; a tap sets it where it lands. The
-     * touches are taken (preventDefault, touch-action: none) so iOS doesn't scroll the dashboard. Homey's
-     * Android app takes the touch anyway after about 100 ms (touchcancel): that gesture is dropped, but a
-     * quick tap still gets through.
-     */
-    function wireBar(id, bar) {
-      const at = clientX => {
-        const r = bar.getBoundingClientRect();
-        return r.width ? clamp01((clientX - r.left) / r.width) : 0;
-      };
-      const move = (clientX) => {
-        drags.set(id, at(clientX));
-        render();
-      };
-      const end = (commitIt) => {
-        if (!drags.has(id)) return;
-        const x = drags.get(id);
-        drags.delete(id);
-        bar.classList.remove('dragging');
-        if (commitIt) commit(id, x);
-        else render();
-      };
-      bar.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        bar.classList.add('dragging');
-        move(e.changedTouches[0].clientX);
-      }, { passive: false });
-      bar.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        move(e.changedTouches[0].clientX);
-      }, { passive: false });
-      bar.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        touches.touched();
-        end(true);
-      });
-      bar.addEventListener('touchcancel', () => end(false));
-      // Mouse (and pen): pointer events with capture, ignored for touch (handled above).
-      bar.addEventListener('pointerdown', (e) => {
-        if (e.pointerType === 'touch') return;
-        e.preventDefault();
-        if (bar.setPointerCapture) bar.setPointerCapture(e.pointerId);
-        bar.classList.add('dragging');
-        move(e.clientX);
-      });
-      bar.addEventListener('pointermove', (e) => {
-        if (e.pointerType === 'touch' || !drags.has(id)) return;
-        move(e.clientX);
-      });
-      bar.addEventListener('pointerup', (e) => {
-        if (e.pointerType === 'touch') return;
-        end(true);
-      });
-      bar.addEventListener('pointercancel', (e) => {
-        if (e.pointerType === 'touch') return;
-        end(false);
-      });
-      bar.addEventListener('click', e => e.stopPropagation()); // not a tap on the tile
     }
 
     const setMask = (node, url) => window.WidgetkeeperKit.setMask(node, url, '--lr-mask');
@@ -495,7 +311,7 @@
         onTap(head, () => toggleOpen(key));
         // The switch is inside the header: its own taps (and keys) must not open the room.
         onTap(sw, () => toggle(key), { stop: true });
-        wireBar(key, bar);
+        wireBar(bar, { id: key, drags, guard: touches, render: () => render(), commit });
         cards.set(key, card);
       }
       return card;
@@ -518,27 +334,10 @@
           if (item && hasChip(item.members[0])) togglePanel(id);
           else toggle(id);
         }, { stop: true });
-        wireBar(id, bar);
+        wireBar(bar, { id, drags, guard: touches, render: () => render(), commit });
         rows.set(id, row);
       }
       return row;
-    }
-
-    /**
-     * The gradients of several colours: the tint (mixed into the card as one colour is), the bar's fill (left to
-     * right) and the chip's pie. Null clears them.
-     */
-    function setBlend(node, colors, tintAngle) {
-      const props = colors ? {
-        '--lr-tint-bg': `linear-gradient(${tintAngle}, ${colors.map(c => `color-mix(in srgb, ${c} var(--lr-tint), var(--lr-tile))`).join(', ')})`,
-        '--lr-fill-bg': `linear-gradient(to right, ${colors.map(c => `color-mix(in srgb, ${c} var(--lr-fill-share), var(--lr-fill-with))`).join(', ')})`,
-        '--lr-pie': `conic-gradient(${colors.map((c, i) => `color-mix(in srgb, ${c} var(--lr-fill-share), var(--lr-fill-with)) ${(i / colors.length) * 100}% ${((i + 1) / colors.length) * 100}%`).join(', ')})`,
-      } : { '--lr-tint-bg': '', '--lr-fill-bg': '', '--lr-pie': '' };
-      for (const [k, v] of Object.entries(props)) {
-        if (node.style.getPropertyValue(k) === v) continue;
-        if (v) node.style.setProperty(k, v);
-        else node.style.removeProperty(k);
-      }
     }
 
     /** The rooms of the lights, in the order of each room's first light; OTHER last. */
@@ -596,7 +395,7 @@
       card.card.classList.toggle('multi', colors.length > 1);
       card.card.classList.toggle('no-dim', !room.members.some(d => d.caps.dim));
       card.card.style.setProperty('--lr-light', colors[0] || (room.members[0] ? colorOf(room.members[0]) : 'transparent'));
-      setBlend(card.card, colors.length > 1 ? colors : null, '90deg');
+      setBlend(card.card, colors.length > 1 ? colors : null, 'lr', '90deg');
       card.head.setAttribute('aria-expanded', String(isOpen));
       const icon = room.zone ? zoneIcons[room.zone] : null;
       setMask(card.icon, icon || null);
@@ -666,7 +465,7 @@
       row.row.classList.toggle('no-dim', !d.caps.dim);
       row.row.classList.toggle('multi', multi);
       row.row.style.setProperty('--lr-light', colors[0] || colorOf(d));
-      setBlend(row.row, multi ? colors : null, '135deg');
+      setBlend(row.row, multi ? colors : null, 'lr', '135deg');
       // A light's typed name (`renameTiles`).
       const name = names.name(d.id, d.name);
       row.row.setAttribute('aria-label', name);
@@ -705,7 +504,7 @@
         panel.remove();
       } else {
         buildPanel(panelItem.members[0]);
-        for (const s of swatches) s.node.classList.toggle('current', isCurrent(panelItem.members[0], s.swatch));
+        for (const s of swatches) s.node.classList.toggle('current', lights.isCurrent(panelItem.members[0], s.swatch));
       }
 
       let prev = null;
