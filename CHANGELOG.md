@@ -17,6 +17,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Any time span:** a number and a unit, up to two years, or whole days, weeks, months or years: today, this month and the two before, or with *Leave out the current period* yesterday or last week. Charts set up before keep their span.
 - Each chart widget shows its key numbers at the top; tap the chart for any point's.
 
+### Sparklines
+- **Any time span**, as Chart · Basic: a number and a unit up to two years, or whole days, weeks, months or years. Sparklines set up before keep their span.
+
 ### New chart widgets
 - **Chart · Totals:** how much a value went up per hour, day or month, like the Energy tab, beside the period before if you like. Any meter, rain gauge or counter, including ones that start again each month or year.
 - **Chart · Scatter (XY):** one value against another, a dot an hour, with a trend line: does the heat pump work harder when it's colder?

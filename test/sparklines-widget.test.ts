@@ -29,6 +29,16 @@ function widget(slots: any[], extra: object = {}) {
   return { w, root, tiles, text, setNow: (t: number) => { now = t; } };
 }
 
+describe('windowQuery', () => {
+  it('asks for the window it draws: a number of a unit, or whole periods', () => {
+    expect(widget([], { span: '40m' }).w.windowQuery()).toBe(`40m~${NOW - 40 * 60e3}~${NOW}~`);
+    expect(widget([], {}).w.windowQuery()).toBe(`24h~${NOW - 24 * HOUR}~${NOW}~`);
+    const midnight = new Date(NOW).setHours(0, 0, 0, 0);
+    expect(widget([], { span: '1d!' }).w.windowQuery()).toBe(`1d!~${midnight}~${NOW}~day`);
+    expect(widget([], { span: 'yesterday' }).w.windowQuery()).toBe(`yesterday~${new Date(NOW - 24 * HOUR).setHours(0, 0, 0, 0)}~${midnight}~day`);
+  });
+});
+
 describe('sparkPath', () => {
   it('maps time to x and the range to y, the highest value at the top', () => {
     const p = win.sparkPath([[0, 10], [50, 20], [100, 15]], 0, 100, 100, 36);

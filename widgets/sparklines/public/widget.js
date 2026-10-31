@@ -264,7 +264,13 @@
       if (visible) render();
     }
 
-    return { setState, setNames: names.set, pushChange, setMessage, render, t, setVisible };
+    /** The window to ask the app for now, as the chart widgets do: `<span>~<from>~<end>~<unit>` (lib/chartState.ts). */
+    function windowQuery() {
+      const w = windowAt(now());
+      return `${span}~${Math.floor(w.from)}~${Math.ceil(w.end)}~${w.unit || ''}`;
+    }
+
+    return { setState, setNames: names.set, pushChange, setMessage, render, t, setVisible, windowQuery };
   }
 
   window.createSparklinesWidget = createSparklinesWidget;

@@ -1870,6 +1870,206 @@
           }
         }
       ]
+    },
+    "sparklines.renameTiles": {
+      "id": "renameTiles",
+      "type": "checkbox",
+      "title": {
+        "en": "Rename tiles",
+        "nl": "Tegels hernoemen",
+        "de": "Kacheln umbenennen",
+        "fr": "Renommer les tuiles",
+        "it": "Rinomina riquadri",
+        "sv": "Byt namn på rutor",
+        "no": "Gi nytt navn til fliser",
+        "es": "Renombrar mosaicos",
+        "da": "Omdøb felter",
+        "ru": "Переименовать плитки",
+        "pl": "Zmień nazwy kafelków",
+        "ko": "타일 이름 바꾸기",
+        "ar": "إعادة تسمية المربعات"
+      },
+      "hint": {
+        "en": "To name the tiles: turn this on and save the widget, then leave the dashboard's edit mode. Each tile shows a text field: type its name, or leave it empty to keep the device's (or room's) name. Then edit the widget again and turn this off.",
+        "nl": "Tegels een naam geven: zet dit aan en sla de widget op, en verlaat dan de bewerkmodus van het dashboard. Elke tegel toont een tekstveld: typ de naam, of laat het leeg om de naam van het apparaat (of de ruimte) te houden. Bewerk daarna de widget opnieuw en zet dit uit.",
+        "de": "Kacheln benennen: Schalte dies ein, speichere das Widget und verlasse den Bearbeitungsmodus des Dashboards. Jede Kachel zeigt ein Textfeld: Gib den Namen ein oder lass es leer, um den Namen des Geräts (oder Raums) zu behalten. Bearbeite danach das Widget erneut und schalte dies aus.",
+        "fr": "Pour nommer les tuiles : activez ceci, enregistrez le widget, puis quittez le mode édition du tableau de bord. Chaque tuile affiche un champ de texte : tapez son nom, ou laissez-le vide pour garder le nom de l'appareil (ou de la pièce). Modifiez ensuite le widget à nouveau et désactivez ceci.",
+        "it": "Per dare un nome ai riquadri: attiva questa opzione e salva il widget, poi esci dalla modalità di modifica della dashboard. Ogni riquadro mostra un campo di testo: scrivi il nome, o lascialo vuoto per mantenere il nome del dispositivo (o della stanza). Poi modifica di nuovo il widget e disattiva questa opzione.",
+        "sv": "Så namnger du rutorna: slå på detta och spara widgeten, och lämna sedan instrumentpanelens redigeringsläge. Varje ruta visar ett textfält: skriv namnet, eller lämna det tomt för att behålla enhetens (eller rummets) namn. Redigera sedan widgeten igen och slå av detta.",
+        "no": "Slik gir du flisene navn: slå på dette og lagre widgeten, og gå så ut av dashbordets redigeringsmodus. Hver flis viser et tekstfelt: skriv navnet, eller la det stå tomt for å beholde enhetens (eller rommets) navn. Rediger så widgeten igjen og slå av dette.",
+        "es": "Para poner nombre a los mosaicos: activa esto y guarda el widget, luego sal del modo de edición del panel. Cada mosaico muestra un campo de texto: escribe su nombre, o déjalo vacío para mantener el nombre del dispositivo (o de la habitación). Después edita el widget de nuevo y desactiva esto.",
+        "da": "Sådan navngiver du felterne: slå dette til og gem widgetten, og forlad så dashboardets redigeringstilstand. Hvert felt viser et tekstfelt: skriv navnet, eller lad det stå tomt for at beholde enhedens (eller rummets) navn. Redigér derefter widgetten igen, og slå dette fra.",
+        "ru": "Чтобы назвать плитки: включите это и сохраните виджет, затем выйдите из режима редактирования панели. На каждой плитке появится текстовое поле: введите название или оставьте его пустым, чтобы оставить имя устройства (или комнаты). Затем снова откройте настройки виджета и выключите это.",
+        "pl": "Aby nazwać kafelki: włącz to i zapisz widżet, a potem wyjdź z trybu edycji pulpitu. Każdy kafelek pokaże pole tekstowe: wpisz nazwę albo zostaw je puste, aby zachować nazwę urządzenia (lub pokoju). Potem ponownie edytuj widżet i wyłącz to.",
+        "ko": "타일 이름을 정하려면: 이 옵션을 켜고 위젯을 저장한 뒤 대시보드 편집 모드를 나가세요. 각 타일에 입력란이 나타납니다. 이름을 입력하거나 비워 두면 기기(또는 방) 이름이 그대로 쓰입니다. 그런 다음 위젯을 다시 편집해 이 옵션을 끄세요.",
+        "ar": "لتسمية المربعات: شغّل هذا الخيار واحفظ الأداة، ثم اخرج من وضع تحرير لوحة التحكم. يعرض كل مربع حقلًا نصيًا: اكتب اسمه، أو اتركه فارغًا لإبقاء اسم الجهاز (أو الغرفة). بعد ذلك حرّر الأداة مجددًا وأوقف هذا الخيار."
+      },
+      "value": false
+    },
+    "sparklines.columns": {
+      "id": "columns",
+      "type": "dropdown",
+      "title": {
+        "en": "Tiles per row",
+        "nl": "Tegels per rij",
+        "de": "Kacheln pro Zeile",
+        "fr": "Tuiles par ligne",
+        "it": "Riquadri per riga",
+        "sv": "Rutor per rad",
+        "no": "Fliser per rad",
+        "es": "Mosaicos por fila",
+        "da": "Felter pr. række",
+        "ru": "Плиток в ряду",
+        "pl": "Kafelków w rzędzie",
+        "ko": "행당 타일",
+        "ar": "البلاطات في كل صف"
+      },
+      "value": "2",
+      "values": [
+        {
+          "id": "2",
+          "title": {
+            "en": "2",
+            "nl": "2",
+            "de": "2",
+            "fr": "2",
+            "it": "2",
+            "sv": "2",
+            "no": "2",
+            "es": "2",
+            "da": "2",
+            "ru": "2",
+            "pl": "2",
+            "ko": "2",
+            "ar": "2"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "1",
+            "nl": "1",
+            "de": "1",
+            "fr": "1",
+            "it": "1",
+            "sv": "1",
+            "no": "1",
+            "es": "1",
+            "da": "1",
+            "ru": "1",
+            "pl": "1",
+            "ko": "1",
+            "ar": "1"
+          }
+        }
+      ]
+    },
+    "sparklines.colorStyle": {
+      "id": "colorStyle",
+      "type": "dropdown",
+      "title": {
+        "en": "Colour style",
+        "nl": "Kleurstijl",
+        "de": "Farbstil",
+        "fr": "Style de couleur",
+        "it": "Stile colori",
+        "sv": "Färgstil",
+        "no": "Fargestil",
+        "es": "Estilo de color",
+        "da": "Farvestil",
+        "ru": "Цветовой стиль",
+        "pl": "Styl kolorów",
+        "ko": "색상 스타일",
+        "ar": "نمط الألوان"
+      },
+      "hint": {
+        "en": "Vivid fills the area under the lines with more colour.",
+        "nl": "Levendig vult het vlak onder de lijnen met meer kleur.",
+        "de": "Kräftig füllt die Fläche unter den Linien mit mehr Farbe.",
+        "fr": "Vives remplit la zone sous les courbes avec plus de couleur.",
+        "it": "Vivaci riempie l'area sotto le linee con più colore.",
+        "sv": "Livfulla fyller ytan under linjerna med mer färg.",
+        "no": "Livlige fyller flaten under linjene med mer farge.",
+        "es": "Vivos rellena el área bajo las líneas con más color.",
+        "da": "Livlige fylder fladen under linjerne med mere farve.",
+        "ru": "«Яркие» заливают область под линиями ярче.",
+        "pl": "Żywe wypełniają obszar pod liniami mocniejszym kolorem.",
+        "ko": "선명하게는 선 아래 영역을 더 진한 색으로 채웁니다.",
+        "ar": "«زاهية» تملأ المساحة تحت الخطوط بلون أكثر."
+      },
+      "value": "soft",
+      "values": [
+        {
+          "id": "soft",
+          "title": {
+            "en": "Muted",
+            "nl": "Gedempt",
+            "de": "Gedämpft",
+            "fr": "Atténuées",
+            "it": "Smorzati",
+            "sv": "Dämpade",
+            "no": "Dempede",
+            "es": "Suaves",
+            "da": "Dæmpede",
+            "ru": "Приглушённые",
+            "pl": "Stonowane",
+            "ko": "차분하게",
+            "ar": "هادئة"
+          }
+        },
+        {
+          "id": "deep",
+          "title": {
+            "en": "Vivid",
+            "nl": "Levendig",
+            "de": "Kräftig",
+            "fr": "Vives",
+            "it": "Vivaci",
+            "sv": "Livfulla",
+            "no": "Livlige",
+            "es": "Vivos",
+            "da": "Livlige",
+            "ru": "Яркие",
+            "pl": "Żywe",
+            "ko": "선명하게",
+            "ar": "زاهية"
+          }
+        }
+      ]
+    },
+    "sparklines.slot": {
+      "id": "slot{n}",
+      "type": "autocomplete",
+      "title": {
+        "en": "Tile {n}",
+        "nl": "Tegel {n}",
+        "de": "Kachel {n}",
+        "fr": "Tuile {n}",
+        "it": "Riquadro {n}",
+        "sv": "Ruta {n}",
+        "no": "Flis {n}",
+        "es": "Mosaico {n}",
+        "da": "Felt {n}",
+        "ru": "Плитка {n}",
+        "pl": "Kafelek {n}",
+        "ko": "타일 {n}",
+        "ar": "البلاطة {n}"
+      },
+      "hint": {
+        "en": "Pick a value for each tile. Only numbers with Insights history are listed; empty tiles are left out.",
+        "nl": "Kies per tegel een waarde. Alleen getallen met Insights-geschiedenis staan in de lijst; lege tegels worden weggelaten.",
+        "de": "Wähle für jede Kachel einen Wert. Nur Zahlen mit Insights-Verlauf stehen zur Auswahl; leere Kacheln werden ausgelassen.",
+        "fr": "Choisissez une valeur par tuile. Seuls les nombres avec un historique Insights sont proposés ; les tuiles vides sont ignorées.",
+        "it": "Scegli un valore per ogni riquadro. Sono elencati solo i numeri con cronologia Insights; i riquadri vuoti vengono omessi.",
+        "sv": "Välj ett värde för varje ruta. Bara tal med Insights-historik visas; tomma rutor utelämnas.",
+        "no": "Velg en verdi for hver flis. Bare tall med Insights-historikk vises; tomme fliser utelates.",
+        "es": "Elige un valor para cada mosaico. Solo aparecen números con historial de Insights; los vacíos se omiten.",
+        "da": "Vælg en værdi for hvert felt. Kun tal med Insights-historik vises; tomme felter udelades.",
+        "ru": "Выберите значение для каждой плитки. В списке только числа с историей Insights; пустые плитки не показываются.",
+        "pl": "Wybierz wartość dla każdego kafelka. Lista zawiera tylko liczby z historią Insights; puste kafelki są pomijane.",
+        "ko": "타일마다 값을 선택하세요. Insights 기록이 있는 숫자만 나열되며, 빈 타일은 표시되지 않습니다.",
+        "ar": "اختر قيمة لكل بلاطة. تظهر فقط الأرقام التي لها سجل في Insights، وتُحذف البلاطات الفارغة."
+      }
     }
   },
   "hints": {
@@ -2666,6 +2866,46 @@
       {
         "use": "colorStyle",
         "hint": "colorStyle.lines"
+      }
+    ],
+    "sparklines": [
+      "sparklines.renameTiles",
+      {
+        "use": "count",
+        "top": true,
+        "value": 24
+      },
+      {
+        "use": "span",
+        "top": true,
+        "value": "hours"
+      },
+      {
+        "use": "leaveOut",
+        "top": true
+      },
+      "sparklines.columns",
+      "sparklines.colorStyle",
+      "sparklines.slot:1",
+      {
+        "use": "sparklines.slot:2",
+        "hint": null
+      },
+      {
+        "use": "sparklines.slot:3",
+        "hint": null
+      },
+      {
+        "use": "sparklines.slot:4",
+        "hint": null
+      },
+      {
+        "use": "sparklines.slot:5",
+        "hint": null
+      },
+      {
+        "use": "sparklines.slot:6",
+        "hint": null
       }
     ]
   }

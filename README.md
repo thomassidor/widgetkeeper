@@ -468,7 +468,7 @@ Transparent empty space of the height you set, in pixels (16 at least), to line 
 
 Device Values' tiles with a small live chart of each value and its highest and lowest.
 
-**Settings:** up to six values, time span (1 hour to 7 days, today or yesterday, or this or last week, month or year), 2 or 1 per row, [colour style](#colour-style), [rename tiles](#tile-names).
+**Settings:** up to six values, time span (a number and a unit, as [Chart · Basic's](#charts): 40 minutes, 24 hours, 18 months, or whole days, weeks, months or years such as today or last month), 2 or 1 per row, [colour style](#colour-style), [rename tiles](#tile-names). Sparklines set up before 1.2.0 keep their span.
 
 <a name="thermostat-shortcuts"></a>
 

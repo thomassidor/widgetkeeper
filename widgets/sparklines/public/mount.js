@@ -6,13 +6,15 @@
 window.mountSparklinesWidget = function (Homey, { root, frame }) {
   const REFRESH_MS = 5 * 60e3; // keeps the app's device subscriptions alive and resyncs state
 
-  const { wireFrame, wireTileNames, onDeviceNames, slotId } = window.WidgetkeeperKit;
+  const { wireFrame, wireTileNames, onDeviceNames, slotId, spanSetting } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
   const settings = Homey.getSettings() || {};
   // Each slot setting is an autocomplete item whose id is `<deviceId>:<capabilityId>`.
   const slots = [1, 2, 3, 4, 5, 6].map(n => slotId(settings[`slot${n}`])).filter(Boolean);
+  // A number of a unit (1.2.0, as the chart widgets'), or the span set before (`24h`, `today` …) until a unit is picked.
+  const span = spanSetting(settings, '', { count: 24, unit: 'hours' });
   let loaded = false;
 
   const tileNames = wireTileNames(Homey, names => widget.setNames(names));
@@ -21,7 +23,7 @@ window.mountSparklinesWidget = function (Homey, { root, frame }) {
     t: (key, tokens) => Homey.__(key, tokens),
     renameTiles: settings.renameTiles === true,
     onRename: (key, name) => tileNames.rename(key, name),
-    span: settings.span,
+    span,
     columns: settings.columns,
     onHeight: link.setHeight,
   });
@@ -38,7 +40,7 @@ window.mountSparklinesWidget = function (Homey, { root, frame }) {
       return;
     }
     try {
-      const state = await tileNames.state(`/state?slots=${slots.map(encodeURIComponent).join(',')}&span=${encodeURIComponent(settings.span || '24h')}${link.perfParam()}`);
+      const state = await tileNames.state(`/state?slots=${slots.map(encodeURIComponent).join(',')}&window=${encodeURIComponent(widget.windowQuery())}${link.perfParam()}`);
       widget.setState(state);
       loaded = true;
     } catch (err) {

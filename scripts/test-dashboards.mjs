@@ -35,7 +35,8 @@ const PREFIX = 'test-';
 /** The front page's sections the web test dashboards are under, each as long as it has any: the chart widgets' apart. */
 const SECTION = { id: 'test-dashboards', name: 'Test dashboards' };
 const CHART_SECTION = { id: 'test-charts', name: 'Test charts' };
-const CHART_TYPES = new Set(Object.keys(JSON.parse(readFileSync(new URL('chart-settings.json', import.meta.url), 'utf8')).widgets));
+// Sparklines takes its time span from the catalog too (1.2.0), but isn't a `Chart · …` widget: it stays with the others.
+const CHART_TYPES = new Set(Object.keys(JSON.parse(readFileSync(new URL('chart-settings.json', import.meta.url), 'utf8')).widgets).filter(t => t !== 'sparklines'));
 /** A test dashboard's section, by its id (`test-<type>`). */
 const sectionOf = id => (CHART_TYPES.has(id.slice(PREFIX.length)) ? CHART_SECTION : SECTION).id;
 /** The name every native test dashboard starts with: the Homey picks their ids, so the name is the marker. */
@@ -431,11 +432,20 @@ const BUILD = {
     const items = await autocomplete('sparklines', 'slot1');
     const cap = c => i => i.id.endsWith(`:${c}`);
     const set = [pick(items, cap('measure_temperature'))[0], pick(items, cap('measure_power'))[0], ...pick(items, cap('measure_temperature'), 3).slice(1), pick(items, cap('measure_battery'))[0]];
-    const out = ['1h', '6h', '24h', 'today', 'yesterday', '2d', '3d', '5d', '7d', 'thisWeek', 'lastWeek', 'thisMonth', 'lastMonth', 'thisYear', 'lastYear'].map(span =>
-      w('sparklines', `${span}${span === '24h' ? ' (default)' : ''}`, { span, ...slots('slot', set.slice(0, 4)) }));
+    // The time span as the chart widgets' (1.2.0): every unit, whole periods with and without the current one, and two
+    // spans stored before 1.2.0, which stay in force until a unit is picked.
+    const spans = [
+      ['24 hours (default)', { count: 24, span: 'hours' }], ['40 minutes', { count: 40, span: 'minutes' }], ['6 hours', { count: 6, span: 'hours' }],
+      ['3 days', { count: 3, span: 'days' }], ['2 weeks', { count: 2, span: 'weeks' }], ['18 months', { count: 18, span: 'months' }],
+      ['2 years', { count: 2, span: 'years' }], ['Today', { count: 1, span: 'calDays' }], ['Yesterday', { count: 1, span: 'calDays', leaveOut: true }],
+      ['This week', { count: 1, span: 'calWeeks' }], ['Last month', { count: 1, span: 'calMonths', leaveOut: true }],
+      ['This year', { count: 1, span: 'calYears' }], ['The 3 months before this one', { count: 3, span: 'calMonths', leaveOut: true }],
+      ['Set before 1.2.0: 7d', { span: '7d' }], ['Set before 1.2.0: lastMonth', { span: 'lastMonth' }],
+    ];
+    const out = spans.map(([title, span]) => w('sparklines', title, { ...span, ...slots('slot', set.slice(0, 4)) }));
     out.push(
-      w('sparklines', '1 column · 7 days · six', { span: '7d', columns: '1', ...slots('slot', set) }),
-      w('sparklines', '1 h · 1 column · power', { span: '1h', columns: '1', ...slots('slot', set.slice(1, 2)) }),
+      w('sparklines', '1 column · 7 days · six', { count: 7, span: 'days', columns: '1', ...slots('slot', set) }),
+      w('sparklines', '1 hour · 1 column · power', { count: 1, span: 'hours', columns: '1', ...slots('slot', set.slice(1, 2)) }),
       w('sparklines', 'Deleted device', { slot1: { id: `${MISSING}:measure_temperature`, name: 'Deleted device · Temperature' } }),
       renaming('sparklines', 'Rename tiles', slots('slot', set.slice(0, 2)), [], set[0] ? { [set[0].id]: 'Typed name' } : {}),
     );

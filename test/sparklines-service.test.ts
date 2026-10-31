@@ -3,6 +3,7 @@ import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHome
 import SparklineService, { calendarWindow, downsample, historyTtl, MAX_METER_POINTS, MAX_POINTS, meterPointsOf, sparkCaps, spanOf } from '../lib/SparklineService.js';
 import { runningTotal } from '../lib/series.js';
 import ValueService, { VALUES_STATE_EVENT } from '../lib/ValueService.js';
+import sparklinesApi from '../widgets/sparklines/api.js';
 
 vi.mock('homey-api', () => homeyApiMock);
 
@@ -284,6 +285,34 @@ describe('getState', () => {
     vi.advanceTimersByTime(12 * 60e3);
     expect(service.describe()).toHaveLength(0);
     await service.stop();
+  });
+});
+
+describe('the widget API', () => {
+  function apiHomey() {
+    const { homey, api, service } = setup();
+    homey.app = { sparklines: service, tileNames: { get: () => ({}) }, log: vi.fn(), debug: vi.fn(), error: vi.fn() };
+    return { homey, api, service };
+  }
+
+  it('reads the window the widget draws, any span, as the chart widgets do (1.2.0)', async () => {
+    const { homey, api, service } = apiHomey();
+    const windows = vi.spyOn(service, 'getWindows');
+    const from = NOW - 40 * 60e3;
+    const res: any = await sparklinesApi.getState({ homey, query: { slots: 'sensor:measure_temperature,nope', window: `40m~${from}~${NOW}~` } });
+    const request = { span: '40m', from, end: NOW, unit: null, use: false, window: true };
+    expect(windows).toHaveBeenCalledWith([{ slot: 'sensor:measure_temperature', ...request }, { slot: 'nope', ...request }]);
+    expect(api.insights.getLogEntries.mock.calls.map((c: any[]) => c[0].resolution)).toEqual(['lastHour']);
+    expect(res).toMatchObject([{ deviceId: 'sensor', name: 'Stue', value: 21.5 }, { deviceId: 'nope', missing: true }]);
+    expect(res[0].points.length).toBeGreaterThan(2);
+    expect(res[0].points.every(([t]: number[]) => t >= from && t <= NOW)).toBe(true);
+  });
+
+  it('still answers a span from a page loaded before', async () => {
+    const { homey, service } = apiHomey();
+    const state = vi.spyOn(service, 'getState');
+    await sparklinesApi.getState({ homey, query: { slots: 'sensor:measure_temperature', span: '6h' } });
+    expect(state).toHaveBeenCalledWith(['sensor:measure_temperature'], '6h');
   });
 });
 
