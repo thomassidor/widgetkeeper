@@ -2,7 +2,7 @@ import type Homey from 'homey';
 import { lastUpdatedMs } from './appApi.js';
 import { describeCapability } from './capabilities.js';
 import DeviceTracker, { type TrackedEntry } from './DeviceTracker.js';
-import { shownName } from './deviceNames.js';
+import { deviceNamer } from './deviceNames.js';
 import Timings from './Timings.js';
 
 export const SA_STATE_EVENT = 'sensoralarms:state';
@@ -93,8 +93,9 @@ export default class SensorAlarmService {
   /** One entry per device, in the order asked for. A deleted device doesn't fail the others. */
   async getState(deviceIds: string[]): Promise<SensorAlarmDevice[]> {
     const tm = new Timings();
+    const show = await deviceNamer(this.homey, tm, this.log, 'Sensor alarms');
     const out = await this.tracker.each(deviceIds, tm, this.log, 'Sensor alarm device', (t, id): SensorAlarmDevice => (
-      { id, name: shownName(this.homey, t.name), icon: t.icon, alarms: t.alarms.map(a => ({ ...a })) }
+      { id, name: show(t.name, t.zone), icon: t.icon, alarms: t.alarms.map(a => ({ ...a })) }
     ));
     this.debug(`Sensor alarms state for ${deviceIds.length} devices: ${tm.summary()}`);
     return out;

@@ -1,8 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
 import {
-  DEVICE_NAMES_EVENT, DEVICE_NAMES_SETTING, deviceNamesState, nameRule, setDeviceNames, shortName, shownName, type NameRule,
+  DEVICE_NAMES_EVENT, DEVICE_NAMES_SETTING, deviceNamer, deviceNamesState, nameRule, setDeviceNames, shortName, shownName,
+  withoutRoom, type NameRule,
 } from '../lib/deviceNames.js';
+import QuickActionService from '../lib/QuickActionService.js';
+import { thermostatState } from '../widgets/thermostat/api.js';
 import Diagnostics from '../lib/Diagnostics.js';
 import api from '../api.js';
 
@@ -43,6 +46,40 @@ describe('shortName', () => {
     expect(shortName('Kitchen ceiling lamp', rule('lastWord'))).toBe('lamp');
     expect(shortName('  Kitchen\tlamp  ', rule('lastWord'))).toBe('lamp');
     expect(shortName('Lamp', rule('lastWord'))).toBe('Lamp');
+  });
+});
+
+describe('withoutRoom', () => {
+  it('takes the room off the start, keeping a capital', () => {
+    expect(withoutRoom('Kitchen ceiling lamp', 'Kitchen')).toBe('Ceiling lamp');
+    expect(withoutRoom('kitchen ceiling lamp', 'Kitchen')).toBe('ceiling lamp');
+    expect(withoutRoom('Kitchen - ceiling lamp', 'Kitchen')).toBe('Ceiling lamp');
+    expect(withoutRoom('Kitchen | Ceiling lamp', 'Kitchen')).toBe('Ceiling lamp');
+    expect(withoutRoom('Living room: floor lamp', 'Living room')).toBe('Floor lamp');
+    expect(withoutRoom('Køkken loftlampe', 'køkken')).toBe('Loftlampe');
+  });
+
+  it('takes the room off the end, in brackets too', () => {
+    expect(withoutRoom('Ceiling lamp Kitchen', 'Kitchen')).toBe('Ceiling lamp');
+    expect(withoutRoom('Ceiling lamp (Kitchen)', 'Kitchen')).toBe('Ceiling lamp');
+    expect(withoutRoom('Ceiling lamp - kitchen', 'Kitchen')).toBe('Ceiling lamp');
+  });
+
+  it('only takes whole words, and nothing without a room', () => {
+    expect(withoutRoom('Kitchenette lamp', 'Kitchen')).toBe('');
+    expect(withoutRoom('Lamp in the Kitchen area', 'Kitchen')).toBe('');
+    expect(withoutRoom('Kitchen', 'Kitchen')).toBe('');
+    expect(withoutRoom('Kitchen lamp', null)).toBe('');
+    expect(withoutRoom('Kitchen lamp', '  ')).toBe('');
+    expect(withoutRoom('Room (1) lamp', 'Room (1)')).toBe('Lamp');
+  });
+
+  it('keeps the whole name in the room mode when the room isn\'t in it', () => {
+    expect(shortName('Kitchen ceiling lamp', rule('room'), 'Kitchen')).toBe('Ceiling lamp');
+    expect(shortName('Kitchen', rule('room'), 'Kitchen')).toBe('Kitchen');
+    expect(shortName('Desk lamp', rule('room'), 'Kitchen')).toBe('Desk lamp');
+    expect(shortName('Kitchen lamp', rule('room'))).toBe('Kitchen lamp');
+    expect(shortName('Kitchen lamp', rule('before'), 'Kitchen')).toBe('Kitchen lamp');
   });
 });
 
@@ -92,6 +129,38 @@ describe('the setting', () => {
       changed: 4,
       total: 5,
     });
+  });
+
+  it('names devices by their room with Leave out the room, reading the zones only then', async () => {
+    const devices = [
+      fakeDevice({ id: 'lamp', name: 'Kitchen lamp', zone: 'k', caps: { onoff: { type: 'boolean', value: true } }, ui: { quickAction: 'onoff' } }),
+      fakeDevice({ id: 'desk', name: 'Office desk', zone: 'gone', caps: {} }),
+    ];
+    const homey = fakeHomey(fakeApi({ devices, zones: { k: { name: 'Kitchen' } } }));
+    homey.app = { log: vi.fn(), debug: vi.fn() };
+    const show = await deviceNamer(homey, null, vi.fn(), 'Test');
+    expect(show('Kitchen lamp', 'k')).toBe('Kitchen lamp');
+    expect(homey.fakeApi.zones.getZones).not.toHaveBeenCalled();
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'room', separator: '|' });
+    const room = await deviceNamer(homey, null, vi.fn(), 'Test');
+    expect(room('Kitchen lamp', 'k')).toBe('Lamp');
+    expect(room('Office desk', 'gone')).toBe('Office desk');
+    expect(room('Kitchen lamp', null)).toBe('Kitchen lamp');
+    expect(room('Kitchen lamp', '__proto__')).toBe('Kitchen lamp');
+    // Through a service's answer, and on the settings page.
+    expect(await new QuickActionService(homey, () => {}).getState(['lamp'])).toMatchObject([{ id: 'lamp', name: 'Lamp' }]);
+    expect(await deviceNamesState(homey, vi.fn())).toEqual({
+      mode: 'room', separator: '|', examples: [{ name: 'Kitchen lamp', shown: 'Lamp' }], changed: 1, total: 2,
+    });
+  });
+
+  it('names a thermostat by its room, without sending the zone on', async () => {
+    const homey = fakeHomey(fakeApi({ zones: { k: { name: 'Kitchen' } } }));
+    homey.app = { log: vi.fn() };
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'room', separator: '|' });
+    const app = { thermostat: { getState: vi.fn(async () => ({ name: 'Kitchen thermostat', zone: 'k', icon: null, values: {}, caps: {} })) }, values: { getState: vi.fn() } };
+    const state = await thermostatState(homey, app as any, 't1');
+    expect(state).toEqual({ name: 'Thermostat', icon: null, values: {}, caps: {} });
   });
 
   it('answers the rule alone when the devices can\'t be read', async () => {
@@ -148,8 +217,9 @@ describe('where the rule is applied', () => {
     expect(tracked.length).toBeGreaterThan(5);
     for (const f of tracked) {
       if (NOT_SHOWN[f]) continue;
-      expect(readFileSync(`lib/${f}`, 'utf8'), f).toMatch(/shownName\(this\.homey, /);
+      // With the device's room, for Leave out the room: `deviceNamer()`, or `shownName()` with its third argument.
+      expect(readFileSync(`lib/${f}`, 'utf8'), f).toMatch(/deviceNamer\(this\.homey, |shownName\(this\.homey, [^,()]+, /);
     }
-    expect(readFileSync('widgets/thermostat/api.ts', 'utf8')).toMatch(/shownName\(homey, /);
+    expect(readFileSync('widgets/thermostat/api.ts', 'utf8')).toMatch(/deviceNamer\(homey, /);
   });
 });

@@ -642,8 +642,9 @@ If your device names say more than the device, such as *Ceiling lamp | Kitchen*,
 - *Before the separator*: *Ceiling lamp | Kitchen* shows as *Ceiling lamp*. You type the separator, such as `|` or ` - ` (spaces count, so ` - ` leaves *Wi-Fi plug* whole). With the separator more than once, the part before the first one.
 - *After the separator*: *Kitchen | Ceiling lamp* shows as *Ceiling lamp*, the part after the last one.
 - *Last word*: *Kitchen ceiling lamp* shows as *lamp*.
+- *Without the room name*: a device in the Kitchen called *Kitchen ceiling lamp*, *Kitchen - ceiling lamp* or *Ceiling lamp (Kitchen)* shows as *Ceiling lamp*. Only the room's whole name at the start or end is left out, so *Kitchenette lamp* stays as it is.
 
-A name without the separator shows in full. The page shows a few of your own names as they'll look, and open widgets change at once. The device lists in widget settings, Flow tokens and [names typed on tiles](#tile-names) stay as they are.
+A name without the separator (or the room's name) shows in full. The page shows a few of your own names as they'll look, and open widgets change at once. The device lists in widget settings, Flow tokens and [names typed on tiles](#tile-names) stay as they are.
 
 ## Tile names
 <img src="docs/clips/rename.webp" alt="Rename tiles: the setting turned on, names typed on two Light Controls tiles, and the setting turned off again with the names kept" width="358">

@@ -222,6 +222,7 @@
     "namesBefore": "Före avgränsaren",
     "namesAfter": "Efter avgränsaren",
     "namesLastWord": "Sista ordet",
+    "namesRoom": "Utan rummets namn",
     "namesBeforeLine": "Före ”__separator__”",
     "namesAfterLine": "Efter ”__separator__”",
     "namesSeparator": "Avgränsare",

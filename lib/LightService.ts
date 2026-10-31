@@ -55,8 +55,6 @@ export type LightChange = { dim?: unknown, onoff?: unknown, temperature?: unknow
 
 type Tracked = TrackedEntry & {
   icon: string | null,
-  /** The zone (room) id, for grouping the tiles by room. */
-  zone: string | null,
   /** A Homey group device's lights (`groupMembers()`), or null. */
   members: string[] | null,
   caps: Record<string, LightCap>,
@@ -126,7 +124,7 @@ export default class LightService {
       signature: device => `${lightCaps(device).join()}|${(groupMembers(device) ?? []).join()}`,
       create: async (device, api, tm) => {
         if (!device.capabilitiesObj?.dim && !device.capabilitiesObj?.onoff) throw new NotALight(`${device.name} has no dim or onoff capability`);
-        return { zone: device.zone ?? null, members: groupMembers(device), caps: readCaps(device, LIGHT_CAPS), lastDim: 1 };
+        return { members: groupMembers(device), caps: readCaps(device, LIGHT_CAPS), lastDim: 1 };
       },
       listen: (t, device) => {
         noteDim(t);
@@ -139,7 +137,6 @@ export default class LightService {
         return instances;
       },
       refresh: (t, device) => {
-        t.zone = device.zone ?? null;
         t.members = groupMembers(device);
         t.caps = readCaps(device, LIGHT_CAPS);
         noteDim(t);
@@ -180,7 +177,8 @@ export default class LightService {
         this.log(`Light ${id} unavailable:`, err);
         return { id, missing: true };
       }
-      const entry: LightDevice = { id, name: shownName(this.homey, t.name), icon: t.icon, zone: zoneRef(await zonesP, t.zone), caps: copyCaps(t.caps) };
+      const zone = zoneRef(await zonesP, t.zone);
+      const entry: LightDevice = { id, name: shownName(this.homey, t.name, zone?.name), icon: t.icon, zone, caps: copyCaps(t.caps) };
       if (t.members) entry.groupLights = await this.groupLights(t.members, read);
       return entry;
     }));

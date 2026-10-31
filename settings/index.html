@@ -154,6 +154,7 @@
           <option value="before" data-i18n="namesBefore">Before the separator</option>
           <option value="after" data-i18n="namesAfter">After the separator</option>
           <option value="lastWord" data-i18n="namesLastWord">Last word</option>
+          <option value="room" data-i18n="namesRoom">Without the room name</option>
         </select>
       </div>
       <div class="homey-form-group" id="namesSepGroup" hidden>
@@ -452,7 +453,7 @@
       const namesMode = $('namesMode');
       const namesSep = $('namesSep');
       const namesStatus = $('namesStatus');
-      const NAME_MODES = { full: 'namesFull', before: 'namesBefore', after: 'namesAfter', lastWord: 'namesLastWord' };
+      const NAME_MODES = { full: 'namesFull', before: 'namesBefore', after: 'namesAfter', lastWord: 'namesLastWord', room: 'namesRoom' };
       const usesSeparator = mode => mode === 'before' || mode === 'after';
       let names = null; // the app's last answer
       function showNames(res) {

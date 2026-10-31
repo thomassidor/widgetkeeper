@@ -224,6 +224,11 @@ it('Device names: the line, the separator only for its two choices, the examples
   select.dispatchEvent(new Event('change'));
   expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'lastWord', separator: ' - ' }]);
   expect([$('namesLine').textContent, $('namesSepGroup').hidden, $('namesStatus').textContent]).toEqual(['namesLastWord', true, '']);
+  // Nor has Without the room name; no name changes here, which the line says without a separator.
+  select.value = 'room';
+  select.dispatchEvent(new Event('change'));
+  expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'room', separator: ' - ' }]);
+  expect([$('namesLine').textContent, $('namesSepGroup').hidden, $('namesCount').textContent]).toEqual(['namesRoom', true, 'namesNone']);
 });
 
 it('Screens and browsers: adds one with a key, shows its code and address once, gives one a new code and removes one', () => {

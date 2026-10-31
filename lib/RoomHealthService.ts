@@ -1,6 +1,6 @@
 import type Homey from 'homey';
 import DeviceTracker, { readZones, zoneRef, type TrackedEntry } from './DeviceTracker.js';
-import { shownName } from './deviceNames.js';
+import { deviceNamer } from './deviceNames.js';
 import Timings from './Timings.js';
 
 export const RH_STATE_EVENT = 'roomhealth:state';
@@ -16,7 +16,6 @@ export type RoomHealthDevice =
   | { id: string, missing: true };
 
 type Tracked = TrackedEntry & {
-  zone: string | null,
   caps: HealthCap[],
   values: Partial<Record<Measure, number | null>>,
 };
@@ -89,7 +88,7 @@ export default class RoomHealthService {
       // again by itself once it has some (its signature changes).
       create: async (device) => {
         const caps = healthCaps(device);
-        return { zone: device.zone ?? null, caps, values: readValues(device, caps) };
+        return { caps, values: readValues(device, caps) };
       },
       listen: (t, device) => {
         const instances = t.caps.map(({ measure, capabilityId, scale }) => device.makeCapabilityInstance(capabilityId, (raw: unknown) => {
@@ -101,7 +100,6 @@ export default class RoomHealthService {
         return instances;
       },
       refresh: (t, device) => {
-        t.zone = device.zone ?? null;
         t.caps = healthCaps(device);
         t.values = readValues(device, t.caps);
       },
@@ -121,10 +119,11 @@ export default class RoomHealthService {
   async getState(deviceIds: string[]): Promise<RoomHealthDevice[]> {
     const tm = new Timings();
     const zonesP = readZones(this.homey, tm, this.log, 'Room health');
+    const show = await deviceNamer(this.homey, tm, this.log, 'Room health');
     const out = await this.tracker.each(deviceIds, tm, this.log, 'Room health sensor', async (t, id): Promise<RoomHealthDevice> => {
       return {
         id,
-        name: shownName(this.homey, t.name),
+        name: show(t.name, t.zone),
         zone: zoneRef(await zonesP, t.zone),
         measures: Object.fromEntries(t.caps.map(c => [c.measure, { capabilityId: c.capabilityId, value: t.values[c.measure] ?? null }])),
       };

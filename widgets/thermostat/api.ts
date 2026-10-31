@@ -1,6 +1,6 @@
 import type { App } from 'homey';
 import type WidgetkeeperApp from '../../app.js';
-import { shownName } from '../../lib/deviceNames.js';
+import { deviceNamer } from '../../lib/deviceNames.js';
 import type { CapValue } from '../../lib/ThermostatService.js';
 import { parseSlot } from '../../lib/ValueService.js';
 import { logged, logPerf, requireId } from '../../lib/widgetApi.js';
@@ -20,7 +20,9 @@ export async function thermostatState(homey: Homey, app: Pick<WidgetkeeperApp, '
     slot ? app.values.getState([slot]) : [],
   ]);
   if ('missing' in full) return full;
-  const state = { ...full, name: shownName(homey, full.name) };
+  const show = await deviceNamer(homey, null, (...args) => homey.app?.log(...args), 'Thermostat');
+  const { zone, ...rest } = full;
+  const state = { ...rest, name: show(full.name, zone) };
   const s = values[0];
   if (!s || 'missing' in s) return state;
   return { ...state, sensor: { deviceId: s.deviceId, capabilityId: s.capabilityId, capability: s.capability, value: s.value } };

@@ -222,6 +222,7 @@
     "namesBefore": "قبل الفاصل",
     "namesAfter": "بعد الفاصل",
     "namesLastWord": "الكلمة الأخيرة",
+    "namesRoom": "بدون اسم الغرفة",
     "namesBeforeLine": "قبل «__separator__»",
     "namesAfterLine": "بعد «__separator__»",
     "namesSeparator": "الفاصل",

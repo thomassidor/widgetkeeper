@@ -2,7 +2,7 @@ import type Homey from 'homey';
 import { devicesAndZones, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { describeCapability } from './capabilities.js';
 import DeviceTracker, { readZones, zoneRef, type TrackedEntry } from './DeviceTracker.js';
-import { shownName } from './deviceNames.js';
+import { deviceNamer } from './deviceNames.js';
 import Timings from './Timings.js';
 
 export const VM_STATE_EVENT = 'valuematrix:state';
@@ -19,7 +19,6 @@ export type MatrixState = { columns: (MatrixColumn | null)[], devices: MatrixDev
 type Tracked = TrackedEntry & {
   deviceId: string,
   capabilityId: string,
-  zone: string | null,
   /** The device hasn't the capability as a number: a striped cell. */
   absent: boolean,
   column: MatrixColumn | null,
@@ -71,7 +70,7 @@ export default class ValueMatrixService {
         const { deviceId, capabilityId } = keyOf(key);
         const column = columnOf(device, capabilityId);
         return {
-          deviceId, capabilityId, zone: device.zone ?? null, absent: !column, column,
+          deviceId, capabilityId, absent: !column, column,
           value: column ? toNumber(device.capabilitiesObj[capabilityId].value) : null,
         };
       },
@@ -86,7 +85,6 @@ export default class ValueMatrixService {
         })];
       },
       refresh: (t, device) => {
-        t.zone = device.zone ?? null;
         t.column = columnOf(device, t.capabilityId);
         t.value = t.column ? toNumber(device.capabilitiesObj[t.capabilityId].value) : null;
       },
@@ -134,6 +132,7 @@ export default class ValueMatrixService {
   async getState(deviceIds: string[], capabilityIds: string[]): Promise<MatrixState> {
     const tm = new Timings();
     const zonesP = readZones(this.homey, tm, this.log, 'Value matrix');
+    const show = await deviceNamer(this.homey, tm, this.log, 'Value matrix');
     const reads = await Promise.all(deviceIds.map(id => this.tracker.each(capabilityIds.map(c => `${id}:${c}`), tm, this.log, 'Matrix value', t => t)));
     const zones = await zonesP;
     const devices = deviceIds.map((id, i): MatrixDevice => {
@@ -143,7 +142,7 @@ export default class ValueMatrixService {
       for (const t of read) {
         if (!t.absent) values[t.capabilityId] = t.value;
       }
-      return { id, name: shownName(this.homey, read[0]?.name ?? ''), zone: zoneRef(zones, read[0]?.zone ?? null), values };
+      return { id, name: show(read[0]?.name ?? '', read[0]?.zone), zone: zoneRef(zones, read[0]?.zone ?? null), values };
     });
     // Each column described by the first device (in the order picked) that has it.
     const columns = capabilityIds.map((c) => {

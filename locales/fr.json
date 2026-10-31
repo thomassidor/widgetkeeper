@@ -222,6 +222,7 @@
     "namesBefore": "Avant le séparateur",
     "namesAfter": "Après le séparateur",
     "namesLastWord": "Dernier mot",
+    "namesRoom": "Sans le nom de la pièce",
     "namesBeforeLine": "Avant « __separator__ »",
     "namesAfterLine": "Après « __separator__ »",
     "namesSeparator": "Séparateur",

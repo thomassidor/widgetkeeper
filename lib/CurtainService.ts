@@ -2,7 +2,7 @@ import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
 import { capValuesText, copyCaps, presentCaps, readCaps, type CapState } from './capabilities.js';
 import DeviceTracker, { readZones, zoneRef, type TrackedEntry } from './DeviceTracker.js';
-import { shownName } from './deviceNames.js';
+import { deviceNamer } from './deviceNames.js';
 import Timings from './Timings.js';
 
 export const CURTAINS_STATE_EVENT = 'curtains:state';
@@ -29,8 +29,6 @@ export type CurtainChange = { action?: unknown, position?: unknown };
 
 type Tracked = TrackedEntry & {
   kind: CurtainKind,
-  /** The zone (room) id, for grouping the tiles by room. */
-  zone: string | null,
   caps: Record<string, CurtainCap>,
 };
 
@@ -61,7 +59,7 @@ export default class CurtainService {
       signature: device => curtainCaps(device).join(),
       create: async (device) => {
         if (!curtainCaps(device).length) throw new Error(`${device.name} has no curtain capability`);
-        return { kind: curtainKind(device), zone: device.zone ?? null, caps: readCaps(device, CURTAIN_CAPS) };
+        return { kind: curtainKind(device), caps: readCaps(device, CURTAIN_CAPS) };
       },
       listen: (t, device) => {
         const instances = Object.keys(t.caps).map(id => device.makeCapabilityInstance(id, (value: unknown) => {
@@ -73,7 +71,6 @@ export default class CurtainService {
       },
       refresh: (t, device) => {
         t.kind = curtainKind(device);
-        t.zone = device.zone ?? null;
         t.caps = readCaps(device, CURTAIN_CAPS);
       },
       label: t => `curtain ${t.name}`,
@@ -92,8 +89,9 @@ export default class CurtainService {
   async getState(deviceIds: string[]): Promise<CurtainDevice[]> {
     const tm = new Timings();
     const zonesP = readZones(this.homey, tm, this.log, 'Curtain');
+    const show = await deviceNamer(this.homey, tm, this.log, 'Curtain');
     const out = await this.tracker.each(deviceIds, tm, this.log, 'Curtain', async (t, id): Promise<CurtainDevice> => ({
-      id, name: shownName(this.homey, t.name), kind: t.kind, zone: zoneRef(await zonesP, t.zone), caps: copyCaps(t.caps),
+      id, name: show(t.name, t.zone), kind: t.kind, zone: zoneRef(await zonesP, t.zone), caps: copyCaps(t.caps),
     }));
     this.debug(`Curtains state for ${deviceIds.length} devices: ${tm.summary()}`);
     return out;

@@ -222,6 +222,7 @@
     "namesBefore": "Før skilletegnet",
     "namesAfter": "Efter skilletegnet",
     "namesLastWord": "Sidste ord",
+    "namesRoom": "Uden rummets navn",
     "namesBeforeLine": "Før ”__separator__”",
     "namesAfterLine": "Efter ”__separator__”",
     "namesSeparator": "Skilletegn",

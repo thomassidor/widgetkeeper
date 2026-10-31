@@ -222,6 +222,7 @@
     "namesBefore": "Prima del separatore",
     "namesAfter": "Dopo il separatore",
     "namesLastWord": "Ultima parola",
+    "namesRoom": "Senza il nome della stanza",
     "namesBeforeLine": "Prima di «__separator__»",
     "namesAfterLine": "Dopo «__separator__»",
     "namesSeparator": "Separatore",

@@ -1,13 +1,18 @@
 import type Homey from 'homey';
 import { devicesAndZones } from './autocomplete.js';
+import { readZones } from './DeviceTracker.js';
+import Timings from './Timings.js';
 
 /** The app setting: how the widgets show device names, `{mode, separator}` (`NameRule`), from the app settings page. */
 export const DEVICE_NAMES_SETTING = 'deviceNames';
 /** Sent when it changes, so open widgets read their devices again. */
 export const DEVICE_NAMES_EVENT = 'devicenames:state';
 
-/** The whole name, the part before the first separator, the part after the last one, the last word. */
-export const NAME_MODES = ['full', 'before', 'after', 'lastWord'] as const;
+/**
+ * The whole name, the part before the first separator, the part after the last one, the last word, or the name
+ * without its room's name at the start or end (`room`, 1.2.0: *Kitchen ceiling lamp* in the Kitchen).
+ */
+export const NAME_MODES = ['full', 'before', 'after', 'lastWord', 'room'] as const;
 export type NameMode = typeof NAME_MODES[number];
 export type NameRule = { mode: NameMode, separator: string };
 
@@ -31,11 +36,40 @@ export function nameRule(value: unknown): NameRule {
   return { mode: isMode(v.mode) ? v.mode : 'full', separator: isSeparator(v.separator) ? v.separator : DEFAULT_SEPARATOR };
 }
 
+/** What may stand between a room's name and the rest: spaces, dashes, `|`, `:`, `·`, `,` and `/`. */
+const ROOM_GAP = '[\\s\\-\u2013\u2014|:\u00b7,/]+';
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 /**
- * The part of `name` the rule shows, trimmed: before the first separator, after the last one, or the last word. The
- * whole name when the separator isn't in it or the part would be empty (`| Kitchen`).
+ * `name` without `room` at its start or end, as a whole word or words (any case, with what stands between them):
+ * *Kitchen ceiling lamp*, *Kitchen - Ceiling lamp* and *Ceiling lamp (Kitchen)* … *Ceiling lamp Kitchen* in the
+ * Kitchen. Its first letter is made a capital when the name started with one. Empty when the room isn't there.
  */
-export function shortName(name: string, rule: NameRule): string {
+export function withoutRoom(name: string, room: string | null | undefined): string {
+  const r = room?.trim();
+  const n = name.trim();
+  if (!r || !n) return '';
+  const esc = escapeRegExp(r);
+  const start = new RegExp(`^${esc}${ROOM_GAP}`, 'iu').exec(n);
+  if (start) {
+    const rest = n.slice(start[0].length);
+    const first = n.charAt(0);
+    const capital = first !== first.toLocaleLowerCase() && first === first.toLocaleUpperCase();
+    return capital ? rest.charAt(0).toLocaleUpperCase() + rest.slice(1) : rest;
+  }
+  const end = new RegExp(`${ROOM_GAP}\\(?${esc}\\)?$`, 'iu').exec(n);
+  return end ? n.slice(0, end.index) : '';
+}
+
+/**
+ * The part of `name` the rule shows, trimmed: before the first separator, after the last one, the last word, or
+ * without its room (`room`, the device's room's name). The whole name when the separator or room isn't in it or the
+ * part would be empty (`| Kitchen`, a device called *Kitchen* in the Kitchen).
+ */
+export function shortName(name: string, rule: NameRule, room?: string | null): string {
   let part = '';
   if (rule.mode === 'before') {
     const at = name.indexOf(rule.separator);
@@ -45,16 +79,32 @@ export function shortName(name: string, rule: NameRule): string {
     if (at >= 0) part = name.slice(at + rule.separator.length);
   } else if (rule.mode === 'lastWord') {
     part = name.trim().split(/\s+/).pop() ?? '';
+  } else if (rule.mode === 'room') {
+    part = withoutRoom(name, room);
   }
   return part.trim() || name;
 }
 
 /**
- * A device's name as the widgets show it, by the app setting (read each time: it's in memory). Only for what a widget
- * shows: pickers, Flow tokens, logs and diagnostics keep the full name.
+ * A device's name as the widgets show it, by the app setting (read each time: it's in memory), `room` its room's name
+ * (only *Leave out the room* uses it). Only for what a widget shows: pickers, Flow tokens, logs and diagnostics keep
+ * the full name.
  */
-export function shownName(homey: Homey.App['homey'], name: string): string {
-  return shortName(name, nameRule(homey.settings.get(DEVICE_NAMES_SETTING)));
+export function shownName(homey: Homey.App['homey'], name: string, room?: string | null): string {
+  return shortName(name, nameRule(homey.settings.get(DEVICE_NAMES_SETTING)), room);
+}
+
+/**
+ * How a widget's answer names its devices: `show(name, zoneId)`, by the setting as it is now. Only *Leave out the
+ * room* reads the zones (`readZones()`, shared for a minute; a failed read leaves the names whole).
+ */
+export async function deviceNamer(homey: Homey.App['homey'], tm: Timings | null, log: (...args: any[]) => void, what: string) {
+  const rule = nameRule(homey.settings.get(DEVICE_NAMES_SETTING));
+  const zones = rule.mode === 'room' ? await readZones(homey, tm ?? new Timings(), log, what) : {};
+  return (name: string, zoneId?: string | null): string => {
+    const room = zoneId && Object.prototype.hasOwnProperty.call(zones, zoneId) ? zones[zoneId]?.name : null;
+    return shortName(name, rule, typeof room === 'string' ? room : null);
+  };
 }
 
 export type DeviceNamesState = NameRule & {
@@ -69,13 +119,14 @@ export type DeviceNamesState = NameRule & {
 export async function deviceNamesState(homey: Homey.App['homey'], log: (...args: any[]) => void): Promise<DeviceNamesState> {
   const rule = nameRule(homey.settings.get(DEVICE_NAMES_SETTING));
   try {
-    const [devices] = await devicesAndZones(homey);
-    const names = devices.map(d => String(d.name ?? '')).sort((a, b) => a.localeCompare(b));
-    const changed = names.flatMap((name) => {
-      const shown = shortName(name, rule);
+    const [devices, zones] = await devicesAndZones(homey);
+    const named = devices.map(d => ({ name: String(d.name ?? ''), room: zones[d.zone]?.name as string | undefined }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+    const changed = named.flatMap(({ name, room }) => {
+      const shown = shortName(name, rule, room);
       return shown === name ? [] : [{ name, shown }];
     });
-    return { ...rule, examples: changed.slice(0, EXAMPLES), changed: changed.length, total: names.length };
+    return { ...rule, examples: changed.slice(0, EXAMPLES), changed: changed.length, total: named.length };
   } catch (err) {
     log('Device names: the devices could not be read:', err);
     return rule;

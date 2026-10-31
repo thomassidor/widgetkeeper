@@ -3,7 +3,7 @@ import { devicesAndZones, listCapabilitySlots, matches, withNone, type Autocompl
 import { describeCapability, type CapabilityDescription } from './capabilities.js';
 import DeviceTracker, { type TrackedEntry } from './DeviceTracker.js';
 import { fetchSvgIcon } from './deviceIcon.js';
-import { shownName } from './deviceNames.js';
+import { deviceNamer } from './deviceNames.js';
 import { FlowColors, parseTileColor, type TileColor } from './tileColors.js';
 import Timings from './Timings.js';
 
@@ -165,6 +165,7 @@ export default class ValueService {
   async getState(slots: string[], seconds: (string | undefined)[] = []): Promise<ValueSlot[]> {
     const tm = new Timings();
     const colors = this.colors.all();
+    const show = await deviceNamer(this.homey, tm, this.log, 'Values');
     const out = await Promise.all(slots.map(async (slot, i): Promise<ValueSlot | null> => {
       const s = parseSlot(slot);
       if (!s) return null;
@@ -173,7 +174,7 @@ export default class ValueService {
         const color = colors[t.key];
         const second = await this.second(s.deviceId, seconds[i], s.capabilityId, tm);
         return {
-          deviceId: t.deviceId, capabilityId: t.capabilityId, name: shownName(this.homey, t.name), capability: { ...t.capability }, value: t.value,
+          deviceId: t.deviceId, capabilityId: t.capabilityId, name: show(t.name, t.zone), capability: { ...t.capability }, value: t.value,
           ...(color ? { color } : {}), ...(second ? { second } : {}),
         };
       } catch (err) {

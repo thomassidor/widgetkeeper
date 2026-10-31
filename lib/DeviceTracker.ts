@@ -17,6 +17,8 @@ export type TrackedEntry = {
   key: string,
   /** The device's name, from every read. */
   name: string,
+  /** The device's zone (room) id, from every read: for its room and the Device names setting's *Leave out the room*. */
+  zone: string | null,
   /** With `iconLog`: the device's icon (`fetchDeviceIcon()`), from every read. */
   icon?: string | null,
   /** The capability instances, destroyed with the entry. */
@@ -39,7 +41,7 @@ export type DeviceTrackerOptions<T extends TrackedEntry> = {
   create: (device: any, api: any, tm: Timings, key: string) => Promise<Omit<T, keyof TrackedEntry>>,
   /** The capability instances that keep the entry live; also the place to log what's tracked. */
   listen: (entry: T, device: any) => any[],
-  /** Updates the entry from a fresh read of a tracked device (`name` and `icon` are already). Throwing disposes it. */
+  /** Updates the entry from a fresh read of a tracked device (`name`, `zone` and `icon` are already). Throwing disposes it. */
   refresh?: (entry: T, device: any, api: any, tm: Timings) => Promise<void> | void,
   /** Keeps the device's icon in `icon`, fetched on every read (cached per URL); a failed fetch is logged here. */
   iconLog?: (...args: any[]) => void,
@@ -174,6 +176,7 @@ export default class DeviceTracker<T extends TrackedEntry> {
     }
     try {
       t.name = device.name;
+      t.zone = device.zone ?? null;
       if (this.opts.iconLog) t.icon = await this.icon(api, device, tm);
       await this.opts.refresh?.(t, device, api, tm);
     } catch (err) {
@@ -203,7 +206,7 @@ export default class DeviceTracker<T extends TrackedEntry> {
     ]);
     if (this.stopped) throw new Error(`Stopped before ${key} was tracked`); // nothing would ever destroy its instances
     const t = {
-      ...own, key, name: device.name, ...(this.opts.iconLog ? { icon } : {}), instances: [], lastRequested: Date.now(), signature: this.opts.signature(device, key),
+      ...own, key, name: device.name, zone: device.zone ?? null, ...(this.opts.iconLog ? { icon } : {}), instances: [], lastRequested: Date.now(), signature: this.opts.signature(device, key),
     } as unknown as T;
     t.instances = this.opts.listen(t, device);
     this.tracked.set(key, t);

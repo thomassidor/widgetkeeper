@@ -2,7 +2,7 @@ import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
 import { isTransientError, readFresh } from './DeviceTracker.js';
 import { deviceImage, fetchDeviceIcon, fetchImageBase64, type DeviceImage } from './deviceIcon.js';
-import { shownName } from './deviceNames.js';
+import { deviceNamer } from './deviceNames.js';
 import Timings from './Timings.js';
 
 /** Several widgets (or a fast refresh) asking for the same snapshot within this share one fetch. */
@@ -96,6 +96,7 @@ export default class CameraService {
   async getState(deviceIds: string[]): Promise<CameraDevice[]> {
     const tm = new Timings();
     const api = await tm.time('api', () => getAppApi(this.homey));
+    const show = await deviceNamer(this.homey, tm, this.log, 'Camera');
     const out = await Promise.all(deviceIds.map(async (id): Promise<CameraDevice> => {
       this.requestedNow(id);
       try {
@@ -106,7 +107,7 @@ export default class CameraService {
         else this.imageUrls.delete(id);
         const entry: CameraDevice = {
           id,
-          name: shownName(this.homey, device.name),
+          name: show(device.name, device.zone),
           icon: await tm.time('icons', () => fetchDeviceIcon(api, device, this.log)),
           image,
           video: videos[0] ?? null,

@@ -2,7 +2,7 @@ import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
 import DeviceTracker, { type TrackedEntry } from './DeviceTracker.js';
 import { fetchSvgIcon } from './deviceIcon.js';
-import { shownName } from './deviceNames.js';
+import { deviceNamer } from './deviceNames.js';
 import Timings from './Timings.js';
 
 export const QA_STATE_EVENT = 'quickactions:state';
@@ -106,8 +106,9 @@ export default class QuickActionService {
   /** One entry per device, in the order asked for. A deleted device doesn't fail the others. */
   async getState(deviceIds: string[]): Promise<QuickActionDevice[]> {
     const tm = new Timings();
+    const show = await deviceNamer(this.homey, tm, this.log, 'Quick actions');
     const out = await this.tracker.each(deviceIds, tm, this.log, 'Quick action device', (t, id): QuickActionDevice => (
-      { id, name: shownName(this.homey, t.name), icon: t.icon, quickAction: t.quickAction && { ...t.quickAction } }
+      { id, name: show(t.name, t.zone), icon: t.icon, quickAction: t.quickAction && { ...t.quickAction } }
     ));
     this.debug(`Quick actions state for ${deviceIds.length} devices: ${tm.summary()}`);
     return out;

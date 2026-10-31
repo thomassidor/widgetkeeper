@@ -23,6 +23,8 @@ type CapInfo = {
 
 type ThermostatState = {
   name: string,
+  /** The device's zone id, for the Device names setting's *Leave out the room* (not sent on to the widget). */
+  zone: string | null,
   icon: string | null, // the device's icon as an SVG data URL (the widget uses it as a mask)
   values: Record<string, unknown>,
   caps: Record<string, CapInfo>,
@@ -135,7 +137,7 @@ export default class ThermostatService {
       return { missing: true };
     }
     this.debug(`Thermostat state ${t.name}: ${tm.summary()}`);
-    return { name: t.name, icon: t.icon, values: { ...t.values }, caps: t.caps };
+    return { name: t.name, zone: t.zone, icon: t.icon, values: { ...t.values }, caps: t.caps };
   }
 
   /**

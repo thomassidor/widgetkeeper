@@ -222,6 +222,7 @@
     "namesBefore": "Vóór het scheidingsteken",
     "namesAfter": "Na het scheidingsteken",
     "namesLastWord": "Laatste woord",
+    "namesRoom": "Zonder de ruimtenaam",
     "namesBeforeLine": "Vóór “__separator__”",
     "namesAfterLine": "Na “__separator__”",
     "namesSeparator": "Scheidingsteken",

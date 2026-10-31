@@ -222,6 +222,7 @@
     "namesBefore": "Before the separator",
     "namesAfter": "After the separator",
     "namesLastWord": "Last word",
+    "namesRoom": "Without the room name",
     "namesBeforeLine": "Before “__separator__”",
     "namesAfterLine": "After “__separator__”",
     "namesSeparator": "Separator",

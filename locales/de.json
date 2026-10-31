@@ -222,6 +222,7 @@
     "namesBefore": "Vor dem Trennzeichen",
     "namesAfter": "Nach dem Trennzeichen",
     "namesLastWord": "Letztes Wort",
+    "namesRoom": "Ohne den Raumnamen",
     "namesBeforeLine": "Vor „__separator__“",
     "namesAfterLine": "Nach „__separator__“",
     "namesSeparator": "Trennzeichen",
