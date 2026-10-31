@@ -173,6 +173,10 @@
       "method": "PUT",
       "path": "/web/screens/:id"
     },
+    "putWebScreenDashboard": {
+      "method": "PUT",
+      "path": "/web/screens/:id/dashboard"
+    },
     "deleteWebScreen": {
       "method": "DELETE",
       "path": "/web/screens/:id"

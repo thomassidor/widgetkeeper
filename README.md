@@ -589,6 +589,8 @@ You get a code like `K7QM-3XPA`, shown only once, and an address with it, also a
 - type the code on the page, or
 - open the address on the screen: `…/dashboard.html#code=K7QM-3XPA`, or `…/dashboard.html#/d/<dashboard>?code=K7QM-3XPA` for one dashboard. It works on every load, so a cast screen that forgets everything still gets in.
 
+Each screen in the list has **Opens on**: pick a dashboard, and its code opens that one instead of the dashboards' front page, so a kitchen tablet or a cast Nest Hub goes straight to its own. An address that names a dashboard still opens that one. Give the dashboard a [code](#code) too, and the screen stays there.
+
 Anyone with a code can use its key, so give each screen only the permissions it needs. **New code** makes another (paste the screen's key again, or a new one). **Remove** stops the code; the device keeps what it has until it next loads the page, so for a lost device also delete its key in the Homey web app (**Settings → API Keys**). Repeated wrong codes lock every code for a while.
 
 ### Code

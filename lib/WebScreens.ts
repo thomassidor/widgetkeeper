@@ -27,12 +27,17 @@ const MAX_LOCK_MS = 15 * 60e3;
 type Screen = {
   id: string, name: string, code: string, key: string, created: number, used: number,
   session?: string, stamp?: string,
+  /** The web dashboard it opens on (1.2.0, `setDashboard()`); none: the front page, or the address it was given. */
+  dashboard?: string,
 };
 
-export type ScreenItem = { id: string, name: string, created: number, used: number, needsPassword: boolean };
+export type ScreenItem = { id: string, name: string, created: number, used: number, needsPassword: boolean, dashboard: string | null };
 
 type Refused = { ok: false, reason: 'wrong' | 'locked', retryAfter?: number };
-export type RedeemResult = { ok: true, key: string, session?: string } | Refused;
+export type RedeemResult = { ok: true, key: string, session?: string, dashboard?: string } | Refused;
+
+/** A web dashboard's id as stored (`WebDashboardService`): letters, digits, `-` and `_`. */
+const DASHBOARD_ID = /^[\w-]{1,64}$/;
 export type AddResult =
   | { ok: true, id: string, code: string, devices: boolean, screens: ScreenItem[] }
   | { ok: false, reason: 'name' | 'keyInvalid' | 'full' } | Refused;
@@ -101,7 +106,9 @@ export default class WebScreens {
 
   /** The screens for the settings page: names and dates, never a code or a key. */
   list(): ScreenItem[] {
-    return this.screens.map(s => ({ id: s.id, name: s.name, created: s.created, used: s.used, needsPassword: !this.signedIn(s) }));
+    return this.screens.map(s => ({
+      id: s.id, name: s.name, created: s.created, used: s.used, needsPassword: !this.signedIn(s), dashboard: s.dashboard ?? null,
+    }));
   }
 
   /**
@@ -176,6 +183,21 @@ export default class WebScreens {
     this.save(screens);
   }
 
+  /**
+   * The dashboard a screen opens on (the settings page's *Opens on*), or null for none. Not a secret: it only says where
+   * the page goes after the code, which the code's holder could open anyway. Whether it still exists is the caller's.
+   */
+  setDashboard(id: unknown, dashboard: unknown): { ok: true, screens: ScreenItem[] } | { ok: false, reason: 'missing' | 'dashboard' } {
+    if (dashboard !== null && (typeof dashboard !== 'string' || !DASHBOARD_ID.test(dashboard))) return { ok: false, reason: 'dashboard' };
+    const screens = this.screens;
+    const screen = screens.find(s => s.id === id);
+    if (!screen) return { ok: false, reason: 'missing' };
+    if (dashboard) screen.dashboard = dashboard;
+    else delete screen.dashboard;
+    this.save(screens);
+    return { ok: true, screens: this.list() };
+  }
+
   remove(id: unknown): { ok: boolean, screens: ScreenItem[] } {
     const screens = this.screens;
     const left = screens.filter(s => s.id !== id);
@@ -218,7 +240,8 @@ export default class WebScreens {
       screen.used = now;
       try { this.save(screens); } catch (err) { this.log('Web dashboards: a screen\'s use could not be saved:', String((err as any)?.message ?? err)); }
     }
-    return this.signedIn(screen) && screen.session ? { ok: true, key: screen.key, session: screen.session } : { ok: true, key: screen.key };
+    const opens = screen.dashboard ? { dashboard: screen.dashboard } : {};
+    return this.signedIn(screen) && screen.session ? { ok: true, key: screen.key, session: screen.session, ...opens } : { ok: true, key: screen.key, ...opens };
   }
 
   /** Whether a web password session token is a screen's (granted with the password set now). */

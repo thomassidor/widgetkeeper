@@ -176,6 +176,18 @@ describe("web dashboards page: a screen's code (takeCode, useCode)", () => {
     expect(noSession.wd.session).toBe('old-session');
   });
 
+  it("opens the screen's dashboard after its code, unless the address names one", async () => {
+    const front = codePage('', { ok: true, key: 'screen-key', dashboard: 'kitchen' });
+    await front.useCode('ABCD-EFGH');
+    expect(front.location.hash).toBe('#/d/kitchen');
+    const named = codePage('#/d/hall', { ok: true, key: 'screen-key', dashboard: 'kitchen' });
+    await named.useCode('ABCD-EFGH');
+    expect(named.location.hash).toBe('#/d/hall');
+    const odd = codePage('#/', { ok: true, key: 'screen-key', dashboard: '../x' });
+    await odd.useCode('ABCD-EFGH');
+    expect(odd.location.hash).toBe('#/');
+  });
+
   it('forgets what this browser stored for a removed code, but not for the lock or a failure', async () => {
     const wrong = codePage('#/', { ok: false, reason: 'wrong' });
     await expect(wrong.useCode('ABCD-EFGH')).resolves.toBe('screenCodeWrong');

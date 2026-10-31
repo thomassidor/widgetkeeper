@@ -37,7 +37,7 @@ describe('web dashboards: screens without a keyboard', () => {
     expect(stored).not.toContain(res.code.replace('-', ''));
     expect(stored).toContain(KEY);
     expect(homey.settings.get(WEB_SCREENS_SECRET)).toBeNull();
-    await expect(api.getWebScreens({ homey })).resolves.toEqual({ screens: screens.list() });
+    await expect(api.getWebScreens({ homey })).resolves.toEqual({ screens: screens.list(), dashboards: [] });
   });
 
   it('says when the key may not control devices', async () => {
@@ -168,5 +168,25 @@ describe('web dashboards: a screen\'s code route', () => {
     await expect(api.postWebScreenCode({ homey, query: { away: '1' }, body: { code } })).resolves.toEqual({ ok: true, key: KEY });
     vi.spyOn(web, 'enabled', 'get').mockReturnValue(false);
     await expect(api.postWebScreenCode({ homey, query: {}, body: { code } })).rejects.toThrow(/turned off/);
+  });
+});
+
+describe('web dashboards: the dashboard a screen opens on (1.2.0)', () => {
+  it('keeps a dashboard per screen, sends it with the key, and drops one deleted since', async () => {
+    const { homey, screens, web } = setup();
+    const { id, code } = await screens.add('Kitchen', KEY) as any;
+    const board = web.save({ name: 'Kitchen', columns: [[]] });
+    expect(screens.list()[0].dashboard).toBeNull();
+    await expect(api.putWebScreenDashboard({ homey, params: { id }, body: { dashboard: 'nope' } })).resolves.toEqual({ ok: false, reason: 'dashboard' });
+    await expect(api.putWebScreenDashboard({ homey, params: { id: 'nope' }, body: { dashboard: board.id } })).resolves.toEqual({ ok: false, reason: 'missing' });
+    await expect(api.putWebScreenDashboard({ homey, params: { id }, body: { dashboard: board.id } })).resolves.toMatchObject({ ok: true, screens: [{ dashboard: board.id }] });
+    await expect(api.postWebScreenCode({ homey, query: {}, body: { code } })).resolves.toEqual({ ok: true, key: KEY, dashboard: board.id });
+    // Deleted: the code still gives the key, without the dashboard.
+    web.remove(board.id);
+    await expect(api.postWebScreenCode({ homey, query: {}, body: { code } })).resolves.toEqual({ ok: true, key: KEY });
+    // None again.
+    await expect(api.putWebScreenDashboard({ homey, params: { id }, body: { dashboard: null } })).resolves.toMatchObject({ ok: true, screens: [{ dashboard: null }] });
+    expect(screens.setDashboard(id, { id: 'x' })).toEqual({ ok: false, reason: 'dashboard' });
+    expect(screens.setDashboard(id, '../x')).toEqual({ ok: false, reason: 'dashboard' });
   });
 });

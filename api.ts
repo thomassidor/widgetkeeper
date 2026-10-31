@@ -315,7 +315,8 @@ export default {
   /** The app settings page: the screens added with a code (`WebScreens`), by name, never their codes or keys. */
   async getWebScreens({ homey }: { homey: Homey }) {
     const app = homey.app as WidgetkeeperApp;
-    return { screens: app.webScreens.list() };
+    // With the dashboards' names, for each screen's Opens on (the page's own front page lists them to any key holder too).
+    return { screens: app.webScreens.list(), dashboards: app.web.list().map(d => ({ id: d.id, name: d.name })) };
   },
 
   /**
@@ -337,6 +338,17 @@ export default {
     return app.webScreens.renew(params?.id, body?.key, body?.current);
   },
 
+  /**
+   * The app settings page's *Opens on*: `{dashboard}`, a web dashboard's id or null (the front page, or the address the
+   * screen was given) → `{ok, screens}`, or `{ok: false, reason: 'missing' | 'dashboard'}` (no such screen or dashboard).
+   */
+  async putWebScreenDashboard({ homey, params, body }: { homey: Homey, params: Record<string, string>, body: { dashboard?: unknown } }) {
+    const app = homey.app as WidgetkeeperApp;
+    const dashboard = body?.dashboard ?? null;
+    if (dashboard !== null && !app.web.list().some(d => d.id === dashboard)) return { ok: false, reason: 'dashboard' };
+    return app.webScreens.setDashboard(params?.id, dashboard);
+  },
+
   /** The app settings page: removes a screen (its code stops working; the page forgets the key it got from it). */
   async deleteWebScreen({ homey, params }: { homey: Homey, params: Record<string, string> }) {
     const app = homey.app as WidgetkeeperApp;
@@ -352,7 +364,10 @@ export default {
   async postWebScreenCode({ homey, query, body }: { homey: Homey, query?: Record<string, string>, body: { code?: unknown } }) {
     const app = homey.app as WidgetkeeperApp;
     app.web.assertEnabled(isAway(query));
-    return app.webScreens.redeem(body?.code);
+    const res = await app.webScreens.redeem(body?.code);
+    // A dashboard deleted since isn't sent: the page opens where it would without one.
+    if (res.ok && res.dashboard && !app.web.list().some(d => d.id === res.dashboard)) delete res.dashboard;
+    return res;
   },
 
   /** The web dashboards page: signs the browser out (`?session=`). */

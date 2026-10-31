@@ -93,6 +93,7 @@
     .scr-info { flex: 1 1 9em; min-width: 0; }
     .scr-info .kp-code-name, .scr-info .kp-code-digits { display: block; }
     .scr-info .scr-warn { color: #A85700; font-weight: var(--homey-font-weight-medium, 500); }
+    .scr-info .scr-opens { display: block; width: auto; max-width: 100%; margin-top: 6px; }
     .scr-buttons { display: flex; flex: none; gap: 8px; margin-left: auto; }
     .scr-address .sub-title { font-size: 14px; }
     .web-url { display: block; margin-top: 4px; font-size: 14px; line-height: 20px; word-break: break-all; text-decoration: none; color: var(--homey-color-blue, #0082FA); }
@@ -860,6 +861,35 @@
         const about = document.createElement('div');
         about.className = 'scr-info';
         about.append(name, info);
+        // Opens on: the dashboard the page goes to after this screen's code (none: the dashboards, or its own address).
+        if (scrDashboards.length) {
+          const opens = document.createElement('select');
+          opens.className = 'homey-form-select scr-opens';
+          opens.setAttribute('aria-label', t('webScreenOpensOn'));
+          const choices = [{ id: '', name: t('webScreenOpensFront') }, ...scrDashboards];
+          // A dashboard deleted since shows as the front page, which is where the screen now goes.
+          const current = scrDashboards.some(d => d.id === screen.dashboard) ? screen.dashboard : '';
+          for (const d of choices) {
+            const option = document.createElement('option');
+            option.value = d.id;
+            option.textContent = d.id ? t('webScreenOpensDashboard', { name: d.name }) : d.name;
+            option.selected = d.id === current;
+            opens.append(option);
+          }
+          opens.addEventListener('change', () => {
+            opens.disabled = true;
+            Homey.api('PUT', `/web/screens/${encodeURIComponent(screen.id)}/dashboard`, { dashboard: opens.value || null }, (err, res) => {
+              opens.disabled = false;
+              if (err || !res || !res.ok) {
+                opens.value = current;
+                scrStatus.textContent = err ? err.message || String(err) : t(res && res.reason === 'dashboard' ? 'webScreenOpensGone' : 'webScreenGone');
+                return;
+              }
+              showScreens(res.screens || []);
+            });
+          });
+          about.append(opens);
+        }
         const buttons = document.createElement('div');
         buttons.className = 'scr-buttons';
         row.append(about, buttons);
@@ -891,11 +921,16 @@
         buttons.append(renew, remove);
         return row;
       }
+      let scrDashboards = []; // the web dashboards, `{id, name}`, for each screen's Opens on
       function showScreens(screens) {
         $('scrList').replaceChildren(...screens.map(screenRow));
       }
       function loadScreens() {
-        Homey.api('GET', '/web/screens', null, (err, res) => { if (!err && res) showScreens(res.screens || []); });
+        Homey.api('GET', '/web/screens', null, (err, res) => {
+          if (err || !res) return;
+          scrDashboards = Array.isArray(res.dashboards) ? res.dashboards : [];
+          showScreens(res.screens || []);
+        });
       }
       /** The address as a QR code: an SVG of dark modules (qrcode-generator, settings/qrcode.js). */
       function qrSvg(text) {

@@ -292,3 +292,36 @@ it('Screens and browsers: adds one with a key, shows its code and address once, 
     expect($('scrStatus').textContent).toBe('webScreenRemoved');
   });
 });
+
+it("Screens and browsers: each screen's Opens on, saved on change", () => {
+  let screens: any[] = [{ id: 's0', name: 'Hall', created: 1, used: 0, needsPassword: false, dashboard: 'gone' }];
+  const dashboards = [{ id: 'k', name: 'Kitchen' }, { id: 'e', name: 'Energy' }];
+  const { calls, $ } = loadPage((method, path, body) => {
+    if (path === '/web/password') return { set: false };
+    if (path === '/web/address') return { url: 'http://192.168.1.20/app/x/settings/dashboard.html', remoteUrl: null };
+    if (path === '/web/screens' && method === 'GET') return { screens, dashboards };
+    if (path === '/web/screens/s0/dashboard') {
+      if (body.dashboard === 'e') return { ok: false, reason: 'dashboard' };
+      screens = [{ ...screens[0], dashboard: body.dashboard }];
+      return { ok: true, screens };
+    }
+    return undefined;
+  });
+  const select = () => document.querySelector<HTMLSelectElement>('#scrList .scr-opens')!;
+  return Promise.resolve().then(() => {
+    // A dashboard deleted since reads as the front page.
+    expect([...select().options].map(o => o.textContent)).toEqual(['webScreenOpensFront', 'webScreenOpensDashboard{"name":"Kitchen"}', 'webScreenOpensDashboard{"name":"Energy"}']);
+    expect(select().value).toBe('');
+    select().value = 'k';
+    select().dispatchEvent(new Event('change'));
+    expect(calls.at(-1)).toEqual(['PUT', '/web/screens/s0/dashboard', { dashboard: 'k' }]);
+    expect(select().value).toBe('k');
+    // Refused (deleted meanwhile): back as it was, and why.
+    select().value = 'e';
+    select().dispatchEvent(new Event('change'));
+    expect([select().value, $('scrStatus').textContent]).toEqual(['k', 'webScreenOpensGone']);
+    select().value = '';
+    select().dispatchEvent(new Event('change'));
+    expect(calls.at(-1)).toEqual(['PUT', '/web/screens/s0/dashboard', { dashboard: null }]);
+  });
+});

@@ -19,7 +19,7 @@ const routes: Record<string, { method: string, path: string, public?: boolean }>
  * while a password is set; a new route lands in the table below by itself.
  */
 const OPEN = ['getWebSetup', 'getWebAddress', 'getWebPassword', 'putWebPassword', 'postWebLogin', 'postWebLogout',
-  'getWebScreens', 'postWebScreen', 'putWebScreen', 'deleteWebScreen', 'postWebScreenCode'];
+  'getWebScreens', 'postWebScreen', 'putWebScreen', 'putWebScreenDashboard', 'deleteWebScreen', 'postWebScreenCode'];
 const GUARDED = Object.entries(routes).filter(([name, r]) => r.path.startsWith('/web/') && !OPEN.includes(name)).map(([name]) => name);
 
 /** A route's call with the arguments every handler takes; `query` carries `away` and `session`. */

@@ -741,7 +741,8 @@
      * A screen's code (Web dashboards, Screens, in the app settings), from the address or typed on the key screen: the
      * app swaps it for the screen's key, and its password session while the password it was added with is set. The
      * route is public, as the screen has no key yet. Answers null once the key is in, else why not. A code that doesn't
-     * work (removed) forgets what this browser stored, as that came from it.
+     * work (removed) forgets what this browser stored, as that came from it. A screen set to open on a dashboard goes
+     * there, unless the address names a dashboard of its own.
      */
     async function useCode(code) {
       let res;
@@ -758,6 +759,10 @@
         wd.key = res.key;
         storageSet(KEY_STORAGE, wd.key);
         if (res.session) { wd.session = res.session; storageSet(SESSION_STORAGE, wd.session); }
+        // The dashboard the screen opens on (the settings page's Opens on), unless the address names one itself.
+        if (typeof res.dashboard === 'string' && /^[\w-]+$/.test(res.dashboard) && !/^#\/d\//.test(location.hash)) {
+          history.replaceState(null, '', `${location.pathname}${location.search}#/d/${res.dashboard}`);
+        }
         return null;
       }
       if (res && res.reason === 'locked') return t('screenCodeLocked', { seconds: res.retryAfter || 30 });
