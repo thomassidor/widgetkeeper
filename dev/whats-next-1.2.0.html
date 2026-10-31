@@ -6,10 +6,12 @@
   <title>What's next in 1.2.0</title>
   <!--
     A teaser of 1.2.0 (CHANGELOG.md), in the look of the 1.0.0 and 1.1.0 posters (whats-new.html, whats-next-1.1.0.html):
-    the five new chart widgets (Totals, Scatter (XY), Daily Profile, Min/Max, Ranking) as the real widgets
-    with the README screenshots' made-up readings (mock-*.js), Chart · Basic's free time spans (two stacked charts of
-    6 months and 40 minutes, drawn here), the Device names setting (its card drawn, Quick Actions with the full and the
-    short names) and the web editor's live preview (docs/web/preview.png, `npm run web-showcase -- preview`).
+    the eight new chart widgets (Totals, Scatter (XY), Daily Profile, Min/Max, Lines, Stacked, Timeline, Ranking) as the
+    real widgets with the README screenshots' made-up readings (mock-*.js), Chart · Basic's free time spans (two stacked
+    charts of 6 months and 40 minutes, drawn here), the Device names setting (its card drawn, Quick Actions with the full
+    and the short names), the web dashboards' sign-in codes (the settings page's Screens and browsers drawn, a made-up
+    code and its address as a real QR code, settings/qrcode.js) and the web editor's live preview (docs/web/preview.png,
+    `npm run web-showcase -- preview`).
     scripts/render-whats-next.mjs (`npm run whats-next`) renders it to docs/whats-next-1.2.0.png at 2x; the clock is
     fixed (fixed-clock.js).
   -->
@@ -23,6 +25,9 @@
   <link rel="stylesheet" href="../widgets/typicalday/public/widget.css">
   <link rel="stylesheet" href="../widgets/dailyrange/public/widget.css">
   <link rel="stylesheet" href="../widgets/compare/public/widget.css">
+  <link rel="stylesheet" href="../widgets/lines/public/widget.css">
+  <link rel="stylesheet" href="../widgets/stacked/public/widget.css">
+  <link rel="stylesheet" href="../widgets/timeline/public/widget.css">
   <link rel="stylesheet" href="../widgets/quickactions/public/widget.css">
   <script src="../widgets/spacer/public/kit.js"></script>
   <script src="../widgets/electricity/public/chart.js"></script>
@@ -32,6 +37,10 @@
   <script src="../widgets/typicalday/public/widget.js"></script>
   <script src="../widgets/dailyrange/public/widget.js"></script>
   <script src="../widgets/compare/public/widget.js"></script>
+  <script src="../widgets/lines/public/widget.js"></script>
+  <script src="../widgets/stacked/public/widget.js"></script>
+  <script src="../widgets/timeline/public/widget.js"></script>
+  <script src="../settings/qrcode.js"></script>
   <script src="../widgets/quickactions/public/widget.js"></script>
   <script src="../temp/screenshot-icons.js" onerror="window.ICONS = {}"></script>
   <script src="mock-util.js"></script>
@@ -40,6 +49,9 @@
   <script src="mock-typicalday.js"></script>
   <script src="mock-dailyrange.js"></script>
   <script src="mock-compare.js"></script>
+  <script src="mock-lines.js"></script>
+  <script src="mock-stacked.js"></script>
+  <script src="mock-timeline.js"></script>
   <script src="showcase-data.js"></script>
   <script src="showcase-mount.js"></script>
   <style>
@@ -63,7 +75,7 @@
     .eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 6px; font-size: 20px; line-height: 28px; font-weight: 700; color: #B9A6FF; }
     .eyebrow span { padding: 2px 10px; border-radius: 999px; background: rgba(185, 166, 255, 0.16); font-size: 13px; line-height: 20px; letter-spacing: 0.6px; text-transform: uppercase; }
     header p { margin: 8px 0 0; font-size: 22px; line-height: 30px; color: #B4B2C6; }
-    .chips { margin-left: auto; display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; max-width: 660px; }
+    .chips { margin-left: auto; display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; max-width: 640px; }
     .chips span { padding: 8px 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.07); color: #DCDAE8; font-size: 15px; font-weight: 500; }
     .chips b { font-weight: 700; color: #FFFFFF; }
 
@@ -89,7 +101,7 @@
     ul.more li { font-size: 15px; line-height: 21px; color: #A9A8B8; padding-left: 18px; position: relative; }
     ul.more li::before { content: ''; position: absolute; left: 2px; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: #8E6CFF; }
     ul.more b { color: #FFFFFF; font-weight: 500; }
-    .card + ul.more, .spans + .card, .names-card + .label { margin-top: 18px; }
+    .card + ul.more, .spans + .card, .names-card + .label, .names-card + .label + .signin, .signin + ul.more { margin-top: 18px; }
 
     /* Homey's widget frame: 16 px padding on the default widget background. */
     .card { padding: 16px; box-sizing: border-box; }
@@ -114,6 +126,23 @@
     .names-list li:first-child { border-top: 0; }
     .names-list b { color: #FFFFFF; font-weight: 500; }
 
+    /* Sign-in codes: the settings page's Screens and browsers, and the dashboards page asking for the code. */
+    .scr-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-top: 1px solid rgba(255, 255, 255, 0.07); }
+    .names-head + .scr-row { border-top: 0; }
+    .scr-row b { display: block; font-size: 15px; line-height: 20px; font-weight: 500; color: #E4E4E7; }
+    .scr-row small { display: block; font-size: 13px; line-height: 18px; color: #8E8DA0; }
+    .scr-row .btn { padding: 5px 10px; border-radius: 8px; background: #2B2C36; color: #DCDAE8; font-size: 13px; line-height: 18px; font-weight: 500; white-space: nowrap; }
+    .scr-new { margin: 6px 0 10px; padding: 12px 0 0; border-top: 1px solid rgba(255, 255, 255, 0.07); display: flex; gap: 16px; align-items: center; }
+    .scr-new .what { flex: 1 1 auto; min-width: 0; font-size: 14px; line-height: 20px; color: #8E8DA0; }
+    .scr-code { display: block; margin-top: 6px; font-size: 26px; line-height: 32px; font-weight: 700; letter-spacing: 2px; color: #FFFFFF; font-variant-numeric: tabular-nums; }
+    .scr-qr { flex: none; width: 96px; padding: 6px; background: #FFFFFF; border-radius: 6px; box-sizing: border-box; }
+    .scr-qr svg { display: block; width: 100%; height: auto; }
+    .signin { border-radius: 18px; background: #1F2029; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); padding: 14px 16px; }
+    .signin .field { display: flex; gap: 8px; }
+    .signin .input { flex: 1 1 auto; padding: 9px 12px; border-radius: 10px; background: #2B2C36; font-size: 16px; line-height: 20px; font-weight: 500; letter-spacing: 1px; color: #FFFFFF; }
+    .signin .go { padding: 9px 14px; border-radius: 10px; background: #339BFB; font-size: 15px; line-height: 20px; font-weight: 500; color: #FFFFFF; }
+    .signin .alt { margin-top: 10px; font-size: 14px; line-height: 20px; color: #8E8DA0; }
+
     .wide { margin-top: 24px; display: flex; gap: 40px; align-items: center; padding: 32px 40px 32px 36px; }
     .wide .text { flex: 1 1 auto; min-width: 0; }
     .wide p { margin-bottom: 22px; }
@@ -126,11 +155,12 @@
     <div>
       <div class="eyebrow">Widgetkeeper 1.2.0 <span>Coming soon</span></div>
       <h1>What's next in 1.2.0</h1>
-      <p>Five new chart widgets, any time span, a live preview and shorter device names.</p>
+      <p>Eight new charts, any time span, sign-in codes, a live preview and shorter device names.</p>
     </div>
     <div class="chips">
-      <span>Totals</span><span>Scatter (XY)</span><span>Daily Profile</span><span>Min/Max</span><span>Ranking</span>
-      <span>Charts → <b>Chart · Basic</b></span><span>Live preview</span><span>Device names</span>
+      <span>Totals</span><span>Scatter (XY)</span><span>Daily Profile</span><span>Min/Max</span>
+      <span>Lines</span><span>Stacked</span><span>Timeline</span><span>Ranking</span>
+      <span>Charts → <b>Chart · Basic</b></span><span>Sign-in codes</span><span>Live preview</span><span>Device names</span>
     </div>
   </header>
 
@@ -192,6 +222,42 @@
     <div class="column">
       <section class="feat">
         <span class="tag new">New widget</span>
+        <h2><span class="pre">Chart ·</span> Lines</h2>
+        <p>Up to six values as lines on one chart, such as every room's temperature, each in a colour of its own.</p>
+        <div class="card chart"><div id="w-lines"></div></div>
+        <ul class="more">
+          <li><b>A second scale</b> on the right for a different kind of value, such as humidity beside the temperatures.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="feat">
+        <span class="tag new">New widget</span>
+        <h2><span class="pre">Chart ·</span> Stacked</h2>
+        <p>Who uses the power? Up to six values stacked over time, and the rest of a total, such as the main meter, as Other.</p>
+        <div class="card chart"><div id="w-stacked"></div></div>
+        <ul class="more">
+          <li><b>Values below zero</b>, such as solar, stack downwards.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="feat">
+        <span class="tag new">New widget</span>
+        <h2><span class="pre">Chart ·</span> Timeline</h2>
+        <p>When was it on, open or moving? A row per value over the day: the heating, a motion sensor, the front door, the TV.</p>
+        <div class="card chart"><div id="w-timeline"></div></div>
+        <ul class="more">
+          <li><b>A number can be a row too</b>, on above or below a threshold.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="feat">
+        <span class="tag new">New widget</span>
         <h2><span class="pre">Chart ·</span> Ranking</h2>
         <p>One value from up to eight devices, side by side and sorted: each room's temperature now as a dot, its range today as a bar. Which room is warmest?</p>
         <div class="card chart"><div id="w-compare"></div></div>
@@ -201,6 +267,9 @@
       </section>
     </div>
 
+  </div>
+
+  <div class="columns">
     <div class="column">
       <section class="feat">
         <span class="tag">Chart · Basic</span>
@@ -239,9 +308,36 @@
 
     <div class="column">
       <section class="feat">
+        <span class="tag">Web dashboards</span>
+        <h2>Sign-in codes</h2>
+        <p>Sign a wall tablet, phone, computer or Nest Hub in with a short code or a QR code instead of pasting an API key. Each screen has a key of its own.</p>
+        <div class="names-card">
+          <div class="names-head"><b>Screens and browsers</b></div>
+          <div class="scr-row"><span><b>Kitchen tablet</b><small>Used today</small></span><span class="btn">New code</span></div>
+          <div class="scr-row"><span><b>Hall Nest Hub</b><small>Not used yet</small></span><span class="btn">New code</span></div>
+          <div class="scr-new">
+            <div class="what">Hall Nest Hub added. Its sign-in code:<span class="scr-code" id="scr-code"></span></div>
+            <div class="scr-qr" id="scr-qr"></div>
+          </div>
+        </div>
+        <div class="label">On the screen</div>
+        <div class="signin">
+          <div class="field"><span class="input" id="scr-typed"></span><span class="go">Sign in</span></div>
+          <div class="alt">Use an API key instead</div>
+        </div>
+        <ul class="more">
+          <li><b>Remove a screen</b> and its code stops working.</li>
+          <li><b>Setting the password</b> keeps your screens signed in.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="feat">
         <span class="tag">And also</span>
         <ul class="more">
           <li><b>Longer spans in detail:</b> two weeks or six months come from the Insights logs that hold them, stitched together, as detailed as Homey keeps them.</li>
+          <li><b>Key numbers at the top</b> of every chart widget; tap the chart for any point's.</li>
           <li><b>Smart Stack:</b> each new chart can be one of its pages.</li>
           <li><b>Chart · Totals</b> lists meters first when you pick its value.</li>
           <li><b>Web dashboards:</b> the new charts in the editor, with a picker for each value.</li>
@@ -269,12 +365,28 @@
       const el = id => document.getElementById(id);
       const NOW = Date.now(); // fixed-clock.js: the showcase's Tuesday 6 October 2026 at 18:40
 
-      // The five new charts as their README screenshots (mock-dashboard.js), from the same made-up readings.
+      // The eight new charts as their README screenshots (mock-dashboard.js), from the same made-up readings.
       MOUNT.totals(el('w-totals'), { opts: { period: 'thisYear', compare: true }, state: mockTotals.totalsState('thisYear', NOW) });
       MOUNT.scatter(el('w-scatter'), { opts: { span: '7d' }, state: mockScatter.scatterState('7d', NOW) });
       MOUNT.typicalday(el('w-typicalday'), { opts: {}, state: mockTypicalDay.typicalDayState(7, NOW) });
       MOUNT.dailyrange(el('w-dailyrange'), { opts: {}, state: mockDailyRange.dailyRangeState('4w', NOW) });
       MOUNT.compare(el('w-compare'), { opts: { count: 6 }, state: mockCompare.compareState('1d!', NOW) });
+      MOUNT.lines(el('w-lines'), { opts: { count: 4 }, state: mockLines.linesState('24h', NOW) });
+      MOUNT.stacked(el('w-stacked'), { opts: { total: true, count: 3, colors: ['orange', 'red', 'green'] }, state: mockStacked.stackedState('24h', NOW) });
+      MOUNT.timeline(el('w-timeline'), { opts: { colors: ['orange', 'yellow', 'red', 'blue'] }, state: mockTimeline.timelineState('1d!', NOW) });
+
+      // Sign-in codes: a made-up code (the codes' letters: no 0/O, 1/I/L or U) and the home address with it as a QR
+      // code, as the settings page draws it (qrcode-generator), on the live preview's made-up address.
+      const CODE = 'KX7P-M4TQ';
+      el('scr-code').textContent = CODE;
+      el('scr-typed').textContent = CODE;
+      const qr = window.qrcode(0, 'M');
+      qr.addData(`http://192.168.1.20/app/com.thomassidor.widgetkeeper/settings/dashboard.html#code=${CODE}`);
+      qr.make();
+      const n = qr.getModuleCount();
+      let d = '';
+      for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (qr.isDark(y, x)) d += `M${x} ${y}h1v1h-1z`;
+      el('scr-qr').innerHTML = `<svg viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges"><path d="${d}" fill="#000000"/></svg>`;
 
       // Chart · Basic: two stacked charts of very different spans. The outdoor temperature over the last 6 months
       // (a Danish year's curve with the weather's ups and downs, each point a day and a half's average) and the house's
