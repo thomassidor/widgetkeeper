@@ -443,7 +443,9 @@
         askCode(d, () => { unlocked.add(d.id); location.hash = `#/d/${d.id}/edit`; });
       });
       items.push(edit);
-      return bar(...items);
+      const node = bar(...items);
+      node.classList.add('wd-bar-view');
+      return node;
     }
 
     function editBar() {

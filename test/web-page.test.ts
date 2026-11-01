@@ -143,6 +143,40 @@ describe("web dashboards page: a widget's popup() opens only web addresses (webU
   });
 });
 
+describe('web dashboards page: kiosk mode (takeKiosk)', () => {
+  function kioskPage(address: string) {
+    const location = new URL(address);
+    const history = { replaceState: vi.fn((_s: unknown, _t: string, url: string) => { location.href = new URL(url, location.href).href; }) };
+    const { takeKiosk } = new Function('location', 'history', `${fn('takeKiosk')}\nreturn { takeKiosk };`)(location, history);
+    return { takeKiosk: takeKiosk as () => boolean, location, history };
+  }
+
+  it("reads it from the address's query", () => {
+    expect(kioskPage(`${PAGE}?kiosk=1#/d/kitchen`).takeKiosk()).toBe(true);
+    expect(kioskPage(`${PAGE}?kiosk=true#/d/kitchen`).takeKiosk()).toBe(true);
+    expect(kioskPage(`${PAGE}?kiosk=0#/d/kitchen`).takeKiosk()).toBe(false);
+    const plain = kioskPage(`${PAGE}#/d/kitchen`);
+    expect(plain.takeKiosk()).toBe(false);
+    expect(plain.history.replaceState).not.toHaveBeenCalled();
+  });
+
+  it("moves it from the hash's query to the address's, leaving a screen's code for takeCode", () => {
+    const route = kioskPage(`${PAGE}#/d/kitchen?kiosk=1`);
+    expect(route.takeKiosk()).toBe(true);
+    expect([route.location.search, route.location.hash]).toEqual(['?kiosk=1', '#/d/kitchen']);
+    const withCode = kioskPage(`${PAGE}#/d/kitchen?kiosk=1&code=ABCD-EFGH`);
+    expect(withCode.takeKiosk()).toBe(true);
+    expect(withCode.location.hash).toBe('#/d/kitchen?code=ABCD-EFGH');
+    const codeFirst = kioskPage(`${PAGE}?x=2#code=ABCD-EFGH&kiosk=1`);
+    expect(codeFirst.takeKiosk()).toBe(true);
+    expect([codeFirst.location.search, codeFirst.location.hash]).toEqual(['?x=2&kiosk=1', '#code=ABCD-EFGH']);
+    // Turned off again from the hash.
+    const off = kioskPage(`${PAGE}?kiosk=1#/d/kitchen?kiosk=0`);
+    expect(off.takeKiosk()).toBe(false);
+    expect(off.location.hash).toBe('#/d/kitchen');
+  });
+});
+
 describe("web dashboards page: a screen's code (takeCode, useCode)", () => {
   /** The page's code helpers, on an address, with `fetch` answering `answer` (status 200 unless given). */
   function codePage(hash: string, answer: unknown = null, status = 200) {

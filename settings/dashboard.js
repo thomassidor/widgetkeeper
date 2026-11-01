@@ -787,6 +787,26 @@
       return m[2];
     }
 
+    /**
+     * Kiosk mode (`?kiosk=1`, for a kiosk browser such as Fully Kiosk that fills the screen itself, set up remotely): a
+     * dashboard's bar loses the back link, title, pen and full screen button (`wd-kiosk` on html, dashboard.css). Read
+     * from the address's query, or from the hash's (`#/d/<id>?kiosk=1`, `#code=…&kiosk=1`), which is moved to the query,
+     * so the routes and a screen's code read the hash as before and kiosk mode holds while the hash changes.
+     */
+    function takeKiosk() {
+      const m = location.hash.match(/^#(\/[^?]*)?\??(.*)$/);
+      const query = new URLSearchParams(m ? m[2] : '');
+      if (m && query.has('kiosk')) {
+        const search = new URLSearchParams(location.search);
+        search.set('kiosk', query.get('kiosk') || '');
+        query.delete('kiosk');
+        const rest = query.toString();
+        const path = m[1] || '';
+        history.replaceState(null, '', `${location.pathname}?${search}#${path}${rest ? `${path ? '?' : ''}${rest}` : ''}`);
+      }
+      return /^(1|true|yes|on)$/i.test(new URLSearchParams(location.search).get('kiosk') || '');
+    }
+
     /** A key Homey no longer accepts: not kept, and the socket that used it stops. */
     function forgetKey() {
       wd.key = null;
@@ -860,6 +880,7 @@
     }
 
     async function start() {
+      document.documentElement.classList.toggle('wd-kiosk', takeKiosk());
       const code = takeCode();
       if (code) {
         const problem = await useCode(code);
@@ -880,6 +901,7 @@
     }
 
     window.addEventListener('hashchange', async () => {
+      if (/kiosk=/.test(location.hash)) { start(); return; } // kiosk mode turned on or off in an open page
       // A screen's code opened in a page already open: used as at a load.
       if (/code=/.test(location.hash)) { start(); return; }
       // Leaving the editor: wait for the last save, so the view shows what was saved.
