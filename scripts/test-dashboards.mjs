@@ -322,8 +322,12 @@ const BUILD = {
   },
 
   async cameras() {
-    // Synology Surveillance Station's cameras are class sensor: those with a camera image or a video count too.
-    const cams = where(d => ['camera', 'doorbell'].includes(cls(d)) || (d.images || []).some(i => i?.type === 'camera') || (d.videos || []).length > 0);
+    const cams = where(d => ['camera', 'doorbell'].includes(cls(d)));
+    // Camera 1 … 6: the slots' own list, the cameras the devices list leaves out first (Synology's are class sensor).
+    const listed = pick(await autocomplete('cameras', 'camera1'), () => true, 50);
+    const others = listed.filter(i => !cams.includes(i.id));
+    const slotCams = [...others, ...listed.filter(i => cams.includes(i.id))].slice(0, 6);
+    const repeat = listed.find(i => i.id === cams[0]); // the device picked as well, which shows once
     return { cols: 3, widgets: [
       wide(w('cameras', 'Three · large on top', { layout: 'top' }, cams.slice(0, 3))),
       w('cameras', 'One · 5 s', { refresh: '5' }, cams.slice(0, 1)),
@@ -337,6 +341,8 @@ const BUILD = {
       w('cameras', '12-hour times (a late snapshot shows its time) · 60 s', { refresh: '60', timeFormat: '12' }, cams.slice(0, 2)),
       w('cameras', '24-hour times · 60 s', { refresh: '60', timeFormat: '24' }, cams.slice(0, 2)),
       renaming('cameras', 'Rename tiles', {}, cams.slice(0, 2), cams[0] ? { [cams[0]]: 'Typed name' } : {}),
+      w('cameras', 'Camera slots after a device, it again in Camera 1 (shows once)', slots('camera', [repeat, ...others].filter(Boolean).slice(0, 6)), cams.slice(0, 1)),
+      w('cameras', 'Camera slots only', slots('camera', slotCams)),
     ] };
   },
 

@@ -44,7 +44,9 @@ window.mountCamerasWidget = function (Homey, { root, frame }) {
   });
 
   // The cameras (names, image and video ids) with their tile names, now and every 5 min; snapshots start with the first.
-  const cameras = wireDeviceState(Homey, link, widget, { tileNames, onState: startSnapshots });
+  // Camera 1 … 6 add cameras the `devices` list leaves out (Synology's are class sensor), after the picked ones.
+  const more = [1, 2, 3, 4, 5, 6].map(n => settings[`camera${n}`]?.id).filter(id => typeof id === 'string' && id && id !== 'none');
+  const cameras = wireDeviceState(Homey, link, widget, { tileNames, onState: startSnapshots, more });
 
   return {
     /** The Smart Stack: whether this page is the one on screen. */

@@ -94,6 +94,18 @@ describe('cameraImage / cameraVideos', () => {
   });
 });
 
+describe('listCameras', () => {
+  it('lists cameras, doorbells and any device with a camera picture or stream (Synology: class sensor), None first', async () => {
+    const synology = camera('syn', 'Garden', { class: 'sensor', images: [image('img-s')] });
+    const doorbell = camera('bell', 'Doorbird', { class: 'doorbell', images: [] });
+    const motion = Object.assign(fakeDevice({ id: 'pir', name: 'Hall motion', class: 'sensor', caps: {} }), { images: [] });
+    const art = camera('sonos', 'Sonos', { class: 'speaker', images: [image('img-a', 'media')] });
+    const { service } = setup([Object.assign(kitchen(), { class: 'camera' }), synology, doorbell, motion, art]);
+    expect((await service.listCameras('')).map(i => i.id)).toEqual(['none', 'bell', 'kitchen', 'syn']);
+    expect((await service.listCameras('gard')).map(i => i.id)).toEqual(['syn']);
+  });
+});
+
 describe('getState', () => {
   it('shows the name as the device names setting says', async () => {
     const { homey, service } = setup([camera('kitchen', 'E1 Kitchen | Hall', { images: [], videos: [] })]);

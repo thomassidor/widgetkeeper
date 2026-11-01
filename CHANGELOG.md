@@ -35,7 +35,7 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Six more colours** wherever you pick one: teal, cyan, indigo, pink, brown and grey, in Muted and Vivid. The Flow cards that colour a Device Values tile, a Flow Button or a note offer them too.
 
 ### Cameras
-- **Synology Surveillance Station's cameras** can now be picked: they call themselves sensors, so the widget's device list left them out. The list on the phone now shows your sensors too; pick the cameras among them. The web dashboards' list shows only the sensors with a camera picture or video.
+- **Synology Surveillance Station's cameras, and any other camera missing from the device list:** the new Camera 1 to 6 settings list every device with a snapshot or video, whatever kind of device it calls itself (Synology's call themselves sensors). They show after the cameras picked in the device list.
 
 ## 1.1.2
 

@@ -639,17 +639,18 @@
    * `selectDevices` (or what `need()` says is missing); a failed refresh keeps the tiles with a passing message, only
    * a failed first load replaces them. `tileNames` (the mount's `wireTileNames()`) reads the names with it; `query()`
    * adds to the request; `setState(state)` hands the answer to the widget (default `widget.setState(state)`), and
-   * `onState(state)` runs after each good one. Ready is told after the first load, once the
+   * `onState(state)` runs after each good one. `more` are ids picked another way (the Cameras widget's Camera slots),
+   * after the `devices` setting's, a repeat left out. Ready is told after the first load, once the
    * text font is in (at most 1 s), so the names don't pop in after the icons.
    * @param {any} Homey
    * @param {{ ready: (opts?: object) => Promise<void>, perfParam: (sep?: string) => string }} link the mount's `wireFrame()`
    * @param {any} widget
    * @param {{ event?: string | null, tileNames?: { state: (path: string) => Promise<any> } | null, query?: () => string,
    *   need?: (ids: string[]) => string | null, watches?: (id: string) => boolean, setState?: ((state: any) => void) | null,
-   *   onState?: ((state: any) => void) | null }} [opts]
+   *   onState?: ((state: any) => void) | null, more?: string[] }} [opts]
    */
   function wireDeviceState(Homey, link, widget, {
-    event = null, tileNames = null, query = () => '', need = () => null, watches = () => false, setState = null, onState = null,
+    event = null, tileNames = null, query = () => '', need = () => null, watches = () => false, setState = null, onState = null, more = [],
   } = {}) {
     let deviceIds = [];
     let loaded = false;
@@ -685,14 +686,14 @@
       });
     }
     getDeviceIds(Homey)
-      .then((ids) => { deviceIds = ids; })
+      .then((ids) => { deviceIds = [...new Set([...ids, ...more])]; })
       .then(() => {
         setInterval(load, DEVICE_REFRESH_MS);
         onDeviceNames(Homey, load);
         load();
       });
     return {
-      /** The `devices` setting's ids (empty until read). */
+      /** The `devices` setting's ids, then `more` (empty until read). */
       ids: () => deviceIds,
       /** Whether a `/state` has come. */
       loaded: () => loaded,

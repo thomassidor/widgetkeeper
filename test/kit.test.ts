@@ -288,6 +288,13 @@ describe('wireDeviceState()', () => {
     expect(widget.pushChange).toHaveBeenCalledTimes(1);
   });
 
+  it('adds `more` ids after the devices, without repeats', async () => {
+    const { Homey, devices } = setup({ more: ['b c', 'x'] });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(Homey.api).toHaveBeenCalledWith('GET', '/state?deviceIds=a,b%20c,x&perf=1');
+    expect(devices.ids()).toEqual(['a', 'b c', 'x']);
+  });
+
   it('reads through the tile names when given, and `watches` adds devices to the realtime filter', async () => {
     const tileNames = { state: vi.fn(async () => []) };
     const { Homey, widget, handlers } = setup({ event: 'x:state', tileNames, watches: (id: string) => id === 'member' });

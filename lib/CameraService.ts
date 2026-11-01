@@ -1,5 +1,6 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
+import { listDevicesWhere, withNone, type AutocompleteItem } from './autocomplete.js';
 import { isTransientError, readFresh } from './DeviceTracker.js';
 import { deviceImage, fetchDeviceIcon, fetchImageBase64, type DeviceImage } from './deviceIcon.js';
 import { deviceNamer } from './deviceNames.js';
@@ -64,9 +65,8 @@ export function h265Videos(device: any): string[] {
 }
 
 /**
- * Whether a device has a camera's picture or stream: a `camera` image or a video. The Cameras widget's `devices`
- * filter also takes class `sensor` (Synology Surveillance Station's cameras, 1.2.0), which Homey's filter can't narrow
- * further, so the web editor's picker keeps only the sensors this says are cameras.
+ * Whether a device has a camera's picture or stream: a `camera` image or a video, whatever its class (Synology
+ * Surveillance Station's cameras are class `sensor`, which the `devices` filter, by class only, leaves out).
  */
 export function hasCameraMedia(device: any): boolean {
   const images: any[] = Array.isArray(device?.images) ? device.images : [];
@@ -100,6 +100,15 @@ export default class CameraService {
     this.last.clear();
     this.imageUrls.clear();
     this.requested.clear();
+  }
+
+  /**
+   * The Camera 1 … 6 settings: `None`, then every camera, doorbell or device with a camera image or a video, as the
+   * `devices` setting's filter can only ask for classes.
+   */
+  async listCameras(query: string): Promise<AutocompleteItem[]> {
+    const items = await listDevicesWhere(this.homey, query, d => d?.class === 'camera' || d?.class === 'doorbell' || hasCameraMedia(d));
+    return withNone(this.homey.__('values.none') || 'None', query, items);
   }
 
   /** One entry per device, in the order asked for. A deleted device doesn't fail the others. */

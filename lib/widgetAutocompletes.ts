@@ -19,6 +19,7 @@ const SHORTCUT_SLOTS = [1, 2, 3, 4, 5, 6, 7, 8];
 const MEDIA_BUTTONS = [1, 2, 3, 4, 5, 6, 7, 8];
 const DAYS_SINCE_COUNTERS = [1, 2, 3, 4, 5, 6, 7, 8];
 const MATRIX_COLUMNS = [1, 2, 3, 4, 5, 6];
+const CAMERA_SLOTS = [1, 2, 3, 4, 5, 6];
 
 /**
  * Every autocomplete setting's listener, by widget and setting id. `app.ts` registers them with Homey (the widget
@@ -97,6 +98,9 @@ export function widgetAutocompletes(app: WidgetkeeperApp): Record<string, Record
 
   // Media: the speaker, then each button's Flow card of that speaker or flow, and its icon.
   add('media', 'device', query => app.media.listDevices(query));
+
+  // Cameras: the cameras the `devices` list leaves out (any device with a camera image or a video).
+  for (const n of CAMERA_SLOTS) add('cameras', `camera${n}`, query => app.cameras.listCameras(query));
   for (const n of MEDIA_BUTTONS) {
     add('media', `button${n}`, (query, settings) => app.media.listButtons(settings?.device?.id, query));
     add('media', `button${n}Icon`, async query => app.flows.listIcons(query, { none: true }));

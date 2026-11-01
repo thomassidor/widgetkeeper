@@ -108,6 +108,49 @@ describe('layout', () => {
   });
 });
 
+describe('Camera slots', () => {
+  it('adds the Camera 1 … 6 picks after the devices, a repeat or None left out', async () => {
+    vi.useFakeTimers();
+    try {
+      loadMount('cameras');
+      const root = document.createElement('div');
+      document.body.append(root);
+      const api = vi.fn(async (_m: string, path: string): Promise<any> => (path.startsWith('/state')
+        ? { state: [], tileNames: {} } : new Promise(() => {})));
+      const Homey = {
+        api, on: vi.fn(), ready: vi.fn(), setHeight: vi.fn(), getWidgetInstanceId: () => 'w1', __: (key: string) => key,
+        getSettings: () => ({ camera1: { id: 'syn1', name: 'Garden' }, camera2: { id: 'none', name: 'None' }, camera3: { id: 'a' }, camera6: { id: 'syn2' } }),
+        getDeviceIds: () => ['a', 'b'],
+      };
+      win.mountCamerasWidget(Homey, { root, frame: root });
+      await vi.advanceTimersByTimeAsync(100);
+      expect(api.mock.calls.find(([, path]) => path.startsWith('/state'))?.[1]).toMatch(/^\/state\?deviceIds=a,b,syn1,syn2&/);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('shows the slots alone when no device is picked', async () => {
+    vi.useFakeTimers();
+    try {
+      loadMount('cameras');
+      const root = document.createElement('div');
+      document.body.append(root);
+      const api = vi.fn(async (_m: string, path: string): Promise<any> => (path.startsWith('/state')
+        ? { state: [cam('syn1')], tileNames: {} } : new Promise(() => {})));
+      const Homey = {
+        api, on: vi.fn(), ready: vi.fn(), setHeight: vi.fn(), getWidgetInstanceId: () => 'w1', __: (key: string) => key,
+        getSettings: () => ({ camera1: { id: 'syn1', name: 'Garden' } }), getDeviceIds: () => [],
+      };
+      win.mountCamerasWidget(Homey, { root, frame: root });
+      await vi.advanceTimersByTimeAsync(100);
+      expect(root.querySelectorAll('.cw-tile')).toHaveLength(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
 describe('snapshots', () => {
   it('loads each snapshot from its URL, cache-busted, and swaps it in once loaded', async () => {
     const { w, tile } = widget([cam('a'), cam('b', { image: null })]);

@@ -1,6 +1,5 @@
 import { readFile } from 'node:fs/promises';
 import type Homey from 'homey';
-import { hasCameraMedia } from './CameraService.js';
 import { repeatKeys, type default as TileNameService } from './TileNameService.js';
 import { devicesAndZones, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { describeCapability } from './capabilities.js';
@@ -294,15 +293,6 @@ export function passesDeviceFilter(device: any, filter: Record<string, unknown> 
   return true;
 }
 
-/**
- * A narrower check for a widget whose manifest filter takes more than it shows, as Homey's filter knows only classes and
- * capabilities: the Cameras widget's `sensor` class is for cameras that call themselves sensors (Synology's), so the
- * picker leaves out the sensors without a camera image or video. The phone's picker shows every sensor.
- */
-const DEVICE_CHECKS: Record<string, (device: any) => boolean> = {
-  cameras: d => [d?.class, d?.virtualClass].some(c => c === 'camera' || c === 'doorbell') || hasCameraMedia(d),
-};
-
 /** Another app's widget type (`homey:app:<appId>:<widgetId>`), split; null for ours, a malformed one or our own app's. */
 export function foreignWidget(type: unknown, ownAppId: string): { appId: string, widgetId: string } | null {
   const m = typeof type === 'string' ? FOREIGN.exec(type) : null;
@@ -585,7 +575,6 @@ export default class WebDashboardService {
     const [devices, zones] = await devicesAndZones(this.homey);
     return devices
       .filter(d => passesDeviceFilter(d, filter))
-      .filter(d => other || !Object.prototype.hasOwnProperty.call(DEVICE_CHECKS, type) || DEVICE_CHECKS[type](d))
       .filter(d => !other || !foreign.app || deviceApp(d) === `homey:app:${other.appId}`)
       .map(d => webDevice(d, zones))
       .filter(d => matches(query, d.name, d.zone?.name))
