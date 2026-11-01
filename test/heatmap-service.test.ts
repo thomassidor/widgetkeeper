@@ -322,6 +322,80 @@ describe('HeatmapService', () => {
     await service.stop();
   });
 
+  it('tries a failed backfill again after a minute, not on every request', async () => {
+    let busy = true;
+    const { api, service } = setup({
+      logEntries: () => { if (busy) throw Object.assign(new Error('Too many requests.'), { statusCode: 429 }); return { values: [] }; },
+    });
+    await service.getHistory('hue', 'alarm_motion');
+    await service.getHistory('hue', 'alarm_motion');
+    expect(api.insights.getLogEntries).toHaveBeenCalledTimes(1);
+    busy = false;
+    vi.advanceTimersByTime(60e3 + 1);
+    await service.getHistory('hue', 'alarm_motion');
+    expect(api.insights.getLogEntries).toHaveBeenCalledTimes(2);
+    await service.stop();
+  });
+
+  it('tries a saved recording again when it could not subscribe at start, without a widget asking', async () => {
+    const first = setup();
+    await first.service.getHistory('hue', 'alarm_motion');
+    await first.service.stop();
+
+    const device = sensor();
+    const api = fakeApi({ devices: [device] });
+    const log = vi.fn();
+    const service = new HeatmapService(fakeHomey(api), log, () => {}, historyFile(first.file.text));
+    api.devices.getDevice.mockRejectedValueOnce(Object.assign(new Error('Timeout after 10000ms'), { statusCode: 408 }));
+    service.start();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(log).toHaveBeenCalledWith('Could not record alarm_motion of hue:', expect.any(Error));
+    expect(device.listenerCount('alarm_motion')).toBe(0);
+    await vi.advanceTimersByTimeAsync(60e3); // the next tick
+    expect(device.listenerCount('alarm_motion')).toBe(1);
+    expect(log).toHaveBeenCalledTimes(1); // the retry logs at debug only
+    await service.stop();
+  });
+
+  it('tries a recording whose device could not be read again after 10 minutes', async () => {
+    const first = setup();
+    await first.service.getHistory('hue', 'alarm_motion');
+    await first.service.stop();
+
+    const device = sensor();
+    const api = fakeApi({ devices: [device] });
+    const service = new HeatmapService(fakeHomey(api), () => {}, () => {}, historyFile(first.file.text));
+    api.devices.getDevice.mockRejectedValueOnce(new Error('Not Found: Device'));
+    service.start();
+    await vi.advanceTimersByTimeAsync(9 * 60e3);
+    expect(api.devices.getDevice).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(2 * 60e3);
+    expect(api.devices.getDevice).toHaveBeenCalledTimes(2);
+    expect(device.listenerCount('alarm_motion')).toBe(1);
+    await service.stop();
+  });
+
+  it('subscribes to nothing and writes nothing more when stopped while a saved recording is being subscribed', async () => {
+    const first = setup();
+    await first.service.getHistory('hue', 'alarm_motion');
+    await first.service.stop();
+
+    const device = sensor();
+    const api = fakeApi({ devices: [device] });
+    const file = historyFile(first.file.text);
+    const service = new HeatmapService(fakeHomey(api), () => {}, () => {}, file);
+    let answer: (d: any) => void = () => {};
+    api.devices.getDevice.mockImplementationOnce(() => new Promise((resolve) => { answer = resolve; }));
+    service.start();
+    await vi.advanceTimersByTimeAsync(0);
+    await service.stop();
+    const writes = file.writes();
+    answer(device);
+    await vi.advanceTimersByTimeAsync(TEN_MINUTES * 2);
+    expect(device.listenerCount('alarm_motion')).toBe(0);
+    expect(file.writes()).toBe(writes);
+  });
+
   it('writes the history 10 minutes after a change, once for a burst', async () => {
     const { device, service, file } = setup();
     await service.getHistory('hue', 'alarm_motion'); // a new recording: written too

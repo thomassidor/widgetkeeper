@@ -440,7 +440,9 @@ describe('usage', () => {
           : { values: [{ t: new Date(NOW - 20 * MINUTE).toISOString(), v: 250 }] };
       },
     });
-    expect((await service.getSnapshot('m1')).usage).toEqual([]);
+    const first = service.getSnapshot('m1');
+    await vi.advanceTimersByTimeAsync(2e3); // the usage's second look waits out the Insights pause after a busy answer
+    expect((await first).usage).toEqual([]);
     busy = false;
     vi.setSystemTime(NOW + 6 * MINUTE);
     const { usage, live } = await service.getSnapshot('m1');
@@ -593,6 +595,43 @@ describe('price history (Chart · Totals\' cost, 1.2.0)', () => {
   it('gives the fixed price instead of hours', async () => {
     const { service } = history({ priceType: 'fixed', fixedPrice: { value: { costs: { user_fixed_base: { value: 2 } } } } });
     expect(await service.getPriceHistory(day('2026-01-01'), NOW)).toEqual({ currency: 'DKK', fixed: 2, hours: [], missing: 0, pending: 0 });
+  });
+
+  it('lets go of the kept days 10 minutes after the last ask, writing them first, and reads them again from the file', async () => {
+    const storage = memoryStorage();
+    const { api, service } = history({}, storage);
+    const kept = () => (service as any).history.loaded;
+    await service.getPriceHistory(day('2026-01-09'), day('2026-01-12'));
+    expect(kept()).toBe(true);
+    await vi.advanceTimersByTimeAsync(9 * 60e3);
+    await service.getPriceHistory(day('2026-01-09'), day('2026-01-12')); // asked again: kept 10 min from now
+    await vi.advanceTimersByTimeAsync(9 * 60e3);
+    expect(kept()).toBe(true);
+    await vi.advanceTimersByTimeAsync(60e3);
+    expect(kept()).toBe(false);
+    expect(Object.keys(JSON.parse(storage.text!).days)).toEqual(['2026-01-09', '2026-01-10', '2026-01-11']);
+    api.energy.fetchDynamicElectricityPrices.mockClear();
+    expect((await service.getPriceHistory(day('2026-01-09'), day('2026-01-12'))).hours).toHaveLength(3 * 24);
+    expect(api.energy.fetchDynamicElectricityPrices).not.toHaveBeenCalled();
+    await service.stop();
+  });
+
+  it("counts the kept days for the diagnostics without keeping them, and writes nothing for a read that ends after stop", async () => {
+    const storage = memoryStorage(JSON.stringify({ v: 1, days: { '2026-01-09': [[day('2026-01-09'), 1]] } }));
+    let answer: () => void = () => {};
+    const { service } = history({
+      prices: async ({ date }) => { await new Promise<void>((r) => { answer = r; }); return dayPrices(date); },
+    }, storage);
+    expect(await service.describe()).toMatchObject({ priceHistoryDays: 1 });
+    expect((service as any).history.loaded).toBe(false);
+    const write = vi.spyOn(storage, 'write');
+    const p = service.getPriceHistory(day('2026-01-10'), day('2026-01-11'));
+    await vi.advanceTimersByTimeAsync(8e3);
+    await p; // answered without the day, still being read
+    await service.stop();
+    answer();
+    await vi.advanceTimersByTimeAsync(60e3);
+    expect(write).not.toHaveBeenCalled();
   });
 
   it('reads a damaged file as empty and logs it', async () => {

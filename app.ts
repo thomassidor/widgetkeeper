@@ -194,27 +194,27 @@ export default class WidgetkeeperApp extends Homey.App {
     this.diagnostics?.add('error', args);
   }
 
+  /**
+   * The services that keep something (a debounced write) stop first, so it's written before anything waits on the
+   * network (Variables lets go of its Logic subscription); each group stops at once, and one that throws doesn't keep
+   * the others from stopping.
+   */
   async onUninit() {
-    await this.electricity?.stop();
-    await this.thermostat?.stop();
-    await this.quickActions?.stop();
-    await this.sensorAlarms?.stop();
-    await this.roomHealth?.stop();
-    await this.valueMatrix?.stop();
-    await this.weather?.stop();
-    await this.pollen?.stop();
-    await this.heatmap?.stop();
-    await this.cameras?.stop();
-    await this.values?.stop();
-    await this.lights?.stop();
-    await this.sparklines?.stop();
-    await this.variables?.stop();
-    await this.timers?.stop();
-    await this.daysSince?.stop();
-    await this.locks?.stop();
-    await this.curtains?.stop();
-    await this.media?.stop();
-    this.popups?.stop();
+    await this.stopAll({
+      timers: this.timers, daysSince: this.daysSince, popups: this.popups, heatmap: this.heatmap, electricity: this.electricity,
+    });
+    await this.stopAll({
+      thermostat: this.thermostat, quickActions: this.quickActions, sensorAlarms: this.sensorAlarms, roomHealth: this.roomHealth,
+      valueMatrix: this.valueMatrix, weather: this.weather, pollen: this.pollen, cameras: this.cameras, values: this.values,
+      lights: this.lights, sparklines: this.sparklines, variables: this.variables, locks: this.locks, curtains: this.curtains,
+      media: this.media,
+    });
+  }
+
+  private async stopAll(services: Record<string, { stop(): unknown } | undefined>) {
+    const names = Object.keys(services);
+    const results = await Promise.allSettled(names.map(async name => services[name]?.stop()));
+    results.forEach((r, i) => { if (r.status === 'rejected') this.log(`Could not stop ${names[i]}:`, r.reason); });
   }
 
   /** Every widget's autocomplete settings (`lib/widgetAutocompletes.ts`, which the web dashboards' editor uses too). */

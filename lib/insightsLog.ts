@@ -14,20 +14,65 @@ const LOG_ALIASES: Record<string, string[]> = {
  * Electricity Overview) sent ~20 at once, and Homey answers a burst of log reads with `Too many requests`.
  */
 const MAX_CONCURRENT_READS = 6;
+/** After a read failed because Homey was busy (`isTransientError()`): no new read starts for this long… */
+const BUSY_PAUSE = 2e3;
+/** …and then at most this many run at once for `BUSY_WINDOW`, so the queue doesn't hit a busy Homey at full rate again. */
+const BUSY_CONCURRENT_READS = 2;
+const BUSY_WINDOW = 30e3;
+
 let running = 0;
 const waiting: (() => void)[] = [];
+let pausedUntil = 0;
+let slowUntil = 0;
+let wakeTimer: ReturnType<typeof setTimeout> | null = null;
 
-/** `read()` once fewer than `MAX_CONCURRENT_READS` Insights reads are running (in the order asked). */
+function allowed(now: number): number {
+  if (now < pausedUntil) return 0;
+  return now < slowUntil ? BUSY_CONCURRENT_READS : MAX_CONCURRENT_READS;
+}
+
+/** Starts the reads waiting, in the order asked, as far as `allowed()` lets; while paused, again once the pause is over. */
+function pump() {
+  const now = Date.now();
+  while (waiting.length && running < allowed(now)) {
+    running++;
+    waiting.shift()!();
+  }
+  if (waiting.length && now < pausedUntil && !wakeTimer) {
+    wakeTimer = setTimeout(() => { wakeTimer = null; pump(); }, pausedUntil - now);
+    (wakeTimer as { unref?: () => void }).unref?.();
+  }
+}
+
+/**
+ * `read()` once fewer than `MAX_CONCURRENT_READS` Insights reads are running (in the order asked). A read that fails
+ * because Homey is busy pauses the queue for `BUSY_PAUSE`, then lets only `BUSY_CONCURRENT_READS` run for `BUSY_WINDOW`.
+ */
 export async function limitInsights<T>(read: () => Promise<T>): Promise<T> {
-  if (running < MAX_CONCURRENT_READS) running++;
-  else await new Promise<void>(resolve => waiting.push(resolve)); // a finishing read hands its place over
+  if (!waiting.length && running < allowed(Date.now())) running++;
+  else await new Promise<void>((resolve) => { waiting.push(resolve); pump(); });
   try {
     return await read();
+  } catch (err) {
+    if (isTransientError(err)) {
+      const now = Date.now();
+      pausedUntil = Math.max(pausedUntil, now + BUSY_PAUSE);
+      slowUntil = Math.max(slowUntil, now + BUSY_WINDOW);
+    }
+    throw err;
   } finally {
-    const next = waiting.shift();
-    if (next) next();
-    else running--;
+    running--;
+    pump();
   }
+}
+
+/** Forgets a busy Homey (the tests: each starts with a fresh limiter). */
+export function resetInsightsLimit() {
+  pausedUntil = 0;
+  slowUntil = 0;
+  if (wakeTimer) clearTimeout(wakeTimer);
+  wakeTimer = null;
+  pump();
 }
 
 /** The Insights log ids that may hold a capability's history, in the order to try them. */

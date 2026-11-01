@@ -6,6 +6,7 @@ process.env.TZ = 'Europe/Copenhagen';
 export default defineConfig({
   test: {
     include: ['test/**/*.test.ts'],
+    setupFiles: ['test/helpers/setup.ts'],
     // `npm run coverage`: a report (coverage/index.html and a summary), not a gate. The widget and page scripts run
     // unchanged in the tests, under their own file names (test/helpers/loadWidget.ts' `runFile()`), so they're counted too.
     coverage: {

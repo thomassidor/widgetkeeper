@@ -135,6 +135,18 @@ describe('getForecast', () => {
     await expect(service.getForecast()).rejects.toThrow('offline');
   });
 
+  it('answers a failed first fetch again for a minute without fetching, then tries again', async () => {
+    const { service } = setup();
+    fetchMock.mockRejectedValueOnce(new Error('offline'));
+    await expect(service.getForecast()).rejects.toThrow('offline');
+    vi.setSystemTime(NOW + 59e3);
+    await expect(service.getForecast()).rejects.toThrow('offline');
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    vi.setSystemTime(NOW + 60e3);
+    expect((await service.getForecast()).hours.length).toBeGreaterThan(0);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
   it('reports a missing location instead of fetching', async () => {
     const { homey, service } = setup();
     homey.geolocation.getLatitude = () => 0;
