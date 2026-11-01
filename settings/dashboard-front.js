@@ -339,7 +339,8 @@
                 await loadSetup(); // the dashboards and the front page's choices as restored
                 if (location.hash === '#/edit') renderList(true); // behind the dialog
                 show(null);
-                status.textContent = t('backupRestored', { dashboards: res.dashboards, widgets: res.widgets });
+                // Restored either way: an answer without the counts mustn't turn that into a failure.
+                status.textContent = t('backupRestored', { dashboards: (res && res.dashboards) || 0, widgets: (res && res.widgets) || 0 });
               } catch (err) {
                 list.busy(false);
                 if (/Not a Widgetkeeper backup/.test(String(err && err.message))) {

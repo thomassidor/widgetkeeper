@@ -298,6 +298,29 @@ describe('wireDeviceState()', () => {
     expect(widget.pushChange).toHaveBeenCalledTimes(1);
   });
 
+  it('an older /state that answers after a newer one is dropped, its failure too', async () => {
+    const { Homey, widget, handlers } = setup();
+    const answers: Array<{ resolve: (v: any) => void, reject: (e: any) => void }> = [];
+    Homey.api.mockImplementation(() => new Promise((resolve, reject) => { answers.push({ resolve, reject }); }));
+    await vi.advanceTimersByTimeAsync(0); // the first load, still waiting
+    handlers['devicenames:state']({}); // a second one meanwhile
+    expect(answers).toHaveLength(2);
+    answers[1].resolve([{ id: 'a', name: 'new' }]);
+    await vi.advanceTimersByTimeAsync(0);
+    answers[0].resolve([{ id: 'a', name: 'old' }]);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(widget.setState).toHaveBeenCalledTimes(1);
+    expect(widget.setState).toHaveBeenCalledWith([{ id: 'a', name: 'new' }]);
+    // A stale failure doesn't say error over the newer answer either.
+    handlers['devicenames:state']({});
+    handlers['devicenames:state']({});
+    answers[3].resolve([{ id: 'a', name: 'newest' }]);
+    answers[2].reject(new Error('slow'));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(widget.setMessage).not.toHaveBeenCalled();
+    expect(widget.setState).toHaveBeenLastCalledWith([{ id: 'a', name: 'newest' }]);
+  });
+
   it('`setState` takes an answer the widget wants in another shape', async () => {
     const setState = vi.fn();
     const onState = vi.fn();
