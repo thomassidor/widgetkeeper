@@ -22,6 +22,9 @@
   <div class="col"><span>358 px · dark · lighter tile · doors: long press</span><div class="dash homey-dark-mode" style="width:358px"><div id="w2"></div></div></div>
   <div class="col"><span>358 px · light · blue tint · doors: double press</span><div class="dash light" style="width:358px"><div id="w3"></div></div></div>
   <div class="col"><span>358 px · light · lighter tile · doors: long press</span><div class="dash light" style="width:358px"><div id="w4"></div></div></div>
+  <div class="col"><span>358 px · dark · pill · blue tint</span><div class="dash homey-dark-mode" style="width:358px"><div id="w6"></div></div></div>
+  <div class="col"><span>358 px · light · pill · Vivid</span><div class="dash light" style="width:358px"><div id="w7"></div></div></div>
+  <div class="col"><span>300 px · dark · pill · lighter tile (Tiles per row 3: still 2)</span><div class="dash homey-dark-mode" style="width:300px"><div id="w8"></div></div></div>
   <div class="col"><span>358 px · no devices</span><div class="dash homey-dark-mode" style="width:358px"><div id="w5"></div></div></div>
 
   <script>
@@ -40,11 +43,15 @@
       { id: 'g', name: 'Back Door Sensor', icon: null, quickAction: null },
       { id: 'h', missing: true },
     ];
-    for (const [id, activeStyle, press] of [['w1', 'tint', 'double'], ['w2', 'lighter', 'long'], ['w3', 'tint', 'double'], ['w4', 'lighter', 'long']]) {
+    for (const [id, activeStyle, press, tileStyle, colorStyle, columns] of [['w1', 'tint', 'double'], ['w2', 'lighter', 'long'], ['w3', 'tint', 'double'], ['w4', 'lighter', 'long'],
+      ['w6', 'tint', 'double', 'pill', 'soft', '2'], ['w7', 'tint', 'double', 'pill', 'deep', '2'], ['w8', 'lighter', 'long', 'pill', 'soft', '3']]) {
       let w;
       w = createQuickActionsWidget(document.getElementById(id), {
         t: devT,
         activeStyle,
+        tileStyle,
+        colorStyle,
+        columns,
         press,
         pressFor: 'locks', // only the doors
         // Simulate the device confirming after a moment.

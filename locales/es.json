@@ -42,7 +42,15 @@
     "unavailable": "No disponible",
     "renameFailed": "No se pudo guardar el nombre.",
     "tapAgain": "Toca otra vez",
-    "hold": "Mantén pulsado"
+    "hold": "Mantén pulsado",
+    "on": "Encendido",
+    "off": "Apagado",
+    "locked": "Cerrado con llave",
+    "unlocked": "Desbloqueado",
+    "open": "Abierto",
+    "closed": "Cerrado",
+    "playing": "Reproduciendo",
+    "paused": "En pausa"
   },
   "sensoralarms": {
     "selectDevices": "Elige sensores en los ajustes del widget.",

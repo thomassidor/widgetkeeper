@@ -39,6 +39,7 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 
 ### Device Quick Actions
 - **Tiles per row:** 3 as before, or 2 for wider tiles with room for longer names.
+- **Pill tiles**, as Device Values has: the icon beside the name, with the state (*On*, *Locked*, *Playing* …) under it, 2 per row. **Tile style** in the widget's settings.
 
 ## 1.1.2
 

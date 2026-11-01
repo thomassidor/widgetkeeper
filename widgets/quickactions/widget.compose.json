@@ -115,6 +115,79 @@
       ]
     },
     {
+      "id": "tileStyle",
+      "type": "dropdown",
+      "title": {
+        "en": "Tile style",
+        "nl": "Tegelstijl",
+        "de": "Kachelstil",
+        "fr": "Style des tuiles",
+        "it": "Stile dei riquadri",
+        "sv": "Rutstil",
+        "no": "Flisstil",
+        "es": "Estilo de mosaico",
+        "da": "Feltstil",
+        "ru": "Стиль плиток",
+        "pl": "Styl kafelków",
+        "ko": "타일 스타일",
+        "ar": "نمط البلاطات"
+      },
+      "hint": {
+        "en": "Pill: the icon beside the name and state, like Sensor Alarms' tiles, 2 per row.",
+        "nl": "Pil: het pictogram naast de naam en status, zoals de tegels van Sensoralarmen, 2 per rij.",
+        "de": "Kapsel: das Symbol neben Name und Zustand, wie die Kacheln von Sensoralarme, 2 pro Zeile.",
+        "fr": "Pilule : l'icône à côté du nom et de l'état, comme les tuiles d'Alarmes des capteurs, 2 par ligne.",
+        "it": "Pillola: l'icona accanto al nome e allo stato, come i riquadri di Allarmi sensori, 2 per riga.",
+        "sv": "Kapsel: ikonen bredvid namnet och läget, som rutorna i Sensorlarm, 2 per rad.",
+        "no": "Kapsel: ikonet ved siden av navnet og tilstanden, som flisene i Sensoralarmer, 2 per rad.",
+        "es": "Píldora: el icono junto al nombre y el estado, como los mosaicos de Alarmas de sensores, 2 por fila.",
+        "da": "Kapsel: ikonet ved siden af navnet og tilstanden, som felterne i Sensoralarmer, 2 pr. række.",
+        "ru": "Капсула: значок рядом с именем и состоянием, как плитки «Тревоги датчиков», по 2 в ряд.",
+        "pl": "Pigułka: ikona obok nazwy i stanu, jak kafelki Alarmów czujników, 2 w rzędzie.",
+        "ko": "알약형: 센서 알람의 타일처럼 아이콘이 이름과 상태 옆에 놓이며, 한 줄에 2개입니다.",
+        "ar": "كبسولة: الأيقونة بجانب الاسم والحالة، مثل بلاطات إنذارات المستشعرات، 2 في كل صف."
+      },
+      "value": "compact",
+      "values": [
+        {
+          "id": "compact",
+          "title": {
+            "en": "Compact",
+            "nl": "Compact",
+            "de": "Kompakt",
+            "fr": "Compact",
+            "it": "Compatto",
+            "sv": "Kompakt",
+            "no": "Kompakt",
+            "es": "Compacto",
+            "da": "Kompakt",
+            "ru": "Компактный",
+            "pl": "Kompaktowy",
+            "ko": "컴팩트",
+            "ar": "مدمج"
+          }
+        },
+        {
+          "id": "pill",
+          "title": {
+            "en": "Pill",
+            "nl": "Pil",
+            "de": "Kapsel",
+            "fr": "Pilule",
+            "it": "Pillola",
+            "sv": "Kapsel",
+            "no": "Kapsel",
+            "es": "Píldora",
+            "da": "Kapsel",
+            "ru": "Капсула",
+            "pl": "Pigułka",
+            "ko": "알약형",
+            "ar": "كبسولة"
+          }
+        }
+      ]
+    },
+    {
       "id": "activeStyle",
       "type": "dropdown",
       "title": {

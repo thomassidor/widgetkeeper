@@ -42,7 +42,15 @@
     "unavailable": "Niet beschikbaar",
     "renameFailed": "Kon de naam niet opslaan.",
     "tapAgain": "Tik nogmaals",
-    "hold": "Vasthouden"
+    "hold": "Vasthouden",
+    "on": "Aan",
+    "off": "Uit",
+    "locked": "Vergrendeld",
+    "unlocked": "Ontgrendeld",
+    "open": "Open",
+    "closed": "Dicht",
+    "playing": "Speelt",
+    "paused": "Gepauzeerd"
   },
   "sensoralarms": {
     "selectDevices": "Kies sensoren in de widgetinstellingen.",
