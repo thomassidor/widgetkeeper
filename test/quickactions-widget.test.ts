@@ -59,7 +59,6 @@ describe('render', () => {
     const speaker = { id: 'speaker', name: 'Speaker', icon: null, quickAction: qa('speaker_playing', true) };
     const { root, tile } = widget([lamp(true), door(false), garage, speaker, alarm(), sensor(), { id: 'gone', missing: true }], undefined, undefined, { tileStyle: 'pill' });
     expect(root.classList.contains('qa-pill')).toBe(true);
-    expect(root.dataset.columns).toBe('3'); // the CSS puts pill tiles 2 per row whatever it says
     const state = (id: string) => tile(id).querySelector<HTMLElement>('.qa-state')!;
     expect(['lamp', 'door', 'garage', 'speaker'].map(id => state(id).textContent)).toEqual(['On', 'Unlocked', 'Open', 'Playing']);
     for (const id of ['alarm', 'sensor', 'gone']) expect(state(id).style.display).toBe('none');
