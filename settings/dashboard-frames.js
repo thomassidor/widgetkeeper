@@ -148,6 +148,13 @@
       return own.includes(u.pathname) ? m[1] : null;
     }
 
+    /** A widget's `popup(url)` as an `http:` or `https:` address (relative ones against this page), else null. */
+    function webUrl(url) {
+      let u;
+      try { u = new URL(url, location.href); } catch (e) { return null; }
+      return u.protocol === 'http:' || u.protocol === 'https:' ? u.href : null;
+    }
+
     function handle(frame, msg) {
       const id = msg.callbackId;
       const w = frame.widget;
@@ -212,8 +219,10 @@
           // Dashboard Shortcuts: another dashboard opens here (not from the editor, where a tap shouldn't leave it).
           if (dashboard) {
             if (!/\/edit$/.test(location.hash)) location.hash = `#/d/${dashboard}`;
-          } else if (url) {
-            window.open(url, '_blank', 'noopener');
+          } else if (url && webUrl(url)) {
+            // Only a web address: the page opens it with its own origin, so a `javascript:` or `data:` URL from a
+            // sandboxed widget could otherwise reach the page's key.
+            window.open(webUrl(url), '_blank', 'noopener');
           }
           reply(frame, id, null, null);
           break;

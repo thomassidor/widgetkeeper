@@ -31,8 +31,8 @@ const PAGE = 'http://192.168.1.20/app/com.thomassidor.widgetkeeper/settings/dash
 function load(homeyRequest = vi.fn(async (method: string, path: string, body?: unknown) => ({ method, path, body }))) {
   const location = new URL(`${PAGE}#/`);
   const helpers = new Function('location', 'homeyRequest', 'APP_ID', [
-    constant('HEX'), fn('hexEncode'), fn('hexDecode'), fn('bracketQuery'), fn('appWidget'), fn('appApi'), fn('dashboardLink'),
-    'return { hexEncode, hexDecode, bracketQuery, appWidget, appApi, dashboardLink };',
+    constant('HEX'), fn('hexEncode'), fn('hexDecode'), fn('bracketQuery'), fn('appWidget'), fn('appApi'), fn('dashboardLink'), fn('webUrl'),
+    'return { hexEncode, hexDecode, bracketQuery, appWidget, appApi, dashboardLink, webUrl };',
   ].join('\n'))(location, homeyRequest, 'com.thomassidor.widgetkeeper');
   return { ...helpers, homeyRequest };
 }
@@ -125,6 +125,21 @@ describe("web dashboards page: a widget's link to a dashboard (dashboardLink)", 
   ])('opens no dashboard for %s', (url) => {
     const { dashboardLink } = load();
     expect(dashboardLink(url, frame)).toBeNull();
+  });
+});
+
+describe("web dashboards page: a widget's popup() opens only web addresses (webUrl)", () => {
+  it('takes http and https, relative ones against the page', () => {
+    const { webUrl } = load();
+    expect(webUrl('https://example.com/a?b=1')).toBe('https://example.com/a?b=1');
+    expect(webUrl('http://192.168.1.20/x')).toBe('http://192.168.1.20/x');
+    expect(webUrl('/manager/x')).toBe('http://192.168.1.20/manager/x');
+  });
+
+  // The page opens it itself, with its own origin: a sandboxed widget mustn't run script there (the key).
+  it.each(['javascript:alert(1)', ' JavaScript:alert(1)', 'data:text/html,<script>1</script>', 'blob:http://192.168.1.20/x', 'file:///etc/passwd', 'http://['])('refuses %s', (url) => {
+    const { webUrl } = load();
+    expect(webUrl(url)).toBeNull();
   });
 });
 

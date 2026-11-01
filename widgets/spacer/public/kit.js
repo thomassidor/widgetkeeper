@@ -654,7 +654,9 @@
     let deviceIds = [];
     let loaded = false;
     const ready = () => link.ready({ fonts: true });
+    let loadSeq = 0; // only the latest load's answer counts: an older one that comes in last would undo it
     async function load() {
+      const seq = ++loadSeq;
       const missing = deviceIds.length ? need(deviceIds) : 'selectDevices';
       if (missing) {
         widget.setMessage(widget.t(missing));
@@ -664,11 +666,13 @@
       try {
         const path = `/state?deviceIds=${deviceIds.map(encodeURIComponent).join(',')}${query()}${link.perfParam()}`;
         const state = await (tileNames ? tileNames.state(path) : Homey.api('GET', path));
+        if (seq !== loadSeq) return; // a newer load is on its way
         if (setState) setState(state);
         else widget.setState(state);
         loaded = true;
         if (onState) onState(state);
       } catch (err) {
+        if (seq !== loadSeq) return;
         console.error(err);
         // A failed refresh keeps the tiles; only a failed first load replaces them with the error.
         widget.setMessage(widget.t('error'), loaded);

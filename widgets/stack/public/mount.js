@@ -84,7 +84,10 @@ window.mountStackWidget = function (Homey, { root, frame }) {
       getWidgetInstanceId: () => page.id,
       setHeight: () => widget.measure(),
       ready: () => { widget.measure(); readyPages.add(page.id); checkFirstPage(); },
-      hapticFeedback: () => { if (Homey.hapticFeedback) Homey.hapticFeedback(); },
+      // Homey's throws unless a touch just ended (a click, a key): a page's mount mustn't depend on wrapping it.
+      hapticFeedback: () => {
+        try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not on every platform */ }
+      },
       popup: (url) => { if (Homey.popup) Homey.popup(url); },
     };
   }
