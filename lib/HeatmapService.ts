@@ -2,6 +2,7 @@ import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
 import { listDevicesWhere, matches, type AutocompleteItem } from './autocomplete.js';
 import { describeCapability } from './capabilities.js';
+import { isTransientError } from './DeviceTracker.js';
 import { fetchDeviceIcon } from './deviceIcon.js';
 import { deviceNamer } from './deviceNames.js';
 import { hourlyAverages, hourlyShareTrue, spanFor, type HeatmapDay, type Span } from './heatmap.js';
@@ -29,6 +30,10 @@ const SAVE_DELAY = 10 * MINUTE;
 const SEEN_SAVE = HOUR;
 /** Insights backfill for a recorded boolean: at most this often. */
 const BACKFILL_TTL = 5 * MINUTE;
+/** A failed backfill is tried again after this, not on every request (Homey answers a busy one with `Too many requests`). */
+const BACKFILL_RETRY = MINUTE;
+/** A recording whose device couldn't be read to subscribe (a deleted one, say) is tried again after this; a busy Homey's on the next tick. */
+const SUBSCRIBE_RETRY = 10 * MINUTE;
 
 /**
  * Where the recorded booleans are kept: a file in the app's own `/userdata`, which no API serves. They're presence data
@@ -151,6 +156,10 @@ export default class HeatmapService {
   private tickTimer: NodeJS.Timeout | null = null;
   /** The old app setting is still there: it's unset once the file has been written (`store()`). */
   private legacySetting = false;
+  /** Recordings whose subscription failed, by key: when `tick()` tries again. */
+  private retrySubscribe = new Map<string, number>();
+  /** Set by `stop()`: a subscription still under way then makes no capability instance. */
+  private stopped = false;
 
   constructor(
     private homey: Homey.App['homey'],
@@ -189,14 +198,15 @@ export default class HeatmapService {
       }
     }
     for (const [k, r] of this.recorded) this.requestSaved.set(k, r.lastRequested);
-    for (const r of this.recorded.values()) {
-      this.subscribe(r).catch(err => this.log(`Could not record ${r.capabilityId} of ${r.deviceId}:`, err));
-    }
+    this.stopped = false;
+    for (const r of this.recorded.values()) this.resubscribe(r, this.log);
     this.tickTimer = this.homey.setInterval(() => this.tick(), TICK);
   }
 
   async stop() {
+    this.stopped = true;
     if (this.tickTimer) this.homey.clearInterval(this.tickTimer);
+    this.tickTimer = null;
     for (const k of [...this.instances.keys()]) this.unsubscribe(k);
     this.saved.flush();
   }
@@ -304,12 +314,13 @@ export default class HeatmapService {
         this.backfilledAt.set(k, Date.now());
       } catch (err) {
         this.log(`Insights backfill of ${capabilityId} of ${device.name} failed:`, err);
+        this.backfilledAt.set(k, Date.now() - BACKFILL_TTL + BACKFILL_RETRY);
       }
     }
     // After the backfill, so the state now only counts as a change if it differs from Insights' last.
     if (!this.instances.has(k)) await this.subscribe(r, device);
     this.prune(r);
-    if (changed) this.saved.schedule();
+    if (changed) this.save();
     return r;
   }
 
@@ -338,13 +349,31 @@ export default class HeatmapService {
     if (this.instances.has(k)) return;
     const api = await getAppApi(this.homey);
     const d = device ?? await api.devices.getDevice({ id: r.deviceId });
-    if (this.instances.has(k)) return;
+    // Stopped meanwhile (nothing would destroy the instance), or the recording was dropped or replaced.
+    if (this.instances.has(k) || this.stopped || this.recorded.get(k) !== r) return;
+    this.retrySubscribe.delete(k);
     // The state now: covers changes missed while the app wasn't running.
     const value = d.capabilitiesObj?.[r.capabilityId]?.value;
     if (typeof value === 'boolean') this.record(r, value);
     this.instances.set(k, d.makeCapabilityInstance(r.capabilityId, (v: unknown) => {
       if (typeof v === 'boolean') this.record(r, v);
     }));
+  }
+
+  /**
+   * Subscribes a saved recording without a widget asking (at start, and from `tick()` after a failure), so its changes
+   * are recorded while no dashboard is open: a failure (Homey still starting, busy, the device gone) is tried again on
+   * the next tick when it was passing, else after `SUBSCRIBE_RETRY`.
+   */
+  private resubscribe(r: Recorded, log: (...args: any[]) => void) {
+    const k = key(r.deviceId, r.capabilityId);
+    this.retrySubscribe.set(k, Infinity); // under way: not tried again meanwhile
+    this.subscribe(r).catch((err) => {
+      log(`Could not record ${r.capabilityId} of ${r.deviceId}:`, err);
+      if (this.recorded.get(k) === r) this.retrySubscribe.set(k, isTransientError(err) ? 0 : Date.now() + SUBSCRIBE_RETRY);
+    }).finally(() => {
+      if (this.retrySubscribe.get(k) === Infinity) this.retrySubscribe.delete(k);
+    });
   }
 
   private unsubscribe(k: string) {
@@ -356,7 +385,12 @@ export default class HeatmapService {
     const last = r.changes[r.changes.length - 1];
     if (last && last[1] === (value ? 1 : 0)) return;
     r.changes.push([Date.now(), value ? 1 : 0]);
-    this.saved.schedule();
+    this.save();
+  }
+
+  /** Writes the recordings a while from now; not once stopped, which has written them (a late change is lost, not written after). */
+  private save() {
+    if (!this.stopped) this.saved.schedule();
   }
 
   /** Drops changes older than `KEEP`, keeping the last of them as the state the window starts in. */
@@ -409,9 +443,15 @@ export default class HeatmapService {
         this.recorded.delete(k);
         this.backfilledAt.delete(k);
         this.requestSaved.delete(k);
+        this.retrySubscribe.delete(k);
         this.debug(`Stopped recording ${r.capabilityId} of ${r.deviceId}`);
-        this.saved.schedule();
+        this.save();
       }
+    }
+    for (const [k, at] of this.retrySubscribe) {
+      const r = this.recorded.get(k);
+      if (!r || this.instances.has(k)) this.retrySubscribe.delete(k);
+      else if (now >= at) this.resubscribe(r, this.debug);
     }
   }
 

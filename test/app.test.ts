@@ -202,4 +202,25 @@ describe('the app: stop', () => {
     const written = homey.settings.set.mock.calls.map((c: unknown[]) => c[0]);
     expect(written).toEqual(expect.arrayContaining([POPUP_NAMES_SETTING, DAYS_SINCE_SETTING]));
   });
+
+  it('writes what was waiting before anything waits on the network, and goes on past a stop that throws', async () => {
+    const { app, homey } = await bootApp();
+    const order: string[] = [];
+    let release: () => void = () => {};
+    vi.spyOn(app.variables, 'stop').mockImplementation(() => new Promise<void>((resolve) => { order.push('variables'); release = resolve; }));
+    vi.spyOn(app.thermostat, 'stop').mockRejectedValue(new Error('Broken'));
+    vi.spyOn(app.electricity, 'stop').mockRejectedValue(new Error('Broken too'));
+    const log = vi.spyOn(app, 'log');
+    app.popups.forScreen('Hall');
+    app.daysSince.reset('Filter');
+    homey.settings.set.mockImplementation((key: string) => { order.push(key); });
+    const stopping = app.onUninit();
+    await vi.waitFor(() => expect(order).toContain('variables'));
+    expect(order.indexOf(DAYS_SINCE_SETTING)).toBeLessThan(order.indexOf('variables'));
+    expect(order.indexOf(POPUP_NAMES_SETTING)).toBeLessThan(order.indexOf('variables'));
+    release();
+    await stopping;
+    expect(log).toHaveBeenCalledWith('Could not stop electricity:', expect.any(Error));
+    expect(log).toHaveBeenCalledWith('Could not stop thermostat:', expect.any(Error));
+  });
 });

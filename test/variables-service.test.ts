@@ -165,6 +165,20 @@ describe('getState', () => {
     await service.getState(['v1']);
     expect(logic.connect).toHaveBeenCalledTimes(2);
   });
+
+  it('listens to nothing and stays disconnected when stopped while connecting', async () => {
+    const { service, logic } = setup();
+    let connected: () => void = () => {};
+    logic.connect.mockImplementationOnce(() => new Promise<void>((resolve) => { connected = resolve; }));
+    const pending = service.getState(['v1']).catch(() => null);
+    await vi.waitFor(() => expect(logic.connect).toHaveBeenCalledTimes(1));
+    await service.stop();
+    connected();
+    await pending;
+    expect(logic.listenerCount('variable.update')).toBe(0);
+    expect(logic.disconnect).toHaveBeenCalled();
+    expect(service.describe()).toMatchObject({ connected: false });
+  });
 });
 
 /** A personal API key's API: the scopes it has, and Logic writes that land in the app's fake Logic manager. */

@@ -64,6 +64,8 @@ export default class VariableService {
   private reading: Promise<void> | null = null;
   /** Ids changed (by an event or a write) while a full read is on its way: newer than what it brings back. */
   private changedDuringRead: Set<string> | null = null;
+  /** Set by `stop()`: a request still under way then doesn't connect again. */
+  private stopped = false;
 
   private onUpdate = (data: any) => this.received(data);
   private onDelete = (data: any) => {
@@ -83,11 +85,14 @@ export default class VariableService {
   ) {}
 
   start() {
+    this.stopped = false;
     this.tickTimer = this.homey.setInterval(() => this.tick(), TICK);
   }
 
   async stop() {
+    this.stopped = true;
     if (this.tickTimer) this.homey.clearInterval(this.tickTimer);
+    this.tickTimer = null;
     await this.disconnect();
   }
 
@@ -214,10 +219,20 @@ export default class VariableService {
   }
 
   private ensureConnected(tm: Timings): Promise<any> {
+    if (this.stopped) return Promise.reject(new Error('Variables stopped'));
     if (!this.connecting) {
-      this.connecting = (async () => {
+      let attempt!: Promise<any>; // read once the connect has awaited, by then assigned
+      attempt = (async () => {
         const api = await tm.time('api', () => getAppApi(this.homey));
         await tm.time('connect', () => api.logic.connect());
+        if (this.connecting !== attempt) {
+          // Let go of (`stop()`, or the idle disconnect) while connecting: no listeners, nothing kept. A newer connect
+          // under way shares the Logic manager's subscription, so it's only disconnected when there's none.
+          if (!this.connecting) {
+            try { await api.logic.disconnect(); } catch (err) { /* ignore */ }
+          }
+          return api;
+        }
         api.logic.on('variable.update', this.onUpdate);
         api.logic.on('variable.create', this.onUpdate);
         api.logic.on('variable.delete', this.onDelete);
@@ -226,13 +241,14 @@ export default class VariableService {
         this.debug('Subscribed to Logic variables');
         return api;
       })().catch(err => {
-        this.connecting = null;
+        if (this.connecting === attempt) this.connecting = null;
         this.lastError = String(err?.message ?? err);
         this.log('Could not subscribe to Logic variables:', err);
         throw err;
       });
+      this.connecting = attempt;
     }
-    return this.connecting;
+    return this.connecting!;
   }
 
   /** Re-reads every variable; concurrent requests share one read. */

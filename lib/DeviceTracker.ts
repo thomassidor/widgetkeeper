@@ -154,6 +154,9 @@ export default class DeviceTracker<T extends TrackedEntry> {
   private async read(key: string, tm: Timings): Promise<T> {
     const t = this.tracked.get(key);
     if (!t) return this.ensureTracked(key, tm);
+    // Marked now, not once the re-read is done: a slow re-read of an entry idle for 10 min mustn't be dropped by
+    // `tick()` meanwhile, which would turn a busy Homey's timeout into a missing device.
+    t.lastRequested = Date.now();
     const api = await getAppApi(this.opts.homey);
     let device: any;
     try {

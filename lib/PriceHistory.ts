@@ -16,6 +16,8 @@ const MISS_RETRY = 6 * HOUR;
 const AT_ONCE = 3;
 /** Written this long after the first new day, so a year's first load is one write. */
 const SAVE_DELAY = 30e3;
+/** The kept days (two years are ~1–1.5 MB of Maps) are let go this long after the last ask, written first if changed. */
+const RELEASE_AFTER = 10 * 60e3;
 
 /** One day's hourly prices from Homey, as `ElectricityService` reads them. */
 export type FetchedDay = { hours: Map<number, number> };
@@ -35,6 +37,9 @@ export default class PriceHistory {
   private queue: (() => void)[] = [];
   private running = 0;
   private saved: DebouncedSetting;
+  private releaseTimer: NodeJS.Timeout | null = null;
+  /** Set by `stop()`: a read finishing later writes nothing (the last write has been). */
+  private stopped = false;
 
   constructor(
     private homey: Homey.App['homey'],
@@ -48,12 +53,23 @@ export default class PriceHistory {
   }
 
   stop() {
+    this.stopped = true;
+    if (this.releaseTimer) this.homey.clearTimeout(this.releaseTimer);
+    this.releaseTimer = null;
     this.saved.flush();
   }
 
-  /** How many days are kept, for the diagnostics report. */
+  /** How many days are kept, for the diagnostics report: read from the file when they aren't in memory, without keeping them. */
   size(): number {
-    return this.load().size;
+    if (this.days) return this.days.size;
+    const n = this.load().size;
+    this.days = null;
+    return n;
+  }
+
+  /** Whether the kept days are in memory (for the tests). */
+  get loaded(): boolean {
+    return this.days !== null;
   }
 
   /**
@@ -79,6 +95,7 @@ export default class PriceHistory {
       ]);
       if (timer) this.homey.clearTimeout(timer);
     }
+    this.releaseLater();
     const hours = new Map<number, number>();
     let missing = 0, pending = 0;
     for (const day of days) {
@@ -101,7 +118,7 @@ export default class PriceHistory {
         if (res.hours.size >= 23) {
           this.load().set(day, new Map(res.hours));
           this.misses.delete(day);
-          this.saved.schedule();
+          if (!this.stopped) this.saved.schedule();
         } else {
           this.misses.set(day, Date.now());
         }
@@ -113,6 +130,21 @@ export default class PriceHistory {
       });
     this.pending.set(day, p);
     return p;
+  }
+
+  /** Lets go of the kept days `RELEASE_AFTER` after the last ask, once no read is on its way; a pending write goes first. */
+  private releaseLater() {
+    if (this.stopped) return;
+    if (this.releaseTimer) this.homey.clearTimeout(this.releaseTimer);
+    this.releaseTimer = this.homey.setTimeout(() => {
+      this.releaseTimer = null;
+      if (this.pending.size) {
+        this.releaseLater();
+        return;
+      }
+      this.saved.flush();
+      this.days = null;
+    }, RELEASE_AFTER);
   }
 
   private next() {

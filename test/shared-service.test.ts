@@ -182,6 +182,22 @@ describe('DeviceTracker', () => {
     tracker.stop();
   });
 
+  it("doesn't drop an idle entry while a request's slow re-read of it is on its way", async () => {
+    const { device, api, tracker, onDispose } = setup();
+    tracker.start();
+    const t = await tracker.current('d1', new Timings());
+    await vi.advanceTimersByTimeAsync(10 * 60e3 + 30e3); // idle, not yet dropped (ticks every minute)
+    let fail: (err: unknown) => void = () => {};
+    api.devices.getDevice.mockImplementationOnce(() => new Promise((_, reject) => { fail = reject; }));
+    const pending = tracker.current('d1', new Timings());
+    await vi.advanceTimersByTimeAsync(30e3); // a tick while the re-read waits
+    fail(Object.assign(new Error('Timeout after 10000ms'), { statusCode: 408 }));
+    expect(await pending).toBe(t);
+    expect(onDispose).not.toHaveBeenCalled();
+    expect(device.listenerCount('onoff')).toBe(1);
+    tracker.stop();
+  });
+
   it('shares the zones for a minute, and gives the last ones when a read fails', async () => {
     const api = fakeApi({ zones: { z1: { id: 'z1', name: 'Hall' } } });
     const homey = fakeHomey(api);
@@ -334,6 +350,22 @@ describe('sharedCache', () => {
     expect(await cache.get(1000)).toBe(3);
   });
 
+  it("doesn't start a second read while a slow one is on its way, however old it is", async () => {
+    let finish: (v: string) => void = () => {};
+    const fetch = vi.fn(() => new Promise<string>((resolve) => { finish = resolve; }));
+    const cache = sharedCache(fetch);
+    const first = cache.get(5000);
+    vi.advanceTimersByTime(8000); // older than maxAge, still on its way
+    const second = cache.get(5000);
+    expect(fetch).toHaveBeenCalledTimes(1);
+    finish('a');
+    expect([await first, await second]).toEqual(['a', 'a']);
+    const third = cache.get(5000); // done, but 8 s old: read again
+    expect(fetch).toHaveBeenCalledTimes(2);
+    finish('b');
+    expect(await third).toBe('b');
+  });
+
   it('keeps the last read for good without keepFor', async () => {
     const cache = sharedCache(async () => 'all');
     await cache.get(1000);
@@ -426,7 +458,7 @@ describe('limitInsights', () => {
       started.push(i);
       await new Promise(r => setTimeout(r, 100 + i));
       running--;
-      if (i === 2) throw new Error('Too many requests.');
+      if (i === 2) throw new Error('Not Found: LogLocal');
       return i;
     }).catch(() => -1));
     await vi.advanceTimersByTimeAsync(0);
@@ -435,6 +467,43 @@ describe('limitInsights', () => {
     expect(await Promise.all(reads)).toEqual([0, 1, -1, 3, 4, 5, 6, 7, 8, 9]);
     expect(most).toBe(6);
     expect(started).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  });
+
+  it('pauses for 2 s after Homey said it was busy, then runs 2 at once for 30 s', async () => {
+    let running = 0;
+    let most = 0;
+    const started: [number, number][] = [];
+    const t0 = Date.now();
+    const read = (i: number, ms: number, fail = false) => limitInsights(async () => {
+      running++;
+      most = Math.max(most, running);
+      started.push([i, Date.now() - t0]);
+      await new Promise(r => setTimeout(r, ms));
+      running--;
+      if (fail) throw Object.assign(new Error('Too many requests.'), { statusCode: 429 });
+      return i;
+    }).catch(() => -1);
+    const busy = read(0, 100, true);
+    const reads = Array.from({ length: 6 }, (_, i) => read(i + 1, 500));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(started.map(([i]) => i)).toEqual([0, 1, 2, 3, 4, 5]); // six at once, as before
+    await vi.advanceTimersByTimeAsync(100); // read 0 failed busy at 100 ms
+    expect(await busy).toBe(-1);
+    await vi.advanceTimersByTimeAsync(1999);
+    expect(started.map(([i]) => i)).toEqual([0, 1, 2, 3, 4, 5]); // 6 waits out the pause
+    await vi.advanceTimersByTimeAsync(1);
+    expect(started.at(-1)).toEqual([6, 2100]);
+    most = running;
+    const later = Array.from({ length: 4 }, (_, i) => read(i + 7, 100));
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(await Promise.all([...reads, ...later])).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    expect(most).toBe(2);
+    await vi.advanceTimersByTimeAsync(30e3);
+    const free = Array.from({ length: 6 }, (_, i) => read(i + 11, 100));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(running).toBe(6); // back to six once the busy window is over
+    await vi.advanceTimersByTimeAsync(100);
+    await Promise.all(free);
   });
 });
 

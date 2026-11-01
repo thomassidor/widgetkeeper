@@ -4,6 +4,8 @@ const MINUTE = 60e3;
 const TICK = MINUTE;
 const IDLE_TIMEOUT = 10 * MINUTE;
 const RETRY_AFTER_ERROR = 5 * MINUTE;
+/** A first fetch that failed (nothing to show instead) fails again at once for this long, not fetched on every request. */
+const RETRY_FIRST_ERROR = MINUTE;
 
 /** What a forecast service keeps of one fetch: `key` names the place (and whatever else changes the answer). */
 export type Fetched = { key: string, expires: number, fetchedAt: number };
@@ -23,6 +25,8 @@ export default class ForecastCache<T extends Fetched> {
   /** The key last asked for: an older fetch that ends after it doesn't replace what's kept. */
   private latestKey: string | null = null;
   private lastRequested = 0;
+  /** The last failed fetch with nothing kept for its key: its error is answered again for `RETRY_FIRST_ERROR`. */
+  private failed: { key: string, at: number, err: unknown } | null = null;
   private tickTimer: NodeJS.Timeout | null = null;
   private onLocation = () => {
     this.opts.debug(`${this.opts.name}: Homey location changed, dropping the cached forecast`);
@@ -68,6 +72,8 @@ export default class ForecastCache<T extends Fetched> {
     const c = this.cached;
     if (c && c.key === key && Date.now() < c.expires) return Promise.resolve(c);
     if (this.inflight?.key === key) return this.inflight.promise;
+    const f = this.failed;
+    if (f && f.key === key && Date.now() - f.at < RETRY_FIRST_ERROR) return Promise.reject(f.err);
     const promise = this.fetchOrStale(key, c && c.key === key ? c : null)
       .finally(() => { if (this.inflight?.promise === promise) this.inflight = null; });
     this.inflight = { key, promise };
@@ -79,9 +85,13 @@ export default class ForecastCache<T extends Fetched> {
     try {
       result = await this.opts.fetch(key, stale);
       this.lastError = null;
+      if (this.failed?.key === key) this.failed = null;
     } catch (err) {
       this.lastError = err instanceof Error ? err.message : String(err);
-      if (!stale) throw err;
+      if (!stale) {
+        this.failed = { key, at: Date.now(), err };
+        throw err;
+      }
       this.opts.log(`${this.opts.name}: fetch failed, showing the previous forecast`, err);
       // Don't hammer the service while it's failing.
       result = { ...stale, expires: Date.now() + RETRY_AFTER_ERROR };

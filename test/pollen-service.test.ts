@@ -183,6 +183,7 @@ describe('getPollen', () => {
     const { service } = setup();
     fetchMock.mockResolvedValueOnce(response(500, null));
     await expect(service.getPollen()).rejects.toThrow('HTTP 500');
+    vi.advanceTimersByTime(60e3); // a failed first fetch is answered again for a minute
     fetchMock.mockResolvedValueOnce(response(200, { error: true }));
     await expect(service.getPollen()).rejects.toThrow('Unexpected air-quality response');
   });
