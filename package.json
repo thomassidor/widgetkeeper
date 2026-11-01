@@ -36,7 +36,7 @@
     "whats-next": "node scripts/render-whats-next.mjs"
   },
   "dependencies": {
-    "homey-api": "^3.21.0"
+    "homey-api": "^3.21.2"
   },
   "devDependencies": {
     "@tsconfig/node16": "^16.1.9",
@@ -45,7 +45,7 @@
     "@vitest/coverage-v8": "5.0.5",
     "esbuild": "^0.28.2",
     "happy-dom": "^21.0.4",
-    "homey": "^4.6.1",
+    "homey": "^4.6.2",
     "qrcode-generator": "2.0.4",
     "sharp": "^0.35.5",
     "socket.io-client": "^2.5.0",
