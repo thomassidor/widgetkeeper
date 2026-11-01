@@ -488,6 +488,21 @@ describe('web dashboards: what the editor needs', () => {
     expect(passesDeviceFilter(sensor, undefined)).toBe(true);
   });
 
+  it("lists Synology's cameras (class sensor) for the Cameras widget, but no other sensor", async () => {
+    const snap = { type: 'camera', id: 'snapshot', title: 'Snapshot', imageObj: { id: 'i1', url: '/api/image/i1' } };
+    const homey = fakeHomey(fakeApi({
+      devices: [
+        { id: 'reolink', name: 'Drive', class: 'camera', capabilities: [] },
+        { id: 'synology', name: 'Garden', class: 'sensor', capabilities: ['alarm_motion'], images: [snap] },
+        { id: 'motion', name: 'Hall motion', class: 'sensor', capabilities: ['alarm_motion'] },
+        { id: 'lamp', name: 'Lamp', class: 'light', capabilities: ['onoff'], images: [snap] },
+      ] as any,
+    }));
+    homey.manifest = { ...homey.manifest, widgets: app.widgets };
+    const web = new WebDashboardService(homey, vi.fn(), {});
+    expect((await web.devices('cameras')).map(d => d.id)).toEqual(['reolink', 'synology']);
+  });
+
   it('gives the device picker the rooms (with the zones above them) and the icons', async () => {
     const homey = fakeHomey(fakeApi({
       devices: [

@@ -20,7 +20,7 @@
     "type": "global",
     "singular": false,
     "filter": {
-      "class": "camera|doorbell"
+      "class": "camera|doorbell|sensor"
     }
   },
   "settings": [

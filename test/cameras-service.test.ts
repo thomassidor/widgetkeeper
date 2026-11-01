@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
 import { DEVICE_NAMES_SETTING } from '../lib/deviceNames.js';
-import CameraService, { cameraImage, cameraVideos, h265Videos } from '../lib/CameraService.js';
+import CameraService, { cameraImage, cameraVideos, h265Videos, hasCameraMedia } from '../lib/CameraService.js';
 
 vi.mock('homey-api', () => homeyApiMock);
 
@@ -79,6 +79,13 @@ describe('cameraImage / cameraVideos', () => {
     expect(cameraVideos({ videos: [video('main', 'm', 'h265')] })).toEqual(['m']);
     expect(cameraVideos({ videos: [{ id: 'x', title: 'No object' }] })).toEqual([]);
     expect(cameraVideos({})).toEqual([]);
+  });
+
+  it('tells a camera that calls itself a sensor (Synology) by its picture or stream', () => {
+    expect(hasCameraMedia({ class: 'sensor', images: [image('snap')] })).toBe(true);
+    expect(hasCameraMedia({ class: 'sensor', images: [], videos: [video('main', 'm')] })).toBe(true);
+    expect(hasCameraMedia({ class: 'sensor', images: [image('art', 'media')] })).toBe(false);
+    expect(hasCameraMedia({ class: 'sensor', capabilities: ['alarm_motion'] })).toBe(false);
   });
 
   it('names the H.265 streams', () => {

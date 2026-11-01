@@ -64,6 +64,16 @@ export function h265Videos(device: any): string[] {
 }
 
 /**
+ * Whether a device has a camera's picture or stream: a `camera` image or a video. The Cameras widget's `devices`
+ * filter also takes class `sensor` (Synology Surveillance Station's cameras, 1.2.0), which Homey's filter can't narrow
+ * further, so the web editor's picker keeps only the sensors this says are cameras.
+ */
+export function hasCameraMedia(device: any): boolean {
+  const images: any[] = Array.isArray(device?.images) ? device.images : [];
+  return images.some(i => i?.type === 'camera') || cameraVideos(device).length > 0;
+}
+
+/**
  * Cameras widget: snapshot URLs and live view. Homey serves a device's snapshot at `/api/image/<id>`
  * (the driver makes it on request); the widget loads that directly when it can reach it, or else
  * through `getSnapshot`. Live view goes through Homey's own WebRTC server (go2rtc, `api.videos`):

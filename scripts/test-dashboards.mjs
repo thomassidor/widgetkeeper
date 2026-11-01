@@ -322,7 +322,8 @@ const BUILD = {
   },
 
   async cameras() {
-    const cams = where(d => ['camera', 'doorbell'].includes(cls(d)));
+    // Synology Surveillance Station's cameras are class sensor: those with a camera image or a video count too.
+    const cams = where(d => ['camera', 'doorbell'].includes(cls(d)) || (d.images || []).some(i => i?.type === 'camera') || (d.videos || []).length > 0);
     return { cols: 3, widgets: [
       wide(w('cameras', 'Three · large on top', { layout: 'top' }, cams.slice(0, 3))),
       w('cameras', 'One · 5 s', { refresh: '5' }, cams.slice(0, 1)),
