@@ -576,6 +576,7 @@ The front page shows every dashboard as a card with a miniature of its widgets, 
 - **Settings:** the same as on a Homey dashboard, in cards: the devices, the general settings, and a folding card per button, tile or column that sums up what's set. Devices are picked from a list grouped by room, with a search.
 - **Look:** light, dark or automatic, and a background per dashboard (Default, Black or White, Slate, Ocean, Forest, Plum, Berry, Sand), each with a light and a dark shade. The sun button in the bar switches between light and dark in this browser only.
 - **Full screen:** the corner button gives the whole screen to the dashboard.
+- **Kiosk browsers:** add `?kiosk=1` to the address (`…/dashboard.html?kiosk=1#/d/<dashboard>`, or `#/d/<dashboard>?kiosk=1`) for a browser such as Fully Kiosk that fills the screen itself: the dashboard's bar, with its back link, name, pen and full screen button, is left out. A browser can't go full screen on its own when the page opens, so use the kiosk browser's own full screen setting for that. Add a [code](#code) to the dashboard too, so nobody can leave it or edit it.
 - **A menu:** put [Dashboard Shortcuts](#dashboard-shortcuts) on every dashboard to jump between them.
 - **Popups:** Flows can show a message or ask Yes or No over a dashboard, in every browser showing it, with a camera's picture if you like. See [Popups](#popups).
 

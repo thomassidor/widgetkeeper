@@ -42,6 +42,13 @@ body { margin: 0; color: var(--wd-text); font-size: var(--homey-font-size-defaul
    scrolls away. */
 .wd-full .wd-back, .wd-full .wd-bar-title, .wd-full .wd-bar-edit { display: none; }
 .wd-full .wd-bar { position: static; background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* Kiosk mode (`?kiosk=1`, a kiosk browser that fills the screen itself): a dashboard's bar keeps only the live note,
+   without the full screen button, and is gone while the note is hidden. The editor's bar is left as it is. */
+.wd-kiosk .wd-bar-view .wd-back, .wd-kiosk .wd-bar-view .wd-bar-title, .wd-kiosk .wd-bar-view .wd-bar-edit,
+.wd-kiosk .wd-bar-view .wd-full-toggle { display: none; }
+.wd-kiosk .wd-bar-view { position: static; background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.wd-kiosk .wd-bar-view:not(:has(> .wd-live:not([hidden]))) { display: none; }
+.wd-kiosk .wd-bar-view + .wd-grid { padding-top: 16px; }
 /* The dashboard's backdrop in the editor: a button with its swatch, opening the palette under it. */
 .wd-bgpick { position: relative; display: inline-flex; }
 .wd-bgpop {
