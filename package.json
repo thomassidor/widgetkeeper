@@ -43,7 +43,7 @@
     "@vitest/coverage-v8": "5.0.5",
     "esbuild": "^0.28.2",
     "happy-dom": "^21.0.4",
-    "homey": "^4.6.1",
+    "homey": "^4.6.2",
     "sharp": "^0.35.5",
     "socket.io-client": "^2.5.0",
     "typescript": "^7.0.2",
