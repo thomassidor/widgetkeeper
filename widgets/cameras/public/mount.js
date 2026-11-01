@@ -19,6 +19,7 @@ window.mountCamerasWidget = function (Homey, { root, frame }) {
     renameTiles: settings.renameTiles === true,
     onRename: (key, name) => tileNames.rename(key, name),
     refreshMs: snapshotMs,
+    liveView: settings.liveView !== false,
     liveFor: settings.liveFor,
     timeFormat: settings.timeFormat,
     layout: settings.layout,
