@@ -37,6 +37,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 ### Cameras
 - **Synology Surveillance Station's cameras** can now be picked: they call themselves sensors, so the widget's device list left them out. The list on the phone now shows your sensors too; pick the cameras among them. The web dashboards' list shows only the sensors with a camera picture or video.
 
+### Device Quick Actions
+- **Tiles per row:** 3 as before, or 2 for wider tiles with room for longer names.
+
 ## 1.1.2
 
 ### Charts

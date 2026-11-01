@@ -36,6 +36,12 @@ describe('render', () => {
     expect(tile('door').classList.contains('active')).toBe(true);
   });
 
+  it('puts 3 tiles in a row unless the setting says 2', () => {
+    expect(widget([lamp()]).root.dataset.columns).toBe('3');
+    expect(widget([lamp()], undefined, undefined, { columns: '2' }).root.dataset.columns).toBe('2');
+    expect(widget([lamp()], undefined, undefined, { columns: 'bogus' }).root.dataset.columns).toBe('3');
+  });
+
   it('uses the active style from the settings, blue tint by default', () => {
     expect(widget([lamp()]).root.dataset.activeStyle).toBe('tint');
     expect(widget([lamp()], undefined, 'lighter').root.dataset.activeStyle).toBe('lighter');

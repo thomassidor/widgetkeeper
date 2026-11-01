@@ -50,7 +50,7 @@
 
   /**
    * @param {HTMLElement} root
-   * @param {{ t?: (key: string, tokens?: object) => string, activeStyle?: 'tint' | 'lighter',
+   * @param {{ t?: (key: string, tokens?: object) => string, activeStyle?: 'tint' | 'lighter', columns?: number|string,
    *   color?: string, colorStyle?: string, press?: 'single' | 'double' | 'long', pressFor?: 'all' | 'locks',
    *   onTrigger?: (deviceId: string, value: boolean) => Promise<any>, onHaptic?: () => void,
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
@@ -77,6 +77,7 @@
       setMessage(t('renameFailed'), true);
     });
     root.classList.toggle('renaming', names.renaming);
+    root.dataset.columns = String(opts.columns) === '2' ? '2' : '3';
     root.dataset.activeStyle = opts.activeStyle === 'lighter' ? 'lighter' : 'tint';
     applyColors(root, { style: opts.colorStyle, color: opts.color, fallback: 'blue' });
     root.style.setProperty('--qa-hold', `${HOLD_MS}ms`); // the long press's fill
