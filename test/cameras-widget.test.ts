@@ -438,6 +438,49 @@ describe('live view: falling back to the next stream', () => {
   });
 });
 
+describe('live view off (liveView)', () => {
+  beforeEach(() => { vi.useFakeTimers(); });
+  afterEach(() => { vi.useRealTimers(); });
+
+  it('a tap opens no stream and expands nothing, and the tile does not look tappable', async () => {
+    const pcs = stubPeerConnection();
+    const api = offerApi();
+    const { tile } = widget([cam('a'), cam('b')], api, () => Date.now(), { liveView: false });
+    tile('a').click();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(pcs).toHaveLength(0);
+    expect(api.mock.calls.some((c: any[]) => c[1] === '/video/offer')).toBe(false);
+    expect(tile('a').classList.contains('expanded')).toBe(false);
+    expect(tile('a').classList.contains('has-video')).toBe(false);
+  });
+
+  it('still grabs a frame for a video-only camera', async () => {
+    const pcs = stubPeerConnection();
+    const { w } = widget([cam('v', { image: null })], offerApi(), () => Date.now(), { liveView: false });
+    w.refresh();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(pcs).toHaveLength(1);
+  });
+
+  it('the mount reads a missing setting as on, and false as off', async () => {
+    loadMount('cameras');
+    const mount = (settings: object) => {
+      const root = document.createElement('div');
+      document.body.append(root);
+      const api = vi.fn(async (_m: string, path: string): Promise<any> => (path.startsWith('/state') ? { state: [cam('a')], tileNames: {} } : {}));
+      win.mountCamerasWidget({
+        api, on: vi.fn(), ready: vi.fn(), setHeight: vi.fn(), getSettings: () => settings,
+        getDeviceIds: () => ['a'], getWidgetInstanceId: () => 'w1', __: (key: string) => key,
+      }, { root, frame: root });
+      return root;
+    };
+    const on = mount({}), off = mount({ liveView: false });
+    await vi.advanceTimersByTimeAsync(100);
+    expect(on.querySelector('.cw-tile')!.classList.contains('has-video')).toBe(true);
+    expect(off.querySelector('.cw-tile')!.classList.contains('has-video')).toBe(false);
+  });
+});
+
 describe('live view: how long it stays on (liveFor)', () => {
   beforeEach(() => { vi.useFakeTimers(); });
   afterEach(() => { vi.useRealTimers(); });

@@ -42,7 +42,15 @@
     "unavailable": "Indisponible",
     "renameFailed": "Impossible d'enregistrer le nom.",
     "tapAgain": "Touchez encore",
-    "hold": "Maintenez"
+    "hold": "Maintenez",
+    "on": "Allumé",
+    "off": "Éteint",
+    "locked": "Verrouillé",
+    "unlocked": "Déverrouillé",
+    "open": "Ouvert",
+    "closed": "Fermé",
+    "playing": "En lecture",
+    "paused": "En pause"
   },
   "sensoralarms": {
     "selectDevices": "Choisissez des capteurs dans les réglages.",

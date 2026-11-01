@@ -187,6 +187,47 @@ describe('price slots', () => {
   });
 });
 
+describe('an older Homey Pro (homey-api V2: no price methods)', () => {
+  /** homey-api's V2 energy manager, as an older Homey Pro (2016–2019) gets it: none of the price methods. */
+  function v2Setup() {
+    const ctx = setup();
+    const lines: string[] = [];
+    ctx.api.energy = { getOptionCurrency: vi.fn(), getLiveReport: vi.fn() } as any;
+    const service = new ElectricityService(ctx.homey, (...args: unknown[]) => { lines.push(args.map(String).join(' ')); });
+    return { ...ctx, service, lines };
+  }
+
+  it('has no prices and no error, like prices not set up, and logs each missing method once', async () => {
+    const { service, lines } = v2Setup();
+    const snap = await service.getSnapshot(null);
+    expect(snap.priceError).toBeNull();
+    expect(snap.fixedPrice).toBeNull();
+    expect(snap.currency).toBeNull();
+    expect(snap.prices).toHaveLength(49);
+    expect(snap.prices.every(p => p.price == null)).toBe(true);
+    vi.setSystemTime(NOW + 20 * MINUTE); // past the price settings' 5 min and a partial day's 15
+    await service.getSnapshot(null);
+    expect(lines.filter(l => l.includes('TypeError'))).toEqual([]);
+    expect(lines.filter(l => l.includes('energy.')).sort()).toEqual([
+      'getCurrency', 'getDynamicElectricityPriceUserCosts', 'getElectricityPriceType', 'fetchDynamicElectricityPrices',
+    ].sort().map(m => `This Homey's API has no energy.${m}(); left out (an older Homey Pro has no dynamic electricity prices)`));
+  });
+
+  it('still shows the meter, and names the missing methods in the diagnostics', async () => {
+    const { service } = v2Setup();
+    const snap = await service.getSnapshot('m1');
+    expect(snap.meterError).toBeFalsy();
+    expect((await service.describe()).missingEnergyMethods).toEqual(expect.arrayContaining(['getElectricityPriceType', 'fetchDynamicElectricityPrices']));
+  });
+
+  it('gives the price history as missing days, not an error', async () => {
+    const { service } = v2Setup();
+    const answer = await service.getPriceHistory(NOW - 2 * 24 * HOUR, NOW);
+    expect(answer.fixed).toBeNull();
+    expect(answer.hours).toEqual([]);
+  });
+});
+
 describe('fixed price', () => {
   const fixed = { priceType: 'fixed', fixedPrice: { value: { costs: { user_fixed_base: { value: 2 } } } } };
 

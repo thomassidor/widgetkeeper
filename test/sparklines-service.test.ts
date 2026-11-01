@@ -39,9 +39,23 @@ function setup(logEntries: (args: any) => unknown = entries) {
 beforeEach(() => { vi.useFakeTimers({ now: NOW }); });
 afterEach(() => { vi.useRealTimers(); });
 
+/** A sensor as an older Homey Pro (2016–2019) sends it through homey-api's V2 API: no `insights` on its capabilities. */
+const v2Sensor = () => fakeDevice({
+  id: 'old', name: 'Kelder', zone: 'z1',
+  caps: {
+    measure_temperature: { type: 'number', value: 12.5, title: 'Temperatuur', units: '°C', decimals: 1 },
+    alarm_motion: { type: 'boolean', value: false, title: 'Beweging' },
+    button: { type: 'string', value: null, title: 'Knop' },
+  },
+});
+
 describe('sparkCaps', () => {
   it('keeps the numbers Homey logs in Insights', () => {
     expect(sparkCaps(sensor())).toEqual(['measure_temperature', 'measure_humidity']);
+  });
+
+  it('keeps every number of a device whose capabilities say nothing about Insights (an older Homey Pro)', () => {
+    expect(sparkCaps(v2Sensor())).toEqual(['measure_temperature']);
   });
 });
 
@@ -136,6 +150,14 @@ describe('listSlots', () => {
       { name: 'Stue · Temperature', description: 'Living room · °C', id: 'sensor:measure_temperature' },
     ]);
     expect((await service.listSlots('temp')).map(i => i.id)).toEqual(['sensor:measure_temperature']);
+  });
+
+  it("lists an older Homey Pro's numbers, which come without `insights` (a user's report, 2026-11-01)", async () => {
+    const api = fakeApi({ devices: [sensor(), v2Sensor()], zones: { z1: { name: 'Living room' } }, logEntries: entries });
+    const homey = fakeHomey(api);
+    const service = new SparklineService(homey, new ValueService(homey, () => {}), () => {});
+    expect((await service.listSlots('')).map(i => i.id)).toEqual(['none', 'old:measure_temperature', 'sensor:measure_humidity', 'sensor:measure_temperature']);
+    expect((await service.listSlots('', 'boolean')).map(i => i.id)).toEqual(['none', 'old:alarm_motion', 'sensor:alarm_motion']);
   });
 
   it("lists the meters first for a value that counts up (Chart · Totals')", async () => {

@@ -37,6 +37,10 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 ### Cameras
 - **Synology Surveillance Station's cameras, and any other camera missing from the device list:** the new Camera 1 to 6 settings list every device with a snapshot or video, whatever kind of device it calls itself (Synology's call themselves sensors). They show after the cameras picked in the device list.
 
+### Device Quick Actions
+- **Tiles per row:** 3 as before, or 2 for wider tiles with room for longer names.
+- **Pill tiles**, as Device Values has: the icon beside the name, with the state (*On*, *Locked*, *Playing* …) under it. **Tile style** in the widget's settings.
+
 ## 1.1.2
 
 ### Charts

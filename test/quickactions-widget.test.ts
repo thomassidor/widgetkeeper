@@ -36,10 +36,44 @@ describe('render', () => {
     expect(tile('door').classList.contains('active')).toBe(true);
   });
 
+  it('puts 3 tiles in a row unless the setting says 2', () => {
+    expect(widget([lamp()]).root.dataset.columns).toBe('3');
+    expect(widget([lamp()], undefined, undefined, { columns: '2' }).root.dataset.columns).toBe('2');
+    expect(widget([lamp()], undefined, undefined, { columns: 'bogus' }).root.dataset.columns).toBe('3');
+  });
+
   it('uses the active style from the settings, blue tint by default', () => {
     expect(widget([lamp()]).root.dataset.activeStyle).toBe('tint');
     expect(widget([lamp()], undefined, 'lighter').root.dataset.activeStyle).toBe('lighter');
     expect(widget([lamp()], undefined, 'bogus').root.dataset.activeStyle).toBe('tint');
+  });
+
+  it('lays out compact tiles by default, pill tiles with a state line on request', () => {
+    const compact = widget([lamp()]);
+    expect(compact.root.classList.contains('qa-pill')).toBe(false);
+    expect(compact.tile('lamp').querySelector('.qa-top')).not.toBeNull();
+    expect(compact.tile('lamp').querySelector('.qa-state')).toBeNull();
+    expect(widget([lamp()], undefined, undefined, { tileStyle: 'bogus' }).root.classList.contains('qa-pill')).toBe(false);
+
+    const garage = { id: 'garage', name: 'Garage', icon: null, quickAction: qa('garagedoor_closed', false) };
+    const speaker = { id: 'speaker', name: 'Speaker', icon: null, quickAction: qa('speaker_playing', true) };
+    const { root, tile } = widget([lamp(true), door(false), garage, speaker, alarm(), sensor(), { id: 'gone', missing: true }], undefined, undefined, { tileStyle: 'pill' });
+    expect(root.classList.contains('qa-pill')).toBe(true);
+    const state = (id: string) => tile(id).querySelector<HTMLElement>('.qa-state')!;
+    expect(['lamp', 'door', 'garage', 'speaker'].map(id => state(id).textContent)).toEqual(['On', 'Unlocked', 'Open', 'Playing']);
+    for (const id of ['alarm', 'sensor', 'gone']) expect(state(id).style.display).toBe('none');
+    expect(tile('lamp').querySelector('.qa-name')!.textContent).toBe('Lamp');
+  });
+
+  it('pill tiles follow the state and the second tap', () => {
+    const { w, tile } = widget([door(true)], undefined, undefined, { tileStyle: 'pill', press: 'double' });
+    const state = () => tile('door').querySelector<HTMLElement>('.qa-state')!;
+    expect(state().textContent).toBe('Locked');
+    w.pushChange({ deviceId: 'door', capabilityId: 'locked', value: false });
+    expect(state().textContent).toBe('Unlocked');
+    tile('door').click();
+    expect(tile('door').querySelector('.qa-name')!.textContent).toBe('Tap again');
+    expect(state().style.display).toBe('none');
   });
 
   it('uses the device icon, or the fallback', () => {

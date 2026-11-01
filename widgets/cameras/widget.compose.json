@@ -126,6 +126,41 @@
       ]
     },
     {
+      "id": "liveView",
+      "type": "checkbox",
+      "title": {
+        "en": "Live view",
+        "nl": "Live beeld",
+        "de": "Live-Ansicht",
+        "fr": "Vidéo en direct",
+        "it": "Video in diretta",
+        "sv": "Livevisning",
+        "no": "Direktevisning",
+        "es": "Vídeo en directo",
+        "da": "Live-visning",
+        "ru": "Прямой эфир",
+        "pl": "Podgląd na żywo",
+        "ko": "실시간 보기",
+        "ar": "العرض المباشر"
+      },
+      "hint": {
+        "en": "Turn off to show snapshots only: tapping a camera then does nothing.",
+        "nl": "Zet dit uit om alleen snapshots te tonen: tikken op een camera doet dan niets.",
+        "de": "Schalte dies aus, um nur Schnappschüsse zu zeigen: Tippen auf eine Kamera bewirkt dann nichts.",
+        "fr": "Désactivez ceci pour n'afficher que les instantanés : toucher une caméra ne fait alors rien.",
+        "it": "Disattiva per mostrare solo le istantanee: toccare una telecamera non farà nulla.",
+        "sv": "Slå av för att bara visa bilder: att trycka på en kamera gör då ingenting.",
+        "no": "Slå av for å bare vise bilder: å trykke på et kamera gjør da ingenting.",
+        "es": "Desactívalo para mostrar solo instantáneas: tocar una cámara no hará nada.",
+        "da": "Slå fra for kun at vise billeder: et tryk på et kamera gør så ingenting.",
+        "ru": "Выключите, чтобы показывать только снимки: нажатие на камеру ничего не делает.",
+        "pl": "Wyłącz, aby pokazywać tylko zdjęcia: dotknięcie kamery nic wtedy nie robi.",
+        "ko": "끄면 스냅샷만 표시되며, 카메라를 탭해도 아무 일도 일어나지 않습니다.",
+        "ar": "أوقفه لعرض اللقطات فقط: لن يفعل النقر على الكاميرا شيئًا."
+      },
+      "value": true
+    },
+    {
       "id": "liveFor",
       "type": "dropdown",
       "title": {

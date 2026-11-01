@@ -72,11 +72,17 @@ type NumericCache = { at: number, lastRequested: number, days: HeatmapDay[] };
 
 const key = (deviceId: string, capabilityId: string) => `${deviceId}:${capabilityId}`;
 
-/** The device's capabilities a heatmap can show: numbers and booleans that Homey logs in Insights. */
+/**
+ * The device's capabilities a heatmap can show: numbers and booleans that Homey logs in Insights (`insights: true`). An
+ * older Homey Pro (2016–2019, homey-api's V2 API) sends no `insights` on any capability, so on a device where none has it
+ * every number and boolean is offered (a read that finds no log gives no history): with `=== true` alone, Sparklines'
+ * and the chart widgets' lists were empty there (a user's report, 2026-11-01).
+ */
 export function heatmapCaps(device: any): HeatmapCapability[] {
   const caps = device?.capabilitiesObj || {};
+  const reportsInsights = Object.values(caps).some((c: any) => typeof c?.insights === 'boolean');
   return (device?.capabilities as string[] || Object.keys(caps))
-    .filter(id => caps[id]?.insights === true && (caps[id].type === 'number' || caps[id].type === 'boolean'))
+    .filter(id => caps[id] && (reportsInsights ? caps[id].insights === true : true) && (caps[id].type === 'number' || caps[id].type === 'boolean'))
     .map(id => {
       const { title, type, units, decimals } = describeCapability(caps[id], id);
       return { id, title, type: type as HeatmapCapability['type'], units, decimals };

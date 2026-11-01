@@ -15,6 +15,7 @@ window.mountSensorAlarmsWidget = function (Homey, { root, frame }) {
     colorStyle: settings.colorStyle,
     t: (key, tokens) => Homey.__(key, tokens),
     renameTiles: settings.renameTiles === true,
+    columns: settings.columns,
     onRename: (key, name) => tileNames.rename(key, name),
     includeStates: settings.includeStates === true,
     onHeight: link.setHeight,

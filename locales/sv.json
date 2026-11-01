@@ -42,7 +42,15 @@
     "unavailable": "Inte tillgänglig",
     "renameFailed": "Kunde inte spara namnet.",
     "tapAgain": "Tryck igen",
-    "hold": "Håll in"
+    "hold": "Håll in",
+    "on": "På",
+    "off": "Av",
+    "locked": "Låst",
+    "unlocked": "Olåst",
+    "open": "Öppen",
+    "closed": "Stängd",
+    "playing": "Spelar",
+    "paused": "Pausad"
   },
   "sensoralarms": {
     "selectDevices": "Välj sensorer i widgetinställningarna.",

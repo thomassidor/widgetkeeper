@@ -42,7 +42,15 @@
     "unavailable": "Nicht verfügbar",
     "renameFailed": "Der Name konnte nicht gespeichert werden.",
     "tapAgain": "Erneut tippen",
-    "hold": "Halten"
+    "hold": "Halten",
+    "on": "Ein",
+    "off": "Aus",
+    "locked": "Verriegelt",
+    "unlocked": "Entriegelt",
+    "open": "Offen",
+    "closed": "Geschlossen",
+    "playing": "Spielt",
+    "paused": "Pausiert"
   },
   "sensoralarms": {
     "selectDevices": "Wähle Sensoren in den Widget-Einstellungen.",

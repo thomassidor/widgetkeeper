@@ -15,6 +15,8 @@ window.mountQuickActionsWidget = function (Homey, { root, frame }) {
     t: (key, tokens) => Homey.__(key, tokens),
     renameTiles: settings.renameTiles === true,
     onRename: (key, name) => tileNames.rename(key, name),
+    columns: settings.columns,
+    tileStyle: settings.tileStyle,
     activeStyle: settings.activeStyle,
     color: settings.color,
     colorStyle: settings.colorStyle,

@@ -37,6 +37,7 @@ html, body { background: transparent !important; }
 .qa [dir="auto"] { text-align: left; }
 
 .qa-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--homey-su-3, 12px); }
+.qa[data-columns="2"] .qa-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
 /* A compact device tile (62px): the icon row and the name, with room between them. */
 .qa-tile {
@@ -76,6 +77,22 @@ html, body { background: transparent !important; }
   font-size: var(--qa-fs-small); line-height: var(--qa-lh-small); font-weight: var(--qa-bold);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+
+/* Pill (`tileStyle: pill`): Sensor Alarms' tile, as Device Values' pill: 52 px, the 24 px muted icon beside
+   the name (14 bold) over the state (14 muted), both on 18 px lines; #2B2C36 in dark mode, no rim. They follow
+   Tiles per row, as Device Values' do (at 3 a phone-width widget leaves the name a letter or two). */
+.homey-dark-mode .qa.qa-pill, .qa.qa-pill.homey-dark-mode { --qa-tile: #2B2C36; }
+.qa.qa-pill .qa-tile::after { display: none; }
+.qa-pill .qa-tile { flex-direction: row; align-items: center; gap: 13px; height: 52px; padding: 7px 12px 5px 10px; }
+.qa-pill .qa-icon { width: 24px; height: 24px; color: var(--qa-muted); }
+.qa-pill .qa-icon.fallback { width: 20px; height: 20px; margin: 2px; }
+.qa-pill .qa-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.qa-pill .qa-name, .qa-pill .qa-state { line-height: 18px; }
+.qa-state {
+  font-size: var(--qa-fs-small); font-weight: var(--homey-font-weight-regular, 400); color: var(--qa-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.qa-pill .wk-rename { margin: -3px 0; }
 
 /*
  * The whole tile shows the state: on, locked, playing (or a button just pressed). Two styles, picked

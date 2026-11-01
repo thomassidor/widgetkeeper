@@ -92,7 +92,7 @@
    *   api?: (method: string, path: string, body?: object) => Promise<any>,
    *   report?: (text: string, warn?: boolean) => void, onHeight?: (h: number) => void,
    *   now?: () => number, renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
-   *   liveFor?: string, layout?: string, timeFormat?: string }} opts
+   *   liveView?: boolean, liveFor?: string, layout?: string, timeFormat?: string }} opts
    */
   function createCamerasWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -104,6 +104,8 @@
     const refreshMs = opts.refreshMs || 10e3;
     const grabMs = Math.max(GRAB_MIN_MS, refreshMs);
     const liveMs = liveLimit(opts.liveFor);
+    // `liveView` off: snapshots only, a tap does nothing (a video-only camera still gets its grabbed frames).
+    const liveView = opts.liveView !== false;
 
     let devices = []; // [{ id, name, icon, image: { id, url, lastUpdated } | null, video, videos, h265 } | { id, missing }]
     // What failed: a lasting message replaces the content, a transient one goes by itself.
@@ -558,7 +560,7 @@
 
     function press(id) {
       const d = devices.find(x => x.id === id);
-      if (!d || 'missing' in d || !d.video || names.renaming) return;
+      if (!liveView || !d || 'missing' in d || !d.video || names.renaming) return;
       resumeId = null;
       const wasLive = live && live.id === id;
       stopLive();
@@ -622,7 +624,7 @@
         // "No snapshot": no image and no video to grab a frame from, or a failed grab before any frame.
         const empty = !missing && !d.image && (!d.video || (tile.grabFailed && !tile.loadedAt));
         tile.tile.classList.toggle('no-image', empty);
-        tile.tile.classList.toggle('has-video', !missing && !!d.video);
+        tile.tile.classList.toggle('has-video', liveView && !missing && !!d.video);
         // A lone tile, and the last (or first) of an odd number, spans the row.
         tile.tile.classList.toggle('wide', spansRow(i, devices.length, opts.layout));
         if (empty) tile.note.style.display = 'none';
@@ -655,7 +657,7 @@
     function resume() {
       const id = resumeId;
       resumeId = null;
-      if (!id || live || names.renaming) return;
+      if (!liveView || !id || live || names.renaming) return;
       const d = devices.find(x => x.id === id);
       if (d && !('missing' in d) && d.video) startLive(d);
     }

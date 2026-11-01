@@ -94,6 +94,8 @@ export default class ElectricityService {
   private priceTypePending: Promise<PriceSettings> | null = null;
   private tickTimer: NodeJS.Timeout | null = null;
   private loggedPriceSample = false;
+  /** The price methods this Homey's API doesn't have (`hasEnergy()`), each logged once. */
+  private missingEnergy = new Set<string>();
   private history: PriceHistory;
 
   constructor(
@@ -327,7 +329,7 @@ export default class ElectricityService {
       let failed = false;
       try {
         api = await getAppApi(this.homey);
-        if (await api.energy.getElectricityPriceType() === 'fixed') {
+        if (this.hasEnergy(api, 'getElectricityPriceType') && await api.energy.getElectricityPriceType() === 'fixed') {
           settings.fixed = parseFixedPrice(await api.energy.getOptionElectricityPriceFixed());
           if (settings.fixed == null) this.log('Fixed electricity price set, but no price found');
         }
@@ -335,7 +337,7 @@ export default class ElectricityService {
         failed = true;
         this.log('Could not read the electricity price type', err);
       }
-      if (settings.fixed == null && api) {
+      if (settings.fixed == null && api && this.hasEnergy(api, 'getDynamicElectricityPriceUserCosts')) {
         try {
           const res = await api.energy.getDynamicElectricityPriceUserCosts();
           const expression = typeof res?.mathExpression === 'string' ? res.mathExpression : null;
@@ -399,7 +401,7 @@ export default class ElectricityService {
     const interval = !today?.hours.size ? null : today.interval ?? 60;
     return {
       priceType: fixed == null ? 'dynamic' : 'fixed', fixedPrice: fixed, priceCosts: costsExpression, priceInterval: interval, currency: this.currency,
-      priceHistoryDays: this.history.size(),
+      priceHistoryDays: this.history.size(), missingEnergyMethods: [...this.missingEnergy],
     };
   }
 
@@ -448,7 +450,9 @@ export default class ElectricityService {
   private loadCurrency(): Promise<void> {
     this.currencyPending ??= (async () => {
       try {
-        const c = await (await getAppApi(this.homey)).energy.getCurrency();
+        const api = await getAppApi(this.homey);
+        if (!this.hasEnergy(api, 'getCurrency')) return;
+        const c = await api.energy.getCurrency();
         this.currency = typeof c === 'string' ? c : (c?.currency ?? c?.symbol ?? null);
       } catch (err) {
         this.log('Could not read currency', err);
@@ -491,8 +495,9 @@ export default class ElectricityService {
   private async fetchPriceDay(day: string): Promise<PriceDay> {
     const now = Date.now();
     const api = await getAppApi(this.homey);
-    const res = await api.energy.fetchDynamicElectricityPrices({ date: day });
-    if (!this.loggedPriceSample) {
+    // Without the method (an older Homey Pro) the day has no prices, as when none are set up in Homey Energy.
+    const res = this.hasEnergy(api, 'fetchDynamicElectricityPrices') ? await api.energy.fetchDynamicElectricityPrices({ date: day }) : null;
+    if (res && !this.loggedPriceSample) {
       this.loggedPriceSample = true;
       this.debug(`Price response sample for ${day}:`, JSON.stringify(res)?.slice(0, 600));
     }
@@ -508,6 +513,20 @@ export default class ElectricityService {
       if (key < oldest) this.priceFailures.delete(key);
     }
     return entry;
+  }
+
+  /**
+   * Whether this Homey's API has an energy method. An older Homey Pro (2016–2019, `platformVersion` 1) gets homey-api's
+   * V2 API, whose energy manager has none of the price methods: it then has no prices (no error, as without prices set
+   * up in Homey Energy), spot prices without costs and no currency, logged once per method instead of on every request.
+   */
+  private hasEnergy(api: any, method: string): boolean {
+    if (typeof api?.energy?.[method] === 'function') return true;
+    if (!this.missingEnergy.has(method)) {
+      this.missingEnergy.add(method);
+      this.log(`This Homey's API has no energy.${method}(); left out (an older Homey Pro has no dynamic electricity prices)`);
+    }
+    return false;
   }
 
   /** YYYY-MM-DD in Homey's timezone (through the heatmap's cached formatter: this runs ~50 times per snapshot). */

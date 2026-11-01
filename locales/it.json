@@ -42,7 +42,15 @@
     "unavailable": "Non disponibile",
     "renameFailed": "Impossibile salvare il nome.",
     "tapAgain": "Tocca di nuovo",
-    "hold": "Tieni premuto"
+    "hold": "Tieni premuto",
+    "on": "Acceso",
+    "off": "Spento",
+    "locked": "Bloccato",
+    "unlocked": "Sbloccato",
+    "open": "Aperto",
+    "closed": "Chiuso",
+    "playing": "In riproduzione",
+    "paused": "In pausa"
   },
   "sensoralarms": {
     "selectDevices": "Scegli i sensori nelle impostazioni del widget.",

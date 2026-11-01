@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.thomassidor.widgetkeeper",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "compatibility": ">=12.6.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -5279,6 +5279,41 @@
               }
             }
           ]
+        },
+        {
+          "id": "liveView",
+          "type": "checkbox",
+          "title": {
+            "en": "Live view",
+            "nl": "Live beeld",
+            "de": "Live-Ansicht",
+            "fr": "Vidéo en direct",
+            "it": "Video in diretta",
+            "sv": "Livevisning",
+            "no": "Direktevisning",
+            "es": "Vídeo en directo",
+            "da": "Live-visning",
+            "ru": "Прямой эфир",
+            "pl": "Podgląd na żywo",
+            "ko": "실시간 보기",
+            "ar": "العرض المباشر"
+          },
+          "hint": {
+            "en": "Turn off to show snapshots only: tapping a camera then does nothing.",
+            "nl": "Zet dit uit om alleen snapshots te tonen: tikken op een camera doet dan niets.",
+            "de": "Schalte dies aus, um nur Schnappschüsse zu zeigen: Tippen auf eine Kamera bewirkt dann nichts.",
+            "fr": "Désactivez ceci pour n'afficher que les instantanés : toucher une caméra ne fait alors rien.",
+            "it": "Disattiva per mostrare solo le istantanee: toccare una telecamera non farà nulla.",
+            "sv": "Slå av för att bara visa bilder: att trycka på en kamera gör då ingenting.",
+            "no": "Slå av for å bare vise bilder: å trykke på et kamera gjør da ingenting.",
+            "es": "Desactívalo para mostrar solo instantáneas: tocar una cámara no hará nada.",
+            "da": "Slå fra for kun at vise billeder: et tryk på et kamera gør så ingenting.",
+            "ru": "Выключите, чтобы показывать только снимки: нажатие на камеру ничего не делает.",
+            "pl": "Wyłącz, aby pokazywać tylko zdjęcia: dotknięcie kamery nic wtedy nie robi.",
+            "ko": "끄면 스냅샷만 표시되며, 카메라를 탭해도 아무 일도 일어나지 않습니다.",
+            "ar": "أوقفه لعرض اللقطات فقط: لن يفعل النقر على الكاميرا شيئًا."
+          },
+          "value": true
         },
         {
           "id": "liveFor",
@@ -23313,6 +23348,137 @@
           "value": false
         },
         {
+          "id": "columns",
+          "type": "dropdown",
+          "title": {
+            "en": "Tiles per row",
+            "nl": "Tegels per rij",
+            "de": "Kacheln pro Zeile",
+            "fr": "Tuiles par ligne",
+            "it": "Riquadri per riga",
+            "sv": "Rutor per rad",
+            "no": "Fliser per rad",
+            "es": "Mosaicos por fila",
+            "da": "Felter pr. række",
+            "ru": "Плиток в ряду",
+            "pl": "Kafelków w rzędzie",
+            "ko": "행당 타일",
+            "ar": "البلاطات في كل صف"
+          },
+          "value": "3",
+          "values": [
+            {
+              "id": "3",
+              "title": {
+                "en": "3",
+                "nl": "3",
+                "de": "3",
+                "fr": "3",
+                "it": "3",
+                "sv": "3",
+                "no": "3",
+                "es": "3",
+                "da": "3",
+                "ru": "3",
+                "pl": "3",
+                "ko": "3",
+                "ar": "3"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
+        },
+        {
+          "id": "tileStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Tile style",
+            "nl": "Tegelstijl",
+            "de": "Kachelstil",
+            "fr": "Style des tuiles",
+            "it": "Stile dei riquadri",
+            "sv": "Rutstil",
+            "no": "Flisstil",
+            "es": "Estilo de mosaico",
+            "da": "Feltstil",
+            "ru": "Стиль плиток",
+            "pl": "Styl kafelków",
+            "ko": "타일 스타일",
+            "ar": "نمط البلاطات"
+          },
+          "hint": {
+            "en": "Pill: the icon beside the name and state, like Sensor Alarms' tiles.",
+            "nl": "Pil: het pictogram naast de naam en status, zoals de tegels van Sensoralarmen.",
+            "de": "Kapsel: das Symbol neben Name und Zustand, wie die Kacheln von Sensoralarme.",
+            "fr": "Pilule : l'icône à côté du nom et de l'état, comme les tuiles d'Alarmes des capteurs.",
+            "it": "Pillola: l'icona accanto al nome e allo stato, come i riquadri di Allarmi sensori.",
+            "sv": "Kapsel: ikonen bredvid namnet och läget, som rutorna i Sensorlarm.",
+            "no": "Kapsel: ikonet ved siden av navnet og tilstanden, som flisene i Sensoralarmer.",
+            "es": "Píldora: el icono junto al nombre y el estado, como los mosaicos de Alarmas de sensores.",
+            "da": "Kapsel: ikonet ved siden af navnet og tilstanden, som felterne i Sensoralarmer.",
+            "ru": "Капсула: значок рядом с именем и состоянием, как плитки «Тревоги датчиков».",
+            "pl": "Pigułka: ikona obok nazwy i stanu, jak kafelki Alarmów czujników.",
+            "ko": "알약형: 센서 알람의 타일처럼 아이콘이 이름과 상태 옆에 놓입니다.",
+            "ar": "كبسولة: الأيقونة بجانب الاسم والحالة، مثل بلاطات إنذارات المستشعرات."
+          },
+          "value": "compact",
+          "values": [
+            {
+              "id": "compact",
+              "title": {
+                "en": "Compact",
+                "nl": "Compact",
+                "de": "Kompakt",
+                "fr": "Compact",
+                "it": "Compatto",
+                "sv": "Kompakt",
+                "no": "Kompakt",
+                "es": "Compacto",
+                "da": "Kompakt",
+                "ru": "Компактный",
+                "pl": "Kompaktowy",
+                "ko": "컴팩트",
+                "ar": "مدمج"
+              }
+            },
+            {
+              "id": "pill",
+              "title": {
+                "en": "Pill",
+                "nl": "Pil",
+                "de": "Kapsel",
+                "fr": "Pilule",
+                "it": "Pillola",
+                "sv": "Kapsel",
+                "no": "Kapsel",
+                "es": "Píldora",
+                "da": "Kapsel",
+                "ru": "Капсула",
+                "pl": "Pigułka",
+                "ko": "알약형",
+                "ar": "كبسولة"
+              }
+            }
+          ]
+        },
+        {
           "id": "activeStyle",
           "type": "dropdown",
           "title": {
@@ -25479,6 +25645,64 @@
             "ar": "لتسمية المربعات: شغّل هذا الخيار واحفظ الأداة، ثم اخرج من وضع تحرير لوحة التحكم. يعرض كل مربع حقلًا نصيًا: اكتب اسمه، أو اتركه فارغًا لإبقاء اسم الجهاز (أو الغرفة). بعد ذلك حرّر الأداة مجددًا وأوقف هذا الخيار."
           },
           "value": false
+        },
+        {
+          "id": "columns",
+          "type": "dropdown",
+          "title": {
+            "en": "Tiles per row",
+            "nl": "Tegels per rij",
+            "de": "Kacheln pro Zeile",
+            "fr": "Tuiles par ligne",
+            "it": "Riquadri per riga",
+            "sv": "Rutor per rad",
+            "no": "Fliser per rad",
+            "es": "Mosaicos por fila",
+            "da": "Felter pr. række",
+            "ru": "Плиток в ряду",
+            "pl": "Kafelków w rzędzie",
+            "ko": "행당 타일",
+            "ar": "البلاطات في كل صف"
+          },
+          "value": "2",
+          "values": [
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            },
+            {
+              "id": "3",
+              "title": {
+                "en": "3",
+                "nl": "3",
+                "de": "3",
+                "fr": "3",
+                "it": "3",
+                "sv": "3",
+                "no": "3",
+                "es": "3",
+                "da": "3",
+                "ru": "3",
+                "pl": "3",
+                "ko": "3",
+                "ar": "3"
+              }
+            }
+          ]
         },
         {
           "id": "includeStates",
