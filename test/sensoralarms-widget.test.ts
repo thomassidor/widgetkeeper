@@ -19,10 +19,10 @@ const door = (open = true) => ({
 const motion = () => ({ id: 'motion', name: 'Hall', icon: null, alarms: [alarm('alarm_motion', true, 'Motion alarm', true)] });
 const thermo = () => ({ id: 'thermo', name: 'Bedroom', icon: null, alarms: [] });
 
-function widget(devices: any[], includeStates?: boolean) {
+function widget(devices: any[], includeStates?: boolean, extra: object = {}) {
   const root = document.createElement('div');
   document.body.append(root);
-  const w = win.createSensorAlarmsWidget(root, { includeStates });
+  const w = win.createSensorAlarmsWidget(root, { includeStates, ...extra });
   w.setState(devices);
   const tile = (id: string) => root.querySelector<HTMLElement>(`.sa-tile[data-device="${id}"]`)!;
   const status = (id: string) => tile(id).querySelector('.sa-status')!.textContent;
@@ -151,6 +151,20 @@ describe('alarm panel', () => {
     expect(root.querySelector('.sa-panel')!.previousElementSibling).toBe(tile('thermo'));
     expect(root.querySelector('.sa-empty')!.textContent).toBe('No alarm sensors');
     expect(tile('air').classList.contains('open')).toBe(false);
+  });
+
+  it('sits after a row of three with Tiles per row 3', () => {
+    const { root, tile } = widget([air(), door(), thermo(), motion()], false, { columns: '3' });
+    expect(root.dataset.columns).toBe('3');
+    tap(tile('air'));
+    expect(root.querySelector('.sa-panel')!.previousElementSibling).toBe(tile('thermo'));
+    tap(tile('motion'));
+    expect(root.querySelector('.sa-panel')!.previousElementSibling).toBe(tile('motion'));
+  });
+
+  it('reads a missing or unknown Tiles per row as 2', () => {
+    expect(widget([air()]).root.dataset.columns).toBe('2');
+    expect(widget([air()], false, { columns: 'bogus' }).root.dataset.columns).toBe('2');
   });
 
   it('lists motion and contact, red only when they count', () => {

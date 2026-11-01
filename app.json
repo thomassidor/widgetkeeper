@@ -25518,6 +25518,64 @@
           "value": false
         },
         {
+          "id": "columns",
+          "type": "dropdown",
+          "title": {
+            "en": "Tiles per row",
+            "nl": "Tegels per rij",
+            "de": "Kacheln pro Zeile",
+            "fr": "Tuiles par ligne",
+            "it": "Riquadri per riga",
+            "sv": "Rutor per rad",
+            "no": "Fliser per rad",
+            "es": "Mosaicos por fila",
+            "da": "Felter pr. række",
+            "ru": "Плиток в ряду",
+            "pl": "Kafelków w rzędzie",
+            "ko": "행당 타일",
+            "ar": "البلاطات في كل صف"
+          },
+          "value": "2",
+          "values": [
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            },
+            {
+              "id": "3",
+              "title": {
+                "en": "3",
+                "nl": "3",
+                "de": "3",
+                "fr": "3",
+                "it": "3",
+                "sv": "3",
+                "no": "3",
+                "es": "3",
+                "da": "3",
+                "ru": "3",
+                "pl": "3",
+                "ko": "3",
+                "ar": "3"
+              }
+            }
+          ]
+        },
+        {
           "id": "includeStates",
           "type": "checkbox",
           "title": {

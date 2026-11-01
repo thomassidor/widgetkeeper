@@ -1,5 +1,5 @@
 /*
- * Sensor Alarms: a grid of device tiles, 2 per row, each with the device's icon, its name and its
+ * Sensor Alarms: a grid of device tiles, 2 or 3 per row (`columns`), each with the device's icon, its name and its
  * current alarm (or "No alarm"). A tile with an active alarm turns red. A tap opens a panel under the tile's
  * row with every alarm of the device, active or not.
  * Plain browser JS (served as-is).
@@ -24,6 +24,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, t?: (key: string, tokens?: object) => string, includeStates?: boolean,
+   *   columns?: number|string,
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
    *   onHeight?: (h: number) => void }} opts
    */
@@ -41,6 +42,8 @@
     const touches = touchGuard(); // the tiles' taps
 
     root.classList.add('sa');
+    const columns = String(opts.columns) === '3' ? 3 : 2; // a missing or unknown value is 2, as before
+    root.dataset.columns = String(columns);
     applyColors(root, { style: opts.colorStyle });
     const typed = tileNames(opts, () => render(), (key) => {
       const tile = tiles.get(key);
@@ -159,8 +162,9 @@
         panel.remove();
         return;
       }
-      // Right after the tapped tile's row (2 per row).
-      const after = tiles.get(devices[Math.min(index | 1, devices.length - 1)].id);
+      // Right after the tapped tile's row.
+      const rowEnd = Math.floor(index / columns) * columns + columns - 1;
+      const after = tiles.get(devices[Math.min(rowEnd, devices.length - 1)].id);
       if (after && panel.previousSibling !== after.tile) after.tile.after(panel);
       const rows = alarmRows(d);
       panelList.textContent = '';

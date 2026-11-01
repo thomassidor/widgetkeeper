@@ -30,6 +30,7 @@ html, body { background: transparent !important; }
 .sa [dir="auto"] { text-align: left; }
 
 .sa-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--homey-su-3, 12px); }
+.sa[data-columns="3"] .sa-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
 /*
  * Like the native temperature tiles (measured from phone screenshots at 3x): 52px high, a 24px icon, then

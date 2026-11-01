@@ -201,6 +201,7 @@ const BUILD = {
       w('sensoralarms', 'Defaults · alarm sensors', {}, counted),
       w('sensoralarms', 'Motion and contact counted', { includeStates: true }, [...states, ...counted.slice(0, 2)]),
       w('sensoralarms', 'Motion and contact not counted', {}, states),
+      w('sensoralarms', '3 per row · alarm sensors', { columns: '3' }, [...counted, ...states].slice(0, 6)),
       w('sensoralarms', 'No alarms · deleted device', {}, [...none, MISSING]),
       renaming('sensoralarms', 'Rename tiles', {}, counted.slice(0, 2), counted[0] ? { [counted[0]]: 'Typed name' } : {}),
     ] };
