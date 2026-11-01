@@ -180,6 +180,8 @@ const BUILD = {
       w('quickactions', 'Lighter · lights and plugs', { activeStyle: 'lighter' }, [...lights.slice(0, 3), ...sockets]),
       w('quickactions', 'Locks · other on/off · own icons', {}, [...locks, ...others, ...custom]),
       w('quickactions', 'Lighter · locks and others', { activeStyle: 'lighter' }, [...locks, ...others]),
+      w('quickactions', 'Pill · lights, plugs and locks', { tileStyle: 'pill' }, [...lights.slice(0, 2), ...sockets.slice(0, 1), ...locks]),
+      w('quickactions', 'Pill · lighter · Vivid', { tileStyle: 'pill', activeStyle: 'lighter', colorStyle: 'deep' }, [...lights.slice(0, 2), ...locks, ...others]),
       w('quickactions', 'Double press · locks only', { press: 'double', pressFor: 'locks' }, [...locks, ...others]),
       w('quickactions', 'Long press · every tile', { press: 'long' }, [...lights.slice(0, 3), ...locks]),
       w('quickactions', 'One device', {}, lights.slice(0, 1)),

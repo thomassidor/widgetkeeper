@@ -22,6 +22,14 @@
     renameFailed: 'Could not save the name.',
     tapAgain: 'Tap again',
     hold: 'Hold',
+    on: 'On',
+    off: 'Off',
+    locked: 'Locked',
+    unlocked: 'Unlocked',
+    open: 'Open',
+    closed: 'Closed',
+    playing: 'Playing',
+    paused: 'Paused',
   };
 
   // Homey's standard capabilities carry no icon of their own (the Homey app draws them), so these
@@ -48,9 +56,19 @@
     return GLYPHS.power;
   }
 
+  /** The pill tile's state line for a quick action's value (none for a momentary button). */
+  function stateKey(capabilityId, value) {
+    const base = capabilityId.split('.')[0];
+    if (base === 'button') return null;
+    if (base === 'locked') return value ? 'locked' : 'unlocked';
+    if (base === 'garagedoor_closed') return value ? 'closed' : 'open';
+    if (base === 'speaker_playing') return value ? 'playing' : 'paused';
+    return value ? 'on' : 'off';
+  }
+
   /**
    * @param {HTMLElement} root
-   * @param {{ t?: (key: string, tokens?: object) => string, activeStyle?: 'tint' | 'lighter',
+   * @param {{ t?: (key: string, tokens?: object) => string, activeStyle?: 'tint' | 'lighter', tileStyle?: string,
    *   color?: string, colorStyle?: string, press?: 'single' | 'double' | 'long', pressFor?: 'all' | 'locks',
    *   onTrigger?: (deviceId: string, value: boolean) => Promise<any>, onHaptic?: () => void,
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
@@ -78,12 +96,15 @@
     });
     root.classList.toggle('renaming', names.renaming);
     root.dataset.activeStyle = opts.activeStyle === 'lighter' ? 'lighter' : 'tint';
+    // Pill (`tileStyle: pill`, as Device Values'): Sensor Alarms' tile, the icon beside the name over the state.
+    const pill = opts.tileStyle === 'pill';
+    root.classList.toggle('qa-pill', pill);
     applyColors(root, { style: opts.colorStyle, color: opts.color, fallback: 'blue' });
     root.style.setProperty('--qa-hold', `${HOLD_MS}ms`); // the long press's fill
     const grid = el('div', { class: 'qa-grid' }, root);
     const messageEl = el('div', { class: 'qa-message', dir: 'auto' }, root);
     const touches = touchGuard(); // the tiles' taps
-    /** @type {Map<string, {button: HTMLButtonElement, icon: HTMLElement, action: HTMLElement, name: HTMLElement}>} */
+    /** @type {Map<string, {button: HTMLButtonElement, icon: HTMLElement, action: HTMLElement, name: HTMLElement, state: HTMLElement | null}>} */
     const tiles = new Map();
 
     function setState(list) {
@@ -196,13 +217,27 @@
         // Renaming: a plain tile, as a text field can't sit in a button.
         const button = names.renaming ? el('div', { class: 'qa-tile', 'data-device': id })
           : el('button', { type: 'button', class: 'qa-tile', 'data-device': id });
-        const top = el('div', { class: 'qa-top' }, button);
-        tile = {
-          button,
-          icon: el('span', { class: 'qa-icon' }, top),
-          action: el('span', { class: 'qa-action' }, top),
-          name: el('span', { class: 'qa-name', dir: 'auto' }, button),
-        };
+        if (pill) {
+          // The icon, the name over the state, the action icon.
+          const icon = el('span', { class: 'qa-icon' }, button);
+          const text = el('div', { class: 'qa-text' }, button);
+          tile = {
+            button,
+            icon,
+            name: el('span', { class: 'qa-name', dir: 'auto' }, text),
+            state: el('span', { class: 'qa-state', dir: 'auto' }, text),
+            action: el('span', { class: 'qa-action' }, button),
+          };
+        } else {
+          const top = el('div', { class: 'qa-top' }, button);
+          tile = {
+            button,
+            icon: el('span', { class: 'qa-icon' }, top),
+            action: el('span', { class: 'qa-action' }, top),
+            name: el('span', { class: 'qa-name', dir: 'auto' }, button),
+            state: null,
+          };
+        }
         // Taps from the touch events (the kit's `onTap()`), so the pressed state also shows on iOS (where :active
         // needs a touch listener) and the dashboard's own touch handling can't swallow the click; a drag is left
         // to the dashboard, so dragging over the tiles still scrolls it. A button clicks on Enter and Space itself.
@@ -252,6 +287,11 @@
         if (names.renaming && !('missing' in d)) {
           const field = names.field(d.id, d.name);
           if (field.previousSibling !== tile.name) tile.name.after(field);
+        }
+        if (tile.state) {
+          const key = qa && !hint && !confirm ? stateKey(qa.capabilityId, value) : null;
+          tile.state.textContent = key ? t(key) : '';
+          tile.state.style.display = key ? '' : 'none';
         }
         tile.button.classList.toggle('missing', 'missing' in d);
         setMask(tile.icon, 'missing' in d ? null : d.icon);

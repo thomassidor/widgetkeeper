@@ -42,7 +42,15 @@
     "unavailable": "Unavailable",
     "renameFailed": "Could not save the name.",
     "tapAgain": "Tap again",
-    "hold": "Hold"
+    "hold": "Hold",
+    "on": "On",
+    "off": "Off",
+    "locked": "Locked",
+    "unlocked": "Unlocked",
+    "open": "Open",
+    "closed": "Closed",
+    "playing": "Playing",
+    "paused": "Paused"
   },
   "sensoralarms": {
     "selectDevices": "Select sensors in the widget settings.",

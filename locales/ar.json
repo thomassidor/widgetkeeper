@@ -42,7 +42,15 @@
     "unavailable": "غير متاح",
     "renameFailed": "تعذّر حفظ الاسم.",
     "tapAgain": "اضغط مرة أخرى",
-    "hold": "اضغط مطولًا"
+    "hold": "اضغط مطولًا",
+    "on": "تشغيل",
+    "off": "إيقاف",
+    "locked": "مقفل",
+    "unlocked": "غير مقفل",
+    "open": "مفتوح",
+    "closed": "مغلق",
+    "playing": "قيد التشغيل",
+    "paused": "متوقف مؤقتًا"
   },
   "sensoralarms": {
     "selectDevices": "اختر المستشعرات في إعدادات الأداة.",

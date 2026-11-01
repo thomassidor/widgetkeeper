@@ -42,7 +42,15 @@
     "unavailable": "Utilgjengelig",
     "renameFailed": "Kunne ikke lagre navnet.",
     "tapAgain": "Trykk igjen",
-    "hold": "Hold inne"
+    "hold": "Hold inne",
+    "on": "På",
+    "off": "Av",
+    "locked": "Låst",
+    "unlocked": "Ulåst",
+    "open": "Åpen",
+    "closed": "Lukket",
+    "playing": "Spiller",
+    "paused": "Satt på pause"
   },
   "sensoralarms": {
     "selectDevices": "Velg sensorer i widgetinnstillingene.",
