@@ -433,6 +433,22 @@ describe('Keypad: a press', () => {
     expect(onWrong).toHaveBeenCalledTimes(6);
   });
 
+  // Every code reads as gone while the file can't be read, which let anyone into a dashboard with a code.
+  it("refuses a web dashboard's code while the secrets file can't be read", () => {
+    const { homey, keypad } = setup();
+    const kids = codeId(keypad, '2580', 'Kids');
+    const secrets = Secrets.for(homey);
+    Object.defineProperty(secrets, 'readable', { get: () => false, configurable: true });
+    try {
+      expect(keypad.unlock(kids, '', 'Hallway')).toEqual({ ok: false, reason: 'locked', retryAfter: 5 });
+      expect(keypad.unlock('any', '', 'Hallway')).toMatchObject({ ok: false, reason: 'locked' });
+      expect(keypad.unlock(null, '', 'Open')).toEqual({ ok: true });
+    } finally {
+      delete (secrets as any).readable;
+    }
+    expect(keypad.unlock(kids, '2580', 'Hallway')).toEqual({ ok: true });
+  });
+
   it("never fails a press for the trigger", async () => {
     const { keypad, onPress, log } = setup();
     onPress.mockRejectedValueOnce(new Error('No such card'));

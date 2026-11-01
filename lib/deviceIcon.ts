@@ -15,9 +15,12 @@ export function deviceImage(device: any, type: string, { anyType = false } = {})
   return { id: o.id, url: o.url, lastUpdated: typeof o.lastUpdated === 'number' ? o.lastUpdated : null };
 }
 
+/** How long an image (a camera's snapshot, album art) may take; the widgets give up after 20 s. */
+const IMAGE_TIMEOUT_MS = 15e3;
+
 /** An image fetched as base64 (`what` names it in the errors: `Snapshot HTTP 404`, `Album art is text/html`). */
 export async function fetchImageBase64(api: any, path: string, what: string): Promise<{ type: string, data: string }> {
-  const res = await fetch(await homeyUrl(api, path));
+  const res = await fetch(await homeyUrl(api, path), { signal: AbortSignal.timeout(IMAGE_TIMEOUT_MS) });
   if (!res.ok) throw new Error(`${what} HTTP ${res.status}`);
   const type = res.headers.get('content-type') || 'image/jpeg';
   if (!type.startsWith('image/')) throw new Error(`${what} is ${type}`);

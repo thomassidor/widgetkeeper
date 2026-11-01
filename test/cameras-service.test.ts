@@ -49,6 +49,8 @@ describe('state', () => {
     expect(await service.getState(['kitchen'])).toEqual([first]);
     api.devices.getDevice.mockRejectedValueOnce(new Error('Not Found'));
     expect(await service.getState(['kitchen'])).toEqual([{ id: 'kitchen', missing: true }]);
+    // Its image goes too, so a snapshot isn't fetched from a deleted camera.
+    expect((service as any).imageUrls.has('kitchen')).toBe(false);
   });
 });
 
@@ -121,7 +123,7 @@ describe('getSnapshot', () => {
     const fetch = stubFetch();
     const { service } = setup();
     expect(await service.getSnapshot('kitchen')).toEqual({ type: 'image/jpeg', data: 'AQID' });
-    expect(fetch).toHaveBeenCalledWith('http://homey/api/image/img-k');
+    expect(fetch).toHaveBeenCalledWith('http://homey/api/image/img-k', { signal: expect.any(AbortSignal) });
   });
 
   it('shares one fetch within 2 s, then fetches again', async () => {
