@@ -5,6 +5,7 @@
 import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { downloadIcons, edge, withServer } from './headless.mjs';
+import { progress } from './progress.mjs';
 
 // The shots: the ids of the page's `<section class="shot">`s, in page order.
 const SHOTS = [...readFileSync('dev/screenshots.html', 'utf8').matchAll(/<section class="shot" id="(\w+)"/g)].map(m => m[1]);
@@ -16,7 +17,9 @@ mkdirSync('docs/screenshots', { recursive: true });
 
 const only = process.argv.slice(2);
 await withServer(async (origin) => {
-  for (const id of SHOTS.filter(s => !only.length || only.includes(s))) {
+  const ids = SHOTS.filter(s => !only.length || only.includes(s));
+  const wrote = progress(ids.length);
+  for (const id of ids) {
     const url = `${origin}/dev/screenshots.html?s=${id}`;
     // First pass: the page reports its height once the fonts have loaded.
     const dom = edge([`--window-size=${WIDTH},2000`, '--dump-dom', url]);
@@ -24,6 +27,6 @@ await withServer(async (origin) => {
     if (!height) throw new Error(`No height for ${id}`);
     const out = `docs/screenshots/${id}.png`;
     edge([`--window-size=${WIDTH},${height}`, `--force-device-scale-factor=${SCALE}`, '--default-background-color=00000000', `--screenshot=${resolve(out)}`, url]);
-    console.log('wrote', out, `(${WIDTH}×${height} @${SCALE}x)`);
+    wrote(out, `(${WIDTH}×${height} @${SCALE}x)`);
   }
 });

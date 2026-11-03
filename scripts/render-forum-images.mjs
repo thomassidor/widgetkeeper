@@ -5,19 +5,20 @@
 import { mkdirSync, readdirSync } from 'node:fs';
 import sharp from 'sharp';
 import { background, readConfig } from './app-images.mjs';
+import { progress } from './progress.mjs';
 
 const WIDTH = 1380;
 const SOURCES = ['showcase', 'web'];
 
 const config = readConfig();
 mkdirSync('docs/forum', { recursive: true });
-for (const dir of SOURCES) {
-  for (const file of readdirSync(`docs/${dir}`).filter(f => f.endsWith('.png')).sort()) {
-    const image = await sharp(`docs/${dir}/${file}`).resize({ width: WIDTH, kernel: 'lanczos3' }).png().toBuffer();
-    const { width, height } = await sharp(image).metadata();
-    const out = `docs/forum/${dir}-${file.replace(/\.png$/, '.jpg')}`;
-    await sharp(await background(config.background, width, height)).composite([{ input: image }])
-      .jpeg({ quality: 88, mozjpeg: true }).toFile(out);
-    console.log('wrote', out, `(${width}×${height})`);
-  }
+const files = SOURCES.flatMap(dir => readdirSync(`docs/${dir}`).filter(f => f.endsWith('.png')).sort().map(file => ({ dir, file })));
+const wrote = progress(files.length);
+for (const { dir, file } of files) {
+  const image = await sharp(`docs/${dir}/${file}`).resize({ width: WIDTH, kernel: 'lanczos3' }).png().toBuffer();
+  const { width, height } = await sharp(image).metadata();
+  const out = `docs/forum/${dir}-${file.replace(/\.png$/, '.jpg')}`;
+  await sharp(await background(config.background, width, height)).composite([{ input: image }])
+    .jpeg({ quality: 88, mozjpeg: true }).toFile(out);
+  wrote(out, `(${width}×${height})`);
 }

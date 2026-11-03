@@ -8,6 +8,7 @@ import { pathToFileURL } from 'node:url';
 import sharp from 'sharp';
 import { appImageSources, renderAppImages } from './app-images.mjs';
 import { edge } from './headless.mjs';
+import { progress } from './progress.mjs';
 
 const page = pathToFileURL(resolve('dev/widget-previews.html')).href;
 // The page's frame ids are `<prefix>-dark` and `<prefix>-light`; each goes to widgets/<widget>/preview-<theme>.png.
@@ -22,12 +23,15 @@ const OUT = Object.fromEntries(Object.entries(WIDGETS).flatMap(([prefix, widget]
 
 const only = process.argv.slice(2);
 const rendered = [];
-for (const [id, { widget, theme, out }] of Object.entries(OUT).filter(([id]) => !only.length || only.includes(id))) {
+const frames = Object.entries(OUT).filter(([id]) => !only.length || only.includes(id));
+// Two files a frame: the preview and the README's cropped copy.
+const wrote = progress(frames.length * 2);
+for (const [id, { widget, theme, out }] of frames) {
   edge([
     '--force-device-scale-factor=1', '--default-background-color=00000000', '--window-size=1024,1024',
     `--screenshot=${resolve(out)}`, `${page}?p=${id}`,
   ], { virtualTime: null });
-  console.log('wrote', out);
+  wrote(out);
   // The README shows the previews small, floated left of the text; the 1024×1024 frame is mostly empty
   // space, so crop to the card (its shadow included), scale to 480 px wide (120 px at 4x) and pad the
   // bottom to 420 px, so every image is as tall and the text beside it doesn't wrap under a short one.
@@ -37,7 +41,7 @@ for (const [id, { widget, theme, out }] of Object.entries(OUT).filter(([id]) => 
   const { height } = await sharp(card).metadata();
   await sharp(card).extend({ bottom: Math.max(0, 420 - height), background: { r: 0, g: 0, b: 0, alpha: 0 } })
     .png({ compressionLevel: 9 }).toFile(cropped);
-  console.log('wrote', cropped);
+  wrote(cropped);
   rendered.push(out);
 }
 

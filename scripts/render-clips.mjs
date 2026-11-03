@@ -8,6 +8,7 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import sharp from 'sharp';
 import { downloadIcons, EDGE, freshProfile, HEADLESS } from './headless.mjs';
+import { progress } from './progress.mjs';
 
 const page = pathToFileURL(resolve('dev/clips.html')).href;
 const WIDTH = 358;
@@ -235,7 +236,15 @@ async function launch() {
     pending.set(++id, { res, rej });
     ws.send(JSON.stringify({ id, method, params }));
   });
-  const close = () => { ws.close(); proc.kill(); setTimeout(() => rmSync(profile, { recursive: true, force: true }), 500); };
+  // The profile goes once the browser has exited: on a slow machine it was still writing its session storage
+  // 500 ms after the kill, and the removal failed with ENOTEMPTY (the NAS build box, 2026-11-03).
+  const exited = new Promise(res => proc.once('exit', res));
+  const close = async () => {
+    ws.close();
+    proc.kill();
+    await Promise.race([exited, sleep(10000)]);
+    rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+  };
   return { send, close };
 }
 
@@ -353,14 +362,16 @@ async function record(id) {
       .webp({ loop: 0, delay: delays, quality: 80, effort: 6, smartSubsample: true })
       .toFile(out);
     const seconds = delays.reduce((a, b) => a + b, 0) / 1000;
-    console.log('wrote', out, `(${frames.length} frames, ${seconds.toFixed(1)} s, ${width}×${height} @${SCALE}x)`);
+    wrote(out, `(${frames.length} frames, ${seconds.toFixed(1)} s, ${width}×${height} @${SCALE}x)`);
   } finally {
-    close();
+    await close();
   }
 }
 
 await downloadIcons();
 mkdirSync('docs/clips', { recursive: true });
 const only = process.argv.slice(2);
-for (const id of Object.keys(CLIPS).filter(c => !only.length || only.includes(c))) await record(id);
+const ids = Object.keys(CLIPS).filter(c => !only.length || only.includes(c));
+const wrote = progress(ids.length);
+for (const id of ids) await record(id);
 process.exit(0);

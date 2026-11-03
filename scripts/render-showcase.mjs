@@ -5,6 +5,7 @@
 import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { downloadIcons, edge, withServer } from './headless.mjs';
+import { progress } from './progress.mjs';
 
 const SCALE = 2;
 // The dashboard ids: the keys of `window.SHOWCASE` (each followed by its `title`).
@@ -15,7 +16,9 @@ mkdirSync('docs/showcase', { recursive: true });
 
 const only = process.argv.slice(2);
 await withServer(async (origin) => {
-  for (const id of only.length ? only : ALL) {
+  const ids = only.length ? only : ALL;
+  const wrote = progress(ids.length);
+  for (const id of ids) {
     const url = `${origin}/dev/showcase.html?d=${id}`;
     // First pass: the page reports its size, and how far each column runs past the screen's bottom.
     const dom = edge(['--window-size=2000,1400', '--dump-dom', url]);
@@ -26,6 +29,6 @@ await withServer(async (origin) => {
     overflow.forEach((px, i) => { if (px > 0) console.warn(`${id}: column ${i + 1} runs ${px} px off the screen`); });
     const out = `docs/showcase/${id}.png`;
     edge([`--window-size=${width},${height}`, `--force-device-scale-factor=${SCALE}`, '--default-background-color=00000000', `--screenshot=${resolve(out)}`, url]);
-    console.log('wrote', out, `(${width}×${height} @${SCALE}x; columns end ${overflow.map(px => `${-px}`).join('/')} px above the bottom)`);
+    wrote(out, `(${width}×${height} @${SCALE}x; columns end ${overflow.map(px => `${-px}`).join('/')} px above the bottom)`);
   }
 });

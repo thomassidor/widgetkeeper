@@ -6,6 +6,11 @@ import { tmpdir } from 'node:os';
 import { extname, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// The made-up data follows the fixed clock's local time (18:40 on 6 October), and the committed renders were made in
+// Copenhagen: on a UTC machine (the NAS build box) the readings came out different (Chart · Scatter's 6.5 °C for
+// 6.8, 2026-11-03). The browsers inherit it. Windows is left as it is: Edge there reads the system's zone.
+if (process.platform !== 'win32') process.env.TZ = 'Europe/Copenhagen';
+
 /** The browser: Edge's default install path, or `EDGE` from the environment. */
 export const EDGE = process.env.EDGE || 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
 /** The flags every render runs Edge with. */

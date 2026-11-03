@@ -7,6 +7,7 @@
 import { existsSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { downloadIcons, edge, withServer } from './headless.mjs';
+import { progress } from './progress.mjs';
 
 const SCALE = 2;
 /** Each teaser and the web showcase view its page shows. */
@@ -16,6 +17,7 @@ if (!TEASERS[version]) throw new Error(`No teaser for ${version} (${Object.keys(
 const web = `docs/web/${TEASERS[version]}.png`;
 
 if (!existsSync(web)) throw new Error(`Render ${web} first: npm run web-showcase -- ${TEASERS[version]}`);
+const wrote = progress(1);
 await downloadIcons();
 mkdirSync('docs', { recursive: true });
 await withServer(async (origin) => {
@@ -27,5 +29,5 @@ await withServer(async (origin) => {
   if (!width || !height) throw new Error('No size for the poster');
   const out = `docs/whats-next-${version}.png`;
   edge([`--window-size=${width},${height}`, `--force-device-scale-factor=${SCALE}`, `--screenshot=${resolve(out)}`, url]);
-  console.log('wrote', out, `(${width}×${height} @${SCALE}x; columns ${/data-columns="([^"]*)"/.exec(dom)?.[1]} px)`);
+  wrote(out, `(${width}×${height} @${SCALE}x; columns ${/data-columns="([^"]*)"/.exec(dom)?.[1]} px)`);
 });

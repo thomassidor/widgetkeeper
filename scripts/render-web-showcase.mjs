@@ -6,6 +6,7 @@
 import { mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { downloadIcons, edge, withServer } from './headless.mjs';
+import { progress } from './progress.mjs';
 
 const VIEWS = ['dashboard', 'front', 'editor', 'settings', 'preview', 'light', 'wide', 'popup'];
 const SCALE = 2;
@@ -17,7 +18,9 @@ await downloadIcons();
 mkdirSync('docs/web', { recursive: true });
 
 await withServer(async (origin) => {
-  for (const view of only.length ? only : VIEWS) {
+  const views = only.length ? only : VIEWS;
+  const wrote = progress(views.length);
+  for (const view of views) {
     const url = `${origin}/dev/web-showcase.html?v=${view}`;
     // First pass: the page reports its size.
     const dom = edge(['--window-size=1600,1100', '--dump-dom', url]);
@@ -26,6 +29,6 @@ await withServer(async (origin) => {
     if (!width || !height) throw new Error(`No size for ${view}`);
     const out = `docs/web/${view}.png`;
     edge([`--window-size=${width},${height}`, `--force-device-scale-factor=${SCALE}`, '--default-background-color=00000000', `--screenshot=${resolve(out)}`, url]);
-    console.log('wrote', out, `(${width}×${height} @${SCALE}x)`);
+    wrote(out, `(${width}×${height} @${SCALE}x)`);
   }
 });

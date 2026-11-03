@@ -5,11 +5,13 @@ import { existsSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { downloadIcons, edge } from './headless.mjs';
+import { progress } from './progress.mjs';
 
 const url = pathToFileURL(resolve('dev/whats-new.html')).href;
 const SCALE = 2;
 
 if (!existsSync('docs/web/settings.png')) throw new Error('Render docs/web/settings.png first: npm run web-showcase -- settings');
+const wrote = progress(1);
 await downloadIcons();
 mkdirSync('docs', { recursive: true });
 // First pass: the page reports its size and its columns' heights.
@@ -19,4 +21,4 @@ const height = Number(/data-height="(\d+)"/.exec(dom)?.[1]);
 if (!width || !height) throw new Error('No size for the poster');
 const out = 'docs/whats-new-1.0.0.png';
 edge([`--window-size=${width},${height}`, `--force-device-scale-factor=${SCALE}`, `--screenshot=${resolve(out)}`, url]);
-console.log('wrote', out, `(${width}×${height} @${SCALE}x; columns ${/data-columns="([^"]*)"/.exec(dom)?.[1]} px)`);
+wrote(out, `(${width}×${height} @${SCALE}x; columns ${/data-columns="([^"]*)"/.exec(dom)?.[1]} px)`);

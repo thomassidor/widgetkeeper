@@ -369,9 +369,9 @@
         variable: { id: 'm1', name: 'House mode', type: 'string', value: 'Away' },
       });
 
-      // Light Controls: the evening's lights by room, the living room's Moods open on its tile (three colours blended).
+      // Light Controls: the evening's lights (since 1.1.0 the showcase's Lights by Room), the living room's Moods open on its tile (three colours blended).
       const lcap = v => ({ value: v, setable: true });
-      const evening = SHOWCASE_WIDGETS.find(w => w.type === 'lights' && w.opts && w.opts.palette === 'dusk').devices.slice(0, 5);
+      const evening = SHOWCASE_WIDGETS.find(w => w.opts && w.opts.palette === 'dusk').devices.slice(0, 5);
       const moods = [
         ['m1', 'Cosy evening', [{ temperature: 1 }, { hue: 0.07, saturation: 0.85 }]],
         ['m2', 'Movie night', [{ hue: 0.68, saturation: 0.9 }, { hue: 0.78, saturation: 1 }]],
