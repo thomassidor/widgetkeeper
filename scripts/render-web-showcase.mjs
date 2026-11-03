@@ -4,6 +4,7 @@
 // The page fetches /app.json and /locales/en.json, which a file:// page can't, so the repo root is served over HTTP
 // on 127.0.0.1 while it renders (headless.mjs's withServer()).
 import { mkdirSync } from 'node:fs';
+import sharp from 'sharp';
 import { resolve } from 'node:path';
 import { downloadIcons, edge, withServer } from './headless.mjs';
 import { progress } from './progress.mjs';
@@ -29,6 +30,15 @@ await withServer(async (origin) => {
     if (!width || !height) throw new Error(`No size for ${view}`);
     const out = `docs/web/${view}.png`;
     edge([`--window-size=${width},${height}`, `--force-device-scale-factor=${SCALE}`, '--default-background-color=00000000', `--screenshot=${resolve(out)}`, url]);
-    wrote(out, `(${width}×${height} @${SCALE}x)`);
+    // The dialog views also come cropped close to their dialog, rounded (docs/web/<view>-dialog.png, the 1.2.0 teaser's).
+    const crop = /data-crop="([^"]*)"/.exec(dom)?.[1];
+    if (crop) {
+      const [left, top, w, h] = crop.split(',').map(n => Number(n) * SCALE);
+      const r = 16 * SCALE;
+      const mask = Buffer.from(`<svg width="${w}" height="${h}"><rect width="${w}" height="${h}" rx="${r}" ry="${r}"/></svg>`);
+      await sharp(out).extract({ left, top, width: w, height: h })
+        .composite([{ input: mask, blend: 'dest-in' }]).png().toFile(`docs/web/${view}-dialog.png`);
+    }
+    wrote(out, `(${width}×${height} @${SCALE}x${crop ? '; and its dialog' : ''})`);
   }
 });

@@ -165,16 +165,20 @@
     .wide .text { flex: 1 1 auto; min-width: 0; }
     .wide p { margin-bottom: 22px; }
     .wide img { flex: none; width: 1140px; margin: -16px -24px -24px 0; display: block; }
-    /* Sync: the picture on the left. */
-    .wide.flip { flex-direction: row-reverse; padding: 32px 36px 32px 40px; }
-    .wide.flip img { margin: -16px 0 -24px -24px; }
-    /* Copy a widget and kiosk mode, side by side: the text, then the picture. */
+    /* Sync and Copy a widget, side by side: the text, then the pictures. */
     .pair { margin-top: 24px; display: flex; gap: 24px; align-items: stretch; }
     .pair .feat { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; padding: 32px 36px 20px; }
     .pair .feat > .tag { align-self: flex-start; }
     .pair .feat p { margin-bottom: 14px; }
     .pair .feat ul.more { margin-bottom: 8px; }
-    .pair .feat img { display: block; width: calc(100% + 32px); margin: auto -16px 0; }
+    .pair .feat img { display: block; width: 100%; margin: auto 0 12px; }
+    /* Sync's two dialogs side by side (cropped close by the web showcase), Copy's beside them. */
+    .pair .feat.sync { flex: 2.6 1 0; }
+    .pair .feat.sync ul.more { margin-bottom: 22px; }
+    .shots { margin-top: auto; display: flex; gap: 20px; align-items: flex-end; }
+    .shots figure { flex: 1 1 0; min-width: 0; margin: 0; }
+    .shots img { margin: 0 0 10px; }
+    .shots figcaption { margin-bottom: 12px; font-size: 13px; line-height: 16px; font-weight: 500; color: #8E8DA0; text-transform: uppercase; letter-spacing: 0.5px; }
   </style>
 </head>
 <body>
@@ -419,33 +423,27 @@
     <img src="../docs/web/preview.png" alt="">
   </section>
 
-  <section class="feat wide flip">
-    <div class="text">
+  <div class="pair">
+    <section class="feat sync">
       <span class="tag">Web dashboards</span>
       <h2>Sync with Homey dashboards</h2>
       <p>Link a web dashboard with one in the Homey app, or make a new one from it, and the two stay the same, both ways: change a widget on your phone and it changes on the wall tablet too.</p>
       <ul class="more">
-        <li><b>When you ask, when it's opened</b> and every night, at a time you set.</li>
+        <li><b>When you ask, when it's opened</b> and every night, at a time you set in the front page's Settings.</li>
         <li><b>Change by change:</b> each setting, device and tile name on its own, so edits on both sides come together.</li>
         <li><b>On a conflict</b>, the side you picked wins.</li>
         <li><b>Homey's own widgets</b> stay on Homey; both sides are backed up before each sync.</li>
       </ul>
-    </div>
-    <img src="../docs/web/sync.png" alt="">
-  </section>
-
-  <div class="pair">
-    <section class="feat">
-      <span class="tag">Web dashboards</span>
-      <h2>Every night, on its own</h2>
-      <p>The front page's Settings: every synced dashboard each night at the time you pick, or all of them now.</p>
-      <img src="../docs/web/nightly.png" alt="">
+      <div class="shots">
+        <figure><img src="../docs/web/sync-dialog.png" alt=""><figcaption>In the dashboard's editor</figcaption></figure>
+        <figure><img src="../docs/web/nightly-dialog.png" alt=""><figcaption>In the front page's Settings</figcaption></figure>
+      </div>
     </section>
-    <section class="feat">
+    <section class="feat copy">
       <span class="tag">Web dashboards</span>
       <h2>Copy a widget</h2>
       <p>To this dashboard or another, with its settings, devices and tile names. Pick the column it goes in.</p>
-      <img src="../docs/web/copy.png" alt="">
+      <img src="../docs/web/copy-dialog.png" alt="">
     </section>
   </div>
 

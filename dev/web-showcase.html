@@ -280,6 +280,11 @@
     /* The settings view: the dialog inside the page, over a backdrop like a modal's. */
     .viewport.settings { height: 1040px; }
     .shot-backdrop { position: absolute; inset: 0; z-index: 9998; background: rgba(0, 0, 0, .5); }
+    /* The sync, nightly and copy views are cropped close to their dialog (the render script's -dialog.png): the page
+       behind dimmed more, and the nightly view's Settings only its sync section. */
+    .crop .shot-backdrop { background: rgba(0, 0, 0, .7); }
+    .crop .wd-page-settings .wd-page-section:not(:has(.wd-sync-time)) { display: none; }
+    .crop .wd-page-settings .wd-page-section { border-top: 0; margin-top: 0; padding-top: 0; }
     .viewport > .wd-dialog { position: absolute; inset: 40px 0 auto; height: calc(100% - 80px); max-height: none; margin: 0 auto; z-index: 9999; box-shadow: 0 24px 64px rgba(0, 0, 0, .5); }
     /* The popup, sync and copy views: the dialog in the middle, as tall as it is, without the focus ring a script's focus() gives. */
     .viewport > .wd-dialog.wd-popup, .viewport > .wd-dialog.wd-sync-dialog, .viewport > .wd-dialog.wd-copy, .viewport > .wd-dialog.wd-page-settings { inset: 0; height: fit-content; margin: auto; }
@@ -332,6 +337,8 @@
     document.getElementById('hash').textContent = HASH === '#/' ? '' : HASH;
     if (VIEW === 'light') document.querySelector('.window').classList.add('light');
     if (VIEW === 'kiosk') document.querySelector('.window').classList.add('tablet');
+    const CROP = ['sync', 'nightly', 'copy'].includes(VIEW);
+    if (CROP) document.body.classList.add('crop');
     // The sync and copy views: once the editor is there, open the Sync dialog, or Copy to… for the chart with Home picked.
     // The nightly view: the front page's edit mode with its Settings open (the backup, the nightly sync, this browser).
     if (VIEW === 'nightly') {
@@ -390,6 +397,13 @@
       const r = document.body.getBoundingClientRect();
       document.body.dataset.width = String(Math.ceil(r.width));
       document.body.dataset.height = String(Math.ceil(r.height));
+      // The dialog's box with 24 px around it, for the close crop (sync, nightly, copy).
+      const dialog = CROP && document.querySelector('.viewport > .wd-dialog');
+      if (dialog) {
+        const b = dialog.getBoundingClientRect();
+        const pad = 24;
+        document.body.dataset.crop = [b.left - r.left - pad, b.top - r.top - pad, b.width + 2 * pad, b.height + 2 * pad].map(Math.round).join(',');
+      }
     }, 800));
   </script>
 </body>
