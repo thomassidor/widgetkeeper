@@ -165,6 +165,16 @@
     .wide .text { flex: 1 1 auto; min-width: 0; }
     .wide p { margin-bottom: 22px; }
     .wide img { flex: none; width: 1140px; margin: -16px -24px -24px 0; display: block; }
+    /* Sync: the picture on the left. */
+    .wide.flip { flex-direction: row-reverse; padding: 32px 36px 32px 40px; }
+    .wide.flip img { margin: -16px 0 -24px -24px; }
+    /* Copy a widget and kiosk mode, side by side: the text, then the picture. */
+    .pair { margin-top: 24px; display: flex; gap: 24px; align-items: stretch; }
+    .pair .feat { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; padding: 32px 36px 20px; }
+    .pair .feat > .tag { align-self: flex-start; }
+    .pair .feat p { margin-bottom: 14px; }
+    .pair .feat ul.more { margin-bottom: 8px; }
+    .pair .feat img { display: block; width: calc(100% + 32px); margin: auto -16px 0; }
   </style>
 </head>
 <body>
@@ -403,13 +413,40 @@
         <li><b>Devices included:</b> pick another value, and the preview draws it.</li>
         <li><b>Cancel</b> leaves the widget as it was.</li>
         <li><b>Every Widgetkeeper widget</b>, the new charts too.</li>
-        <li><b>Sync with a Homey dashboard:</b> link the two and a change on either side shows on the other, every night or when you ask.</li>
-        <li><b>Copy a widget</b> to this dashboard or another.</li>
-        <li><b>Kiosk mode</b> hides the dashboard's bar on a wall tablet.</li>
       </ul>
     </div>
     <img src="../docs/web/preview.png" alt="">
   </section>
+
+  <section class="feat wide flip">
+    <div class="text">
+      <span class="tag">Web dashboards</span>
+      <h2>Sync with Homey dashboards</h2>
+      <p>Link a web dashboard with one in the Homey app, or make a new one from it, and the two stay the same, both ways: change a widget on your phone and it changes on the wall tablet too.</p>
+      <ul class="more">
+        <li><b>When you ask, when it's opened</b> and every night, at a time you set.</li>
+        <li><b>Change by change:</b> each setting, device and tile name on its own, so edits on both sides come together.</li>
+        <li><b>On a conflict</b>, the side you picked wins.</li>
+        <li><b>Homey's own widgets</b> stay on Homey; both sides are backed up before each sync.</li>
+      </ul>
+    </div>
+    <img src="../docs/web/sync.png" alt="">
+  </section>
+
+  <div class="pair">
+    <section class="feat">
+      <span class="tag">Web dashboards</span>
+      <h2>Copy a widget</h2>
+      <p>To this dashboard or another, with its settings, devices and tile names. Pick the column it goes in.</p>
+      <img src="../docs/web/copy.png" alt="">
+    </section>
+    <section class="feat">
+      <span class="tag">Web dashboards</span>
+      <h2>Kiosk mode</h2>
+      <p>Add <b>?kiosk=1</b> to a dashboard's address and its bar is gone: only the widgets, for a wall tablet in a kiosk browser such as Fully Kiosk.</p>
+      <img src="../docs/web/kiosk.png" alt="">
+    </section>
+  </div>
 
   <script>
     (function () {
