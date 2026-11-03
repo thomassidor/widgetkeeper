@@ -113,6 +113,30 @@ const stale = item => unavailable.has(String(item.id).split(':')[0]);
 const pick = (items, fn = () => true, n = 1) => items.filter(i => i.id !== 'none' && fn(i))
   .sort((a, b) => stale(a) - stale(b)).slice(0, n);
 
+/**
+ * Value items with how far each moved over the last 24 hours (`{item, min, max, now, spread}`), the widest first; the
+ * ones without a day's numbers left out. Read one at a time from Insights (`measure_power`'s log is `energy_power`), so
+ * a widget showing a value's range doesn't get one that sat still all day (every gauge on a flat temperature or a CO₂
+ * far under its levels, 2026-11-03).
+ */
+async function bySpread(items) {
+  const out = [];
+  for (const item of items) {
+    const [dev, cap] = String(item.id).split(':');
+    if (!cap || dev === 'log') continue;
+    const logId = `homey:device:${dev}:${cap === 'measure_power' ? 'energy_power' : cap}`;
+    const log = await homeyApi('GET', `/api/manager/insights/log/${encodeURIComponent(`homey:device:${dev}`)}/${encodeURIComponent(logId)}/entry?resolution=last24Hours`).catch(() => null);
+    const vs = (log?.values || []).map(v => v.v).filter(Number.isFinite);
+    if (vs.length < 2) continue;
+    const min = Math.min(...vs), max = Math.max(...vs);
+    if (max > min) out.push({ item, min, max, now: vs.at(-1), spread: max - min });
+  }
+  return out.sort((a, b) => stale(a.item) - stale(b.item) || b.spread - a.spread);
+}
+
+/** A number rounded to two significant digits (a level or a scale's end a person would type). */
+const round2 = x => (x === 0 ? 0 : Number(x.toPrecision(2)));
+
 /** `{slot1: …, slot2: …}` from a list of items (null where a slot stays empty). */
 const slots = (prefix, items) => Object.fromEntries(items.map((item, i) => [`${prefix}${i + 1}`, item ?? null]));
 
@@ -530,25 +554,43 @@ const BUILD = {
   },
   async gauge() {
     const items = await autocomplete('gauge', 'slot');
-    // A CO₂ value where there is one (levels that rise), a battery (levels that fall), a percentage (0–100), a temperature.
-    const first = re => pick(items, i => re.test(i.id), 1)[0];
-    const any = pick(items, () => true, 1)[0];
-    const co2 = first(/:measure_co2$/) || any;
-    const battery = first(/:measure_battery$/) || any;
-    const percent = first(/:measure_humidity$/) || battery;
-    const temp = first(/:measure_temperature$/) || any;
+    // Values that moved most over the last day, so the range band and the levels show (a flat one looks broken): a
+    // temperature (any, outdoor and heat pump ones too), power (levels that rise; CO₂ where there's no power), a battery
+    // (levels that fall), a percentage (0–100), each the widest of its kind. The levels and the set scale come from
+    // that value's own day, so the track has all three colours and the value sits inside it.
+    const ranked = fn => bySpread(pick(items, fn, Infinity));
+    const capIs = re => i => re.test(i.id);
+    const fallback = re => pick(items, capIs(re), 1)[0] || pick(items, () => true, 1)[0];
+    const temps = await ranked(capIs(/:measure_temperature(\.|$)/));
+    const powers = await ranked(capIs(/:measure_power$/));
+    const co2s = powers.length ? [] : await ranked(capIs(/:measure_co2$/));
+    const batteries = await ranked(capIs(/:measure_battery$/));
+    // A percentage other than a battery (the autocomplete's description ends in the units).
+    const percents = await ranked(i => !/:measure_battery$/.test(i.id) && /(^| · )%$/.test(i.description || ''));
+    const temp = temps[0]?.item || fallback(/:measure_temperature$/);
+    const rise = powers[0] || co2s[0];
+    const high = rise?.item || fallback(/:measure_co2$/);
+    const [yellowUp, redUp] = rise ? [round2(rise.min + rise.spread * 0.4), round2(rise.min + rise.spread * 0.75)] : [1000, 1400];
+    const low = batteries[0];
+    const battery = low?.item || fallback(/:measure_battery$/);
+    const [yellowDown, redDown] = low ? [round2(low.min + low.spread * 0.6), round2(low.min + low.spread * 0.25)] : [30, 15];
+    const percent = percents[0]?.item || battery;
+    const t = temps[0];
+    const [from, to] = t ? [Math.floor(t.min / 10) * 10 - 10, Math.ceil(t.max / 10) * 10 + 10] : [0, 40];
+    const up = { zones: 'rising', yellowAt: yellowUp, redAt: redUp };
+    const down = { zones: 'falling', yellowAt: yellowDown, redAt: redDown };
     const missing = { id: `${MISSING}:measure_temperature`, name: 'Deleted device · Temperature' };
     return { cols: 3, widgets: [
       w('gauge', 'Bar, today, fitted scale, one colour (defaults)', { slot: temp }),
       w('gauge', 'Dial', { slot: temp, layout: 'dial' }),
-      w('gauge', 'Dial · higher is worse · Vivid', { slot: co2, layout: 'dial', zones: 'rising', yellowAt: 1000, redAt: 1400, colorStyle: 'deep' }),
-      w('gauge', 'Dial · lower is worse · no range', { slot: battery, layout: 'dial', zones: 'falling', yellowAt: 30, redAt: 15, showRange: false }),
-      w('gauge', 'Higher is worse · 1000/1400', { slot: co2, zones: 'rising', yellowAt: 1000, redAt: 1400 }),
-      w('gauge', 'Lower is worse · 30/15 · no range', { slot: battery, zones: 'falling', yellowAt: 30, redAt: 15, showRange: false }),
+      w('gauge', 'Dial · higher is worse · Vivid', { slot: high, layout: 'dial', ...up, colorStyle: 'deep' }),
+      w('gauge', 'Dial · lower is worse · no range', { slot: battery, layout: 'dial', ...down, showRange: false }),
+      w('gauge', `Higher is worse · ${yellowUp}/${redUp}`, { slot: high, ...up }),
+      w('gauge', `Lower is worse · ${yellowDown}/${redDown} · no range`, { slot: battery, ...down, showRange: false }),
       w('gauge', 'A percentage on 0–100 · teal', { slot: percent, color: 'teal' }),
-      w('gauge', 'Scale 0–40 as set · 24 hours · own title', { slot: temp, scale: 'custom', scaleMin: 0, scaleMax: 40, count: 24, span: 'hours', title: 'Typed title' }),
+      w('gauge', `Scale ${from}–${to} as set · 24 hours · own title`, { slot: temp, scale: 'custom', scaleMin: from, scaleMax: to, count: 24, span: 'hours', title: 'Typed title' }),
       w('gauge', 'This week · Vivid · purple', { slot: temp, count: 1, span: 'calWeeks', colorStyle: 'deep', color: 'purple' }),
-      w('gauge', 'Vivid with levels', { slot: co2, zones: 'rising', yellowAt: 1000, redAt: 1400, colorStyle: 'deep' }),
+      w('gauge', 'Vivid with levels', { slot: high, ...up, colorStyle: 'deep' }),
       w('gauge', 'Deleted device', { slot: missing }),
       w('gauge', 'Nothing picked'),
     ].filter(Boolean) };
