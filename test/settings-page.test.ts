@@ -325,3 +325,14 @@ it("Screens and browsers: each screen's Opens on, saved on change", () => {
     expect(calls.at(-1)).toEqual(['PUT', '/web/screens/s0/dashboard', { dashboard: null }]);
   });
 });
+
+it('Updates: the Timeline switch is on unless turned off, saved at once, and the line says which', () => {
+  const settings: Record<string, any> = {};
+  const { $, click } = loadPage(() => undefined, settings);
+  expect([$('updTimeline').checked, $('updTimeline').disabled, $('updLine').textContent, $('updLine').classList.contains('ok')])
+    .toEqual([true, false, 'updLineOn', true]);
+  click('updTimeline');
+  expect([settings.timelineUpdates, $('updLine').textContent, $('updLine').classList.contains('ok')]).toEqual([false, 'updLineOff', false]);
+  const off = loadPage(() => undefined, { timelineUpdates: false });
+  expect([off.$('updTimeline').checked, off.$('updLine').textContent]).toEqual([false, 'updLineOff']);
+});

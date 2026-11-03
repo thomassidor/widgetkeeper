@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeHomey } from './helpers/fakeHomey.js';
-import { isFeatureUpdate, LAST_VERSION_SETTING, noticeText, postUpdateNotice, ranBefore } from '../lib/UpdateNotice.js';
+import { isFeatureUpdate, LAST_VERSION_SETTING, noticeText, postUpdateNotice, ranBefore, TIMELINE_UPDATES_SETTING } from '../lib/UpdateNotice.js';
 
 const CHANGELOG = {
   '1.2.0': { en: 'Nine new chart widgets.', da: 'Ni nye grafwidgets.' },
@@ -42,6 +42,14 @@ describe('the update notice on the Timeline', () => {
     expect(homey.settings.get(LAST_VERSION_SETTING)).toBe('1.2.0');
     await post(homey);
     expect(excerpts(homey)).toHaveLength(1);
+  });
+
+  it("posts nothing with the settings page's Updates switch off, but keeps the version", async () => {
+    const homey = homeyAt('1.3.0', '1.2.0');
+    homey.settings.set(TIMELINE_UPDATES_SETTING, false);
+    await post(homey);
+    expect(excerpts(homey)).toEqual([]);
+    expect(homey.settings.get(LAST_VERSION_SETTING)).toBe('1.3.0');
   });
 
   it('posts nothing for a patch release, but keeps its version', async () => {

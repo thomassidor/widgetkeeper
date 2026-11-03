@@ -5,6 +5,9 @@ import { SECRETS_FILE } from './secrets.js';
 /** The app setting holding the version that last started, so the next start knows it was updated. */
 export const LAST_VERSION_SETTING = 'lastVersion';
 
+/** The settings page's Updates switch: `false` posts nothing (missing is on). */
+export const TIMELINE_UPDATES_SETTING = 'timelineUpdates';
+
 /**
  * The current feature release's Timeline line, one short sentence per language (the changelog entry is far too long
  * for the Timeline, and the CLI leaves `.homeychangelog.json` out of the build anyway). A test checks its version.
@@ -53,7 +56,7 @@ export function ranBefore(homey: Homey.App['homey'], secretsFile = SECRETS_FILE)
 
 /**
  * After an update to a new major or minor version, posts what's new to Homey's Timeline, once; patch releases and
- * fresh installs post nothing. A start without `lastVersion` that ran before was updated from a version older than
+ * fresh installs post nothing, nor anything with the settings page's Updates switch off. A start without `lastVersion` that ran before was updated from a version older than
  * this notice (1.2.0). The version is kept only once the post went out (or wasn't due), so a failed one is tried on
  * the next start. Never throws.
  */
@@ -66,7 +69,8 @@ export async function postUpdateNotice(homey: Homey.App['homey'], log: (...args:
     if (!version) return;
     const last = homey.settings.get(LAST_VERSION_SETTING);
     if (last === version) return;
-    const due = typeof last === 'string' ? isFeatureUpdate(last, version) : opts.ranBefore;
+    const due = (typeof last === 'string' ? isFeatureUpdate(last, version) : opts.ranBefore)
+      && homey.settings.get(TIMELINE_UPDATES_SETTING) !== false;
     if (due) {
       let text: string | null = null;
       try {

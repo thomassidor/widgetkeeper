@@ -323,6 +323,21 @@
     </div>
   </details>
 
+  <!-- Whether a feature release (a new major or minor version, not a fix) is posted to Homey's Timeline after the update
+       (`timelineUpdates`, on unless turned off; `lib/UpdateNotice.ts`). -->
+  <details class="card" id="updCard">
+    <summary><span class="card-titles"><span class="card-title" data-i18n="updTitle">Updates</span><span class="card-line" id="updLine"></span></span></summary>
+    <div class="card-body">
+      <p class="help" data-i18n="updHelp"></p>
+      <label class="homey-form-checkbox">
+        <input class="homey-form-checkbox-input" id="updTimeline" type="checkbox" disabled>
+        <span class="homey-form-checkbox-checkmark"></span>
+        <span class="homey-form-checkbox-text" data-i18n="updEnable">Post new features to the Timeline</span>
+      </label>
+      <p class="help status" id="updStatus" role="status"></p>
+    </div>
+  </details>
+
   <details class="card" id="diagCard">
     <summary><span class="card-titles"><span class="card-title" data-i18n="title">Diagnostics</span><span class="card-line" data-i18n="diagLine"></span></span></summary>
     <div class="card-body">
@@ -722,6 +737,18 @@
       }
       wireSwitch(webEnabled, 'webDashboardsEnabled', $('webStatus'), showWeb);
       wireSwitch(webRemote, 'webRemoteAccess', $('webRemoteStatus'), (on) => { webRemote.checked = on; showAddresses(); });
+
+      // ---- Updates: a feature release posted to the Timeline, on unless turned off. ----
+      const updTimeline = $('updTimeline');
+      function showUpdates(on) {
+        updTimeline.checked = on;
+        setLine('updLine', t(on ? 'updLineOn' : 'updLineOff'), on);
+      }
+      Homey.get('timelineUpdates', (err, value) => {
+        updTimeline.disabled = false;
+        showUpdates(err || value !== false);
+      });
+      wireSwitch(updTimeline, 'timelineUpdates', $('updStatus'), showUpdates);
       for (const block of webAddresses) {
         const link = block.querySelector('.web-url');
         const status = block.querySelector('.status');
