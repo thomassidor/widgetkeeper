@@ -26,7 +26,7 @@
    * mountWebDashboards() runs them. A part registers itself with `WidgetkeeperWeb.part(name, fn)`; `fn(wd)` is
    * the code that was once in mountWebDashboards() itself, sharing the page's state and functions through `wd`.
    */
-  const PARTS = ['realtime', 'frames', 'views', 'front', 'editing', 'settings', 'pickers', 'popups'];
+  const PARTS = ['realtime', 'frames', 'views', 'front', 'editing', 'settings', 'pickers', 'popups', 'sync'];
   window.WidgetkeeperWeb = {
     /** @type {Map<string, (wd: any) => void>} */
     parts: new Map(),
@@ -111,6 +111,42 @@
     thisDashboard: 'This dashboard',
     dashboardFull: 'Full',
     tooManyWidgets: 'At most __max__ widgets on a dashboard.',
+    sync: 'Sync',
+    syncTitle: 'Sync with a Homey dashboard',
+    syncText: 'Keeps this dashboard and one in the Homey app the same, both ways: on demand, when it\'s opened and every night. Homey\'s own widgets stay on Homey.',
+    syncPick: 'Homey dashboard',
+    syncNew: 'New Homey dashboard',
+    syncTaken: '__name__ (already synced)',
+    syncStart: 'The first time',
+    syncFromHomey: 'Homey\'s to here',
+    syncFromWeb: 'This one to Homey',
+    syncPrefer: 'On a conflict, keep',
+    syncPreferText: 'When the same thing was changed differently on both since the last sync.',
+    syncKeepHomey: 'Homey',
+    syncKeepWeb: 'This one',
+    syncLink: 'Start syncing',
+    syncNow: 'Sync now',
+    syncStop: 'Stop syncing',
+    syncWith: 'Synced with __name__',
+    syncedAt: 'Synced __time__',
+    syncNever: 'Not synced yet',
+    syncing: 'Syncing…',
+    syncConflicts: '__count__ conflicts, kept: __side__',
+    syncFailed: 'Sync failed: __reason__',
+    syncNoKey: 'no API key saved',
+    syncKeyScope: 'the API key needs full access',
+    syncKeyInvalid: 'Homey no longer accepts the API key',
+    syncHomeyGone: 'the Homey dashboard was deleted',
+    syncTooMany: 'more than 60 widgets',
+    syncError: 'Homey didn\'t answer',
+    syncKeyNeeded: 'Syncing needs a personal API key with full access (Homey) saved in the Widgetkeeper app settings.',
+    syncUpdated: 'Updated from Homey',
+    syncSettings: 'Sync with Homey dashboards',
+    syncNightly: 'Sync every night',
+    syncNightlyText: 'Every synced dashboard, at this time on the Homey.',
+    syncTime: 'Time',
+    syncAll: 'Sync all now',
+    syncCount: '__count__ synced dashboards',
     pageSettings: 'Settings',
     thisBrowser: 'This browser',
     forgetKeyText: 'Signs this browser out: it asks for a sign-in code again.',
@@ -345,6 +381,8 @@
     sliders: 'M4 6h9M17 6h3M15 4v4M4 12h3M11 12h9M9 10v4M4 18h11M19 18h1M17 16v4',
     trash: 'M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3',
     copy: 'M10 9h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2zM16 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2',
+    // Syncing with a Homey dashboard: two arrows round a circle.
+    sync: 'M19.5 10A8 8 0 0 0 5.6 7.2L4 9M4 4.5V9h4.5M4.5 14a8 8 0 0 0 13.9 2.8L20 15M20 19.5V15h-4.5',
   };
 
   /**
@@ -635,6 +673,7 @@
       wd.types = new Map((wd.setup.widgets || []).map(w => [w.type, w]));
       wd.dashboards = wd.setup.dashboards || [];
       wd.frontPage = { widgets: true, sections: [], ...wd.setup.front };
+      wd.syncLinks = wd.setup.sync || {}; // the dashboards synced with Homey dashboards (dashboard-sync.js)
       if (wd.setup.maxDashboards > 0) wd.maxDashboards = wd.setup.maxDashboards;
       if (wd.setup.maxSections > 0) wd.maxSections = wd.setup.maxSections;
       if (wd.setup.maxWidgets > 0) wd.maxWidgets = wd.setup.maxWidgets;

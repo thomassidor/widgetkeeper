@@ -282,6 +282,7 @@
       root.append(editing ? editBar() : viewBar(), wd.current.grid);
       wd.sizes.observe(wd.current.grid);
       syncGrid();
+      if (!editing) wd.onSyncOpen(dashboard.id);
     }
 
     /**
@@ -432,6 +433,8 @@
         full.append(icon(page.fullscreenElement || page.webkitFullscreenElement ? 'fullScreenExit' : 'fullScreen'));
         items.push(full);
       }
+      const sync = wd.syncBarButton(d.id); // synced with a Homey dashboard: its state, and a tap syncs now
+      if (sync) items.push(sync);
       const edit = el('a', 'wd-icon wd-bar-edit');
       edit.href = `#/d/${d.id}/edit`;
       edit.title = t('edit');
@@ -589,7 +592,7 @@
       // The end of the bar stays together when a narrow window wraps it.
       const end = el('span', 'wd-bar-end');
       end.append(remove, done);
-      const b = bar(name, el('span', 'wd-bar-rule'), cols, widthPick, themePick, bgPick, codePick, end);
+      const b = bar(name, el('span', 'wd-bar-rule'), cols, widthPick, themePick, bgPick, codePick, wd.syncPill(d), end);
       stepColumns(b);
       return b;
     }

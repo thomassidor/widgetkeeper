@@ -765,3 +765,18 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-code-key.fn { color: var(--wd-muted); }
 .wd-code-key svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .wd-code-key:disabled { opacity: .35; cursor: default; }
+
+/* Syncing with a Homey dashboard (dashboard-sync.js): the editor's pill, the viewing bar's button, the cards' icon. */
+.wd-syncpill.on { color: var(--wd-accent); }
+.wd-sync.bad { color: var(--wd-red); }
+.wd-sync.busy svg { animation: wd-spin 1.2s linear infinite; }
+@keyframes wd-spin { to { transform: rotate(-360deg); } }
+.wd-dash-count.synced { display: flex; align-items: center; gap: 4px; }
+.wd-dash-sync { display: inline-flex; flex: none; }
+.wd-dash-sync svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.wd-sync-dialog .wd-set-card { margin-top: 8px; }
+.wd-sync-dialog .wd-sync-pick { max-width: 220px; }
+.wd-sync-dialog .wd-set-card > .wd-muted, .wd-sync-dialog .wd-set-card > .wd-error { padding: 12px 16px; }
+.wd-sync-buttons { margin-top: 12px; gap: 8px; }
+.wd-sync-time { width: auto; }
+@media (prefers-reduced-motion: reduce) { .wd-sync.busy svg { animation: none; } }

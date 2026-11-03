@@ -1,7 +1,7 @@
 import type { App } from 'homey';
 import type WidgetkeeperApp from './app.js';
 import { deviceNamesState, setDeviceNames } from './lib/deviceNames.js';
-import { scopesAllow, type KeyUse } from './lib/PersonalApiKey.js';
+import { KeyError, scopesAllow, type KeyUse } from './lib/PersonalApiKey.js';
 import { idList } from './lib/widgetApi.js';
 import { MAX_DASHBOARDS, MAX_SECTIONS, MAX_WIDGETS } from './lib/WebDashboardService.js';
 import { autocompleteKeyUse, callWidgetRoute, pageKeyUse, type WidgetApis } from './lib/widgetRoutes.js';
@@ -45,6 +45,16 @@ function assertWebSession(app: WidgetkeeperApp, query: Record<string, string> | 
 }
 
 /** No password, or a browser signed in with it, or a screen added with it (`WebScreens`). */
+/** `{ok: true, ...}`, or `{ok: false, reason}` when the stored key is missing, too narrow or refused. */
+async function keyAnswer<T extends object>(fn: () => Promise<T>): Promise<({ ok: true } & T) | { ok: false, reason: string }> {
+  try {
+    return { ok: true, ...(await fn()) };
+  } catch (err) {
+    if (err instanceof KeyError) return { ok: false, reason: err.reason };
+    throw err;
+  }
+}
+
 function signedIn(app: WidgetkeeperApp, query: Record<string, string> | undefined) {
   return !app.webPassword.isSet || app.webPassword.check(query?.session) || !!app.webScreens?.checkSession(query?.session);
 }
@@ -131,6 +141,7 @@ export default {
       maxDashboards: MAX_DASHBOARDS, maxWidgets: MAX_WIDGETS,
       maxSections: MAX_SECTIONS,
       popups: app.popups.all(),
+      sync: app.webSync?.status() ?? {},
     };
   },
 
@@ -193,7 +204,64 @@ export default {
   async deleteWebDashboard({ homey, query, params }: { homey: Homey, query?: Record<string, string>, params: Record<string, string> }) {
     const app = homey.app as WidgetkeeperApp;
     assertWebSession(app, query);
-    return app.web.remove(params?.id || '');
+    const removed = app.web.remove(params?.id || '');
+    if (removed.removed) app.webSync?.unlink(params?.id || '');
+    return removed;
+  },
+
+  /** Syncing with Homey dashboards (`lib/WebSyncService.ts`): the nightly schedule and each linked dashboard's state. */
+  async getWebSync({ homey, query }: { homey: Homey, query?: Record<string, string> }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    return { schedule: app.webSync.schedule(), links: app.webSync.status() };
+  },
+
+  /** The front page's Settings: `{nightly?, time?: 'HH:MM'}`; answers the schedule as kept. */
+  async putWebSync({ homey, query, body }: { homey: Homey, query?: Record<string, string>, body: unknown }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    return app.webSync.setSchedule(body);
+  },
+
+  /** Sync all now: `{results: {[id]: LastSync}}`. */
+  async postWebSyncAll({ homey, query }: { homey: Homey, query?: Record<string, string> }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    return { results: await app.webSync.syncAll() };
+  },
+
+  /** The Homey dashboards to link to (`{ok, dashboards: [{id, name, linked}]}`), or why the stored key can't read them. */
+  async getWebSyncHomey({ homey, query }: { homey: Homey, query?: Record<string, string> }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    return keyAnswer(async () => ({ dashboards: await app.webSync.homeyDashboards() }));
+  },
+
+  /**
+   * The editor's Sync: links the dashboard (`{homeyId: <id> | 'new', start: 'web'|'homey', prefer}`) and syncs it, or
+   * for a linked one with only `{prefer}`, changes which side wins a conflict.
+   */
+  async putWebDashboardSync({ homey, query, params, body }: { homey: Homey, query?: Record<string, string>, params: Record<string, string>, body?: any }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    const id = params?.id || '';
+    if (body?.homeyId === undefined && app.webSync.status()[id]) return { ok: true, link: app.webSync.setPrefer(id, body?.prefer) };
+    return keyAnswer(() => app.webSync.link(id, body ?? {}));
+  },
+
+  /** Sync now (`?ifOlder=<seconds>`: only when the last sync is older, as when a dashboard is opened): the `LastSync`. */
+  async postWebDashboardSync({ homey, query, params }: { homey: Homey, query?: Record<string, string>, params: Record<string, string> }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    const older = Number(query?.ifOlder);
+    return app.webSync.sync(params?.id || '', Number.isFinite(older) && older > 0 ? { ifOlderMs: older * 1000 } : {});
+  },
+
+  /** Stops syncing a dashboard; both stay as they are. */
+  async deleteWebDashboardSync({ homey, query, params }: { homey: Homey, query?: Record<string, string>, params: Record<string, string> }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    return app.webSync.unlink(params?.id || '');
   },
 
   /**

@@ -60,7 +60,7 @@ function mockSettingSections(settings, lang) {
 /** Made-up Keypad codes for a dashboard's code (the app keeps only fingerprints; the preview knows the digits). */
 const MOCK_CODES = [{ id: '0a1b2c3d4e5f', name: 'Anna', digits: '1234' }, { id: 'f5e4d3c2b1a0', name: 'Kids', digits: '2580' }];
 
-function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones = {}, devices = [], readings = {}, popups = [], codes = MOCK_CODES } = {}) {
+function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones = {}, devices = [], readings = {}, popups = [], codes = MOCK_CODES, sync = {} } = {}) {
   try { localStorage.setItem('widgetkeeper.web.key', 'preview'); } catch (e) { /* private mode */ }
   const loc = (text) => (text && typeof text === 'object' ? text[lang] || text.en : text) || '';
 
@@ -81,6 +81,12 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
     if (filter.capabilities && !any(filter.capabilities).some(c => d.capabilities.includes(c))) return false;
     return true;
   };
+
+  const HOMEY_DASHBOARDS = [{ id: 'h-kitchen', name: 'Kitchen' }, { id: 'h-phone', name: 'Phone' }, { id: 'h-energy', name: 'Energy' }];
+  let syncSchedule = { nightly: true, time: '03:00' };
+  /** The dashboards synced with Homey dashboards (`LinkStatus` by web dashboard id). */
+  /** @type {Record<string, any>} */
+  const syncLinks = { ...sync };
 
   async function answer(method, path, body) {
     await ready;
@@ -109,7 +115,28 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
         appId: 'com.thomassidor.widgetkeeper', homeyId: 'preview', language: lang, strings, widgets, dashboards, front,
         maxDashboards: 64, maxWidgets: 60, maxSections: 20, popups: { popups, now: Date.now() },
         codes: codes.map(({ id, name, digits }) => ({ id, name, digits: digits.length })),
+        sync: syncLinks,
       };
+    }
+    // Syncing with Homey dashboards (lib/WebSyncService.ts): made-up Homey dashboards; a sync changes nothing here.
+    if (p === '/web/sync' && method === 'GET') return { schedule: syncSchedule, links: syncLinks };
+    if (p === '/web/sync' && method === 'PUT') { syncSchedule = { ...syncSchedule, ...body }; return syncSchedule; }
+    if (p === '/web/sync' && method === 'POST') return { results: {} };
+    if (p === '/web/sync/homey') {
+      return { ok: true, dashboards: HOMEY_DASHBOARDS.map(h => ({ ...h, linked: Object.keys(syncLinks).find(id => syncLinks[id].homeyId === h.id) || null })) };
+    }
+    const syncRoute = p.match(/^\/web\/dashboards\/([^/]+)\/sync$/);
+    if (syncRoute) {
+      const id = syncRoute[1];
+      const lastSync = { at: Date.now(), ok: true, conflicts: [], changes: { web: { added: 0, removed: 0, updated: 0, moved: false, renamed: false }, homey: { added: 0, removed: 0, updated: 0, moved: false, renamed: false } } };
+      if (method === 'DELETE') { const removed = !!syncLinks[id]; delete syncLinks[id]; return { removed }; }
+      if (method === 'PUT') {
+        if (body.homeyId === undefined) { syncLinks[id].prefer = body.prefer === 'web' ? 'web' : 'homey'; return { ok: true, link: syncLinks[id] }; }
+        syncLinks[id] = { homeyId: body.homeyId === 'new' ? 'h-new' : body.homeyId, prefer: body.prefer === 'web' ? 'web' : 'homey', lastSync, syncing: false };
+        return { ok: true, link: syncLinks[id], lastSync };
+      }
+      if (syncLinks[id]) syncLinks[id].lastSync = lastSync;
+      return lastSync;
     }
     if (p === '/web/popups') return { popups, now: Date.now() };
     const popupImage = p.match(/^\/web\/popups\/([^/]+)\/image$/);

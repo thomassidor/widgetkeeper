@@ -52,7 +52,7 @@ This file holds what applies across the app. Each widget's notes, and those of t
 | Popups (and their Flow cards, prompt page and web overlay) | `popups` | `widgets/popups.md` |
 | Keypad | `keypad` | `widgets/keypad.md` |
 
-Areas: `tile-names.md` (Rename tiles in thirteen widgets, `lib/TileNameService.ts`), `web-dashboards.md` (`settings/dashboard.*` and its parts `settings/dashboard-*.js`, `/web/…` routes, the password) and `renders.md` (the render scripts and their pages in `dev/`).
+Areas: `tile-names.md` (Rename tiles in thirteen widgets, `lib/TileNameService.ts`), `web-dashboards.md` (`settings/dashboard.*` and its parts `settings/dashboard-*.js`, `/web/…` routes, the password), `web-sync.md` (syncing web dashboards with Homey dashboards, `lib/dashboardSync.ts`; in progress) and `renders.md` (the render scripts and their pages in `dev/`).
 
 ## Commands
 - Use the **project-local Homey CLI v4**: `npx homey …` (the global `homey` is an old 3.7.x).

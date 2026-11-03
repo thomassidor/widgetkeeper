@@ -94,7 +94,12 @@
         : [];
 
       // A section on the front page: the two wall tablets' dashboards.
-      mockWebApi({ lang, dashboards, front: { sections: [{ id: 'rooms', name: 'Wall tablets' }] }, zones, devices, readings: READINGS, popups });
+      // Two dashboards synced with Homey dashboards: one synced an hour ago, one whose Homey dashboard was deleted.
+      const sync = {
+        kitchen: { homeyId: 'h-kitchen', prefer: 'homey', syncing: false, lastSync: { at: now - 3600e3, ok: true, conflicts: [] } },
+        hall: { homeyId: 'h-phone', prefer: 'web', syncing: false, lastSync: { at: now - 600e3, ok: false, reason: 'homeyGone' } },
+      };
+      mockWebApi({ lang, dashboards, front: { sections: [{ id: 'rooms', name: 'Wall tablets' }] }, zones, devices, readings: READINGS, popups, sync });
     })();
   </script>
   <script src="../widgets/spacer/public/kit.js"></script>
@@ -108,6 +113,7 @@
   <script src="../settings/dashboard-settings.js"></script>
   <script src="../settings/dashboard-pickers.js"></script>
   <script src="../settings/dashboard-popups.js"></script>
+  <script src="../settings/dashboard-sync.js"></script>
 </head>
 <body>
   <div id="app" class="wd"></div>

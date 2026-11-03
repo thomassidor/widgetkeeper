@@ -120,6 +120,34 @@
       "method": "POST",
       "path": "/web/dashboards/:id/unlock"
     },
+    "getWebSync": {
+      "method": "GET",
+      "path": "/web/sync"
+    },
+    "putWebSync": {
+      "method": "PUT",
+      "path": "/web/sync"
+    },
+    "postWebSyncAll": {
+      "method": "POST",
+      "path": "/web/sync"
+    },
+    "getWebSyncHomey": {
+      "method": "GET",
+      "path": "/web/sync/homey"
+    },
+    "putWebDashboardSync": {
+      "method": "PUT",
+      "path": "/web/dashboards/:id/sync"
+    },
+    "postWebDashboardSync": {
+      "method": "POST",
+      "path": "/web/dashboards/:id/sync"
+    },
+    "deleteWebDashboardSync": {
+      "method": "DELETE",
+      "path": "/web/dashboards/:id/sync"
+    },
     "getWebBackup": {
       "method": "GET",
       "path": "/web/backup"

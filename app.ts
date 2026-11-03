@@ -37,6 +37,7 @@ import ValueService from './lib/ValueService.js';
 import VariableService from './lib/VariableService.js';
 import WeatherService from './lib/WeatherService.js';
 import WebDashboardService from './lib/WebDashboardService.js';
+import WebSyncService from './lib/WebSyncService.js';
 import WebPassword, { WEB_PASSWORD_REMOVE_CARD } from './lib/WebPassword.js';
 import WebScreens from './lib/WebScreens.js';
 import { widgetAutocompletes } from './lib/widgetAutocompletes.js';
@@ -75,6 +76,7 @@ export default class WidgetkeeperApp extends Homey.App {
   /** The names typed on the device widgets' tiles (`renameTiles`). */
   tileNames!: TileNameService;
   web!: WebDashboardService;
+  webSync!: WebSyncService;
   /** The web dashboards' optional password and the browsers signed in with it. */
   webPassword!: WebPassword;
   webScreens!: WebScreens;
@@ -150,6 +152,8 @@ export default class WidgetkeeperApp extends Homey.App {
     this.tileNames = new TileNameService(this.homey, debug);
     this.web = new WebDashboardService(this.homey, log, widgetAutocompletes(this), this.tileNames);
     this.adoptOldTileNames();
+    this.webSync = new WebSyncService(this.homey, { web: this.web, tileNames: this.tileNames, key: this.apiKey }, log, debug);
+    this.webSync.start();
     this.thermostatPresets = new ThermostatPresetService(this.homey, {
       thermostat: this.thermostat,
       stack: this.stack,
@@ -206,6 +210,7 @@ export default class WidgetkeeperApp extends Homey.App {
   async onUninit() {
     await this.stopAll({
       timers: this.timers, daysSince: this.daysSince, popups: this.popups, heatmap: this.heatmap, electricity: this.electricity,
+      webSync: this.webSync,
     });
     await this.stopAll({
       thermostat: this.thermostat, quickActions: this.quickActions, sensorAlarms: this.sensorAlarms, roomHealth: this.roomHealth,

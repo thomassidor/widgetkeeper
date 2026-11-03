@@ -233,7 +233,7 @@
       const card = el('div', 'wd-set-card');
       card.append(setRow(t('darkLight'), t('darkLightText'), mode), awake, dim, setRow(t('signedIn'), t('forgetKeyText'), forget));
       browser.append(el('h3', 'wd-h2', t('thisBrowser')), card);
-      body.append(backupSection(), browser);
+      body.append(backupSection(), wd.syncSettingsSection(), browser);
       d.showModal();
     }
 
@@ -631,7 +631,10 @@
       if (!editing) link.href = `#/d/${d.id}`;
       const count = d.columns.reduce((n, c) => n + c.length, 0);
       const info = el('span', 'wd-dash-info');
-      info.append(el('span', 'wd-dash-name', d.name || t('untitled')), el('span', 'wd-muted wd-dash-count', t('widgetCount', { count })));
+      const countLine = el('span', 'wd-muted wd-dash-count', t('widgetCount', { count }));
+      const synced = wd.syncIcon(d.id, 'wd-sync wd-dash-sync'); // synced with a Homey dashboard
+      if (synced) { countLine.prepend(synced); countLine.classList.add('synced'); }
+      info.append(el('span', 'wd-dash-name', d.name || t('untitled')), countLine);
       link.append(info);
       if (editing) {
         card.tabIndex = 0;
