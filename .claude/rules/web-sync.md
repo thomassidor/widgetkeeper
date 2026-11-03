@@ -86,10 +86,9 @@ ways, on demand or every night at a time set in the web dashboards' Settings; a 
 - Strings `web.sync*` in all 13 languages. `dev/mock-web-api.js` answers the sync routes (made-up Homey dashboards
   Kitchen, Phone, Energy) and takes `sync` (links); `dev/web-preview.html` starts with Kitchen tablet synced and Hallway
   failed (its Homey dashboard deleted).
-- Checked in happy-dom on `dev/web-preview.html` (its scripts evaluated in order: happy-dom 21 doesn't run external
-  scripts in order): the pill and dialog, linking, the linked dialog, changing the preferred side, Stop syncing, the
-  bar button, the cards' icons and the Settings card. Not in a real browser or on the Homey; the realtime redraw is
-  untested.
+- Checked in Chromium on the build box (`$EDGE` over DevTools, `dev/web-preview.html`, 2026-11-03): the cards' icons, the
+  pill and both dialogs, linking, the bar button, the Settings card, and the editor's drag and drop (a widget dragged
+  by its bar into another column, saved). Not yet on the Homey; the realtime redraw after a sync is untested.
 
 ## Still to build
 1. The settings page's API key card: say syncing needs a Homey (everything) key.

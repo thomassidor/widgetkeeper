@@ -780,3 +780,4 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-sync-buttons { margin-top: 12px; gap: 8px; }
 .wd-sync-time { width: auto; }
 @media (prefers-reduced-motion: reduce) { .wd-sync.busy svg { animation: none; } }
+.wd-sync-status:empty { display: none; }
