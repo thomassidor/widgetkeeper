@@ -113,6 +113,10 @@
       "method": "POST",
       "path": "/web/dashboards/:id/copy"
     },
+    "postWebWidgetCopy": {
+      "method": "POST",
+      "path": "/web/dashboards/:id/widgets/:widget/copy"
+    },
     "postWebDashboardUnlock": {
       "method": "POST",
       "path": "/web/dashboards/:id/unlock"

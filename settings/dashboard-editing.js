@@ -9,7 +9,7 @@
 
   window.WidgetkeeperWeb.part('editing', (wd) => {
     const { appWidget, button, clone, confirmButton, DRAG_SLOP, EDGE_PX, el, frames, icon, keepAwake, LAYOUT, opts,
-      persist, root, t, typeOf } = wd;
+      newId, persist, request, root, t, toast, typeOf, unlocked } = wd;
 
     /** What another app's widget frame may do: no `allow-same-origin`, so it can't read this page or its key. */
     const SANDBOX = 'allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox';
@@ -159,6 +159,7 @@
         tool('right', 'wd-move', () => move(w.id, 1, 0), t('moveRight')),
         el('span', 'wd-tools-rule'),
         tool('sliders', 'wd-tool-settings', () => wd.editWidget(w.id), t('settings')),
+        tool('copy', 'wd-tool-copy', () => copyTo(w.id), t('copyWidget')),
         confirmButton('wd-tool danger', icon('close'), () => removeWidget(w.id), t('tapAgain'), t('remove')),
       );
       const [up, down, left, right] = tools.querySelectorAll('.wd-move');
@@ -431,6 +432,144 @@
       }
       persist();
       wd.syncGrid();
+    }
+
+    // ---- Copy to…: one widget to this dashboard or another ----------------------------------------------------
+
+    /** The widgets a dashboard has (the open one as the editor has it, covers left out). */
+    function widgetCount(d) {
+      return d.columns.reduce((n, column) => n + column.filter(e => e && !e.cover).length, 0);
+    }
+
+    /**
+     * Copy to…: a dialog of the dashboards (this one first, then the front page's order), a full one disabled, and for
+     * another one with columns the column it goes in (this one's, or its last). On this dashboard the copy goes right
+     * after the widget at once; on another at the end of that column. The app copies it (after the saves already
+     * queued, so with this widget as it's shown) with its tile names. A dashboard locked by another code than this
+     * one's asks it first, or copying would go round its editor's code.
+     */
+    function copyTo(id) {
+      const at = find(id);
+      if (!at) return;
+      const here = wd.current.dashboard;
+      const max = wd.maxWidgets;
+      const sections = (wd.frontPage && wd.frontPage.sections) || [];
+      const known = new Set(sections.map(s => s.id));
+      const others = wd.dashboards.filter(x => x.id !== here.id);
+      const items = [
+        { dash: here, tag: t('thisDashboard') },
+        ...others.filter(x => !x.section || !known.has(x.section)).map(dash => ({ dash, tag: '' })),
+        ...sections.flatMap(s => others.filter(x => x.section === s.id).map(dash => ({ dash, tag: s.name }))),
+      ];
+      const { d, body } = wd.dialog(t('copyTitle'));
+      d.classList.add('wd-copy');
+      const list = el('div', 'wd-backup-list wd-copy-list');
+      list.setAttribute('role', 'radiogroup');
+      let chosen = null;
+      let column = at.c;
+      const columnRow = el('div', 'wd-copy-column');
+      const go = button('wd-btn primary', t('copy'), () => {
+        if (!chosen) return;
+        const target = chosen;
+        d.close();
+        const sameLock = here.code && target.code && here.code.id === target.code.id;
+        if (target.id === here.id || sameLock || unlocked.has(target.id)) copyWidget(id, target, column);
+        else wd.askCode(target, () => copyWidget(id, target, column));
+      });
+      go.disabled = true;
+      for (const { dash, tag } of items) {
+        const count = dash.id === here.id ? widgetCount(here) : widgetCount(dash);
+        const full = count >= max;
+        const label = el('label', 'wd-backup-item');
+        const input = el('input');
+        input.type = 'radio';
+        input.name = 'wd-copy-to';
+        input.disabled = full;
+        input.addEventListener('change', () => {
+          chosen = dash;
+          column = dash.id === here.id ? at.c : Math.min(at.c, dash.columns.length - 1);
+          go.disabled = false;
+          drawColumn();
+        });
+        const text = el('span', 'wd-backup-item-text');
+        const name = el('span', 'wd-backup-item-name', dash.name || t('untitled'));
+        name.dir = 'auto';
+        text.append(name, el('span', 'wd-muted', t('widgetCount', { count })));
+        label.append(input, text);
+        if (full || tag) {
+          const note = el('span', 'wd-backup-tag', full ? t('dashboardFull') : tag);
+          note.dir = 'auto';
+          label.append(note);
+        }
+        if (full) label.classList.add('off');
+        list.append(label);
+      }
+      /** The column choice: only for another dashboard with more than one. */
+      function drawColumn() {
+        columnRow.textContent = '';
+        const n = chosen && chosen.id !== here.id ? chosen.columns.length : 0;
+        columnRow.hidden = n < 2;
+        if (n < 2) return;
+        const values = Array.from({ length: n }, (_, i) => ({ id: String(i), title: String(i + 1) }));
+        columnRow.append(el('span', 'wd-copy-column-name', t('copyColumn')),
+          wd.choiceGroup({ id: 'column' }, values, String(column), (v) => { column = Number(v); }));
+      }
+      drawColumn();
+      const actions = el('div', 'wd-actions');
+      actions.append(button('wd-btn quiet', t('cancel'), () => d.close()), go);
+      body.append(list, columnRow, actions);
+      d.showModal();
+    }
+
+    /** Copies widget `id` of the open dashboard to `target`'s `column` (queued after the saves); see `copyTo()`. */
+    function copyWidget(id, target, column) {
+      const here = wd.current.dashboard;
+      const at = find(id);
+      if (!at) return;
+      const from = here.id;
+      let as = '';
+      if (target.id === here.id) {
+        // At once, right after it (its covers after its own): the saves that follow have it.
+        const ids = new Set(here.columns.flat().map(e => e && e.id).filter(Boolean));
+        do as = newId(); while (ids.has(as));
+        const columns = here.columns;
+        columns[at.c].splice(at.i + 1, 0, { ...clone(at.widget), id: as });
+        const span = LAYOUT.spanOf(at.widget, at.c, columns.length);
+        for (let k = at.c + 1; k < at.c + span; k++) {
+          const j = columns[k].findIndex(e => e && e.cover === at.widget.id);
+          columns[k].splice(j < 0 ? columns[k].length : j + 1, 0, { cover: as });
+        }
+        wd.syncGrid();
+        const fresh = wd.current.widgets.get(as);
+        if (fresh) {
+          fresh.el.classList.add('fresh');
+          fresh.el.addEventListener('animationend', () => fresh.el.classList.remove('fresh'), { once: true });
+          fresh.el.scrollIntoView({ block: 'nearest' });
+        }
+      }
+      const path = `/web/dashboards/${encodeURIComponent(from)}/widgets/${encodeURIComponent(at.widget.id)}/copy`;
+      const payload = { to: target.id, column, ...(as ? { as } : {}) };
+      const snapshot = JSON.stringify(wd.stored(here));
+      wd.saving = wd.saving.then(async () => {
+        if (wd.deleted.has(from) || wd.deleted.has(target.id)) return;
+        try {
+          const res = await request('POST', path, payload);
+          if (res && Array.isArray(res.dashboards)) wd.dashboards = res.dashboards;
+          const saved = res && res.dashboard;
+          if (!saved) return;
+          if (saved.id !== from) { toast(t('copiedTo', { name: saved.name || t('untitled') })); return; }
+          // This dashboard: the app's copy when nothing changed meanwhile, as `persist()` takes it.
+          if (wd.current && wd.current.dashboard.id === from && JSON.stringify(wd.stored(wd.current.dashboard)) === snapshot
+            && JSON.stringify(saved) !== snapshot) {
+            wd.current.dashboard = wd.editable(saved);
+            wd.syncGrid();
+          }
+        } catch (err) {
+          if (as && wd.current && wd.current.dashboard.id === from) removeWidget(as); // not kept: saved without it
+          if (/At most/.test(String(err && err.message))) toast(t('tooManyWidgets', { max: wd.maxWidgets }));
+          else wd.failed(err);
+        }
+      });
     }
 
     Object.assign(wd, { endDrag, endResize, find, layoutWide, setSpan, setTools, sizes, widgetElement });

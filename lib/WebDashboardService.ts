@@ -30,7 +30,7 @@ const LANGUAGES = ['en', 'nl', 'de', 'fr', 'it', 'sv', 'no', 'es', 'da', 'ru', '
 export const MAX_DASHBOARDS = 64;
 export const MAX_SECTIONS = 20;
 const MAX_COLUMNS = 6;
-const MAX_WIDGETS = 60; // per dashboard
+export const MAX_WIDGETS = 60; // per dashboard
 const MAX_DEVICES = 100; // per widget
 const MAX_TEXT = 2000;
 const MAX_FOREIGN_SETTINGS = 60; // per widget of another app
@@ -465,6 +465,53 @@ export default class WebDashboardService {
     this.homey.settings.set(WEB_DASHBOARDS_SETTING, all);
     for (const w of dashboard.columns.flat()) this.tileNames?.copy(`web-${from.id}-${w.id}`, `web-${dashboard.id}-${w.id}`);
     return { dashboard, dashboards: all };
+  }
+
+  /**
+   * Copies one widget (the editor's Copy to…), with its tile names, to a dashboard: on its own one right after it (its
+   * covers too, when it's wide), on another at the end of `column` (clamped to its columns), under every wide widget
+   * there and, when wide, under everything in the columns it covers. Its id: `as` when free there (the page puts a copy on
+   * its own dashboard at once, with that id), else its own when free (ids are unique per dashboard only), else a new one.
+   * Running timers stay with the original.
+   */
+  copyWidget(fromId: string, widgetId: string, toId: string, column: unknown, as?: unknown): { dashboard: WebDashboard, widget: string, dashboards: WebDashboard[] } {
+    const all = this.list();
+    const from = all.find(d => d.id === fromId);
+    const t = all.findIndex(d => d.id === toId);
+    if (!from || t < 0) throw new Error('No such dashboard');
+    const c = from.columns.findIndex(col => col.some(w => w.id === widgetId));
+    if (c < 0) throw new Error('No such widget');
+    const i = from.columns[c].findIndex(w => w.id === widgetId);
+    const original = from.columns[c][i];
+    const to = structuredClone(all[t]);
+    if (to.columns.reduce((n, col) => n + col.length, 0) >= MAX_WIDGETS) throw new Error(`At most ${MAX_WIDGETS} widgets`);
+    const ids = new Set(to.columns.flat().map(w => w.id));
+    const free = (x: unknown): x is string => typeof x === 'string' && ID.test(x) && !ids.has(x);
+    let id = free(as) ? as : free(original.id) ? original.id : newId();
+    while (ids.has(id)) id = newId();
+    const copy: WebWidget = { ...structuredClone(original), id };
+    if (to.id === from.id) {
+      // Right after it: a wide widget from the left sitting after it in this column now sits after the copy too.
+      to.columns.forEach((col, k) => col.forEach((w) => {
+        if (k < c && w.span && w.at && k + w.span - 1 >= c && w.at[c - k - 1] > i) w.at[c - k - 1] += 1;
+      }));
+      to.columns[c].splice(i + 1, 0, copy);
+    } else {
+      const n = Number(column);
+      const k = Number.isInteger(n) ? Math.min(Math.max(n, 0), to.columns.length - 1) : Math.min(c, to.columns.length - 1);
+      delete copy.at;
+      const span = copy.span ? Math.min(copy.span, to.columns.length - k) : 1;
+      if (span > 1) {
+        copy.span = span;
+        copy.at = Array.from({ length: span - 1 }, (_, j) => to.columns[k + 1 + j].length);
+      } else delete copy.span;
+      to.columns[k].push(copy);
+    }
+    const dashboard = this.normalize(to);
+    all[t] = dashboard;
+    this.homey.settings.set(WEB_DASHBOARDS_SETTING, all);
+    this.tileNames?.copy(`web-${from.id}-${original.id}`, `web-${dashboard.id}-${id}`);
+    return { dashboard, widget: id, dashboards: all };
   }
 
   /** The web dashboards as one file (`WebBackup`): every one, or only those `ids` names (in their stored order). */

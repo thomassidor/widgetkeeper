@@ -107,7 +107,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
       });
       return {
         appId: 'com.thomassidor.widgetkeeper', homeyId: 'preview', language: lang, strings, widgets, dashboards, front,
-        maxDashboards: 64, maxSections: 20, popups: { popups, now: Date.now() },
+        maxDashboards: 64, maxWidgets: 60, maxSections: 20, popups: { popups, now: Date.now() },
         codes: codes.map(({ id, name, digits }) => ({ id, name, digits: digits.length })),
       };
     }
@@ -214,6 +214,32 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
       const dashboard = { ...JSON.parse(JSON.stringify(dashboards[i])), id: Math.random().toString(36).slice(2, 10), name: `${dashboards[i].name || 'Dashboard'} (copy)` };
       dashboards.splice(i + 1, 0, dashboard);
       return { dashboard, dashboards };
+    }
+    // Copy to… (the app's `copyWidget()` in lib/WebDashboardService.ts, simplified: on another dashboard a wide widget's copy is one column wide).
+    const widgetCopy = p.match(/^\/web\/dashboards\/([^/]+)\/widgets\/([^/]+)\/copy$/);
+    if (widgetCopy && method === 'POST') {
+      const from = dashboards.find(d => d.id === decodeURIComponent(widgetCopy[1]));
+      const t = dashboards.findIndex(d => d.id === body.to);
+      if (!from || t < 0) throw new Error('No such dashboard');
+      const wid = decodeURIComponent(widgetCopy[2]);
+      const c = from.columns.findIndex(col => col.some(w => w.id === wid));
+      if (c < 0) throw new Error('No such widget');
+      const i = from.columns[c].findIndex(w => w.id === wid);
+      const to = JSON.parse(JSON.stringify(dashboards[t]));
+      if (to.columns.flat().length >= 60) throw new Error('At most 60 widgets');
+      const ids = new Set(to.columns.flat().map(w => w.id));
+      const free = x => typeof x === 'string' && x && !ids.has(x);
+      let id = free(body.as) ? body.as : free(wid) ? wid : Math.random().toString(36).slice(2, 10);
+      while (ids.has(id)) id = Math.random().toString(36).slice(2, 10);
+      const copy = { ...JSON.parse(JSON.stringify(from.columns[c][i])), id };
+      if (to.id === from.id) to.columns[c].splice(i + 1, 0, copy);
+      else {
+        delete copy.span;
+        delete copy.at;
+        to.columns[Math.min(Math.max(Number(body.column) || 0, 0), to.columns.length - 1)].push(copy);
+      }
+      dashboards[t] = to;
+      return { dashboard: to, widget: id, dashboards };
     }
     if (p.startsWith('/web/dashboards/') && method === 'DELETE') {
       dashboards = dashboards.filter(d => d.id !== p.split('/').pop());

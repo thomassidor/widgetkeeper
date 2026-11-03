@@ -3,7 +3,7 @@ import type WidgetkeeperApp from './app.js';
 import { deviceNamesState, setDeviceNames } from './lib/deviceNames.js';
 import { scopesAllow, type KeyUse } from './lib/PersonalApiKey.js';
 import { idList } from './lib/widgetApi.js';
-import { MAX_DASHBOARDS, MAX_SECTIONS } from './lib/WebDashboardService.js';
+import { MAX_DASHBOARDS, MAX_SECTIONS, MAX_WIDGETS } from './lib/WebDashboardService.js';
 import { autocompleteKeyUse, callWidgetRoute, pageKeyUse, type WidgetApis } from './lib/widgetRoutes.js';
 import dayssince from './widgets/dayssince/api.js';
 import keypad from './widgets/keypad/api.js';
@@ -128,7 +128,7 @@ export default {
       dashboards: app.web.list(),
       front: app.web.front(),
       codes: app.keypad.listCodes(), // names and lengths, for a dashboard's code
-      maxDashboards: MAX_DASHBOARDS,
+      maxDashboards: MAX_DASHBOARDS, maxWidgets: MAX_WIDGETS,
       maxSections: MAX_SECTIONS,
       popups: app.popups.all(),
     };
@@ -213,6 +213,16 @@ export default {
     const app = homey.app as WidgetkeeperApp;
     assertWebSession(app, query);
     return app.web.duplicate(params?.id || '');
+  },
+
+  /**
+   * The editor: copies one widget, with its tile names, to a dashboard (`{to, column, as?}`, the same one or another);
+   * answers `{dashboard, widget, dashboards}`, `widget` the copy's id.
+   */
+  async postWebWidgetCopy({ homey, query, params, body }: { homey: Homey, query?: Record<string, string>, params: Record<string, string>, body?: any }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    return app.web.copyWidget(params?.id || '', params?.widget || '', String(body?.to ?? ''), body?.column, body?.as);
   },
 
   /** The front page's edit mode: the web dashboards as one file (`WebBackup`), every one or those `?ids=a,b` names. */

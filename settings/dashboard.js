@@ -103,6 +103,14 @@
     duplicate: 'Duplicate',
     copyName: '__name__ (copy)',
     tooManyDashboards: 'At most __max__ dashboards.',
+    copyWidget: 'Copy to…',
+    copyTitle: 'Copy to dashboard',
+    copy: 'Copy',
+    copyColumn: 'Column',
+    copiedTo: 'Copied to __name__',
+    thisDashboard: 'This dashboard',
+    dashboardFull: 'Full',
+    tooManyWidgets: 'At most __max__ widgets on a dashboard.',
     pageSettings: 'Settings',
     thisBrowser: 'This browser',
     forgetKeyText: 'Signs this browser out: it asks for a sign-in code again.',
@@ -543,10 +551,11 @@
     const wd = {};
     wd.key = storageGet(KEY_STORAGE);
     wd.session = storageGet(SESSION_STORAGE);
-    wd.setup = null; // `/web/setup`: {appId, homeyId, language, strings, widgets, dashboards, front, maxDashboards, maxSections, popups}
-    // The most dashboards and front page sections the app keeps (`/web/setup`'s, from lib/WebDashboardService.ts).
+    wd.setup = null; // `/web/setup`: {appId, homeyId, language, strings, widgets, dashboards, front, maxDashboards, maxWidgets, maxSections, popups}
+    // The most dashboards, widgets on one and front page sections the app keeps (`/web/setup`'s, from lib/WebDashboardService.ts).
     wd.maxDashboards = 64;
     wd.maxSections = 20;
+    wd.maxWidgets = 60; // per dashboard
     wd.types = new Map(); // widget id → its type (name, settings, devices …)
     wd.foreign = new Map(); // another app's widget (`homey:app:<appId>:<id>`) → its type, from Homey's list
     wd.foreignState = null; // that list: 'ok', 'noScope' (this key may not read it) or 'failed'
@@ -628,6 +637,7 @@
       wd.frontPage = { widgets: true, sections: [], ...wd.setup.front };
       if (wd.setup.maxDashboards > 0) wd.maxDashboards = wd.setup.maxDashboards;
       if (wd.setup.maxSections > 0) wd.maxSections = wd.setup.maxSections;
+      if (wd.setup.maxWidgets > 0) wd.maxWidgets = wd.setup.maxWidgets;
       if (wd.setup.language) document.documentElement.lang = wd.setup.language;
       if (wd.setup.disabled || wd.setup.passwordRequired) return; // turned off, or the password first: `route()` says so
       wd.setPopups(wd.setup.popups && wd.setup.popups.popups, wd.setup.popups && wd.setup.popups.now);

@@ -4,7 +4,7 @@ import { fakeApi, fakeHomey, homeyApiMock, keyApis } from './helpers/fakeHomey.j
 import { logSlot } from '../lib/appLogs.js';
 import PersonalApiKey from '../lib/PersonalApiKey.js';
 import TileNameService, { TILE_NAMES_EVENT, TILE_NAMES_SETTING, tileNameRoutes } from '../lib/TileNameService.js';
-import WebDashboardService, { MAX_DASHBOARDS, passesDeviceFilter, settingSections, WEB_BACKUP_FORMAT, WEB_DASHBOARDS_SETTING, WEB_ENABLED_SETTING, WEB_FRONT_SETTING, WEB_REMOTE_SETTING } from '../lib/WebDashboardService.js';
+import WebDashboardService, { MAX_DASHBOARDS, MAX_WIDGETS, passesDeviceFilter, settingSections, WEB_BACKUP_FORMAT, WEB_DASHBOARDS_SETTING, WEB_ENABLED_SETTING, WEB_FRONT_SETTING, WEB_REMOTE_SETTING } from '../lib/WebDashboardService.js';
 import { widgetAutocompletes } from '../lib/widgetAutocompletes.js';
 import { DEVICE_WRITES, pageKeyUse, routeKeyUse } from '../lib/widgetRoutes.js';
 import WebPassword from '../lib/WebPassword.js';
@@ -773,6 +773,101 @@ describe('web dashboards: duplicate', () => {
     await expect(api.postWebDashboardCopy({ homey, params: { id: a.id } })).rejects.toThrow(/password required/);
     const { token } = await homey.app.webPassword.login('correct horse');
     await expect(api.postWebDashboardCopy({ homey, query: { session: token }, params: { id: a.id } })).resolves.toHaveProperty('dashboard');
+  });
+});
+
+describe('web dashboards: Copy to… (one widget)', () => {
+  const ids = (d: { columns: { id: string }[][] }) => d.columns.map(c => c.map(w => w.id));
+
+  it('copies a widget to another dashboard at the end of the chosen column, with its tile names and a new id', async () => {
+    const { homey, web, tileNames } = setup();
+    const a = web.save({ name: 'Hall', columns: [[{ id: 'w1', type: 'lights', title: 'Porch', deviceIds: ['d1'], settings: { groupByZone: true } }]] });
+    const b = web.save({ name: 'Kitchen', columns: [[{ id: 'w1', type: 'clock' }], [{ id: 'k2', type: 'clock' }]] });
+    tileNames.set(`web-${a.id}-w1`, 'd1', 'Front door');
+    const res = await api.postWebWidgetCopy({ homey, params: { id: a.id, widget: 'w1' }, body: { to: b.id, column: 1 } });
+    expect(res.dashboard.id).toBe(b.id);
+    expect(res.widget).not.toBe('w1'); // w1 is taken there
+    expect(ids(res.dashboard)).toEqual([['w1'], ['k2', res.widget]]);
+    const { id: _id, ...rest } = a.columns[0][0];
+    expect(res.dashboard.columns[1][1]).toEqual({ ...rest, id: res.widget });
+    expect(res.dashboards).toEqual(web.list());
+    expect(web.list().find(d => d.id === a.id)).toEqual(a); // the original stays as it was
+    expect(tileNames.get(`web-${b.id}-${res.widget}`).names).toEqual({ d1: 'Front door' });
+    tileNames.set(`web-${b.id}-${res.widget}`, 'd1', 'Back door'); // the copy's names are its own
+    expect(tileNames.get(`web-${a.id}-w1`).names).toEqual({ d1: 'Front door' });
+  });
+
+  it("keeps the widget's id where it's free, and clamps the column (missing: the widget's own, or the last)", () => {
+    const { web } = setup();
+    const a = web.save({ name: 'A', columns: [[], [], [{ id: 'w', type: 'clock' }]] });
+    const b = web.save({ name: 'B', columns: [[{ id: 'x', type: 'clock' }]] });
+    const c = web.save({ name: 'C', columns: [[], [], [], []] });
+    expect(web.copyWidget(a.id, 'w', b.id, 7)).toMatchObject({ widget: 'w' });
+    expect(ids(web.list().find(d => d.id === b.id)!)).toEqual([['x', 'w']]);
+    expect(ids(web.copyWidget(a.id, 'w', c.id, undefined).dashboard)).toEqual([[], [], ['w'], []]);
+    expect(ids(web.copyWidget(a.id, 'w', c.id, -3).dashboard)[0]).toHaveLength(1);
+  });
+
+  it('puts a copy on its own dashboard right after it, with the id the page gave it, and moves a wide widget after it along', () => {
+    const { web, tileNames } = setup();
+    const a = web.save({ name: 'A', columns: [
+      [{ id: 'wide', type: 'cameras', span: 2, at: [2] }, { id: 'v', type: 'clock' }],
+      [{ id: 'p', type: 'clock' }, { id: 'w', type: 'clock' }, { id: 'q', type: 'clock' }],
+    ] });
+    tileNames.set(`web-${a.id}-w`, 'd1', 'Lamp');
+    const res = web.copyWidget(a.id, 'w', a.id, 0, 'fresh1');
+    expect(res.widget).toBe('fresh1');
+    expect(ids(res.dashboard)).toEqual([['wide', 'v'], ['p', 'w', 'fresh1', 'q']]);
+    expect(res.dashboard.columns[0][0].at).toEqual([3]); // it sat after w, so it sits after the copy too
+    expect(web.copyWidget(a.id, 'p', a.id, 0).dashboard.columns[0][0].at).toEqual([4]);
+    expect(tileNames.get(`web-${a.id}-fresh1`).names).toEqual({ d1: 'Lamp' });
+    expect(web.copyWidget(a.id, 'w', a.id, 0, 'fresh1').widget).not.toBe('fresh1'); // taken by now
+  });
+
+  it("copies a wide widget wide: on its own dashboard with its covers' places, on another under everything it covers", () => {
+    const { web } = setup();
+    const a = web.save({ name: 'A', columns: [[{ id: 'wide', type: 'cameras', span: 3, at: [1, 0] }], [{ id: 'x', type: 'clock' }], [{ id: 'y', type: 'clock' }]] });
+    const b = web.save({ name: 'B', columns: [[{ id: 'm', type: 'clock' }], [{ id: 'n', type: 'clock' }, { id: 'o', type: 'clock' }]] });
+    const here = web.copyWidget(a.id, 'wide', a.id, 0, 'w2').dashboard;
+    expect(here.columns[0][1]).toMatchObject({ id: 'w2', span: 3, at: [1, 0] });
+    const there = web.copyWidget(a.id, 'wide', b.id, 0).dashboard;
+    expect(there.columns[0][1]).toMatchObject({ id: 'wide', span: 2, at: [2] }); // two columns there, under n and o
+    const last = web.copyWidget(a.id, 'wide', b.id, 1).dashboard;
+    expect(last.columns[1][2]).toMatchObject({ id: expect.any(String) });
+    expect(last.columns[1][2]).not.toHaveProperty('span'); // the last column: one wide
+    expect(last.columns[1][2]).not.toHaveProperty('at');
+  });
+
+  it("copies another app's widget with its own two fields", () => {
+    const { web } = setup();
+    const type = 'homey:app:com.example.garden:plants';
+    const a = web.save({ name: 'A', columns: [[{ id: 'g', type, settings: { size: 2 }, trusted: true, scaled: true }]] });
+    const b = web.save({ name: 'B', columns: [[]] });
+    expect(web.copyWidget(a.id, 'g', b.id, 0).dashboard.columns[0][0]).toEqual({ id: 'g', type, title: '', settings: { size: 2 }, deviceIds: [], trusted: true, scaled: true });
+  });
+
+  it('refuses an unknown dashboard or widget and a full dashboard', () => {
+    const { web } = setup();
+    const a = web.save({ name: 'A', columns: [[{ id: 'w', type: 'clock' }]] });
+    const full = web.save({ name: 'Full', columns: Array.from({ length: 6 }, () => Array.from({ length: 10 }, () => ({ type: 'clock' }))) });
+    expect(full.columns.flat()).toHaveLength(MAX_WIDGETS);
+    expect(() => web.copyWidget('nope', 'w', a.id, 0)).toThrow(/No such dashboard/);
+    expect(() => web.copyWidget(a.id, 'w', 'nope', 0)).toThrow(/No such dashboard/);
+    expect(() => web.copyWidget(a.id, 'nope', a.id, 0)).toThrow(/No such widget/);
+    expect(() => web.copyWidget(a.id, 'w', full.id, 0)).toThrow(/At most 60 widgets/);
+    expect(web.list().find(d => d.id === full.id)).toEqual(full);
+  });
+
+  it('needs the session while a password is set, and the setup says how many widgets fit', async () => {
+    const { homey, web } = setup();
+    homey.cloud = { getLocalAddress: async () => '192.168.1.20:80', getHomeyId: async () => 'abc123' };
+    const a = web.save({ name: 'A', columns: [[{ id: 'w', type: 'clock' }]] });
+    await expect(api.getWebSetup({ homey, query: {} })).resolves.toMatchObject({ maxWidgets: MAX_WIDGETS });
+    await homey.app.webPassword.setPassword('correct horse');
+    const call = (query?: Record<string, string>) => api.postWebWidgetCopy({ homey, query, params: { id: a.id, widget: 'w' }, body: { to: a.id } });
+    await expect(call()).rejects.toThrow(/password required/);
+    const { token } = await homey.app.webPassword.login('correct horse');
+    await expect(call({ session: token })).resolves.toHaveProperty('widget');
   });
 });
 

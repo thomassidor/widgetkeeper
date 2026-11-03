@@ -276,6 +276,15 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-backup-note { margin: 0; font-size: 14px; line-height: 20px; color: var(--wd-red); }
 .wd-backup-note:empty { display: none; }
 .wd-backup-foot .wd-btn.armed { color: #FFFFFF; background: var(--wd-red); } /* tap again to restore */
+/* Copy to…: the dashboards as a radio list (a full one faded), then the column for another one with several. */
+.wd-dialog.wd-copy { width: min(480px, calc(100vw - 32px)); }
+.wd-backup-item.off { opacity: .45; cursor: default; }
+.wd-copy-column { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.wd-copy-column[hidden] { display: none; }
+.wd-copy-column-name { font-size: 15px; line-height: 20px; }
+.wd-widget.fresh { animation: wd-fresh-widget 1.6s ease-out; border-radius: 14px; }
+@keyframes wd-fresh-widget { from { box-shadow: 0 0 0 4px var(--wd-accent); } }
+@media (prefers-reduced-motion: reduce) { .wd-widget.fresh { animation: none; } }
 .wd-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 @media (max-width: 480px) { .wd-bar-label { display: none; } } /* the icon alone on a phone */
 .wd-carousel-show { margin-left: auto; display: inline-flex; align-items: center; gap: 10px; font-size: 14px; line-height: 20px; color: var(--wd-muted); cursor: pointer; }
