@@ -594,6 +594,9 @@ export default class WebDashboardService {
   async valueDevices(type: string): Promise<WebValueDevice[]> {
     const slots = Object.prototype.hasOwnProperty.call(CAPABILITY_SLOTS, type) ? CAPABILITY_SLOTS[type] : undefined;
     if (!slots) throw new Error(`No device value settings: ${type}`);
+    const kind = Object.prototype.hasOwnProperty.call(VALUE_SETTINGS, type) ? VALUE_SETTINGS[type].kind : null;
+    // The apps' logs are read alongside the devices, not after them (logDevices() never throws).
+    const logs = kind && kind !== 'boolean' ? this.logDevices() : Promise.resolve([]);
     const [devices, zones] = await devicesAndZones(this.homey);
     const out: WebValueDevice[] = [];
     for (const d of devices) {
@@ -603,8 +606,7 @@ export default class WebDashboardService {
       });
       if (caps.length) out.push({ ...webDevice(d, zones), caps });
     }
-    const kind = Object.prototype.hasOwnProperty.call(VALUE_SETTINGS, type) ? VALUE_SETTINGS[type].kind : null;
-    if (kind && kind !== 'boolean') out.push(...await this.logDevices());
+    out.push(...await logs);
     return out.sort((a, b) => a.name.localeCompare(b.name));
   }
 

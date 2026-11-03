@@ -11,11 +11,13 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Sign-in codes:** sign a wall tablet, phone, computer or Nest Hub in with a short code or QR code instead of an API key, each with a key of its own (**Screens and browsers** in the app settings, with the steps to make the key). **Opens on** sends each screen straight to a dashboard of its own. The page asks for the code first, with the API key behind *Use an API key instead*; **Forget the key** is now **Sign out**.
 - The app settings' Web dashboards card reads in the order you set it up: the address, screens and browsers, then away from home with the password. Setting or changing the password keeps your screens signed in.
 - **A live preview** beside a widget's settings while you edit it.
+- **Kiosk browsers:** add `?kiosk=1` to a dashboard's address for a browser such as Fully Kiosk that fills the screen itself: the dashboard's bar is left out.
 
 ### Charts
 - **Charts is now Chart · Basic**, beside the other chart widgets in Homey's list. Its first setting reads *One value*, *Two values, stacked* or *Two values on one chart*. Widgets already on your dashboards stay as they are.
 - **Any time span:** a number and a unit, up to two years, or whole days, weeks, months or years: today, this month and the two before, or with *Leave out the current period* yesterday or last week. Charts set up before keep their span.
 - Each chart widget shows its key numbers at the top; tap the chart for any point's.
+- **Apps' own logged numbers** as values too, such as Better Logic's number variables.
 
 ### Sparklines
 - **Any time span**, as Chart · Basic: a number and a unit up to two years, or whole days, weeks, months or years. Sparklines set up before keep their span.
@@ -36,10 +38,19 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 
 ### Cameras
 - **Synology Surveillance Station's cameras, and any other camera missing from the device list:** the new Camera 1 to 6 settings list every device with a snapshot or video, whatever kind of device it calls itself (Synology's call themselves sensors). They show after the cameras picked in the device list.
+- **Live view** can be turned off, so a tap never opens a stream or expands a camera.
+- Away from home, a camera that can't go live now says *Live view needs your home network or a VPN.* instead of *Live view failed*: the video goes straight to the Homey, which Homey's cloud doesn't carry.
 
 ### Device Quick Actions
 - **Tiles per row:** 3 as before, or 2 for wider tiles with room for longer names.
 - **Pill tiles**, as Device Values has: the icon beside the name, with the state (*On*, *Locked*, *Playing* …) under it. **Tile style** in the widget's settings.
+
+### Sensor Alarms
+- **Tiles per row:** 2 as before, or 3.
+
+### Fixes
+- **Older Homey Pro (2016–2019):** Sparklines, the chart widgets and Heatmap list a device's values again, and the Electricity Overview no longer fails on every request where the Homey has no dynamic prices.
+- A busy Homey no longer shows devices as missing while a dashboard loads, and stopping the app writes everything still pending first.
 
 ## 1.1.2
 

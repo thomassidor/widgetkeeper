@@ -115,6 +115,8 @@
 
     function setLive(on) {
       wd.live = on;
+      // Kiosk mode hides the dashboard's bar while live (dashboard.css), by a class: older WebViews have no `:has()`.
+      document.documentElement.classList.toggle('wd-online', !!on);
       for (const node of root.querySelectorAll('.wd-live')) /** @type {HTMLElement} */ (node).hidden = on;
     }
 

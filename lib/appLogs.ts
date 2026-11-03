@@ -1,6 +1,7 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
 import { matches, type AutocompleteItem } from './autocomplete.js';
+import { limitInsights } from './insightsLog.js';
 import { sharedCache } from './sharedCache.js';
 
 /**
@@ -35,7 +36,11 @@ const appCaches = new WeakMap<object, ReturnType<typeof sharedCache<any[]>>>();
 function allLogs(homey: Homey.App['homey']): Promise<any[]> {
   let cache = caches.get(homey);
   if (!cache) {
-    cache = sharedCache(async () => Object.values(await (await getAppApi(homey) as any).insights.getLogs() ?? {}), { keepFor: 120e3 });
+    // Through limitInsights() like every other Insights read, so a busy Homey's answer pauses the rest too.
+    cache = sharedCache(async () => {
+      const api = await getAppApi(homey) as any;
+      return Object.values(await limitInsights(() => api.insights.getLogs()) ?? {});
+    }, { keepFor: 120e3 });
     caches.set(homey, cache);
   }
   return cache.get(60e3);
