@@ -81,17 +81,19 @@ describe('the update notice on the Timeline', () => {
     expect(excerpts(homey)).toEqual(['**Widgetkeeper 3.0.0**']);
   });
 
-  it("ships the current feature release's changelog entry (copy it into lib/release-notes.json on a new x.y.0)", () => {
+  it("ships a short line for the current feature release, in every language (write one on a new x.y.0)", () => {
     const [major, minor] = JSON.parse(readFileSync('.homeycompose/app.json', 'utf8')).version.split('.');
-    const release = `${major}.${minor}.0`;
     const shipped = JSON.parse(readFileSync('lib/release-notes.json', 'utf8'));
-    expect(shipped.version).toBe(release);
-    expect(shipped.notes).toEqual(JSON.parse(readFileSync('.homeychangelog.json', 'utf8'))[release]);
+    expect(shipped.version).toBe(`${major}.${minor}.0`);
+    const langs = ['en', 'nl', 'de', 'fr', 'it', 'sv', 'no', 'es', 'da', 'ru', 'pl', 'ko', 'ar'];
+    expect(Object.keys(shipped.notes).sort()).toEqual([...langs].sort());
+    // A line or two on the Timeline, not the changelog.
+    for (const lang of langs) expect(shipped.notes[lang].length, lang).toBeLessThanOrEqual(130);
   });
 
   it("reads the release notes it ships", async () => {
     const homey = homeyAt('1.2.0', '1.1.2');
     await postUpdateNotice(homey, () => {}, { ranBefore: true });
-    expect(excerpts(homey)[0]).toMatch(/^\*\*Widgetkeeper 1\.2\.0\*\*: Nine new chart widgets/);
+    expect(excerpts(homey)[0]).toBe('**Widgetkeeper 1.2.0**: Nine new chart widgets, shorter device names and sign-in codes for web dashboards.');
   });
 });

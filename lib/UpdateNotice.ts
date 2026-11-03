@@ -6,8 +6,8 @@ import { SECRETS_FILE } from './secrets.js';
 export const LAST_VERSION_SETTING = 'lastVersion';
 
 /**
- * The current feature release's notes, a copy of its `.homeychangelog.json` entry: the CLI leaves dotfiles out of the
- * build, so the changelog itself never reaches the Homey (a test checks the copy matches it).
+ * The current feature release's Timeline line, one short sentence per language (the changelog entry is far too long
+ * for the Timeline, and the CLI leaves `.homeychangelog.json` out of the build anyway). A test checks its version.
  */
 export const RELEASE_NOTES = new URL('./release-notes.json', import.meta.url);
 
@@ -25,7 +25,7 @@ export function isFeatureUpdate(from: string, to: string): boolean {
   return ta > fa || (ta === fa && tb > fb);
 }
 
-/** The release's text in `lang` (English otherwise): the x.y.0 entry, which says what came, else the version's own. */
+/** The release's line in `lang` (English otherwise): the x.y.0 one, which says what came, else the version's own. */
 export function noticeText(changelog: Changelog, version: string, lang: string): string | null {
   const [a, b] = parts(version);
   const entry = changelog[`${a}.${b}.0`] ?? changelog[version];
