@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import type Homey from 'homey';
 import { repeatKeys, type default as TileNameService } from './TileNameService.js';
+import { listAppLogs, logSlot } from './appLogs.js';
 import { devicesAndZones, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { describeCapability } from './capabilities.js';
 import { driverIconPath, libraryIconUrl } from './deviceIcon.js';
@@ -278,10 +279,15 @@ export function settingSections(settings: any[], language: string): { sections: 
   return { sections, labels };
 }
 
-/** Whether a device passes a widget's `devices.filter` (`class` and `capabilities`, each `a|b`: any of them). */
+/**
+ * Whether a device passes a widget's `devices.filter` (`class` and `capabilities`, each `a|b`: any of them). A comma
+ * counts as `|` too: MyNissan's widget (`eu.nissanconnect`, 0.0.16) has `car_charging,car_plugged,hvac_on_off`, which
+ * matched no device while split on `|` alone (a user's report, 2026-11-03). Homey's schema doesn't say whether a comma
+ * means any or all; any shows the car either way.
+ */
 export function passesDeviceFilter(device: any, filter: Record<string, unknown> | undefined): boolean {
   if (!filter) return true;
-  const any = (list: unknown) => String(list).split('|').map(s => s.trim()).filter(Boolean);
+  const any = (list: unknown) => String(list).split(/[|,]/).map(s => s.trim()).filter(Boolean);
   if (filter.class != null) {
     const classes = any(filter.class);
     if (!classes.includes(device?.class) && !classes.includes(device?.virtualClass)) return false;
@@ -597,7 +603,38 @@ export default class WebDashboardService {
       });
       if (caps.length) out.push({ ...webDevice(d, zones), caps });
     }
+    const kind = Object.prototype.hasOwnProperty.call(VALUE_SETTINGS, type) ? VALUE_SETTINGS[type].kind : null;
+    if (kind && kind !== 'boolean') out.push(...await this.logDevices());
     return out.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  /**
+   * The numbers apps log themselves (Better Logic's variables), as the chart widgets' autocompletes list them: per app a
+   * "device" `log` in a "room" of the app's name, its logs as values (`<appId>:<name>`, so the picked id is
+   * `log:<appId>:<name>`, `logSlot()`). A failed read leaves them out.
+   */
+  private async logDevices(): Promise<WebValueDevice[]> {
+    let logs;
+    try {
+      logs = await listAppLogs(this.homey);
+    } catch (err) {
+      this.log('App logs unavailable:', err);
+      return [];
+    }
+    const apps = new Map<string, WebValueDevice>();
+    for (const l of logs) {
+      const slot = l.type === 'number' ? logSlot(l.id) : null;
+      if (!slot) continue;
+      const appId = l.ownerUri.slice('homey:app:'.length);
+      const name = l.ownerName ?? appId;
+      let dev = apps.get(appId);
+      if (!dev) apps.set(appId, dev = { id: 'log', name, zone: { id: `app:${appId}`, name, path: [] }, icon: null, caps: [] });
+      dev.caps.push({
+        id: slot.slice('log:'.length), title: l.title, type: 'number', units: l.units, decimals: l.decimals,
+        min: null, max: null, values: null, value: typeof l.lastValue === 'number' ? l.lastValue : null,
+      });
+    }
+    return [...apps.values()];
   }
 
   /** An autocomplete setting's items, from the same listener Homey's widget settings use. */

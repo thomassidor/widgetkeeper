@@ -265,9 +265,12 @@
       const find = (id) => {
         const i = typeof id === 'string' ? id.indexOf(':') : -1;
         if (i < 0 || !devices) return null;
-        const dev = devices.find(x => x.id === id.slice(0, i));
-        const cap = dev && dev.caps.find(c => c.id === id.slice(i + 1));
-        return cap ? { dev, cap } : null;
+        // Every app's logged values come as a device `log` of its own (`valueDevices()`), so look in each with the id.
+        for (const dev of devices) {
+          const cap = dev.id === id.slice(0, i) && dev.caps.find(c => c.id === id.slice(i + 1));
+          if (cap) return { dev, cap };
+        }
+        return null;
       };
       const open = async () => {
         let list;
@@ -342,7 +345,7 @@
       let room = 'all';
       // The device whose values show, or null for the rooms; opens at the current choice's device.
       const sep = typeof currentId === 'string' ? currentId.indexOf(':') : -1;
-      let device = sep > 0 ? devices.find(x => x.id === currentId.slice(0, sep)) || null : null;
+      let device = sep > 0 ? devices.find(x => x.id === currentId.slice(0, sep) && x.caps.some(c => c.id === currentId.slice(sep + 1))) || null : null;
 
       function drawRooms() {
         rooms.textContent = '';
@@ -395,7 +398,8 @@
             // The devices as tiles; a tap opens its values.
             const tiles = el('div', 'wd-devtiles');
             for (const dev of g.devices) {
-              const chosen = sep > 0 && dev.id === currentId.slice(0, sep);
+              // By its values too: every app's logged values come as a device `log` (`valueDevices()`).
+              const chosen = sep > 0 && dev.id === currentId.slice(0, sep) && dev.caps.some(c => c.id === currentId.slice(sep + 1));
               const tile = button(`wd-devtile${chosen ? ' on' : ''}`, '', () => { device = dev; box.scrollTop = 0; draw(); });
               tile.append(deviceIcon(dev, 'large'), el('span', 'wd-devtile-name', dev.name),
                 el('span', 'wd-hint wd-valnames', dev.caps.map(c => c.title).join(', ')));

@@ -6,6 +6,7 @@ import { healthCaps } from './RoomHealthService.js';
 import { alarmCaps } from './SensorAlarmService.js';
 import { isThermostat } from './ThermostatService.js';
 import { getAppApi } from './appApi.js';
+import { describeAppLogs } from './appLogs.js';
 
 const MAX_LINES = 500;
 
@@ -90,6 +91,8 @@ export default class Diagnostics {
         })
         .sort((a, b) => a.name.localeCompare(b.name));
       out.cameras = this.probeCameras(devices);
+      // Insights logs other apps keep (Better Logic's variables): what a chart could read besides capabilities.
+      out.appLogs = await describeAppLogs(this.homey).catch((err: unknown) => String(err));
       if (device) {
         const q = device.toLowerCase();
         const d = devices.find(x => x.id === device) || devices.find(x => String(x.name).toLowerCase().includes(q));

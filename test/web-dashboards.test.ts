@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeHomey, homeyApiMock, keyApis } from './helpers/fakeHomey.js';
+import { logSlot } from '../lib/appLogs.js';
 import PersonalApiKey from '../lib/PersonalApiKey.js';
 import TileNameService, { TILE_NAMES_EVENT, TILE_NAMES_SETTING, tileNameRoutes } from '../lib/TileNameService.js';
 import WebDashboardService, { MAX_DASHBOARDS, passesDeviceFilter, settingSections, WEB_BACKUP_FORMAT, WEB_DASHBOARDS_SETTING, WEB_ENABLED_SETTING, WEB_FRONT_SETTING, WEB_REMOTE_SETTING } from '../lib/WebDashboardService.js';
@@ -486,6 +487,10 @@ describe('web dashboards: what the editor needs', () => {
     expect(passesDeviceFilter(sensor, { class: 'light|socket' })).toBe(false);
     expect(passesDeviceFilter(sensor, { capabilities: 'onoff|dim' })).toBe(false);
     expect(passesDeviceFilter(sensor, undefined)).toBe(true);
+    // MyNissan's widget lists its capabilities with commas.
+    const car = { class: 'car', capabilities: ['car_charging', 'car_plugged'] };
+    expect(passesDeviceFilter(car, { capabilities: 'car_charging,car_plugged,hvac_on_off' })).toBe(true);
+    expect(passesDeviceFilter(sensor, { capabilities: 'car_charging,car_plugged,hvac_on_off' })).toBe(false);
   });
 
   it('gives the device picker the rooms (with the zones above them) and the icons', async () => {
@@ -543,6 +548,29 @@ describe('web dashboards: what the editor needs', () => {
     expect((await web.valueDevices('sparklines'))[0].caps.map(c => c.id)).toEqual(['measure_temperature']);
     await expect(web.valueDevices('lights')).rejects.toThrow();
     await expect(web.valueDevices('__proto__')).rejects.toThrow();
+  });
+
+  it("gives the chart widgets' value picker the numbers apps log, a device `log` per app in a room of its name", async () => {
+    const bll = (name: string, type = 'number') => ({
+      id: `homey:app:net.i-dev.betterlogic:${name}`, ownerUri: 'homey:app:net.i-dev.betterlogic', ownerId: name, ownerName: null,
+      type, title: name, units: 'Value', decimals: 2, lastValue: type === 'number' ? 7 : true,
+    });
+    const api = fakeApi({ logs: [bll('Heat, today'), bll('Alarm', 'boolean'), { id: 'homey:manager:logic:v1', ownerUri: 'homey:manager:logic', ownerId: 'v1' }] as any });
+    (api as any).apps = { getApps: async () => ({ 'net.i-dev.betterlogic': { id: 'net.i-dev.betterlogic', name: 'Better Logic Library' } }) };
+    const homey = fakeHomey(api);
+    homey.manifest = { ...homey.manifest, widgets: app.widgets };
+    const web = new WebDashboardService(homey, vi.fn(), {});
+    const [dev] = await web.valueDevices('charts');
+    expect(dev).toMatchObject({ id: 'log', name: 'Better Logic Library', zone: { id: 'app:net.i-dev.betterlogic', name: 'Better Logic Library', path: [] }, icon: null });
+    expect(dev.caps).toEqual([{ id: logSlot(bll('Heat, today').id)!.slice(4), title: 'Heat, today', type: 'number', units: null, decimals: 2, min: null, max: null, values: null, value: 7 }]);
+    // Not Device Values (live values only) or a booleans-only list.
+    expect(await web.valueDevices('values')).toEqual([]);
+    // A log list that can't be read leaves just the devices.
+    const failing = fakeApi({});
+    failing.insights.getLogs.mockRejectedValue(new Error('Missing Scopes'));
+    const other = fakeHomey(failing);
+    other.manifest = { ...other.manifest, widgets: app.widgets };
+    expect(await new WebDashboardService(other, vi.fn(), {}).valueDevices('lines')).toEqual([]);
   });
 
   it("calls an autocomplete setting's listener with the draft settings", async () => {

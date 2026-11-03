@@ -1,4 +1,5 @@
 import type Homey from 'homey';
+import { findLog, parseLogSlot } from './appLogs.js';
 import { devicesAndZones, listCapabilitySlots, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { describeCapability, type CapabilityDescription } from './capabilities.js';
 import DeviceTracker, { type TrackedEntry } from './DeviceTracker.js';
@@ -167,6 +168,7 @@ export default class ValueService {
     const colors = this.colors.all();
     const show = await deviceNamer(this.homey, tm, this.log, 'Values');
     const out = await Promise.all(slots.map(async (slot, i): Promise<ValueSlot | null> => {
+      if (parseLogSlot(slot)) return this.logState(slot);
       const s = parseSlot(slot);
       if (!s) return null;
       try {
@@ -184,6 +186,28 @@ export default class ValueService {
     }));
     this.debug(`Values state for ${slots.length} slots: ${tm.summary()}`);
     return out.filter((x): x is ValueSlot => x !== null);
+  }
+
+  /**
+   * An app's log as a value (`log:<appId>:<name>`, the chart widgets' and Sparklines'): the app as the device, the log's
+   * title as the capability, its last value from the log list (read again after a minute; no realtime). `{missing}` for
+   * a log that's gone (a deleted variable) or can't be read.
+   */
+  private async logState(slot: string): Promise<ValueSlot> {
+    const s = parseLogSlot(slot)!;
+    const ids = { deviceId: s.deviceId, capabilityId: s.capabilityId };
+    try {
+      const l = await findLog(this.homey, slot);
+      if (!l || l.type !== 'number') return { ...ids, missing: true };
+      return {
+        ...ids, name: l.ownerName ?? s.appId,
+        capability: { title: l.title, type: 'number', units: l.units, decimals: l.decimals, min: null, max: null, values: null, icon: null },
+        value: typeof l.lastValue === 'number' ? l.lastValue : null,
+      };
+    } catch (err) {
+      this.log(`Value ${slot} unavailable:`, err);
+      return { ...ids, missing: true };
+    }
   }
 
   /** A slot's second value, tracked like a slot of its own, or null for none, its own capability or one that can't be read. */

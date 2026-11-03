@@ -64,7 +64,7 @@ const report = homeyApi('GET', `/api/app/${APP_ID}/diagnostics${query}`);
 if (opts.json) {
   console.log(JSON.stringify(report, null, 2));
 } else {
-  const { log = [], devices, thermostats, device, heatmapHistory, energyReport, ...status } = report;
+  const { log = [], devices, thermostats, device, heatmapHistory, energyReport, appLogs, ...status } = report;
   console.log(Object.entries(status).map(([k, v]) => `${k}: ${typeof v === 'string' ? v : JSON.stringify(v)}`).join('\n'));
   if (opts.devices) {
     console.log('\nthermostats:', JSON.stringify(thermostats, null, 2));
@@ -73,6 +73,7 @@ if (opts.json) {
   if (device) console.log('\ndevice:', JSON.stringify(device, null, 2));
   if (heatmapHistory) console.log('\nheatmapHistory:', JSON.stringify(heatmapHistory));
   if (energyReport) console.log('\nenergyReport:', JSON.stringify(energyReport, null, 2));
+  if (appLogs) console.log('\nappLogs:', JSON.stringify(appLogs, null, 2));
   console.log(`\nlog (${log.length} lines):`);
   for (const line of log) console.log(line);
 }

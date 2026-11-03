@@ -1,9 +1,10 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
+import { listLogSlots, parseLogSlot } from './appLogs.js';
 import { listCapabilitySlots, type AutocompleteItem } from './autocomplete.js';
 import { heatmapCaps } from './HeatmapService.js';
 import { isTransientError } from './DeviceTracker.js';
-import { readCapabilityLog } from './insightsLog.js';
+import { limitInsights, readCapabilityLog } from './insightsLog.js';
 import { logCover, mergeLogs, periodStart, planLogs, type CalendarUnit, type InsightsLog } from './logPlan.js';
 import { bucketAverage, HOUR, MINUTE, parseInsightsEntries, runningTotal, type Meter, type Sample } from './series.js';
 import Timings from './Timings.js';
@@ -235,9 +236,24 @@ export default class SparklineService {
    * the power values (`measure_power`) first, `boolean` the logged booleans instead, and `timeline` (Chart ·
    * Timeline's) both.
    */
-  listSlots(query: string, kind: SlotKind = 'number'): Promise<AutocompleteItem[]> {
+  async listSlots(query: string, kind: SlotKind = 'number'): Promise<AutocompleteItem[]> {
     const first = kind === 'counter' ? (id: string) => id.startsWith('meter_') : kind === 'power' ? (id: string) => id.startsWith('measure_power') : undefined;
-    return listCapabilitySlots(this.homey, query, slotCaps(kind), first);
+    const [devices, logs] = await Promise.all([
+      listCapabilitySlots(this.homey, query, slotCaps(kind), first),
+      kind === 'boolean' ? [] : this.logSlots(query),
+    ]);
+    return [...devices, ...logs];
+  }
+
+  /**
+   * The numbers apps log themselves (Better Logic's variables: `App · Title`, `log:<appId>:<name>`), after the devices'.
+   * A failed read leaves them out, never the devices.
+   */
+  private logSlots(query: string): Promise<AutocompleteItem[]> {
+    return listLogSlots(this.homey, query).catch((err: unknown) => {
+      this.log('App logs unavailable:', err);
+      return [];
+    });
   }
 
   // ---------------------------------------------------------------- state
@@ -368,7 +384,11 @@ export default class SparklineService {
       cached.lastRequested = now;
       return cached.log;
     }
-    const log = getAppApi(this.homey).then(api => readCapabilityLog(api, deviceId, capabilityId, resolution, this.logIds));
+    // An app's log (`log:<appId>:<name>`) is read by its own owner and full id; a device's by its capability's log ids.
+    const own = parseLogSlot(slot);
+    const log = getAppApi(this.homey).then(api => (own
+      ? limitInsights(() => api.insights.getLogEntries({ uri: own.uri, id: own.logId, resolution }))
+      : readCapabilityLog(api, deviceId, capabilityId, resolution, this.logIds)));
     const entry = { at: now, ttl, lastRequested: now, log };
     // A failure is handled by each caller and kept no longer than an ordinary read (a finished period's `ttl` runs until
     // the next period, which would leave its chart empty until then); a busy Homey's is asked again soon, so a dashboard's
