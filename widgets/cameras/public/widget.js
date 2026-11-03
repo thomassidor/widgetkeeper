@@ -32,6 +32,7 @@
     live: 'Live',
     liveFailed: 'Live view failed',
     liveH265: 'H.265 can\'t play live. Try H.264.',
+    liveAway: 'Live view needs your home network or a VPN.',
     renameFailed: 'Could not save the name.',
   };
 
@@ -459,6 +460,7 @@
       const l = {
         id: d.id, pc: null, videoId: null, playing: false, timeout: null, maxTimer: null, keepAlive: null,
         frameCheck: null, frames: 0, frameAt: 0, fail: null, keepAliveFailed: false,
+        unreached: 0, reached: false,
       };
       live = l;
       l.fail = (why) => {
@@ -467,11 +469,15 @@
         stopLive();
         note(d.id, t('liveFailed'));
       };
+      // Homey answered an offer but the connection never came up: the phone can't reach Homey's video server
+      // (go2rtc, port 8555), which Homey's cloud doesn't relay. That's away from home without a VPN.
       const giveUp = () => {
         if (live !== l) return;
-        report(`live view of ${d.name}: none of its ${order.length} streams played`, true);
+        const away = l.unreached > 0 && !l.reached;
+        report(`live view of ${d.name}: none of its ${order.length} streams played`
+          + (away ? '; Homey answered, but its video server could not be reached (away from home?)' : ''), true);
         stopLive();
-        note(d.id, t(allH265(d) ? 'liveH265' : 'liveFailed'));
+        note(d.id, t(allH265(d) ? 'liveH265' : away ? 'liveAway' : 'liveFailed'));
       };
       tile.tile.classList.add('connecting');
       expand(tile, true);
@@ -490,8 +496,11 @@
         l.videoId = videoId;
         l.keepAliveFailed = false;
         const current = () => live === l && l.pc === pc;
+        let answered = false;
+        let connected = false;
         const next = (why) => {
           if (!current() || l.playing) return;
+          if (answered && !connected) l.unreached++;
           streamFailed(d.id, videoId);
           report(`live view of ${d.name}: stream ${i + 1} of ${order.length} failed: ${why}`, true);
           attempt(i + 1);
@@ -505,12 +514,15 @@
           if (p && p.catch) p.catch(() => {});
         };
         pc.onconnectionstatechange = () => {
+          if (current() && pc.connectionState === 'connected') { connected = true; l.reached = true; }
           if (!current() || pc.connectionState !== 'failed') return;
           if (l.playing) l.fail('connection failed');
           else next('connection failed');
         };
         openStream(pc, videoId, current).then((res) => {
-          if (!res || !current() || !res.streamId) return;
+          if (!res || !current()) return;
+          answered = true;
+          if (!res.streamId) return;
           l.keepAlive = setInterval(() => {
             api('POST', '/video/keepalive', { videoId, streamId: res.streamId }).catch((err) => {
               // A rejected keep-alive ends the stream on Homey's side; the frame check then ends live view.

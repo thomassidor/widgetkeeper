@@ -317,6 +317,7 @@
     "live": "Live",
     "liveFailed": "Livebild fehlgeschlagen",
     "liveH265": "H.265 geht nicht live. H.264 probieren.",
+    "liveAway": "Live-Bild nur im Heimnetz oder per VPN.",
     "renameFailed": "Der Name konnte nicht gespeichert werden."
   },
   "values": {

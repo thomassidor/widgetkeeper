@@ -409,6 +409,36 @@ describe('live view: falling back to the next stream', () => {
     expect(tile('a').querySelector('.cw-note')!.textContent).toBe('Live view failed');
   });
 
+  it('says live view needs the home network when Homey answered but no connection came up', async () => {
+    vi.useFakeTimers();
+    try {
+      stubPeerConnection();
+      const { tile, report } = widget([cam('a', { videos: ['main', 'sub'] })], refusing('main'));
+      tile('a').click();
+      await vi.advanceTimersByTimeAsync(16000);
+      expect(report).toHaveBeenCalledWith('live view of Cam a: none of its 2 streams played; Homey answered, but its video server could not be reached (away from home?)', true);
+      expect(tile('a').querySelector('.cw-note')!.textContent).toBe('Live view needs your home network or a VPN.');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('keeps "Live view failed" when the connection came up but no video did', async () => {
+    vi.useFakeTimers();
+    try {
+      const pcs = stubPeerConnection();
+      const { tile } = widget([cam('a', { videos: ['sub'] })], refusing());
+      tile('a').click();
+      await vi.advanceTimersByTimeAsync(100);
+      pcs[0].connectionState = 'connected';
+      pcs[0].onconnectionstatechange();
+      await vi.advanceTimersByTimeAsync(16000);
+      expect(tile('a').querySelector('.cw-note')!.textContent).toBe('Live view failed');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('names H.265 when every stream is H.265', async () => {
     stubPeerConnection();
     const { tile } = widget([cam('a', { videos: ['main'], h265: ['main'] })], refusing('main'));

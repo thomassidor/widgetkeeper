@@ -317,6 +317,7 @@
     "live": "Live",
     "liveFailed": "Live view failed",
     "liveH265": "H.265 can't play live. Try H.264.",
+    "liveAway": "Live view needs your home network or a VPN.",
     "renameFailed": "Could not save the name."
   },
   "values": {

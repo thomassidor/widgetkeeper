@@ -317,6 +317,7 @@
     "live": "Direct",
     "liveFailed": "Échec du direct",
     "liveH265": "H.265 non lisible en direct. Essayez H.264.",
+    "liveAway": "Le direct exige le réseau de la maison ou un VPN.",
     "renameFailed": "Impossible d'enregistrer le nom."
   },
   "values": {

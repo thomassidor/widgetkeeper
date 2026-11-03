@@ -317,6 +317,7 @@
     "live": "Na żywo",
     "liveFailed": "Błąd podglądu na żywo",
     "liveH265": "H.265 nie działa na żywo. Użyj H.264.",
+    "liveAway": "Podgląd na żywo wymaga sieci domowej lub VPN.",
     "renameFailed": "Nie udało się zapisać nazwy."
   },
   "values": {

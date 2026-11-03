@@ -317,6 +317,7 @@
     "live": "En vivo",
     "liveFailed": "Falló el vídeo en vivo",
     "liveH265": "H.265 no se ve en directo. Prueba H.264.",
+    "liveAway": "El directo requiere la red de casa o una VPN.",
     "renameFailed": "No se pudo guardar el nombre."
   },
   "values": {

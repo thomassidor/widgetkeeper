@@ -317,6 +317,7 @@
     "live": "Live",
     "liveFailed": "Livebild misslyckades",
     "liveH265": "H.265 kan inte visas live. Prova H.264.",
+    "liveAway": "Live kräver hemnätverket eller en VPN.",
     "renameFailed": "Kunde inte spara namnet."
   },
   "values": {

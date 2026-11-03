@@ -317,6 +317,7 @@
     "live": "Direkte",
     "liveFailed": "Direktebilde feilet",
     "liveH265": "H.265 kan ikke vises live. Prøv H.264.",
+    "liveAway": "Live krever hjemmenettet eller en VPN.",
     "renameFailed": "Kunne ikke lagre navnet."
   },
   "values": {
