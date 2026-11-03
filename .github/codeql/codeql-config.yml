@@ -1,0 +1,16 @@
+name: Widgetkeeper CodeQL config
+
+queries:
+  - uses: security-extended
+
+# Not ours or not shipped: the bundled libraries (npm run web-socket, npm run qr-code),
+# the dev previews and render pages, the generated docs, coverage and local scratch.
+paths-ignore:
+  - settings/socket.io.js
+  - settings/qrcode.js
+  - dev
+  - docs
+  - temp
+  - coverage
+  - node_modules
+  - .homeybuild
