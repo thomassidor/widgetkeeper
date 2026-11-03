@@ -59,8 +59,12 @@ async function autocomplete(widget, settingId, settings = {}, query = '') {
 
 const widgetDefs = widgetManifests();
 
+// Unavailable devices last (then by name): one that stopped reporting shows a flat history and stale values, so a
+// widget tested on it looks broken (every gauge read a dead air quality sensor, 2026-11-03); still used where nothing
+// else fits.
 const devices = Object.values(await homeyApi('GET', '/api/manager/devices/device/'))
-  .sort((a, b) => a.name.localeCompare(b.name));
+  .sort((a, b) => (a.available === false) - (b.available === false) || a.name.localeCompare(b.name));
+const unavailable = new Set(devices.filter(d => d.available === false).map(d => d.id));
 const has = (d, ...caps) => caps.every(c => d.capabilities?.includes(c));
 const where = (fn, n = Infinity) => devices.filter(fn).slice(0, n).map(d => d.id);
 const cls = d => d.virtualClass || d.class;
@@ -103,8 +107,11 @@ function deepVariants(type, widgets) {
   ];
 }
 
-/** The first n autocomplete items that pass, `None` and the like left out. */
-const pick = (items, fn = () => true, n = 1) => items.filter(i => i.id !== 'none' && fn(i)).slice(0, n);
+/** Whether an autocomplete item (a device, or a `<deviceId>:<capabilityId>` value) is an unavailable device's. */
+const stale = item => unavailable.has(String(item.id).split(':')[0]);
+/** The first n autocomplete items that pass, `None` and the like left out; an unavailable device's after the rest. */
+const pick = (items, fn = () => true, n = 1) => items.filter(i => i.id !== 'none' && fn(i))
+  .sort((a, b) => stale(a) - stale(b)).slice(0, n);
 
 /** `{slot1: …, slot2: …}` from a list of items (null where a slot stays empty). */
 const slots = (prefix, items) => Object.fromEntries(items.map((item, i) => [`${prefix}${i + 1}`, item ?? null]));
