@@ -1,6 +1,6 @@
 // Renders a release's teaser, what's next in <version> (docs/whats-next-<version>.png), from dev/whats-next-<version>.html
 // with headless Edge, at 2x: 1.1.0's (its wide widgets panel shows docs/web/wide.png, `npm run web-showcase -- wide`) or
-// 1.2.0's (its web dashboards panels show docs/web/preview.png, sync.png, copy.png and kiosk.png, `npm run web-showcase -- preview sync copy kiosk`). 1.1.0's page fetches
+// 1.2.0's (its web dashboards panels show docs/web/preview.png, sync.png, nightly.png and copy.png, `npm run web-showcase -- preview sync nightly copy`). 1.1.0's page fetches
 // the popup's picture, which a file:// page can't, so the repo root is served while a teaser renders (headless.mjs's
 // withServer()).
 // Usage: `npm run whats-next [-- 1.1.0]` (default: the latest, 1.2.0).
@@ -11,7 +11,7 @@ import { progress } from './progress.mjs';
 
 const SCALE = 2;
 /** Each teaser and the web showcase views its page shows. */
-const TEASERS = { '1.1.0': ['wide'], '1.2.0': ['preview', 'sync', 'copy', 'kiosk'] };
+const TEASERS = { '1.1.0': ['wide'], '1.2.0': ['preview', 'sync', 'nightly', 'copy'] };
 const version = process.argv[2] || '1.2.0';
 if (!TEASERS[version]) throw new Error(`No teaser for ${version} (${Object.keys(TEASERS).join(', ')})`);
 const missing = TEASERS[version].filter(view => !existsSync(`docs/web/${view}.png`));

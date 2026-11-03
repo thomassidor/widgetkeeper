@@ -7,7 +7,7 @@
   <!--
     The web dashboards page (settings/dashboard.js) with the made-up home of showcase-data.js, in a drawn desktop
     browser window: the showcase dashboards as web dashboards, their widgets mounted in place of the iframes (the
-    `mountWidget` hook) with the real widget code. `?v=dashboard|front|editor|settings|preview|light|wide|popup|sync|copy|kiosk` picks the view (settings: the editor with Flow Buttons' settings dialog open; preview: Energy's editor with a Chart · Scatter (XY)'s settings and its live preview (1.2.0); light: the Kitchen, a light dashboard, in a light browser; wide: Energy's chart across two columns; popup: Security with a Flow's question over it; sync: Energy's editor with its Sync dialog, linked with the Homey dashboard Energy; copy: Energy's editor copying its Chart · Basic to Home; kiosk: Home with `?kiosk=1` on a drawn wall tablet), `&d=<id>` the
+    `mountWidget` hook) with the real widget code. `?v=dashboard|front|editor|settings|preview|light|wide|popup|sync|nightly|copy|kiosk` picks the view (settings: the editor with Flow Buttons' settings dialog open; preview: Energy's editor with a Chart · Scatter (XY)'s settings and its live preview (1.2.0); light: the Kitchen, a light dashboard, in a light browser; wide: Energy's chart across two columns; popup: Security with a Flow's question over it; sync: Energy's editor with its Sync dialog, linked with the Homey dashboard Energy; nightly: the front page's Settings with the nightly sync, Energy and the Kitchen synced; copy: Energy's editor copying its Chart · Basic to Home; kiosk: Home with `?kiosk=1` on a drawn wall tablet), `&d=<id>` the
     dashboard (default home). Serve the repo root (the page and mock-web-api.js fetch /app.json and /locales/en.json)
     and open /dev/web-showcase.html; scripts/render-web-showcase.mjs (`npm run web-showcase [-- <view>…]`) renders
     them to docs/web/<view>.png on a transparent background. The clock is fixed (fixed-clock.js), so every render is
@@ -158,13 +158,13 @@
     if (VIEW === 'kiosk' && !params.has('kiosk')) history.replaceState(null, '', `${location.pathname}${location.search}&kiosk=1${location.hash}`);
     const BOARD = VIEW === 'light' ? LIGHT_BOARD : VIEW === 'wide' ? WIDE_BOARD : VIEW === 'popup' ? POPUP_BOARD
       : VIEW === 'preview' ? PREVIEW_BOARD : VIEW === 'sync' || VIEW === 'copy' ? SYNC_BOARD : params.get('d') || 'home';
-    const HASH = VIEW === 'front' ? '#/' : ['editor', 'settings', 'preview', 'sync', 'copy'].includes(VIEW) ? `#/d/${BOARD}/edit` : `#/d/${BOARD}`;
+    const HASH = VIEW === 'front' ? '#/' : VIEW === 'nightly' ? '#/edit' : ['editor', 'settings', 'preview', 'sync', 'copy'].includes(VIEW) ? `#/d/${BOARD}/edit` : `#/d/${BOARD}`;
 
     // The settings, preview and popup views draw their dialog inside the window: shown non-modal over a backdrop of its
     // own, since a modal one sits over the whole render. The settings view: Home's Flow Buttons with four buttons, in its
     // settings and drawn alike behind the dialog (the showcase's has two).
     const SETTINGS_WIDGET = 'home-0-2';
-    if (['settings', 'preview', 'popup', 'sync', 'copy'].includes(VIEW)) {
+    if (['settings', 'preview', 'popup', 'sync', 'nightly', 'copy'].includes(VIEW)) {
       HTMLDialogElement.prototype.showModal = function () {
         this.show();
         const viewport = document.querySelector('.viewport');
@@ -207,12 +207,12 @@
       },
     };
     const noChanges = { added: 0, removed: 0, updated: 0, moved: false, renamed: false };
-    const sync = VIEW !== 'sync' ? {} : {
-      [SYNC_BOARD]: { homeyId: 'h-energy', prefer: 'homey', syncing: false,
-        lastSync: { at: Date.now() - 12 * 6e4, ok: true, conflicts: [], changes: { web: noChanges, homey: noChanges } } },
-    };
+    const synced = (homeyId, minutes) => ({ homeyId, prefer: 'homey', syncing: false,
+      lastSync: { at: Date.now() - minutes * 6e4, ok: true, conflicts: [], changes: { web: noChanges, homey: noChanges } } });
+    const sync = VIEW === 'sync' ? { [SYNC_BOARD]: synced('h-energy', 12) }
+      : VIEW === 'nightly' ? { [SYNC_BOARD]: synced('h-energy', 12), kitchen: synced('h-kitchen', 40) } : {};
     // The sync line's time on the 24-hour clock, as the showcase's widgets (en-GB) have it: the page's language is just `en`.
-    if (VIEW === 'sync') {
+    if (VIEW === 'sync' || VIEW === 'nightly') {
       const time = Date.prototype.toLocaleTimeString;
       Date.prototype.toLocaleTimeString = function (lang, o) { return time.call(this, lang === 'en' ? 'en-GB' : lang, o); };
     }
@@ -282,7 +282,7 @@
     .shot-backdrop { position: absolute; inset: 0; z-index: 9998; background: rgba(0, 0, 0, .5); }
     .viewport > .wd-dialog { position: absolute; inset: 40px 0 auto; height: calc(100% - 80px); max-height: none; margin: 0 auto; z-index: 9999; box-shadow: 0 24px 64px rgba(0, 0, 0, .5); }
     /* The popup, sync and copy views: the dialog in the middle, as tall as it is, without the focus ring a script's focus() gives. */
-    .viewport > .wd-dialog.wd-popup, .viewport > .wd-dialog.wd-sync-dialog, .viewport > .wd-dialog.wd-copy { inset: 0; height: fit-content; margin: auto; }
+    .viewport > .wd-dialog.wd-popup, .viewport > .wd-dialog.wd-sync-dialog, .viewport > .wd-dialog.wd-copy, .viewport > .wd-dialog.wd-page-settings { inset: 0; height: fit-content; margin: auto; }
     .viewport > .wd-dialog :focus-visible { outline: none; }
     /* The kiosk view: no browser around the page, a wall tablet's bezel instead (16:10, 1440 × 900). */
     .window.tablet { padding: 22px; border-radius: 40px; background: #0B0B0E; box-shadow: 0 0 0 2px #2A2B30, 0 30px 60px -16px rgba(0, 0, 0, 0.55), 0 10px 20px rgba(0, 0, 0, 0.25); }
@@ -333,6 +333,24 @@
     if (VIEW === 'light') document.querySelector('.window').classList.add('light');
     if (VIEW === 'kiosk') document.querySelector('.window').classList.add('tablet');
     // The sync and copy views: once the editor is there, open the Sync dialog, or Copy to… for the chart with Home picked.
+    // The nightly view: the front page's edit mode with its Settings open (the backup, the nightly sync, this browser).
+    if (VIEW === 'nightly') {
+      const open = () => {
+        const settings = [...document.querySelectorAll('.wd-bar .wd-btn')].find(b => b.textContent === 'Settings');
+        if (!settings) { setTimeout(open, 50); return; }
+        settings.click();
+        // The sync time on the 24-hour clock: a time field draws it in the browser's own language (US English here).
+        const time = () => {
+          const input = document.querySelector('.wd-sync-time');
+          if (!input || !input.value) { setTimeout(time, 50); return; }
+          const value = input.value;
+          input.type = 'text';
+          input.value = value;
+        };
+        time();
+      };
+      open();
+    }
     if (VIEW === 'sync' || VIEW === 'copy') {
       const open = () => {
         if (VIEW === 'sync') {
