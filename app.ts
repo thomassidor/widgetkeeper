@@ -32,6 +32,7 @@ import ThermostatPresetService, {
 import ThermostatService from './lib/ThermostatService.js';
 import TileNameService from './lib/TileNameService.js';
 import TimerService, { TIMER_FINISHED_CARD, timerDurationText, type Timer } from './lib/TimerService.js';
+import { postUpdateNotice, ranBefore } from './lib/UpdateNotice.js';
 import ValueService from './lib/ValueService.js';
 import VariableService from './lib/VariableService.js';
 import WeatherService from './lib/WeatherService.js';
@@ -85,6 +86,8 @@ export default class WidgetkeeperApp extends Homey.App {
   async onInit() {
     this.diagnostics = new Diagnostics(this.homey);
     const log = this.log.bind(this);
+    // Read before any service writes a setting or the secrets file, so a fresh install isn't taken for an update.
+    const updateNotice = postUpdateNotice(this.homey, log, { ranBefore: ranBefore(this.homey) });
     const debug = this.debug.bind(this);
     this.electricity = new ElectricityService(this.homey, log, debug);
     this.electricity.start();
@@ -160,6 +163,7 @@ export default class WidgetkeeperApp extends Homey.App {
     this.popups = new PopupService(this.homey, { cameras: this.cameras, web: this.web }, log, debug);
     this.registerPopupFlows();
     this.registerAutocompletes();
+    await updateNotice;
     this.debug('Widgetkeeper has been initialized');
   }
 
