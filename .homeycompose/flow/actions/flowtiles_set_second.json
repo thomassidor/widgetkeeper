@@ -1,0 +1,153 @@
+{
+  "id": "flowtiles_set_second",
+  "title": {
+    "en": "Set a Flow Tile's second line",
+    "nl": "De tweede regel van een Flowtegel instellen",
+    "de": "Zweite Zeile einer Flow-Kachel setzen",
+    "fr": "Définir la deuxième ligne d'une Tuile de flow",
+    "it": "Imposta la seconda riga di un Riquadro dei flow",
+    "sv": "Ange andra raden på en Flödesruta",
+    "no": "Angi andre linje på en Flytflis",
+    "es": "Establecer la segunda línea de un Mosaico de flujo",
+    "da": "Angiv anden linje på et Flowfelt",
+    "ru": "Задать вторую строку плитки потока",
+    "pl": "Ustaw drugą linię Kafelka Flow",
+    "ko": "플로우 타일의 두 번째 줄 설정",
+    "ar": "تعيين السطر الثاني لمربع تدفق"
+  },
+  "titleFormatted": {
+    "en": "Set the second line of Flow Tile [[tile]] on [[board]] to [[text]]",
+    "nl": "Stel de tweede regel van Flowtegel [[tile]] op [[board]] in op [[text]]",
+    "de": "Zweite Zeile der Flow-Kachel [[tile]] auf [[board]] auf [[text]] setzen",
+    "fr": "Définir la deuxième ligne de la Tuile de flow [[tile]] de [[board]] sur [[text]]",
+    "it": "Imposta la seconda riga del Riquadro dei flow [[tile]] su [[board]] a [[text]]",
+    "sv": "Ange andra raden på Flödesrutan [[tile]] på [[board]] till [[text]]",
+    "no": "Angi andre linje på Flytflisen [[tile]] på [[board]] til [[text]]",
+    "es": "Establecer la segunda línea del Mosaico de flujo [[tile]] de [[board]] en [[text]]",
+    "da": "Angiv anden linje på Flowfeltet [[tile]] på [[board]] til [[text]]",
+    "ru": "Задать вторую строку плитки потока [[tile]] на [[board]]: [[text]]",
+    "pl": "Ustaw drugą linię Kafelka Flow [[tile]] na [[board]] na [[text]]",
+    "ko": "[[board]]의 플로우 타일 [[tile]]의 두 번째 줄을 [[text]](으)로 설정",
+    "ar": "تعيين السطر الثاني لمربع التدفق [[tile]] في [[board]] إلى [[text]]"
+  },
+  "hint": {
+    "en": "Small and muted at the end of the name's row. Leave the text empty to remove it. Makes the tile if it isn't there yet. Every Flow Tiles widget showing this board shows it, on every screen.",
+    "nl": "Klein en gedempt aan het eind van de naamregel. Laat de tekst leeg om hem te verwijderen. Maakt de tegel aan als die er nog niet is. Elke Flowtegels-widget met dit bord toont hem, op elk scherm.",
+    "de": "Klein und gedämpft am Ende der Namenszeile. Lass den Text leer, um sie zu entfernen. Legt die Kachel an, falls es sie noch nicht gibt. Jedes Flow-Kacheln-Widget mit dieser Tafel zeigt sie, auf jedem Bildschirm.",
+    "fr": "Petite et atténuée au bout de la ligne du nom. Laissez le texte vide pour la retirer. Crée la tuile si elle n'existe pas encore. Chaque widget Tuiles de flow affichant ce tableau la montre, sur chaque écran.",
+    "it": "Piccola e attenuata alla fine della riga del nome. Lascia il testo vuoto per rimuoverla. Crea il riquadro se non c'è ancora. Ogni widget Riquadri dei flow con questa bacheca lo mostra, su ogni schermo.",
+    "sv": "Liten och dämpad i slutet av namnraden. Lämna texten tom för att ta bort den. Skapar rutan om den inte finns än. Alla Flödesrutor-widgetar som visar tavlan visar den, på alla skärmar.",
+    "no": "Liten og dempet på slutten av navnelinjen. La teksten stå tom for å fjerne den. Lager flisen hvis den ikke finnes ennå. Alle Flytfliser-widgeter som viser tavlen, viser den, på alle skjermer.",
+    "es": "Pequeña y atenuada al final de la fila del nombre. Deja el texto vacío para quitarla. Crea el mosaico si aún no existe. Cada widget Mosaicos de flujo que muestra este tablero lo muestra, en cada pantalla.",
+    "da": "Lille og dæmpet for enden af navnelinjen. Lad teksten være tom for at fjerne den. Opretter feltet, hvis det ikke findes endnu. Alle Flowfelter-widgets, der viser tavlen, viser det, på alle skærme.",
+    "ru": "Мелко и приглушённо в конце строки с названием. Оставьте текст пустым, чтобы убрать её. Создаёт плитку, если её ещё нет. Её показывают все виджеты «Плитки потоков» с этой доской на всех экранах.",
+    "pl": "Mała i przygaszona na końcu wiersza z nazwą. Zostaw tekst pusty, aby ją usunąć. Tworzy kafelek, jeśli jeszcze go nie ma. Pokazuje go każdy widżet Kafelki Flow z tą tablicą, na każdym ekranie.",
+    "ko": "이름 줄 끝에 작고 흐리게 표시됩니다. 지우려면 텍스트를 비워 두세요. 타일이 없으면 만듭니다. 이 보드를 보여 주는 모든 플로우 타일 위젯이 모든 화면에 표시합니다.",
+    "ar": "صغير وباهت في نهاية سطر الاسم. اترك النص فارغًا لإزالته. ينشئ المربع إن لم يكن موجودًا. تعرضه كل أدوات مربعات التدفقات التي تعرض هذه اللوحة، في كل شاشة."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "board",
+      "title": {
+        "en": "Board",
+        "nl": "Bord",
+        "de": "Tafel",
+        "fr": "Tableau",
+        "it": "Bacheca",
+        "sv": "Tavla",
+        "no": "Tavle",
+        "es": "Tablero",
+        "da": "Tavle",
+        "ru": "Доска",
+        "pl": "Tablica",
+        "ko": "보드",
+        "ar": "اللوحة"
+      },
+      "placeholder": {
+        "en": "Tiles",
+        "nl": "Tiles",
+        "de": "Tiles",
+        "fr": "Tiles",
+        "it": "Tiles",
+        "sv": "Tiles",
+        "no": "Tiles",
+        "es": "Tiles",
+        "da": "Tiles",
+        "ru": "Tiles",
+        "pl": "Tiles",
+        "ko": "Tiles",
+        "ar": "Tiles"
+      }
+    },
+    {
+      "type": "autocomplete",
+      "name": "tile",
+      "title": {
+        "en": "Tile",
+        "nl": "Tegel",
+        "de": "Kachel",
+        "fr": "Tuile",
+        "it": "Riquadro",
+        "sv": "Ruta",
+        "no": "Flis",
+        "es": "Mosaico",
+        "da": "Felt",
+        "ru": "Плитка",
+        "pl": "Kafelek",
+        "ko": "타일",
+        "ar": "المربع"
+      },
+      "placeholder": {
+        "en": "Car",
+        "nl": "Auto",
+        "de": "Auto",
+        "fr": "Voiture",
+        "it": "Auto",
+        "sv": "Bil",
+        "no": "Bil",
+        "es": "Coche",
+        "da": "Bil",
+        "ru": "Машина",
+        "pl": "Samochód",
+        "ko": "자동차",
+        "ar": "السيارة"
+      }
+    },
+    {
+      "type": "text",
+      "name": "text",
+      "required": false,
+      "title": {
+        "en": "Text",
+        "nl": "Tekst",
+        "de": "Text",
+        "fr": "Texte",
+        "it": "Testo",
+        "sv": "Text",
+        "no": "Tekst",
+        "es": "Texto",
+        "da": "Tekst",
+        "ru": "Текст",
+        "pl": "Tekst",
+        "ko": "텍스트",
+        "ar": "النص"
+      },
+      "placeholder": {
+        "en": "214 km",
+        "nl": "214 km",
+        "de": "214 km",
+        "fr": "214 km",
+        "it": "214 km",
+        "sv": "214 km",
+        "no": "214 km",
+        "es": "214 km",
+        "da": "214 km",
+        "ru": "214 км",
+        "pl": "214 km",
+        "ko": "214km",
+        "ar": "214 كم"
+      }
+    }
+  ]
+}

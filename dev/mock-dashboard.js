@@ -19,6 +19,17 @@ const SCREENSHOTS = (function () {
 
   const values = (el, o) => MOUNT.values(el, withOpts(findWidget('values', 1), o)); // security: batteries in red, yellow and green
 
+  // Flow Tiles: what the house's Flows write: the car's charge as a fill, the bins, the internet check, the washer's end, the
+  // heat pump's mode and the post.
+  const flowtiles = (el, o) => MOUNT.flowtiles(el, { opts: { columns: '2', ...o }, tiles: [
+    { name: 'Car', kind: 'number', number: 214, units: 'km', decimals: '0', icon: 'car', fill: 82, color: 'green', second: '82 %' },
+    { name: 'Bins', text: 'Paper Thu', icon: 'trash', color: 'purple' },
+    { name: 'Internet', text: 'Down', icon: 'wifi', color: 'red', second: '4 min' },
+    { name: 'Washer', text: 'Done 19:25', icon: 'washer', tappable: true },
+    { name: 'Heat pump', text: 'Eco', icon: 'flame', color: 'orange' },
+    { name: 'Post', text: 'Delivered', icon: 'gift', tappable: true },
+  ] });
+
   // Combined Value: the rooms' average temperature with the dots, the big users' power as shares, the lowest battery as a pill.
   const combined = (el, o) => {
     const cap = (id, title, units, decimals) => ({ id, title, units, decimals, min: null, max: null });
@@ -210,7 +221,7 @@ const SCREENSHOTS = (function () {
   };
 
   return {
-    electricity, thermostat, quickactions, sensoralarms, roomhealth, valuematrix, weather, heatmap, cameras, values, combined, variables, varpresets,
+    electricity, thermostat, quickactions, sensoralarms, roomhealth, valuematrix, weather, heatmap, cameras, values, flowtiles, combined, variables, varpresets,
     keypad, flows: flowButtons, price, locks, sparklines, charts, totals, scatter, compare, timeline, stacked, lines, gauge, gaugedial,
     dailyrange, typicalday, clock, textline, dayssince, shortcuts, lightrooms, pollen, webpage, popups,
   };

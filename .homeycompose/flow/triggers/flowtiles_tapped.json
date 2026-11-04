@@ -1,0 +1,222 @@
+{
+  "id": "flowtiles_tapped",
+  "title": {
+    "en": "A Flow Tile was tapped",
+    "nl": "Op een Flowtegel is getikt",
+    "de": "Eine Flow-Kachel wurde angetippt",
+    "fr": "Une Tuile de flow a été touchée",
+    "it": "È stato toccato un Riquadro dei flow",
+    "sv": "En Flödesruta trycktes",
+    "no": "En Flytflis ble trykket",
+    "es": "Se tocó un Mosaico de flujo",
+    "da": "Der blev trykket på et Flowfelt",
+    "ru": "Нажата плитка потока",
+    "pl": "Dotknięto Kafelka Flow",
+    "ko": "플로우 타일을 눌렀을 때",
+    "ar": "تم النقر على مربع تدفق"
+  },
+  "titleFormatted": {
+    "en": "Flow Tile [[tile]] on [[board]] was tapped",
+    "nl": "Op Flowtegel [[tile]] op [[board]] is getikt",
+    "de": "Flow-Kachel [[tile]] auf [[board]] wurde angetippt",
+    "fr": "La Tuile de flow [[tile]] de [[board]] a été touchée",
+    "it": "È stato toccato il Riquadro dei flow [[tile]] su [[board]]",
+    "sv": "Flödesrutan [[tile]] på [[board]] trycktes",
+    "no": "Flytflisen [[tile]] på [[board]] ble trykket",
+    "es": "Se tocó el Mosaico de flujo [[tile]] de [[board]]",
+    "da": "Der blev trykket på Flowfeltet [[tile]] på [[board]]",
+    "ru": "Нажата плитка потока [[tile]] на [[board]]",
+    "pl": "Dotknięto Kafelka Flow [[tile]] na [[board]]",
+    "ko": "[[board]]의 플로우 타일 [[tile]]을(를) 눌렀을 때",
+    "ar": "تم النقر على مربع التدفق [[tile]] في [[board]]"
+  },
+  "hint": {
+    "en": "On any dashboard. Only tiles a Flow like this one listens to can be tapped. Value is the tile's text or number.",
+    "nl": "Op elk dashboard. Alleen op tegels waar een Flow als deze naar luistert kan worden getikt. Waarde is de tekst of het getal van de tegel.",
+    "de": "Auf jedem Dashboard. Nur Kacheln, auf die ein Flow wie dieser hört, lassen sich antippen. Wert ist der Text oder die Zahl der Kachel.",
+    "fr": "Sur n'importe quel tableau de bord. Seules les tuiles qu'un Flow comme celui-ci écoute peuvent être touchées. Valeur est le texte ou le nombre de la tuile.",
+    "it": "Su qualsiasi dashboard. Si possono toccare solo i riquadri ascoltati da un Flow come questo. Valore è il testo o il numero del riquadro.",
+    "sv": "På vilken instrumentpanel som helst. Bara rutor som ett flöde som det här lyssnar på går att trycka på. Värde är rutans text eller tal.",
+    "no": "På hvilket som helst dashbord. Bare fliser som en flyt som denne lytter til, kan trykkes. Verdi er flisens tekst eller tall.",
+    "es": "En cualquier panel. Solo se pueden tocar los mosaicos que escucha un flujo como este. Valor es el texto o el número del mosaico.",
+    "da": "På ethvert dashboard. Kun felter, som et flow som dette lytter til, kan trykkes på. Værdi er feltets tekst eller tal.",
+    "ru": "На любой панели. Нажать можно только плитки, которые слушает такой поток. Значение — текст или число плитки.",
+    "pl": "Na dowolnym pulpicie. Dotknąć można tylko kafelków, których słucha taki Flow jak ten. Wartość to tekst lub liczba kafelka.",
+    "ko": "모든 대시보드에서. 이런 플로우가 듣고 있는 타일만 누를 수 있습니다. 값은 타일의 텍스트나 숫자입니다.",
+    "ar": "على أي لوحة تحكم. لا يمكن النقر إلا على المربعات التي يستمع إليها تدفق مثل هذا. القيمة هي نص المربع أو رقمه."
+  },
+  "tokens": [
+    {
+      "name": "board",
+      "type": "string",
+      "title": {
+        "en": "Board",
+        "nl": "Bord",
+        "de": "Tafel",
+        "fr": "Tableau",
+        "it": "Bacheca",
+        "sv": "Tavla",
+        "no": "Tavle",
+        "es": "Tablero",
+        "da": "Tavle",
+        "ru": "Доска",
+        "pl": "Tablica",
+        "ko": "보드",
+        "ar": "اللوحة"
+      },
+      "example": {
+        "en": "Tiles",
+        "nl": "Tiles",
+        "de": "Tiles",
+        "fr": "Tiles",
+        "it": "Tiles",
+        "sv": "Tiles",
+        "no": "Tiles",
+        "es": "Tiles",
+        "da": "Tiles",
+        "ru": "Tiles",
+        "pl": "Tiles",
+        "ko": "Tiles",
+        "ar": "Tiles"
+      }
+    },
+    {
+      "name": "tile",
+      "type": "string",
+      "title": {
+        "en": "Tile",
+        "nl": "Tegel",
+        "de": "Kachel",
+        "fr": "Tuile",
+        "it": "Riquadro",
+        "sv": "Ruta",
+        "no": "Flis",
+        "es": "Mosaico",
+        "da": "Felt",
+        "ru": "Плитка",
+        "pl": "Kafelek",
+        "ko": "타일",
+        "ar": "المربع"
+      },
+      "example": {
+        "en": "Car",
+        "nl": "Auto",
+        "de": "Auto",
+        "fr": "Voiture",
+        "it": "Auto",
+        "sv": "Bil",
+        "no": "Bil",
+        "es": "Coche",
+        "da": "Bil",
+        "ru": "Машина",
+        "pl": "Samochód",
+        "ko": "자동차",
+        "ar": "السيارة"
+      }
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "title": {
+        "en": "Value",
+        "nl": "Waarde",
+        "de": "Wert",
+        "fr": "Valeur",
+        "it": "Valore",
+        "sv": "Värde",
+        "no": "Verdi",
+        "es": "Valor",
+        "da": "Værdi",
+        "ru": "Значение",
+        "pl": "Wartość",
+        "ko": "값",
+        "ar": "القيمة"
+      },
+      "example": {
+        "en": "82 %",
+        "nl": "82 %",
+        "de": "82 %",
+        "fr": "82 %",
+        "it": "82 %",
+        "sv": "82 %",
+        "no": "82 %",
+        "es": "82 %",
+        "da": "82 %",
+        "ru": "82 %",
+        "pl": "82 %",
+        "ko": "82%",
+        "ar": "82 ٪"
+      }
+    }
+  ],
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "board",
+      "title": {
+        "en": "Board",
+        "nl": "Bord",
+        "de": "Tafel",
+        "fr": "Tableau",
+        "it": "Bacheca",
+        "sv": "Tavla",
+        "no": "Tavle",
+        "es": "Tablero",
+        "da": "Tavle",
+        "ru": "Доска",
+        "pl": "Tablica",
+        "ko": "보드",
+        "ar": "اللوحة"
+      },
+      "placeholder": {
+        "en": "Tiles",
+        "nl": "Tiles",
+        "de": "Tiles",
+        "fr": "Tiles",
+        "it": "Tiles",
+        "sv": "Tiles",
+        "no": "Tiles",
+        "es": "Tiles",
+        "da": "Tiles",
+        "ru": "Tiles",
+        "pl": "Tiles",
+        "ko": "Tiles",
+        "ar": "Tiles"
+      }
+    },
+    {
+      "type": "autocomplete",
+      "name": "tile",
+      "title": {
+        "en": "Tile",
+        "nl": "Tegel",
+        "de": "Kachel",
+        "fr": "Tuile",
+        "it": "Riquadro",
+        "sv": "Ruta",
+        "no": "Flis",
+        "es": "Mosaico",
+        "da": "Felt",
+        "ru": "Плитка",
+        "pl": "Kafelek",
+        "ko": "타일",
+        "ar": "المربع"
+      },
+      "placeholder": {
+        "en": "Car",
+        "nl": "Auto",
+        "de": "Auto",
+        "fr": "Voiture",
+        "it": "Auto",
+        "sv": "Bil",
+        "no": "Bil",
+        "es": "Coche",
+        "da": "Bil",
+        "ru": "Машина",
+        "pl": "Samochód",
+        "ko": "자동차",
+        "ar": "السيارة"
+      }
+    }
+  ]
+}

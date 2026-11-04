@@ -1,0 +1,69 @@
+{
+  "id": "flowtiles_clear",
+  "title": {
+    "en": "Clear a Flow Tiles board",
+    "nl": "Een Flowtegels-bord leegmaken",
+    "de": "Eine Flow-Kacheln-Tafel leeren",
+    "fr": "Vider un tableau de Tuiles de flow",
+    "it": "Svuota una bacheca dei Riquadri dei flow",
+    "sv": "Töm en Flödesrutor-tavla",
+    "no": "Tøm en Flytfliser-tavle",
+    "es": "Vaciar un tablero de Mosaicos de flujo",
+    "da": "Ryd en Flowfelter-tavle",
+    "ru": "Очистить доску плиток потоков",
+    "pl": "Wyczyść tablicę Kafelków Flow",
+    "ko": "플로우 타일 보드 비우기",
+    "ar": "مسح لوحة مربعات التدفقات"
+  },
+  "titleFormatted": {
+    "en": "Remove every Flow Tile from [[board]]",
+    "nl": "Verwijder elke Flowtegel van [[board]]",
+    "de": "Alle Flow-Kacheln von [[board]] entfernen",
+    "fr": "Retirer toutes les Tuiles de flow de [[board]]",
+    "it": "Rimuovi tutti i Riquadri dei flow da [[board]]",
+    "sv": "Ta bort alla Flödesrutor från [[board]]",
+    "no": "Fjern alle Flytfliser fra [[board]]",
+    "es": "Quitar todos los Mosaicos de flujo de [[board]]",
+    "da": "Fjern alle Flowfelter fra [[board]]",
+    "ru": "Удалить все плитки потоков с [[board]]",
+    "pl": "Usuń wszystkie Kafelki Flow z [[board]]",
+    "ko": "[[board]]에서 모든 플로우 타일 제거",
+    "ar": "إزالة كل مربعات التدفق من [[board]]"
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "board",
+      "title": {
+        "en": "Board",
+        "nl": "Bord",
+        "de": "Tafel",
+        "fr": "Tableau",
+        "it": "Bacheca",
+        "sv": "Tavla",
+        "no": "Tavle",
+        "es": "Tablero",
+        "da": "Tavle",
+        "ru": "Доска",
+        "pl": "Tablica",
+        "ko": "보드",
+        "ar": "اللوحة"
+      },
+      "placeholder": {
+        "en": "Tiles",
+        "nl": "Tiles",
+        "de": "Tiles",
+        "fr": "Tiles",
+        "it": "Tiles",
+        "sv": "Tiles",
+        "no": "Tiles",
+        "es": "Tiles",
+        "da": "Tiles",
+        "ru": "Tiles",
+        "pl": "Tiles",
+        "ko": "Tiles",
+        "ar": "Tiles"
+      }
+    }
+  ]
+}

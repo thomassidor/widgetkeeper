@@ -11,6 +11,10 @@ export type FakeCard = {
   run: ((args: any, state?: any) => Promise<unknown>) | null,
   autocompletes: Record<string, (query: string, args?: any) => Promise<unknown>>,
   trigger: ReturnType<typeof vi.fn>,
+  /** The arguments of every Flow using the card (`getArgumentValues()`); empty unless a test fills it. */
+  argumentValues: any[],
+  /** Its `on()` listeners (`update`: a Flow using it was saved). */
+  listeners: Record<string, () => void>,
 };
 
 /**
@@ -27,6 +31,10 @@ function fakeFlow() {
       const c: FakeCard & Record<string, any> = {
         kind, id, run: null, autocompletes: {},
         trigger: vi.fn(async () => {}),
+        argumentValues: [],
+        listeners: {},
+        getArgumentValues: async () => c.argumentValues,
+        on(event: string, fn: () => void) { c.listeners[event] = fn; return c; },
         registerRunListener(fn: FakeCard['run']) { c.run = fn; return c; },
         registerArgumentAutocompleteListener(name: string, fn: any) { c.autocompletes[name] = fn; return c; },
       };

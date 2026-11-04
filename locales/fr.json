@@ -783,6 +783,17 @@
     "boardInUse": "A un texte",
     "boardNew": "Nouvelle note"
   },
+  "flowtiles": {
+    "empty": "Pas encore de tuiles. Ajoutez-en une avec la carte Flow Définir la Tuile de flow.",
+    "noneShown": "Aucune des tuiles d'Afficher seulement n'est encore sur ce tableau.",
+    "error": "Impossible de charger les tuiles.",
+    "tapFailed": "Impossible de toucher __name__.",
+    "tileCount": "Tuiles : __count__",
+    "newBoard": "Nouveau tableau",
+    "newTile": "Nouvelle tuile",
+    "anyBoard": "N'importe quel tableau",
+    "anyTile": "N'importe quelle tuile"
+  },
   "dayssince": {
     "setup": "Nommez vos compteurs dans les réglages du widget.",
     "nothingDue": "Rien à faire.",
@@ -1039,6 +1050,7 @@
       "cameras": "Images des caméras, avec la vidéo en direct d'un geste.",
       "values": "N'importe quelle valeur d'appareil en tuile compacte.",
       "combined": "Une valeur de plusieurs appareils réunie en une : la moyenne, la somme, la plus basse ou la plus haute.",
+      "flowtiles": "Des tuiles écrites par vos Flows : un texte ou un nombre, une icône, une couleur et un remplissage.",
       "lights": "Des tuiles de lumières avec luminosité et couleur à portée.",
       "lightrooms": "Les lumières de chaque pièce sur une carte : allumez une pièce, ou ouvrez-la pour ses lampes et ses Moods.",
       "sparklines": "Des valeurs avec un petit graphique de leur historique.",

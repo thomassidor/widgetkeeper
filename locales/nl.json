@@ -783,6 +783,17 @@
     "boardInUse": "Heeft een tekst",
     "boardNew": "Nieuwe notitie"
   },
+  "flowtiles": {
+    "empty": "Nog geen tegels. Voeg er een toe met de Flow-kaart Stel Flowtegel in.",
+    "noneShown": "Geen van de tegels uit Alleen tonen staat al op dit bord.",
+    "error": "Kon de tegels niet laden.",
+    "tapFailed": "Kon niet op __name__ tikken.",
+    "tileCount": "Tegels: __count__",
+    "newBoard": "Nieuw bord",
+    "newTile": "Nieuwe tegel",
+    "anyBoard": "Elk bord",
+    "anyTile": "Elke tegel"
+  },
   "dayssince": {
     "setup": "Geef je tellers een naam in de widgetinstellingen.",
     "nothingDue": "Niets te doen.",
@@ -1039,6 +1050,7 @@
       "cameras": "Camerabeelden, met live video na een tik.",
       "values": "Elke apparaatwaarde als compacte tegel.",
       "combined": "Eén waarde van meerdere apparaten als één: het gemiddelde, de som, de laagste of de hoogste.",
+      "flowtiles": "Tegels die je Flows schrijven: een tekst of getal, een pictogram, een kleur en een vulling.",
       "lights": "Lichttegels met helderheid en kleur bij de hand.",
       "lightrooms": "De lampen van elke kamer op een kaart: schakel een kamer, of open hem voor zijn lampen en Moods.",
       "sparklines": "Waarden met een kleine grafiek van hun recente verloop.",

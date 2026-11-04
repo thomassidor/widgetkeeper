@@ -783,6 +783,17 @@
     "boardInUse": "Ma tekst",
     "boardNew": "Nowa notatka"
   },
+  "flowtiles": {
+    "empty": "Brak kafelków. Dodaj kafelek kartą Flow Ustaw Kafelek Flow.",
+    "noneShown": "Żadnego z kafelków z Pokaż tylko nie ma jeszcze na tej tablicy.",
+    "error": "Nie udało się wczytać kafelków.",
+    "tapFailed": "Nie udało się dotknąć __name__.",
+    "tileCount": "Kafelki: __count__",
+    "newBoard": "Nowa tablica",
+    "newTile": "Nowy kafelek",
+    "anyBoard": "Dowolna tablica",
+    "anyTile": "Dowolny kafelek"
+  },
   "dayssince": {
     "setup": "Nazwij liczniki w ustawieniach widżetu.",
     "nothingDue": "Nic do zrobienia.",
@@ -1039,6 +1050,7 @@
       "cameras": "Zdjęcia z kamer, z obrazem na żywo po dotknięciu.",
       "values": "Dowolna wartość urządzenia jako kompaktowy kafelek.",
       "combined": "Jedna wartość wielu urządzeń jako jedna: średnia, suma, najniższa lub najwyższa.",
+      "flowtiles": "Kafelki zapisywane przez Twoje Flow: tekst lub liczba, ikona, kolor i wypełnienie.",
       "lights": "Kafelki świateł z jasnością i kolorem pod ręką.",
       "lightrooms": "Światła każdego pokoju na karcie: przełącz cały pokój albo otwórz go, by sterować lampami i Moods.",
       "sparklines": "Wartości z małym wykresem ich niedawnej historii.",

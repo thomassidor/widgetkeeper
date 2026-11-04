@@ -783,6 +783,17 @@
     "boardInUse": "Har en text",
     "boardNew": "Ny anteckning"
   },
+  "flowtiles": {
+    "empty": "Inga rutor än. Lägg till en med Flow-kortet Ange Flödesrutan.",
+    "noneShown": "Ingen av rutorna i Visa bara finns på tavlan än.",
+    "error": "Kunde inte läsa in rutorna.",
+    "tapFailed": "Kunde inte trycka på __name__.",
+    "tileCount": "Rutor: __count__",
+    "newBoard": "Ny tavla",
+    "newTile": "Ny ruta",
+    "anyBoard": "Vilken tavla som helst",
+    "anyTile": "Vilken ruta som helst"
+  },
   "dayssince": {
     "setup": "Namnge dina räknare i widgetinställningarna.",
     "nothingDue": "Inget att göra.",
@@ -1039,6 +1050,7 @@
       "cameras": "Kamerabilder, med livevideo vid ett tryck.",
       "values": "Valfritt enhetsvärde som en kompakt ruta.",
       "combined": "Ett värde från flera enheter som ett: medelvärdet, summan, det lägsta eller det högsta.",
+      "flowtiles": "Rutor som dina flöden skriver: en text eller ett tal, en ikon, en färg och en fyllning.",
       "lights": "Ljusrutor med ljusstyrka och färg nära till hands.",
       "lightrooms": "Varje rums lampor på ett kort: tänd ett rum eller öppna det för dess lampor och Moods.",
       "sparklines": "Värden med ett litet diagram över deras senaste historik.",

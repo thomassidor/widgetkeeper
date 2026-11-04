@@ -8,6 +8,11 @@ import DaysSinceService, {
 } from './lib/DaysSinceService.js';
 import ElectricityService from './lib/ElectricityService.js';
 import FlowService from './lib/FlowService.js';
+import FlowTileService, {
+  FLOWTILES_CLEAR_CARD, FLOWTILES_REMOVE_CARD, FLOWTILES_REMOVE_FILL_CARD, FLOWTILES_SET_FILL_CARD, FLOWTILES_SET_LOOK_CARD,
+  FLOWTILES_SET_NUMBER_CARD, FLOWTILES_SET_SECOND_CARD, FLOWTILES_SET_TEXT_CARD, FLOWTILES_TAPPED_CARD, FLOWTILES_TILE_CARDS,
+  type FlowTileArg, type TapListener,
+} from './lib/FlowTileService.js';
 import FrameCheck from './lib/frameCheck.js';
 import HeatmapService from './lib/HeatmapService.js';
 import KeypadService, { KEYPAD_TAPPED_CARD, KEYPAD_WRONG_CARD, type PressArg, type PressState } from './lib/KeypadService.js';
@@ -76,6 +81,8 @@ export default class WidgetkeeperApp extends Homey.App {
   media!: MediaService;
   stack!: StackService;
   textLines!: TextLineService;
+  /** The Flow Tiles widget's tiles, which Flow cards write on named boards. */
+  flowTiles!: FlowTileService;
   /** The Days Since widget's counters, shared by name. */
   daysSince!: DaysSinceService;
   /** The names typed on the device widgets' tiles (`renameTiles`). */
@@ -154,6 +161,9 @@ export default class WidgetkeeperApp extends Homey.App {
     this.registerStackFlows();
     this.textLines = new TextLineService(this.homey, debug);
     this.registerTextLineFlows();
+    this.flowTiles = new FlowTileService(this.homey, log, debug,
+      (tokens, state) => this.homey.flow.getTriggerCard(FLOWTILES_TAPPED_CARD).trigger(tokens, state));
+    this.registerFlowTileFlows();
     this.daysSince = new DaysSinceService(this.homey, log, debug, counter => this.daysSinceOverdue(counter));
     this.registerDaysSinceFlows();
     this.daysSince.start();
@@ -218,7 +228,7 @@ export default class WidgetkeeperApp extends Homey.App {
   async onUninit() {
     await this.stopAll({
       timers: this.timers, daysSince: this.daysSince, popups: this.popups, heatmap: this.heatmap, electricity: this.electricity,
-      webSync: this.webSync,
+      webSync: this.webSync, flowTiles: this.flowTiles,
     });
     await this.stopAll({
       thermostat: this.thermostat, quickActions: this.quickActions, sensorAlarms: this.sensorAlarms, roomHealth: this.roomHealth,
@@ -308,6 +318,48 @@ export default class WidgetkeeperApp extends Homey.App {
       .registerRunListener(async (args: BoardArg & { text: string, color: string }) => this.textLines.set(board(args), args.text, args.color));
     this.homey.flow.getActionCard(TEXTLINE_CLEAR_CARD)
       .registerRunListener(async (args: BoardArg) => this.textLines.clear(board(args)));
+  }
+
+  /**
+   * The Flow Tiles cards: set a tile's text, number, second line, look and fill, remove it, clear a board, and the trigger
+   * *… was tapped* (filtered to its board and tile, or any). The board and tile arguments list what's there, then what's
+   * typed as a new one; a tile's list is its card's board's.
+   */
+  private registerFlowTileFlows() {
+    type Args = { board?: FlowTileArg, tile?: FlowTileArg };
+    const name = FlowTileService.argName;
+    const boards = (any: boolean) => async (query: string) => this.flowTiles.listBoards(query, { create: true, any });
+    const tiles = (any: boolean) => async (query: string, args?: Args) => this.flowTiles.listTiles(query, args?.board, { create: true, any });
+    for (const id of FLOWTILES_TILE_CARDS) {
+      this.homey.flow.getActionCard(id)
+        .registerArgumentAutocompleteListener('board', boards(false))
+        .registerArgumentAutocompleteListener('tile', tiles(false));
+    }
+    const run = <A extends Args>(id: string, fn: (args: A, board?: string, tile?: string) => void) => this.homey.flow.getActionCard(id)
+      .registerRunListener(async (args: A) => { fn(args, name(args.board), name(args.tile)); });
+    run<Args & { text: string }>(FLOWTILES_SET_TEXT_CARD, (a, b, t) => this.flowTiles.setText(b, t, a.text));
+    run<Args & { number: number, units?: string, decimals?: string }>(FLOWTILES_SET_NUMBER_CARD,
+      (a, b, t) => this.flowTiles.setNumber(b, t, a.number, a.units, a.decimals));
+    run<Args & { text?: string }>(FLOWTILES_SET_SECOND_CARD, (a, b, t) => this.flowTiles.setSecond(b, t, a.text));
+    run<Args & { icon?: { id?: string }, color: string }>(FLOWTILES_SET_LOOK_CARD, (a, b, t) => this.flowTiles.setLook(b, t, a.icon?.id, a.color));
+    run<Args & { percent: number }>(FLOWTILES_SET_FILL_CARD, (a, b, t) => this.flowTiles.setFill(b, t, a.percent));
+    run(FLOWTILES_REMOVE_FILL_CARD, (a, b, t) => this.flowTiles.removeFill(b, t));
+    run(FLOWTILES_REMOVE_CARD, (a, b, t) => this.flowTiles.remove(b, t));
+    this.homey.flow.getActionCard(FLOWTILES_SET_LOOK_CARD)
+      .registerArgumentAutocompleteListener('icon', async query => this.flows.listIcons(query, { none: true }));
+    this.homey.flow.getActionCard(FLOWTILES_CLEAR_CARD)
+      .registerArgumentAutocompleteListener('board', boards(false))
+      .registerRunListener(async (args: Args) => { this.flowTiles.clear(name(args.board)); });
+    const tapped = this.homey.flow.getTriggerCard(FLOWTILES_TAPPED_CARD);
+    tapped.registerArgumentAutocompleteListener('board', boards(true));
+    tapped.registerArgumentAutocompleteListener('tile', tiles(true));
+    tapped.registerRunListener(async (args: Args, state: { board?: string, tile?: string }) => this.flowTiles.matches(args, state));
+    // Which tiles a Flow listens to, so only those can be tapped: read now and whenever a Flow using the card is saved.
+    const listeners = () => tapped.getArgumentValues()
+      .then((list: TapListener[]) => this.flowTiles.setListeners(list))
+      .catch((err: unknown) => this.log('Flow Tiles: could not read the tap Flows:', err));
+    tapped.on('update', () => { void listeners(); });
+    void listeners();
   }
 
   /**

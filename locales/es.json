@@ -783,6 +783,17 @@
     "boardInUse": "Tiene un texto",
     "boardNew": "Nota nueva"
   },
+  "flowtiles": {
+    "empty": "Aún no hay mosaicos. Añade uno con la tarjeta de Flow Establecer el Mosaico de flujo.",
+    "noneShown": "Ninguno de los mosaicos de Mostrar solo está aún en este tablero.",
+    "error": "No se pudieron cargar los mosaicos.",
+    "tapFailed": "No se pudo tocar __name__.",
+    "tileCount": "Mosaicos: __count__",
+    "newBoard": "Tablero nuevo",
+    "newTile": "Mosaico nuevo",
+    "anyBoard": "Cualquier tablero",
+    "anyTile": "Cualquier mosaico"
+  },
   "dayssince": {
     "setup": "Pon nombre a tus contadores en los ajustes del widget.",
     "nothingDue": "Nada pendiente.",
@@ -1039,6 +1050,7 @@
       "cameras": "Imágenes de las cámaras, con vídeo en directo con un toque.",
       "values": "Cualquier valor de un dispositivo como ficha compacta.",
       "combined": "Un valor de varios dispositivos en uno: la media, la suma, el más bajo o el más alto.",
+      "flowtiles": "Mosaicos que escriben tus flujos: un texto o un número, un icono, un color y un relleno.",
       "lights": "Fichas de luces con brillo y color a mano.",
       "lightrooms": "Las luces de cada habitación en una tarjeta: enciende una habitación o ábrela para ver sus luces y Moods.",
       "sparklines": "Valores con un pequeño gráfico de su historial reciente.",

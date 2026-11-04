@@ -300,6 +300,24 @@
           }
         },
         {
+          "id": "flowtiles",
+          "title": {
+            "en": "Flow Tiles",
+            "nl": "Flowtegels",
+            "de": "Flow-Kacheln",
+            "fr": "Tuiles de flow",
+            "it": "Riquadri dei flow",
+            "sv": "Flödesrutor",
+            "no": "Flytfliser",
+            "es": "Mosaicos de flujo",
+            "da": "Flowfelter",
+            "ru": "Плитки потоков",
+            "pl": "Kafelki Flow",
+            "ko": "플로우 타일",
+            "ar": "مربعات التدفقات"
+          }
+        },
+        {
           "id": "lights",
           "title": {
             "en": "Light Controls",

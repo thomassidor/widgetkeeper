@@ -424,6 +424,57 @@ const BUILD = {
     ] };
   },
 
+  async flowtiles() {
+    // The tiles are written by the app's own Flow cards, run here as a Flow would run them (`homey.flow`, which the CLI's
+    // login has): the app keeps the boards in memory, so writing its setting would be overwritten. Each board is cleared
+    // first, so a re-run starts over. No Flow listens to *A Flow Tile was tapped* here, so no tile can be tapped.
+    const uri = `homey:app:${APP_ID}`;
+    const card = async (id, args) => {
+      const run = cardId => homeyApi('POST', `/api/manager/flow/flowcardaction/${encodeURIComponent(uri)}/${encodeURIComponent(cardId)}/run`, { args });
+      // An app's card is `homey:app:<appId>:<id>`; some firmware takes the bare id.
+      await run(`${uri}:${id}`).catch(() => run(id));
+    };
+    const arg = name => ({ id: name, name });
+    const BOARD = 'Test · Tiles', COLOURS = 'Test · Colours', EMPTY = 'Test · Empty';
+    for (const b of [BOARD, COLOURS, EMPTY]) await card('flowtiles_clear', { board: arg(b) });
+    const set = (tile, args) => ({ board: arg(BOARD), tile: arg(tile), ...args });
+    await card('flowtiles_set_number', set('Car', { number: 214, units: 'km', decimals: '0' }));
+    await card('flowtiles_set_second', set('Car', { text: '82 %' }));
+    await card('flowtiles_set_fill', set('Car', { percent: 82 }));
+    await card('flowtiles_set_look', set('Car', { icon: { id: 'car' }, color: 'green' }));
+    await card('flowtiles_set_text', set('Bins', { text: 'Paper on Thursday' }));
+    await card('flowtiles_set_look', set('Bins', { icon: { id: 'trash' }, color: 'purple' }));
+    await card('flowtiles_set_text', set('Internet', { text: 'Down' }));
+    await card('flowtiles_set_look', set('Internet', { icon: { id: 'wifi' }, color: 'red' }));
+    await card('flowtiles_set_number', set('Price', { number: 2.5, units: 'kr', decimals: '2' }));
+    await card('flowtiles_set_number', set('Outside', { number: 6.456, units: '°C', decimals: 'auto' }));
+    await card('flowtiles_set_look', set('Outside', { icon: { id: 'thermometer' }, color: 'default' }));
+    await card('flowtiles_set_fill', set('No colour fill', { percent: 40 }));
+    await card('flowtiles_set_text', set('No icon', { text: 'Text without an icon' }));
+    await card('flowtiles_set_text', set('Long', { text: 'A text long enough to be cut short on a tile' }));
+    await card('flowtiles_set_look', set('Look only', { icon: { id: 'gift' }, color: 'yellow' }));
+    for (const [i, color] of ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'teal', 'cyan', 'indigo', 'pink', 'brown', 'grey'].entries()) {
+      const c = { board: arg(COLOURS), tile: arg(color[0].toUpperCase() + color.slice(1)) };
+      await card('flowtiles_set_number', { ...c, number: (i + 1) * 8, units: '%', decimals: '0' });
+      await card('flowtiles_set_look', { ...c, icon: { id: 'star' }, color });
+      if (i % 2) await card('flowtiles_set_fill', { ...c, percent: (i + 1) * 8 });
+    }
+    const board = name => ({ board: arg(name) });
+    return { cols: 3, widgets: [
+      w('flowtiles', 'Test · Tiles · defaults (3 per row, compact, Muted)', board(BOARD)),
+      w('flowtiles', '2 per row · pill', { ...board(BOARD), columns: '2', tileStyle: 'pill' }),
+      w('flowtiles', '1 per row · Vivid · show when it changed', { ...board(BOARD), columns: '1', colorStyle: 'deep', showAge: true }),
+      w('flowtiles', 'By name · on tap none', { ...board(BOARD), order: 'name', tapEffect: 'none' }),
+      w('flowtiles', 'Show only: Internet, car, Nope (that order)', { ...board(BOARD), only: 'Internet, car, Nope' }),
+      w('flowtiles', 'Show only: none on the board', { ...board(BOARD), only: 'Nope, Nothing' }),
+      w('flowtiles', 'Every colour · Muted · fills on every other', { ...board(COLOURS), columns: '2' }),
+      w('flowtiles', 'Every colour · Vivid', { ...board(COLOURS), columns: '2', colorStyle: 'deep' }),
+      w('flowtiles', 'Every colour · Vivid pill', { ...board(COLOURS), columns: '2', colorStyle: 'deep', tileStyle: 'pill' }),
+      w('flowtiles', 'An empty board', board(EMPTY)),
+      w('flowtiles', 'No board picked (Tiles)'),
+    ] };
+  },
+
   async combined() {
     // The value from the widget's own autocomplete (every number capability on the Homey, by id); with no devices picked,
     // every device that has it counts.
