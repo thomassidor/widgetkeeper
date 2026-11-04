@@ -7,7 +7,7 @@ window.mountFlowTilesWidget = function (Homey, { root, frame }) {
   // The events keep it current; this catches a missed one (a screen that slept).
   const REFRESH_MS = 5 * 60e3;
 
-  const { wireFrame } = window.WidgetkeeperKit;
+  const { wireFrame, wireTimeFormat } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -28,7 +28,7 @@ window.mountFlowTilesWidget = function (Homey, { root, frame }) {
     showAge: settings.showAge === true,
     tapEffect: settings.tapEffect,
     onTap: async (tile) => {
-      try { Homey.hapticFeedback(); } catch (e) { /* only right after a touch */ }
+      try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* only right after a touch */ }
       await Homey.api('POST', '/tap', { board, tile });
     },
     onHeight: link.setHeight,
@@ -55,7 +55,11 @@ window.mountFlowTilesWidget = function (Homey, { root, frame }) {
   Homey.on('flowtiles:state', (entry) => widget.pushBoard(entry, key));
 
   // The time of a change (Show when it changed) moves on by itself: drawn again each minute.
-  if (settings.showAge === true) setInterval(() => widget.render(), 60e3);
+  if (settings.showAge === true) {
+    setInterval(() => widget.render(), 60e3);
+    // Its times follow the app's time format: drawn again when it changes.
+    wireTimeFormat(Homey, () => widget.render());
+  }
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && Date.now() - loadedAt >= REFRESH_MS) load();
   });

@@ -149,6 +149,7 @@ const ROUTES: Route[] = [
   ['weather', 'GET', '/forecast', {}, {}, [['weather.getForecast', []]]],
   ['webpage', 'GET', '/location', {}, {}, []],
   timeFormat('cameras'),
+  timeFormat('flowtiles'),
   timeFormat('charts'),
   timeFormat('clock'),
   timeFormat('compare'),

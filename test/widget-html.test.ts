@@ -113,7 +113,7 @@ describe('copied widget helpers', () => {
 describe('haptic feedback', () => {
   // A tap that starts, sets or switches something vibrates (the settings review, 2026-11-04: six widgets that act didn't).
   // The rest only show, open a panel or move between pages (the Smart Stack's own).
-  const ACTING = ['combined', 'curtains', 'dayssince', 'flows', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions',
+  const ACTING = ['combined', 'curtains', 'dayssince', 'flows', 'flowtiles', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions',
     'shortcuts', 'stack', 'thermostat', 'timers', 'variables', 'varpresets'];
   it('every widget whose taps act calls Homey.hapticFeedback(), in a try', () => {
     for (const id of WIDGETS) {
