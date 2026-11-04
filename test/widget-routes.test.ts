@@ -123,6 +123,8 @@ const ROUTES: Route[] = [
   ['valuematrix', 'GET', '/state', { deviceIds: 'a,b', capabilityIds: 'measure_temperature,measure_humidity' }, {},
     [['valueMatrix.getState', [['a', 'b'], ['measure_temperature', 'measure_humidity']]]]],
   setName('valuematrix'),
+  ['valueboard', 'GET', '/state', { deviceIds: 'a,b' }, {}, [['valueBoard.getState', [['a', 'b'], 'readings']]]],
+  ['valueboard', 'GET', '/state', { deviceIds: 'a', values: 'all' }, {}, [['valueBoard.getState', [['a'], 'all']]]],
   ['values', 'GET', '/state', { slots: 'a:measure_temperature,b:measure_power', seconds: ',measure_humidity' }, {},
     [['values.getState', [['a:measure_temperature', 'b:measure_power'], ['', 'measure_humidity']]]]],
   setName('values'),

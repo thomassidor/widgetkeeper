@@ -116,6 +116,20 @@
     "none": "Brak",
     "devices": "Urządzenia: __count__"
   },
+  "valueboard": {
+    "selectDevices": "Wybierz urządzenia w ustawieniach widżetu.",
+    "error": "Nie udało się wczytać wartości.",
+    "unavailable": "Niedostępne",
+    "noValues": "Te urządzenia nie mają wartości do pokazania.",
+    "on": "Wł.",
+    "off": "Wył.",
+    "open": "Otwarte",
+    "closed": "Zamknięte",
+    "motion": "Ruch",
+    "noMotion": "Brak ruchu",
+    "alarm": "Alarm",
+    "ok": "OK"
+  },
   "weather": {
     "now": "Teraz",
     "error": "Nie udało się wczytać prognozy.",
@@ -994,6 +1008,7 @@
       "sensordots": "Ruch, drzwi i kamery jako siatka kropek.",
       "roomhealth": "Temperatura, wilgotność i powietrze każdego pokoju w jednym spojrzeniu, od żółtego do czerwonego, gdy coś jest nie tak.",
       "valuematrix": "Urządzenia lub pomieszczenia względem wybranych wartości, zielone, pomarańczowe lub czerwone według zakresu.",
+      "valueboard": "Każda wartość wybranych urządzeń, według pomieszczeń lub urządzeń, jako kafelki lub zwarte wiersze.",
       "weather": "Najbliższe 36 godzin, godzina po godzinie.",
       "pollen": "Dzisiejsze pyłki i szczyt UV, dla Europy.",
       "heatmap": "Tydzień dowolnej wartości jako mapa cieplna dzień × godzina.",

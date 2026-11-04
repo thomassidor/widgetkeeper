@@ -1,0 +1,434 @@
+{
+  "name": {
+    "en": "Value Board",
+    "nl": "Waardenbord",
+    "de": "Wertetafel",
+    "fr": "Tableau de valeurs",
+    "it": "Tabellone dei valori",
+    "sv": "Värdetavla",
+    "no": "Verditavle",
+    "es": "Panel de valores",
+    "da": "Værditavle",
+    "ru": "Табло значений",
+    "pl": "Tablica wartości",
+    "ko": "값 보드",
+    "ar": "لوحة القيم"
+  },
+  "height": 300,
+  "transparent": true,
+  "devices": {
+    "type": "global",
+    "singular": false
+  },
+  "settings": [
+    {
+      "id": "layout",
+      "type": "dropdown",
+      "value": "tiles",
+      "title": {
+        "en": "Layout",
+        "nl": "Indeling",
+        "de": "Layout",
+        "fr": "Disposition",
+        "it": "Layout",
+        "sv": "Layout",
+        "no": "Oppsett",
+        "es": "Diseño",
+        "da": "Layout",
+        "ru": "Макет",
+        "pl": "Układ",
+        "ko": "레이아웃",
+        "ar": "التخطيط"
+      },
+      "hint": {
+        "en": "Compact shows each group's values on lines, without names: tap a value to see what it is.",
+        "nl": "Compact toont de waarden van elke groep op regels, zonder namen: tik op een waarde om te zien wat het is.",
+        "de": "Kompakt zeigt die Werte jeder Gruppe in Zeilen, ohne Namen: Tippe auf einen Wert, um zu sehen, was er ist.",
+        "fr": "Compact affiche les valeurs de chaque groupe en lignes, sans noms : touchez une valeur pour voir ce que c'est.",
+        "it": "Compatto mostra i valori di ogni gruppo su righe, senza nomi: tocca un valore per vedere cos'è.",
+        "sv": "Kompakt visar varje grupps värden på rader, utan namn: tryck på ett värde för att se vad det är.",
+        "no": "Kompakt viser hver gruppes verdier på linjer, uten navn: trykk på en verdi for å se hva den er.",
+        "es": "Compacto muestra los valores de cada grupo en líneas, sin nombres: toca un valor para ver qué es.",
+        "da": "Kompakt viser hver gruppes værdier på linjer, uden navne: tryk på en værdi for at se, hvad den er.",
+        "ru": "«Компактно» показывает значения каждой группы строками, без названий: нажмите на значение, чтобы узнать, что это.",
+        "pl": "Kompaktowy pokazuje wartości każdej grupy w wierszach, bez nazw: dotknij wartości, aby zobaczyć, co to jest.",
+        "ko": "간단히는 각 그룹의 값을 이름 없이 줄로 표시합니다. 값을 탭하면 무엇인지 볼 수 있습니다.",
+        "ar": "«مضغوط» يعرض قيم كل مجموعة في أسطر بلا أسماء: المس قيمة لترى ما هي."
+      },
+      "values": [
+        {
+          "id": "tiles",
+          "title": {
+            "en": "Tiles",
+            "nl": "Tegels",
+            "de": "Kacheln",
+            "fr": "Tuiles",
+            "it": "Riquadri",
+            "sv": "Rutor",
+            "no": "Fliser",
+            "es": "Mosaicos",
+            "da": "Felter",
+            "ru": "Плитки",
+            "pl": "Kafelki",
+            "ko": "타일",
+            "ar": "بلاطات"
+          }
+        },
+        {
+          "id": "compact",
+          "title": {
+            "en": "Compact",
+            "nl": "Compact",
+            "de": "Kompakt",
+            "fr": "Compact",
+            "it": "Compatto",
+            "sv": "Kompakt",
+            "no": "Kompakt",
+            "es": "Compacto",
+            "da": "Kompakt",
+            "ru": "Компактно",
+            "pl": "Kompaktowy",
+            "ko": "간단히",
+            "ar": "مضغوط"
+          }
+        }
+      ]
+    },
+    {
+      "id": "groupBy",
+      "type": "dropdown",
+      "value": "rooms",
+      "title": {
+        "en": "Group by",
+        "nl": "Groeperen op",
+        "de": "Gruppieren nach",
+        "fr": "Regrouper par",
+        "it": "Raggruppa per",
+        "sv": "Gruppera efter",
+        "no": "Grupper etter",
+        "es": "Agrupar por",
+        "da": "Gruppér efter",
+        "ru": "Группировать по",
+        "pl": "Grupuj według",
+        "ko": "그룹 기준",
+        "ar": "التجميع حسب"
+      },
+      "values": [
+        {
+          "id": "rooms",
+          "title": {
+            "en": "Rooms",
+            "nl": "Ruimtes",
+            "de": "Räume",
+            "fr": "Pièces",
+            "it": "Stanze",
+            "sv": "Rum",
+            "no": "Rom",
+            "es": "Habitaciones",
+            "da": "Rum",
+            "ru": "Комнатам",
+            "pl": "Pomieszczenia",
+            "ko": "방",
+            "ar": "الغرف"
+          }
+        },
+        {
+          "id": "devices",
+          "title": {
+            "en": "Devices",
+            "nl": "Apparaten",
+            "de": "Geräte",
+            "fr": "Appareils",
+            "it": "Dispositivi",
+            "sv": "Enheter",
+            "no": "Enheter",
+            "es": "Dispositivos",
+            "da": "Enheder",
+            "ru": "Устройствам",
+            "pl": "Urządzenia",
+            "ko": "기기",
+            "ar": "الأجهزة"
+          }
+        }
+      ]
+    },
+    {
+      "id": "values",
+      "type": "dropdown",
+      "value": "readings",
+      "title": {
+        "en": "Values",
+        "nl": "Waarden",
+        "de": "Werte",
+        "fr": "Valeurs",
+        "it": "Valori",
+        "sv": "Värden",
+        "no": "Verdier",
+        "es": "Valores",
+        "da": "Værdier",
+        "ru": "Значения",
+        "pl": "Wartości",
+        "ko": "값",
+        "ar": "القيم"
+      },
+      "hint": {
+        "en": "Readings are what the devices measure, their meters and their alarms. All values adds switches, dim levels, set temperatures and modes.",
+        "nl": "Metingen zijn wat de apparaten meten, hun meters en hun alarmen. Alle waarden voegt schakelaars, dimniveaus, ingestelde temperaturen en modi toe.",
+        "de": "Messwerte sind, was die Geräte messen, ihre Zähler und ihre Alarme. Alle Werte fügt Schalter, Dimmstufen, Solltemperaturen und Modi hinzu.",
+        "fr": "Les mesures sont ce que mesurent les appareils, leurs compteurs et leurs alarmes. Toutes les valeurs ajoute interrupteurs, niveaux de variation, températures de consigne et modes.",
+        "it": "Le letture sono ciò che misurano i dispositivi, i loro contatori e i loro allarmi. Tutti i valori aggiunge interruttori, livelli di luminosità, temperature impostate e modalità.",
+        "sv": "Mätvärden är det enheterna mäter, deras mätare och deras larm. Alla värden lägger till brytare, dimnivåer, inställda temperaturer och lägen.",
+        "no": "Målinger er det enhetene måler, målerne deres og alarmene deres. Alle verdier legger til brytere, dimmenivåer, innstilte temperaturer og moduser.",
+        "es": "Las lecturas son lo que miden los dispositivos, sus contadores y sus alarmas. Todos los valores añade interruptores, niveles de atenuación, temperaturas fijadas y modos.",
+        "da": "Målinger er det, enhederne måler, deres målere og deres alarmer. Alle værdier tilføjer kontakter, dæmpningsniveauer, indstillede temperaturer og tilstande.",
+        "ru": "Показания — это то, что измеряют устройства, их счётчики и тревоги. «Все значения» добавляет выключатели, яркость, заданные температуры и режимы.",
+        "pl": "Odczyty to to, co mierzą urządzenia, ich liczniki i alarmy. Wszystkie wartości dodaje przełączniki, poziomy jasności, ustawione temperatury i tryby.",
+        "ko": "측정값은 기기가 측정하는 값, 계량기, 경보입니다. 모든 값은 스위치, 밝기, 설정 온도, 모드를 더합니다.",
+        "ar": "القراءات هي ما تقيسه الأجهزة وعداداتها وإنذاراتها. «كل القيم» يضيف المفاتيح ومستويات الإضاءة ودرجات الحرارة المضبوطة والأوضاع."
+      },
+      "values": [
+        {
+          "id": "readings",
+          "title": {
+            "en": "Readings",
+            "nl": "Metingen",
+            "de": "Messwerte",
+            "fr": "Mesures",
+            "it": "Letture",
+            "sv": "Mätvärden",
+            "no": "Målinger",
+            "es": "Lecturas",
+            "da": "Målinger",
+            "ru": "Показания",
+            "pl": "Odczyty",
+            "ko": "측정값",
+            "ar": "القراءات"
+          }
+        },
+        {
+          "id": "all",
+          "title": {
+            "en": "All values",
+            "nl": "Alle waarden",
+            "de": "Alle Werte",
+            "fr": "Toutes les valeurs",
+            "it": "Tutti i valori",
+            "sv": "Alla värden",
+            "no": "Alle verdier",
+            "es": "Todos los valores",
+            "da": "Alle værdier",
+            "ru": "Все значения",
+            "pl": "Wszystkie wartości",
+            "ko": "모든 값",
+            "ar": "كل القيم"
+          }
+        }
+      ]
+    },
+    {
+      "id": "columns",
+      "type": "dropdown",
+      "title": {
+        "en": "Tiles per row",
+        "nl": "Tegels per rij",
+        "de": "Kacheln pro Zeile",
+        "fr": "Tuiles par ligne",
+        "it": "Riquadri per riga",
+        "sv": "Rutor per rad",
+        "no": "Fliser per rad",
+        "es": "Mosaicos por fila",
+        "da": "Felter pr. række",
+        "ru": "Плиток в ряду",
+        "pl": "Kafelków w rzędzie",
+        "ko": "행당 타일",
+        "ar": "البلاطات في كل صف"
+      },
+      "value": "3",
+      "values": [
+        {
+          "id": "2",
+          "title": {
+            "en": "2",
+            "nl": "2",
+            "de": "2",
+            "fr": "2",
+            "it": "2",
+            "sv": "2",
+            "no": "2",
+            "es": "2",
+            "da": "2",
+            "ru": "2",
+            "pl": "2",
+            "ko": "2",
+            "ar": "2"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "3",
+            "nl": "3",
+            "de": "3",
+            "fr": "3",
+            "it": "3",
+            "sv": "3",
+            "no": "3",
+            "es": "3",
+            "da": "3",
+            "ru": "3",
+            "pl": "3",
+            "ko": "3",
+            "ar": "3"
+          }
+        },
+        {
+          "id": "4",
+          "title": {
+            "en": "4",
+            "nl": "4",
+            "de": "4",
+            "fr": "4",
+            "it": "4",
+            "sv": "4",
+            "no": "4",
+            "es": "4",
+            "da": "4",
+            "ru": "4",
+            "pl": "4",
+            "ko": "4",
+            "ar": "4"
+          }
+        }
+      ],
+      "hint": {
+        "en": "In the Tiles layout.",
+        "nl": "In de indeling Tegels.",
+        "de": "Im Layout Kacheln.",
+        "fr": "Dans la disposition Tuiles.",
+        "it": "Nel layout Riquadri.",
+        "sv": "I layouten Rutor.",
+        "no": "I oppsettet Fliser.",
+        "es": "En el diseño Mosaicos.",
+        "da": "I layoutet Felter.",
+        "ru": "В макете «Плитки».",
+        "pl": "W układzie Kafelki.",
+        "ko": "타일 레이아웃에서.",
+        "ar": "في تخطيط البلاطات."
+      }
+    },
+    {
+      "id": "greenWhenFine",
+      "type": "checkbox",
+      "value": false,
+      "title": {
+        "en": "Green when fine",
+        "nl": "Groen als het goed is",
+        "de": "Grün, wenn in Ordnung",
+        "fr": "Vert si tout va bien",
+        "it": "Verde se va bene",
+        "sv": "Grönt när det är bra",
+        "no": "Grønt når det er bra",
+        "es": "Verde si está bien",
+        "da": "Grøn når det er fint",
+        "ru": "Зелёный, если всё в норме",
+        "pl": "Zielony, gdy w normie",
+        "ko": "정상이면 초록색",
+        "ar": "أخضر عندما يكون جيدًا"
+      },
+      "hint": {
+        "en": "Batteries, alarms and air quality are judged: low or alarming is yellow or red. This shows the fine ones in green, not grey.",
+        "nl": "Batterijen, alarmen en luchtkwaliteit worden beoordeeld: laag of alarmerend is geel of rood. Dit toont de goede in groen, niet grijs.",
+        "de": "Batterien, Alarme und Luftqualität werden bewertet: niedrig oder alarmierend ist gelb oder rot. Dies zeigt die guten grün statt grau.",
+        "fr": "Batteries, alarmes et qualité de l'air sont évaluées : faible ou en alarme, c'est jaune ou rouge. Ceci affiche les bonnes en vert, et non en gris.",
+        "it": "Batterie, allarmi e qualità dell'aria vengono valutati: basso o in allarme è giallo o rosso. Questo mostra quelli a posto in verde, non in grigio.",
+        "sv": "Batterier, larm och luftkvalitet bedöms: lågt eller larmande är gult eller rött. Detta visar de bra i grönt, inte grått.",
+        "no": "Batterier, alarmer og luftkvalitet vurderes: lavt eller alarmerende er gult eller rødt. Dette viser de gode i grønt, ikke grått.",
+        "es": "Se valoran baterías, alarmas y calidad del aire: bajo o en alarma es amarillo o rojo. Esto muestra los correctos en verde, no en gris.",
+        "da": "Batterier, alarmer og luftkvalitet vurderes: lavt eller alarmerende er gult eller rødt. Dette viser de gode i grønt, ikke gråt.",
+        "ru": "Оцениваются батареи, тревоги и качество воздуха: низкое или тревожное — жёлтое или красное. Это показывает нормальные зелёным, а не серым.",
+        "pl": "Oceniane są baterie, alarmy i jakość powietrza: niskie lub alarmujące są żółte lub czerwone. To pokazuje dobre na zielono, a nie na szaro.",
+        "ko": "배터리, 경보, 공기질을 평가합니다. 낮거나 경보면 노란색 또는 빨간색입니다. 이 설정은 정상인 값을 회색 대신 초록색으로 표시합니다.",
+        "ar": "تُقيَّم البطاريات والإنذارات وجودة الهواء: المنخفض أو المُنذِر أصفر أو أحمر. هذا يعرض الجيدة بالأخضر بدل الرمادي."
+      }
+    },
+    {
+      "id": "colorStyle",
+      "type": "dropdown",
+      "title": {
+        "en": "Colour style",
+        "nl": "Kleurstijl",
+        "de": "Farbstil",
+        "fr": "Style de couleur",
+        "it": "Stile colori",
+        "sv": "Färgstil",
+        "no": "Fargestil",
+        "es": "Estilo de color",
+        "da": "Farvestil",
+        "ru": "Цветовой стиль",
+        "pl": "Styl kolorów",
+        "ko": "색상 스타일",
+        "ar": "نمط الألوان"
+      },
+      "hint": {
+        "en": "Vivid shows the colours bright and at full strength.",
+        "nl": "Levendig toont de kleuren fel en op volle sterkte.",
+        "de": "Kräftig zeigt die Farben kräftig und in voller Stärke.",
+        "fr": "Vives affiche les couleurs vives, à pleine intensité.",
+        "it": "Vivaci mostra i colori vivaci e a piena intensità.",
+        "sv": "Livfulla visar färgerna klara och i full styrka.",
+        "no": "Livlige viser fargene klare og med full styrke.",
+        "es": "Vivos muestra los colores vivos y con toda su intensidad.",
+        "da": "Livlige viser farverne klare og i fuld styrke.",
+        "ru": "«Яркие» показывают цвета ярко и в полную силу.",
+        "pl": "Żywe pokazują kolory jaskrawo i w pełnej mocy.",
+        "ko": "선명하게는 색을 선명하고 진하게 표시합니다.",
+        "ar": "«زاهية» تعرض الألوان زاهية وبكامل قوتها."
+      },
+      "value": "soft",
+      "values": [
+        {
+          "id": "soft",
+          "title": {
+            "en": "Muted",
+            "nl": "Gedempt",
+            "de": "Gedämpft",
+            "fr": "Atténuées",
+            "it": "Smorzati",
+            "sv": "Dämpade",
+            "no": "Dempede",
+            "es": "Suaves",
+            "da": "Dæmpede",
+            "ru": "Приглушённые",
+            "pl": "Stonowane",
+            "ko": "차분하게",
+            "ar": "هادئة"
+          }
+        },
+        {
+          "id": "deep",
+          "title": {
+            "en": "Vivid",
+            "nl": "Levendig",
+            "de": "Kräftig",
+            "fr": "Vives",
+            "it": "Vivaci",
+            "sv": "Livfulla",
+            "no": "Livlige",
+            "es": "Vivos",
+            "da": "Livlige",
+            "ru": "Яркие",
+            "pl": "Żywe",
+            "ko": "선명하게",
+            "ar": "زاهية"
+          }
+        }
+      ]
+    }
+  ],
+  "api": {
+    "getState": {
+      "method": "GET",
+      "path": "/state"
+    }
+  }
+}

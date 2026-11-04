@@ -116,6 +116,20 @@
     "none": "Geen",
     "devices": "__count__ apparaten"
   },
+  "valueboard": {
+    "selectDevices": "Kies apparaten in de widgetinstellingen.",
+    "error": "Kon de waarden niet laden.",
+    "unavailable": "Niet beschikbaar",
+    "noValues": "Deze apparaten hebben geen waarden om te tonen.",
+    "on": "Aan",
+    "off": "Uit",
+    "open": "Open",
+    "closed": "Dicht",
+    "motion": "Beweging",
+    "noMotion": "Geen beweging",
+    "alarm": "Alarm",
+    "ok": "OK"
+  },
   "weather": {
     "now": "Nu",
     "error": "Kon de verwachting niet laden.",
@@ -994,6 +1008,7 @@
       "sensordots": "Beweging, deuren en camera's als een raster van stippen.",
       "roomhealth": "Temperatuur, vochtigheid en lucht per ruimte in één oogopslag, geel tot rood als iets niet goed is.",
       "valuematrix": "Apparaten of ruimtes tegen gekozen waarden, groen, oranje of rood naar hun bereik.",
+      "valueboard": "Elke waarde van de gekozen apparaten, per ruimte of per apparaat, als tegels of compacte regels.",
       "weather": "De komende 36 uur, uur voor uur.",
       "pollen": "De pollen van vandaag en de uv-piek, voor Europa.",
       "heatmap": "Een week van een waarde als heatmap van dag × uur.",

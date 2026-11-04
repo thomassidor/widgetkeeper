@@ -429,6 +429,30 @@ function valueMatrix(t, theme) {
   </div>`;
 }
 
+// Value Board: two rooms, each a tile with its name on top and a grid of value cells (an icon and value over a name), a battery
+// low in yellow and an alarm in red, as Muted washes them.
+function valueBoard(t, theme) {
+  const dark = theme === 'dark';
+  const tileBg = dark ? '#181920' : '#FFFFFF';
+  const rim = dark ? ',inset 0 3px 0 rgba(255,255,255,.05),inset 0 0 0 3px rgba(255,255,255,.03)' : '';
+  const shadow = dark ? '0 12px 40px rgba(0,0,0,.45)' : '0 12px 40px rgba(17,18,23,.12)';
+  const line = dark ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.08)';
+  const tone = { y: ['rgba(245,197,24,.16)', dark ? '#F5C518' : '#9A6A00'], r: ['rgba(242,95,92,.18)', dark ? '#FF7B78' : '#D93B37'] };
+  const cell = ([v, n, c], i) => {
+    const [bg, fg] = c ? tone[c] : ['transparent', t.fg];
+    return `<div style="padding:30px 28px;background:${bg};box-shadow:inset -3px -3px 0 ${line};display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;align-items:center;gap:16px">${pill(36, 36, c ? fg : t.muted, 'border-radius:10px;opacity:.8')}${pill(v, 34, fg)}</div>
+      ${pill(n, 22, t.muted)}</div>`;
+  };
+  const group = (w, cells) => `<div style="border-radius:32px;background:${tileBg};box-shadow:${shadow}${rim};overflow:hidden">
+    <div style="padding:34px 40px 26px">${pill(w, 30, t.fg, 'opacity:.85')}</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);margin:0 -3px -3px 0;border-top:3px solid ${line}">${cells.map(cell).join('')}</div></div>`;
+  return `<div style="width:880px;display:flex;flex-direction:column;gap:28px">
+    ${group(220, [[110, 150], [80, 150], [100, 90], [96, 80], [120, 170], [70, 170, 'y']])}
+    ${group(160, [[110, 140], [90, 140], [130, 140, 'r'], [80, 120], [100, 120]])}
+  </div>`;
+}
+
 // Cameras: a 2×2 grid of 16:9 snapshot tiles (flat scenes), each with a name pill; one plays live.
 function cameras(t, theme) {
   const shadow = theme === 'dark' ? '0 12px 40px rgba(0,0,0,.45)' : '0 12px 40px rgba(17,18,23,.12)';
@@ -1241,6 +1265,8 @@ const PREVIEWS = [
   { id: 'rh-light',     label: '3d · Room Health — preview-light.png',            theme: 'light', render: roomHealth },
   { id: 'vm-dark',      label: '3e · Value Matrix — preview-dark.png',            theme: 'dark',  render: valueMatrix },
   { id: 'vm-light',     label: '3f · Value Matrix — preview-light.png',           theme: 'light', render: valueMatrix },
+  { id: 'vb-dark',      label: '3g · Value Board — preview-dark.png',             theme: 'dark',  render: valueBoard },
+  { id: 'vb-light',     label: '3h · Value Board — preview-light.png',            theme: 'light', render: valueBoard },
   { id: 'weather-dark',  label: '1g · Weather Forecast — preview-dark.png',      theme: 'dark',  render: weather },
   { id: 'weather-light', label: '1h · Weather Forecast — preview-light.png',     theme: 'light', render: weather },
   { id: 'hm-dark',      label: '1k · Insights Heatmap — preview-dark.png',       theme: 'dark',  render: heatmap },

@@ -47,6 +47,9 @@ interface Window {
   valueMatrixRange: (text: unknown, column?: { capabilityId?: string, units?: string | null } | null) => { min: number | null, max: number | null } | null;
   valueMatrixLevel: (value: unknown, range: { min: number | null, max: number | null } | null) => 'good' | 'out' | 'far' | 'plain' | 'none';
   valueMatrixRows: (devices: object[], mode?: string) => { key: string, name?: string, missing?: true, devices: object[], values: Record<string, number | null> }[];
+  createValueBoardWidget: (root: HTMLElement, opts?: object) => any;
+  valueBoardLevel: (value: { capabilityId: string, type?: string, units?: string | null, value: unknown }) => 'alert' | 'warn' | 'fine' | null;
+  valueBoardGroups: (devices: object[], groupBy?: string) => { key: string, name?: string, missing?: true, values: any[] }[];
   roomHealthRooms: (devices: object[]) => { key: string, name?: string, missing?: true, sensors: object[], values: Record<string, number | null> }[];
   createWeatherWidget: (root: HTMLElement, opts?: object) => any;
   createPollenWidget: (root: HTMLElement, opts?: object) => any;
@@ -95,6 +98,7 @@ interface Window {
     scaled: (cap: any, value: number) => number,
     formatNumber: (cap: any, value: number, averaged?: boolean) => string,
     formatValue: (cap: any, value: unknown, t?: (key: string) => string) => string,
+    valueGlyph: (capabilityId: string, value?: unknown) => string,
     undoTextZoom: () => void,
     el: (tag: string, attrs?: object | null, parent?: Element | null, ns?: string) => any,
     setMask: (node: HTMLElement, url: string | null | undefined, name: string) => void,
@@ -207,6 +211,7 @@ interface Window {
   mountSensorDotsWidget: MountWidget;
   mountRoomHealthWidget: MountWidget;
   mountValueMatrixWidget: MountWidget;
+  mountValueBoardWidget: MountWidget;
   mountSparklinesWidget: MountWidget;
   mountChartsWidget: MountWidget;
   mountTotalsWidget: MountWidget;

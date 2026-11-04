@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Value Board widget preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../widgets/spacer/public/kit.css">
+  <link rel="stylesheet" href="../widgets/valueboard/public/widget.css">
+  <script src="../widgets/spacer/public/kit.js"></script>
+  <script src="../widgets/valueboard/public/widget.js"></script>
+  <script src="i18n.js"></script>
+  <link rel="stylesheet" href="preview.css">
+  <style>
+    /* The widget is transparent: it sits straight on the dashboard background. */
+    .dash { padding: 0; box-sizing: border-box; }
+    .light { background: #F2F3F5; padding: 12px; border-radius: 12px; }
+  </style>
+</head>
+<body>
+  <div class="col"><span>358 px (phone) · dark · tiles, rooms</span><div class="dash homey-dark-mode" style="width:358px"><div id="w1"></div></div></div>
+  <div class="col"><span>358 px · dark · compact, rooms</span><div class="dash homey-dark-mode" style="width:358px"><div id="w2"></div></div></div>
+  <div class="col"><span>358 px · dark · tiles, green when fine</span><div class="dash homey-dark-mode" style="width:358px"><div id="w3"></div></div></div>
+  <div class="col"><span>358 px · dark · compact, green when fine</span><div class="dash homey-dark-mode" style="width:358px"><div id="w4"></div></div></div>
+  <div class="col"><span>358 px · dark · tiles, green, Vivid</span><div class="dash homey-dark-mode" style="width:358px"><div id="w5"></div></div></div>
+  <div class="col"><span>358 px · dark · compact, green, Vivid</span><div class="dash homey-dark-mode" style="width:358px"><div id="w6"></div></div></div>
+  <div class="col"><span>358 px · light · tiles, green when fine</span><div class="dash light" style="width:358px"><div id="w7"></div></div></div>
+  <div class="col"><span>358 px · light · compact, green when fine</span><div class="dash light" style="width:358px"><div id="w8"></div></div></div>
+  <div class="col"><span>358 px · dark · tiles, by device</span><div class="dash homey-dark-mode" style="width:358px"><div id="w9"></div></div></div>
+  <div class="col"><span>358 px · dark · compact, by device</span><div class="dash homey-dark-mode" style="width:358px"><div id="w10"></div></div></div>
+  <div class="col"><span>300 px · dark · tiles, 2 per row</span><div class="dash homey-dark-mode" style="width:300px"><div id="w11"></div></div></div>
+  <div class="col"><span>300 px · dark · compact</span><div class="dash homey-dark-mode" style="width:300px"><div id="w12"></div></div></div>
+  <div class="col"><span>420 px (a tablet column) · dark · tiles, 4 per row</span><div class="dash homey-dark-mode" style="width:420px"><div id="w13"></div></div></div>
+  <div class="col"><span>358 px · no devices</span><div class="dash homey-dark-mode" style="width:358px"><div id="w14"></div></div></div>
+
+  <script>
+    // A made-up house (Solbakken's rooms); `?lang=de` for a language, `?named=<deviceId>:<capabilityId>` taps that value in Compact.
+    const n = (capabilityId, title, value, units = null, more = {}) => ({
+      capabilityId, title, type: typeof value === 'boolean' ? 'boolean' : 'number', units, decimals: null, min: null, max: null, values: null, value, ...more,
+    });
+    const T = v => n('measure_temperature', 'Temperature', v, '°C', { decimals: 1 });
+    const H = v => n('measure_humidity', 'Humidity', v, '%');
+    const B = v => n('measure_battery', 'Battery', v, '%');
+    const W = v => n('measure_power', 'Power', v, 'W');
+    const E = v => n('meter_power', 'Energy', v, 'kWh', { decimals: 1 });
+    const Z = {
+      living: { id: 'living', name: 'Living room' }, kitchen: { id: 'kitchen', name: 'Kitchen' }, bed: { id: 'bed', name: 'Bedroom' },
+      office: { id: 'office', name: 'Office' }, bath: { id: 'bath', name: 'Bathroom' }, garage: { id: 'garage', name: 'Garage' }, out: { id: 'out', name: 'Outside' },
+    };
+    const d = (id, zone, name, values) => ({ id, name, zone, values });
+    const house = () => [
+      d('thermo', Z.living, 'Thermostat', [T(21.4), H(41)]),
+      d('tv', Z.living, 'TV', [W(86), E(1.4)]),
+      d('motion', Z.living, 'Motion sensor', [n('measure_luminance', 'Light', 128, 'lx'), n('alarm_motion', 'Motion', false), B(82)]),
+      d('balcony', Z.living, 'Balcony door', [n('alarm_contact', 'Contact', false), B(64)]),
+      d('fridge', Z.kitchen, 'Fridge', [T(4.1), W(42)]),
+      d('dish', Z.kitchen, 'Dishwasher', [W(1920), E(0.8)]),
+      d('kair', Z.kitchen, 'Air sensor', [T(22), H(48), B(18)]),
+      d('bair', Z.bed, 'Air monitor', [T(19.2), H(52), n('measure_co2', 'CO₂', 1140, 'ppm')]),
+      d('window', Z.bed, 'Window', [n('alarm_contact', 'Contact', true), B(91)]),
+      d('desk', Z.office, 'Desk plug', [W(134), E(2.6)]),
+      d('oair', Z.office, 'Air monitor', [T(22.8), H(38), n('measure_co2', 'CO₂', 760, 'ppm')]),
+      d('hum', Z.bath, 'Humidity sensor', [T(23.5), H(71), B(55)]),
+      d('floor', Z.bath, 'Floor heating', [T(26), W(312)]),
+      d('climate', Z.garage, 'Climate sensor', [T(9.4), B(6)]),
+      d('smoke', Z.garage, 'Smoke alarm', [n('alarm_smoke', 'Smoke', false), B(77)]),
+      d('weather', Z.out, 'Weather station', [T(6.3), H(88), n('measure_wind_strength', 'Wind', 4.2, 'm/s'), B(72)]),
+    ];
+    const make = (id, devices, opts = {}) => {
+      const w = createValueBoardWidget(document.getElementById(id), { t: devT, ...opts });
+      if (devices) w.setState(devices);
+      return w;
+    };
+    const widgets = [
+      make('w1', house()),
+      make('w2', house(), { layout: 'compact' }),
+      make('w3', house(), { greenWhenFine: true }),
+      make('w4', house(), { layout: 'compact', greenWhenFine: true }),
+      make('w5', house(), { greenWhenFine: true, colorStyle: 'deep' }),
+      make('w6', house(), { layout: 'compact', greenWhenFine: true, colorStyle: 'deep' }),
+      make('w7', house(), { greenWhenFine: true }),
+      make('w8', house(), { layout: 'compact', greenWhenFine: true }),
+      make('w9', house().slice(0, 9), { groupBy: 'devices' }),
+      make('w10', house(), { layout: 'compact', groupBy: 'devices' }),
+      make('w11', house(), { columns: '2' }),
+      make('w12', house(), { layout: 'compact' }),
+      make('w13', house(), { columns: '4' }),
+    ];
+    const empty = make('w14', null);
+    empty.setMessage(empty.t('selectDevices'));
+    const named = new URLSearchParams(location.search).get('named');
+    if (named) for (const el of document.querySelectorAll(`.vb-item[data-key="${named}"]`)) el.click();
+    // Simulate the dishwasher's power going up and down.
+    let watts = 1920;
+    setInterval(() => {
+      watts = watts >= 2100 ? 12 : watts + 300;
+      for (const w of widgets) w.pushChange({ deviceId: 'dish', capabilityId: 'measure_power', value: watts });
+    }, 2000);
+  </script>
+</body>
+</html>

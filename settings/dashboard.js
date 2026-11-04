@@ -247,6 +247,7 @@
       sensordots: 'Motion, doors and cameras as a grid of dots.',
       roomhealth: "Each room's temperature, humidity and air at a glance, yellow to red when one is off.",
       valuematrix: 'Devices or rooms against chosen values, green, orange or red by their range.',
+      valueboard: 'Every value of the picked devices, by room or by device, as tiles or compact lines.',
       weather: 'The next 36 hours, hour by hour.',
       pollen: "Today's pollen and the UV peak, for Europe.",
       heatmap: 'A week of any value as a weekday × hour heatmap.',

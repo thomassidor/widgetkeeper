@@ -21,6 +21,7 @@ import PopupService, {
 } from './lib/PopupService.js';
 import QuickActionService from './lib/QuickActionService.js';
 import RoomHealthService from './lib/RoomHealthService.js';
+import ValueBoardService from './lib/ValueBoardService.js';
 import ValueMatrixService from './lib/ValueMatrixService.js';
 import SensorAlarmService from './lib/SensorAlarmService.js';
 import SparklineService from './lib/SparklineService.js';
@@ -54,6 +55,7 @@ export default class WidgetkeeperApp extends Homey.App {
   sensorAlarms!: SensorAlarmService;
   roomHealth!: RoomHealthService;
   valueMatrix!: ValueMatrixService;
+  valueBoard!: ValueBoardService;
   weather!: WeatherService;
   pollen!: PollenService;
   /** Whether a Web Page widget's page refuses to be shown in a frame. */
@@ -106,6 +108,8 @@ export default class WidgetkeeperApp extends Homey.App {
     this.roomHealth.start();
     this.valueMatrix = new ValueMatrixService(this.homey, log, debug);
     this.valueMatrix.start();
+    this.valueBoard = new ValueBoardService(this.homey, log, debug);
+    this.valueBoard.start();
     this.weather = new WeatherService(this.homey, log, debug);
     this.weather.start();
     this.pollen = new PollenService(this.homey, log, debug);
@@ -214,7 +218,7 @@ export default class WidgetkeeperApp extends Homey.App {
     });
     await this.stopAll({
       thermostat: this.thermostat, quickActions: this.quickActions, sensorAlarms: this.sensorAlarms, roomHealth: this.roomHealth,
-      valueMatrix: this.valueMatrix, weather: this.weather, pollen: this.pollen, cameras: this.cameras, values: this.values,
+      valueMatrix: this.valueMatrix, valueBoard: this.valueBoard, weather: this.weather, pollen: this.pollen, cameras: this.cameras, values: this.values,
       lights: this.lights, sparklines: this.sparklines, variables: this.variables, locks: this.locks, curtains: this.curtains,
       media: this.media,
     });

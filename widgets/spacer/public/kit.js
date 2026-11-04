@@ -373,6 +373,56 @@
     return v ? v.title : String(value);
   }
 
+  // Homey's standard capabilities carry no icon of their own (the Homey app draws them), so these stand
+  // in unless the capability has one. Drawn like Quick Actions' glyphs: each viewBox cropped to the ink
+  // (plus half the stroke), with the library icons' thin line.
+  // Made on first use (`btoa` isn't everywhere the kit is loaded).
+  const valueSvg = (viewBox, body) => {
+    let url = null;
+    return () => url || (url = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`)}`);
+  };
+  const LOCK_BOX = '4.4 2.4 15.2 19.2';
+  const VALUE_GLYPHS = {
+    thermometer: valueSvg('7.4 2.4 9.2 19.6', '<path d="M10 13.8V5a2 2 0 0 1 4 0v8.8a4 4 0 1 1-4 0z"/><path d="M12 9v6"/>'),
+    drop: valueSvg('5.4 2.4 13.2 18.2', '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>'),
+    bolt: valueSvg('3.4 1.4 16.2 21.2', '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'),
+    sun: valueSvg('1.4 1.4 21.2 21.2', '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),
+    cloud: valueSvg('2.4 3.4 20.2 15.2', '<path d="M7 18a4 4 0 0 1-.5-8A5.5 5.5 0 0 1 17 8.5a4.5 4.5 0 0 1 .5 9.5z"/>'),
+    battery: valueSvg('2.4 6.4 19.2 11.2', '<rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 10v4"/>'),
+    bell: valueSvg('3.9 4.4 16.2 18.7', '<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>'),
+    power: valueSvg('3.4 2.4 17.2 18.6', '<path d="M12 3v9"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/>'),
+    locked: valueSvg(LOCK_BOX, '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'),
+    unlocked: valueSvg(LOCK_BOX, '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/>'),
+    bulb: valueSvg('5.4 2.4 13.2 19.2', '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z"/>'),
+    wave: valueSvg('2.4 2.4 19.2 16.2', '<path d="M3 12h2l2-6 3 12 3-15 3 15 2-6h3"/>'),
+    gauge: valueSvg('3.4 8.4 17.2 9.2', '<path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/>'),
+  };
+
+  /**
+   * The built-in glyph for a capability and its current value (Device Values' and Value Board's icons), as an SVG data
+   * URL for a mask.
+   * @param {string} capabilityId
+   * @param {unknown} [value]
+   */
+  function valueGlyph(capabilityId, value) {
+    return glyphFor(capabilityId, value)();
+  }
+  function glyphFor(capabilityId, value) {
+    const base = capabilityId.split('.')[0];
+    if (base === 'measure_temperature' || base === 'target_temperature') return VALUE_GLYPHS.thermometer;
+    if (base === 'measure_humidity' || base === 'measure_rain') return VALUE_GLYPHS.drop;
+    if (base === 'measure_power' || base === 'meter_power' || base === 'measure_current' || base === 'measure_voltage') return VALUE_GLYPHS.bolt;
+    if (base === 'measure_luminance' || base === 'measure_ultraviolet') return VALUE_GLYPHS.sun;
+    if (/^measure_(co2|co|pm\d+|voc|tvoc)$/.test(base)) return VALUE_GLYPHS.cloud;
+    if (base === 'measure_battery' || base === 'alarm_battery') return VALUE_GLYPHS.battery;
+    if (base.startsWith('alarm_')) return VALUE_GLYPHS.bell;
+    if (base === 'onoff') return VALUE_GLYPHS.power;
+    if (base === 'locked') return value ? VALUE_GLYPHS.locked : VALUE_GLYPHS.unlocked;
+    if (base === 'dim') return VALUE_GLYPHS.bulb;
+    if (base === 'measure_noise') return VALUE_GLYPHS.wave;
+    return VALUE_GLYPHS.gauge;
+  }
+
   /** A frame's load marks for the app's diagnostics log (`wireFrame()`'s `perf=`): start, HTML, SDK ready, request. */
   function loadMarks(sdkAt) {
     const nav = /** @type {PerformanceNavigationTiming | null} */ (performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null);
@@ -1151,7 +1201,7 @@
   };
 
   window.WidgetkeeperKit = {
-    icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, undoTextZoom, el, setMask, tileNames, timeFormatter,
+    icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
     formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     onDeviceNames, colorStyle, applyColors, sound, optimistic, shake, wireBar, roomTiles,
   };

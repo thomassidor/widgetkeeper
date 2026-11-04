@@ -1,0 +1,125 @@
+/*
+ * Colours map to Homey widget tokens (https://apps.developer.homey.app/the-basics/widgets/styling).
+ * The fallbacks are the dark-theme values, used outside Homey (dev/valueboard-preview.html).
+ */
+.vb {
+  --vb-tile: var(--homey-background-color, #FFFFFF);
+  --vb-text: var(--homey-text-color, #EDEEF0);
+  --vb-muted: var(--homey-text-color-light, #9C9DA5);
+  --vb-line: var(--homey-line-color-light, color-mix(in srgb, var(--vb-text) 8%, transparent)); /* between the cells and groups */
+  --vb-red: var(--homey-color-red, #F25F5C);
+  /* A value that's off in its level's text colour, in pairs that pass 4.5:1 on the tile (Room Health's); green for fine. */
+  --vb-yellow-text: #9A6A00;
+  --vb-red-text: #D93B37;
+  --vb-green-text: #2E7D0F;
+  --vb-fs-small: var(--homey-font-size-small, 14px);
+  --vb-fs-default: var(--homey-font-size-default, 17px);
+  --vb-lh-small: var(--homey-line-height-small, 20px);
+  --vb-medium: var(--homey-font-weight-medium, 500);
+  --vb-bold: var(--homey-font-weight-bold, 700);
+  --vb-radius: 10px; /* Homey's native device tiles, measured from a phone screenshot */
+  --vb-icon: var(--homey-icon-size-regular, 16px);
+}
+/* Dark mode: Homey's native device tiles, as Device Quick Actions. */
+.homey-dark-mode .vb, .vb.homey-dark-mode {
+  --vb-tile: #181920;
+  --vb-yellow-text: #F5C518; --vb-red-text: #FF7B78; --vb-green-text: #8BE04A;
+}
+
+/* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
+html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
+html, body { margin: 0; }
+/* The widget is transparent, but until the SDK adds .homey-dark-mode (~1 s in) Homey's stylesheet paints body
+   in its light background, which shows as white corners around Homey's rounded loading overlay. */
+html, body { background: transparent !important; }
+
+.vb { display: flex; flex-direction: column; gap: var(--homey-su-2, 8px); min-width: 0; color: var(--vb-text); }
+.vb * { box-sizing: border-box; }
+/* Text is dir="auto" so RTL names get their punctuation right; the layout itself stays LTR. */
+.vb [dir="auto"] { text-align: left; }
+.vb-body { display: flex; flex-direction: column; gap: var(--homey-su-2, 8px); min-width: 0; }
+.vb-body:empty { display: none; }
+
+/* A device tile: a group each in Tiles, all groups in one in Compact. */
+.vb-tile { position: relative; overflow: hidden; background: var(--vb-tile); border-radius: var(--vb-radius); }
+/* The native tiles' 1px rim, brightest along the top. */
+.homey-dark-mode .vb-tile::after, .vb.homey-dark-mode .vb-tile::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .05), inset 0 0 0 1px rgb(255 255 255 / .03);
+}
+
+/* The group's name on top (14 medium), the room's or the device's. */
+.vb-head {
+  font-size: var(--vb-fs-small); line-height: var(--vb-lh-small); font-weight: var(--vb-medium);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.vb-group.missing .vb-head { color: var(--vb-muted); font-weight: inherit; }
+.vb-message { font-size: var(--vb-fs-small); line-height: var(--vb-lh-small); color: var(--vb-muted); }
+.vb-message.error { color: var(--vb-red); }
+
+/* The icon: the kit's capability glyph as a mask, in the muted colour (the value's tone colour when it has one). */
+.vb-icon {
+  flex: 0 0 auto; width: var(--vb-isz, var(--vb-icon)); height: var(--vb-isz, var(--vb-icon));
+  background: var(--vb-icon-color, var(--vb-muted));
+  -webkit-mask: var(--vb-mask) center / contain no-repeat; mask: var(--vb-mask) center / contain no-repeat;
+}
+.vb-unit { margin-left: 3px; font-size: 12px; line-height: 1; font-weight: var(--vb-medium); color: var(--vb-muted); }
+.vb:not(.wk-deep) [data-tone] .vb-unit { color: inherit; }
+.vb.wk-deep [data-tone] .vb-unit { color: inherit; }
+.vb-num { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
+
+/*
+ * Tiles: the group's cells in a grid with hairlines between them (Room Health's), 2, 3 or 4 per row (`data-columns`):
+ * each cell's right and bottom line, the grid 1px past the clipping tile so the outer ones go.
+ */
+.vb-tiles .vb-head { padding: 12px 14px 8px; }
+.vb-grid {
+  display: grid; grid-template-columns: repeat(var(--vb-cols, 3), minmax(0, 1fr));
+  margin: 0 -1px -1px 0; border-top: 1px solid var(--vb-line);
+}
+.vb[data-columns="2"] { --vb-cols: 2; }
+.vb[data-columns="4"] { --vb-cols: 4; }
+.vb-cell { min-width: 0; padding: 10px 12px; box-shadow: inset -1px -1px 0 var(--vb-line); }
+.vb[data-columns="4"] .vb-cell { padding: 10px 8px; }
+.vb-value { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: var(--vb-fs-default); line-height: 24px; font-weight: var(--vb-bold); }
+/* The device's name (or the value's), 12/16: the label size, which has no token. */
+.vb-label { font-size: 12px; line-height: 16px; color: var(--vb-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Compact: one tile, a group per part with a line between, the values running on under the name. */
+.vb-compact .vb-group { padding: 8px 14px 10px; }
+.vb-compact .vb-group + .vb-group { border-top: 1px solid var(--vb-line); }
+.vb-compact .vb-group:first-child { padding-top: 10px; }
+.vb-compact .vb-head { color: var(--vb-muted); }
+.vb-compact .vb-head.naming { color: var(--vb-text); }
+.vb-line { display: flex; flex-wrap: wrap; gap: 2px 4px; margin: 2px -6px 0; }
+.vb-item {
+  --vb-isz: 14px;
+  display: inline-flex; align-items: center; gap: 4px; min-width: 0; max-width: 100%; padding: 1px 6px; border-radius: 6px;
+  font-size: var(--vb-fs-small); line-height: var(--vb-lh-small); font-weight: var(--vb-bold);
+  cursor: pointer; -webkit-tap-highlight-color: transparent; outline: none; transition: background-color .15s, opacity .15s;
+}
+.vb-item:focus-visible { box-shadow: inset 0 0 0 2px var(--homey-color-blue, #2F8DF6); }
+.vb-item.pressing { background-color: color-mix(in srgb, var(--vb-text) 8%, transparent); }
+/* A tap named a value: it's marked, the others step back. */
+.has-named .vb-item:not(.named) { opacity: .45; }
+.vb-item.named:not([data-tone]) { background-color: color-mix(in srgb, var(--vb-text) 10%, transparent); }
+
+/*
+ * Muted: a value that's off in its colour's text (the icon too) on a faint wash of it; a fine one green with
+ * `greenWhenFine`. Vivid: filled solid with the kit's shades and the colour on them.
+ */
+.vb [data-tone="warn"] { --vb-tone: var(--wk-yellow-bright); --vb-tone-text: var(--vb-yellow-text); --vb-wash: 14%; }
+.vb [data-tone="alert"] { --vb-tone: var(--wk-red-bright); --vb-tone-text: var(--vb-red-text); --vb-wash: 16%; }
+.vb [data-tone="fine"] { --vb-tone: var(--wk-green-bright); --vb-tone-text: var(--vb-green-text); --vb-wash: 10%; }
+.vb:not(.wk-deep) [data-tone] {
+  --vb-icon-color: var(--vb-tone-text);
+  background-color: color-mix(in srgb, var(--vb-tone) var(--vb-wash), transparent);
+}
+.vb:not(.wk-deep) [data-tone] .vb-num { color: var(--vb-tone-text); }
+.vb.wk-deep [data-tone="warn"] { --vb-fill: var(--wk-yellow); --vb-on: var(--wk-on-yellow); }
+.vb.wk-deep [data-tone="alert"] { --vb-fill: var(--wk-red); --vb-on: var(--wk-on-red); }
+.vb.wk-deep [data-tone="fine"] { --vb-fill: var(--wk-green); --vb-on: var(--wk-on-green); }
+.vb.wk-deep [data-tone] { --vb-icon-color: var(--vb-on); color: var(--vb-on); background-color: var(--vb-fill); }
+.vb.wk-deep [data-tone] .vb-label { color: color-mix(in srgb, var(--vb-on) 80%, transparent); }
+/* Vivid cells: the lines between them in the tile's colour, so the fills sit apart. */
+.vb.wk-deep .vb-cell[data-tone] { box-shadow: inset -1px -1px 0 var(--vb-tile); }

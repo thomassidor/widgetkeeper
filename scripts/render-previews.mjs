@@ -13,7 +13,7 @@ import { progress } from './progress.mjs';
 const page = pathToFileURL(resolve('dev/widget-previews.html')).href;
 // The page's frame ids are `<prefix>-dark` and `<prefix>-light`; each goes to widgets/<widget>/preview-<theme>.png.
 const WIDGETS = {
-  elec: 'electricity', thermo: 'thermostat', qa: 'quickactions', sa: 'sensoralarms', sd: 'sensordots', rh: 'roomhealth', vm: 'valuematrix', weather: 'weather',
+  elec: 'electricity', thermo: 'thermostat', qa: 'quickactions', sa: 'sensoralarms', sd: 'sensordots', rh: 'roomhealth', vm: 'valuematrix', vb: 'valueboard', weather: 'weather',
   hm: 'heatmap', cam: 'cameras', val: 'values', lc: 'lights', lr: 'lightrooms', spark: 'sparklines', chart: 'charts', var: 'variables', vp: 'varpresets', fb: 'flows',
   pb: 'price', tm: 'timers', lk: 'locks', ct: 'curtains', mw: 'media', sk: 'stack', ck: 'clock', sp: 'spacer', tl: 'textline',
   ds: 'dayssince', sc: 'shortcuts', wp: 'webpage', pw: 'pollen', pu: 'popups', kp: 'keypad', tt: 'totals', xy: 'scatter', td: 'typicalday', dr: 'dailyrange', cp: 'compare', tln: 'timeline', stk: 'stacked', lns: 'lines', gg: 'gauge',

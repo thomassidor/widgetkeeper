@@ -116,6 +116,20 @@
     "none": "Aucun",
     "devices": "__count__ appareils"
   },
+  "valueboard": {
+    "selectDevices": "Choisissez des appareils dans les réglages du widget.",
+    "error": "Impossible de charger les valeurs.",
+    "unavailable": "Indisponible",
+    "noValues": "Ces appareils n'ont aucune valeur à afficher.",
+    "on": "Allumé",
+    "off": "Éteint",
+    "open": "Ouvert",
+    "closed": "Fermé",
+    "motion": "Mouvement",
+    "noMotion": "Aucun mouvement",
+    "alarm": "Alarme",
+    "ok": "OK"
+  },
   "weather": {
     "now": "Actuel",
     "error": "Impossible de charger les prévisions.",
@@ -994,6 +1008,7 @@
       "sensordots": "Mouvement, portes et caméras sous forme de points.",
       "roomhealth": "La température, l'humidité et l'air de chaque pièce d'un coup d'œil, du jaune au rouge quand ça ne va pas.",
       "valuematrix": "Appareils ou pièces face aux valeurs choisies, en vert, orange ou rouge selon leur plage.",
+      "valueboard": "Chaque valeur des appareils choisis, par pièce ou par appareil, en tuiles ou en lignes compactes.",
       "weather": "Les 36 prochaines heures, heure par heure.",
       "pollen": "Les pollens du jour et le pic d'UV, pour l'Europe.",
       "heatmap": "Une semaine d'une valeur en carte de chaleur jour × heure.",

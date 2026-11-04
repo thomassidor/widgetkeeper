@@ -43,7 +43,7 @@ export function loadMount(name: WidgetName): any {
   return loadScript(name, 'mount.js');
 }
 
-export type WidgetName = 'electricity' | 'thermostat' | 'quickactions' | 'sensoralarms' | 'sensordots' | 'roomhealth' | 'valuematrix' | 'weather' | 'heatmap'
+export type WidgetName = 'electricity' | 'thermostat' | 'quickactions' | 'sensoralarms' | 'sensordots' | 'roomhealth' | 'valuematrix' | 'valueboard' | 'weather' | 'heatmap'
   | 'cameras' | 'values' | 'lights' | 'lightrooms' | 'sparklines' | 'charts' | 'totals' | 'scatter' | 'typicalday' | 'dailyrange' | 'compare' | 'timeline' | 'stacked' | 'lines' | 'gauge' | 'variables' | 'varpresets' | 'flows' | 'price' | 'timers' | 'locks' | 'curtains' | 'media' | 'clock'
   | 'spacer' | 'textline' | 'dayssince' | 'stack' | 'shortcuts' | 'webpage' | 'pollen' | 'popups' | 'keypad';
 

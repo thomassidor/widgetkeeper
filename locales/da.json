@@ -116,6 +116,20 @@
     "none": "Ingen",
     "devices": "__count__ enheder"
   },
+  "valueboard": {
+    "selectDevices": "Vælg enheder i widgettens indstillinger.",
+    "error": "Kunne ikke indlæse værdierne.",
+    "unavailable": "Ikke tilgængelig",
+    "noValues": "Disse enheder har ingen værdier at vise.",
+    "on": "Tændt",
+    "off": "Slukket",
+    "open": "Åben",
+    "closed": "Lukket",
+    "motion": "Bevægelse",
+    "noMotion": "Ingen bevægelse",
+    "alarm": "Alarm",
+    "ok": "OK"
+  },
   "weather": {
     "now": "Nu",
     "error": "Kunne ikke hente vejrudsigten.",
@@ -994,6 +1008,7 @@
       "sensordots": "Bevægelse, døre og kameraer som et gitter af prikker.",
       "roomhealth": "Hvert rums temperatur, luftfugtighed og luft med ét blik, gul til rød, når noget er galt.",
       "valuematrix": "Enheder eller rum mod valgte værdier, grønne, orange eller røde efter deres interval.",
+      "valueboard": "Hver værdi for de valgte enheder, pr. rum eller enhed, som felter eller kompakte linjer.",
       "weather": "De næste 36 timer, time for time.",
       "pollen": "Dagens pollen og UV-toppen, for Europa.",
       "heatmap": "En uge af en værdi som heatmap over ugedag × time.",

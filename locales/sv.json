@@ -116,6 +116,20 @@
     "none": "Ingen",
     "devices": "__count__ enheter"
   },
+  "valueboard": {
+    "selectDevices": "Välj enheter i widgetens inställningar.",
+    "error": "Kunde inte läsa in värdena.",
+    "unavailable": "Inte tillgänglig",
+    "noValues": "Dessa enheter har inga värden att visa.",
+    "on": "På",
+    "off": "Av",
+    "open": "Öppen",
+    "closed": "Stängd",
+    "motion": "Rörelse",
+    "noMotion": "Ingen rörelse",
+    "alarm": "Larm",
+    "ok": "OK"
+  },
   "weather": {
     "now": "Nu",
     "error": "Kunde inte hämta prognosen.",
@@ -994,6 +1008,7 @@
       "sensordots": "Rörelse, dörrar och kameror som ett rutnät av prickar.",
       "roomhealth": "Varje rums temperatur, luftfuktighet och luft i en blick, gult till rött när något är fel.",
       "valuematrix": "Enheter eller rum mot valda värden, gröna, orange eller röda efter sitt intervall.",
+      "valueboard": "Varje värde för de valda enheterna, per rum eller enhet, som rutor eller kompakta rader.",
       "weather": "De kommande 36 timmarna, timme för timme.",
       "pollen": "Dagens pollen och UV-toppen, för Europa.",
       "heatmap": "En vecka av ett värde som värmekarta veckodag × timme.",

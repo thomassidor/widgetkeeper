@@ -5,7 +5,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, COLORS, tileNames, formatValue, applyColors, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, COLORS, tileNames, formatValue, valueGlyph: glyph, applyColors, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -16,44 +16,6 @@
     off: 'Off',
     renameFailed: 'Could not save the name.',
   };
-
-  // Homey's standard capabilities carry no icon of their own (the Homey app draws them), so these stand
-  // in unless the capability has one. Drawn like Quick Actions' glyphs: each viewBox cropped to the ink
-  // (plus half the stroke), with the library icons' thin line.
-  const svg = (viewBox, body) => `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`)}`;
-  const LOCK_BOX = '4.4 2.4 15.2 19.2';
-  const GLYPHS = {
-    thermometer: svg('7.4 2.4 9.2 19.6', '<path d="M10 13.8V5a2 2 0 0 1 4 0v8.8a4 4 0 1 1-4 0z"/><path d="M12 9v6"/>'),
-    drop: svg('5.4 2.4 13.2 18.2', '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>'),
-    bolt: svg('3.4 1.4 16.2 21.2', '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'),
-    sun: svg('1.4 1.4 21.2 21.2', '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),
-    cloud: svg('2.4 3.4 20.2 15.2', '<path d="M7 18a4 4 0 0 1-.5-8A5.5 5.5 0 0 1 17 8.5a4.5 4.5 0 0 1 .5 9.5z"/>'),
-    battery: svg('2.4 6.4 19.2 11.2', '<rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 10v4"/>'),
-    bell: svg('3.9 4.4 16.2 18.7', '<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>'),
-    power: svg('3.4 2.4 17.2 18.6', '<path d="M12 3v9"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/>'),
-    locked: svg(LOCK_BOX, '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'),
-    unlocked: svg(LOCK_BOX, '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/>'),
-    bulb: svg('5.4 2.4 13.2 19.2', '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z"/>'),
-    wave: svg('2.4 2.4 19.2 16.2', '<path d="M3 12h2l2-6 3 12 3-15 3 15 2-6h3"/>'),
-    gauge: svg('3.4 8.4 17.2 9.2', '<path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/>'),
-  };
-
-  /** The built-in glyph for a capability and its current value. */
-  function glyph(capabilityId, value) {
-    const base = capabilityId.split('.')[0];
-    if (base === 'measure_temperature' || base === 'target_temperature') return GLYPHS.thermometer;
-    if (base === 'measure_humidity' || base === 'measure_rain') return GLYPHS.drop;
-    if (base === 'measure_power' || base === 'meter_power' || base === 'measure_current' || base === 'measure_voltage') return GLYPHS.bolt;
-    if (base === 'measure_luminance' || base === 'measure_ultraviolet') return GLYPHS.sun;
-    if (/^measure_(co2|co|pm\d+|voc|tvoc)$/.test(base)) return GLYPHS.cloud;
-    if (base === 'measure_battery' || base === 'alarm_battery') return GLYPHS.battery;
-    if (base.startsWith('alarm_')) return GLYPHS.bell;
-    if (base === 'onoff') return GLYPHS.power;
-    if (base === 'locked') return value ? GLYPHS.locked : GLYPHS.unlocked;
-    if (base === 'dim') return GLYPHS.bulb;
-    if (base === 'measure_noise') return GLYPHS.wave;
-    return GLYPHS.gauge;
-  }
 
   /** The capability's own icon, else the glyph; batteries always get the glyph (drivers' own differ, some with a fixed level). */
   function iconFor(s) {

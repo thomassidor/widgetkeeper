@@ -114,7 +114,7 @@ describe('widget mount.js: its requests reach its own routes', () => {
 /** The widgets that show device names. The names come with their reads, so these read again when the setting changes. */
 const DEVICE_NAMES: WidgetName[] = [
   'cameras', 'charts', 'curtains', 'heatmap', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions', 'roomhealth',
-  'sensoralarms', 'sensordots', 'sparklines', 'thermostat', 'totals', 'scatter', 'typicalday', 'dailyrange', 'compare', 'timeline', 'stacked', 'lines', 'gauge', 'valuematrix', 'values',
+  'sensoralarms', 'sensordots', 'sparklines', 'thermostat', 'totals', 'scatter', 'typicalday', 'dailyrange', 'compare', 'timeline', 'stacked', 'lines', 'gauge', 'valuematrix', 'valueboard', 'values',
 ];
 
 describe('widget mount.js: the device names setting', () => {
