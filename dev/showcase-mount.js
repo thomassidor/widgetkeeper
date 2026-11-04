@@ -20,6 +20,7 @@ const MOUNT = {
   // Value Matrix: `w.columns` its column settings, `w.state` the widget's `/state` (`{columns, devices}`).
   valuematrix: (el, w) => createValueMatrixWidget(el, { locale: LOCALE, columns: w.columns, ...w.opts }).setState(w.state),
   values: (el, w) => createValuesWidget(el, w.opts || {}).setState(w.slots),
+  combined: (el, w) => createCombinedWidget(el, w.opts || {}).setState(w.state),
   variables: (el, w) => createVariablesWidget(el, w.opts || {}).setState(w.vars),
   varpresets: (el, w) => { const x = createVarPresetsWidget(el, { locale: LOCALE, ...w.opts }); x.setPresets(varPresetsFromSettings(w.settings)); x.setState(w.variable); },
   // Keypad: `w.settings` as the widget's settings, `w.state` its `/state` (`{source, flows}`).

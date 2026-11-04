@@ -282,6 +282,24 @@
           }
         },
         {
+          "id": "combined",
+          "title": {
+            "en": "Combined Value",
+            "nl": "Gecombineerde waarde",
+            "de": "Kombinierter Wert",
+            "fr": "Valeur combinée",
+            "it": "Valore combinato",
+            "sv": "Kombinerat värde",
+            "no": "Kombinert verdi",
+            "es": "Valor combinado",
+            "da": "Samlet værdi",
+            "ru": "Сводное значение",
+            "pl": "Wartość łączna",
+            "ko": "통합 값",
+            "ar": "قيمة مجمّعة"
+          }
+        },
+        {
           "id": "lights",
           "title": {
             "en": "Light Controls",

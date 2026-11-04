@@ -349,6 +349,13 @@
     "none": "Nessuno",
     "pickTileFirst": "Scegli prima il riquadro __n__."
   },
+  "combined": {
+    "selectValue": "Scegli un valore nelle impostazioni del widget.",
+    "noDevices": "Nessuno dei dispositivi ha questo valore.",
+    "error": "Impossibile caricare il valore.",
+    "notRead": "__count__ su __total__ non letti",
+    "others": "Altri"
+  },
   "sparklines": {
     "selectSlots": "Scegli i valori nelle impostazioni del widget.",
     "error": "Impossibile caricare i valori.",
@@ -1014,6 +1021,7 @@
       "heatmap": "Una settimana di un valore come mappa di calore giorno × ora.",
       "cameras": "Istantanee delle telecamere, con video dal vivo con un tocco.",
       "values": "Qualsiasi valore di un dispositivo come tessera compatta.",
+      "combined": "Un valore di più dispositivi in uno: la media, la somma, il più basso o il più alto.",
       "lights": "Tessere delle luci con luminosità e colore a portata di mano.",
       "lightrooms": "Le luci di ogni stanza in una scheda: accendi una stanza o aprila per le sue luci e i Mood.",
       "sparklines": "Valori con un piccolo grafico del loro andamento recente.",

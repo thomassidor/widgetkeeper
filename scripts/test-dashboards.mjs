@@ -424,6 +424,37 @@ const BUILD = {
     ] };
   },
 
+  async combined() {
+    // The value from the widget's own autocomplete (every number capability on the Homey, by id); with no devices picked,
+    // every device that has it counts.
+    const items = await autocomplete('combined', 'capability');
+    const cap = id => items.find(i => i.id === id) ?? null;
+    const [temp, hum, power, battery, dim] = ['measure_temperature', 'measure_humidity', 'measure_power', 'measure_battery', 'dim'].map(cap);
+    const climate = where(d => d.class === 'sensor' && has(d, 'measure_temperature'), 8);
+    const humid = where(d => has(d, 'measure_humidity'), 8);
+    const plugs = where(d => has(d, 'measure_power') && cls(d) === 'socket', 8);
+    const batteries = where(d => has(d, 'measure_battery'), 16);
+    const lamps = where(d => has(d, 'dim'), 6);
+    const two = where(d => has(d, 'measure_temperature'), 2);
+    return { cols: 3, widgets: [
+      w('combined', 'Average temperature · range · dots', { capability: temp, name: 'Indoor temperature' }, climate),
+      w('combined', 'Sum of power · share · no range', { capability: power, show: 'sum', range: false, name: 'Power now' }, plugs),
+      w('combined', 'Lowest battery · every device with one (none picked)', { capability: battery, show: 'min', name: 'Lowest battery' }),
+      w('combined', 'Highest humidity · Muted orange', { capability: hum, show: 'max', color: 'orange' }, humid),
+      w('combined', 'Lowest – highest temperature', { capability: temp, show: 'range' }, climate),
+      w('combined', 'Sum of power · Vivid green', { capability: power, show: 'sum', color: 'green', colorStyle: 'deep' }, plugs.slice(0, 3)),
+      w('combined', 'Brightness (0–1 %) · Vivid, no colour', { capability: dim, colorStyle: 'deep' }, lamps),
+      w('combined', 'Two devices · chart off', { capability: temp, chart: false }, two),
+      w('combined', 'Chart and range off', { capability: power, show: 'sum', range: false, chart: false }, plugs),
+      w('combined', 'A deleted device and one without the value', { capability: temp }, [...climate.slice(0, 3), MISSING, ...plugs.slice(0, 1)]),
+      w('combined', 'Pill · average · dots', { capability: temp, tileStyle: 'pill' }, climate),
+      w('combined', 'Pill · sum · share', { capability: power, tileStyle: 'pill', show: 'sum', range: false }, plugs),
+      w('combined', 'Pill · lowest battery · Vivid purple', { capability: battery, tileStyle: 'pill', show: 'min', color: 'purple', colorStyle: 'deep' }, batteries),
+      w('combined', 'None of the devices has the value', { capability: temp }, lamps.filter(id => !climate.includes(id)).slice(0, 2)),
+      w('combined', 'No value picked', {}, climate.slice(0, 3)),
+    ] };
+  },
+
   async lights() {
     const colour = where(d => cls(d) === 'light' && has(d, 'light_hue'));
     const dimOnly = where(d => cls(d) === 'light' && has(d, 'dim') && !has(d, 'light_hue'));

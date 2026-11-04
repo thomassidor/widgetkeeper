@@ -349,6 +349,13 @@
     "none": "Ninguno",
     "pickTileFirst": "Elige primero el mosaico __n__."
   },
+  "combined": {
+    "selectValue": "Elige un valor en los ajustes del widget.",
+    "noDevices": "Ninguno de los dispositivos tiene este valor.",
+    "error": "No se pudo cargar el valor.",
+    "notRead": "__count__ de __total__ sin leer",
+    "others": "Otros"
+  },
   "sparklines": {
     "selectSlots": "Elige valores en los ajustes del widget.",
     "error": "No se pudieron cargar los valores.",
@@ -1014,6 +1021,7 @@
       "heatmap": "Una semana de cualquier valor como mapa de calor día × hora.",
       "cameras": "Imágenes de las cámaras, con vídeo en directo con un toque.",
       "values": "Cualquier valor de un dispositivo como ficha compacta.",
+      "combined": "Un valor de varios dispositivos en uno: la media, la suma, el más bajo o el más alto.",
       "lights": "Fichas de luces con brillo y color a mano.",
       "lightrooms": "Las luces de cada habitación en una tarjeta: enciende una habitación o ábrela para ver sus luces y Moods.",
       "sparklines": "Valores con un pequeño gráfico de su historial reciente.",

@@ -77,6 +77,11 @@ How much a value went up per hour, day or month (kWh, rain, hours of TV), like t
 <a href="docs/widgets/clock.md"><b>Clock</b></a><br>
 The time and the date, with the weather now and today's high and low<br clear="left"></p>
 
+<a name="combined-value"></a>
+<p><a href="docs/widgets/combined.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/combined-dark.png"><img src="docs/previews/combined-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/combined.md"><b>Combined Value</b></a><br>
+One value of several devices as one: the average, the sum, the lowest or the highest<br clear="left"></p>
+
 <a name="curtains"></a>
 <p><a href="docs/widgets/curtains.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/curtains-dark.png"><img src="docs/previews/curtains-light.png" alt="" width="120" align="left"></picture></a>
 <a href="docs/widgets/curtains.md"><b>Curtains</b></a><br>

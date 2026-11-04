@@ -1,0 +1,160 @@
+/*
+ * Colours map to Homey widget tokens (https://apps.developer.homey.app/the-basics/widgets/styling). The fallbacks are the
+ * dark-theme values, used outside Homey (dev/combined-preview.html). The tile is Device Values' compact tile, full width
+ * (widgets/values/public/widget.css); the pill Sensor Alarms' (and Device Values' pill). The user's pick of two rounds
+ * of mock-ups (temp/aggregate-mockup-2.html, 2026-11-04).
+ */
+.cv {
+  --cv-tile: var(--homey-background-color, #FFFFFF);
+  --cv-text: var(--homey-text-color, #EDEEF0);
+  --cv-muted: var(--homey-text-color-light, #9C9DA5);
+  --cv-accent: var(--wk-blue-bright);
+  --cv-fs-small: var(--homey-font-size-small, 14px); --cv-lh-small: var(--homey-line-height-small, 20px);
+  --cv-fs-large: var(--homey-font-size-large, 20px);
+  --cv-fs-xxlarge: var(--homey-font-size-xxlarge, 32px); --cv-lh-xxlarge: var(--homey-line-height-xxlarge, 40px);
+  --cv-bold: var(--homey-font-weight-bold, 700);
+  --cv-medium: var(--homey-font-weight-medium, 500);
+  --cv-regular: var(--homey-font-weight-regular, 400);
+  --cv-radius: 10px; /* Homey's native device tiles */
+  --cv-mix: 22%; /* a colour mixed into the tile (Muted); Vivid fills with its shade */
+  /* The share bar's parts, biggest first, a little softer in Muted (full in Vivid). */
+  --cv-share-mix: 85%;
+}
+/* Dark mode: a native device tile, darker than the default widget background. */
+.homey-dark-mode .cv, .cv.homey-dark-mode { --cv-tile: #181920; }
+
+/* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
+html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
+html, body { margin: 0; }
+/* Transparent, but Homey paints body light until .homey-dark-mode arrives (see Quick Actions). */
+html, body { background: transparent !important; }
+
+.cv { display: flex; flex-direction: column; gap: var(--homey-su-2, 8px); min-width: 0; color: var(--cv-text); }
+.cv * { box-sizing: border-box; }
+.cv [dir="auto"] { text-align: left; }
+
+/* The tile's own background (with a colour mixed in), which the dots' rings take too. */
+.cv-tile {
+  --cv-bg: var(--cv-tile);
+  --cv-track: color-mix(in srgb, var(--cv-text) 12%, var(--cv-bg));
+  --cv-dot: color-mix(in srgb, var(--cv-text) 55%, var(--cv-bg));
+  position: relative; background: var(--cv-bg); color: var(--cv-text); border-radius: var(--cv-radius); padding: 8px 10px; min-width: 0;
+  user-select: none; -webkit-user-select: none;
+}
+/* The native tiles' 1px rim, brightest along the top. */
+.homey-dark-mode .cv-tile::after, .cv.homey-dark-mode .cv-tile::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .05), inset 0 0 0 1px rgb(255 255 255 / .03);
+}
+
+/* The head: the icon, the name over the line (the range), and the value large on the right. */
+.cv-head { display: flex; align-items: center; gap: 8px; min-height: var(--cv-lh-xxlarge); min-width: 0; }
+.cv-icon {
+  flex-shrink: 0; align-self: flex-start; width: var(--homey-icon-size-medium, 20px); height: var(--homey-icon-size-medium, 20px); background: currentColor;
+  -webkit-mask: var(--cv-mask) left center / contain no-repeat; mask: var(--cv-mask) left center / contain no-repeat;
+}
+.cv-head.one .cv-icon { align-self: center; }
+.cv-text { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; }
+.cv-name, .cv-line {
+  font-size: var(--cv-fs-small); line-height: var(--cv-lh-small); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.cv-name { font-weight: var(--cv-bold); }
+.cv-line { color: var(--cv-muted); font-variant-numeric: tabular-nums; }
+.cv-line[hidden] { display: none; }
+.cv-value {
+  flex: 0 0 auto; font-size: var(--cv-fs-xxlarge); line-height: var(--cv-lh-xxlarge); font-weight: var(--cv-bold);
+  letter-spacing: -.01em; white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.cv-units { font-size: var(--cv-fs-large); font-weight: var(--cv-medium); letter-spacing: 0; margin-left: 2px; }
+.cv-units.tight { margin-left: 0; }
+
+.cv-chart[hidden] { display: none; }
+
+/* Dots: one per device on a shared scale, the band from the lowest to the highest, the average a tick. */
+.cv-strip { position: relative; height: 18px; margin: 8px 5px 0; }
+.cv-track { position: absolute; left: 0; right: 0; top: 8px; height: 2px; border-radius: 1px; background: var(--cv-track); }
+.cv-band { position: absolute; top: 7px; height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--cv-accent) 30%, var(--cv-track)); }
+.cv-band.hl { background: var(--cv-accent); }
+.cv-zero { position: absolute; top: 1px; width: 2px; height: 16px; margin-left: -1px; border-radius: 1px; background: var(--cv-text); opacity: .6; z-index: 1; }
+.cv-dot {
+  position: absolute; top: 4px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%;
+  background: var(--cv-dot); box-shadow: 0 0 0 2px var(--cv-bg);
+}
+.cv-dot.hl { background: var(--cv-accent); z-index: 2; }
+.cv-avg {
+  position: absolute; top: -1px; width: 3px; height: 20px; margin-left: -1.5px; border-radius: 2px;
+  background: var(--cv-accent); box-shadow: 0 0 0 2px var(--cv-bg); z-index: 3;
+}
+.cv-ends {
+  display: flex; justify-content: space-between; gap: 12px; margin-top: 2px; color: var(--cv-muted);
+  font-size: var(--cv-fs-small); line-height: var(--cv-lh-small);
+}
+.cv-end { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.cv .cv-end + .cv-end { text-align: right; }
+.cv-end.hl { color: var(--cv-text); font-weight: var(--cv-medium); }
+
+/* Share: each device's part of the sum, the biggest named in the legend. */
+.cv-share { display: flex; gap: 2px; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 10px; }
+.cv-share i { display: block; height: 100%; min-width: 2px; flex-basis: 0; }
+.cv [data-share="blue"] { --cv-part: var(--wk-blue-bright); }
+.cv [data-share="green"] { --cv-part: var(--wk-green-bright); }
+.cv [data-share="orange"] { --cv-part: var(--wk-orange-bright); }
+.cv [data-share="purple"] { --cv-part: var(--wk-purple-bright); }
+.cv [data-share="others"] { --cv-part: var(--cv-dot); }
+.cv i[data-share] { background: color-mix(in srgb, var(--cv-part) var(--cv-share-mix), var(--cv-bg)); }
+.cv-legend {
+  display: flex; flex-wrap: wrap; gap: 0 12px; margin-top: 6px; color: var(--cv-muted);
+  font-size: var(--cv-fs-small); line-height: var(--cv-lh-small); font-variant-numeric: tabular-nums;
+}
+.cv-key { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; min-width: 0; max-width: 100%; }
+.cv-key i { flex: 0 0 8px; width: 8px; height: 8px; border-radius: 2px; }
+.cv-key-name { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.cv-key b { font-weight: var(--cv-medium); color: var(--cv-text); }
+
+/*
+ * The pill (the "Tile style" setting): Sensor Alarms' tile, 52px high, the 24px muted icon beside the name in 14 bold over
+ * the value and the line in 14 muted (18px lines), flat in the native temperature tiles' dark colour; the dots or the
+ * share on the right, 96px wide.
+ */
+.homey-dark-mode .cv.cv-pill, .cv.cv-pill.homey-dark-mode { --cv-tile: #2B2C36; }
+.cv-pill .cv-tile { height: 52px; padding: 7px 12px 5px 10px; display: flex; align-items: center; }
+.cv.cv-pill .cv-tile::after { display: none; }
+.cv-pill .cv-head { flex: 1; gap: 13px; min-height: 0; }
+.cv-pill .cv-icon {
+  align-self: center; width: 24px; height: 24px; color: var(--cv-muted);
+  -webkit-mask: var(--cv-mask) center / contain no-repeat; mask: var(--cv-mask) center / contain no-repeat;
+}
+.cv-pill .cv-name, .cv-pill .cv-line { line-height: 18px; }
+.cv-pill .cv-value { display: none; }
+.cv-pill .cv-chart { flex: 0 0 96px; }
+.cv-pill .cv-strip { margin: 0; }
+.cv-pill .cv-dot { width: 8px; height: 8px; margin-left: -4px; top: 5px; }
+.cv-pill .cv-avg { height: 16px; top: 1px; }
+.cv-pill .cv-share { margin: 0; height: 8px; border-radius: 4px; gap: 1px; }
+
+/* A colour (the `color` setting, kit.css's data-wk-color): mixed into the tile in Muted, the dots' accent its bright set. */
+.cv.cv-colored .cv-tile { --cv-bg: color-mix(in srgb, var(--wk-c) var(--cv-mix), var(--cv-tile)); --cv-accent: var(--wk-c-bright); }
+
+/*
+ * Vivid (kit.css): a colour fills the tile with its shade, the text, dots and share in the text colour on it (white; dark on
+ * yellow), the parts told apart by their strength. Without a colour the tile stays plain and only the share's parts and
+ * the band come at full strength.
+ */
+.cv.wk-deep { --cv-share-mix: 100%; }
+.cv.wk-deep .cv-band { background: color-mix(in srgb, var(--cv-accent) 45%, var(--cv-track)); }
+.cv.wk-deep .cv-band.hl { background: var(--cv-accent); }
+.cv.wk-deep.cv-colored { --cv-mix: 100%; }
+.cv.wk-deep.cv-colored .cv-tile {
+  --cv-text: var(--wk-on); --cv-muted: color-mix(in srgb, var(--wk-on) 80%, transparent); --cv-accent: var(--wk-on);
+  --cv-track: color-mix(in srgb, var(--wk-on) 25%, var(--cv-bg)); --cv-dot: color-mix(in srgb, var(--wk-on) 60%, var(--cv-bg));
+}
+.cv.wk-deep.cv-colored .cv-tile::after { display: none; }
+.cv.wk-deep.cv-colored.cv-pill .cv-icon { color: var(--cv-text); }
+.cv.wk-deep.cv-colored [data-share="blue"] { --cv-part: var(--wk-on); }
+.cv.wk-deep.cv-colored [data-share="green"] { --cv-part: color-mix(in srgb, var(--wk-on) 70%, var(--cv-bg)); }
+.cv.wk-deep.cv-colored [data-share="orange"] { --cv-part: color-mix(in srgb, var(--wk-on) 45%, var(--cv-bg)); }
+.cv.wk-deep.cv-colored [data-share="purple"] { --cv-part: color-mix(in srgb, var(--wk-on) 30%, var(--cv-bg)); }
+.cv.wk-deep.cv-colored [data-share="others"] { --cv-part: color-mix(in srgb, var(--wk-on) 18%, var(--cv-bg)); }
+
+.cv-message { font-size: var(--cv-fs-small); line-height: var(--cv-lh-small); color: var(--cv-muted); }
+.cv-message.error { color: var(--homey-color-red, #F25F5C); }

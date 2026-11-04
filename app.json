@@ -38923,6 +38923,706 @@
       },
       "id": "webpage"
     },
+    "combined": {
+      "name": {
+        "en": "Combined Value",
+        "nl": "Gecombineerde waarde",
+        "de": "Kombinierter Wert",
+        "fr": "Valeur combinée",
+        "it": "Valore combinato",
+        "sv": "Kombinerat värde",
+        "no": "Kombinert verdi",
+        "es": "Valor combinado",
+        "da": "Samlet værdi",
+        "ru": "Сводное значение",
+        "pl": "Wartość łączna",
+        "ko": "통합 값",
+        "ar": "قيمة مجمّعة"
+      },
+      "height": 104,
+      "transparent": true,
+      "devices": {
+        "type": "global",
+        "singular": false
+      },
+      "settings": [
+        {
+          "id": "capability",
+          "type": "autocomplete",
+          "title": {
+            "en": "Value",
+            "nl": "Waarde",
+            "de": "Wert",
+            "fr": "Valeur",
+            "it": "Valore",
+            "sv": "Värde",
+            "no": "Verdi",
+            "es": "Valor",
+            "da": "Værdi",
+            "ru": "Значение",
+            "pl": "Wartość",
+            "ko": "값",
+            "ar": "القيمة"
+          },
+          "hint": {
+            "en": "The value to combine, from the widget's devices that have it; with no devices picked, from every device that has it.",
+            "nl": "De waarde om te combineren, van de apparaten van de widget die haar hebben; zonder gekozen apparaten van elk apparaat dat haar heeft.",
+            "de": "Der zu kombinierende Wert, von den Geräten des Widgets, die ihn haben; ohne gewählte Geräte von jedem Gerät, das ihn hat.",
+            "fr": "La valeur à combiner, des appareils du widget qui l'ont ; sans appareil choisi, de tous les appareils qui l'ont.",
+            "it": "Il valore da combinare, dai dispositivi del widget che lo hanno; senza dispositivi scelti, da tutti quelli che lo hanno.",
+            "sv": "Värdet som ska kombineras, från widgetens enheter som har det; utan valda enheter från varje enhet som har det.",
+            "no": "Verdien som skal kombineres, fra widgetens enheter som har den; uten valgte enheter fra hver enhet som har den.",
+            "es": "El valor que se combina, de los dispositivos del widget que lo tienen; sin dispositivos elegidos, de todos los que lo tienen.",
+            "da": "Værdien, der samles, fra widgettens enheder, der har den; uden valgte enheder fra hver enhed, der har den.",
+            "ru": "Значение для объединения — с устройств виджета, у которых оно есть; если устройства не выбраны, со всех устройств, у которых оно есть.",
+            "pl": "Wartość do połączenia, z urządzeń widżetu, które ją mają; bez wybranych urządzeń z każdego urządzenia, które ją ma.",
+            "ko": "합칠 값입니다. 이 값이 있는 위젯의 기기에서 가져오며, 선택한 기기가 없으면 이 값이 있는 모든 기기에서 가져옵니다.",
+            "ar": "القيمة المراد جمعها، من أجهزة الأداة التي تملكها؛ وإن لم تختر أي جهاز فمن كل جهاز يملكها."
+          }
+        },
+        {
+          "id": "show",
+          "type": "dropdown",
+          "title": {
+            "en": "Show",
+            "nl": "Toon",
+            "de": "Anzeigen",
+            "fr": "Afficher",
+            "it": "Mostra",
+            "sv": "Visa",
+            "no": "Vis",
+            "es": "Mostrar",
+            "da": "Vis",
+            "ru": "Показывать",
+            "pl": "Pokaż",
+            "ko": "표시",
+            "ar": "العرض"
+          },
+          "value": "avg",
+          "values": [
+            {
+              "id": "avg",
+              "title": {
+                "en": "Average",
+                "nl": "Gemiddelde",
+                "de": "Durchschnitt",
+                "fr": "Moyenne",
+                "it": "Media",
+                "sv": "Medelvärde",
+                "no": "Gjennomsnitt",
+                "es": "Media",
+                "da": "Gennemsnit",
+                "ru": "Среднее",
+                "pl": "Średnia",
+                "ko": "평균",
+                "ar": "المتوسط"
+              }
+            },
+            {
+              "id": "sum",
+              "title": {
+                "en": "Sum",
+                "nl": "Som",
+                "de": "Summe",
+                "fr": "Somme",
+                "it": "Somma",
+                "sv": "Summa",
+                "no": "Sum",
+                "es": "Suma",
+                "da": "Sum",
+                "ru": "Сумма",
+                "pl": "Suma",
+                "ko": "합계",
+                "ar": "المجموع"
+              }
+            },
+            {
+              "id": "min",
+              "title": {
+                "en": "Lowest",
+                "nl": "Laagste",
+                "de": "Niedrigster",
+                "fr": "Le plus bas",
+                "it": "Il più basso",
+                "sv": "Lägsta",
+                "no": "Laveste",
+                "es": "El más bajo",
+                "da": "Laveste",
+                "ru": "Наименьшее",
+                "pl": "Najniższa",
+                "ko": "최저",
+                "ar": "الأدنى"
+              }
+            },
+            {
+              "id": "max",
+              "title": {
+                "en": "Highest",
+                "nl": "Hoogste",
+                "de": "Höchster",
+                "fr": "Le plus haut",
+                "it": "Il più alto",
+                "sv": "Högsta",
+                "no": "Høyeste",
+                "es": "El más alto",
+                "da": "Højeste",
+                "ru": "Наибольшее",
+                "pl": "Najwyższa",
+                "ko": "최고",
+                "ar": "الأعلى"
+              }
+            },
+            {
+              "id": "range",
+              "title": {
+                "en": "Lowest – highest",
+                "nl": "Laagste – hoogste",
+                "de": "Niedrigster – höchster",
+                "fr": "Plus bas – plus haut",
+                "it": "Più basso – più alto",
+                "sv": "Lägsta – högsta",
+                "no": "Laveste – høyeste",
+                "es": "Más bajo – más alto",
+                "da": "Laveste – højeste",
+                "ru": "Наименьшее – наибольшее",
+                "pl": "Najniższa – najwyższa",
+                "ko": "최저 – 최고",
+                "ar": "الأدنى – الأعلى"
+              }
+            }
+          ]
+        },
+        {
+          "id": "name",
+          "type": "text",
+          "title": {
+            "en": "Name",
+            "nl": "Naam",
+            "de": "Name",
+            "fr": "Nom",
+            "it": "Nome",
+            "sv": "Namn",
+            "no": "Navn",
+            "es": "Nombre",
+            "da": "Navn",
+            "ru": "Название",
+            "pl": "Nazwa",
+            "ko": "이름",
+            "ar": "الاسم"
+          },
+          "hint": {
+            "en": "Empty: the value's name, such as Temperature.",
+            "nl": "Leeg: de naam van de waarde, zoals Temperatuur.",
+            "de": "Leer: der Name des Werts, etwa Temperatur.",
+            "fr": "Vide : le nom de la valeur, comme Température.",
+            "it": "Vuoto: il nome del valore, come Temperatura.",
+            "sv": "Tomt: värdets namn, som Temperatur.",
+            "no": "Tomt: verdiens navn, som Temperatur.",
+            "es": "Vacío: el nombre del valor, como Temperatura.",
+            "da": "Tomt: værdiens navn, som Temperatur.",
+            "ru": "Пусто: название значения, например «Температура».",
+            "pl": "Puste: nazwa wartości, np. Temperatura.",
+            "ko": "비워 두면 값의 이름(예: 온도)이 쓰입니다.",
+            "ar": "فارغ: اسم القيمة، مثل درجة الحرارة."
+          },
+          "value": ""
+        },
+        {
+          "id": "range",
+          "type": "checkbox",
+          "title": {
+            "en": "Show the range",
+            "nl": "Bereik tonen",
+            "de": "Spanne anzeigen",
+            "fr": "Afficher l'écart",
+            "it": "Mostra l'intervallo",
+            "sv": "Visa spannet",
+            "no": "Vis spennet",
+            "es": "Mostrar el rango",
+            "da": "Vis spændet",
+            "ru": "Показывать диапазон",
+            "pl": "Pokaż zakres",
+            "ko": "범위 표시",
+            "ar": "عرض النطاق"
+          },
+          "hint": {
+            "en": "The lowest to the highest reading, under the name.",
+            "nl": "De laagste tot de hoogste meting, onder de naam.",
+            "de": "Der niedrigste bis höchste Messwert, unter dem Namen.",
+            "fr": "De la mesure la plus basse à la plus haute, sous le nom.",
+            "it": "Dalla lettura più bassa alla più alta, sotto il nome.",
+            "sv": "Lägsta till högsta mätvärde, under namnet.",
+            "no": "Laveste til høyeste måling, under navnet.",
+            "es": "De la lectura más baja a la más alta, bajo el nombre.",
+            "da": "Laveste til højeste måling, under navnet.",
+            "ru": "От наименьшего до наибольшего показания, под названием.",
+            "pl": "Od najniższego do najwyższego odczytu, pod nazwą.",
+            "ko": "이름 아래에 최저부터 최고 측정값까지 표시합니다.",
+            "ar": "من أدنى قراءة إلى أعلاها، تحت الاسم."
+          },
+          "value": true
+        },
+        {
+          "id": "chart",
+          "type": "checkbox",
+          "title": {
+            "en": "Show the chart",
+            "nl": "Grafiek tonen",
+            "de": "Diagramm anzeigen",
+            "fr": "Afficher le graphique",
+            "it": "Mostra il grafico",
+            "sv": "Visa diagrammet",
+            "no": "Vis diagrammet",
+            "es": "Mostrar el gráfico",
+            "da": "Vis diagrammet",
+            "ru": "Показывать график",
+            "pl": "Pokaż wykres",
+            "ko": "차트 표시",
+            "ar": "عرض المخطط"
+          },
+          "hint": {
+            "en": "Each device against the others: a dot on a scale, or for a sum each device's share.",
+            "nl": "Elk apparaat tegenover de andere: een stip op een schaal, of bij een som het aandeel van elk apparaat.",
+            "de": "Jedes Gerät im Vergleich zu den anderen: ein Punkt auf einer Skala, bei einer Summe der Anteil jedes Geräts.",
+            "fr": "Chaque appareil face aux autres : un point sur une échelle, ou pour une somme la part de chaque appareil.",
+            "it": "Ogni dispositivo rispetto agli altri: un punto su una scala, o per una somma la quota di ciascuno.",
+            "sv": "Varje enhet mot de andra: en punkt på en skala, eller för en summa varje enhets andel.",
+            "no": "Hver enhet mot de andre: et punkt på en skala, eller for en sum hver enhets andel.",
+            "es": "Cada dispositivo frente a los demás: un punto en una escala o, en una suma, la parte de cada uno.",
+            "da": "Hver enhed over for de andre: en prik på en skala, eller ved en sum hver enheds andel.",
+            "ru": "Каждое устройство относительно других: точка на шкале, а для суммы — доля каждого устройства.",
+            "pl": "Każde urządzenie na tle innych: punkt na skali, a dla sumy udział każdego urządzenia.",
+            "ko": "각 기기를 다른 기기와 비교합니다. 눈금 위의 점으로, 합계라면 기기별 비율로 표시합니다.",
+            "ar": "كل جهاز مقارنةً بالآخرين: نقطة على مقياس، أو في المجموع حصة كل جهاز."
+          },
+          "value": true
+        },
+        {
+          "id": "tileStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Tile style",
+            "nl": "Tegelstijl",
+            "de": "Kachelstil",
+            "fr": "Style des tuiles",
+            "it": "Stile dei riquadri",
+            "sv": "Rutstil",
+            "no": "Flisstil",
+            "es": "Estilo de mosaico",
+            "da": "Feltstil",
+            "ru": "Стиль плиток",
+            "pl": "Styl kafelków",
+            "ko": "타일 스타일",
+            "ar": "نمط البلاطات"
+          },
+          "hint": {
+            "en": "Pill: the icon beside the name and value, like Sensor Alarms' tiles.",
+            "nl": "Pil: het pictogram naast de naam en waarde, zoals de tegels van Sensoralarmen.",
+            "de": "Kapsel: das Symbol neben Name und Wert, wie die Kacheln von Sensoralarme.",
+            "fr": "Pilule : l'icône à côté du nom et de la valeur, comme les tuiles d'Alarmes des capteurs.",
+            "it": "Pillola: l'icona accanto al nome e al valore, come i riquadri di Allarmi sensori.",
+            "sv": "Kapsel: ikonen bredvid namnet och värdet, som rutorna i Sensorlarm.",
+            "no": "Kapsel: ikonet ved siden av navnet og verdien, som flisene i Sensoralarmer.",
+            "es": "Píldora: el icono junto al nombre y el valor, como los mosaicos de Alarmas de sensores.",
+            "da": "Kapsel: ikonet ved siden af navnet og værdien, som felterne i Sensoralarmer.",
+            "ru": "Капсула: значок рядом с именем и значением, как плитки «Тревоги датчиков».",
+            "pl": "Pigułka: ikona obok nazwy i wartości, jak kafelki Alarmów czujników.",
+            "ko": "알약형: 센서 알람의 타일처럼 아이콘이 이름과 값 옆에 놓입니다.",
+            "ar": "كبسولة: الأيقونة بجانب الاسم والقيمة، مثل بلاطات إنذارات المستشعرات."
+          },
+          "value": "compact",
+          "values": [
+            {
+              "id": "compact",
+              "title": {
+                "en": "Compact",
+                "nl": "Compact",
+                "de": "Kompakt",
+                "fr": "Compact",
+                "it": "Compatto",
+                "sv": "Kompakt",
+                "no": "Kompakt",
+                "es": "Compacto",
+                "da": "Kompakt",
+                "ru": "Компактный",
+                "pl": "Kompaktowy",
+                "ko": "컴팩트",
+                "ar": "مدمج"
+              }
+            },
+            {
+              "id": "pill",
+              "title": {
+                "en": "Pill",
+                "nl": "Pil",
+                "de": "Kapsel",
+                "fr": "Pilule",
+                "it": "Pillola",
+                "sv": "Kapsel",
+                "no": "Kapsel",
+                "es": "Píldora",
+                "da": "Kapsel",
+                "ru": "Капсула",
+                "pl": "Pigułka",
+                "ko": "알약형",
+                "ar": "كبسولة"
+              }
+            }
+          ]
+        },
+        {
+          "id": "color",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour",
+            "nl": "Kleur",
+            "de": "Farbe",
+            "fr": "Couleur",
+            "it": "Colore",
+            "sv": "Färg",
+            "no": "Farge",
+            "es": "Color",
+            "da": "Farve",
+            "ru": "Цвет",
+            "pl": "Kolor",
+            "ko": "색상",
+            "ar": "اللون"
+          },
+          "hint": {
+            "en": "A tinted tile (Default: a plain tile).",
+            "nl": "Een gekleurde tegel (Standaard: een gewone tegel).",
+            "de": "Eine getönte Kachel (Standard: eine schlichte Kachel).",
+            "fr": "Une tuile teintée (Par défaut : une tuile simple).",
+            "it": "Un riquadro colorato (Predefinito: un riquadro semplice).",
+            "sv": "En tonad ruta (Standard: en vanlig ruta).",
+            "no": "En farget flis (Standard: en vanlig flis).",
+            "es": "Un mosaico teñido (Predeterminado: un mosaico normal).",
+            "da": "Et tonet felt (Standard: et almindeligt felt).",
+            "ru": "Тонированная плитка (по умолчанию: обычная плитка).",
+            "pl": "Zabarwiony kafelek (Domyślny: zwykły kafelek).",
+            "ko": "색이 입혀진 타일입니다(기본값: 일반 타일).",
+            "ar": "بلاطة ملوّنة (الافتراضي: بلاطة عادية)."
+          },
+          "value": "default",
+          "values": [
+            {
+              "id": "default",
+              "title": {
+                "en": "Default",
+                "nl": "Standaard",
+                "de": "Standard",
+                "fr": "Par défaut",
+                "it": "Predefinito",
+                "sv": "Standard",
+                "no": "Standard",
+                "es": "Predeterminado",
+                "da": "Standard",
+                "ru": "По умолчанию",
+                "pl": "Domyślny",
+                "ko": "기본값",
+                "ar": "افتراضي"
+              }
+            },
+            {
+              "id": "blue",
+              "title": {
+                "en": "Blue",
+                "nl": "Blauw",
+                "de": "Blau",
+                "fr": "Bleu",
+                "it": "Blu",
+                "sv": "Blå",
+                "no": "Blå",
+                "es": "Azul",
+                "da": "Blå",
+                "ru": "Синий",
+                "pl": "Niebieski",
+                "ko": "파랑",
+                "ar": "أزرق"
+              }
+            },
+            {
+              "id": "red",
+              "title": {
+                "en": "Red",
+                "nl": "Rood",
+                "de": "Rot",
+                "fr": "Rouge",
+                "it": "Rosso",
+                "sv": "Röd",
+                "no": "Rød",
+                "es": "Rojo",
+                "da": "Rød",
+                "ru": "Красный",
+                "pl": "Czerwony",
+                "ko": "빨강",
+                "ar": "أحمر"
+              }
+            },
+            {
+              "id": "orange",
+              "title": {
+                "en": "Orange",
+                "nl": "Oranje",
+                "de": "Orange",
+                "fr": "Orange",
+                "it": "Arancione",
+                "sv": "Orange",
+                "no": "Oransje",
+                "es": "Naranja",
+                "da": "Orange",
+                "ru": "Оранжевый",
+                "pl": "Pomarańczowy",
+                "ko": "주황",
+                "ar": "برتقالي"
+              }
+            },
+            {
+              "id": "yellow",
+              "title": {
+                "en": "Yellow",
+                "nl": "Geel",
+                "de": "Gelb",
+                "fr": "Jaune",
+                "it": "Giallo",
+                "sv": "Gul",
+                "no": "Gul",
+                "es": "Amarillo",
+                "da": "Gul",
+                "ru": "Жёлтый",
+                "pl": "Żółty",
+                "ko": "노랑",
+                "ar": "أصفر"
+              }
+            },
+            {
+              "id": "green",
+              "title": {
+                "en": "Green",
+                "nl": "Groen",
+                "de": "Grün",
+                "fr": "Vert",
+                "it": "Verde",
+                "sv": "Grön",
+                "no": "Grønn",
+                "es": "Verde",
+                "da": "Grøn",
+                "ru": "Зелёный",
+                "pl": "Zielony",
+                "ko": "초록",
+                "ar": "أخضر"
+              }
+            },
+            {
+              "id": "purple",
+              "title": {
+                "en": "Purple",
+                "nl": "Paars",
+                "de": "Lila",
+                "fr": "Violet",
+                "it": "Viola",
+                "sv": "Lila",
+                "no": "Lilla",
+                "es": "Morado",
+                "da": "Lilla",
+                "ru": "Фиолетовый",
+                "pl": "Fioletowy",
+                "ko": "보라",
+                "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
+            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
+            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
+            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
+            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
+            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
+            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
+            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
+            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
+            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
+            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
+            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
+            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
+              }
+            }
+          ]
+        }
+      ],
+      "api": {
+        "getState": {
+          "method": "GET",
+          "path": "/state"
+        }
+      },
+      "id": "combined"
+    },
     "valueboard": {
       "name": {
         "en": "Value Board",
@@ -42684,6 +43384,24 @@
                   "pl": "Wartości urządzeń",
                   "ko": "기기 값",
                   "ar": "قيم الأجهزة"
+                }
+              },
+              {
+                "id": "combined",
+                "title": {
+                  "en": "Combined Value",
+                  "nl": "Gecombineerde waarde",
+                  "de": "Kombinierter Wert",
+                  "fr": "Valeur combinée",
+                  "it": "Valore combinato",
+                  "sv": "Kombinerat värde",
+                  "no": "Kombinert verdi",
+                  "es": "Valor combinado",
+                  "da": "Samlet værdi",
+                  "ru": "Сводное значение",
+                  "pl": "Wartość łączna",
+                  "ko": "통합 값",
+                  "ar": "قيمة مجمّعة"
                 }
               },
               {

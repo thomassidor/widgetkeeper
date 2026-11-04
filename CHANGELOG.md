@@ -2,6 +2,11 @@
 
 All notable changes to Widgetkeeper. The version numbers match the Homey app version.
 
+## 1.3.0
+
+### New: Combined Value
+- **One value of several devices as one:** the average temperature of every room, the house's total power, the lowest battery or the highest CO₂, large on one full-width tile, with the lowest to the highest under its name. A chart shows each device against the others (a dot on a shared scale, or for a sum each device's share), or leave it out. Pick no devices to count every device with the value. Compact or pill tile, and a colour if you like.
+
 ## 1.2.0
 
 ### New: Device names

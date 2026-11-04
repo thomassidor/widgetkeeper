@@ -399,7 +399,7 @@
   };
 
   /**
-   * The built-in glyph for a capability and its current value (Device Values' and Value Board's icons), as an SVG data
+   * The built-in glyph for a capability and its current value (Device Values', Value Board's and Combined Value's icons), as an SVG data
    * URL for a mask.
    * @param {string} capabilityId
    * @param {unknown} [value]

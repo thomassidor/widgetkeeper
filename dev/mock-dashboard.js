@@ -19,6 +19,20 @@ const SCREENSHOTS = (function () {
 
   const values = (el, o) => MOUNT.values(el, withOpts(findWidget('values', 1), o)); // security: batteries in red, yellow and green
 
+  // Combined Value: the rooms' average temperature with the dots, the big users' power as shares, the lowest battery as a pill.
+  const combined = (el, o) => {
+    const cap = (id, title, units, decimals) => ({ id, title, units, decimals, min: null, max: null });
+    const devices = list => list.map(([name, value], i) => ({ id: `cv${i}`, name, value }));
+    el.style.cssText = 'display: flex; flex-direction: column; gap: 12px';
+    const add = (opts, state) => MOUNT.combined(el.appendChild(document.createElement('div')), { opts: { ...opts, ...o }, state });
+    add({ name: 'Indoor temperature' }, { capability: cap('measure_temperature', 'Temperature', '°C', 1),
+      devices: devices([['Living room', 21.8], ['Kitchen', 22.4], ['Bedroom', 19.6], ['Office', 23.1], ['Bathroom', 22.9], ['Kids’ room', 20.7]]) });
+    add({ name: 'Power now', show: 'sum', range: false }, { capability: cap('measure_power', 'Power', 'W', 0),
+      devices: devices([['Heat pump', 1240], ['Oven', 980], ['Dishwasher', 610], ['Lights', 210], ['TV', 140], ['Fridge', 85]]) });
+    add({ name: 'Lowest battery', show: 'min', range: false, tileStyle: 'pill' }, { capability: cap('measure_battery', 'Battery', '%', 0),
+      devices: devices([['Motion, hall', 18], ['Front door', 82], ['Smoke, attic', 64], ['Leak, laundry', 55], ['Back door', 77], ['Window, office', 95]]) });
+  };
+
   const sparklines = (el, o) => MOUNT.sparklines(el, { opts: o, slots: findWidget('sparklines').slots });
 
   // The Energy dashboard's Charts is one overlaid chart: the README shows two stacked, from the sparklines' made-up 24 hours (outdoor, main meter).
@@ -196,7 +210,7 @@ const SCREENSHOTS = (function () {
   };
 
   return {
-    electricity, thermostat, quickactions, sensoralarms, roomhealth, valuematrix, weather, heatmap, cameras, values, variables, varpresets,
+    electricity, thermostat, quickactions, sensoralarms, roomhealth, valuematrix, weather, heatmap, cameras, values, combined, variables, varpresets,
     keypad, flows: flowButtons, price, locks, sparklines, charts, totals, scatter, compare, timeline, stacked, lines, gauge, gaugedial,
     dailyrange, typicalday, clock, textline, dayssince, shortcuts, lightrooms, pollen, webpage, popups,
   };

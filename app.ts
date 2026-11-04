@@ -22,6 +22,7 @@ import PopupService, {
 import QuickActionService from './lib/QuickActionService.js';
 import RoomHealthService from './lib/RoomHealthService.js';
 import ValueBoardService from './lib/ValueBoardService.js';
+import CombinedService from './lib/CombinedService.js';
 import ValueMatrixService from './lib/ValueMatrixService.js';
 import SensorAlarmService from './lib/SensorAlarmService.js';
 import SparklineService from './lib/SparklineService.js';
@@ -56,6 +57,8 @@ export default class WidgetkeeperApp extends Homey.App {
   roomHealth!: RoomHealthService;
   valueMatrix!: ValueMatrixService;
   valueBoard!: ValueBoardService;
+  /** Combined Value: one value of several devices folded into one (Value Matrix's cells). */
+  combined!: CombinedService;
   weather!: WeatherService;
   pollen!: PollenService;
   /** Whether a Web Page widget's page refuses to be shown in a frame. */
@@ -110,6 +113,7 @@ export default class WidgetkeeperApp extends Homey.App {
     this.valueMatrix.start();
     this.valueBoard = new ValueBoardService(this.homey, log, debug);
     this.valueBoard.start();
+    this.combined = new CombinedService(this.homey, this.valueMatrix, log, debug);
     this.weather = new WeatherService(this.homey, log, debug);
     this.weather.start();
     this.pollen = new PollenService(this.homey, log, debug);

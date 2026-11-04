@@ -349,6 +349,13 @@
     "none": "Ingen",
     "pickTileFirst": "Velg flis __n__ først."
   },
+  "combined": {
+    "selectValue": "Velg en verdi i widgetinnstillingene.",
+    "noDevices": "Ingen av enhetene har denne verdien.",
+    "error": "Kunne ikke laste inn verdien.",
+    "notRead": "__count__ av __total__ ikke lest",
+    "others": "Andre"
+  },
   "sparklines": {
     "selectSlots": "Velg enhetsverdier i widgetinnstillingene.",
     "error": "Kunne ikke laste inn verdiene.",
@@ -1014,6 +1021,7 @@
       "heatmap": "En uke av en verdi som varmekart ukedag × time.",
       "cameras": "Kamerabilder, med direktevideo ved et trykk.",
       "values": "Enhver enhetsverdi som en kompakt flis.",
+      "combined": "Én verdi fra flere enheter som én: gjennomsnittet, summen, den laveste eller den høyeste.",
       "lights": "Lysfliser med lysstyrke og farge for hånden.",
       "lightrooms": "Hvert roms lys på et kort: slå et rom av og på, eller åpne det for lysene og Moods.",
       "sparklines": "Verdier med et lite diagram over den siste historikken.",

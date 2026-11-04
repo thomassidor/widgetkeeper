@@ -349,6 +349,13 @@
     "none": "Geen",
     "pickTileFirst": "Kies eerst Tegel __n__."
   },
+  "combined": {
+    "selectValue": "Kies een waarde in de widgetinstellingen.",
+    "noDevices": "Geen van de apparaten heeft deze waarde.",
+    "error": "Kan de waarde niet laden.",
+    "notRead": "__count__ van __total__ niet gelezen",
+    "others": "Overige"
+  },
   "sparklines": {
     "selectSlots": "Kies apparaatwaarden in de widgetinstellingen.",
     "error": "Kan de waarden niet laden.",
@@ -1014,6 +1021,7 @@
       "heatmap": "Een week van een waarde als heatmap van dag × uur.",
       "cameras": "Camerabeelden, met live video na een tik.",
       "values": "Elke apparaatwaarde als compacte tegel.",
+      "combined": "Eén waarde van meerdere apparaten als één: het gemiddelde, de som, de laagste of de hoogste.",
       "lights": "Lichttegels met helderheid en kleur bij de hand.",
       "lightrooms": "De lampen van elke kamer op een kaart: schakel een kamer, of open hem voor zijn lampen en Moods.",
       "sparklines": "Waarden met een kleine grafiek van hun recente verloop.",

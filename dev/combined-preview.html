@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Combined value widget preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../widgets/spacer/public/kit.css">
+  <link rel="stylesheet" href="../widgets/combined/public/widget.css">
+  <script src="../widgets/spacer/public/kit.js"></script>
+  <script src="../widgets/combined/public/widget.js"></script>
+  <script src="i18n.js"></script>
+  <link rel="stylesheet" href="preview.css">
+  <style>
+    /* The widget is transparent: it sits straight on the dashboard background. */
+    .dash { padding: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; }
+    .light { background: #F2F3F5; padding: 12px; border-radius: 12px; }
+    #cases { display: contents; }
+  </style>
+</head>
+<body>
+  <div id="cases"></div>
+
+  <script>
+    // Made-up devices (the showcase's house), one case per column: the tile, then the pill. `?mode=light`, `?w=300`.
+    const params = new URLSearchParams(location.search);
+    const light = params.get('mode') === 'light';
+    const width = Number(params.get('w')) || 358;
+    const cap = (id, title, units, decimals, extra = {}) => ({ id, title, units, decimals, min: null, max: null, ...extra });
+    const devices = list => list.map(([name, value], i) => (name === null ? { id: `gone${i}`, missing: true } : { id: `d${i}`, name, value }));
+    const TEMPS = [['Living room', 21.8], ['Kitchen', 22.4], ['Bedroom', 19.6], ['Office', 23.1], ['Bathroom', 22.9], ['Kids’ room', 20.7]];
+    const POWER = [['Heat pump', 1240], ['Oven', 980], ['Dishwasher', 610], ['Lights', 210], ['TV', 140], ['Fridge', 85], ['Router', 12]];
+    const CASES = [
+      { title: 'Average · range on · dots', opts: { name: 'Indoor temperature' },
+        state: { capability: cap('measure_temperature', 'Temperature', '°C', 1), devices: devices(TEMPS) } },
+      { title: 'Sum · range off · share', opts: { show: 'sum', name: 'Power now', range: false },
+        state: { capability: cap('measure_power', 'Power', 'W', 0), devices: devices(POWER) } },
+      { title: 'Lowest of 12 batteries (% scale)', opts: { show: 'min', name: 'Lowest battery' },
+        state: { capability: cap('measure_battery', 'Battery', '%', 0), devices: devices([['Motion, hall', 18], ['Front door', 82], ['Window, bedroom', 91], ['Smoke, attic', 64],
+          ['Leak, laundry', 55], ['Motion, garage', 47], ['Back door', 77], ['Smoke, hall', 88], ['Leak, kitchen', 69], ['Window, office', 95], ['Button, bed', 34], ['Motion, stairs', 72]]) } },
+      { title: 'Highest · Muted orange', opts: { show: 'max', name: 'Highest CO₂', range: false, color: 'orange' },
+        state: { capability: cap('measure_co2', 'CO2', 'ppm', 0), devices: devices([['Bedroom', 1140], ['Office', 760], ['Living room', 610], ['Kids’ room', 890]]) } },
+      { title: 'Lowest – highest', opts: { show: 'range' },
+        state: { capability: cap('measure_humidity', 'Humidity', '%', 0), devices: devices([['Bathroom', 68], ['Kitchen', 48], ['Bedroom', 52], ['Living room', 41], ['Office', 38]]) } },
+      { title: 'Sum · Vivid green', opts: { show: 'sum', name: 'Solar now', color: 'green', colorStyle: 'deep' },
+        state: { capability: cap('measure_power', 'Power', 'W', 0), devices: devices([['Roof, south', 2860], ['Roof, west', 1420], ['Carport', 610]]) } },
+      { title: 'Sum with negatives: dots, zero', opts: { show: 'sum', name: 'Net power', range: false },
+        state: { capability: cap('measure_power', 'Power', 'W', 0), devices: devices([['House meter', 1830], ['Solar inverter', -2410], ['Home battery', -640], ['Car charger', 0]]) } },
+      { title: 'Chart off', opts: { name: 'Outside', chart: false },
+        state: { capability: cap('measure_temperature', 'Temperature', '°C', 1), devices: devices([['Weather station', 6.3], ['North wall', 5.8]]) } },
+      { title: 'Chart and range off', opts: { show: 'sum', range: false, chart: false },
+        state: { capability: cap('measure_power', 'Power', 'W', 0), devices: devices(POWER) } },
+      { title: 'A device not read', opts: { name: 'Indoor temperature' },
+        state: { capability: cap('measure_temperature', 'Temperature', '°C', 1), devices: devices([...TEMPS.slice(0, 5), [null]]) } },
+      { title: 'Highest of two freezers', opts: { show: 'max', name: 'Warmest freezer' },
+        state: { capability: cap('measure_temperature', 'Temperature', '°C', 1), devices: devices([['Freezer, garage', -17.2], ['Freezer, kitchen', -19.5]]) } },
+      { title: 'Dim (0–1 as %), Vivid, no colour', opts: { colorStyle: 'deep' },
+        state: { capability: cap('dim', 'Brightness', '%', 2, { min: 0, max: 1 }), devices: devices([['Ceiling', 0.35], ['Floor lamp', 0.8], ['Desk', 1], ['Hallway', 0.1]]) } },
+    ];
+    const root = document.getElementById('cases');
+    for (const c of CASES) {
+      const col = document.createElement('div');
+      col.className = 'col';
+      col.innerHTML = `<span>${width} px · ${light ? 'light' : 'dark'} · ${c.title}</span><div class="dash ${light ? 'light' : 'homey-dark-mode'}" style="width:${width}px"><div></div><div></div></div>`;
+      root.append(col);
+      const [tile, pillEl] = col.querySelectorAll('.dash > div');
+      createCombinedWidget(tile, { t: devT, ...c.opts }).setState(structuredClone(c.state));
+      createCombinedWidget(pillEl, { t: devT, ...c.opts, tileStyle: 'pill' }).setState(structuredClone(c.state));
+    }
+    const none = document.createElement('div');
+    none.className = 'col';
+    none.innerHTML = `<span>Nothing picked</span><div class="dash homey-dark-mode" style="width:${width}px"><div></div></div>`;
+    root.append(none);
+    const empty = createCombinedWidget(none.querySelector('.dash > div'), { t: devT });
+    empty.setMessage(empty.t('selectValue'));
+  </script>
+</body>
+</html>

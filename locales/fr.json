@@ -349,6 +349,13 @@
     "none": "Aucun",
     "pickTileFirst": "Choisissez d'abord la tuile __n__."
   },
+  "combined": {
+    "selectValue": "Choisissez une valeur dans les réglages du widget.",
+    "noDevices": "Aucun des appareils n'a cette valeur.",
+    "error": "Impossible de charger la valeur.",
+    "notRead": "__count__ sur __total__ non lus",
+    "others": "Autres"
+  },
   "sparklines": {
     "selectSlots": "Choisissez des valeurs dans les réglages du widget.",
     "error": "Impossible de charger les valeurs.",
@@ -1014,6 +1021,7 @@
       "heatmap": "Une semaine d'une valeur en carte de chaleur jour × heure.",
       "cameras": "Images des caméras, avec la vidéo en direct d'un geste.",
       "values": "N'importe quelle valeur d'appareil en tuile compacte.",
+      "combined": "Une valeur de plusieurs appareils réunie en une : la moyenne, la somme, la plus basse ou la plus haute.",
       "lights": "Des tuiles de lumières avec luminosité et couleur à portée.",
       "lightrooms": "Les lumières de chaque pièce sur une carte : allumez une pièce, ou ouvrez-la pour ses lampes et ses Moods.",
       "sparklines": "Des valeurs avec un petit graphique de leur historique.",

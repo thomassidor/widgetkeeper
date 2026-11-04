@@ -57,6 +57,8 @@ interface Window {
   createCamerasWidget: (root: HTMLElement, opts?: object) => any;
   createHeatmapWidget: (root: HTMLElement, opts?: object) => any;
   createValuesWidget: (root: HTMLElement, opts?: object) => any;
+  createCombinedWidget: (root: HTMLElement, opts?: object) => any;
+  combineValues: (read: { name: string, value: number }[]) => { sum: number, avg: number, min: number, max: number, lo: string, hi: string, n: number } | null;
   createLightsWidget: (root: HTMLElement, opts?: object) => any;
   createLightRoomsWidget: (root: HTMLElement, opts?: object) => any;
   createSparklinesWidget: (root: HTMLElement, opts?: object) => any;
@@ -227,6 +229,7 @@ interface Window {
   mountThermostatWidget: MountWidget;
   mountTimersWidget: MountWidget;
   mountValuesWidget: MountWidget;
+  mountCombinedWidget: MountWidget;
   mountVariablesWidget: MountWidget;
   mountVarPresetsWidget: MountWidget;
   mountKeypadWidget: MountWidget;

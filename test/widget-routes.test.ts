@@ -128,6 +128,9 @@ const ROUTES: Route[] = [
   ['values', 'GET', '/state', { slots: 'a:measure_temperature,b:measure_power', seconds: ',measure_humidity' }, {},
     [['values.getState', [['a:measure_temperature', 'b:measure_power'], ['', 'measure_humidity']]]]],
   setName('values'),
+  // Every device with the value when none were picked.
+  ['combined', 'GET', '/state', { capabilityId: 'measure_temperature', deviceIds: 'a,b' }, {}, [['combined.getState', ['measure_temperature', ['a', 'b']]]]],
+  ['combined', 'GET', '/state', { capabilityId: 'measure_power' }, {}, [['combined.getState', ['measure_power', []]]]],
   ['variables', 'GET', '/state', { ids: 'v1,v2' }, {}, [['variables.getState', [['v1', 'v2']]]]],
   ['variables', 'POST', '/set', {}, { id: 'v1', value: true }, [['variables.set', ['v1', true]]]],
   setName('variables'),
@@ -190,6 +193,7 @@ describe('widget routes: from the request to the service', () => {
     ['variables', 'POST', '/set', {}, { value: true }, /Missing id/],
     ['varpresets', 'GET', '/state', {}, {}, /Missing id/],
     ['webpage', 'GET', '/check', {}, {}, /Missing address/],
+    ['combined', 'GET', '/state', { deviceIds: 'a' }, {}, /Missing capabilityId/],
   ] as const)('%s %s %s refuses a request without what it needs', async (type, method, path, query, body, error) => {
     const { call, calls } = setup();
     await expect(call(type, method, path, query, body)).rejects.toThrow(error);

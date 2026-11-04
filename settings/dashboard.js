@@ -253,6 +253,7 @@
       heatmap: 'A week of any value as a weekday × hour heatmap.',
       cameras: 'Camera snapshots, with live video on a tap.',
       values: 'Any device value as a compact tile.',
+      combined: 'One value of several devices as one: the average, the sum, the lowest or the highest.',
       lights: 'Light tiles with brightness and colour at hand.',
       lightrooms: "Every room's lights on a card: switch a room, or open it for its lights and Moods.",
       sparklines: 'Values with a small chart of their recent history.',

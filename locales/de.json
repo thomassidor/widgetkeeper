@@ -349,6 +349,13 @@
     "none": "Keine",
     "pickTileFirst": "Wähle zuerst Kachel __n__."
   },
+  "combined": {
+    "selectValue": "Wähle einen Wert in den Widget-Einstellungen.",
+    "noDevices": "Keines der Geräte hat diesen Wert.",
+    "error": "Wert konnte nicht geladen werden.",
+    "notRead": "__count__ von __total__ nicht gelesen",
+    "others": "Andere"
+  },
   "sparklines": {
     "selectSlots": "Wähle Gerätewerte in den Widget-Einstellungen.",
     "error": "Werte konnten nicht geladen werden.",
@@ -1014,6 +1021,7 @@
       "heatmap": "Eine Woche eines Werts als Heatmap aus Wochentag × Stunde.",
       "cameras": "Kamerabilder, mit Live-Video auf Tipp.",
       "values": "Jeder Gerätewert als kompakte Kachel.",
+      "combined": "Ein Wert mehrerer Geräte als einer: der Durchschnitt, die Summe, der niedrigste oder der höchste.",
       "lights": "Lichtkacheln mit Helligkeit und Farbe griffbereit.",
       "lightrooms": "Die Lampen jedes Raums auf einer Karte: schalte einen Raum oder öffne ihn für seine Lampen und Moods.",
       "sparklines": "Werte mit einem kleinen Diagramm ihres Verlaufs.",

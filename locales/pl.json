@@ -349,6 +349,13 @@
     "none": "Brak",
     "pickTileFirst": "Najpierw wybierz kafelek __n__."
   },
+  "combined": {
+    "selectValue": "Wybierz wartość w ustawieniach widżetu.",
+    "noDevices": "Żadne z urządzeń nie ma tej wartości.",
+    "error": "Nie udało się wczytać wartości.",
+    "notRead": "Nieodczytane: __count__ z __total__",
+    "others": "Pozostałe"
+  },
   "sparklines": {
     "selectSlots": "Wybierz wartości w ustawieniach widżetu.",
     "error": "Nie udało się wczytać wartości.",
@@ -1014,6 +1021,7 @@
       "heatmap": "Tydzień dowolnej wartości jako mapa cieplna dzień × godzina.",
       "cameras": "Zdjęcia z kamer, z obrazem na żywo po dotknięciu.",
       "values": "Dowolna wartość urządzenia jako kompaktowy kafelek.",
+      "combined": "Jedna wartość wielu urządzeń jako jedna: średnia, suma, najniższa lub najwyższa.",
       "lights": "Kafelki świateł z jasnością i kolorem pod ręką.",
       "lightrooms": "Światła każdego pokoju na karcie: przełącz cały pokój albo otwórz go, by sterować lampami i Moods.",
       "sparklines": "Wartości z małym wykresem ich niedawnej historii.",

@@ -53,6 +53,8 @@ export function widgetAutocompletes(app: WidgetkeeperApp): Record<string, Record
   }
   // Value matrix: each column's capability, from every number capability on the Homey.
   for (const n of MATRIX_COLUMNS) add('valuematrix', `col${n}`, query => app.valueMatrix.listColumns(query));
+  // Combined value: the value it folds, from the same list.
+  add('combined', 'capability', query => app.combined.listCapabilities(query));
 
   // Sparklines and the chart widgets: each value from Sparklines' list (logged numbers; Chart · Totals' meters first,
   // Chart · Stacked's power first, Chart · Timeline's booleans and numbers), by `VALUE_SETTINGS`.

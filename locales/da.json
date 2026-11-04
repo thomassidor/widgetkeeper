@@ -349,6 +349,13 @@
     "none": "Ingen",
     "pickTileFirst": "Vælg felt __n__ først."
   },
+  "combined": {
+    "selectValue": "Vælg en værdi i widgetindstillingerne.",
+    "noDevices": "Ingen af enhederne har denne værdi.",
+    "error": "Kunne ikke hente værdien.",
+    "notRead": "__count__ af __total__ ikke læst",
+    "others": "Øvrige"
+  },
   "sparklines": {
     "selectSlots": "Vælg enhedsværdier i widgetindstillingerne.",
     "error": "Kunne ikke hente værdierne.",
@@ -1014,6 +1021,7 @@
       "heatmap": "En uge af en værdi som heatmap over ugedag × time.",
       "cameras": "Kamerabilleder med live video ved et tryk.",
       "values": "Enhver enhedsværdi som en kompakt flise.",
+      "combined": "Én værdi fra flere enheder som én: gennemsnittet, summen, den laveste eller den højeste.",
       "lights": "Lysfliser med lysstyrke og farve lige ved hånden.",
       "lightrooms": "Hvert rums lys på et kort: tænd et rum, eller åbn det for dets lys og Moods.",
       "sparklines": "Værdier med en lille graf over deres seneste historik.",

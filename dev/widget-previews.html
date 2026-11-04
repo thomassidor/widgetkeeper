@@ -6,7 +6,7 @@
 <title>Widget Previews</title>
 <!--
   Source for the widget preview PNGs (from the "Widget Previews" Claude Design project).
-  Without a query it shows them all on a canvas; `?p=elec-dark|elec-light|thermo-dark|thermo-light|qa-dark|qa-light|sa-dark|sa-light|sd-dark|sd-light|rh-dark|rh-light|weather-dark|weather-light|hm-dark|hm-light|cam-dark|cam-light|val-dark|val-light|lc-dark|lc-light|lr-dark|lr-light|spark-dark|spark-light|chart-dark|chart-light|var-dark|var-light|vp-dark|vp-light|sd-dark|sd-light|fb-dark|fb-light|pb-dark|pb-light|tm-dark|tm-light|lk-dark|lk-light|ct-dark|ct-light|mw-dark|mw-light|sk-dark|sk-light|ck-dark|ck-light|sp-dark|sp-light|tl-dark|tl-light|ds-dark|ds-light|sc-dark|sc-light|wp-dark|wp-light|pw-dark|pw-light|pu-dark|pu-light|kp-dark|kp-light|tt-dark|tt-light|xy-dark|xy-light|td-dark|td-light|dr-dark|dr-light|cp-dark|cp-light|tln-dark|tln-light|stk-dark|stk-light|lns-dark|lns-light|gg-dark|gg-light`
+  Without a query it shows them all on a canvas; `?p=elec-dark|elec-light|thermo-dark|thermo-light|qa-dark|qa-light|sa-dark|sa-light|sd-dark|sd-light|rh-dark|rh-light|weather-dark|weather-light|hm-dark|hm-light|cam-dark|cam-light|val-dark|val-light|cv-dark|cv-light|lc-dark|lc-light|lr-dark|lr-light|spark-dark|spark-light|chart-dark|chart-light|var-dark|var-light|vp-dark|vp-light|sd-dark|sd-light|fb-dark|fb-light|pb-dark|pb-light|tm-dark|tm-light|lk-dark|lk-light|ct-dark|ct-light|mw-dark|mw-light|sk-dark|sk-light|ck-dark|ck-light|sp-dark|sp-light|tl-dark|tl-light|ds-dark|ds-light|sc-dark|sc-light|wp-dark|wp-light|pw-dark|pw-light|pu-dark|pu-light|kp-dark|kp-light|tt-dark|tt-light|xy-dark|xy-light|td-dark|td-light|dr-dark|dr-light|cp-dark|cp-light|tln-dark|tln-light|stk-dark|stk-light|lns-dark|lns-light|gg-dark|gg-light`
   renders that one 1024×1024 frame alone on a transparent page, for scripts/render-previews.mjs.
 -->
 <style>
@@ -205,6 +205,39 @@ function deviceValues(t, theme) {
   };
   return `<div style="width:880px;display:grid;grid-template-columns:repeat(3,1fr);gap:32px">
     ${[[false, 120], [false, 90, 8, 'red'], [true, 70], [false, 90, 72, 'green'], [false, 90, 16, 'yellow'], [false, 100]].map(tile).join('')}
+  </div>`;
+}
+
+// Combined Value: one full-width tile, the icon and the name over the range on the left, the value large on the right,
+// a dot per device on a shared scale (the average a blue tick) and the lowest and highest named under its ends; under
+// it the pill, a share bar on its right.
+function combinedValue(t, theme) {
+  const tileBg = theme === 'dark' ? '#181920' : '#FFFFFF', pillBg = theme === 'dark' ? '#2B2C36' : '#FFFFFF';
+  const shadow = theme === 'dark' ? 'inset 0 2px 0 rgba(255,255,255,.06), 0 12px 40px rgba(0,0,0,.45)' : '0 12px 40px rgba(17,18,23,.12)';
+  const track = `color-mix(in srgb, ${t.fg} 14%, ${tileBg})`, dot = `color-mix(in srgb, ${t.fg} 55%, ${tileBg})`;
+  const dots = [8, 27, 52, 66, 74, 92];
+  return `<div style="width:880px;display:flex;flex-direction:column;gap:40px">
+    <div style="border-radius:32px;background:${tileBg};box-shadow:${shadow};padding:40px 40px 44px;box-sizing:border-box">
+      <div style="display:flex;align-items:center;gap:28px">
+        <div style="align-self:flex-start;width:56px;height:56px;border:7px solid ${t.fg};border-radius:14px;box-sizing:border-box"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:22px">${pill(300, 34, t.fg)}${pill(200, 30, t.fg, 'opacity:.55')}</div>
+        ${pill(230, 92, t.fg)}
+      </div>
+      <div style="position:relative;height:56px;margin:52px 14px 0">
+        <div style="position:absolute;left:0;right:0;top:25px;height:6px;border-radius:3px;background:${track}"></div>
+        <div style="position:absolute;left:8%;width:84%;top:22px;height:12px;border-radius:6px;background:color-mix(in srgb, ${BLUE} 30%, ${track})"></div>
+        ${dots.map(x => `<div style="position:absolute;left:${x}%;top:12px;width:32px;height:32px;margin-left:-16px;border-radius:50%;background:${dot};box-shadow:0 0 0 6px ${tileBg}"></div>`).join('')}
+        <div style="position:absolute;left:58%;top:0;width:10px;height:56px;margin-left:-5px;border-radius:5px;background:${BLUE};box-shadow:0 0 0 6px ${tileBg}"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:30px">${pill(170, 28, t.fg, 'opacity:.55')}${pill(150, 28, t.fg, 'opacity:.55')}</div>
+    </div>
+    <div style="height:170px;border-radius:32px;background:${pillBg};box-shadow:${shadow};padding:0 40px;box-sizing:border-box;display:flex;align-items:center;gap:36px">
+      <div style="width:64px;height:64px;border:7px solid ${t.fg};opacity:.55;border-radius:16px;box-sizing:border-box"></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:20px">${pill(260, 32, t.fg)}${pill(200, 28, t.fg, 'opacity:.55')}</div>
+      <div style="width:290px;height:26px;border-radius:13px;overflow:hidden;display:flex;gap:6px">
+        <div style="flex:5;background:${BLUE}"></div><div style="flex:3;background:#71D51B"></div><div style="flex:2;background:${ORANGE}"></div><div style="flex:1.5;background:${dot}"></div>
+      </div>
+    </div>
   </div>`;
 }
 
@@ -1275,6 +1308,8 @@ const PREVIEWS = [
   { id: 'cam-light',    label: '1n · Cameras — preview-light.png',               theme: 'light', render: cameras },
   { id: 'val-dark',     label: '1o · Device Values — preview-dark.png',          theme: 'dark',  render: deviceValues },
   { id: 'val-light',    label: '1p · Device Values — preview-light.png',         theme: 'light', render: deviceValues },
+  { id: 'cv-dark',      label: '1p2 · Combined Value — preview-dark.png',        theme: 'dark',  render: combinedValue },
+  { id: 'cv-light',     label: '1p3 · Combined Value — preview-light.png',       theme: 'light', render: combinedValue },
   { id: 'lc-dark',      label: '1q · Light Controls — preview-dark.png',         theme: 'dark',  render: lightControls },
   { id: 'lc-light',     label: '1r · Light Controls — preview-light.png',        theme: 'light', render: lightControls },
   { id: 'lr-dark',      label: '3o · Lights by Room — preview-dark.png',         theme: 'dark',  render: lightRooms },

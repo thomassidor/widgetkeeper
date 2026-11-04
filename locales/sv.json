@@ -349,6 +349,13 @@
     "none": "Ingen",
     "pickTileFirst": "Välj ruta __n__ först."
   },
+  "combined": {
+    "selectValue": "Välj ett värde i widgetinställningarna.",
+    "noDevices": "Ingen av enheterna har det här värdet.",
+    "error": "Kunde inte läsa in värdet.",
+    "notRead": "__count__ av __total__ inte lästa",
+    "others": "Övriga"
+  },
   "sparklines": {
     "selectSlots": "Välj enhetsvärden i widgetinställningarna.",
     "error": "Kunde inte läsa in värdena.",
@@ -1014,6 +1021,7 @@
       "heatmap": "En vecka av ett värde som värmekarta veckodag × timme.",
       "cameras": "Kamerabilder, med livevideo vid ett tryck.",
       "values": "Valfritt enhetsvärde som en kompakt ruta.",
+      "combined": "Ett värde från flera enheter som ett: medelvärdet, summan, det lägsta eller det högsta.",
       "lights": "Ljusrutor med ljusstyrka och färg nära till hands.",
       "lightrooms": "Varje rums lampor på ett kort: tänd ett rum eller öppna det för dess lampor och Moods.",
       "sparklines": "Värden med ett litet diagram över deras senaste historik.",
