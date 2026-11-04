@@ -13,7 +13,7 @@
     electricity: 'mountElectricityWidget', thermostat: 'mountThermostatWidget', quickactions: 'mountQuickActionsWidget',
     sensoralarms: 'mountSensorAlarmsWidget', sensordots: 'mountSensorDotsWidget', roomhealth: 'mountRoomHealthWidget',
     valuematrix: 'mountValueMatrixWidget', weather: 'mountWeatherWidget', pollen: 'mountPollenWidget',
-    heatmap: 'mountHeatmapWidget', cameras: 'mountCamerasWidget', values: 'mountValuesWidget', combined: 'mountCombinedWidget', lights: 'mountLightsWidget',
+    heatmap: 'mountHeatmapWidget', cameras: 'mountCamerasWidget', values: 'mountValuesWidget', combined: 'mountCombinedWidget', flowtiles: 'mountFlowTilesWidget', lights: 'mountLightsWidget',
     sparklines: 'mountSparklinesWidget', charts: 'mountChartsWidget', totals: 'mountTotalsWidget', compare: 'mountCompareWidget', timeline: 'mountTimelineWidget', stacked: 'mountStackedWidget', lines: 'mountLinesWidget', gauge: 'mountGaugeWidget', dailyrange: 'mountDailyRangeWidget', typicalday: 'mountTypicalDayWidget', scatter: 'mountScatterWidget', variables: 'mountVariablesWidget',
     varpresets: 'mountVarPresetsWidget', flows: 'mountFlowsWidget', price: 'mountPriceWidget',
     timers: 'mountTimersWidget', locks: 'mountLocksWidget', curtains: 'mountCurtainsWidget', media: 'mountMediaWidget',

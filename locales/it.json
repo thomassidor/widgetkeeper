@@ -774,6 +774,17 @@
     "boardInUse": "Ha un testo",
     "boardNew": "Nuova nota"
   },
+  "flowtiles": {
+    "empty": "Ancora nessun riquadro. Aggiungine uno con la scheda Flow Imposta il Riquadro dei flow.",
+    "noneShown": "Nessuno dei riquadri di Mostra solo è ancora su questa bacheca.",
+    "error": "Impossibile caricare i riquadri.",
+    "tapFailed": "Impossibile toccare __name__.",
+    "tileCount": "Riquadri: __count__",
+    "newBoard": "Nuova bacheca",
+    "newTile": "Nuovo riquadro",
+    "anyBoard": "Qualsiasi bacheca",
+    "anyTile": "Qualsiasi riquadro"
+  },
   "dayssince": {
     "setup": "Dai un nome ai contatori nelle impostazioni del widget.",
     "nothingDue": "Niente in scadenza.",
@@ -1030,6 +1041,7 @@
       "cameras": "Istantanee delle telecamere, con video dal vivo con un tocco.",
       "values": "Qualsiasi valore di un dispositivo come tessera compatta.",
       "combined": "Un valore di più dispositivi in uno: la media, la somma, il più basso o il più alto.",
+      "flowtiles": "Riquadri scritti dai tuoi Flow: un testo o un numero, un'icona, un colore e un riempimento.",
       "lights": "Tessere delle luci con luminosità e colore a portata di mano.",
       "lightrooms": "Le luci di ogni stanza in una scheda: accendi una stanza o aprila per le sue luci e i Mood.",
       "sparklines": "Valori con un piccolo grafico del loro andamento recente.",

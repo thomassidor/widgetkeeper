@@ -69,6 +69,10 @@ describe('copied widget helpers', () => {
     expect(read('thermostat', 'presets.js')).not.toMatch(/let message(Text|Timer)\b/);
   });
 
+  it("Flow Tiles builds Device Values' tile as it does (its stylesheet is Device Values')", () => {
+    expectSame(['values', 'flowtiles'].map(id => source(id, 'parts')));
+  });
+
   it('nameKeys() is the same in every widget with repeatable slots', () => {
     expectSame(['values', 'sparklines', 'variables'].map(id => source(id, 'nameKeys')));
   });
@@ -134,8 +138,8 @@ describe('shared files', () => {
     for (const f of [...js, ...css]) expect(existsSync(`widgets/${f.replace('/', '/public/')}`)).toBe(true);
   });
 
-  it('the chart module is loaded by the Electricity Overview, Charts and Chart · Totals, the presets module by both preset widgets', () => {
-    expect(Object.keys(stackDeps).sort()).toEqual(['charts', 'compare', 'dailyrange', 'electricity', 'gauge', 'lines', 'scatter', 'stacked', 'thermostat', 'timeline', 'totals', 'typicalday', 'varpresets']);
+  it("the chart module is loaded by the chart widgets, the presets module by both preset widgets, Device Values' tiles by Flow Tiles", () => {
+    expect(Object.keys(stackDeps).sort()).toEqual(['charts', 'compare', 'dailyrange', 'electricity', 'gauge', 'lines', 'scatter', 'stacked', 'thermostat', 'timeline', 'totals', 'typicalday', 'varpresets', 'flowtiles'].sort());
   });
 });
 

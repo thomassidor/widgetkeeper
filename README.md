@@ -123,6 +123,11 @@ The electricity price now and the coming hours as small bars, green, yellow or r
 <a href="docs/widgets/flows.md"><b>Flow Buttons</b></a><br>
 Start flows with one tap: a round button in the colour and icon you pick, with the flow's name<br clear="left"></p>
 
+<a name="flow-tiles"></a>
+<p><a href="docs/widgets/flowtiles.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/flowtiles-dark.png"><img src="docs/previews/flowtiles-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/flowtiles.md"><b>Flow Tiles</b></a><br>
+Tiles your Flows write: a text or number, an icon, a colour and a fill, and a tap that starts a Flow<br clear="left"></p>
+
 <a name="insights-heatmap"></a>
 <p><a href="docs/widgets/heatmap.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/heatmap-dark.png"><img src="docs/previews/heatmap-light.png" alt="" width="120" align="left"></picture></a>
 <a href="docs/widgets/heatmap.md"><b>Insights Heatmap</b></a><br>

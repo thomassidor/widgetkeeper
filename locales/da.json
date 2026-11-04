@@ -774,6 +774,17 @@
     "boardInUse": "Har en tekst",
     "boardNew": "Ny note"
   },
+  "flowtiles": {
+    "empty": "Ingen felter endnu. Tilføj et med Flow-kortet Angiv Flowfeltet.",
+    "noneShown": "Ingen af felterne i Vis kun er på tavlen endnu.",
+    "error": "Kunne ikke indlæse felterne.",
+    "tapFailed": "Kunne ikke trykke på __name__.",
+    "tileCount": "Felter: __count__",
+    "newBoard": "Ny tavle",
+    "newTile": "Nyt felt",
+    "anyBoard": "Enhver tavle",
+    "anyTile": "Ethvert felt"
+  },
   "dayssince": {
     "setup": "Navngiv dine tællere i widgetindstillingerne.",
     "nothingDue": "Intet at gøre.",
@@ -1030,6 +1041,7 @@
       "cameras": "Kamerabilleder med live video ved et tryk.",
       "values": "Enhver enhedsværdi som en kompakt flise.",
       "combined": "Én værdi fra flere enheder som én: gennemsnittet, summen, den laveste eller den højeste.",
+      "flowtiles": "Felter, som dine flows skriver: en tekst eller et tal, et ikon, en farve og et fyld.",
       "lights": "Lysfliser med lysstyrke og farve lige ved hånden.",
       "lightrooms": "Hvert rums lys på et kort: tænd et rum, eller åbn det for dets lys og Moods.",
       "sparklines": "Værdier med en lille graf over deres seneste historik.",

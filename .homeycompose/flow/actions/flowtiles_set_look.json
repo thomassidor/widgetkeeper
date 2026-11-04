@@ -1,0 +1,407 @@
+{
+  "id": "flowtiles_set_look",
+  "title": {
+    "en": "Set a Flow Tile's icon and colour",
+    "nl": "Pictogram en kleur van een Flowtegel instellen",
+    "de": "Symbol und Farbe einer Flow-Kachel setzen",
+    "fr": "Définir l'icône et la couleur d'une Tuile de flow",
+    "it": "Imposta icona e colore di un Riquadro dei flow",
+    "sv": "Ange ikon och färg för en Flödesruta",
+    "no": "Angi ikon og farge for en Flytflis",
+    "es": "Establecer el icono y el color de un Mosaico de flujo",
+    "da": "Angiv ikon og farve for et Flowfelt",
+    "ru": "Задать значок и цвет плитки потока",
+    "pl": "Ustaw ikonę i kolor Kafelka Flow",
+    "ko": "플로우 타일의 아이콘과 색상 설정",
+    "ar": "تعيين أيقونة ولون مربع تدفق"
+  },
+  "titleFormatted": {
+    "en": "Give Flow Tile [[tile]] on [[board]] the icon [[icon]] in [[color]]",
+    "nl": "Geef Flowtegel [[tile]] op [[board]] het pictogram [[icon]] in [[color]]",
+    "de": "Flow-Kachel [[tile]] auf [[board]] das Symbol [[icon]] in [[color]] geben",
+    "fr": "Donner à la Tuile de flow [[tile]] de [[board]] l'icône [[icon]] en [[color]]",
+    "it": "Dai al Riquadro dei flow [[tile]] su [[board]] l'icona [[icon]] in [[color]]",
+    "sv": "Ge Flödesrutan [[tile]] på [[board]] ikonen [[icon]] i [[color]]",
+    "no": "Gi Flytflisen [[tile]] på [[board]] ikonet [[icon]] i [[color]]",
+    "es": "Dar al Mosaico de flujo [[tile]] de [[board]] el icono [[icon]] en [[color]]",
+    "da": "Giv Flowfeltet [[tile]] på [[board]] ikonet [[icon]] i [[color]]",
+    "ru": "Дать плитке потока [[tile]] на [[board]] значок [[icon]], цвет [[color]]",
+    "pl": "Nadaj Kafelkowi Flow [[tile]] na [[board]] ikonę [[icon]] w kolorze [[color]]",
+    "ko": "[[board]]의 플로우 타일 [[tile]]에 아이콘 [[icon]], 색상 [[color]] 지정",
+    "ar": "امنح مربع التدفق [[tile]] في [[board]] الأيقونة [[icon]] باللون [[color]]"
+  },
+  "hint": {
+    "en": "The colour tints the tile, or colours its fill. Default is the widget's own look. Makes the tile if it isn't there yet. Every Flow Tiles widget showing this board shows it, on every screen.",
+    "nl": "De kleur tint de tegel, of kleurt de vulling. Standaard is de eigen look van de widget. Maakt de tegel aan als die er nog niet is. Elke Flowtegels-widget met dit bord toont hem, op elk scherm.",
+    "de": "Die Farbe tönt die Kachel oder färbt ihre Füllung. Standard ist das eigene Aussehen des Widgets. Legt die Kachel an, falls es sie noch nicht gibt. Jedes Flow-Kacheln-Widget mit dieser Tafel zeigt sie, auf jedem Bildschirm.",
+    "fr": "La couleur teinte la tuile, ou colore son remplissage. Par défaut, c'est l'aspect du widget. Crée la tuile si elle n'existe pas encore. Chaque widget Tuiles de flow affichant ce tableau la montre, sur chaque écran.",
+    "it": "Il colore tinge il riquadro, o ne colora il riempimento. Predefinito è l'aspetto del widget. Crea il riquadro se non c'è ancora. Ogni widget Riquadri dei flow con questa bacheca lo mostra, su ogni schermo.",
+    "sv": "Färgen tonar rutan, eller färgar dess fyllning. Standard är widgetens eget utseende. Skapar rutan om den inte finns än. Alla Flödesrutor-widgetar som visar tavlan visar den, på alla skärmar.",
+    "no": "Fargen toner flisen, eller farger fyllet. Standard er widgetens eget utseende. Lager flisen hvis den ikke finnes ennå. Alle Flytfliser-widgeter som viser tavlen, viser den, på alle skjermer.",
+    "es": "El color tiñe el mosaico, o colorea su relleno. Predeterminado es el aspecto del widget. Crea el mosaico si aún no existe. Cada widget Mosaicos de flujo que muestra este tablero lo muestra, en cada pantalla.",
+    "da": "Farven toner feltet eller farver dets fyld. Standard er widgettens eget udseende. Opretter feltet, hvis det ikke findes endnu. Alle Flowfelter-widgets, der viser tavlen, viser det, på alle skærme.",
+    "ru": "Цвет тонирует плитку или её заливку. «По умолчанию» — собственный вид виджета. Создаёт плитку, если её ещё нет. Её показывают все виджеты «Плитки потоков» с этой доской на всех экранах.",
+    "pl": "Kolor barwi kafelek albo jego wypełnienie. Domyślny to wygląd samego widżetu. Tworzy kafelek, jeśli jeszcze go nie ma. Pokazuje go każdy widżet Kafelki Flow z tą tablicą, na każdym ekranie.",
+    "ko": "색상은 타일을 물들이거나 채우기에 색을 입힙니다. 기본값은 위젯 자체의 모양입니다. 타일이 없으면 만듭니다. 이 보드를 보여 주는 모든 플로우 타일 위젯이 모든 화면에 표시합니다.",
+    "ar": "يلوّن اللون المربع أو تعبئته. الافتراضي هو مظهر الأداة نفسها. ينشئ المربع إن لم يكن موجودًا. تعرضه كل أدوات مربعات التدفقات التي تعرض هذه اللوحة، في كل شاشة."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "board",
+      "title": {
+        "en": "Board",
+        "nl": "Bord",
+        "de": "Tafel",
+        "fr": "Tableau",
+        "it": "Bacheca",
+        "sv": "Tavla",
+        "no": "Tavle",
+        "es": "Tablero",
+        "da": "Tavle",
+        "ru": "Доска",
+        "pl": "Tablica",
+        "ko": "보드",
+        "ar": "اللوحة"
+      },
+      "placeholder": {
+        "en": "Tiles",
+        "nl": "Tiles",
+        "de": "Tiles",
+        "fr": "Tiles",
+        "it": "Tiles",
+        "sv": "Tiles",
+        "no": "Tiles",
+        "es": "Tiles",
+        "da": "Tiles",
+        "ru": "Tiles",
+        "pl": "Tiles",
+        "ko": "Tiles",
+        "ar": "Tiles"
+      }
+    },
+    {
+      "type": "autocomplete",
+      "name": "tile",
+      "title": {
+        "en": "Tile",
+        "nl": "Tegel",
+        "de": "Kachel",
+        "fr": "Tuile",
+        "it": "Riquadro",
+        "sv": "Ruta",
+        "no": "Flis",
+        "es": "Mosaico",
+        "da": "Felt",
+        "ru": "Плитка",
+        "pl": "Kafelek",
+        "ko": "타일",
+        "ar": "المربع"
+      },
+      "placeholder": {
+        "en": "Car",
+        "nl": "Auto",
+        "de": "Auto",
+        "fr": "Voiture",
+        "it": "Auto",
+        "sv": "Bil",
+        "no": "Bil",
+        "es": "Coche",
+        "da": "Bil",
+        "ru": "Машина",
+        "pl": "Samochód",
+        "ko": "자동차",
+        "ar": "السيارة"
+      }
+    },
+    {
+      "type": "autocomplete",
+      "name": "icon",
+      "title": {
+        "en": "Icon",
+        "nl": "Pictogram",
+        "de": "Symbol",
+        "fr": "Icône",
+        "it": "Icona",
+        "sv": "Ikon",
+        "no": "Ikon",
+        "es": "Icono",
+        "da": "Ikon",
+        "ru": "Значок",
+        "pl": "Ikona",
+        "ko": "아이콘",
+        "ar": "الأيقونة"
+      },
+      "placeholder": {
+        "en": "No icon",
+        "nl": "Geen pictogram",
+        "de": "Kein Symbol",
+        "fr": "Aucune icône",
+        "it": "Nessuna icona",
+        "sv": "Ingen ikon",
+        "no": "Ingen ikon",
+        "es": "Sin icono",
+        "da": "Intet ikon",
+        "ru": "Без значка",
+        "pl": "Bez ikony",
+        "ko": "아이콘 없음",
+        "ar": "بلا أيقونة"
+      }
+    },
+    {
+      "type": "dropdown",
+      "name": "color",
+      "title": {
+        "en": "Colour",
+        "nl": "Kleur",
+        "de": "Farbe",
+        "fr": "Couleur",
+        "it": "Colore",
+        "sv": "Färg",
+        "no": "Farge",
+        "es": "Color",
+        "da": "Farve",
+        "ru": "Цвет",
+        "pl": "Kolor",
+        "ko": "색상",
+        "ar": "اللون"
+      },
+      "values": [
+        {
+          "id": "default",
+          "title": {
+            "en": "Default",
+            "nl": "Standaard",
+            "de": "Standard",
+            "fr": "Par défaut",
+            "it": "Predefinito",
+            "sv": "Standard",
+            "no": "Standard",
+            "es": "Predeterminado",
+            "da": "Standard",
+            "ru": "По умолчанию",
+            "pl": "Domyślny",
+            "ko": "기본값",
+            "ar": "افتراضي"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        },
+        {
+          "id": "teal",
+          "title": {
+            "en": "Teal",
+            "nl": "Blauwgroen",
+            "de": "Petrol",
+            "fr": "Bleu canard",
+            "it": "Verde acqua",
+            "sv": "Blågrön",
+            "no": "Blågrønn",
+            "es": "Verde azulado",
+            "da": "Blågrøn",
+            "ru": "Бирюзовый",
+            "pl": "Morski",
+            "ko": "청록",
+            "ar": "أزرق مخضر"
+          }
+        },
+        {
+          "id": "cyan",
+          "title": {
+            "en": "Cyan",
+            "nl": "Cyaan",
+            "de": "Cyan",
+            "fr": "Cyan",
+            "it": "Ciano",
+            "sv": "Cyan",
+            "no": "Cyan",
+            "es": "Cian",
+            "da": "Cyan",
+            "ru": "Голубой",
+            "pl": "Cyjan",
+            "ko": "하늘",
+            "ar": "سماوي"
+          }
+        },
+        {
+          "id": "indigo",
+          "title": {
+            "en": "Indigo",
+            "nl": "Indigo",
+            "de": "Indigo",
+            "fr": "Indigo",
+            "it": "Indaco",
+            "sv": "Indigo",
+            "no": "Indigo",
+            "es": "Índigo",
+            "da": "Indigo",
+            "ru": "Индиго",
+            "pl": "Indygo",
+            "ko": "남색",
+            "ar": "نيلي"
+          }
+        },
+        {
+          "id": "pink",
+          "title": {
+            "en": "Pink",
+            "nl": "Roze",
+            "de": "Rosa",
+            "fr": "Rose",
+            "it": "Rosa",
+            "sv": "Rosa",
+            "no": "Rosa",
+            "es": "Rosa",
+            "da": "Lyserød",
+            "ru": "Розовый",
+            "pl": "Różowy",
+            "ko": "분홍",
+            "ar": "وردي"
+          }
+        },
+        {
+          "id": "brown",
+          "title": {
+            "en": "Brown",
+            "nl": "Bruin",
+            "de": "Braun",
+            "fr": "Marron",
+            "it": "Marrone",
+            "sv": "Brun",
+            "no": "Brun",
+            "es": "Marrón",
+            "da": "Brun",
+            "ru": "Коричневый",
+            "pl": "Brązowy",
+            "ko": "갈색",
+            "ar": "بني"
+          }
+        },
+        {
+          "id": "grey",
+          "title": {
+            "en": "Grey",
+            "nl": "Grijs",
+            "de": "Grau",
+            "fr": "Gris",
+            "it": "Grigio",
+            "sv": "Grå",
+            "no": "Grå",
+            "es": "Gris",
+            "da": "Grå",
+            "ru": "Серый",
+            "pl": "Szary",
+            "ko": "회색",
+            "ar": "رمادي"
+          }
+        }
+      ]
+    }
+  ]
+}

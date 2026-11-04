@@ -774,6 +774,17 @@
     "boardInUse": "Has a text",
     "boardNew": "New note"
   },
+  "flowtiles": {
+    "empty": "No tiles yet. Add one with the Flow card Set Flow Tile.",
+    "noneShown": "None of the tiles in Show only are on this board yet.",
+    "error": "Could not load the tiles.",
+    "tapFailed": "Could not tap __name__.",
+    "tileCount": "Tiles: __count__",
+    "newBoard": "New board",
+    "newTile": "New tile",
+    "anyBoard": "Any board",
+    "anyTile": "Any tile"
+  },
   "dayssince": {
     "setup": "Name your counters in the widget settings.",
     "nothingDue": "Nothing due.",
@@ -1030,6 +1041,7 @@
       "cameras": "Camera snapshots, with live video on a tap.",
       "values": "Any device value as a compact tile.",
       "combined": "One value of several devices as one: the average, the sum, the lowest or the highest.",
+      "flowtiles": "Tiles your Flows write: a text or number, an icon, a colour and a fill.",
       "lights": "Light tiles with brightness and colour at hand.",
       "lightrooms": "Every room's lights on a card: switch a room, or open it for its lights and Moods.",
       "sparklines": "Values with a small chart of their recent history.",

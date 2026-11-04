@@ -58,6 +58,8 @@ interface Window {
   createHeatmapWidget: (root: HTMLElement, opts?: object) => any;
   createValuesWidget: (root: HTMLElement, opts?: object) => any;
   createCombinedWidget: (root: HTMLElement, opts?: object) => any;
+  createFlowTilesWidget: (root: HTMLElement, opts?: object) => any;
+  flowTileKey: (name: unknown, fallback?: string) => string;
   combineValues: (read: { name: string, value: number }[]) => { sum: number, avg: number, min: number, max: number, lo: string, hi: string, n: number } | null;
   createLightsWidget: (root: HTMLElement, opts?: object) => any;
   createLightRoomsWidget: (root: HTMLElement, opts?: object) => any;
@@ -233,6 +235,7 @@ interface Window {
   mountTimersWidget: MountWidget;
   mountValuesWidget: MountWidget;
   mountCombinedWidget: MountWidget;
+  mountFlowTilesWidget: MountWidget;
   mountVariablesWidget: MountWidget;
   mountVarPresetsWidget: MountWidget;
   mountKeypadWidget: MountWidget;

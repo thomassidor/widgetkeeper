@@ -21,6 +21,9 @@ const MOUNT = {
   valuematrix: (el, w) => createValueMatrixWidget(el, { locale: LOCALE, columns: w.columns, ...w.opts }).setState(w.state),
   values: (el, w) => createValuesWidget(el, w.opts || {}).setState(w.slots),
   combined: (el, w) => createCombinedWidget(el, w.opts || {}).setState(w.state),
+  // Flow Tiles: `w.tiles` a board's tiles as `/state` sends them (only what differs from an empty text tile).
+  flowtiles: (el, w) => createFlowTilesWidget(el, w.opts || {}).setState({ now: Date.now(), language: 'en', board: { key: 'tiles', name: 'Tiles',
+    tiles: w.tiles.map(t => ({ kind: 'text', text: '', number: null, units: null, decimals: 'auto', second: '', icon: null, color: null, fill: null, updatedAt: 0, tappable: false, key: t.name.toLowerCase(), ...t })) } }),
   variables: (el, w) => createVariablesWidget(el, w.opts || {}).setState(w.vars),
   varpresets: (el, w) => { const x = createVarPresetsWidget(el, { locale: LOCALE, ...w.opts }); x.setPresets(varPresetsFromSettings(w.settings)); x.setState(w.variable); },
   // Keypad: `w.settings` as the widget's settings, `w.state` its `/state` (`{source, flows}`).

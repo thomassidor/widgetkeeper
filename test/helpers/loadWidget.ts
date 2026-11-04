@@ -35,6 +35,7 @@ export const DEPS: Partial<Record<WidgetName, string[]>> = {
   gauge: ['electricity/chart.js'],
   thermostat: ['thermostat/presets.js'],
   varpresets: ['thermostat/presets.js'],
+  flowtiles: ['values/widget.js'],
 };
 
 /** Runs a widget's `public/mount.js` (which wires it to a Homey) the same way; load its widget.js first. */
@@ -44,7 +45,7 @@ export function loadMount(name: WidgetName): any {
 }
 
 export type WidgetName = 'electricity' | 'thermostat' | 'quickactions' | 'sensoralarms' | 'sensordots' | 'roomhealth' | 'valuematrix' | 'valueboard' | 'weather' | 'heatmap'
-  | 'cameras' | 'values' | 'combined' | 'lights' | 'lightrooms' | 'sparklines' | 'charts' | 'totals' | 'scatter' | 'typicalday' | 'dailyrange' | 'compare' | 'timeline' | 'stacked' | 'lines' | 'gauge' | 'variables' | 'varpresets' | 'flows' | 'price' | 'timers' | 'locks' | 'curtains' | 'media' | 'clock'
+  | 'cameras' | 'values' | 'combined' | 'flowtiles' | 'lights' | 'lightrooms' | 'sparklines' | 'charts' | 'totals' | 'scatter' | 'typicalday' | 'dailyrange' | 'compare' | 'timeline' | 'stacked' | 'lines' | 'gauge' | 'variables' | 'varpresets' | 'flows' | 'price' | 'timers' | 'locks' | 'curtains' | 'media' | 'clock'
   | 'spacer' | 'textline' | 'dayssince' | 'stack' | 'shortcuts' | 'webpage' | 'pollen' | 'popups' | 'keypad';
 
 function loadScript(name: WidgetName, file: string): any {

@@ -6,7 +6,7 @@
 <title>Widget Previews</title>
 <!--
   Source for the widget preview PNGs (from the "Widget Previews" Claude Design project).
-  Without a query it shows them all on a canvas; `?p=elec-dark|elec-light|thermo-dark|thermo-light|qa-dark|qa-light|sa-dark|sa-light|sd-dark|sd-light|rh-dark|rh-light|weather-dark|weather-light|hm-dark|hm-light|cam-dark|cam-light|val-dark|val-light|cv-dark|cv-light|lc-dark|lc-light|lr-dark|lr-light|spark-dark|spark-light|chart-dark|chart-light|var-dark|var-light|vp-dark|vp-light|sd-dark|sd-light|fb-dark|fb-light|pb-dark|pb-light|tm-dark|tm-light|lk-dark|lk-light|ct-dark|ct-light|mw-dark|mw-light|sk-dark|sk-light|ck-dark|ck-light|sp-dark|sp-light|tl-dark|tl-light|ds-dark|ds-light|sc-dark|sc-light|wp-dark|wp-light|pw-dark|pw-light|pu-dark|pu-light|kp-dark|kp-light|tt-dark|tt-light|xy-dark|xy-light|td-dark|td-light|dr-dark|dr-light|cp-dark|cp-light|tln-dark|tln-light|stk-dark|stk-light|lns-dark|lns-light|gg-dark|gg-light`
+  Without a query it shows them all on a canvas; `?p=elec-dark|elec-light|thermo-dark|thermo-light|qa-dark|qa-light|sa-dark|sa-light|sd-dark|sd-light|rh-dark|rh-light|weather-dark|weather-light|hm-dark|hm-light|cam-dark|cam-light|val-dark|val-light|cv-dark|cv-light|ft-dark|ft-light|lc-dark|lc-light|lr-dark|lr-light|spark-dark|spark-light|chart-dark|chart-light|var-dark|var-light|vp-dark|vp-light|sd-dark|sd-light|fb-dark|fb-light|pb-dark|pb-light|tm-dark|tm-light|lk-dark|lk-light|ct-dark|ct-light|mw-dark|mw-light|sk-dark|sk-light|ck-dark|ck-light|sp-dark|sp-light|tl-dark|tl-light|ds-dark|ds-light|sc-dark|sc-light|wp-dark|wp-light|pw-dark|pw-light|pu-dark|pu-light|kp-dark|kp-light|tt-dark|tt-light|xy-dark|xy-light|td-dark|td-light|dr-dark|dr-light|cp-dark|cp-light|tln-dark|tln-light|stk-dark|stk-light|lns-dark|lns-light|gg-dark|gg-light`
   renders that one 1024×1024 frame alone on a transparent page, for scripts/render-previews.mjs.
 -->
 <style>
@@ -205,6 +205,45 @@ function deviceValues(t, theme) {
   };
   return `<div style="width:880px;display:grid;grid-template-columns:repeat(3,1fr);gap:32px">
     ${[[false, 120], [false, 90, 8, 'red'], [true, 70], [false, 90, 72, 'green'], [false, 90, 16, 'yellow'], [false, 100]].map(tile).join('')}
+  </div>`;
+}
+
+// Flow Tiles: four of Device Values' tiles as a Flow writes them (a green fill from the left, a Flow's purple and red, a plain
+// one), Flow Buttons' line icons, and a large blue Flow badge (two nodes joined by a connector) over their corner, big enough
+// to read at the README's 120 px.
+function flowTiles(t, theme) {
+  const tileBg = theme === 'dark' ? '#181920' : '#FFFFFF';
+  const shadow = theme === 'dark' ? 'inset 0 2px 0 rgba(255,255,255,.06), 0 12px 40px rgba(0,0,0,.45)' : '0 12px 40px rgba(17,18,23,.12)';
+  const COLOR = { red: '#F25F5C', purple: '#9033FC', green: '#71D51B' };
+  const ICON = {
+    car: 'M5 16H3.5v-3.5l2-5A1.5 1.5 0 0 1 6.9 6.5h10.2a1.5 1.5 0 0 1 1.4 1l2 5V16H19M9 16h6M3.5 12.5h17M7 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM17 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4z',
+    trash: 'M4 6.5h16M9 6.5V4h6v2.5M6 6.5l1 13A1.5 1.5 0 0 0 8.5 21h7a1.5 1.5 0 0 0 1.5-1.5l1-13M10 10.5v6M14 10.5v6',
+    wifi: 'M2.5 8.5a14 14 0 0 1 19 0M5.5 12a9.5 9.5 0 0 1 13 0M8.5 15.5a5 5 0 0 1 7 0M12 19.5h.01',
+    home: 'M3.5 11 12 3.8l8.5 7.2M6 9.3V20h4.5v-5.5h3V20H18V9.3',
+  };
+  const tile = ([icon, w, color, fill]) => {
+    const mix = c => `color-mix(in srgb, ${c} ${theme === 'dark' ? 30 : 22}%, ${tileBg})`;
+    const bg = fill != null
+      ? `linear-gradient(to right, ${mix(COLOR[color])} ${fill}%, ${tileBg} ${fill}%)`
+      : color ? mix(COLOR[color]) : tileBg;
+    return `<div style="height:290px;border-radius:40px;background:${bg};box-shadow:${shadow};padding:52px 48px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <svg width="92" height="92" viewBox="0 0 24 24" style="flex:none"><path d="${ICON[icon]}" fill="none" stroke="${t.fg}" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        ${pill(w, 52, t.fg)}
+      </div>
+      ${pill(210, 44, t.fg, 'opacity:.55')}
+    </div>`;
+  };
+  // The Flow badge: two nodes joined by a connector, white on Homey's blue, with a ring in the page colour so it stands off the tiles.
+  const ring = theme === 'dark' ? '#1F2029' : '#FFFFFF';
+  const badge = `<div style="position:absolute;right:-36px;top:-60px;width:232px;height:232px;border-radius:50%;background:${BLUE};box-shadow:0 0 0 14px ${ring}, 0 16px 40px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center">
+      <svg width="140" height="140" viewBox="0 0 24 24"><g fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="6" cy="6" r="2.6"/><circle cx="16.5" cy="18" r="2.6"/><path d="M8.6 6H13a3.5 3.5 0 0 1 3.5 3.5v5.9"/>
+      </g></svg>
+    </div>`;
+  return `<div style="width:880px;position:relative;display:grid;grid-template-columns:repeat(2,1fr);gap:40px;margin-top:40px">
+    ${[['car', 110, 'green', 64], ['trash', 150, 'purple'], ['wifi', 120, 'red'], ['home', 140]].map(tile).join('')}
+    ${badge}
   </div>`;
 }
 
@@ -1310,6 +1349,8 @@ const PREVIEWS = [
   { id: 'val-light',    label: '1p · Device Values — preview-light.png',         theme: 'light', render: deviceValues },
   { id: 'cv-dark',      label: '1p2 · Combined Value — preview-dark.png',        theme: 'dark',  render: combinedValue },
   { id: 'cv-light',     label: '1p3 · Combined Value — preview-light.png',       theme: 'light', render: combinedValue },
+  { id: 'ft-dark',      label: '1p4 · Flow Tiles — preview-dark.png',            theme: 'dark',  render: flowTiles },
+  { id: 'ft-light',     label: '1p5 · Flow Tiles — preview-light.png',           theme: 'light', render: flowTiles },
   { id: 'lc-dark',      label: '1q · Light Controls — preview-dark.png',         theme: 'dark',  render: lightControls },
   { id: 'lc-light',     label: '1r · Light Controls — preview-light.png',        theme: 'light', render: lightControls },
   { id: 'lr-dark',      label: '3o · Lights by Room — preview-dark.png',         theme: 'dark',  render: lightRooms },

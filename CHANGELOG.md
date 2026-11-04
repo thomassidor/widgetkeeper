@@ -4,6 +4,11 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 
 ## 1.3.0
 
+### New: Flow Tiles
+- **Tiles your Flows write:** Device Values' tiles, each set by Flow cards instead of a device: a text, or a number in your screen's format with units and decimals, a second line, an icon, a colour and a fill from the left, like a battery level. Tiles are on named boards, so every Flow Tiles widget showing a board shows its tiles, on every screen.
+- **Tap a tile** to start a Flow: the trigger *Flow Tile … on … was tapped*, for one tile, a board's or any. Only tiles a Flow listens to can be tapped, and they light up on a tap unless you turn it off.
+- Show only some tiles in the order you type them, or sort them by name; 1, 2 or 3 per row, compact or pill, Muted or Vivid, and optionally when each changed.
+
 ### New: Combined Value
 - **One value of several devices as one:** the average temperature of every room, the house's total power, the lowest battery or the highest CO₂, large on one full-width tile, with the lowest to the highest under its name. A chart shows each device against the others (a dot on a shared scale, or for a sum each device's share), or leave it out. Pick no devices to count every device with the value. Compact or pill tile, and a colour if you like.
 - **OK range:** type `18–24`, `<1000` or `>20`, and the tile turns orange when the value is outside it (red when it's far outside), with an orange or red dot for each device outside it. Show the **number outside the OK range** to see how many batteries are low, named worst first.

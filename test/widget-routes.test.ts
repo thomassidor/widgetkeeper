@@ -49,6 +49,8 @@ const ROUTES: Route[] = [
     [['daysSince.sync', [[{ name: 'Filter', amber: 30, red: 60 }]]]]],
   ['dayssince', 'POST', '/reset', {}, { name: 'Filter' }, [['daysSince.reset', ['Filter', true]]]],
   ['dayssince', 'POST', '/undo', {}, { name: 'Filter', at: 5 }, [['daysSince.undo', ['Filter', 5]]]],
+  ['flowtiles', 'GET', '/state', { board: 'Car' }, {}, [['flowTiles.get', ['Car']]]],
+  ['flowtiles', 'POST', '/tap', {}, { board: 'Car', tile: 'Range', extra: 1 }, [['flowTiles.tap', ['Car', 'Range']]]],
   ['electricity', 'GET', '/snapshot', { deviceId: 'm1', costs: '0' }, {}, [['electricity.getSnapshot', ['m1', { costs: false }]]]],
   ['flows', 'GET', '/state', { ids: 'flow:a,advancedflow:b' }, {}, [['flows.getState', [['flow:a', 'advancedflow:b']]]]],
   ['flows', 'POST', '/trigger', {}, { id: 'flow:a' }, [['flows.trigger', ['flow:a']]]],

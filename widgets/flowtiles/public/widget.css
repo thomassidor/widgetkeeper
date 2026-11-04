@@ -1,0 +1,35 @@
+/*
+ * Flow Tiles: Device Values' tiles and rules (../values/widget.css, loaded first: the root is `vt ft`), with these few on
+ * top. Colours as there: kit.css's palette, Muted tints and Vivid shades.
+ */
+
+/* One tile per row, too (Device Values has 3 or 2). */
+.ft[data-columns="1"] .vt-grid { grid-template-columns: minmax(0, 1fr); }
+
+/* A tile may have no icon (Device Values' always has one): the empty mask would show as a square. The second line has none. */
+.ft .vt-icon.ft-none, .ft .vt-second-icon { display: none; }
+/* A text without an icon in a compact tile starts at the left, as the name does. */
+.ft:not(.vt-pill) .vt-tile.ft-noicon .vt-value { text-align: left; }
+
+/* A fill without a colour is blue (Device Values' fills are coloured by their level). */
+.ft .vt-tile.filled:not([data-color]) { --vt-level: var(--vt-blue); }
+
+/* A tile a Flow listens to can be tapped. */
+.ft .vt-tile.ft-tappable { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ft .vt-tile.ft-tappable.pressing { transform: scale(.97); }
+.ft .vt-tile.ft-tappable:focus-visible { outline: 2px solid var(--vt-accent); outline-offset: 2px; }
+
+/* On tap: Highlight lights the tile up in its colour (blue without one), or in Vivid in its ink, and fades in 0.6 s. An inset
+   shadow paints over the background but under the text. */
+.ft .vt-tile { --ft-flash: var(--vt-blue); }
+.ft .vt-tile[data-color] { --ft-flash: var(--vt-color); }
+.ft.wk-deep .vt-tile[data-color], .ft.wk-deep .vt-tile.filled { --ft-flash: var(--vt-ink); }
+.ft .vt-tile.ft-flash { animation: ft-flash .6s ease-out; }
+.ft .vt-tile.ft-flash.shake { animation: vt-shake .35s; }
+@keyframes ft-flash {
+  from { box-shadow: inset 0 0 0 200px color-mix(in srgb, var(--ft-flash) 45%, transparent); }
+  to { box-shadow: inset 0 0 0 200px transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ft .vt-tile.ft-tappable.pressing { transform: none; }
+}

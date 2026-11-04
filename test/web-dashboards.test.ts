@@ -1182,6 +1182,7 @@ describe("web dashboards: a device change needs the page's own key to control de
   const NEUTRAL = new Set([
     'cameras POST /video/offer', 'cameras POST /video/keepalive', 'cameras POST /report', 'media POST /report',
     'timers POST /start', 'timers POST /action', 'dayssince POST /reset', 'dayssince POST /undo',
+    'flowtiles POST /tap',
   ]);
 
   // A device change left out of DEVICE_WRITES would let a page whose key may not control devices do it with the app's token.

@@ -774,6 +774,17 @@
     "boardInUse": "Har en tekst",
     "boardNew": "Nytt notat"
   },
+  "flowtiles": {
+    "empty": "Ingen fliser ennå. Legg til en med Flow-kortet Angi Flytflisen.",
+    "noneShown": "Ingen av flisene i Vis bare er på tavlen ennå.",
+    "error": "Kunne ikke laste inn flisene.",
+    "tapFailed": "Kunne ikke trykke på __name__.",
+    "tileCount": "Fliser: __count__",
+    "newBoard": "Ny tavle",
+    "newTile": "Ny flis",
+    "anyBoard": "Hvilken som helst tavle",
+    "anyTile": "Hvilken som helst flis"
+  },
   "dayssince": {
     "setup": "Gi tellerne navn i widgetinnstillingene.",
     "nothingDue": "Ingenting å gjøre.",
@@ -1030,6 +1041,7 @@
       "cameras": "Kamerabilder, med direktevideo ved et trykk.",
       "values": "Enhver enhetsverdi som en kompakt flis.",
       "combined": "Én verdi fra flere enheter som én: gjennomsnittet, summen, den laveste eller den høyeste.",
+      "flowtiles": "Fliser som flytene dine skriver: en tekst eller et tall, et ikon, en farge og et fyll.",
       "lights": "Lysfliser med lysstyrke og farge for hånden.",
       "lightrooms": "Hvert roms lys på et kort: slå et rom av og på, eller åpne det for lysene og Moods.",
       "sparklines": "Verdier med et lite diagram over den siste historikken.",

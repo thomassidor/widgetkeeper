@@ -92,6 +92,20 @@ describe('the app: Flow cards', () => {
     ['dayssince_set', 'daysSince', 'setDaysAgo', { counter: { id: 'filter', name: 'Filter' }, days: 3 }, ['filter', 3]],
     ['dayssince_set', 'daysSince', 'setDaysAgo', { counter: { name: 'Boiler' }, days: 0 }, ['Boiler', 0]],
     ['dayssince_reset', 'daysSince', 'reset', { counter: { id: 'filter', name: 'Filter' } }, ['filter']],
+    // A board or tile argument is its name, or the name typed for a new one.
+    ['flowtiles_set_text', 'flowTiles', 'setText', { board: { id: 'Car' }, tile: { name: 'Range' }, text: 'Full' }, ['Car', 'Range', 'Full']],
+    ['flowtiles_set_number', 'flowTiles', 'setNumber', { board: { id: 'Car' }, tile: { id: 'Range' }, number: 214, units: 'km', decimals: '0' },
+      ['Car', 'Range', 214, 'km', '0']],
+    // A card saved without units.
+    ['flowtiles_set_number', 'flowTiles', 'setNumber', { board: { id: 'Car' }, tile: { id: 'Battery' }, number: 82, decimals: 'auto' },
+      ['Car', 'Battery', 82, undefined, 'auto']],
+    ['flowtiles_set_second', 'flowTiles', 'setSecond', { board: { id: 'Car' }, tile: { id: 'Range' }, text: '82 %' }, ['Car', 'Range', '82 %']],
+    ['flowtiles_set_look', 'flowTiles', 'setLook', { board: { id: 'Car' }, tile: { id: 'Range' }, icon: { id: 'car' }, color: 'green' },
+      ['Car', 'Range', 'car', 'green']],
+    ['flowtiles_set_fill', 'flowTiles', 'setFill', { board: { id: 'Car' }, tile: { id: 'Range' }, percent: 82 }, ['Car', 'Range', 82]],
+    ['flowtiles_remove_fill', 'flowTiles', 'removeFill', { board: { id: 'Car' }, tile: { id: 'Range' } }, ['Car', 'Range']],
+    ['flowtiles_remove', 'flowTiles', 'remove', { board: { id: 'Car' }, tile: { id: 'Range' } }, ['Car', 'Range']],
+    ['flowtiles_clear', 'flowTiles', 'clear', { board: { id: 'Car' } }, ['Car']],
   ];
 
   it.each(RUNS)('%s calls %s.%s with its arguments', async (id, service, method, args, call) => {
@@ -133,6 +147,41 @@ describe('the app: Flow cards', () => {
     const isOverdue = vi.spyOn(app.daysSince, 'isOverdue').mockReturnValue(false);
     await expect(flow.cards.get('conditions:dayssince_is_overdue')!.run!({ counter: { id: 'filter' } })).resolves.toBe(false);
     expect(isOverdue).toHaveBeenCalledWith({ id: 'filter' });
+  });
+});
+
+describe('the app: Flow Tiles cards', () => {
+  it('refuses Any board or Any tile in an action (only the trigger has them)', async () => {
+    const { flow } = await bootApp();
+    await expect(flow.cards.get('actions:flowtiles_set_text')!.run!({ board: { id: 'flowtiles:any', any: true }, tile: { id: 'A' }, text: 'x' }))
+      .rejects.toThrow(/Pick a board/);
+  });
+
+  it("lists a card's board's tiles, and the trigger's Any first", async () => {
+    const { app, flow } = await bootApp();
+    app.flowTiles.setText('Car', 'Range', '214 km');
+    app.flowTiles.setText('House', 'Bins', 'Paper');
+    const tiles = await flow.cards.get('actions:flowtiles_set_text')!.autocompletes.tile('', { board: { id: 'Car' } }) as any[];
+    expect(tiles.map(i => i.name)).toEqual(['Range']);
+    const any = await flow.cards.get('triggers:flowtiles_tapped')!.autocompletes.tile('', { board: { id: 'flowtiles:any', any: true } }) as any[];
+    expect(any.map(i => i.name)).toEqual(['Any tile', 'Bins', 'Range']);
+    const icons = await flow.cards.get('actions:flowtiles_set_look')!.autocompletes.icon('car') as any[];
+    expect(icons.map(i => i.id)).toContain('car');
+  });
+
+  it('fires the trigger on a tap, for the Flows of that tile, and makes a tile tappable when a saved Flow listens to it', async () => {
+    const { app, flow } = await bootApp();
+    app.flowTiles.setNumber('Car', 'Range', 214, 'km');
+    const card = flow.cards.get('triggers:flowtiles_tapped')!;
+    expect(app.flowTiles.get('Car').tiles[0].tappable).toBe(false);
+    card.argumentValues = [{ board: { id: 'Car' }, tile: { id: 'Range' } }];
+    card.listeners.update();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(app.flowTiles.get('car').tiles[0].tappable).toBe(true);
+    await app.flowTiles.tap('Car', 'range');
+    expect(card.trigger).toHaveBeenCalledWith({ board: 'Car', tile: 'Range', value: '214 km' }, { board: 'car', tile: 'range' });
+    await expect(card.run!({ board: { id: 'Car' }, tile: { id: 'Range' } }, { board: 'car', tile: 'range' })).resolves.toBe(true);
+    await expect(card.run!({ board: { id: 'Car' }, tile: { id: 'Battery' } }, { board: 'car', tile: 'range' })).resolves.toBe(false);
   });
 });
 

@@ -1,0 +1,103 @@
+{
+  "id": "flowtiles_remove_fill",
+  "title": {
+    "en": "Remove a Flow Tile's fill",
+    "nl": "De vulling van een Flowtegel verwijderen",
+    "de": "Füllung einer Flow-Kachel entfernen",
+    "fr": "Retirer le remplissage d'une Tuile de flow",
+    "it": "Rimuovi il riempimento di un Riquadro dei flow",
+    "sv": "Ta bort fyllningen från en Flödesruta",
+    "no": "Fjern fyllet fra en Flytflis",
+    "es": "Quitar el relleno de un Mosaico de flujo",
+    "da": "Fjern fyldet fra et Flowfelt",
+    "ru": "Убрать заливку плитки потока",
+    "pl": "Usuń wypełnienie Kafelka Flow",
+    "ko": "플로우 타일의 채우기 제거",
+    "ar": "إزالة تعبئة مربع تدفق"
+  },
+  "titleFormatted": {
+    "en": "Remove the fill from Flow Tile [[tile]] on [[board]]",
+    "nl": "Verwijder de vulling van Flowtegel [[tile]] op [[board]]",
+    "de": "Füllung der Flow-Kachel [[tile]] auf [[board]] entfernen",
+    "fr": "Retirer le remplissage de la Tuile de flow [[tile]] de [[board]]",
+    "it": "Rimuovi il riempimento del Riquadro dei flow [[tile]] su [[board]]",
+    "sv": "Ta bort fyllningen från Flödesrutan [[tile]] på [[board]]",
+    "no": "Fjern fyllet fra Flytflisen [[tile]] på [[board]]",
+    "es": "Quitar el relleno del Mosaico de flujo [[tile]] de [[board]]",
+    "da": "Fjern fyldet fra Flowfeltet [[tile]] på [[board]]",
+    "ru": "Убрать заливку плитки потока [[tile]] на [[board]]",
+    "pl": "Usuń wypełnienie Kafelka Flow [[tile]] na [[board]]",
+    "ko": "[[board]]의 플로우 타일 [[tile]]의 채우기 제거",
+    "ar": "إزالة التعبئة من مربع التدفق [[tile]] في [[board]]"
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "board",
+      "title": {
+        "en": "Board",
+        "nl": "Bord",
+        "de": "Tafel",
+        "fr": "Tableau",
+        "it": "Bacheca",
+        "sv": "Tavla",
+        "no": "Tavle",
+        "es": "Tablero",
+        "da": "Tavle",
+        "ru": "Доска",
+        "pl": "Tablica",
+        "ko": "보드",
+        "ar": "اللوحة"
+      },
+      "placeholder": {
+        "en": "Tiles",
+        "nl": "Tiles",
+        "de": "Tiles",
+        "fr": "Tiles",
+        "it": "Tiles",
+        "sv": "Tiles",
+        "no": "Tiles",
+        "es": "Tiles",
+        "da": "Tiles",
+        "ru": "Tiles",
+        "pl": "Tiles",
+        "ko": "Tiles",
+        "ar": "Tiles"
+      }
+    },
+    {
+      "type": "autocomplete",
+      "name": "tile",
+      "title": {
+        "en": "Tile",
+        "nl": "Tegel",
+        "de": "Kachel",
+        "fr": "Tuile",
+        "it": "Riquadro",
+        "sv": "Ruta",
+        "no": "Flis",
+        "es": "Mosaico",
+        "da": "Felt",
+        "ru": "Плитка",
+        "pl": "Kafelek",
+        "ko": "타일",
+        "ar": "المربع"
+      },
+      "placeholder": {
+        "en": "Car",
+        "nl": "Auto",
+        "de": "Auto",
+        "fr": "Voiture",
+        "it": "Auto",
+        "sv": "Bil",
+        "no": "Bil",
+        "es": "Coche",
+        "da": "Bil",
+        "ru": "Машина",
+        "pl": "Samochód",
+        "ko": "자동차",
+        "ar": "السيارة"
+      }
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "id": "flowtiles_set_text",
+  "title": {
+    "en": "Set a Flow Tile's text",
+    "nl": "De tekst van een Flowtegel instellen",
+    "de": "Text einer Flow-Kachel setzen",
+    "fr": "Définir le texte d'une Tuile de flow",
+    "it": "Imposta il testo di un Riquadro dei flow",
+    "sv": "Ange texten på en Flödesruta",
+    "no": "Angi teksten på en Flytflis",
+    "es": "Establecer el texto de un Mosaico de flujo",
+    "da": "Angiv teksten på et Flowfelt",
+    "ru": "Задать текст плитки потока",
+    "pl": "Ustaw tekst Kafelka Flow",
+    "ko": "플로우 타일의 텍스트 설정",
+    "ar": "تعيين نص مربع تدفق"
+  },
+  "titleFormatted": {
+    "en": "Set Flow Tile [[tile]] on [[board]] to [[text]]",
+    "nl": "Stel Flowtegel [[tile]] op [[board]] in op [[text]]",
+    "de": "Flow-Kachel [[tile]] auf [[board]] auf [[text]] setzen",
+    "fr": "Définir la Tuile de flow [[tile]] de [[board]] sur [[text]]",
+    "it": "Imposta il Riquadro dei flow [[tile]] su [[board]] a [[text]]",
+    "sv": "Ange Flödesrutan [[tile]] på [[board]] till [[text]]",
+    "no": "Angi Flytflisen [[tile]] på [[board]] til [[text]]",
+    "es": "Establecer el Mosaico de flujo [[tile]] de [[board]] en [[text]]",
+    "da": "Angiv Flowfeltet [[tile]] på [[board]] til [[text]]",
+    "ru": "Задать плитке потока [[tile]] на [[board]] текст [[text]]",
+    "pl": "Ustaw Kafelek Flow [[tile]] na [[board]] na [[text]]",
+    "ko": "[[board]]의 플로우 타일 [[tile]]을(를) [[text]](으)로 설정",
+    "ar": "تعيين مربع التدفق [[tile]] في [[board]] إلى [[text]]"
+  },
+  "hint": {
+    "en": "Makes the tile if it isn't there yet. Every Flow Tiles widget showing this board shows it, on every screen. Its icon, colour, fill and second line stay as they are.",
+    "nl": "Maakt de tegel aan als die er nog niet is. Elke Flowtegels-widget met dit bord toont hem, op elk scherm. Pictogram, kleur, vulling en tweede regel blijven zoals ze zijn.",
+    "de": "Legt die Kachel an, falls es sie noch nicht gibt. Jedes Flow-Kacheln-Widget mit dieser Tafel zeigt sie, auf jedem Bildschirm. Symbol, Farbe, Füllung und zweite Zeile bleiben, wie sie sind.",
+    "fr": "Crée la tuile si elle n'existe pas encore. Chaque widget Tuiles de flow affichant ce tableau la montre, sur chaque écran. Son icône, sa couleur, son remplissage et sa deuxième ligne restent tels quels.",
+    "it": "Crea il riquadro se non c'è ancora. Ogni widget Riquadri dei flow con questa bacheca lo mostra, su ogni schermo. Icona, colore, riempimento e seconda riga restano come sono.",
+    "sv": "Skapar rutan om den inte finns än. Alla Flödesrutor-widgetar som visar tavlan visar den, på alla skärmar. Ikon, färg, fyllning och andra rad förblir som de är.",
+    "no": "Lager flisen hvis den ikke finnes ennå. Alle Flytfliser-widgeter som viser tavlen, viser den, på alle skjermer. Ikon, farge, fyll og andre linje forblir som de er.",
+    "es": "Crea el mosaico si aún no existe. Cada widget Mosaicos de flujo que muestra este tablero lo muestra, en cada pantalla. Su icono, color, relleno y segunda línea se quedan como están.",
+    "da": "Opretter feltet, hvis det ikke findes endnu. Alle Flowfelter-widgets, der viser tavlen, viser det, på alle skærme. Ikon, farve, fyld og anden linje forbliver, som de er.",
+    "ru": "Создаёт плитку, если её ещё нет. Её показывают все виджеты «Плитки потоков» с этой доской на всех экранах. Значок, цвет, заливка и вторая строка не меняются.",
+    "pl": "Tworzy kafelek, jeśli jeszcze go nie ma. Pokazuje go każdy widżet Kafelki Flow z tą tablicą, na każdym ekranie. Ikona, kolor, wypełnienie i druga linia pozostają bez zmian.",
+    "ko": "타일이 없으면 만듭니다. 이 보드를 보여 주는 모든 플로우 타일 위젯이 모든 화면에 표시합니다. 아이콘, 색상, 채우기, 두 번째 줄은 그대로 유지됩니다.",
+    "ar": "ينشئ المربع إن لم يكن موجودًا. تعرضه كل أدوات مربعات التدفقات التي تعرض هذه اللوحة، في كل شاشة. تبقى الأيقونة واللون والتعبئة والسطر الثاني كما هي."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "board",
+      "title": {
+        "en": "Board",
+        "nl": "Bord",
+        "de": "Tafel",
+        "fr": "Tableau",
+        "it": "Bacheca",
+        "sv": "Tavla",
+        "no": "Tavle",
+        "es": "Tablero",
+        "da": "Tavle",
+        "ru": "Доска",
+        "pl": "Tablica",
+        "ko": "보드",
+        "ar": "اللوحة"
+      },
+      "placeholder": {
+        "en": "Tiles",
+        "nl": "Tiles",
+        "de": "Tiles",
+        "fr": "Tiles",
+        "it": "Tiles",
+        "sv": "Tiles",
+        "no": "Tiles",
+        "es": "Tiles",
+        "da": "Tiles",
+        "ru": "Tiles",
+        "pl": "Tiles",
+        "ko": "Tiles",
+        "ar": "Tiles"
+      }
+    },
+    {
+      "type": "autocomplete",
+      "name": "tile",
+      "title": {
+        "en": "Tile",
+        "nl": "Tegel",
+        "de": "Kachel",
+        "fr": "Tuile",
+        "it": "Riquadro",
+        "sv": "Ruta",
+        "no": "Flis",
+        "es": "Mosaico",
+        "da": "Felt",
+        "ru": "Плитка",
+        "pl": "Kafelek",
+        "ko": "타일",
+        "ar": "المربع"
+      },
+      "placeholder": {
+        "en": "Car",
+        "nl": "Auto",
+        "de": "Auto",
+        "fr": "Voiture",
+        "it": "Auto",
+        "sv": "Bil",
+        "no": "Bil",
+        "es": "Coche",
+        "da": "Bil",
+        "ru": "Машина",
+        "pl": "Samochód",
+        "ko": "자동차",
+        "ar": "السيارة"
+      }
+    },
+    {
+      "type": "text",
+      "name": "text",
+      "title": {
+        "en": "Text",
+        "nl": "Tekst",
+        "de": "Text",
+        "fr": "Texte",
+        "it": "Testo",
+        "sv": "Text",
+        "no": "Tekst",
+        "es": "Texto",
+        "da": "Tekst",
+        "ru": "Текст",
+        "pl": "Tekst",
+        "ko": "텍스트",
+        "ar": "النص"
+      },
+      "placeholder": {
+        "en": "Paper on Thursday",
+        "nl": "Papier op donderdag",
+        "de": "Papier am Donnerstag",
+        "fr": "Papier jeudi",
+        "it": "Carta giovedì",
+        "sv": "Papper på torsdag",
+        "no": "Papir på torsdag",
+        "es": "Papel el jueves",
+        "da": "Papir på torsdag",
+        "ru": "Бумага в четверг",
+        "pl": "Papier w czwartek",
+        "ko": "목요일 종이",
+        "ar": "الورق يوم الخميس"
+      }
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "id": "flowtiles_remove",
+  "title": {
+    "en": "Remove a Flow Tile",
+    "nl": "Een Flowtegel verwijderen",
+    "de": "Eine Flow-Kachel entfernen",
+    "fr": "Retirer une Tuile de flow",
+    "it": "Rimuovi un Riquadro dei flow",
+    "sv": "Ta bort en Flödesruta",
+    "no": "Fjern en Flytflis",
+    "es": "Quitar un Mosaico de flujo",
+    "da": "Fjern et Flowfelt",
+    "ru": "Удалить плитку потока",
+    "pl": "Usuń Kafelek Flow",
+    "ko": "플로우 타일 제거",
+    "ar": "إزالة مربع تدفق"
+  },
+  "titleFormatted": {
+    "en": "Remove Flow Tile [[tile]] from [[board]]",
+    "nl": "Verwijder Flowtegel [[tile]] van [[board]]",
+    "de": "Flow-Kachel [[tile]] von [[board]] entfernen",
+    "fr": "Retirer la Tuile de flow [[tile]] de [[board]]",
+    "it": "Rimuovi il Riquadro dei flow [[tile]] da [[board]]",
+    "sv": "Ta bort Flödesrutan [[tile]] från [[board]]",
+    "no": "Fjern Flytflisen [[tile]] fra [[board]]",
+    "es": "Quitar el Mosaico de flujo [[tile]] de [[board]]",
+    "da": "Fjern Flowfeltet [[tile]] fra [[board]]",
+    "ru": "Удалить плитку потока [[tile]] с [[board]]",
+    "pl": "Usuń Kafelek Flow [[tile]] z [[board]]",
+    "ko": "[[board]]에서 플로우 타일 [[tile]] 제거",
+    "ar": "إزالة مربع التدفق [[tile]] من [[board]]"
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "board",
+      "title": {
+        "en": "Board",
+        "nl": "Bord",
+        "de": "Tafel",
+        "fr": "Tableau",
+        "it": "Bacheca",
+        "sv": "Tavla",
+        "no": "Tavle",
+        "es": "Tablero",
+        "da": "Tavle",
+        "ru": "Доска",
+        "pl": "Tablica",
+        "ko": "보드",
+        "ar": "اللوحة"
+      },
+      "placeholder": {
+        "en": "Tiles",
+        "nl": "Tiles",
+        "de": "Tiles",
+        "fr": "Tiles",
+        "it": "Tiles",
+        "sv": "Tiles",
+        "no": "Tiles",
+        "es": "Tiles",
+        "da": "Tiles",
+        "ru": "Tiles",
+        "pl": "Tiles",
+        "ko": "Tiles",
+        "ar": "Tiles"
+      }
+    },
+    {
+      "type": "autocomplete",
+      "name": "tile",
+      "title": {
+        "en": "Tile",
+        "nl": "Tegel",
+        "de": "Kachel",
+        "fr": "Tuile",
+        "it": "Riquadro",
+        "sv": "Ruta",
+        "no": "Flis",
+        "es": "Mosaico",
+        "da": "Felt",
+        "ru": "Плитка",
+        "pl": "Kafelek",
+        "ko": "타일",
+        "ar": "المربع"
+      },
+      "placeholder": {
+        "en": "Car",
+        "nl": "Auto",
+        "de": "Auto",
+        "fr": "Voiture",
+        "it": "Auto",
+        "sv": "Bil",
+        "no": "Bil",
+        "es": "Coche",
+        "da": "Bil",
+        "ru": "Машина",
+        "pl": "Samochód",
+        "ko": "자동차",
+        "ar": "السيارة"
+      }
+    }
+  ]
+}

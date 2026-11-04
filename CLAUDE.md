@@ -25,6 +25,7 @@ This file holds what applies across the app. Each widget's notes, and those of t
 | Cameras | `cameras` | `widgets/cameras.md` |
 | Device Values | `values` | `widgets/values.md` |
 | Combined Value | `combined` | `widgets/combined.md` |
+| Flow Tiles (Device Values' tiles written by Flow cards, on named boards) | `flowtiles` | `widgets/flowtiles.md` |
 | Light Controls | `lights` | `widgets/lights.md` |
 | Lights by Room | `lightrooms` | `widgets/lightrooms.md` |
 | Chart · Basic, called Charts until 1.2.0, and Chart · Over Time and Chart · History while it was built (and the shared chart module, frame and settings catalog) | `charts` | `widgets/charts.md` |

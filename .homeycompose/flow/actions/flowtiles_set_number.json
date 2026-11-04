@@ -1,0 +1,280 @@
+{
+  "id": "flowtiles_set_number",
+  "title": {
+    "en": "Set a Flow Tile's number",
+    "nl": "Het getal van een Flowtegel instellen",
+    "de": "Zahl einer Flow-Kachel setzen",
+    "fr": "Définir le nombre d'une Tuile de flow",
+    "it": "Imposta il numero di un Riquadro dei flow",
+    "sv": "Ange talet på en Flödesruta",
+    "no": "Angi tallet på en Flytflis",
+    "es": "Establecer el número de un Mosaico de flujo",
+    "da": "Angiv tallet på et Flowfelt",
+    "ru": "Задать число плитки потока",
+    "pl": "Ustaw liczbę Kafelka Flow",
+    "ko": "플로우 타일의 숫자 설정",
+    "ar": "تعيين رقم مربع تدفق"
+  },
+  "titleFormatted": {
+    "en": "Set Flow Tile [[tile]] on [[board]] to [[number]] [[units]], [[decimals]]",
+    "nl": "Stel Flowtegel [[tile]] op [[board]] in op [[number]] [[units]], [[decimals]]",
+    "de": "Flow-Kachel [[tile]] auf [[board]] auf [[number]] [[units]] setzen, [[decimals]]",
+    "fr": "Définir la Tuile de flow [[tile]] de [[board]] sur [[number]] [[units]], [[decimals]]",
+    "it": "Imposta il Riquadro dei flow [[tile]] su [[board]] a [[number]] [[units]], [[decimals]]",
+    "sv": "Ange Flödesrutan [[tile]] på [[board]] till [[number]] [[units]], [[decimals]]",
+    "no": "Angi Flytflisen [[tile]] på [[board]] til [[number]] [[units]], [[decimals]]",
+    "es": "Establecer el Mosaico de flujo [[tile]] de [[board]] en [[number]] [[units]], [[decimals]]",
+    "da": "Angiv Flowfeltet [[tile]] på [[board]] til [[number]] [[units]], [[decimals]]",
+    "ru": "Задать плитке потока [[tile]] на [[board]] число [[number]] [[units]], [[decimals]]",
+    "pl": "Ustaw Kafelek Flow [[tile]] na [[board]] na [[number]] [[units]], [[decimals]]",
+    "ko": "[[board]]의 플로우 타일 [[tile]]을(를) [[number]] [[units]](으)로 설정, [[decimals]]",
+    "ar": "تعيين مربع التدفق [[tile]] في [[board]] إلى [[number]] [[units]]، [[decimals]]"
+  },
+  "hint": {
+    "en": "Shown in the screen's number format, with the units if you give some (°C, %, kWh …). Makes the tile if it isn't there yet. Every Flow Tiles widget showing this board shows it, on every screen.",
+    "nl": "Getoond in de getalnotatie van het scherm, met de eenheid als je die opgeeft (°C, %, kWh …). Maakt de tegel aan als die er nog niet is. Elke Flowtegels-widget met dit bord toont hem, op elk scherm.",
+    "de": "In der Zahlenschreibweise des Bildschirms gezeigt, mit der Einheit, wenn du eine angibst (°C, %, kWh …). Legt die Kachel an, falls es sie noch nicht gibt. Jedes Flow-Kacheln-Widget mit dieser Tafel zeigt sie, auf jedem Bildschirm.",
+    "fr": "Affiché dans le format de nombre de l'écran, avec l'unité si vous en indiquez une (°C, %, kWh…). Crée la tuile si elle n'existe pas encore. Chaque widget Tuiles de flow affichant ce tableau la montre, sur chaque écran.",
+    "it": "Mostrato nel formato numerico dello schermo, con l'unità se ne indichi una (°C, %, kWh…). Crea il riquadro se non c'è ancora. Ogni widget Riquadri dei flow con questa bacheca lo mostra, su ogni schermo.",
+    "sv": "Visas i skärmens talformat, med enheten om du anger en (°C, %, kWh …). Skapar rutan om den inte finns än. Alla Flödesrutor-widgetar som visar tavlan visar den, på alla skärmar.",
+    "no": "Vises i skjermens tallformat, med enheten hvis du oppgir en (°C, %, kWh …). Lager flisen hvis den ikke finnes ennå. Alle Flytfliser-widgeter som viser tavlen, viser den, på alle skjermer.",
+    "es": "Se muestra en el formato numérico de la pantalla, con la unidad si indicas una (°C, %, kWh…). Crea el mosaico si aún no existe. Cada widget Mosaicos de flujo que muestra este tablero lo muestra, en cada pantalla.",
+    "da": "Vises i skærmens talformat, med enheden, hvis du angiver en (°C, %, kWh …). Opretter feltet, hvis det ikke findes endnu. Alle Flowfelter-widgets, der viser tavlen, viser det, på alle skærme.",
+    "ru": "Показывается в числовом формате экрана, с единицей, если она указана (°C, %, кВт·ч …). Создаёт плитку, если её ещё нет. Её показывают все виджеты «Плитки потоков» с этой доской на всех экранах.",
+    "pl": "Pokazywana w formacie liczb ekranu, z jednostką, jeśli ją podasz (°C, %, kWh …). Tworzy kafelek, jeśli jeszcze go nie ma. Pokazuje go każdy widżet Kafelki Flow z tą tablicą, na każdym ekranie.",
+    "ko": "화면의 숫자 형식으로 표시되며, 단위를 입력하면 함께 표시됩니다(°C, %, kWh …). 타일이 없으면 만듭니다. 이 보드를 보여 주는 모든 플로우 타일 위젯이 모든 화면에 표시합니다.",
+    "ar": "يُعرض بتنسيق أرقام الشاشة، مع الوحدة إن أدخلتها (°C، %، kWh …). ينشئ المربع إن لم يكن موجودًا. تعرضه كل أدوات مربعات التدفقات التي تعرض هذه اللوحة، في كل شاشة."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "board",
+      "title": {
+        "en": "Board",
+        "nl": "Bord",
+        "de": "Tafel",
+        "fr": "Tableau",
+        "it": "Bacheca",
+        "sv": "Tavla",
+        "no": "Tavle",
+        "es": "Tablero",
+        "da": "Tavle",
+        "ru": "Доска",
+        "pl": "Tablica",
+        "ko": "보드",
+        "ar": "اللوحة"
+      },
+      "placeholder": {
+        "en": "Tiles",
+        "nl": "Tiles",
+        "de": "Tiles",
+        "fr": "Tiles",
+        "it": "Tiles",
+        "sv": "Tiles",
+        "no": "Tiles",
+        "es": "Tiles",
+        "da": "Tiles",
+        "ru": "Tiles",
+        "pl": "Tiles",
+        "ko": "Tiles",
+        "ar": "Tiles"
+      }
+    },
+    {
+      "type": "autocomplete",
+      "name": "tile",
+      "title": {
+        "en": "Tile",
+        "nl": "Tegel",
+        "de": "Kachel",
+        "fr": "Tuile",
+        "it": "Riquadro",
+        "sv": "Ruta",
+        "no": "Flis",
+        "es": "Mosaico",
+        "da": "Felt",
+        "ru": "Плитка",
+        "pl": "Kafelek",
+        "ko": "타일",
+        "ar": "المربع"
+      },
+      "placeholder": {
+        "en": "Car",
+        "nl": "Auto",
+        "de": "Auto",
+        "fr": "Voiture",
+        "it": "Auto",
+        "sv": "Bil",
+        "no": "Bil",
+        "es": "Coche",
+        "da": "Bil",
+        "ru": "Машина",
+        "pl": "Samochód",
+        "ko": "자동차",
+        "ar": "السيارة"
+      }
+    },
+    {
+      "type": "number",
+      "name": "number",
+      "title": {
+        "en": "Number",
+        "nl": "Getal",
+        "de": "Zahl",
+        "fr": "Nombre",
+        "it": "Numero",
+        "sv": "Tal",
+        "no": "Tall",
+        "es": "Número",
+        "da": "Tal",
+        "ru": "Число",
+        "pl": "Liczba",
+        "ko": "숫자",
+        "ar": "الرقم"
+      },
+      "placeholder": {
+        "en": "82",
+        "nl": "82",
+        "de": "82",
+        "fr": "82",
+        "it": "82",
+        "sv": "82",
+        "no": "82",
+        "es": "82",
+        "da": "82",
+        "ru": "82",
+        "pl": "82",
+        "ko": "82",
+        "ar": "82"
+      }
+    },
+    {
+      "type": "text",
+      "name": "units",
+      "required": false,
+      "title": {
+        "en": "Units",
+        "nl": "Eenheid",
+        "de": "Einheit",
+        "fr": "Unité",
+        "it": "Unità",
+        "sv": "Enhet",
+        "no": "Enhet",
+        "es": "Unidad",
+        "da": "Enhed",
+        "ru": "Единица",
+        "pl": "Jednostka",
+        "ko": "단위",
+        "ar": "الوحدة"
+      },
+      "placeholder": {
+        "en": "No units",
+        "nl": "Geen eenheid",
+        "de": "Keine Einheit",
+        "fr": "Sans unité",
+        "it": "Nessuna unità",
+        "sv": "Ingen enhet",
+        "no": "Ingen enhet",
+        "es": "Sin unidad",
+        "da": "Ingen enhed",
+        "ru": "Без единицы",
+        "pl": "Bez jednostki",
+        "ko": "단위 없음",
+        "ar": "بلا وحدة"
+      }
+    },
+    {
+      "type": "dropdown",
+      "name": "decimals",
+      "title": {
+        "en": "Decimals",
+        "nl": "Decimalen",
+        "de": "Nachkommastellen",
+        "fr": "Décimales",
+        "it": "Decimali",
+        "sv": "Decimaler",
+        "no": "Desimaler",
+        "es": "Decimales",
+        "da": "Decimaler",
+        "ru": "Знаки после запятой",
+        "pl": "Miejsca po przecinku",
+        "ko": "소수 자릿수",
+        "ar": "المنازل العشرية"
+      },
+      "values": [
+        {
+          "id": "auto",
+          "title": {
+            "en": "up to 2 decimals",
+            "nl": "tot 2 decimalen",
+            "de": "bis zu 2 Nachkommastellen",
+            "fr": "jusqu'à 2 décimales",
+            "it": "fino a 2 decimali",
+            "sv": "upp till 2 decimaler",
+            "no": "opptil 2 desimaler",
+            "es": "hasta 2 decimales",
+            "da": "op til 2 decimaler",
+            "ru": "до 2 знаков после запятой",
+            "pl": "do 2 miejsc po przecinku",
+            "ko": "소수점 최대 2자리",
+            "ar": "حتى منزلتين عشريتين"
+          }
+        },
+        {
+          "id": "0",
+          "title": {
+            "en": "no decimals",
+            "nl": "geen decimalen",
+            "de": "ohne Nachkommastellen",
+            "fr": "sans décimale",
+            "it": "senza decimali",
+            "sv": "inga decimaler",
+            "no": "ingen desimaler",
+            "es": "sin decimales",
+            "da": "ingen decimaler",
+            "ru": "без знаков после запятой",
+            "pl": "bez miejsc po przecinku",
+            "ko": "소수점 없음",
+            "ar": "بلا منازل عشرية"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "1 decimal",
+            "nl": "1 decimaal",
+            "de": "1 Nachkommastelle",
+            "fr": "1 décimale",
+            "it": "1 decimale",
+            "sv": "1 decimal",
+            "no": "1 desimal",
+            "es": "1 decimal",
+            "da": "1 decimal",
+            "ru": "1 знак после запятой",
+            "pl": "1 miejsce po przecinku",
+            "ko": "소수점 1자리",
+            "ar": "منزلة عشرية واحدة"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "2 decimals",
+            "nl": "2 decimalen",
+            "de": "2 Nachkommastellen",
+            "fr": "2 décimales",
+            "it": "2 decimali",
+            "sv": "2 decimaler",
+            "no": "2 desimaler",
+            "es": "2 decimales",
+            "da": "2 decimaler",
+            "ru": "2 знака после запятой",
+            "pl": "2 miejsca po przecinku",
+            "ko": "소수점 2자리",
+            "ar": "منزلتان عشريتان"
+          }
+        }
+      ]
+    }
+  ]
+}
