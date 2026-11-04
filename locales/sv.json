@@ -354,7 +354,15 @@
     "noDevices": "Ingen av enheterna har det här värdet.",
     "error": "Kunde inte läsa in värdet.",
     "notRead": "__count__ av __total__ inte lästa",
-    "others": "Övriga"
+    "others": "Övriga",
+    "leftOut": "__count__ av __total__ utelämnade",
+    "upTo": "upp till __value__",
+    "from": "från __value__",
+    "ofTotal": "av __total__",
+    "allOk": "Alla inom intervallet",
+    "noRange": "Ange ett OK-intervall",
+    "unavailable": "__count__ otillgängliga",
+    "otherUnits": "annan enhet, utelämnad"
   },
   "sparklines": {
     "selectSlots": "Välj enhetsvärden i widgetinställningarna.",

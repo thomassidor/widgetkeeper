@@ -354,7 +354,15 @@
     "noDevices": "Żadne z urządzeń nie ma tej wartości.",
     "error": "Nie udało się wczytać wartości.",
     "notRead": "Nieodczytane: __count__ z __total__",
-    "others": "Pozostałe"
+    "others": "Pozostałe",
+    "leftOut": "Pominięto __count__ z __total__",
+    "upTo": "do __value__",
+    "from": "od __value__",
+    "ofTotal": "z __total__",
+    "allOk": "Wszystko w zakresie",
+    "noRange": "Ustaw zakres OK",
+    "unavailable": "Niedostępne: __count__",
+    "otherUnits": "inna jednostka, pominięto"
   },
   "sparklines": {
     "selectSlots": "Wybierz wartości w ustawieniach widżetu.",

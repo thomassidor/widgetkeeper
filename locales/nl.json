@@ -354,7 +354,15 @@
     "noDevices": "Geen van de apparaten heeft deze waarde.",
     "error": "Kan de waarde niet laden.",
     "notRead": "__count__ van __total__ niet gelezen",
-    "others": "Overige"
+    "others": "Overige",
+    "leftOut": "__count__ van __total__ weggelaten",
+    "upTo": "tot __value__",
+    "from": "vanaf __value__",
+    "ofTotal": "van __total__",
+    "allOk": "Alles binnen bereik",
+    "noRange": "Stel een OK-bereik in",
+    "unavailable": "__count__ niet beschikbaar",
+    "otherUnits": "andere eenheid, weggelaten"
   },
   "sparklines": {
     "selectSlots": "Kies apparaatwaarden in de widgetinstellingen.",

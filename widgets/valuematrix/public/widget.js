@@ -5,7 +5,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, applyColors, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, applyColors, messageLine, knownValue, okRange, okLevel } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -21,70 +21,6 @@
     radon: 'Radon',
     voc: 'VOC',
   };
-
-  /**
-   * Capabilities with a usual comfortable range (Room Health's defaults) and a short header, both only in the unit
-   * named (`units`, matched without case; a missing one passes where `optional`). `label` is a string key when it's
-   * translated.
-   */
-  const KNOWN = [
-    { id: /^measure_temperature(\.|$)/, units: /^°C$/, range: { min: 18, max: 24 }, label: '°C' },
-    { id: /^measure_humidity(\.|$)/, units: /^%$/, range: { min: 30, max: 60 }, label: '%' },
-    { id: /^measure_co2$/, units: /^ppm$/i, optional: true, range: { min: null, max: 1000 }, label: 'CO₂' },
-    { id: /^measure_radon$/, units: /^bq\/m(3|³)$/i, range: { min: null, max: 100 }, label: { key: 'radon' } },
-    { id: /^measure_pm25$/, units: /^(μ|µ|u)g\/m(3|³)$/i, optional: true, range: { min: null, max: 15 }, label: 'PM2.5' },
-    { id: /^measure_pm10$/, units: /^(μ|µ|u)g\/m(3|³)$/i, optional: true, range: { min: null, max: 45 }, label: 'PM10' },
-    { id: /^measure_t?voc$/i, units: /^ppb$/i, range: { min: null, max: 1000 }, label: { key: 'voc' } },
-  ];
-
-  /** The known capability a column is, in its expected unit, or null. */
-  function knownOf(column) {
-    if (!column || !column.capabilityId) return null;
-    const units = column.units ? String(column.units).trim() : '';
-    return KNOWN.find(k => k.id.test(column.capabilityId) && (units ? k.units.test(units) : !!k.optional)) || null;
-  }
-
-  const NUM = '(-?\\d+(?:[.,]\\d+)?)';
-  const BETWEEN = new RegExp(`^${NUM}\\s*[-–—]\\s*${NUM}$`);
-  const BELOW = new RegExp(`^(?:<=?|≤)\\s*${NUM}$`);
-  const ABOVE = new RegExp(`^(?:>=?|≥)\\s*${NUM}$`);
-  const toNum = s => Number(s.replace(',', '.'));
-
-  /**
-   * A column's OK range, `{min, max}` (either may be null), from its setting: `18–24` (or `-`/`—`), `<1000`,
-   * `≤1000`, `>10`, `≥10`. Empty is the usual range of a known capability in its unit (`column`: `{capabilityId,
-   * units}`), else none; `–` alone, or text it can't read, is none (null).
-   */
-  function valueMatrixRange(text, column) {
-    const s = typeof text === 'string' ? text.trim() : text == null ? '' : String(text).trim();
-    if (!s) {
-      const known = knownOf(column);
-      return known ? { ...known.range } : null;
-    }
-    let m = s.match(BETWEEN);
-    if (m) {
-      const [a, b] = [toNum(m[1]), toNum(m[2])];
-      return { min: Math.min(a, b), max: Math.max(a, b) };
-    }
-    if ((m = s.match(BELOW))) return { min: null, max: toNum(m[1]) };
-    if ((m = s.match(ABOVE))) return { min: toNum(m[1]), max: null };
-    return null;
-  }
-
-  /**
-   * A cell's level: `none` without a reading, `plain` without a range, else `good` inside it (edges included), `out`
-   * past it, and `far` past it by half its width or more (one-sided: half the limit, so 1.5 × an upper one).
-   */
-  function valueMatrixLevel(value, range) {
-    if (typeof value !== 'number' || !isFinite(value)) return 'none';
-    if (!range || (range.min == null && range.max == null)) return 'plain';
-    let distance = 0;
-    if (range.min != null && value < range.min) distance = range.min - value;
-    else if (range.max != null && value > range.max) distance = value - range.max;
-    if (distance <= 0) return 'good';
-    const margin = range.min != null && range.max != null ? (range.max - range.min) / 2 : Math.abs(range.min != null ? range.min : range.max) / 2;
-    return distance >= margin ? 'far' : 'out';
-  }
 
   /**
    * The rows: in `rooms` mode the devices grouped by zone, in the order their first device was picked, keyed
@@ -186,11 +122,11 @@
     function columns() {
       return picked.map((c, i) => {
         const d = described[i] && described[i].capabilityId === c.capabilityId ? described[i] : { capabilityId: c.capabilityId, title: c.title || c.capabilityId, units: null, decimals: null };
-        const known = knownOf(d);
+        const known = knownValue(d);
         const header = typeof c.header === 'string' && c.header.trim() ? c.header.trim()
           : known ? (typeof known.label === 'string' ? known.label : t(known.label.key))
             : d.units && d.units.length <= 4 ? d.units : d.title;
-        return { ...d, header, range: valueMatrixRange(c.range, d) };
+        return { ...d, header, range: okRange(c.range, d) };
       });
     }
 
@@ -272,7 +208,7 @@
         cols.forEach((c, i) => {
           const has = !missing && c.capabilityId in r.values;
           const value = has ? r.values[c.capabilityId] : null;
-          const level = !has ? (missing ? 'none' : 'absent') : valueMatrixLevel(value, c.range);
+          const level = !has ? (missing ? 'none' : 'absent') : okLevel(value, c.range);
           cells[i].dataset.level = level;
           cells[i].firstChild.textContent = has || missing ? formatNumber(c, value, many) : '';
           if (!has) return;
@@ -296,7 +232,8 @@
   }
 
   window.createValueMatrixWidget = createValueMatrixWidget;
-  window.valueMatrixRange = valueMatrixRange;
-  window.valueMatrixLevel = valueMatrixLevel;
+  // The kit's since 1.3.0 (Combined Value's OK range too); kept here for the tests' names.
+  window.valueMatrixRange = okRange;
+  window.valueMatrixLevel = okLevel;
   window.valueMatrixRows = valueMatrixRows;
 })();

@@ -354,7 +354,15 @@
     "noDevices": "Keines der Geräte hat diesen Wert.",
     "error": "Wert konnte nicht geladen werden.",
     "notRead": "__count__ von __total__ nicht gelesen",
-    "others": "Andere"
+    "others": "Andere",
+    "leftOut": "__count__ von __total__ ausgelassen",
+    "upTo": "bis __value__",
+    "from": "ab __value__",
+    "ofTotal": "von __total__",
+    "allOk": "Alle im Bereich",
+    "noRange": "OK-Bereich einstellen",
+    "unavailable": "__count__ nicht verfügbar",
+    "otherUnits": "andere Einheit, ausgelassen"
   },
   "sparklines": {
     "selectSlots": "Wähle Gerätewerte in den Widget-Einstellungen.",

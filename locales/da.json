@@ -354,7 +354,15 @@
     "noDevices": "Ingen af enhederne har denne værdi.",
     "error": "Kunne ikke hente værdien.",
     "notRead": "__count__ af __total__ ikke læst",
-    "others": "Øvrige"
+    "others": "Øvrige",
+    "leftOut": "__count__ af __total__ udeladt",
+    "upTo": "op til __value__",
+    "from": "fra __value__",
+    "ofTotal": "af __total__",
+    "allOk": "Alle inden for intervallet",
+    "noRange": "Angiv et OK-interval",
+    "unavailable": "__count__ utilgængelige",
+    "otherUnits": "anden enhed, udeladt"
   },
   "sparklines": {
     "selectSlots": "Vælg enhedsværdier i widgetindstillingerne.",

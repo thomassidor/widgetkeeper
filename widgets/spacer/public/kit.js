@@ -423,6 +423,70 @@
     return VALUE_GLYPHS.gauge;
   }
 
+  /**
+   * Capabilities with a usual comfortable range (Room Health's defaults; Value Matrix's and Combined Value's empty OK range) and a short header, both only in the unit
+   * named (`units`, matched without case; a missing one passes where `optional`). `label` is a string key when it's
+   * translated.
+   */
+  const KNOWN_VALUES = [
+    { id: /^measure_temperature(\.|$)/, units: /^°C$/, range: { min: 18, max: 24 }, label: '°C' },
+    { id: /^measure_humidity(\.|$)/, units: /^%$/, range: { min: 30, max: 60 }, label: '%' },
+    { id: /^measure_co2$/, units: /^ppm$/i, optional: true, range: { min: null, max: 1000 }, label: 'CO₂' },
+    { id: /^measure_radon$/, units: /^bq\/m(3|³)$/i, range: { min: null, max: 100 }, label: { key: 'radon' } },
+    { id: /^measure_pm25$/, units: /^(μ|µ|u)g\/m(3|³)$/i, optional: true, range: { min: null, max: 15 }, label: 'PM2.5' },
+    { id: /^measure_pm10$/, units: /^(μ|µ|u)g\/m(3|³)$/i, optional: true, range: { min: null, max: 45 }, label: 'PM10' },
+    { id: /^measure_t?voc$/i, units: /^ppb$/i, range: { min: null, max: 1000 }, label: { key: 'voc' } },
+  ];
+
+  /** The known capability a column is, in its expected unit, or null. */
+  function knownValue(column) {
+    if (!column || !column.capabilityId) return null;
+    const units = column.units ? String(column.units).trim() : '';
+    return KNOWN_VALUES.find(k => k.id.test(column.capabilityId) && (units ? k.units.test(units) : !!k.optional)) || null;
+  }
+
+  const RANGE_NUM = '(-?\\d+(?:[.,]\\d+)?)';
+  const RANGE_BETWEEN = new RegExp(`^${RANGE_NUM}\\s*[-–—]\\s*${RANGE_NUM}$`);
+  const RANGE_BELOW = new RegExp(`^(?:<=?|≤)\\s*${RANGE_NUM}$`);
+  const RANGE_ABOVE = new RegExp(`^(?:>=?|≥)\\s*${RANGE_NUM}$`);
+  const rangeNum = s => Number(s.replace(',', '.'));
+
+  /**
+   * A value's OK range (Value Matrix's columns, Combined Value), `{min, max}` (either may be null), from its setting: `18–24` (or `-`/`—`), `<1000`,
+   * `≤1000`, `>10`, `≥10`. Empty is the usual range of a known capability in its unit (`column`: `{capabilityId,
+   * units}`), else none; `–` alone, or text it can't read, is none (null).
+   */
+  function okRange(text, column) {
+    const s = typeof text === 'string' ? text.trim() : text == null ? '' : String(text).trim();
+    if (!s) {
+      const known = knownValue(column);
+      return known ? { ...known.range } : null;
+    }
+    let m = s.match(RANGE_BETWEEN);
+    if (m) {
+      const [a, b] = [rangeNum(m[1]), rangeNum(m[2])];
+      return { min: Math.min(a, b), max: Math.max(a, b) };
+    }
+    if ((m = s.match(RANGE_BELOW))) return { min: null, max: rangeNum(m[1]) };
+    if ((m = s.match(RANGE_ABOVE))) return { min: rangeNum(m[1]), max: null };
+    return null;
+  }
+
+  /**
+   * A value's level (a Value Matrix cell, a Combined Value device): `none` without a reading, `plain` without a range, else `good` inside it (edges included), `out`
+   * past it, and `far` past it by half its width or more (one-sided: half the limit, so 1.5 × an upper one).
+   */
+  function okLevel(value, range) {
+    if (typeof value !== 'number' || !isFinite(value)) return 'none';
+    if (!range || (range.min == null && range.max == null)) return 'plain';
+    let distance = 0;
+    if (range.min != null && value < range.min) distance = range.min - value;
+    else if (range.max != null && value > range.max) distance = value - range.max;
+    if (distance <= 0) return 'good';
+    const margin = range.min != null && range.max != null ? (range.max - range.min) / 2 : Math.abs(range.min != null ? range.min : range.max) / 2;
+    return distance >= margin ? 'far' : 'out';
+  }
+
   /** A frame's load marks for the app's diagnostics log (`wireFrame()`'s `perf=`): start, HTML, SDK ready, request. */
   function loadMarks(sdkAt) {
     const nav = /** @type {PerformanceNavigationTiming | null} */ (performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null);
@@ -1203,6 +1267,6 @@
   window.WidgetkeeperKit = {
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
     formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
-    onDeviceNames, colorStyle, applyColors, sound, optimistic, shake, wireBar, roomTiles,
+    onDeviceNames, colorStyle, applyColors, sound, optimistic, shake, wireBar, roomTiles, knownValue, okRange, okLevel,
   };
 })();

@@ -354,7 +354,15 @@
     "noDevices": "None of the devices has this value.",
     "error": "Could not load the value.",
     "notRead": "__count__ of __total__ not read",
-    "others": "Others"
+    "others": "Others",
+    "leftOut": "__count__ of __total__ left out",
+    "upTo": "up to __value__",
+    "from": "from __value__",
+    "ofTotal": "of __total__",
+    "allOk": "All within range",
+    "noRange": "Set an OK range in the settings",
+    "unavailable": "__count__ unavailable",
+    "otherUnits": "other unit, left out"
   },
   "sparklines": {
     "selectSlots": "Pick device values in the widget settings.",

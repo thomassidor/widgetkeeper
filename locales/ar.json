@@ -354,7 +354,15 @@
     "noDevices": "لا يملك أي من الأجهزة هذه القيمة.",
     "error": "تعذر تحميل القيمة.",
     "notRead": "لم تُقرأ __count__ من __total__",
-    "others": "أخرى"
+    "others": "أخرى",
+    "leftOut": "استُبعد __count__ من __total__",
+    "upTo": "حتى __value__",
+    "from": "من __value__",
+    "ofTotal": "من __total__",
+    "allOk": "الكل ضمن النطاق",
+    "noRange": "اضبط النطاق الجيد",
+    "unavailable": "غير متاح: __count__",
+    "otherUnits": "وحدة أخرى، مستبعد"
   },
   "sparklines": {
     "selectSlots": "اختر قيم الأجهزة في إعدادات الأداة.",

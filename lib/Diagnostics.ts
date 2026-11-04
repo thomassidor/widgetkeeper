@@ -51,6 +51,7 @@ export default class Diagnostics {
       pollen: (this.homey.app as any)?.pollen?.describe?.() ?? null,
       heatmap: (this.homey.app as any)?.heatmap?.describe?.() ?? null,
       sparklines: (this.homey.app as any)?.sparklines?.describe?.() ?? null,
+      combined: (this.homey.app as any)?.combined?.describe?.() ?? null,
       variables: (this.homey.app as any)?.variables?.describe?.() ?? null,
       flows: (this.homey.app as any)?.flows?.describe?.() ?? null,
       keypad: (this.homey.app as any)?.keypad?.describe?.() ?? null,

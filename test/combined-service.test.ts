@@ -87,4 +87,29 @@ describe('CombinedService', () => {
     api.devices.getDevices.mockRejectedValueOnce(new Error('Homey busy'));
     await expect(service.getState(T, [])).rejects.toThrow('Homey busy');
   });
+
+  it('leaves out devices in other units than most, logs that once, and keeps the last requests for Diagnostics', async () => {
+    const odd = sensor('f', 'Fahrenheit', 70, { units: '°F' });
+    const { service, log } = setup([odd, sensor('b', 'Bedroom', 19.6), sensor('a', 'Attic', 14.2)]);
+    const state = await service.getState(T, []);
+    expect(state.capability!.units).toBe('°C');
+    expect(state.devices).toEqual([
+      { id: 'a', name: 'Attic', value: 14.2 },
+      { id: 'b', name: 'Bedroom', value: 19.6 },
+      { id: 'f', name: 'Fahrenheit', value: 70, otherUnits: '°F' },
+    ]);
+    expect(log).toHaveBeenCalledWith('Combined value measure_temperature: 1 device(s) left out for other units than °C: °F');
+    await service.getState(T, []);
+    expect(log).toHaveBeenCalledTimes(1);
+    expect(service.describe()).toEqual({
+      [T]: { at: expect.any(String), picked: 0, counted: 3, notFound: 0, units: '°C', otherUnits: [{ id: 'f', units: '°F' }] },
+    });
+  });
+
+  it("takes the first device's units on a tie", async () => {
+    const { service } = setup([sensor('f', 'Fahrenheit', 70, { units: '°F' }), sensor('b', 'Bedroom', 19.6)]);
+    const state = await service.getState(T, ['f', 'b']);
+    expect(state.capability!.units).toBe('°F');
+    expect(state.devices[1]).toEqual({ id: 'b', name: 'Bedroom', value: 19.6, otherUnits: '°C' });
+  });
 });

@@ -35,7 +35,7 @@
         state: { capability: cap('measure_temperature', 'Temperature', '°C', 1), devices: devices(TEMPS) } },
       { title: 'Sum · range off · share', opts: { show: 'sum', name: 'Power now', range: false },
         state: { capability: cap('measure_power', 'Power', 'W', 0), devices: devices(POWER) } },
-      { title: 'Lowest of 12 batteries (% scale)', opts: { show: 'min', name: 'Lowest battery' },
+      { title: 'Lowest of 12 batteries (% scale), OK >20', opts: { show: 'min', name: 'Lowest battery', okRange: '>20' },
         state: { capability: cap('measure_battery', 'Battery', '%', 0), devices: devices([['Motion, hall', 18], ['Front door', 82], ['Window, bedroom', 91], ['Smoke, attic', 64],
           ['Leak, laundry', 55], ['Motion, garage', 47], ['Back door', 77], ['Smoke, hall', 88], ['Leak, kitchen', 69], ['Window, office', 95], ['Button, bed', 34], ['Motion, stairs', 72]]) } },
       { title: 'Highest · Muted orange', opts: { show: 'max', name: 'Highest CO₂', range: false, color: 'orange' },
@@ -56,6 +56,16 @@
         state: { capability: cap('measure_temperature', 'Temperature', '°C', 1), devices: devices([['Freezer, garage', -17.2], ['Freezer, kitchen', -19.5]]) } },
       { title: 'Dim (0–1 as %), Vivid, no colour', opts: { colorStyle: 'deep' },
         state: { capability: cap('dim', 'Brightness', '%', 2, { min: 0, max: 1 }), devices: devices([['Ceiling', 0.35], ['Floor lamp', 0.8], ['Desk', 1], ['Hallway', 0.1]]) } },
+      { title: 'Number outside the OK range (>20), list open', opts: { show: 'out', name: 'Low batteries', okRange: '>20', range: false }, open: true,
+        state: { capability: cap('measure_battery', 'Battery', '%', 0), devices: devices([['Motion, hall', 18], ['Front door', 82], ['Smoke, attic', 6], ['Leak, laundry', 55], ['Button, bed', 34]]) } },
+      { title: 'All within the OK range', opts: { show: 'out', name: 'Low batteries', okRange: '>20', range: false },
+        state: { capability: cap('measure_battery', 'Battery', '%', 0), devices: devices([['Front door', 82], ['Leak, laundry', 55], ['Button, bed', 34]]) } },
+      { title: 'Highest CO₂ past 1000, Vivid', opts: { show: 'max', name: 'Highest CO₂', okRange: '<1000', colorStyle: 'deep' },
+        state: { capability: cap('measure_co2', 'CO2', 'ppm', 0), devices: devices([['Bedroom', 1640], ['Office', 760], ['Living room', 610], ['Kids’ room', 890]]) } },
+      { title: 'Median, OK 19–23, Muted blue, list open', opts: { show: 'median', name: 'Rooms', okRange: '19–23', color: 'blue' }, open: true,
+        state: { capability: cap('measure_temperature', 'Temperature', '°C', 1), devices: devices([...TEMPS, [null]]) } },
+      { title: 'A meter in other units, left out', opts: { show: 'sum', name: 'Energy today' },
+        state: { capability: cap('meter_power', 'Energy', 'kWh', 2), devices: [...devices([['Heat pump', 14.2], ['Oven', 2.1]]), { id: 'wh', name: 'Old plug', value: 1830, otherUnits: 'Wh' }] } },
     ];
     const root = document.getElementById('cases');
     for (const c of CASES) {
@@ -64,8 +74,11 @@
       col.innerHTML = `<span>${width} px · ${light ? 'light' : 'dark'} · ${c.title}</span><div class="dash ${light ? 'light' : 'homey-dark-mode'}" style="width:${width}px"><div></div><div></div></div>`;
       root.append(col);
       const [tile, pillEl] = col.querySelectorAll('.dash > div');
-      createCombinedWidget(tile, { t: devT, ...c.opts }).setState(structuredClone(c.state));
-      createCombinedWidget(pillEl, { t: devT, ...c.opts, tileStyle: 'pill' }).setState(structuredClone(c.state));
+      for (const [node, extra] of [[tile, {}], [pillEl, { tileStyle: 'pill' }]]) {
+        const w = createCombinedWidget(node, { t: devT, ...c.opts, ...extra });
+        w.setState(structuredClone(c.state));
+        if (c.open && !extra.tileStyle) w.toggle(); // the list a tap opens
+      }
     }
     const none = document.createElement('div');
     none.className = 'col';

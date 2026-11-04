@@ -9,8 +9,21 @@ export type CombinedCapability = {
   id: string, title: string, units: string | null, decimals: number | null, min: number | null, max: number | null,
 };
 
-/** A counted device: its shown name and its reading (null before its first), or one that can't be read (deleted, or failing). */
-export type CombinedDevice = { id: string, name: string, value: number | null } | { id: string, missing: true };
+/**
+ * A counted device: its shown name and its reading (null before its first), or one that can't be read (deleted, or failing).
+ * `otherUnits` (the device's units, `''` for none): it reports the value in units the others don't, so the widget lists
+ * it but leaves it out of the combined value (a Wh meter among kWh ones would make the sum wrong).
+ */
+export type CombinedDevice = { id: string, name: string, value: number | null, otherUnits?: string } | { id: string, missing: true };
+
+/** What the last request for a value counted, for Diagnostics' `combined`. */
+type CombinedRequest = {
+  at: string, picked: number, counted: number, notFound: number, units: string | null,
+  otherUnits: { id: string, units: string }[],
+};
+
+/** Diagnostics keeps the last request of this many values. */
+const DESCRIBED = 10;
 
 export type CombinedState = { capability: CombinedCapability | null, devices: CombinedDevice[] };
 
@@ -28,6 +41,14 @@ export default class CombinedService {
     private log: (...args: any[]) => void, // errors and warnings: always kept
     private debug: (...args: any[]) => void = () => {}, // routine detail: only with the `debugLog` setting on
   ) {}
+
+  /** The last request per value, newest last. */
+  private requests = new Map<string, CombinedRequest>();
+
+  /** Diagnostics' `combined`: per value its last request (what was picked, counted, not found, in other units). */
+  describe() {
+    return Object.fromEntries(this.requests);
+  }
 
   /** The `capability` setting: every number capability on the Homey, as Value Matrix's columns (units · N devices). */
   listCapabilities(query: string): Promise<AutocompleteItem[]> {
@@ -53,15 +74,39 @@ export default class CombinedService {
         .sort((a, b) => String(a.name).localeCompare(String(b.name)))
         .map(d => d.id as string));
     }
-    const first = counted.length ? byId.get(counted[0]) : null;
-    const c = first ? describeCapability(first.capabilitiesObj[capabilityId], capabilityId) : null;
+    // The value's units are those most counted devices report it in (the first's on a tie); the rest are left out.
+    const unitsOf = (id: string) => describeCapability(byId.get(id).capabilitiesObj[capabilityId], capabilityId).units ?? '';
+    const tally = new Map<string, number>();
+    for (const id of counted) tally.set(unitsOf(id), (tally.get(unitsOf(id)) ?? 0) + 1);
+    let units: string | null = null;
+    for (const [u, n] of tally) if (units === null || n > tally.get(units)!) units = u;
+    const first = counted.find(id => unitsOf(id) === units);
+    const c = first ? describeCapability(byId.get(first).capabilitiesObj[capabilityId], capabilityId) : null;
     const capability = c ? { id: capabilityId, title: c.title, units: c.units, decimals: c.decimals, min: c.min, max: c.max } : null;
     const read = counted.length ? (await this.matrix.getState(counted, [capabilityId])).devices : [];
-    const out: CombinedDevice[] = read.map(d => ('missing' in d
-      ? { id: d.id, missing: true as const }
-      : { id: d.id, name: d.name, value: d.values[capabilityId] ?? null }));
+    const otherUnits: { id: string, units: string }[] = [];
+    const out: CombinedDevice[] = read.map((d) => {
+      if ('missing' in d) return { id: d.id, missing: true as const };
+      const entry: CombinedDevice = { id: d.id, name: d.name, value: d.values[capabilityId] ?? null };
+      const u = unitsOf(d.id);
+      if (u !== units) {
+        entry.otherUnits = u;
+        otherUnits.push({ id: d.id, units: u });
+      }
+      return entry;
+    });
     for (const id of gone) out.push({ id, missing: true });
     if (gone.length) this.log(`Combined value: ${gone.length} picked device(s) not found`);
+    // Once while it stays so, not every refresh.
+    const before = this.requests.get(capabilityId);
+    if (otherUnits.length && JSON.stringify(otherUnits) !== JSON.stringify(before?.otherUnits ?? [])) {
+      this.log(`Combined value ${capabilityId}: ${otherUnits.length} device(s) left out for other units than ${units || 'none'}: ${otherUnits.map(o => o.units || 'none').join(', ')}`);
+    }
+    this.requests.delete(capabilityId);
+    this.requests.set(capabilityId, {
+      at: new Date().toISOString(), picked: deviceIds.length, counted: counted.length, notFound: gone.length, units: capability ? capability.units : null, otherUnits,
+    });
+    while (this.requests.size > DESCRIBED) this.requests.delete(this.requests.keys().next().value!);
     this.debug(`Combined value ${capabilityId} of ${counted.length} devices${deviceIds.length ? '' : ' (every one with it)'}: ${tm.summary()}`);
     return { capability, devices: out };
   }

@@ -39019,6 +39019,24 @@
               }
             },
             {
+              "id": "median",
+              "title": {
+                "en": "Median",
+                "nl": "Mediaan",
+                "de": "Median",
+                "fr": "Médiane",
+                "it": "Mediana",
+                "sv": "Median",
+                "no": "Median",
+                "es": "Mediana",
+                "da": "Median",
+                "ru": "Медиана",
+                "pl": "Mediana",
+                "ko": "중앙값",
+                "ar": "الوسيط"
+              }
+            },
+            {
               "id": "sum",
               "title": {
                 "en": "Sum",
@@ -39089,6 +39107,24 @@
                 "ko": "최저 – 최고",
                 "ar": "الأدنى – الأعلى"
               }
+            },
+            {
+              "id": "out",
+              "title": {
+                "en": "Number outside the OK range",
+                "nl": "Aantal buiten het OK-bereik",
+                "de": "Anzahl außerhalb des OK-Bereichs",
+                "fr": "Nombre hors de la plage OK",
+                "it": "Numero fuori dall'intervallo OK",
+                "sv": "Antal utanför OK-intervallet",
+                "no": "Antall utenfor OK-området",
+                "es": "Número fuera del rango OK",
+                "da": "Antal uden for OK-intervallet",
+                "ru": "Сколько вне диапазона нормы",
+                "pl": "Liczba poza zakresem OK",
+                "ko": "정상 범위 밖의 개수",
+                "ar": "العدد خارج النطاق الجيد"
+              }
             }
           ]
         },
@@ -39124,6 +39160,41 @@
             "pl": "Puste: nazwa wartości, np. Temperatura.",
             "ko": "비워 두면 값의 이름(예: 온도)이 쓰입니다.",
             "ar": "فارغ: اسم القيمة، مثل درجة الحرارة."
+          },
+          "value": ""
+        },
+        {
+          "id": "okRange",
+          "type": "text",
+          "title": {
+            "en": "OK range",
+            "nl": "OK-bereik",
+            "de": "OK-Bereich",
+            "fr": "Plage OK",
+            "it": "Intervallo OK",
+            "sv": "OK-intervall",
+            "no": "OK-område",
+            "es": "Rango OK",
+            "da": "OK-interval",
+            "ru": "Диапазон нормы",
+            "pl": "Zakres OK",
+            "ko": "정상 범위",
+            "ar": "النطاق الجيد"
+          },
+          "hint": {
+            "en": "In the value's unit: 18–24, <1000 or >20. Outside it the tile turns orange, and red once it's past by half the range (or half the limit); devices outside it get an orange or red dot. Empty: none.",
+            "nl": "In de eenheid van de waarde: 18–24, <1000 of >20. Daarbuiten wordt de tegel oranje, en rood zodra het er een half bereik (of de helft van de grens) voorbij is; apparaten daarbuiten krijgen een oranje of rode stip. Leeg: geen.",
+            "de": "In der Einheit des Werts: 18–24, <1000 oder >20. Außerhalb wird die Kachel orange und rot, sobald der Wert um den halben Bereich (oder die halbe Grenze) darüber hinaus liegt; Geräte außerhalb bekommen einen orangen oder roten Punkt. Leer: keiner.",
+            "fr": "Dans l'unité de la valeur : 18–24, <1000 ou >20. Dehors, la tuile devient orange, et rouge une fois dépassée de la moitié de la plage (ou de la moitié de la limite) ; les appareils dehors ont un point orange ou rouge. Vide : aucune.",
+            "it": "Nell'unità del valore: 18–24, <1000 o >20. Fuori il riquadro diventa arancione, e rosso quando lo supera di metà intervallo (o di metà limite); i dispositivi fuori hanno un punto arancione o rosso. Vuoto: nessuno.",
+            "sv": "I värdets enhet: 18–24, <1000 eller >20. Utanför blir rutan orange, och röd när värdet ligger ett halvt intervall (eller en halv gräns) utanför; enheter utanför får en orange eller röd prick. Tomt: inget.",
+            "no": "I verdiens enhet: 18–24, <1000 eller >20. Utenfor blir flisen oransje, og rød når verdien er et halvt område (eller en halv grense) utenfor; enheter utenfor får en oransje eller rød prikk. Tomt: ingen.",
+            "es": "En la unidad del valor: 18–24, <1000 o >20. Fuera, el mosaico se vuelve naranja, y rojo cuando lo supera en medio rango (o en la mitad del límite); los dispositivos fuera tienen un punto naranja o rojo. Vacío: ninguno.",
+            "da": "I værdiens enhed: 18–24, <1000 eller >20. Udenfor bliver feltet orange, og rødt, når værdien ligger et halvt interval (eller en halv grænse) udenfor; enheder udenfor får en orange eller rød prik. Tomt: intet.",
+            "ru": "В единицах значения: 18–24, <1000 или >20. Вне его плитка становится оранжевой, а красной, когда выходит за диапазон на его половину (или на половину предела); у устройств вне его оранжевая или красная точка. Пусто: без диапазона.",
+            "pl": "W jednostce wartości: 18–24, <1000 lub >20. Poza nim kafelek robi się pomarańczowy, a czerwony, gdy wykracza o połowę zakresu (lub połowę limitu); urządzenia poza nim mają pomarańczową lub czerwoną kropkę. Puste: bez zakresu.",
+            "ko": "값의 단위로: 18–24, <1000 또는 >20. 범위 밖이면 타일이 주황색, 범위의 절반(또는 한계의 절반)만큼 벗어나면 빨간색이 되고, 범위 밖의 기기는 주황색이나 빨간색 점으로 표시됩니다. 비워 두면 범위 없음.",
+            "ar": "بوحدة القيمة: 18–24 أو <1000 أو >20. خارجه يصبح المربع برتقاليًا، وأحمر متى تجاوزه بنصف النطاق (أو نصف الحد)؛ وتظهر الأجهزة خارجه بنقطة برتقالية أو حمراء. فارغ: بلا نطاق."
           },
           "value": ""
         },

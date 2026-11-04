@@ -354,7 +354,15 @@
     "noDevices": "Ingen av enhetene har denne verdien.",
     "error": "Kunne ikke laste inn verdien.",
     "notRead": "__count__ av __total__ ikke lest",
-    "others": "Andre"
+    "others": "Andre",
+    "leftOut": "__count__ av __total__ utelatt",
+    "upTo": "opptil __value__",
+    "from": "fra __value__",
+    "ofTotal": "av __total__",
+    "allOk": "Alle innenfor området",
+    "noRange": "Angi et OK-område",
+    "unavailable": "__count__ utilgjengelige",
+    "otherUnits": "annen enhet, utelatt"
   },
   "sparklines": {
     "selectSlots": "Velg enhetsverdier i widgetinnstillingene.",

@@ -354,7 +354,15 @@
     "noDevices": "Aucun des appareils n'a cette valeur.",
     "error": "Impossible de charger la valeur.",
     "notRead": "__count__ sur __total__ non lus",
-    "others": "Autres"
+    "others": "Autres",
+    "leftOut": "__count__ sur __total__ ignorés",
+    "upTo": "jusqu'à __value__",
+    "from": "dès __value__",
+    "ofTotal": "sur __total__",
+    "allOk": "Tout dans la plage",
+    "noRange": "Définissez une plage OK",
+    "unavailable": "__count__ indisponible(s)",
+    "otherUnits": "autre unité, ignoré"
   },
   "sparklines": {
     "selectSlots": "Choisissez des valeurs dans les réglages du widget.",

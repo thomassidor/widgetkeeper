@@ -39,8 +39,10 @@ html, body { background: transparent !important; }
   --cv-track: color-mix(in srgb, var(--cv-text) 12%, var(--cv-bg));
   --cv-dot: color-mix(in srgb, var(--cv-text) 55%, var(--cv-bg));
   position: relative; background: var(--cv-bg); color: var(--cv-text); border-radius: var(--cv-radius); padding: 8px 10px; min-width: 0;
-  user-select: none; -webkit-user-select: none;
+  user-select: none; -webkit-user-select: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
 }
+.cv-tile:focus { outline: none; }
+.cv-tile:focus-visible { outline: 2px solid var(--cv-accent); outline-offset: 2px; }
 /* The native tiles' 1px rim, brightest along the top. */
 .homey-dark-mode .cv-tile::after, .cv.homey-dark-mode .cv-tile::after {
   content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
@@ -67,6 +69,8 @@ html, body { background: transparent !important; }
 }
 .cv-units { font-size: var(--cv-fs-large); font-weight: var(--cv-medium); letter-spacing: 0; margin-left: 2px; }
 .cv-units.tight { margin-left: 0; }
+/* The count's `of 12`: a word, so a space's width. */
+.cv-units.count { margin-left: .25em; }
 
 .cv-chart[hidden] { display: none; }
 
@@ -155,6 +159,49 @@ html, body { background: transparent !important; }
 .cv.wk-deep.cv-colored [data-share="orange"] { --cv-part: color-mix(in srgb, var(--wk-on) 45%, var(--cv-bg)); }
 .cv.wk-deep.cv-colored [data-share="purple"] { --cv-part: color-mix(in srgb, var(--wk-on) 30%, var(--cv-bg)); }
 .cv.wk-deep.cv-colored [data-share="others"] { --cv-part: color-mix(in srgb, var(--wk-on) 18%, var(--cv-bg)); }
+
+/*
+ * The OK range (Value Matrix's levels, kit.css's colours): a tile whose value is outside it is orange (out) or red (far),
+ * mixed 22 % in Muted (over the tile's own colour), filled in Vivid; a dot outside it takes the bright colour, or on a
+ * filled tile the text colour.
+ */
+.cv .cv-tile[data-level="out"] { --cv-bg: color-mix(in srgb, var(--wk-orange) var(--cv-mix), var(--cv-tile)); }
+.cv .cv-tile[data-level="far"] { --cv-bg: color-mix(in srgb, var(--wk-red) var(--cv-mix), var(--cv-tile)); }
+.cv.wk-deep .cv-tile[data-level] {
+  --cv-bg: var(--wk-orange); --cv-text: var(--wk-on-orange); --cv-muted: color-mix(in srgb, var(--wk-on-orange) 80%, transparent);
+  --cv-accent: var(--cv-text); --cv-track: color-mix(in srgb, var(--cv-text) 25%, var(--cv-bg)); --cv-dot: color-mix(in srgb, var(--cv-text) 60%, var(--cv-bg));
+}
+.cv.wk-deep .cv-tile[data-level="far"] {
+  --cv-bg: var(--wk-red); --cv-text: var(--wk-on-red); --cv-muted: color-mix(in srgb, var(--wk-on-red) 80%, transparent);
+}
+.cv.wk-deep .cv-tile[data-level]::after { display: none; }
+.cv.wk-deep.cv-pill .cv-tile[data-level] .cv-icon { color: var(--cv-text); }
+.cv-dot[data-level="out"] { background: var(--wk-orange-bright); }
+.cv-dot[data-level="far"] { background: var(--wk-red-bright); }
+.cv.wk-deep.cv-colored .cv-dot[data-level], .cv.wk-deep .cv-tile[data-level] .cv-dot[data-level] { background: var(--cv-text); }
+
+/* Every device's value, opened by a tap on the tile: the tile's look, a row each (the name, the value on the right). */
+.cv-list {
+  --cv-bg: var(--cv-tile);
+  position: relative; background: var(--cv-bg); border-radius: var(--cv-radius); padding: 6px 10px; cursor: pointer;
+  user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+  font-size: var(--cv-fs-small); line-height: var(--cv-lh-small);
+}
+.cv-list[hidden] { display: none; }
+.homey-dark-mode .cv-list::after, .cv.homey-dark-mode .cv-list::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .05), inset 0 0 0 1px rgb(255 255 255 / .03);
+}
+.cv-row { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 2px 0; }
+.cv-row + .cv-row { border-top: 1px solid color-mix(in srgb, var(--cv-text) 8%, var(--cv-bg)); }
+.cv-mark { flex: 0 0 8px; width: 8px; height: 8px; border-radius: 50%; background: color-mix(in srgb, var(--cv-text) 35%, var(--cv-bg)); }
+.cv-mark[data-level="out"] { background: var(--wk-orange-bright); }
+.cv-mark[data-level="far"] { background: var(--wk-red-bright); }
+.cv-row-name { flex: 1 1 auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.cv-row-value { flex: 0 0 auto; font-variant-numeric: tabular-nums; font-weight: var(--cv-medium); }
+.cv-row.hl .cv-row-name, .cv-row.hl .cv-row-value { font-weight: var(--cv-bold); }
+.cv-row.left { color: var(--cv-muted); }
+.cv-row.left .cv-row-value { font-weight: var(--cv-regular); }
 
 .cv-message { font-size: var(--cv-fs-small); line-height: var(--cv-lh-small); color: var(--cv-muted); }
 .cv-message.error { color: var(--homey-color-red, #F25F5C); }

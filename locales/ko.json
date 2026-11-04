@@ -354,7 +354,15 @@
     "noDevices": "이 값이 있는 기기가 없습니다.",
     "error": "값을 불러올 수 없습니다.",
     "notRead": "__total__개 중 __count__개를 읽지 못함",
-    "others": "기타"
+    "others": "기타",
+    "leftOut": "__total__개 중 __count__개 제외",
+    "upTo": "최대 __value__",
+    "from": "최소 __value__",
+    "ofTotal": "/ __total__",
+    "allOk": "모두 범위 안",
+    "noRange": "정상 범위를 설정하세요",
+    "unavailable": "__count__개 사용 불가",
+    "otherUnits": "다른 단위, 제외됨"
   },
   "sparklines": {
     "selectSlots": "위젯 설정에서 기기 값을 선택하세요.",

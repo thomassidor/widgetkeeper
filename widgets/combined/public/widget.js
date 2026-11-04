@@ -1,12 +1,13 @@
 /*
  * Combined Value: one full-width tile with one value read from several devices, folded into one number (the average,
- * the sum, the lowest, the highest, or the lowest to the highest), large on the right; the name and the range on the
- * left; under them a chart of the devices against each other: a dot each on a shared scale, or for a sum of values
- * that are all zero or more, each device's share of it. A pill style puts the dots (or the share) on the right.
- * Display only. Plain browser JS (served as-is).
+ * the median, the sum, the lowest, the highest, the lowest to the highest, or how many are outside an OK range), large
+ * on the right; the name and the range on the left; under them a chart of the devices against each other: a dot each on
+ * a shared scale, or for a sum of values that are all zero or more, each device's share of it. A pill style puts the
+ * dots (or the share) on the right. An OK range colours the tile when the value is outside it, and the dots outside it.
+ * A tap opens every device's value under the tile. Plain browser JS (served as-is).
  */
 (function () {
-  const { el, COLORS, TIGHT_UNITS, formatNumber, scaled, valueGlyph, setMask, applyColors, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, COLORS, TIGHT_UNITS, formatNumber, scaled, valueGlyph, setMask, applyColors, messageLine, okRange, okLevel, onTap } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -14,18 +15,29 @@
     noDevices: 'None of the devices has this value.',
     error: 'Could not load the value.',
     notRead: '__count__ of __total__ not read',
+    leftOut: '__count__ of __total__ left out',
     others: 'Others',
+    upTo: 'up to __value__',
+    from: 'from __value__',
+    ofTotal: 'of __total__',
+    allOk: 'All within range',
+    noRange: 'Set an OK range in the settings',
+    unavailable: '__count__ unavailable',
+    otherUnits: 'other unit, left out',
   };
 
-  const SHOWS = ['avg', 'sum', 'min', 'max', 'range'];
+  const SHOWS = ['avg', 'median', 'sum', 'min', 'max', 'range', 'out'];
+  /** The levels past the OK range, worst last. */
+  const PAST = ['out', 'far'];
   /** The share bar's colours, biggest first (kit.css's bright set), and Others. */
   const SHARE_COLORS = ['blue', 'green', 'orange', 'purple'];
   /** The share bar names every device up to this many, else the biggest three and Others. */
   const SHARE_ALL = 4;
 
   /**
-   * What the readings fold into: their sum, average, lowest and highest (raw, as the devices report them), with the first
-   * device at the lowest and at the highest; null without a reading.
+   * What the readings fold into: their sum, average, median, lowest and highest (raw, as the devices report them), with
+   * the first device at the lowest and at the highest; null without a reading. The median of an even count is the
+   * average of the middle two.
    * @param {{name: string, value: number}[]} read
    */
   function combine(read) {
@@ -38,8 +50,14 @@
       if (d.value < lo.value) lo = d;
       if (d.value > hi.value) hi = d;
     }
-    return { sum, avg: sum / read.length, min: lo.value, max: hi.value, lo: lo.name, hi: hi.name, n: read.length };
+    const sorted = read.map(d => d.value).sort((a, b) => a - b);
+    const mid = sorted.length >> 1;
+    const median = sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+    return { sum, avg: sum / read.length, median, min: lo.value, max: hi.value, lo: lo.name, hi: hi.name, n: read.length };
   }
+
+  /** The worse of two levels (`far` over `out` over the rest). */
+  const worse = (a, b) => (PAST.indexOf(b) > PAST.indexOf(a) ? b : a);
 
   /**
    * The dots' scale, in the shown numbers (`scaled()`): 0–100 for a `%` value, so a low battery sits at the left; else
@@ -70,7 +88,8 @@
   /**
    * @param {HTMLElement} root
    * @param {{ t?: (key: string, tokens?: object) => string, show?: string, name?: string, range?: boolean, chart?: boolean,
-   *   tileStyle?: string, color?: string, colorStyle?: string, onHeight?: (h: number) => void }} opts
+   *   okRange?: string, tileStyle?: string, color?: string, colorStyle?: string, onHeight?: (h: number) => void,
+   *   onTap?: () => void }} opts
    */
   function createCombinedWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -86,6 +105,8 @@
 
     /** @type {{capability: any, devices: any[]} | null} */
     let state = null;
+    /** Every device's value is open under the tile (a tap toggles it). */
+    let listOpen = false;
     const message = messageLine(() => render(), { clear: () => { state = null; } });
 
     root.classList.add('cv');
@@ -103,8 +124,21 @@
     const lineEl = el('span', { class: 'cv-line', dir: 'auto' }, text);
     const valueEl = el('span', { class: 'cv-value' }, head);
     const chartEl = el('div', { class: 'cv-chart' }, pill ? head : tile);
+    const listEl = el('div', { class: 'cv-list', hidden: '' }, root);
     const messageEl = el('div', { class: 'cv-message', dir: 'auto' }, root);
     tile.style.display = 'none'; // until there's a value to show
+    // A tap on the tile opens every device's value under it; another tap (on either) closes it.
+    tile.setAttribute('role', 'button');
+    tile.setAttribute('tabindex', '0');
+    tile.setAttribute('aria-expanded', 'false');
+    const toggle = () => {
+      if (!state || !state.capability) return;
+      listOpen = !listOpen;
+      if (opts.onTap) opts.onTap();
+      render();
+    };
+    onTap(tile, toggle);
+    onTap(listEl, toggle, { keys: false });
 
     function setState(next) {
       state = next && typeof next === 'object' ? { capability: next.capability || null, devices: Array.isArray(next.devices) ? next.devices : [] } : null;
@@ -135,20 +169,77 @@
     /** `19.6–23.1°`, spaced when a number is negative (`−19.5 – −17.2°`). */
     const span = (a, b) => `${num(a)}${a < 0 || b < 0 ? ' – ' : '–'}${num(b)}`;
 
-    /** The main value: the number (or the span) and its units apart, so the units can be smaller. */
-    function mainParts(c) {
+    /**
+     * The OK range in the shown numbers (`18–24`, `<1000`, `>20`), or null. Empty is none: unlike Value Matrix's rooms,
+     * the devices may be anything (an outdoor sensor, a freezer), so a usual indoor range would colour them wrongly.
+     */
+    const ok = okRange(opts.okRange) || null;
+    /** A raw reading's level against the OK range (`plain` without one). */
+    const levelOf = (x, ok) => okLevel(scaled(state.capability, x), ok);
+
+    /** The main value: the number (or the span, or the count) and its units apart, so the units can be smaller. */
+    function mainParts(c, f) {
+      if (show === 'out') return f.ok ? [String(f.past.length), t('ofTotal', { total: c.n })] : ['–', ''];
       if (show === 'range') return [span(c.min, c.max), units()];
-      return [num(c[show], show === 'avg'), units()];
+      return [num(c[show], show === 'avg' || show === 'median'), units()];
     }
 
-    /** The line under the name: what's missing, else the device the value comes from (Lowest, Highest) and the range. */
-    function lineText(c, missing, total) {
-      if (missing) return t('notRead', { count: missing, total });
+    /**
+     * The line under the name: what's missing (or left out), else the device the value comes from (Lowest, Highest) and
+     * the range, its other end only when the value is one (`up to 23.1°C`); for the count, the devices outside the range,
+     * worst first.
+     */
+    function lineText(c, f) {
+      if (f.leftOut) return t('leftOut', { count: f.leftOut, total: f.total });
+      if (f.missing) return t('notRead', { count: f.missing, total: f.total });
       const parts = [];
+      if (show === 'out') {
+        if (!f.ok) return t('noRange');
+        parts.push(f.past.length ? f.past.map(d => d.name).join(', ') : t('allOk'));
+      }
       if (show === 'min') parts.push(c.lo);
       if (show === 'max') parts.push(c.hi);
-      if (withRange && show !== 'range') parts.push(withUnits(span(c.min, c.max)));
+      if (withRange && show === 'min') parts.push(t('upTo', { value: withUnits(num(c.max)) }));
+      else if (withRange && show === 'max') parts.push(t('from', { value: withUnits(num(c.min)) }));
+      else if (withRange && show !== 'range') parts.push(withUnits(span(c.min, c.max)));
       return parts.join(' · ');
+    }
+
+    /** The tile's level: the shown value's against the OK range (the worse end of a span; for the count, the worst device). */
+    function tileLevel(c, f) {
+      if (!f.ok) return 'plain';
+      if (show === 'out') return f.past.reduce((a, d) => worse(a, d.level), 'good');
+      if (show === 'range') return worse(levelOf(c.min, f.ok), levelOf(c.max, f.ok));
+      return levelOf(c[show], f.ok);
+    }
+
+    /**
+     * Every device under the tile: the readings in the order the value reads them (highest first for the sum and the
+     * highest, worst first for the count, else lowest first), then those without a reading or in other units, and how
+     * many can't be read. The device the value comes from is bold, one outside the OK range marked by its level.
+     */
+    function renderList(read, c, f) {
+      listEl.textContent = '';
+      const down = show === 'sum' || show === 'max';
+      const rank = d => (show === 'out' ? -PAST.indexOf(d.level) : 0);
+      const rows = [...read].sort((a, b) => rank(a) - rank(b) || (down ? b.value - a.value : a.value - b.value));
+      const from = show === 'min' ? c.min : show === 'max' ? c.max : null;
+      for (const d of rows) {
+        const row = el('div', { class: `cv-row${d.value === from ? ' hl' : ''}` }, listEl);
+        el('i', { class: 'cv-mark', 'data-level': d.level }, row);
+        el('span', { class: 'cv-row-name', dir: 'auto' }, row).textContent = d.name;
+        el('span', { class: 'cv-row-value' }, row).textContent = withUnits(num(d.value));
+      }
+      for (const d of f.unread) {
+        const row = el('div', { class: 'cv-row left' }, listEl);
+        el('i', { class: 'cv-mark' }, row);
+        el('span', { class: 'cv-row-name', dir: 'auto' }, row).textContent = d.name;
+        const u = d.otherUnits;
+        const v = typeof d.value === 'number' && isFinite(d.value) && u != null
+          ? `${formatNumber({ ...state.capability, units: u, min: null, max: null }, d.value).replace(/^-/, '−')}${u ? (TIGHT_UNITS.test(u) ? u : ` ${u}`) : ''}` : '–';
+        el('span', { class: 'cv-row-value', title: u != null ? t('otherUnits') : null }, row).textContent = v;
+      }
+      if (f.unavailable) el('div', { class: 'cv-row left' }, listEl).textContent = t('unavailable', { count: f.unavailable });
     }
 
     function renderDots(read, c) {
@@ -165,6 +256,7 @@
       for (const d of read) {
         const hl = (show === 'min' && d.value === c.min) || (show === 'max' && d.value === c.max) || (show === 'range' && (d.value === c.min || d.value === c.max));
         const dot = el('div', { class: `cv-dot${hl ? ' hl' : ''}`, title: `${d.name}: ${withUnits(num(d.value))}` }, strip);
+        if (PAST.includes(d.level)) dot.dataset.level = d.level;
         dot.style.left = at(d.value);
       }
       if (show === 'avg') el('div', { class: 'cv-avg' }, strip).style.left = at(c.avg);
@@ -195,10 +287,16 @@
     function render() {
       if (state && state.capability) {
         const cap = state.capability;
-        const read = state.devices
-          .filter(d => !d.missing && typeof d.value === 'number' && isFinite(d.value))
-          .map(d => ({ name: d.name, value: d.value }));
+        const counts = d => !d.missing && d.otherUnits == null && typeof d.value === 'number' && isFinite(d.value);
+        const read = state.devices.filter(counts).map(d => ({ name: d.name, value: d.value, level: levelOf(d.value, ok) }));
         const total = state.devices.length;
+        const unread = state.devices.filter(d => !d.missing && !counts(d));
+        const leftOut = unread.filter(d => d.otherUnits != null).length;
+        const unavailable = state.devices.filter(d => d.missing).length;
+        const f = {
+          ok, total, unread, unavailable, leftOut: leftOut ? total - read.length : 0, missing: total - read.length,
+          past: read.filter(d => PAST.includes(d.level)).sort((a, b) => PAST.indexOf(b.level) - PAST.indexOf(a.level)),
+        };
         const c = combine(read);
         nameEl.textContent = typedName || cap.title;
         root.dataset.capability = cap.id;
@@ -206,17 +304,22 @@
         valueEl.textContent = '';
         chartEl.textContent = '';
         if (c) {
-          const [n, u] = mainParts(c);
+          const [n, u] = mainParts(c, f);
+          // The count's `of 12` is spaced and untranslated units aren't: both go through withUnits() but the count.
+          const tight = show !== 'out' && TIGHT_UNITS.test(u);
           if (pill) {
-            valueEl.textContent = u ? withUnits(n) : n;
+            valueEl.textContent = !u ? n : show === 'out' ? `${n} ${u}` : withUnits(n);
           } else {
             el('span', { class: 'cv-number' }, valueEl).textContent = n;
-            if (u) el('span', { class: `cv-units${TIGHT_UNITS.test(u) ? ' tight' : ''}` }, valueEl).textContent = u;
+            if (u) el('span', { class: `cv-units${tight ? ' tight' : ''}${show === 'out' ? ' count' : ''}` }, valueEl).textContent = u;
           }
         } else {
           valueEl.textContent = '–';
         }
-        const line = c ? lineText(c, total - read.length, total) : t('notRead', { count: total, total });
+        const level = c ? tileLevel(c, f) : 'plain';
+        if (PAST.includes(level)) tile.dataset.level = level;
+        else delete tile.dataset.level;
+        const line = c ? lineText(c, f) : t('notRead', { count: total, total });
         // The pill's value line carries the value first, then the line; the tile's line is under the name.
         lineEl.textContent = pill ? [valueEl.textContent, line].filter(Boolean).join(' · ') : line;
         lineEl.hidden = !lineEl.textContent;
@@ -228,7 +331,12 @@
         }
         chartEl.hidden = !withChart || !c;
         root.dataset.chart = !withChart || !c ? 'none' : share ? 'share' : 'dots';
+        if (listOpen) renderList(read, c || { min: null, max: null }, f);
       }
+      const open = listOpen && !!state && !!state.capability;
+      listEl.hidden = !open;
+      tile.setAttribute('aria-expanded', String(open));
+      root.classList.toggle('cv-open', open);
       // No device has the value (or none of those picked): said in place of the tile.
       const note = message.text || (state && !state.capability ? t('noDevices') : '');
       messageEl.textContent = note;
@@ -241,7 +349,7 @@
       if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
     }
 
-    return { setState, pushChange, setMessage, render, t };
+    return { setState, pushChange, setMessage, render, t, toggle };
   }
 
   window.createCombinedWidget = createCombinedWidget;

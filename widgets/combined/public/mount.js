@@ -19,12 +19,15 @@ window.mountCombinedWidget = function (Homey, { root, frame }) {
     t: (key, tokens) => Homey.__(key, tokens),
     show: settings.show,
     name: settings.name,
+    okRange: settings.okRange,
     range: settings.range !== false,
     chart: settings.chart !== false,
     tileStyle: settings.tileStyle,
     color: settings.color,
     colorStyle: settings.colorStyle,
     onHeight: link.setHeight,
+    // Throws without a touch just before it (a click on a web dashboard).
+    onTap: () => { try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not on every platform */ } },
   });
 
   // Shown once the text font has loaded (at most 1 s), so the text doesn't pop in.

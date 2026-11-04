@@ -37,7 +37,9 @@ function widget(state: any, opts: object = {}) {
 describe('combineValues', () => {
   it('sums, averages and finds the lowest and highest, naming the first device at each', () => {
     expect(win.combineValues([{ name: 'a', value: 2 }, { name: 'b', value: 6 }, { name: 'c', value: 2 }, { name: 'd', value: 6 }]))
-      .toEqual({ sum: 16, avg: 4, min: 2, max: 6, lo: 'a', hi: 'b', n: 4 });
+      .toEqual({ sum: 16, avg: 4, median: 4, min: 2, max: 6, lo: 'a', hi: 'b', n: 4 });
+    expect(win.combineValues([{ name: 'a', value: 9 }, { name: 'b', value: 1 }, { name: 'c', value: 2 }]).median).toBe(2);
+    expect(win.combineValues([{ name: 'a', value: 1 }, { name: 'b', value: 2 }, { name: 'c', value: 10 }, { name: 'd', value: 3 }]).median).toBe(2.5);
     expect(win.combineValues([])).toBeNull();
   });
 });
@@ -61,13 +63,14 @@ describe('the Combined Value widget', () => {
   });
 
   it.each([
-    ['sum', `${num(64.5, 1)}°C`, null],
-    ['min', `${num(19.6, 1)}°C`, 'Bedroom'],
-    ['max', `${num(23.1, 1)}°C`, 'Office'],
-  ])('%s: the value, and for Lowest and Highest the device first', (show, shown, device) => {
+    ['sum', `${num(64.5, 1)}°C`, `${num(19.6, 1)}–${num(23.1, 1)}°C`],
+    ['median', `${num(21.8, 1)}°C`, `${num(19.6, 1)}–${num(23.1, 1)}°C`],
+    ['min', `${num(19.6, 1)}°C`, `Bedroom · up to ${num(23.1, 1)}°C`],
+    ['max', `${num(23.1, 1)}°C`, `Office · from ${num(19.6, 1)}°C`],
+  ])('%s: the value, for Lowest and Highest the device first and only the range\'s other end', (show, shown, line_) => {
     const { value, line } = widget({ capability: TEMP, devices: temps() }, { show });
     expect(value()).toBe(shown);
-    expect(line()).toBe([device, `${num(19.6, 1)}–${num(23.1, 1)}°C`].filter(Boolean).join(' · '));
+    expect(line()).toBe(line_);
   });
 
   it('Lowest – highest is the value itself, so the line is left out and the name centred', () => {
@@ -79,7 +82,8 @@ describe('the Combined Value widget', () => {
 
   it('spaces the dash between negative numbers', () => {
     const devices = [{ id: 'a', name: 'Garage', value: -17.2 }, { id: 'b', name: 'Kitchen', value: -19.5 }];
-    expect(widget({ capability: TEMP, devices }, { show: 'max' }).line()).toBe(`Garage · −${num(19.5, 1)} – −${num(17.2, 1)}°C`);
+    expect(widget({ capability: TEMP, devices }).line()).toBe(`−${num(19.5, 1)} – −${num(17.2, 1)}°C`);
+    expect(widget({ capability: TEMP, devices }, { show: 'max' }).line()).toBe(`Garage · from −${num(19.5, 1)}°C`);
   });
 
   it('without the range shows no line (or just the device)', () => {
@@ -191,6 +195,115 @@ describe('the Combined Value widget', () => {
     const plain = widget({ capability: TEMP, devices: temps() }, { color: 'default' });
     expect(plain.root.dataset.wkColor).toBeUndefined();
     expect(plain.root.classList.contains('cv-colored')).toBe(false);
+  });
+
+  describe('the OK range', () => {
+    const BATTERY = { id: 'measure_battery', title: 'Battery', units: '%', decimals: 0, min: 0, max: 100 };
+    const batteries = () => [
+      { id: 'a', name: 'Door', value: 80 }, { id: 'b', name: 'Hall', value: 15 }, { id: 'c', name: 'Attic', value: 5 }, { id: 'd', name: 'Desk', value: 60 },
+    ];
+
+    it("colours the tile by the shown value's level, and the dots outside it", () => {
+      const low = widget({ capability: BATTERY, devices: batteries() }, { show: 'min', okRange: '>20' });
+      expect(low.q('.cv-tile')!.dataset.level).toBe('far'); // 5 is 15 under 20, past half the limit
+      expect(low.all('.cv-dot[data-level]').map(d => [d.title, d.dataset.level])).toEqual([['Hall: 15%', 'out'], ['Attic: 5%', 'far']]);
+      const avg = widget({ capability: BATTERY, devices: batteries() }, { okRange: '>20' });
+      expect(avg.q('.cv-tile')!.dataset.level).toBeUndefined(); // 40 is fine
+      const range = widget({ capability: BATTERY, devices: batteries() }, { show: 'range', okRange: '10–90' });
+      expect(range.q('.cv-tile')!.dataset.level).toBe('out'); // the worse end, 5
+    });
+
+    it("empty is none, even for a value Value Matrix knows a usual range of (an outdoor sensor, a freezer)", () => {
+      const cold = [...temps(), { id: 'g', name: 'Garage', value: 6 }];
+      expect(widget({ capability: TEMP, devices: cold }, { show: 'min' }).q('[data-level]')).toBeNull();
+      expect(widget({ capability: TEMP, devices: cold }, { show: 'min', okRange: '–' }).q('[data-level]')).toBeNull();
+      expect(widget({ capability: TEMP, devices: cold }, { show: 'min', okRange: '18–24' }).q('.cv-tile')!.dataset.level).toBe('far');
+    });
+
+    it('reads a 0–1 percentage in percent', () => {
+      const dim = { id: 'dim', title: 'Brightness', units: '%', decimals: 2, min: 0, max: 1 };
+      const w = widget({ capability: dim, devices: [{ id: 'a', name: 'A', value: 0.15 }, { id: 'b', name: 'B', value: 0.5 }] }, { show: 'min', okRange: '>20' });
+      expect(w.q('.cv-tile')!.dataset.level).toBe('out');
+    });
+
+    it('counts the devices outside it, naming them worst first', () => {
+      const { value, line, q, root } = widget({ capability: BATTERY, devices: batteries() }, { show: 'out', okRange: '>20', range: false });
+      expect([q('.cv-number')!.textContent, q('.cv-units')!.textContent]).toEqual(['2', 'of 4']);
+      expect(value()).toBe('2of 4');
+      expect(line()).toBe('Attic, Hall');
+      expect(q('.cv-tile')!.dataset.level).toBe('far');
+      expect(root.dataset.chart).toBe('dots');
+      const pill = widget({ capability: BATTERY, devices: batteries() }, { show: 'out', okRange: '>20', tileStyle: 'pill' });
+      expect(pill.line()).toBe(`2 of 4 · Attic, Hall · ${num(5)}–${num(80)}%`);
+    });
+
+    it('says all are within it, or that it needs one', () => {
+      const fine = widget({ capability: BATTERY, devices: batteries() }, { show: 'out', okRange: '>1', range: false });
+      expect(fine.q('.cv-number')!.textContent).toBe('0');
+      expect(fine.line()).toBe('All within range');
+      expect(fine.q('.cv-tile')!.dataset.level).toBeUndefined();
+      const none = widget({ capability: POWER, devices: power() }, { show: 'out' });
+      expect(none.value()).toBe('–');
+      expect(none.line()).toBe('Set an OK range in the settings');
+    });
+  });
+
+  it('leaves out a device in other units, saying so, and lists it apart', () => {
+    const devices = [...power().slice(0, 2), { id: 'w', name: 'Old meter', value: 5000, otherUnits: 'kW' }];
+    const { q, line, all, w } = widget({ capability: POWER, devices }, { show: 'sum' });
+    expect(q('.cv-number')!.textContent).toBe(num(2220));
+    expect(line()).toBe('1 of 3 left out');
+    expect(all('.cv-share i').length).toBe(2);
+    w.toggle();
+    expect(all('.cv-row').map(r => r.textContent)).toEqual([`Heat pump${num(1240)} W`, `Oven${num(980)} W`, `Old meter${num(5000)} kW`]);
+    expect(q('.cv-row.left .cv-row-value')!.title).toBe('other unit, left out');
+  });
+
+  describe('the list a tap opens', () => {
+    const tap = (node: HTMLElement) => node.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+    it('is closed until a tap on the tile, and a tap on either closes it', () => {
+      const { q, root } = widget({ capability: TEMP, devices: temps() });
+      const tile = q('.cv-tile')!;
+      expect(q('.cv-list')!.hidden).toBe(true);
+      expect(tile.getAttribute('aria-expanded')).toBe('false');
+      tap(tile);
+      expect(q('.cv-list')!.hidden).toBe(false);
+      expect(tile.getAttribute('aria-expanded')).toBe('true');
+      expect(root.classList.contains('cv-open')).toBe(true);
+      tap(q('.cv-list')!);
+      expect(q('.cv-list')!.hidden).toBe(true);
+    });
+
+    it('calls onTap (the haptic tick), and does nothing before a value', () => {
+      const onTap = vi.fn();
+      const { q } = widget(null, { onTap });
+      tap(q('.cv-tile')!);
+      expect(onTap).not.toHaveBeenCalled();
+      expect(q('.cv-list')!.hidden).toBe(true);
+    });
+
+    it('lists every device in the order of the value, the one it comes from bold, then the unread and unavailable', () => {
+      const devices = [...temps(), { id: 'k', name: 'Kitchen', value: null }, { id: 'x', missing: true }];
+      const min = widget({ capability: TEMP, devices }, { show: 'min' });
+      min.w.toggle();
+      expect(min.all('.cv-row').map(r => r.textContent)).toEqual([
+        `Bedroom${num(19.6, 1)}°C`, `Living room${num(21.8, 1)}°C`, `Office${num(23.1, 1)}°C`, 'Kitchen–', '1 unavailable',
+      ]);
+      expect(min.all('.cv-row.hl').map(r => r.querySelector('.cv-row-name')!.textContent)).toEqual(['Bedroom']);
+      const max = widget({ capability: TEMP, devices: temps() }, { show: 'max' });
+      max.w.toggle();
+      expect(max.all('.cv-row-name').map(r => r.textContent)).toEqual(['Office', 'Living room', 'Bedroom']);
+    });
+
+    it("marks the devices outside the OK range, worst first when counting them, and follows changes", () => {
+      const { w, all } = widget({ capability: TEMP, devices: temps() }, { show: 'out', okRange: '20–23' });
+      w.toggle();
+      expect(all('.cv-row').map(r => [r.querySelector('.cv-row-name')!.textContent, r.querySelector('.cv-mark')!.getAttribute('data-level')]))
+        .toEqual([['Bedroom', 'out'], ['Office', 'out'], ['Living room', 'good']]);
+      w.pushChange({ deviceId: 'l', capabilityId: 'measure_temperature', value: 30 });
+      expect(all('.cv-row').map(r => r.querySelector('.cv-mark')!.getAttribute('data-level'))).toEqual(['far', 'out', 'out']);
+    });
   });
 
   it('keeps the tile on a failed refresh, with a passing message', () => {
