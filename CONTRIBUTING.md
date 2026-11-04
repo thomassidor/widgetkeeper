@@ -39,7 +39,7 @@ npm run forum-images                   # the community post's images (docs/forum
 npm run flow-icons                     # the Flow Buttons icon images (lib/flowIconImages.ts)
 ```
 
-The npm scripts run the project-local CLI too. The render scripts need Microsoft Edge (set `EDGE` to its path if it isn't the default). `npm run web-socket` re-bundles `socket.io-client` into `settings/socket.io.js` after an update.
+The npm scripts run the project-local CLI too. The render scripts need Microsoft Edge (set `EDGE` to its path if it isn't the default; on Linux, a Chromium headless shell works too, see `.claude/rules/renders.md`). `npm run web-socket` re-bundles `socket.io-client` into `settings/socket.io.js` after an update.
 
 ### App Store images
 The app's App Store images (`assets/images/small.png`, `large.png` and `xlarge.png`: 250×175, 500×350 and 1000×700, Homey's sizes) are rendered from the widget previews: columns of preview cards, tilted, on a gradient in the brand colour. `dev/app-images.json` sets which widgets appear and in what order (`columns`, by widget id), the previews' `theme`, the tilt, the column width (a fraction of the image), the gaps and the gradient (its colours, angle and glow).
