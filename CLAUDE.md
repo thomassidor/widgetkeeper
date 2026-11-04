@@ -60,12 +60,11 @@ Sessions run on the user's Windows PC or on the NAS build box (the repo `thomass
 | | PC (Windows) | Build box (Linux, as root) |
 |---|---|---|
 | Folders | one clone | a clone per release branch, `/work/wk-<version>` (`/work/buildbox/rc.sh list`; `add <repo> <name> [branch]` for a worktree, `remove <folder>`), a Remote Control each. Another session may be pushing to the same branch: pull before you commit |
-| Browser | Edge (`msedge`, `headless.mjs`'s default path) | `"$EDGE"`: Playwright's Chromium headless shell through a wrapper that drops `--headless=new` and adds `--no-sandbox`. **There's no `msedge`, `chrome` or `chromium` on the PATH; don't conclude there's no browser.** Use it wherever these notes say Edge or `msedge`: renders, screenshots, `--dump-dom`, DevTools (`--remote-debugging-port`) for clicking through a dev page. Don't drive a dev page in happy-dom instead (it ran the page's scripts out of order, 2026-11-03) |
+| Browser | Edge (`msedge`, `headless.mjs`'s default path) | `"$EDGE"`: Playwright's Chromium headless shell through a wrapper that drops `--headless=new` and adds `--no-sandbox`. Also on the PATH as `chromium` (since 2026-11-04), but not as `msedge` or `chrome`: **don't conclude there's no browser.** Use it wherever these notes say Edge or `msedge`: renders, screenshots, `--dump-dom`, DevTools (`--remote-debugging-port`) for clicking through a dev page. Don't drive a dev page in happy-dom instead (it ran the page's scripts out of order, 2026-11-03) |
 | Renders | Edge's renders; committed from here too | Chromium's; committed from here too. Slow (previews ~9 min, screenshots ~11): run them in the background and follow the `[n/total]` lines (`.claude/rules/renders.md`) |
-| Time zone | Copenhagen | UTC (`date`, `new Date()` in a `node -e`, logs). The tests (`vitest.config.ts`) and renders (`headless.mjs`) set `Europe/Copenhagen` themselves; convert anything else |
+| Time zone | Copenhagen | Copenhagen too (`TZ` in the box's settings, 2026-11-04); a session opened before then has UTC, which the tests (`vitest.config.ts`) and renders (`headless.mjs`) override themselves |
 | Homey | home network | home network too: `npx homey app install`, `npm run diagnostics` and `npm run test-dashboards` work as on the PC. To log in: `npx homey login` prints a link; the user opens it and pastes back the code after `code=` in the address it ends on |
 | `npx homey app run` | needs Docker Desktop, usually not running | no Docker at all: install, then `npm run diagnostics` |
-| Python | `python` | `python3` only, with no packages (no Pillow): do image work with `sharp` from `node_modules` in a node script |
 | Stopping a process | — | `pkill -f "http.server 8765"` kills its own shell too, since the command line holds the pattern (exit 144): `pkill -f "[h]ttp.server 8765"`, or kill the PID |
 | GitHub | — | `gh` logged in as the user; `git push` and `gh pr` work; commits are authored as Claude |
 
