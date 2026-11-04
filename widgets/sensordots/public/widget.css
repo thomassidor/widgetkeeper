@@ -138,3 +138,25 @@ html, body { background: transparent !important; }
 
 .sd-message { font-size: var(--sd-fs-small); line-height: var(--homey-line-height-small, 20px); color: var(--sd-muted); }
 .sd-message.error { color: var(--sd-red); }
+
+/* Rename tiles: in place of the dots, a row per sensor: its dot and its name as a text field (Room Health's). */
+.sd-rename-list { display: none; }
+.sd.renaming .sd-grid { display: none; }
+.sd.renaming .sd-rename-list { display: flex; flex-direction: column; gap: var(--homey-su-1, 4px); padding: 8px 10px 10px; }
+.sd-rename-row { display: flex; align-items: center; gap: 10px; }
+.sd-rename-row[data-level="active"] .sd-panel-dot { background: var(--sd-active); }
+.sd-rename-row[data-level="unknown"] .sd-panel-dot { background: color-mix(in srgb, var(--sd-muted) 55%, transparent); }
+.sd .wk-rename {
+  flex: 1; width: 100%; min-width: 0; height: 24px; margin: 0; padding: 0 6px;
+  font: inherit; font-size: var(--sd-fs-small); color: var(--sd-text);
+  background: color-mix(in srgb, var(--sd-text) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sd-text) 24%, transparent); border-radius: 8px; outline: none;
+  user-select: text; -webkit-user-select: text;
+}
+.sd .wk-rename::placeholder { color: var(--sd-muted); opacity: 1; }
+.sd .wk-rename:focus { border-color: var(--sd-blue); }
+.sd-rename-row.shake { animation: sd-shake .35s; }
+@keyframes sd-shake {
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}

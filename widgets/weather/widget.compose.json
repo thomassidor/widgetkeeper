@@ -21,19 +21,19 @@
       "id": "density",
       "type": "dropdown",
       "title": {
-        "en": "Hour columns",
-        "nl": "Uurkolommen",
-        "de": "Stundenspalten",
-        "fr": "Colonnes horaires",
-        "it": "Colonne orarie",
-        "sv": "Timkolumner",
-        "no": "Timekolonner",
-        "es": "Columnas por hora",
-        "da": "Timekolonner",
-        "ru": "Столбцы часов",
-        "pl": "Kolumny godzin",
-        "ko": "시간 열",
-        "ar": "أعمدة الساعات"
+        "en": "Layout",
+        "nl": "Indeling",
+        "de": "Darstellung",
+        "fr": "Affichage",
+        "it": "Layout",
+        "sv": "Layout",
+        "no": "Oppsett",
+        "es": "Diseño",
+        "da": "Layout",
+        "ru": "Вид",
+        "pl": "Układ",
+        "ko": "레이아웃",
+        "ar": "التخطيط"
       },
       "hint": {
         "en": "Compact fits more hours. Detailed has bigger icons and units on every value.",
@@ -335,6 +335,10 @@
     "getForecast": {
       "method": "GET",
       "path": "/forecast"
+    },
+    "getTimeFormat": {
+      "method": "GET",
+      "path": "/time-format"
     }
   }
 }

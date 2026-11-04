@@ -23,6 +23,7 @@ window.mountValueMatrixWidget = function (Homey, { root, frame }) {
   const tileNames = wireTileNames(Homey, names => widget.setNames(names));
   const widget = window.createValueMatrixWidget(root, {
     colorStyle: settings.colorStyle,
+    greenWhenFine: settings.greenWhenFine !== false, // missing on widgets placed before the setting: on, as before
     rows: settings.rows,
     showLegend: settings.showLegend !== false,
     columns,

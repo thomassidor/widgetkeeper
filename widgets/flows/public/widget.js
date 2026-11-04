@@ -9,6 +9,10 @@
 
   const MIN_RUNNING_MS = 400; // the spinner shows at least this long, so a fast start still registers
   const DONE_MS = 1500; // how long the check mark shows after a start
+  // `press` (Quick Actions' "Activate with", 1.3.0): the second tap's wait, the long press's hold, the short tap's hint.
+  const CONFIRM_MS = 3000;
+  const HOLD_MS = 600;
+  const HINT_MS = 1500;
 
   const DEFAULT_STRINGS = {
     selectSlots: 'Pick flows in the widget settings.',
@@ -20,6 +24,8 @@
     noKey: 'To start flows, add an API key in the app settings.',
     keyScope: 'The API key may not start flows: it needs Start Flows.',
     keyInvalid: 'The API key was not accepted.',
+    tapAgain: 'Tap again',
+    hold: 'Hold',
   };
 
   const COLORS = ['blue', 'red', 'orange', 'yellow', 'green', 'purple', 'teal', 'cyan', 'indigo', 'pink', 'brown', 'grey'];
@@ -64,7 +70,7 @@
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, t?: (key: string, tokens?: object) => string, columns?: number|string,
    *   buttons?: {id: string, color?: string, icon?: string, name?: string}[],
-   *   onTrigger?: (id: string) => Promise<any>, onHaptic?: () => void,
+   *   press?: 'single' | 'double' | 'long', onTrigger?: (id: string) => Promise<any>, onHaptic?: () => void,
    *   onHeight?: (h: number) => void }} opts
    */
   function createFlowsWidget(root, opts = {}) {
@@ -81,12 +87,16 @@
     let flows = []; // [{ id, name, enabled, triggerable, advanced, color? } | { id, missing }], one per button
     const flowColors = new Map(); // flow id → a colour set by the Flow card, which wins over the button's own
     const busy = new Map(); // button index → 'running' | 'done'
+    const press = opts.press === 'double' || opts.press === 'long' ? opts.press : 'single';
+    const confirming = new Map(); // button index → timer: waiting for the second tap (`press: double`)
+    const hints = new Map(); // button index → timer: a short tap on a row that wants a long press
     // What failed: a lasting message replaces the content, a transient one goes by itself.
     const message = messageLine(() => render(), { clear: () => { flows = []; } });
 
     root.classList.add('fb');
     applyColors(root, { style: opts.colorStyle });
     root.dataset.columns = String(opts.columns) === '2' ? '2' : '1';
+    root.style.setProperty('--fb-hold', `${HOLD_MS}ms`); // the long press's fill
     const grid = el('div', { class: 'fb-grid' }, root);
     const messageEl = el('div', { class: 'fb-message', dir: 'auto' }, root);
     /** @type {{row: HTMLElement, button: HTMLElement, name: HTMLElement, icon: string|null}[]} */
@@ -157,12 +167,50 @@
       }, DONE_MS);
     }
 
+    /** Whether a row's flow may be started now (the rest only say why not, on any tap). */
+    const startable = index => {
+      const f = flows[index];
+      return !!f && !f.missing && f.enabled && f.triggerable && busy.get(index) !== 'running';
+    };
+
+    /**
+     * A tap: starts the flow, unless `press` guards it (Quick Actions' "Activate with", so a stray tap can't start a
+     * Flow): Double asks for a second tap within CONFIRM_MS (*Tap again*, the row red), Long only says *Hold*.
+     */
+    function tap(index) {
+      if (!startable(index) || press === 'single') { start(index); return; }
+      if (press === 'long') {
+        clearTimeout(hints.get(index));
+        hints.set(index, setTimeout(() => { hints.delete(index); render(); }, HINT_MS));
+        render();
+        return;
+      }
+      if (!confirming.has(index)) {
+        confirming.set(index, setTimeout(() => { confirming.delete(index); render(); }, CONFIRM_MS));
+        render();
+        return;
+      }
+      clearTimeout(confirming.get(index));
+      confirming.delete(index);
+      start(index);
+    }
+
     function rowAt(index) {
       if (rows[index]) return rows[index];
       const row = el('div', { class: 'fb-row', role: 'button', tabindex: '0' });
       const button = el('span', { class: 'fb-button' }, row);
       const r = { row, button, name: el('span', { class: 'fb-name', dir: 'auto' }, row), icon: null };
-      onTap(row, () => start(index));
+      // A long press (`press: long`): the row fills while held and starts the flow once full; let go sooner, it's a
+      // tap. It vibrates as the finger lifts: Homey's haptic only works right after a touch ends.
+      onTap(row, () => tap(index), {
+        hold: {
+          ms: HOLD_MS,
+          when: () => press === 'long' && startable(index),
+          start: () => { clearTimeout(hints.get(index)); hints.delete(index); render(); },
+          act: () => start(index),
+          done: () => { if (opts.onHaptic) opts.onHaptic(); },
+        },
+      });
       rows[index] = r;
       return r;
     }
@@ -191,7 +239,9 @@
         r.row.classList.toggle('unavailable', !f.missing && (!f.enabled || !f.triggerable));
         r.row.classList.toggle('running', state === 'running');
         r.row.classList.toggle('done', state === 'done');
-        r.name.textContent = f.missing ? t('missing') : f.name;
+        const confirm = confirming.has(i);
+        r.row.classList.toggle('confirm', confirm);
+        r.name.textContent = f.missing ? t('missing') : confirm ? t('tapAgain') : hints.has(i) ? t('hold') : f.name;
         r.row.title = f.missing ? '' : f.name;
         r.row.setAttribute('aria-label', f.missing ? t('missing') : f.name);
         r.row.setAttribute('aria-busy', String(state === 'running'));

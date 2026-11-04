@@ -6,7 +6,7 @@
 window.mountElectricityWidget = function (Homey, { root, frame }) {
   const REFRESH_MS = 5 * 60e3; // usage history resolution; also keeps the app's meter subscription alive
 
-  const { wireFrame, getDeviceIds } = window.WidgetkeeperKit;
+  const { wireFrame, getDeviceIds, wireTimeFormat } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -75,6 +75,9 @@ window.mountElectricityWidget = function (Homey, { root, frame }) {
     }
   }
   setTimeout(() => { tick(); setInterval(tick, 60e3); }, 60e3 - (Date.now() % 60e3) + 50);
+
+  // The times (the axes, the next low, a scrubbed moment) follow the app's time format: drawn again when it changes.
+  wireTimeFormat(Homey, () => widget.render());
 
   getDeviceIds(Homey)
     .then((ids) => { deviceId = ids[0] || null; })

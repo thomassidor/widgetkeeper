@@ -54,7 +54,7 @@
 
   /**
    * @param {HTMLElement} root
-   * @param {{ colorStyle?: string, rows?: string, showLegend?: boolean, columns?: {capabilityId: string, title?: string, range?: string, header?: string}[],
+   * @param {{ colorStyle?: string, rows?: string, showLegend?: boolean, greenWhenFine?: boolean, columns?: {capabilityId: string, title?: string, range?: string, header?: string}[],
    *   t?: (key: string, tokens?: object) => string, locale?: string, renameTiles?: boolean,
    *   onRename?: (key: string, name: string) => Promise<any>, onHeight?: (h: number) => void }} opts
    */
@@ -73,6 +73,9 @@
     const message = messageLine(() => render(), { clear: () => { devices = []; } });
 
     root.classList.add('vm');
+    // Green when fine (on unless turned off, as the cells always were): off leaves a value inside its range plain.
+    const green = opts.greenWhenFine !== false;
+    root.classList.toggle('vm-plain-fine', !green);
     applyColors(root, { style: opts.colorStyle });
     const typed = tileNames(opts, () => render(), (key) => {
       const row = rowEls.get(key);
@@ -89,7 +92,7 @@
     const gridEl = el('div', { class: 'vm-grid' }, tileEl);
     const headEl = el('div', { class: 'vm-row vm-head', 'aria-hidden': 'true' }, gridEl);
     const legendEl = el('div', { class: 'vm-legend', 'aria-hidden': 'true' }, tileEl);
-    for (const [level, key] of [['good', 'ok'], ['out', 'warning'], ['far', 'alert']]) {
+    for (const [level, key] of [['good', 'ok'], ['out', 'warning'], ['far', 'alert']].filter(([level]) => green || level !== 'good')) {
       const item = el('span', { class: 'vm-key' }, legendEl);
       el('span', { class: 'vm-swatch', 'data-level': level }, item);
       el('span', { class: 'vm-key-label', text: t(key) }, item);

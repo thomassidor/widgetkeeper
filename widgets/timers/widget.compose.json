@@ -589,6 +589,10 @@
     "action": {
       "method": "POST",
       "path": "/action"
+    },
+    "getTimeFormat": {
+      "method": "GET",
+      "path": "/time-format"
     }
   }
 }

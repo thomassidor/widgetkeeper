@@ -159,3 +159,57 @@ describe('createValueBoardWidget', () => {
     expect(cells().map(x => x.querySelector('.vb-num')!.textContent)).toEqual(['No motion', 'Alarm', 'Tændt']);
   });
 });
+
+describe('Rename tiles (1.3.0)', () => {
+  it('shows the typed names of rooms and devices, in both layouts and in the tapped name', () => {
+    for (const layout of ['tiles', 'compact']) {
+      const { w, heads, cells } = widget(devices(), { layout });
+      w.setNames({ 'zone:z2': 'Sleeping', air: 'Air' });
+      expect(heads()).toEqual(['Sleeping', 'Office', 'Unavailable']);
+      if (layout === 'tiles') expect(cells('.vb-label').map(c => c.textContent)).toContain('Air');
+      else expect(cells('.vb-item')[0].getAttribute('aria-label')).toMatch(/^Air · /);
+    }
+    const { w, heads } = widget(devices(), { groupBy: 'devices' });
+    w.setNames({ air: 'Air' });
+    expect(heads()[0]).toBe('Air');
+  });
+
+  it('renaming: a field per room and then its devices, no values; a change is saved', async () => {
+    const onRename = vi.fn(async () => {});
+    const { root, w } = widget(devices(), { renameTiles: true, onRename });
+    expect(root.classList.contains('renaming')).toBe(true);
+    expect(root.querySelector('.vb-cell')).toBeNull();
+    const rows = () => [...root.querySelectorAll<HTMLElement>('.vb-rename-row')].map(r => [r.dataset.rename, r.querySelector('input')!.placeholder]);
+    expect(rows()).toEqual([['zone:z2', 'Bedroom'], ['air', 'Air monitor'], ['window', 'Window'], ['zone:z3', 'Office'], ['plug', 'Desk plug']]);
+    const field = root.querySelector<HTMLInputElement>('[data-rename="air"] input')!;
+    field.value = ' Air ';
+    field.dispatchEvent(new Event('change'));
+    expect(onRename).toHaveBeenCalledWith('air', 'Air');
+    // A realtime value doesn't redraw the fields.
+    w.pushChange({ deviceId: 'plug', capabilityId: 'measure_power', value: 5 });
+    expect(root.querySelector('[data-rename="air"] input')).toBe(field);
+    // Grouped by device, a field per device.
+    const byDevice = widget(devices(), { renameTiles: true, groupBy: 'devices' });
+    expect([...byDevice.root.querySelectorAll<HTMLElement>('.vb-rename-row')].map(r => r.dataset.rename)).toEqual(['air', 'plug', 'window']);
+  });
+
+  it('keeps a field being typed in, and draws once it is left', () => {
+    const { root, w } = widget(devices(), { renameTiles: true });
+    const field = root.querySelector<HTMLInputElement>('[data-rename="air"] input')!;
+    field.focus();
+    w.setState(devices().slice(0, 2));
+    expect(root.querySelector('[data-rename="window"]')).not.toBeNull();
+    field.blur();
+    expect(root.querySelector('[data-rename="window"]')).toBeNull();
+  });
+
+  it('says so when a name could not be saved', async () => {
+    const { root } = widget(devices(), { renameTiles: true, onRename: async () => { throw new Error('busy'); } });
+    const field = root.querySelector<HTMLInputElement>('[data-rename="zone:z3"] input')!;
+    field.value = 'Study';
+    field.dispatchEvent(new Event('change'));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(root.querySelector('.vb-message')!.textContent).toBe('Could not save the name.');
+    expect(root.querySelector('[data-rename="zone:z3"]')!.classList.contains('shake')).toBe(true);
+  });
+});

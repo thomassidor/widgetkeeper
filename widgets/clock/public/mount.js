@@ -9,7 +9,7 @@ window.mountClockWidget = function (Homey, { root, frame }) {
   // The time needn't wait for the weather: shown with it, or without it this long in (the weather follows).
   const WEATHER_WAIT_MS = 1500;
 
-  const { wireFrame } = window.WidgetkeeperKit;
+  const { wireFrame, wireTimeFormat } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -18,7 +18,6 @@ window.mountClockWidget = function (Homey, { root, frame }) {
 
   const widget = window.createClockWidget(root, {
     showWeather,
-    timeFormat: settings.timeFormat,
     onHeight: link.setHeight,
   });
 
@@ -47,6 +46,8 @@ window.mountClockWidget = function (Homey, { root, frame }) {
     if (Date.now() - loadedAt >= REFRESH_MS) load();
   });
 
+  // The app's time format (the settings page's): drawn again at once when it changes.
+  wireTimeFormat(Homey, () => widget.render());
   setInterval(load, REFRESH_MS);
   load();
 };

@@ -1,4 +1,5 @@
 import type { App } from 'homey';
+import { timeFormatRoutes } from '../../lib/timeFormat.js';
 import type WidgetkeeperApp from '../../app.js';
 import { chartState } from '../../lib/chartState.js';
 import type { PriceHistoryAnswer } from '../../lib/ElectricityService.js';
@@ -13,6 +14,7 @@ function priceSpan(v: string | undefined): [number, number] | null {
 }
 
 export default {
+  ...timeFormatRoutes,
   /**
    * `charts`: the value's running total (`~use`) over the period, and with compare over the one before
    * (`parseChartRequests()` in lib/chartState.ts). `{charts, language}`: `[current, previous?]`. With `prices=<from>~<to>`

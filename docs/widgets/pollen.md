@@ -13,7 +13,7 @@ A level is the day's average in grains per m³, by Astma-Allergi Danmark's bands
 | Birch, alder, olive | 1 | 30 | 101 | 1,001 |
 | Grass, mugwort, ragweed | 1 | 10 | 51 | 251 |
 
-**Settings:** compact or detailed (with the grains per m³ and the next three days), the UV index, the pollen types (alder, birch, olive, grass, mugwort, ragweed; birch, grass and mugwort by default), [colour style](../../README.md#colour-style), time format.
+**Settings:** compact or detailed (with the grains per m³ and the next three days), the UV index, the pollen types (alder, birch, olive, grass, mugwort, ragweed; birch, grass and mugwort by default), [colour style](../../README.md#colour-style).
 
 Pollen and UV data from [Open-Meteo](https://open-meteo.com), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), generated using Copernicus Atmosphere Monitoring Service information.
 

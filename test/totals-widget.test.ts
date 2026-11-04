@@ -275,12 +275,14 @@ describe('cost (Show: Cost, 1.2.0)', () => {
     win.mountTotalsWidget(Homey, { root, frame: root });
     await vi.advanceTimersByTimeAsync(0);
     expect(decodeURIComponent((api.mock.calls[0] as any)[1])).toMatch(new RegExp(`&prices=${midnight}~${NOW}(&|$)`));
+    // The /state requests (the app's time format is asked once too).
+    const states = () => api.mock.calls.filter(c => String((c as any)[1]).startsWith('/state')).length;
     await vi.advanceTimersByTimeAsync(10e3);
-    expect(api).toHaveBeenCalledTimes(2);
+    expect(states()).toBe(2);
     api.mockResolvedValue({ charts: [meter(midnight, NOW)], language: 'en', prices: prices() });
     await vi.advanceTimersByTimeAsync(10e3);
-    expect(api).toHaveBeenCalledTimes(3);
+    expect(states()).toBe(3);
     await vi.advanceTimersByTimeAsync(60e3);
-    expect(api).toHaveBeenCalledTimes(3);
+    expect(states()).toBe(3);
   });
 });

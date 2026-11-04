@@ -76,7 +76,8 @@
     "vibration": "Vibration",
     "noVibration": "No vibration",
     "nothingDetected": "Nothing detected",
-    "since": "since __time__"
+    "since": "since __time__",
+    "renameFailed": "Could not save the name."
   },
   "roomhealth": {
     "selectDevices": "Select sensors in the widget settings.",
@@ -128,7 +129,8 @@
     "motion": "Motion",
     "noMotion": "No motion",
     "alarm": "Alarm",
-    "ok": "OK"
+    "ok": "OK",
+    "renameFailed": "Could not save the name."
   },
   "weather": {
     "now": "Now",
@@ -258,6 +260,11 @@
     "namesChanged": "__changed__ of __total__ device names change:",
     "namesNoneSep": "No device name has “__separator__” in it.",
     "namesNone": "No device name changes.",
+    "timeTitle": "Time format",
+    "timeHelp": "How every widget shows times. Automatic follows the language of the phone or browser that shows it.",
+    "timeAuto": "Automatic",
+    "time24": "24-hour",
+    "time12": "12-hour",
     "webTitle": "Web dashboards",
     "webHelp": "Your Widgetkeeper widgets in any browser on your home network: a tablet, computer, TV or Nest Hub. Turn them on, add each screen below for its sign-in code, then build the dashboards on the page itself.",
     "webEnable": "Turn on web dashboards",
@@ -660,7 +667,9 @@
       "gift": "Gift",
       "sparkles": "Sparkles",
       "dashboard": "Dashboard"
-    }
+    },
+    "tapAgain": "Tap again",
+    "hold": "Hold"
   },
   "price": {
     "now": "Now",

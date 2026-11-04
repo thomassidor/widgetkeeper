@@ -7,7 +7,7 @@ window.mountPollenWidget = function (Homey, { root, frame }) {
   // The app refetches from Open-Meteo at most hourly; this picks that up, and a new day.
   const REFRESH_MS = 5 * 60e3;
 
-  const { wireFrame } = window.WidgetkeeperKit;
+  const { wireFrame, wireTimeFormat } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -19,7 +19,6 @@ window.mountPollenWidget = function (Homey, { root, frame }) {
     types: window.pollenTypes(settings),
     showUv: settings.showUv !== false,
     colorStyle: settings.colorStyle,
-    timeFormat: settings.timeFormat,
     // The widget reports its own height; Homey needs the body's, which adds the widget padding.
     onHeight: link.setHeight,
   });
@@ -37,6 +36,8 @@ window.mountPollenWidget = function (Homey, { root, frame }) {
     link.ready();
   }
 
+  // The app's time format (the settings page's): the UV peak's time drawn again when it changes.
+  wireTimeFormat(Homey, () => { if (loaded) load(); });
   setInterval(load, REFRESH_MS);
   load();
 };

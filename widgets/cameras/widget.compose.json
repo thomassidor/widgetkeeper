@@ -94,9 +94,60 @@
       },
       "value": "bottom",
       "values": [
-        { "id": "bottom", "title": { "en": "Large camera at the bottom", "nl": "Grote camera onderaan", "de": "Große Kamera unten", "fr": "Grande caméra en bas", "it": "Telecamera grande in basso", "sv": "Stor kamera längst ner", "no": "Stort kamera nederst", "es": "Cámara grande abajo", "da": "Stort kamera nederst", "ru": "Большая камера внизу", "pl": "Duża kamera na dole", "ko": "큰 카메라를 아래에", "ar": "الكاميرا الكبيرة في الأسفل" } },
-        { "id": "top", "title": { "en": "Large camera on top", "nl": "Grote camera bovenaan", "de": "Große Kamera oben", "fr": "Grande caméra en haut", "it": "Telecamera grande in alto", "sv": "Stor kamera överst", "no": "Stort kamera øverst", "es": "Cámara grande arriba", "da": "Stort kamera øverst", "ru": "Большая камера вверху", "pl": "Duża kamera na górze", "ko": "큰 카메라를 위에", "ar": "الكاميرا الكبيرة في الأعلى" } },
-        { "id": "single", "title": { "en": "One camera per row", "nl": "Eén camera per rij", "de": "Eine Kamera pro Zeile", "fr": "Une caméra par ligne", "it": "Una telecamera per riga", "sv": "En kamera per rad", "no": "Ett kamera per rad", "es": "Una cámara por fila", "da": "Ét kamera pr. række", "ru": "Одна камера в ряду", "pl": "Jedna kamera w wierszu", "ko": "한 줄에 카메라 하나", "ar": "كاميرا واحدة في كل صف" } }
+        {
+          "id": "bottom",
+          "title": {
+            "en": "Large camera at the bottom",
+            "nl": "Grote camera onderaan",
+            "de": "Große Kamera unten",
+            "fr": "Grande caméra en bas",
+            "it": "Telecamera grande in basso",
+            "sv": "Stor kamera längst ner",
+            "no": "Stort kamera nederst",
+            "es": "Cámara grande abajo",
+            "da": "Stort kamera nederst",
+            "ru": "Большая камера внизу",
+            "pl": "Duża kamera na dole",
+            "ko": "큰 카메라를 아래에",
+            "ar": "الكاميرا الكبيرة في الأسفل"
+          }
+        },
+        {
+          "id": "top",
+          "title": {
+            "en": "Large camera on top",
+            "nl": "Grote camera bovenaan",
+            "de": "Große Kamera oben",
+            "fr": "Grande caméra en haut",
+            "it": "Telecamera grande in alto",
+            "sv": "Stor kamera överst",
+            "no": "Stort kamera øverst",
+            "es": "Cámara grande arriba",
+            "da": "Stort kamera øverst",
+            "ru": "Большая камера вверху",
+            "pl": "Duża kamera na górze",
+            "ko": "큰 카메라를 위에",
+            "ar": "الكاميرا الكبيرة في الأعلى"
+          }
+        },
+        {
+          "id": "single",
+          "title": {
+            "en": "One camera per row",
+            "nl": "Eén camera per rij",
+            "de": "Eine Kamera pro Zeile",
+            "fr": "Une caméra par ligne",
+            "it": "Una telecamera per riga",
+            "sv": "En kamera per rad",
+            "no": "Ett kamera per rad",
+            "es": "Una cámara por fila",
+            "da": "Ét kamera pr. række",
+            "ru": "Одна камера в ряду",
+            "pl": "Jedna kamera w wierszu",
+            "ko": "한 줄에 카메라 하나",
+            "ar": "كاميرا واحدة في كل صف"
+          }
+        }
       ]
     },
     {
@@ -119,10 +170,78 @@
       },
       "value": "10",
       "values": [
-        { "id": "5", "title": { "en": "5 s", "nl": "5 s", "de": "5 s", "fr": "5 s", "it": "5 s", "sv": "5 s", "no": "5 s", "es": "5 s", "da": "5 s", "ru": "5 с", "pl": "5 s", "ko": "5초", "ar": "5 ث" } },
-        { "id": "10", "title": { "en": "10 s", "nl": "10 s", "de": "10 s", "fr": "10 s", "it": "10 s", "sv": "10 s", "no": "10 s", "es": "10 s", "da": "10 s", "ru": "10 с", "pl": "10 s", "ko": "10초", "ar": "10 ث" } },
-        { "id": "30", "title": { "en": "30 s", "nl": "30 s", "de": "30 s", "fr": "30 s", "it": "30 s", "sv": "30 s", "no": "30 s", "es": "30 s", "da": "30 s", "ru": "30 с", "pl": "30 s", "ko": "30초", "ar": "30 ث" } },
-        { "id": "60", "title": { "en": "1 min", "nl": "1 min", "de": "1 Min.", "fr": "1 min", "it": "1 min", "sv": "1 min", "no": "1 min", "es": "1 min", "da": "1 min", "ru": "1 мин", "pl": "1 min", "ko": "1분", "ar": "1 د" } }
+        {
+          "id": "5",
+          "title": {
+            "en": "5 s",
+            "nl": "5 s",
+            "de": "5 s",
+            "fr": "5 s",
+            "it": "5 s",
+            "sv": "5 s",
+            "no": "5 s",
+            "es": "5 s",
+            "da": "5 s",
+            "ru": "5 с",
+            "pl": "5 s",
+            "ko": "5초",
+            "ar": "5 ث"
+          }
+        },
+        {
+          "id": "10",
+          "title": {
+            "en": "10 s",
+            "nl": "10 s",
+            "de": "10 s",
+            "fr": "10 s",
+            "it": "10 s",
+            "sv": "10 s",
+            "no": "10 s",
+            "es": "10 s",
+            "da": "10 s",
+            "ru": "10 с",
+            "pl": "10 s",
+            "ko": "10초",
+            "ar": "10 ث"
+          }
+        },
+        {
+          "id": "30",
+          "title": {
+            "en": "30 s",
+            "nl": "30 s",
+            "de": "30 s",
+            "fr": "30 s",
+            "it": "30 s",
+            "sv": "30 s",
+            "no": "30 s",
+            "es": "30 s",
+            "da": "30 s",
+            "ru": "30 с",
+            "pl": "30 s",
+            "ko": "30초",
+            "ar": "30 ث"
+          }
+        },
+        {
+          "id": "60",
+          "title": {
+            "en": "1 min",
+            "nl": "1 min",
+            "de": "1 Min.",
+            "fr": "1 min",
+            "it": "1 min",
+            "sv": "1 min",
+            "no": "1 min",
+            "es": "1 min",
+            "da": "1 min",
+            "ru": "1 мин",
+            "pl": "1 min",
+            "ko": "1분",
+            "ar": "1 د"
+          }
+        }
       ]
     },
     {
@@ -195,99 +314,76 @@
       },
       "value": "300",
       "values": [
-        { "id": "30", "title": { "en": "30 s", "nl": "30 s", "de": "30 s", "fr": "30 s", "it": "30 s", "sv": "30 s", "no": "30 s", "es": "30 s", "da": "30 s", "ru": "30 с", "pl": "30 s", "ko": "30초", "ar": "30 ث" } },
-        { "id": "60", "title": { "en": "1 min", "nl": "1 min", "de": "1 Min.", "fr": "1 min", "it": "1 min", "sv": "1 min", "no": "1 min", "es": "1 min", "da": "1 min", "ru": "1 мин", "pl": "1 min", "ko": "1분", "ar": "1 د" } },
-        { "id": "300", "title": { "en": "5 min", "nl": "5 min", "de": "5 Min.", "fr": "5 min", "it": "5 min", "sv": "5 min", "no": "5 min", "es": "5 min", "da": "5 min", "ru": "5 мин", "pl": "5 min", "ko": "5분", "ar": "5 د" } },
-        { "id": "tap", "title": { "en": "Until tapped", "nl": "Tot je weer tikt", "de": "Bis zum Tippen", "fr": "Jusqu'au prochain toucher", "it": "Fino al tocco successivo", "sv": "Tills du trycker", "no": "Til du trykker", "es": "Hasta volver a tocar", "da": "Til du trykker", "ru": "До нажатия", "pl": "Do dotknięcia", "ko": "탭할 때까지", "ar": "حتى النقر مجددًا" } }
-      ]
-    },
-    {
-      "id": "timeFormat",
-      "type": "dropdown",
-      "title": {
-        "en": "Time format",
-        "nl": "Tijdnotatie",
-        "de": "Zeitformat",
-        "fr": "Format de l'heure",
-        "it": "Formato ora",
-        "sv": "Tidsformat",
-        "no": "Tidsformat",
-        "es": "Formato de hora",
-        "da": "Tidsformat",
-        "ru": "Формат времени",
-        "pl": "Format godziny",
-        "ko": "시간 형식",
-        "ar": "تنسيق الوقت"
-      },
-      "hint": {
-        "en": "Automatic follows the language of the phone or browser that shows it.",
-        "nl": "Automatisch volgt de taal van de telefoon of browser waarop het wordt getoond.",
-        "de": "Automatisch folgt der Sprache des Telefons oder Browsers, auf dem es angezeigt wird.",
-        "fr": "Automatique suit la langue du téléphone ou du navigateur qui l'affiche.",
-        "it": "Automatico segue la lingua del telefono o del browser che lo mostra.",
-        "sv": "Automatiskt följer språket i telefonen eller webbläsaren som visar den.",
-        "no": "Automatisk følger språket på telefonen eller nettleseren som viser den.",
-        "es": "Automático sigue el idioma del teléfono o del navegador que lo muestra.",
-        "da": "Automatisk følger sproget på telefonen eller browseren, der viser den.",
-        "ru": "«Автоматически» следует языку телефона или браузера, на котором он показан.",
-        "pl": "Automatycznie: według języka telefonu lub przeglądarki, która go wyświetla.",
-        "ko": "자동은 표시하는 휴대폰이나 브라우저의 언어를 따릅니다.",
-        "ar": "«تلقائي» يتبع لغة الهاتف أو المتصفح الذي يعرضه."
-      },
-      "value": "auto",
-      "values": [
         {
-          "id": "auto",
+          "id": "30",
           "title": {
-            "en": "Automatic",
-            "nl": "Automatisch",
-            "de": "Automatisch",
-            "fr": "Automatique",
-            "it": "Automatico",
-            "sv": "Automatiskt",
-            "no": "Automatisk",
-            "es": "Automático",
-            "da": "Automatisk",
-            "ru": "Автоматически",
-            "pl": "Automatycznie",
-            "ko": "자동",
-            "ar": "تلقائي"
+            "en": "30 s",
+            "nl": "30 s",
+            "de": "30 s",
+            "fr": "30 s",
+            "it": "30 s",
+            "sv": "30 s",
+            "no": "30 s",
+            "es": "30 s",
+            "da": "30 s",
+            "ru": "30 с",
+            "pl": "30 s",
+            "ko": "30초",
+            "ar": "30 ث"
           }
         },
         {
-          "id": "24",
+          "id": "60",
           "title": {
-            "en": "24-hour",
-            "nl": "24-uurs",
-            "de": "24 Stunden",
-            "fr": "24 heures",
-            "it": "24 ore",
-            "sv": "24 timmar",
-            "no": "24 timer",
-            "es": "24 horas",
-            "da": "24 timer",
-            "ru": "24 часа",
-            "pl": "24-godzinny",
-            "ko": "24시간",
-            "ar": "24 ساعة"
+            "en": "1 min",
+            "nl": "1 min",
+            "de": "1 Min.",
+            "fr": "1 min",
+            "it": "1 min",
+            "sv": "1 min",
+            "no": "1 min",
+            "es": "1 min",
+            "da": "1 min",
+            "ru": "1 мин",
+            "pl": "1 min",
+            "ko": "1분",
+            "ar": "1 د"
           }
         },
         {
-          "id": "12",
+          "id": "300",
           "title": {
-            "en": "12-hour",
-            "nl": "12-uurs",
-            "de": "12 Stunden",
-            "fr": "12 heures",
-            "it": "12 ore",
-            "sv": "12 timmar",
-            "no": "12 timer",
-            "es": "12 horas",
-            "da": "12 timer",
-            "ru": "12 часов",
-            "pl": "12-godzinny",
-            "ko": "12시간",
-            "ar": "12 ساعة"
+            "en": "5 min",
+            "nl": "5 min",
+            "de": "5 Min.",
+            "fr": "5 min",
+            "it": "5 min",
+            "sv": "5 min",
+            "no": "5 min",
+            "es": "5 min",
+            "da": "5 min",
+            "ru": "5 мин",
+            "pl": "5 min",
+            "ko": "5분",
+            "ar": "5 د"
+          }
+        },
+        {
+          "id": "tap",
+          "title": {
+            "en": "Until tapped",
+            "nl": "Tot je weer tikt",
+            "de": "Bis zum Tippen",
+            "fr": "Jusqu'au prochain toucher",
+            "it": "Fino al tocco successivo",
+            "sv": "Tills du trycker",
+            "no": "Til du trykker",
+            "es": "Hasta volver a tocar",
+            "da": "Til du trykker",
+            "ru": "До нажатия",
+            "pl": "Do dotknięcia",
+            "ko": "탭할 때까지",
+            "ar": "حتى النقر مجددًا"
           }
         }
       ]
@@ -295,7 +391,21 @@
     {
       "id": "camera1",
       "type": "autocomplete",
-      "title": { "en": "Camera 1", "nl": "Camera 1", "de": "Kamera 1", "fr": "Caméra 1", "it": "Telecamera 1", "sv": "Kamera 1", "no": "Kamera 1", "es": "Cámara 1", "da": "Kamera 1", "ru": "Камера 1", "pl": "Kamera 1", "ko": "카메라 1", "ar": "الكاميرا 1" },
+      "title": {
+        "en": "Camera 1",
+        "nl": "Camera 1",
+        "de": "Kamera 1",
+        "fr": "Caméra 1",
+        "it": "Telecamera 1",
+        "sv": "Kamera 1",
+        "no": "Kamera 1",
+        "es": "Cámara 1",
+        "da": "Kamera 1",
+        "ru": "Камера 1",
+        "pl": "Kamera 1",
+        "ko": "카메라 1",
+        "ar": "الكاميرا 1"
+      },
       "hint": {
         "en": "Cameras the device list leaves out, such as Synology Surveillance Station's: this lists every device with a snapshot or video. They show after the picked devices.",
         "nl": "Camera's die de apparatenlijst weglaat, zoals die van Synology Surveillance Station: hier staat elk apparaat met een momentopname of video. Ze komen na de gekozen apparaten.",
@@ -315,35 +425,127 @@
     {
       "id": "camera2",
       "type": "autocomplete",
-      "title": { "en": "Camera 2", "nl": "Camera 2", "de": "Kamera 2", "fr": "Caméra 2", "it": "Telecamera 2", "sv": "Kamera 2", "no": "Kamera 2", "es": "Cámara 2", "da": "Kamera 2", "ru": "Камера 2", "pl": "Kamera 2", "ko": "카메라 2", "ar": "الكاميرا 2" }
+      "title": {
+        "en": "Camera 2",
+        "nl": "Camera 2",
+        "de": "Kamera 2",
+        "fr": "Caméra 2",
+        "it": "Telecamera 2",
+        "sv": "Kamera 2",
+        "no": "Kamera 2",
+        "es": "Cámara 2",
+        "da": "Kamera 2",
+        "ru": "Камера 2",
+        "pl": "Kamera 2",
+        "ko": "카메라 2",
+        "ar": "الكاميرا 2"
+      }
     },
     {
       "id": "camera3",
       "type": "autocomplete",
-      "title": { "en": "Camera 3", "nl": "Camera 3", "de": "Kamera 3", "fr": "Caméra 3", "it": "Telecamera 3", "sv": "Kamera 3", "no": "Kamera 3", "es": "Cámara 3", "da": "Kamera 3", "ru": "Камера 3", "pl": "Kamera 3", "ko": "카메라 3", "ar": "الكاميرا 3" }
+      "title": {
+        "en": "Camera 3",
+        "nl": "Camera 3",
+        "de": "Kamera 3",
+        "fr": "Caméra 3",
+        "it": "Telecamera 3",
+        "sv": "Kamera 3",
+        "no": "Kamera 3",
+        "es": "Cámara 3",
+        "da": "Kamera 3",
+        "ru": "Камера 3",
+        "pl": "Kamera 3",
+        "ko": "카메라 3",
+        "ar": "الكاميرا 3"
+      }
     },
     {
       "id": "camera4",
       "type": "autocomplete",
-      "title": { "en": "Camera 4", "nl": "Camera 4", "de": "Kamera 4", "fr": "Caméra 4", "it": "Telecamera 4", "sv": "Kamera 4", "no": "Kamera 4", "es": "Cámara 4", "da": "Kamera 4", "ru": "Камера 4", "pl": "Kamera 4", "ko": "카메라 4", "ar": "الكاميرا 4" }
+      "title": {
+        "en": "Camera 4",
+        "nl": "Camera 4",
+        "de": "Kamera 4",
+        "fr": "Caméra 4",
+        "it": "Telecamera 4",
+        "sv": "Kamera 4",
+        "no": "Kamera 4",
+        "es": "Cámara 4",
+        "da": "Kamera 4",
+        "ru": "Камера 4",
+        "pl": "Kamera 4",
+        "ko": "카메라 4",
+        "ar": "الكاميرا 4"
+      }
     },
     {
       "id": "camera5",
       "type": "autocomplete",
-      "title": { "en": "Camera 5", "nl": "Camera 5", "de": "Kamera 5", "fr": "Caméra 5", "it": "Telecamera 5", "sv": "Kamera 5", "no": "Kamera 5", "es": "Cámara 5", "da": "Kamera 5", "ru": "Камера 5", "pl": "Kamera 5", "ko": "카메라 5", "ar": "الكاميرا 5" }
+      "title": {
+        "en": "Camera 5",
+        "nl": "Camera 5",
+        "de": "Kamera 5",
+        "fr": "Caméra 5",
+        "it": "Telecamera 5",
+        "sv": "Kamera 5",
+        "no": "Kamera 5",
+        "es": "Cámara 5",
+        "da": "Kamera 5",
+        "ru": "Камера 5",
+        "pl": "Kamera 5",
+        "ko": "카메라 5",
+        "ar": "الكاميرا 5"
+      }
     },
     {
       "id": "camera6",
       "type": "autocomplete",
-      "title": { "en": "Camera 6", "nl": "Camera 6", "de": "Kamera 6", "fr": "Caméra 6", "it": "Telecamera 6", "sv": "Kamera 6", "no": "Kamera 6", "es": "Cámara 6", "da": "Kamera 6", "ru": "Камера 6", "pl": "Kamera 6", "ko": "카메라 6", "ar": "الكاميرا 6" }
+      "title": {
+        "en": "Camera 6",
+        "nl": "Camera 6",
+        "de": "Kamera 6",
+        "fr": "Caméra 6",
+        "it": "Telecamera 6",
+        "sv": "Kamera 6",
+        "no": "Kamera 6",
+        "es": "Cámara 6",
+        "da": "Kamera 6",
+        "ru": "Камера 6",
+        "pl": "Kamera 6",
+        "ko": "카메라 6",
+        "ar": "الكاميرا 6"
+      }
     }
   ],
   "api": {
-    "getState": { "method": "GET", "path": "/state" },
-    "getSnapshot": { "method": "GET", "path": "/snapshot" },
-    "postOffer": { "method": "POST", "path": "/video/offer" },
-    "postKeepAlive": { "method": "POST", "path": "/video/keepalive" },
-    "postReport": { "method": "POST", "path": "/report" },
-    "setName": { "method": "POST", "path": "/names" }
+    "getState": {
+      "method": "GET",
+      "path": "/state"
+    },
+    "getSnapshot": {
+      "method": "GET",
+      "path": "/snapshot"
+    },
+    "postOffer": {
+      "method": "POST",
+      "path": "/video/offer"
+    },
+    "postKeepAlive": {
+      "method": "POST",
+      "path": "/video/keepalive"
+    },
+    "postReport": {
+      "method": "POST",
+      "path": "/report"
+    },
+    "setName": {
+      "method": "POST",
+      "path": "/names"
+    },
+    "getTimeFormat": {
+      "method": "GET",
+      "path": "/time-format"
+    }
   }
 }

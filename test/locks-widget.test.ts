@@ -3,7 +3,8 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 import { loadWidget } from './helpers/loadWidget.js';
 
 let win: any;
-beforeAll(() => { win = loadWidget('locks'); });
+// Automatic (the screen's language) unless a test says: the times' own tests.
+beforeAll(() => { win = loadWidget('locks'); win.WidgetkeeperKit.setTimeFormat('auto'); });
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date('2026-10-06T18:40:00+02:00')); });
 afterEach(() => { vi.useRealTimers(); document.body.innerHTML = ''; });
 

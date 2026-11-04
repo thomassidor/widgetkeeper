@@ -110,6 +110,13 @@ interface Window {
     tileNames: (opts: any, render: () => void, failed: (key: string) => void) => any,
     timeFormatter: (locale?: string, timeFormat?: unknown, hour?: 'numeric' | '2-digit' | '2-digit-24') => Intl.DateTimeFormat,
     formatSince: (ms: number, now: number, language?: string, locale?: string, timeFormat?: unknown) => string,
+    /** The app's time format (the settings page's), kept per screen: `auto`, `24` or `12`. */
+    getTimeFormat: () => 'auto' | '24' | '12',
+    setTimeFormat: (value: unknown) => boolean,
+    wireTimeFormat: (Homey: any, changed?: () => void) => void,
+    uses12Hours: (locale?: string, timeFormat?: unknown) => boolean,
+    clockTime: (ms: number, opts?: { locale?: string, timeFormat?: unknown, pad?: boolean, seconds?: boolean }) => string,
+    hourLabel: (hour: number, opts?: { locale?: string, timeFormat?: unknown, pad?: boolean }) => string,
     baseTitle: (title: unknown) => string,
     lowestSlot: (slots: any[], from: number, hours: number) => number,
     parseSpan: (span: unknown) => { count: number, unit: 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year', whole: boolean, skip: boolean } | null,
@@ -146,6 +153,8 @@ interface Window {
       onState?: ((state: any) => void) | null,
       /** Ids picked another way (the Cameras widget's Camera slots), after the `devices` setting's. */
       more?: string[],
+      /** The widget shows times: it follows the app's time format. */
+      times?: boolean,
     }) => { ids: () => string[], loaded: () => boolean },
     onDeviceNames: (Homey: any, load: () => void) => void,
     COLORS: string[],

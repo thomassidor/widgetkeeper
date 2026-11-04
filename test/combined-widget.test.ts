@@ -359,3 +359,18 @@ describe('the Combined Value mount', () => {
     expect(root.querySelector('.cv-value')!.textContent).toBe('30°C');
   });
 });
+
+describe('Green when fine (1.3.0)', () => {
+  const BATTERY = { id: 'measure_battery', title: 'Battery', units: '%', decimals: 0, min: 0, max: 100 };
+  const batteries = () => [
+    { id: 'a', name: 'Door', value: 80 }, { id: 'b', name: 'Hall', value: 15 }, { id: 'c', name: 'Attic', value: 5 }, { id: 'd', name: 'Desk', value: 60 },
+  ];
+  it('colours the tile green inside the OK range only when asked; outside it stays orange or red', () => {
+    const level = (opts: object) => widget({ capability: BATTERY, devices: batteries() }, opts).q('.cv-tile')!.dataset.level ?? null;
+    expect(level({ okRange: '0–100' })).toBeNull();
+    expect(level({ okRange: '0–100', greenWhenFine: true })).toBe('good');
+    expect(level({ okRange: '>20', show: 'min', greenWhenFine: true })).not.toBe('good');
+    // Without a range nothing is judged.
+    expect(level({ greenWhenFine: true })).toBeNull();
+  });
+});

@@ -11,6 +11,15 @@ window.mountThermostatWidget = function (Homey, { root, frame }) {
   const link = wireFrame(Homey, frame);
 
   const settings = Homey.getSettings() || {};
+  // A tap that changes something vibrates, as on the other widgets that act (the settings review, 2026-11-04). Homey's
+  // haptic throws unless a touch has just ended (a click, a key, a late send): nothing then.
+  // Once for a room's lights or presets' several values sent together.
+  let hapticAt = 0;
+  const haptic = () => {
+    if (Date.now() - hapticAt < 300) return;
+    hapticAt = Date.now();
+    try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not now */ }
+  };
   const deviceId = (settings.device && settings.device.id) || null;
   // The value beside the name: a Device Values slot `<deviceId>:<capabilityId>` (`None`'s id has no colon).
   const sensor = settings.sensor && String(settings.sensor.id || '').includes(':') ? settings.sensor.id : null;
@@ -24,11 +33,14 @@ window.mountThermostatWidget = function (Homey, { root, frame }) {
     t: (key, tokens) => Homey.__(key, tokens),
     layout: settings.layout, // missing on widgets placed before the setting: standard
     title: settings.title, // empty or missing: the device's name
-    onApply: (values, press) => Homey.api('POST', '/apply', {
-      deviceId,
-      values: values.map(({ capabilityId, value }) => ({ capabilityId, value })),
-      ...(press && instance ? { instance, button: press.button } : {}),
-    }),
+    onApply: (values, press) => {
+      haptic();
+      return Homey.api('POST', '/apply', {
+        deviceId,
+        values: values.map(({ capabilityId, value }) => ({ capabilityId, value })),
+        ...(press && instance ? { instance, button: press.button } : {}),
+      });
+    },
     // The widget reports its own height; Homey needs the body's, which adds the widget padding.
     onHeight: link.setHeight,
   });

@@ -6,7 +6,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, applyColors, onTap: kitOnTap, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, applyColors, onTap: kitOnTap, messageLine, clockTime } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const MINUTE = 60e3;
@@ -261,9 +261,8 @@
       return r;
     }
 
-    const pad2 = n => String(n).padStart(2, '0');
-    /** A Homey time as the local clock time; the offset only matters for what's left. */
-    const clockTime = ms => { const d = new Date(ms - offset); return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`; };
+    /** A Homey time as the local clock time, in the app's time format; the offset only matters for what's left. */
+    const endTime = ms => clockTime(ms - offset);
 
     /** Time left, the fill, the sub text and the button of one row. */
     function paint(tm, now) {
@@ -274,7 +273,7 @@
       r.name.textContent = tm.label || durationText(tm.duration / MINUTE);
       const left = done ? 0 : remainingOf(tm, now);
       r.time.textContent = formatRemaining(left);
-      r.sub.textContent = done ? t('done') : state === 'paused' ? t('paused') : t('endsAt', { time: clockTime(tm.endsAt) });
+      r.sub.textContent = done ? t('done') : state === 'paused' ? t('paused') : t('endsAt', { time: endTime(tm.endsAt) });
       r.row.style.setProperty('--tm-left', `${tm.duration > 0 ? Math.min(100, Math.max(0, left / tm.duration * 100)) : 0}%`);
       const g = done ? 'bell' : state === 'paused' ? 'play' : 'pause';
       if (r.glyph !== g) {

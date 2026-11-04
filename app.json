@@ -81,6 +81,14 @@
       "method": "PUT",
       "path": "/device-names"
     },
+    "getTimeFormat": {
+      "method": "GET",
+      "path": "/time-format"
+    },
+    "putTimeFormat": {
+      "method": "PUT",
+      "path": "/time-format"
+    },
     "getWebSetup": {
       "method": "GET",
       "path": "/web/setup"
@@ -278,6 +286,41 @@
       },
       "settings": [
         {
+          "id": "renameTiles",
+          "type": "checkbox",
+          "title": {
+            "en": "Rename tiles",
+            "nl": "Tegels hernoemen",
+            "de": "Kacheln umbenennen",
+            "fr": "Renommer les tuiles",
+            "it": "Rinomina riquadri",
+            "sv": "Byt namn på rutor",
+            "no": "Gi nytt navn til fliser",
+            "es": "Renombrar mosaicos",
+            "da": "Omdøb felter",
+            "ru": "Переименовать плитки",
+            "pl": "Zmień nazwy kafelków",
+            "ko": "타일 이름 바꾸기",
+            "ar": "إعادة تسمية المربعات"
+          },
+          "hint": {
+            "en": "To name the sensors: turn this on and save the widget, then leave the dashboard's edit mode. Each sensor shows a text field: type its name, or leave it empty to keep the device's name. Then edit the widget again and turn this off.",
+            "nl": "Sensoren een naam geven: zet dit aan en sla de widget op, en verlaat dan de bewerkmodus van het dashboard. Elke sensor toont een tekstveld: typ de naam, of laat het leeg om de naam van het apparaat te houden. Bewerk daarna de widget opnieuw en zet dit uit.",
+            "de": "Sensoren benennen: Schalte dies ein, speichere das Widget und verlasse den Bearbeitungsmodus des Dashboards. Jeder Sensor zeigt ein Textfeld: Gib den Namen ein oder lass es leer, um den Namen des Geräts zu behalten. Bearbeite danach das Widget erneut und schalte dies aus.",
+            "fr": "Pour nommer les capteurs : activez ceci, enregistrez le widget, puis quittez le mode édition du tableau de bord. Chaque capteur affiche un champ de texte : tapez son nom, ou laissez-le vide pour garder le nom de l'appareil. Modifiez ensuite le widget à nouveau et désactivez ceci.",
+            "it": "Per dare un nome ai sensori: attiva questa opzione e salva il widget, poi esci dalla modalità di modifica della dashboard. Ogni sensore mostra un campo di testo: scrivi il nome, o lascialo vuoto per mantenere il nome del dispositivo. Poi modifica di nuovo il widget e disattiva questa opzione.",
+            "sv": "Så namnger du sensorerna: slå på detta och spara widgeten, och lämna sedan instrumentpanelens redigeringsläge. Varje sensor visar ett textfält: skriv namnet, eller lämna det tomt för att behålla enhetens namn. Redigera sedan widgeten igen och slå av detta.",
+            "no": "Slik gir du sensorene navn: slå på dette og lagre widgeten, og gå så ut av dashbordets redigeringsmodus. Hver sensor viser et tekstfelt: skriv navnet, eller la det stå tomt for å beholde enhetens navn. Rediger så widgeten igjen og slå av dette.",
+            "es": "Para poner nombre a los sensores: activa esto y guarda el widget, luego sal del modo de edición del panel. Cada sensor muestra un campo de texto: escribe su nombre, o déjalo vacío para mantener el nombre del dispositivo. Después edita el widget de nuevo y desactiva esto.",
+            "da": "Sådan navngiver du sensorerne: slå dette til og gem widgetten, og forlad så dashboardets redigeringstilstand. Hver sensor viser et tekstfelt: skriv navnet, eller lad det stå tomt for at beholde enhedens navn. Redigér derefter widgetten igen, og slå dette fra.",
+            "ru": "Чтобы назвать датчики: включите это и сохраните виджет, затем выйдите из режима редактирования панели. У каждого датчика появится текстовое поле: введите название или оставьте его пустым, чтобы оставить имя устройства. Затем снова откройте настройки виджета и выключите это.",
+            "pl": "Aby nazwać czujniki: włącz to i zapisz widżet, a potem wyjdź z trybu edycji pulpitu. Każdy czujnik pokaże pole tekstowe: wpisz nazwę albo zostaw je puste, aby zachować nazwę urządzenia. Potem ponownie edytuj widżet i wyłącz to.",
+            "ko": "센서 이름을 정하려면: 이 옵션을 켜고 위젯을 저장한 뒤 대시보드 편집 모드를 나가세요. 각 센서에 입력란이 나타납니다. 이름을 입력하거나 비워 두면 기기 이름이 그대로 쓰입니다. 그런 다음 위젯을 다시 편집해 이 옵션을 끄세요.",
+            "ar": "لتسمية المستشعرات: شغّل هذا الخيار واحفظ الأداة، ثم اخرج من وضع تحرير لوحة التحكم. يظهر حقل نصي لكل مستشعر: اكتب الاسم، أو اتركه فارغًا لإبقاء اسم الجهاز. بعد ذلك حرّر الأداة مجددًا وأوقف هذا الخيار."
+          },
+          "value": false
+        },
+        {
           "id": "title",
           "type": "text",
           "title": {
@@ -333,24 +376,6 @@
           "value": "grey",
           "values": [
             {
-              "id": "grey",
-              "title": {
-                "en": "Grey",
-                "nl": "Grijs",
-                "de": "Grau",
-                "fr": "Gris",
-                "it": "Grigio",
-                "sv": "Grå",
-                "no": "Grå",
-                "es": "Gris",
-                "da": "Grå",
-                "ru": "Серый",
-                "pl": "Szary",
-                "ko": "회색",
-                "ar": "رمادي"
-              }
-            },
-            {
               "id": "blue",
               "title": {
                 "en": "Blue",
@@ -546,6 +571,24 @@
                 "pl": "Brązowy",
                 "ko": "갈색",
                 "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -571,24 +614,6 @@
           "value": "blue",
           "values": [
             {
-              "id": "grey",
-              "title": {
-                "en": "Grey",
-                "nl": "Grijs",
-                "de": "Grau",
-                "fr": "Gris",
-                "it": "Grigio",
-                "sv": "Grå",
-                "no": "Grå",
-                "es": "Gris",
-                "da": "Grå",
-                "ru": "Серый",
-                "pl": "Szary",
-                "ko": "회색",
-                "ar": "رمادي"
-              }
-            },
-            {
               "id": "blue",
               "title": {
                 "en": "Blue",
@@ -784,6 +809,24 @@
                 "pl": "Brązowy",
                 "ko": "갈색",
                 "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]
@@ -860,103 +903,20 @@
               }
             }
           ]
-        },
-        {
-          "id": "timeFormat",
-          "type": "dropdown",
-          "title": {
-            "en": "Time format",
-            "nl": "Tijdnotatie",
-            "de": "Zeitformat",
-            "fr": "Format de l'heure",
-            "it": "Formato ora",
-            "sv": "Tidsformat",
-            "no": "Tidsformat",
-            "es": "Formato de hora",
-            "da": "Tidsformat",
-            "ru": "Формат времени",
-            "pl": "Format godziny",
-            "ko": "시간 형식",
-            "ar": "تنسيق الوقت"
-          },
-          "hint": {
-            "en": "Automatic follows the language of the phone or browser that shows it.",
-            "nl": "Automatisch volgt de taal van de telefoon of browser waarop het wordt getoond.",
-            "de": "Automatisch folgt der Sprache des Telefons oder Browsers, auf dem es angezeigt wird.",
-            "fr": "Automatique suit la langue du téléphone ou du navigateur qui l'affiche.",
-            "it": "Automatico segue la lingua del telefono o del browser che lo mostra.",
-            "sv": "Automatiskt följer språket i telefonen eller webbläsaren som visar den.",
-            "no": "Automatisk følger språket på telefonen eller nettleseren som viser den.",
-            "es": "Automático sigue el idioma del teléfono o del navegador que lo muestra.",
-            "da": "Automatisk følger sproget på telefonen eller browseren, der viser den.",
-            "ru": "«Автоматически» следует языку телефона или браузера, на котором он показан.",
-            "pl": "Automatycznie: według języka telefonu lub przeglądarki, która go wyświetla.",
-            "ko": "자동은 표시하는 휴대폰이나 브라우저의 언어를 따릅니다.",
-            "ar": "«تلقائي» يتبع لغة الهاتف أو المتصفح الذي يعرضه."
-          },
-          "value": "auto",
-          "values": [
-            {
-              "id": "auto",
-              "title": {
-                "en": "Automatic",
-                "nl": "Automatisch",
-                "de": "Automatisch",
-                "fr": "Automatique",
-                "it": "Automatico",
-                "sv": "Automatiskt",
-                "no": "Automatisk",
-                "es": "Automático",
-                "da": "Automatisk",
-                "ru": "Автоматически",
-                "pl": "Automatycznie",
-                "ko": "자동",
-                "ar": "تلقائي"
-              }
-            },
-            {
-              "id": "24",
-              "title": {
-                "en": "24-hour",
-                "nl": "24-uurs",
-                "de": "24 Stunden",
-                "fr": "24 heures",
-                "it": "24 ore",
-                "sv": "24 timmar",
-                "no": "24 timer",
-                "es": "24 horas",
-                "da": "24 timer",
-                "ru": "24 часа",
-                "pl": "24-godzinny",
-                "ko": "24시간",
-                "ar": "24 ساعة"
-              }
-            },
-            {
-              "id": "12",
-              "title": {
-                "en": "12-hour",
-                "nl": "12-uurs",
-                "de": "12 Stunden",
-                "fr": "12 heures",
-                "it": "12 ore",
-                "sv": "12 timmar",
-                "no": "12 timer",
-                "es": "12 horas",
-                "da": "12 timer",
-                "ru": "12 часов",
-                "pl": "12-godzinny",
-                "ko": "12시간",
-                "ar": "12 ساعة"
-              }
-            }
-          ]
         }
       ],
       "api": {
         "getState": {
           "method": "GET",
           "path": "/state"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
+        },
+        "setName": {
+          "method": "POST",
+          "path": "/names"
         }
       },
       "id": "sensordots"
@@ -1352,97 +1312,6 @@
           ]
         },
         {
-          "id": "timeFormat",
-          "type": "dropdown",
-          "title": {
-            "en": "Time format",
-            "nl": "Tijdnotatie",
-            "de": "Zeitformat",
-            "fr": "Format de l'heure",
-            "it": "Formato ora",
-            "sv": "Tidsformat",
-            "no": "Tidsformat",
-            "es": "Formato de hora",
-            "da": "Tidsformat",
-            "ru": "Формат времени",
-            "pl": "Format godziny",
-            "ko": "시간 형식",
-            "ar": "تنسيق الوقت"
-          },
-          "hint": {
-            "en": "Automatic follows the language of the phone or browser that shows it.",
-            "nl": "Automatisch volgt de taal van de telefoon of browser waarop het wordt getoond.",
-            "de": "Automatisch folgt der Sprache des Telefons oder Browsers, auf dem es angezeigt wird.",
-            "fr": "Automatique suit la langue du téléphone ou du navigateur qui l'affiche.",
-            "it": "Automatico segue la lingua del telefono o del browser che lo mostra.",
-            "sv": "Automatiskt följer språket i telefonen eller webbläsaren som visar den.",
-            "no": "Automatisk følger språket på telefonen eller nettleseren som viser den.",
-            "es": "Automático sigue el idioma del teléfono o del navegador que lo muestra.",
-            "da": "Automatisk følger sproget på telefonen eller browseren, der viser den.",
-            "ru": "«Автоматически» следует языку телефона или браузера, на котором он показан.",
-            "pl": "Automatycznie: według języka telefonu lub przeglądarki, która go wyświetla.",
-            "ko": "자동은 표시하는 휴대폰이나 브라우저의 언어를 따릅니다.",
-            "ar": "«تلقائي» يتبع لغة الهاتف أو المتصفح الذي يعرضه."
-          },
-          "value": "auto",
-          "values": [
-            {
-              "id": "auto",
-              "title": {
-                "en": "Automatic",
-                "nl": "Automatisch",
-                "de": "Automatisch",
-                "fr": "Automatique",
-                "it": "Automatico",
-                "sv": "Automatiskt",
-                "no": "Automatisk",
-                "es": "Automático",
-                "da": "Automatisk",
-                "ru": "Автоматически",
-                "pl": "Automatycznie",
-                "ko": "자동",
-                "ar": "تلقائي"
-              }
-            },
-            {
-              "id": "24",
-              "title": {
-                "en": "24-hour",
-                "nl": "24-uurs",
-                "de": "24 Stunden",
-                "fr": "24 heures",
-                "it": "24 ore",
-                "sv": "24 timmar",
-                "no": "24 timer",
-                "es": "24 horas",
-                "da": "24 timer",
-                "ru": "24 часа",
-                "pl": "24-godzinny",
-                "ko": "24시간",
-                "ar": "24 ساعة"
-              }
-            },
-            {
-              "id": "12",
-              "title": {
-                "en": "12-hour",
-                "nl": "12-uurs",
-                "de": "12 Stunden",
-                "fr": "12 heures",
-                "it": "12 ore",
-                "sv": "12 timmar",
-                "no": "12 timer",
-                "es": "12 horas",
-                "da": "12 timer",
-                "ru": "12 часов",
-                "pl": "12-godzinny",
-                "ko": "12시간",
-                "ar": "12 ساعة"
-              }
-            }
-          ]
-        },
-        {
           "id": "camera1",
           "type": "autocomplete",
           "title": {
@@ -1596,6 +1465,10 @@
         "setName": {
           "method": "POST",
           "path": "/names"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "cameras"
@@ -3503,6 +3376,10 @@
         "getState": {
           "method": "GET",
           "path": "/state"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "charts"
@@ -4116,6 +3993,10 @@
         "getState": {
           "method": "GET",
           "path": "/state"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "typicalday"
@@ -5159,6 +5040,10 @@
         "getState": {
           "method": "GET",
           "path": "/state"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "gauge"
@@ -7612,6 +7497,10 @@
         "getState": {
           "method": "GET",
           "path": "/state"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "lines"
@@ -8436,6 +8325,10 @@
         "getState": {
           "method": "GET",
           "path": "/state"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "dailyrange"
@@ -9691,6 +9584,10 @@
         "getState": {
           "method": "GET",
           "path": "/state"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "compare"
@@ -10617,6 +10514,10 @@
         "getState": {
           "method": "GET",
           "path": "/state"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "scatter"
@@ -13026,6 +12927,10 @@
         "getState": {
           "method": "GET",
           "path": "/state"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "stacked"
@@ -16580,6 +16485,10 @@
         "getState": {
           "method": "GET",
           "path": "/state"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "timeline"
@@ -17419,6 +17328,10 @@
         "getState": {
           "method": "GET",
           "path": "/state"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "totals"
@@ -17476,103 +17389,16 @@
             "ar": "الطقس الآن وأعلى وأدنى درجة حرارة اليوم في موقع Homey، من MET Norway (yr.no)."
           },
           "value": true
-        },
-        {
-          "id": "timeFormat",
-          "type": "dropdown",
-          "title": {
-            "en": "Time format",
-            "nl": "Tijdnotatie",
-            "de": "Zeitformat",
-            "fr": "Format de l'heure",
-            "it": "Formato ora",
-            "sv": "Tidsformat",
-            "no": "Tidsformat",
-            "es": "Formato de hora",
-            "da": "Tidsformat",
-            "ru": "Формат времени",
-            "pl": "Format godziny",
-            "ko": "시간 형식",
-            "ar": "تنسيق الوقت"
-          },
-          "hint": {
-            "en": "Automatic follows the language of the phone or browser that shows it.",
-            "nl": "Automatisch volgt de taal van de telefoon of browser waarop het wordt getoond.",
-            "de": "Automatisch folgt der Sprache des Telefons oder Browsers, auf dem es angezeigt wird.",
-            "fr": "Automatique suit la langue du téléphone ou du navigateur qui l'affiche.",
-            "it": "Automatico segue la lingua del telefono o del browser che lo mostra.",
-            "sv": "Automatiskt följer språket i telefonen eller webbläsaren som visar den.",
-            "no": "Automatisk følger språket på telefonen eller nettleseren som viser den.",
-            "es": "Automático sigue el idioma del teléfono o del navegador que lo muestra.",
-            "da": "Automatisk følger sproget på telefonen eller browseren, der viser den.",
-            "ru": "«Автоматически» следует языку телефона или браузера, на котором он показан.",
-            "pl": "Automatycznie: według języka telefonu lub przeglądarki, która go wyświetla.",
-            "ko": "자동은 표시하는 휴대폰이나 브라우저의 언어를 따릅니다.",
-            "ar": "«تلقائي» يتبع لغة الهاتف أو المتصفح الذي يعرضه."
-          },
-          "value": "auto",
-          "values": [
-            {
-              "id": "auto",
-              "title": {
-                "en": "Automatic",
-                "nl": "Automatisch",
-                "de": "Automatisch",
-                "fr": "Automatique",
-                "it": "Automatico",
-                "sv": "Automatiskt",
-                "no": "Automatisk",
-                "es": "Automático",
-                "da": "Automatisk",
-                "ru": "Автоматически",
-                "pl": "Automatycznie",
-                "ko": "자동",
-                "ar": "تلقائي"
-              }
-            },
-            {
-              "id": "24",
-              "title": {
-                "en": "24-hour",
-                "nl": "24-uurs",
-                "de": "24 Stunden",
-                "fr": "24 heures",
-                "it": "24 ore",
-                "sv": "24 timmar",
-                "no": "24 timer",
-                "es": "24 horas",
-                "da": "24 timer",
-                "ru": "24 часа",
-                "pl": "24-godzinny",
-                "ko": "24시간",
-                "ar": "24 ساعة"
-              }
-            },
-            {
-              "id": "12",
-              "title": {
-                "en": "12-hour",
-                "nl": "12-uurs",
-                "de": "12 Stunden",
-                "fr": "12 heures",
-                "it": "12 ore",
-                "sv": "12 timmar",
-                "no": "12 timer",
-                "es": "12 horas",
-                "da": "12 timer",
-                "ru": "12 часов",
-                "pl": "12-godzinny",
-                "ko": "12시간",
-                "ar": "12 ساعة"
-              }
-            }
-          ]
         }
       ],
       "api": {
         "getClock": {
           "method": "GET",
           "path": "/clock"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "clock"
@@ -18436,19 +18262,19 @@
           "id": "columns",
           "type": "dropdown",
           "title": {
-            "en": "Columns",
-            "nl": "Kolommen",
-            "de": "Spalten",
-            "fr": "Colonnes",
-            "it": "Colonne",
-            "sv": "Kolumner",
-            "no": "Kolonner",
-            "es": "Columnas",
-            "da": "Kolonner",
-            "ru": "Столбцы",
-            "pl": "Kolumny",
-            "ko": "열",
-            "ar": "الأعمدة"
+            "en": "Tiles per row",
+            "nl": "Tegels per rij",
+            "de": "Kacheln pro Zeile",
+            "fr": "Tuiles par ligne",
+            "it": "Riquadri per riga",
+            "sv": "Rutor per rad",
+            "no": "Fliser per rad",
+            "es": "Mosaicos por fila",
+            "da": "Felter pr. række",
+            "ru": "Плиток в ряду",
+            "pl": "Kafelków w rzędzie",
+            "ko": "행당 타일",
+            "ar": "البلاطات في كل صف"
           },
           "value": "2",
           "values": [
@@ -21852,24 +21678,6 @@
           "value": "3",
           "values": [
             {
-              "id": "3",
-              "title": {
-                "en": "3",
-                "nl": "3",
-                "de": "3",
-                "fr": "3",
-                "it": "3",
-                "sv": "3",
-                "no": "3",
-                "es": "3",
-                "da": "3",
-                "ru": "3",
-                "pl": "3",
-                "ko": "3",
-                "ar": "3"
-              }
-            },
-            {
               "id": "2",
               "title": {
                 "en": "2",
@@ -21885,6 +21693,24 @@
                 "pl": "2",
                 "ko": "2",
                 "ar": "2"
+              }
+            },
+            {
+              "id": "3",
+              "title": {
+                "en": "3",
+                "nl": "3",
+                "de": "3",
+                "fr": "3",
+                "it": "3",
+                "sv": "3",
+                "no": "3",
+                "es": "3",
+                "da": "3",
+                "ru": "3",
+                "pl": "3",
+                "ko": "3",
+                "ar": "3"
               }
             }
           ]
@@ -22602,24 +22428,6 @@
           "value": "3",
           "values": [
             {
-              "id": "3",
-              "title": {
-                "en": "3",
-                "nl": "3",
-                "de": "3",
-                "fr": "3",
-                "it": "3",
-                "sv": "3",
-                "no": "3",
-                "es": "3",
-                "da": "3",
-                "ru": "3",
-                "pl": "3",
-                "ko": "3",
-                "ar": "3"
-              }
-            },
-            {
               "id": "2",
               "title": {
                 "en": "2",
@@ -22635,6 +22443,24 @@
                 "pl": "2",
                 "ko": "2",
                 "ar": "2"
+              }
+            },
+            {
+              "id": "3",
+              "title": {
+                "en": "3",
+                "nl": "3",
+                "de": "3",
+                "fr": "3",
+                "it": "3",
+                "sv": "3",
+                "no": "3",
+                "es": "3",
+                "da": "3",
+                "ru": "3",
+                "pl": "3",
+                "ko": "3",
+                "ar": "3"
               }
             }
           ]
@@ -23814,6 +23640,10 @@
         "getSnapshot": {
           "method": "GET",
           "path": "/snapshot"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "electricity"
@@ -24076,6 +23906,10 @@
         "getPrice": {
           "method": "GET",
           "path": "/price"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "price"
@@ -24103,19 +23937,19 @@
           "id": "columns",
           "type": "dropdown",
           "title": {
-            "en": "Columns",
-            "nl": "Kolommen",
-            "de": "Spalten",
-            "fr": "Colonnes",
-            "it": "Colonne",
-            "sv": "Kolumner",
-            "no": "Kolonner",
-            "es": "Columnas",
-            "da": "Kolonner",
-            "ru": "Столбцы",
-            "pl": "Kolumny",
-            "ko": "열",
-            "ar": "الأعمدة"
+            "en": "Tiles per row",
+            "nl": "Tegels per rij",
+            "de": "Kacheln pro Zeile",
+            "fr": "Tuiles par ligne",
+            "it": "Riquadri per riga",
+            "sv": "Rutor per rad",
+            "no": "Fliser per rad",
+            "es": "Mosaicos por fila",
+            "da": "Felter pr. række",
+            "ru": "Плиток в ряду",
+            "pl": "Kafelków w rzędzie",
+            "ko": "행당 타일",
+            "ar": "البلاطات في كل صف"
           },
           "value": "1",
           "values": [
@@ -24226,6 +24060,97 @@
                 "pl": "Żywe",
                 "ko": "선명하게",
                 "ar": "زاهية"
+              }
+            }
+          ]
+        },
+        {
+          "id": "press",
+          "type": "dropdown",
+          "title": {
+            "en": "Activate with",
+            "nl": "Activeren met",
+            "de": "Auslösen mit",
+            "fr": "Activer par",
+            "it": "Attiva con",
+            "sv": "Aktivera med",
+            "no": "Aktiver med",
+            "es": "Activar con",
+            "da": "Aktivér med",
+            "ru": "Срабатывание",
+            "pl": "Uruchamiaj przez",
+            "ko": "실행 방식",
+            "ar": "التفعيل بـ"
+          },
+          "hint": {
+            "en": "Double press: the first tap turns the row red and asks for a second within 3 seconds. Long press: hold the row until it has filled. So a stray tap can't start a Flow.",
+            "nl": "Dubbele tik: de eerste tik kleurt de rij rood en vraagt binnen 3 seconden om een tweede. Lang indrukken: houd de rij vast tot hij gevuld is. Zo start een verdwaalde tik geen Flow.",
+            "de": "Doppelt tippen: Das erste Tippen färbt die Zeile rot und verlangt innerhalb von 3 Sekunden ein zweites. Lange drücken: Halte die Zeile, bis sie gefüllt ist. So startet ein versehentliches Tippen keinen Flow.",
+            "fr": "Double appui : le premier appui colore la ligne en rouge et en demande un second dans les 3 secondes. Appui long : maintenez la ligne jusqu'à ce qu'elle soit remplie. Ainsi, un appui accidentel ne lance pas un Flow.",
+            "it": "Doppio tocco: il primo tocco colora la riga di rosso e ne chiede un secondo entro 3 secondi. Pressione lunga: tieni premuta la riga finché non si riempie. Così un tocco accidentale non avvia un Flow.",
+            "sv": "Dubbeltryck: det första trycket gör raden röd och ber om ett andra inom 3 sekunder. Långt tryck: håll in raden tills den har fyllts. Så startar ett oavsiktligt tryck inte ett Flow.",
+            "no": "Dobbelttrykk: det første trykket gjør raden rød og ber om et nytt innen 3 sekunder. Langt trykk: hold inne raden til den er fylt. Slik starter ikke et utilsiktet trykk en Flow.",
+            "es": "Doble toque: el primer toque pone la fila en rojo y pide otro en 3 segundos. Pulsación larga: mantén pulsada la fila hasta que se llene. Así un toque accidental no inicia un Flow.",
+            "da": "Dobbelttryk: det første tryk gør rækken rød og beder om et til inden for 3 sekunder. Langt tryk: hold rækken inde, til den er fyldt. Så starter et utilsigtet tryk ikke et Flow.",
+            "ru": "Двойное нажатие: первое нажатие окрашивает строку в красный и ждёт второго в течение 3 секунд. Долгое нажатие: удерживайте строку, пока она не заполнится. Так случайное нажатие не запустит Flow.",
+            "pl": "Podwójne dotknięcie: pierwsze dotknięcie barwi wiersz na czerwono i czeka 3 sekundy na drugie. Długie przytrzymanie: przytrzymaj wiersz, aż się wypełni. Dzięki temu przypadkowe dotknięcie nie uruchomi Flow.",
+            "ko": "두 번 탭: 첫 번째 탭은 줄을 빨간색으로 바꾸고 3초 안에 한 번 더 탭하도록 요청합니다. 길게 누르기: 줄이 가득 찰 때까지 누르고 있으세요. 그래서 실수로 탭해도 Flow가 시작되지 않습니다.",
+            "ar": "نقرة مزدوجة: النقرة الأولى تجعل الصف أحمر وتطلب نقرة ثانية خلال 3 ثوانٍ. ضغطة مطوّلة: اضغط على الصف حتى يمتلئ. وبذلك لا تبدأ نقرة عابرة أي Flow."
+          },
+          "value": "single",
+          "values": [
+            {
+              "id": "single",
+              "title": {
+                "en": "Single press",
+                "nl": "Enkele tik",
+                "de": "Einmal tippen",
+                "fr": "Appui simple",
+                "it": "Tocco singolo",
+                "sv": "Ett tryck",
+                "no": "Ett trykk",
+                "es": "Toque simple",
+                "da": "Ét tryk",
+                "ru": "Одно нажатие",
+                "pl": "Jedno dotknięcie",
+                "ko": "한 번 탭",
+                "ar": "نقرة واحدة"
+              }
+            },
+            {
+              "id": "double",
+              "title": {
+                "en": "Double press",
+                "nl": "Dubbele tik",
+                "de": "Doppelt tippen",
+                "fr": "Double appui",
+                "it": "Doppio tocco",
+                "sv": "Dubbeltryck",
+                "no": "Dobbelttrykk",
+                "es": "Doble toque",
+                "da": "Dobbelttryk",
+                "ru": "Двойное нажатие",
+                "pl": "Podwójne dotknięcie",
+                "ko": "두 번 탭",
+                "ar": "نقرة مزدوجة"
+              }
+            },
+            {
+              "id": "long",
+              "title": {
+                "en": "Long press",
+                "nl": "Lang indrukken",
+                "de": "Lange drücken",
+                "fr": "Appui long",
+                "it": "Pressione lunga",
+                "sv": "Långt tryck",
+                "no": "Langt trykk",
+                "es": "Pulsación larga",
+                "da": "Langt tryk",
+                "ru": "Долгое нажатие",
+                "pl": "Długie przytrzymanie",
+                "ko": "길게 누르기",
+                "ar": "ضغطة مطوّلة"
               }
             }
           ]
@@ -27322,6 +27247,10 @@
         "getHistory": {
           "method": "GET",
           "path": "/history"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "heatmap"
@@ -27797,19 +27726,19 @@
           "id": "label1",
           "type": "text",
           "title": {
-            "en": "  – Label",
-            "nl": "  – Label",
-            "de": "  – Beschriftung",
-            "fr": "  – Libellé",
-            "it": "  – Etichetta",
-            "sv": "  – Etikett",
-            "no": "  – Etikett",
-            "es": "  – Etiqueta",
-            "da": "  – Etiket",
-            "ru": "  – Подпись",
-            "pl": "  – Etykieta",
-            "ko": "  – 레이블",
-            "ar": "  – التسمية"
+            "en": "  – Name",
+            "nl": "  – Naam",
+            "de": "  – Name",
+            "fr": "  – Nom",
+            "it": "  – Nome",
+            "sv": "  – Namn",
+            "no": "  – Navn",
+            "es": "  – Nombre",
+            "da": "  – Navn",
+            "ru": "  – Название",
+            "pl": "  – Nazwa",
+            "ko": "  – 이름",
+            "ar": "  – الاسم"
           },
           "hint": {
             "en": "Optional. Leave empty for the Flow’s name or the value. A label alone, without a Flow or value, makes a button that only fires the Keypad’s Flow card.",
@@ -28162,19 +28091,19 @@
           "id": "label2",
           "type": "text",
           "title": {
-            "en": "  – Label",
-            "nl": "  – Label",
-            "de": "  – Beschriftung",
-            "fr": "  – Libellé",
-            "it": "  – Etichetta",
-            "sv": "  – Etikett",
-            "no": "  – Etikett",
-            "es": "  – Etiqueta",
-            "da": "  – Etiket",
-            "ru": "  – Подпись",
-            "pl": "  – Etykieta",
-            "ko": "  – 레이블",
-            "ar": "  – التسمية"
+            "en": "  – Name",
+            "nl": "  – Naam",
+            "de": "  – Name",
+            "fr": "  – Nom",
+            "it": "  – Nome",
+            "sv": "  – Namn",
+            "no": "  – Navn",
+            "es": "  – Nombre",
+            "da": "  – Navn",
+            "ru": "  – Название",
+            "pl": "  – Nazwa",
+            "ko": "  – 이름",
+            "ar": "  – الاسم"
           },
           "value": ""
         },
@@ -28497,19 +28426,19 @@
           "id": "label3",
           "type": "text",
           "title": {
-            "en": "  – Label",
-            "nl": "  – Label",
-            "de": "  – Beschriftung",
-            "fr": "  – Libellé",
-            "it": "  – Etichetta",
-            "sv": "  – Etikett",
-            "no": "  – Etikett",
-            "es": "  – Etiqueta",
-            "da": "  – Etiket",
-            "ru": "  – Подпись",
-            "pl": "  – Etykieta",
-            "ko": "  – 레이블",
-            "ar": "  – التسمية"
+            "en": "  – Name",
+            "nl": "  – Naam",
+            "de": "  – Name",
+            "fr": "  – Nom",
+            "it": "  – Nome",
+            "sv": "  – Namn",
+            "no": "  – Navn",
+            "es": "  – Nombre",
+            "da": "  – Navn",
+            "ru": "  – Название",
+            "pl": "  – Nazwa",
+            "ko": "  – 이름",
+            "ar": "  – الاسم"
           },
           "value": ""
         },
@@ -29980,97 +29909,6 @@
               }
             }
           ]
-        },
-        {
-          "id": "timeFormat",
-          "type": "dropdown",
-          "title": {
-            "en": "Time format",
-            "nl": "Tijdnotatie",
-            "de": "Zeitformat",
-            "fr": "Format de l'heure",
-            "it": "Formato ora",
-            "sv": "Tidsformat",
-            "no": "Tidsformat",
-            "es": "Formato de hora",
-            "da": "Tidsformat",
-            "ru": "Формат времени",
-            "pl": "Format godziny",
-            "ko": "시간 형식",
-            "ar": "تنسيق الوقت"
-          },
-          "hint": {
-            "en": "Automatic follows the language of the phone or browser that shows it.",
-            "nl": "Automatisch volgt de taal van de telefoon of browser waarop het wordt getoond.",
-            "de": "Automatisch folgt der Sprache des Telefons oder Browsers, auf dem es angezeigt wird.",
-            "fr": "Automatique suit la langue du téléphone ou du navigateur qui l'affiche.",
-            "it": "Automatico segue la lingua del telefono o del browser che lo mostra.",
-            "sv": "Automatiskt följer språket i telefonen eller webbläsaren som visar den.",
-            "no": "Automatisk følger språket på telefonen eller nettleseren som viser den.",
-            "es": "Automático sigue el idioma del teléfono o del navegador que lo muestra.",
-            "da": "Automatisk følger sproget på telefonen eller browseren, der viser den.",
-            "ru": "«Автоматически» следует языку телефона или браузера, на котором он показан.",
-            "pl": "Automatycznie: według języka telefonu lub przeglądarki, która go wyświetla.",
-            "ko": "자동은 표시하는 휴대폰이나 브라우저의 언어를 따릅니다.",
-            "ar": "«تلقائي» يتبع لغة الهاتف أو المتصفح الذي يعرضه."
-          },
-          "value": "auto",
-          "values": [
-            {
-              "id": "auto",
-              "title": {
-                "en": "Automatic",
-                "nl": "Automatisch",
-                "de": "Automatisch",
-                "fr": "Automatique",
-                "it": "Automatico",
-                "sv": "Automatiskt",
-                "no": "Automatisk",
-                "es": "Automático",
-                "da": "Automatisk",
-                "ru": "Автоматически",
-                "pl": "Automatycznie",
-                "ko": "자동",
-                "ar": "تلقائي"
-              }
-            },
-            {
-              "id": "24",
-              "title": {
-                "en": "24-hour",
-                "nl": "24-uurs",
-                "de": "24 Stunden",
-                "fr": "24 heures",
-                "it": "24 ore",
-                "sv": "24 timmar",
-                "no": "24 timer",
-                "es": "24 horas",
-                "da": "24 timer",
-                "ru": "24 часа",
-                "pl": "24-godzinny",
-                "ko": "24시간",
-                "ar": "24 ساعة"
-              }
-            },
-            {
-              "id": "12",
-              "title": {
-                "en": "12-hour",
-                "nl": "12-uurs",
-                "de": "12 Stunden",
-                "fr": "12 heures",
-                "it": "12 ore",
-                "sv": "12 timmar",
-                "no": "12 timer",
-                "es": "12 horas",
-                "da": "12 timer",
-                "ru": "12 часов",
-                "pl": "12-godzinny",
-                "ko": "12시간",
-                "ar": "12 ساعة"
-              }
-            }
-          ]
         }
       ],
       "api": {
@@ -30089,6 +29927,10 @@
         "open": {
           "method": "POST",
           "path": "/open"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "locks"
@@ -32570,103 +32412,16 @@
               }
             }
           ]
-        },
-        {
-          "id": "timeFormat",
-          "type": "dropdown",
-          "title": {
-            "en": "Time format",
-            "nl": "Tijdnotatie",
-            "de": "Zeitformat",
-            "fr": "Format de l'heure",
-            "it": "Formato ora",
-            "sv": "Tidsformat",
-            "no": "Tidsformat",
-            "es": "Formato de hora",
-            "da": "Tidsformat",
-            "ru": "Формат времени",
-            "pl": "Format godziny",
-            "ko": "시간 형식",
-            "ar": "تنسيق الوقت"
-          },
-          "hint": {
-            "en": "Automatic follows the language of the phone or browser that shows it.",
-            "nl": "Automatisch volgt de taal van de telefoon of browser waarop het wordt getoond.",
-            "de": "Automatisch folgt der Sprache des Telefons oder Browsers, auf dem es angezeigt wird.",
-            "fr": "Automatique suit la langue du téléphone ou du navigateur qui l'affiche.",
-            "it": "Automatico segue la lingua del telefono o del browser che lo mostra.",
-            "sv": "Automatiskt följer språket i telefonen eller webbläsaren som visar den.",
-            "no": "Automatisk følger språket på telefonen eller nettleseren som viser den.",
-            "es": "Automático sigue el idioma del teléfono o del navegador que lo muestra.",
-            "da": "Automatisk følger sproget på telefonen eller browseren, der viser den.",
-            "ru": "«Автоматически» следует языку телефона или браузера, на котором он показан.",
-            "pl": "Automatycznie: według języka telefonu lub przeglądarki, która go wyświetla.",
-            "ko": "자동은 표시하는 휴대폰이나 브라우저의 언어를 따릅니다.",
-            "ar": "«تلقائي» يتبع لغة الهاتف أو المتصفح الذي يعرضه."
-          },
-          "value": "auto",
-          "values": [
-            {
-              "id": "auto",
-              "title": {
-                "en": "Automatic",
-                "nl": "Automatisch",
-                "de": "Automatisch",
-                "fr": "Automatique",
-                "it": "Automatico",
-                "sv": "Automatiskt",
-                "no": "Automatisk",
-                "es": "Automático",
-                "da": "Automatisk",
-                "ru": "Автоматически",
-                "pl": "Automatycznie",
-                "ko": "자동",
-                "ar": "تلقائي"
-              }
-            },
-            {
-              "id": "24",
-              "title": {
-                "en": "24-hour",
-                "nl": "24-uurs",
-                "de": "24 Stunden",
-                "fr": "24 heures",
-                "it": "24 ore",
-                "sv": "24 timmar",
-                "no": "24 timer",
-                "es": "24 horas",
-                "da": "24 timer",
-                "ru": "24 часа",
-                "pl": "24-godzinny",
-                "ko": "24시간",
-                "ar": "24 ساعة"
-              }
-            },
-            {
-              "id": "12",
-              "title": {
-                "en": "12-hour",
-                "nl": "12-uurs",
-                "de": "12 Stunden",
-                "fr": "12 heures",
-                "it": "12 ore",
-                "sv": "12 timmar",
-                "no": "12 timer",
-                "es": "12 horas",
-                "da": "12 timer",
-                "ru": "12 часов",
-                "pl": "12-godzinny",
-                "ko": "12시간",
-                "ar": "12 ساعة"
-              }
-            }
-          ]
         }
       ],
       "api": {
         "getPollen": {
           "method": "GET",
           "path": "/pollen"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "pollen"
@@ -34542,24 +34297,6 @@
           "value": "2",
           "values": [
             {
-              "id": "2",
-              "title": {
-                "en": "2",
-                "nl": "2",
-                "de": "2",
-                "fr": "2",
-                "it": "2",
-                "sv": "2",
-                "no": "2",
-                "es": "2",
-                "da": "2",
-                "ru": "2",
-                "pl": "2",
-                "ko": "2",
-                "ar": "2"
-              }
-            },
-            {
               "id": "1",
               "title": {
                 "en": "1",
@@ -34575,6 +34312,24 @@
                 "pl": "1",
                 "ko": "1",
                 "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
               }
             }
           ]
@@ -36065,6 +35820,10 @@
         "action": {
           "method": "POST",
           "path": "/action"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "timers"
@@ -36291,6 +36050,41 @@
             "pl": "Pokaż legendę",
             "ko": "범례 표시",
             "ar": "إظهار وسيلة الإيضاح"
+          }
+        },
+        {
+          "id": "greenWhenFine",
+          "type": "checkbox",
+          "value": true,
+          "title": {
+            "en": "Green when fine",
+            "nl": "Groen als het goed is",
+            "de": "Grün, wenn in Ordnung",
+            "fr": "Vert si tout va bien",
+            "it": "Verde se va bene",
+            "sv": "Grönt när det är bra",
+            "no": "Grønt når det er bra",
+            "es": "Verde si está bien",
+            "da": "Grøn når det er fint",
+            "ru": "Зелёный, если всё в норме",
+            "pl": "Zielony, gdy w normie",
+            "ko": "정상이면 초록색",
+            "ar": "أخضر عندما يكون جيدًا"
+          },
+          "hint": {
+            "en": "Shows the values inside their range in green, not grey.",
+            "nl": "Toont waarden binnen hun bereik in groen, niet grijs.",
+            "de": "Zeigt Werte innerhalb ihres Bereichs grün statt grau.",
+            "fr": "Affiche en vert, et non en gris, les valeurs dans leur plage.",
+            "it": "Mostra in verde, non in grigio, i valori entro il loro intervallo.",
+            "sv": "Visar värden inom sitt intervall i grönt, inte grått.",
+            "no": "Viser verdier innenfor området i grønt, ikke grått.",
+            "es": "Muestra en verde, no en gris, los valores dentro de su rango.",
+            "da": "Viser værdier inden for deres interval i grønt, ikke gråt.",
+            "ru": "Показывает значения в пределах диапазона зелёным, а не серым.",
+            "pl": "Pokazuje wartości w zakresie na zielono, a nie na szaro.",
+            "ko": "범위 안의 값을 회색 대신 초록색으로 표시합니다.",
+            "ar": "يعرض القيم الواقعة ضمن نطاقها باللون الأخضر بدل الرمادي."
           }
         },
         {
@@ -36889,19 +36683,19 @@
           "id": "color",
           "type": "dropdown",
           "title": {
-            "en": "Button colour",
-            "nl": "Knopkleur",
-            "de": "Tastenfarbe",
-            "fr": "Couleur des boutons",
-            "it": "Colore dei pulsanti",
-            "sv": "Knappfärg",
-            "no": "Knappfarge",
-            "es": "Color de los botones",
-            "da": "Knapfarve",
-            "ru": "Цвет кнопок",
-            "pl": "Kolor przycisków",
-            "ko": "버튼 색상",
-            "ar": "لون الأزرار"
+            "en": "Colour",
+            "nl": "Kleur",
+            "de": "Farbe",
+            "fr": "Couleur",
+            "it": "Colore",
+            "sv": "Färg",
+            "no": "Farge",
+            "es": "Color",
+            "da": "Farve",
+            "ru": "Цвет",
+            "pl": "Kolor",
+            "ko": "색상",
+            "ar": "اللون"
           },
           "value": "blue",
           "values": [
@@ -37249,19 +37043,19 @@
           "id": "label1",
           "type": "text",
           "title": {
-            "en": "  – Label",
-            "nl": "  – Label",
-            "de": "  – Beschriftung",
-            "fr": "  – Libellé",
-            "it": "  – Etichetta",
-            "sv": "  – Etikett",
-            "no": "  – Etikett",
-            "es": "  – Etiqueta",
-            "da": "  – Etiket",
-            "ru": "  – Подпись",
-            "pl": "  – Etykieta",
-            "ko": "  – 레이블",
-            "ar": "  – التسمية"
+            "en": "  – Name",
+            "nl": "  – Naam",
+            "de": "  – Name",
+            "fr": "  – Nom",
+            "it": "  – Nome",
+            "sv": "  – Namn",
+            "no": "  – Navn",
+            "es": "  – Nombre",
+            "da": "  – Navn",
+            "ru": "  – Название",
+            "pl": "  – Nazwa",
+            "ko": "  – 이름",
+            "ar": "  – الاسم"
           },
           "hint": {
             "en": "Optional, such as Away. Shown on the button in place of the value.",
@@ -37303,19 +37097,19 @@
           "id": "label2",
           "type": "text",
           "title": {
-            "en": "  – Label",
-            "nl": "  – Label",
-            "de": "  – Beschriftung",
-            "fr": "  – Libellé",
-            "it": "  – Etichetta",
-            "sv": "  – Etikett",
-            "no": "  – Etikett",
-            "es": "  – Etiqueta",
-            "da": "  – Etiket",
-            "ru": "  – Подпись",
-            "pl": "  – Etykieta",
-            "ko": "  – 레이블",
-            "ar": "  – التسمية"
+            "en": "  – Name",
+            "nl": "  – Naam",
+            "de": "  – Name",
+            "fr": "  – Nom",
+            "it": "  – Nome",
+            "sv": "  – Namn",
+            "no": "  – Navn",
+            "es": "  – Nombre",
+            "da": "  – Navn",
+            "ru": "  – Название",
+            "pl": "  – Nazwa",
+            "ko": "  – 이름",
+            "ar": "  – الاسم"
           },
           "value": ""
         },
@@ -37342,19 +37136,19 @@
           "id": "label3",
           "type": "text",
           "title": {
-            "en": "  – Label",
-            "nl": "  – Label",
-            "de": "  – Beschriftung",
-            "fr": "  – Libellé",
-            "it": "  – Etichetta",
-            "sv": "  – Etikett",
-            "no": "  – Etikett",
-            "es": "  – Etiqueta",
-            "da": "  – Etiket",
-            "ru": "  – Подпись",
-            "pl": "  – Etykieta",
-            "ko": "  – 레이블",
-            "ar": "  – التسمية"
+            "en": "  – Name",
+            "nl": "  – Naam",
+            "de": "  – Name",
+            "fr": "  – Nom",
+            "it": "  – Nome",
+            "sv": "  – Namn",
+            "no": "  – Navn",
+            "es": "  – Nombre",
+            "da": "  – Navn",
+            "ru": "  – Название",
+            "pl": "  – Nazwa",
+            "ko": "  – 이름",
+            "ar": "  – الاسم"
           },
           "value": ""
         },
@@ -37381,19 +37175,19 @@
           "id": "label4",
           "type": "text",
           "title": {
-            "en": "  – Label",
-            "nl": "  – Label",
-            "de": "  – Beschriftung",
-            "fr": "  – Libellé",
-            "it": "  – Etichetta",
-            "sv": "  – Etikett",
-            "no": "  – Etikett",
-            "es": "  – Etiqueta",
-            "da": "  – Etiket",
-            "ru": "  – Подпись",
-            "pl": "  – Etykieta",
-            "ko": "  – 레이블",
-            "ar": "  – التسمية"
+            "en": "  – Name",
+            "nl": "  – Naam",
+            "de": "  – Name",
+            "fr": "  – Nom",
+            "it": "  – Nome",
+            "sv": "  – Namn",
+            "no": "  – Navn",
+            "es": "  – Nombre",
+            "da": "  – Navn",
+            "ru": "  – Название",
+            "pl": "  – Nazwa",
+            "ko": "  – 이름",
+            "ar": "  – الاسم"
           },
           "value": ""
         }
@@ -37468,19 +37262,19 @@
           "id": "columns",
           "type": "dropdown",
           "title": {
-            "en": "Columns",
-            "nl": "Kolommen",
-            "de": "Spalten",
-            "fr": "Colonnes",
-            "it": "Colonne",
-            "sv": "Kolumner",
-            "no": "Kolonner",
-            "es": "Columnas",
-            "da": "Kolonner",
-            "ru": "Столбцы",
-            "pl": "Kolumny",
-            "ko": "열",
-            "ar": "الأعمدة"
+            "en": "Tiles per row",
+            "nl": "Tegels per rij",
+            "de": "Kacheln pro Zeile",
+            "fr": "Tuiles par ligne",
+            "it": "Riquadri per riga",
+            "sv": "Rutor per rad",
+            "no": "Fliser per rad",
+            "es": "Mosaicos por fila",
+            "da": "Felter pr. række",
+            "ru": "Плиток в ряду",
+            "pl": "Kafelków w rzędzie",
+            "ko": "행당 타일",
+            "ar": "البلاطات في كل صف"
           },
           "value": "1",
           "values": [
@@ -38218,19 +38012,19 @@
           "id": "density",
           "type": "dropdown",
           "title": {
-            "en": "Hour columns",
-            "nl": "Uurkolommen",
-            "de": "Stundenspalten",
-            "fr": "Colonnes horaires",
-            "it": "Colonne orarie",
-            "sv": "Timkolumner",
-            "no": "Timekolonner",
-            "es": "Columnas por hora",
-            "da": "Timekolonner",
-            "ru": "Столбцы часов",
-            "pl": "Kolumny godzin",
-            "ko": "시간 열",
-            "ar": "أعمدة الساعات"
+            "en": "Layout",
+            "nl": "Indeling",
+            "de": "Darstellung",
+            "fr": "Affichage",
+            "it": "Layout",
+            "sv": "Layout",
+            "no": "Oppsett",
+            "es": "Diseño",
+            "da": "Layout",
+            "ru": "Вид",
+            "pl": "Układ",
+            "ko": "레이아웃",
+            "ar": "التخطيط"
           },
           "hint": {
             "en": "Compact fits more hours. Detailed has bigger icons and units on every value.",
@@ -38532,6 +38326,10 @@
         "getForecast": {
           "method": "GET",
           "path": "/forecast"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
         }
       },
       "id": "weather"
@@ -39199,7 +38997,42 @@
           "value": ""
         },
         {
-          "id": "range",
+          "id": "greenWhenFine",
+          "type": "checkbox",
+          "value": false,
+          "title": {
+            "en": "Green when fine",
+            "nl": "Groen als het goed is",
+            "de": "Grün, wenn in Ordnung",
+            "fr": "Vert si tout va bien",
+            "it": "Verde se va bene",
+            "sv": "Grönt när det är bra",
+            "no": "Grønt når det er bra",
+            "es": "Verde si está bien",
+            "da": "Grøn når det er fint",
+            "ru": "Зелёный, если всё в норме",
+            "pl": "Zielony, gdy w normie",
+            "ko": "정상이면 초록색",
+            "ar": "أخضر عندما يكون جيدًا"
+          },
+          "hint": {
+            "en": "Shows the values inside their range in green, not grey.",
+            "nl": "Toont waarden binnen hun bereik in groen, niet grijs.",
+            "de": "Zeigt Werte innerhalb ihres Bereichs grün statt grau.",
+            "fr": "Affiche en vert, et non en gris, les valeurs dans leur plage.",
+            "it": "Mostra in verde, non in grigio, i valori entro il loro intervallo.",
+            "sv": "Visar värden inom sitt intervall i grönt, inte grått.",
+            "no": "Viser verdier innenfor området i grønt, ikke grått.",
+            "es": "Muestra en verde, no en gris, los valores dentro de su rango.",
+            "da": "Viser værdier inden for deres interval i grønt, ikke gråt.",
+            "ru": "Показывает значения в пределах диапазона зелёным, а не серым.",
+            "pl": "Pokazuje wartości w zakresie na zielono, a nie na szaro.",
+            "ko": "범위 안의 값을 회색 대신 초록색으로 표시합니다.",
+            "ar": "يعرض القيم الواقعة ضمن نطاقها باللون الأخضر بدل الرمادي."
+          }
+        },
+        {
+          "id": "showRange",
           "type": "checkbox",
           "title": {
             "en": "Show the range",
@@ -39718,6 +39551,41 @@
       },
       "settings": [
         {
+          "id": "renameTiles",
+          "type": "checkbox",
+          "title": {
+            "en": "Rename tiles",
+            "nl": "Tegels hernoemen",
+            "de": "Kacheln umbenennen",
+            "fr": "Renommer les tuiles",
+            "it": "Rinomina riquadri",
+            "sv": "Byt namn på rutor",
+            "no": "Gi nytt navn til fliser",
+            "es": "Renombrar mosaicos",
+            "da": "Omdøb felter",
+            "ru": "Переименовать плитки",
+            "pl": "Zmień nazwy kafelków",
+            "ko": "타일 이름 바꾸기",
+            "ar": "إعادة تسمية المربعات"
+          },
+          "hint": {
+            "en": "To name the rooms and devices: turn this on and save the widget, then leave the dashboard's edit mode. Each room and device shows a text field: type its name, or leave it empty to keep its own name. Then edit the widget again and turn this off.",
+            "nl": "Ruimtes en apparaten een naam geven: zet dit aan en sla de widget op, en verlaat dan de bewerkmodus van het dashboard. Elke ruimte en elk apparaat toont een tekstveld: typ de naam, of laat het leeg om de eigen naam te houden. Bewerk daarna de widget opnieuw en zet dit uit.",
+            "de": "Räume und Geräte benennen: Schalte dies ein, speichere das Widget und verlasse den Bearbeitungsmodus des Dashboards. Jeder Raum und jedes Gerät zeigt ein Textfeld: Gib den Namen ein oder lass es leer, um den eigenen Namen zu behalten. Bearbeite danach das Widget erneut und schalte dies aus.",
+            "fr": "Pour nommer les pièces et les appareils : activez ceci, enregistrez le widget, puis quittez le mode édition du tableau de bord. Chaque pièce et chaque appareil affiche un champ de texte : tapez son nom, ou laissez-le vide pour garder son nom d'origine. Modifiez ensuite le widget à nouveau et désactivez ceci.",
+            "it": "Per dare un nome alle stanze e ai dispositivi: attiva questa opzione e salva il widget, poi esci dalla modalità di modifica della dashboard. Ogni stanza e ogni dispositivo mostra un campo di testo: scrivi il nome, o lascialo vuoto per mantenere il nome originale. Poi modifica di nuovo il widget e disattiva questa opzione.",
+            "sv": "Så namnger du rummen och enheterna: slå på detta och spara widgeten, och lämna sedan instrumentpanelens redigeringsläge. Varje rum och enhet visar ett textfält: skriv namnet, eller lämna det tomt för att behålla det egna namnet. Redigera sedan widgeten igen och slå av detta.",
+            "no": "Slik gir du rommene og enhetene navn: slå på dette og lagre widgeten, og gå så ut av dashbordets redigeringsmodus. Hvert rom og hver enhet viser et tekstfelt: skriv navnet, eller la det stå tomt for å beholde det opprinnelige navnet. Rediger så widgeten igjen og slå av dette.",
+            "es": "Para poner nombre a las habitaciones y los dispositivos: activa esto y guarda el widget, luego sal del modo de edición del panel. Cada habitación y cada dispositivo muestra un campo de texto: escribe su nombre, o déjalo vacío para mantener su nombre original. Después edita el widget de nuevo y desactiva esto.",
+            "da": "Sådan navngiver du rummene og enhederne: slå dette til og gem widgetten, og forlad så dashboardets redigeringstilstand. Hvert rum og hver enhed viser et tekstfelt: skriv navnet, eller lad det stå tomt for at beholde det oprindelige navn. Redigér derefter widgetten igen, og slå dette fra.",
+            "ru": "Чтобы назвать комнаты и устройства: включите это и сохраните виджет, затем выйдите из режима редактирования панели. У каждой комнаты и каждого устройства появится текстовое поле: введите название или оставьте его пустым, чтобы оставить исходное имя. Затем снова откройте настройки виджета и выключите это.",
+            "pl": "Aby nazwać pokoje i urządzenia: włącz to i zapisz widżet, a potem wyjdź z trybu edycji pulpitu. Każdy pokój i każde urządzenie pokaże pole tekstowe: wpisz nazwę albo zostaw je puste, aby zachować pierwotną nazwę. Potem ponownie edytuj widżet i wyłącz to.",
+            "ko": "방과 기기 이름을 정하려면: 이 옵션을 켜고 위젯을 저장한 뒤 대시보드 편집 모드를 나가세요. 각 방과 기기에 입력란이 나타납니다. 이름을 입력하거나 비워 두면 원래 이름이 그대로 쓰입니다. 그런 다음 위젯을 다시 편집해 이 옵션을 끄세요.",
+            "ar": "لتسمية الغرف والأجهزة: شغّل هذا الخيار واحفظ الأداة، ثم اخرج من وضع تحرير لوحة التحكم. يظهر حقل نصي لكل غرفة ولكل جهاز: اكتب الاسم، أو اتركه فارغًا لإبقاء الاسم الأصلي. بعد ذلك حرّر الأداة مجددًا وأوقف هذا الخيار."
+          },
+          "value": false
+        },
+        {
           "id": "layout",
           "type": "dropdown",
           "value": "tiles",
@@ -40125,6 +39993,10 @@
         "getState": {
           "method": "GET",
           "path": "/state"
+        },
+        "setName": {
+          "method": "POST",
+          "path": "/names"
         }
       },
       "id": "valueboard"

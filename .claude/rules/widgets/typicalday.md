@@ -13,3 +13,4 @@ paths:
 - Header: today's value now (or the tapped hour's average today, `HH:00`) in the widget's colour, then the usual one for that hour, muted (`usualAt`). Chips: the value's and `Usual · 7 d`. A tap picks the hour under the pointer (kept as its number, a cursor line at its half past).
 - Live: `values:state` onto today's line; redrawn every minute; refetched every 5 min.
 - `dev/typicalday-preview.html` (`mock-typicalday.js`: the showcase house's power, never a real meter's), the preview frames `td-dark`/`td-light` (a green line over a soft band), the README screenshot `typicalday`. `npm run test-dashboards -- typicalday` (under Test charts). Not yet tried on the Homey or the phones.
+- A tapped hour is the kit's `clockTime()` (`14:00`, or `2:00 PM` in 12 hours: the app's Time format, CLAUDE.md, 1.3.0).

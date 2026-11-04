@@ -256,6 +256,10 @@
     "getPrice": {
       "method": "GET",
       "path": "/price"
+    },
+    "getTimeFormat": {
+      "method": "GET",
+      "path": "/time-format"
     }
   }
 }

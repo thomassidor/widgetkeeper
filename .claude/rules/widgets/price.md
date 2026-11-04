@@ -15,3 +15,4 @@ paths:
 - 15-minute prices: the price and level now are the current quarter's, with a bar per quarter (the user's choice: 48/96/144; `ensureBars()` remakes them when the count changes; `data-quarters`: 1 px gaps at 12 h, none from 24 h), axis labels on whole hours only.
 - The current slot is found by time (`slotAt()`); it re-renders when the slot ends and refetches every 5 min. `opts.now` replaces the clock.
 - Colour style (`colorStyle`, Muted/Vivid; CLAUDE.md *Widget styling*, `kit.css`): after `tint`. Vivid: the bars in the shades at full strength (low green-700, medium yellow, high red-600, no tint blue-600), the current hour in today's bright colour; the label is unchanged.
+- The axis hours are the kit's `hourLabel()` (`06` as before, `6 AM` in 12 hours: the app's Time format, CLAUDE.md, 1.3.0); the mount reloads when it changes.

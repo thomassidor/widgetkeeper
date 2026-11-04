@@ -28,6 +28,7 @@ window.mountFlowsWidget = function (Homey, { root, frame }) {
     colorStyle: settings.colorStyle,
     t: (key, tokens) => Homey.__(key, tokens),
     columns: settings.columns,
+    press: settings.press,
     buttons,
     onTrigger: async (id) => {
       const res = await Homey.api('POST', '/trigger', { id });

@@ -76,7 +76,8 @@
     "vibration": "Vibrazione",
     "noVibration": "Nessuna vibrazione",
     "nothingDetected": "Nulla rilevato",
-    "since": "da __time__"
+    "since": "da __time__",
+    "renameFailed": "Impossibile salvare il nome."
   },
   "roomhealth": {
     "selectDevices": "Scegli i sensori nelle impostazioni del widget.",
@@ -128,7 +129,8 @@
     "motion": "Movimento",
     "noMotion": "Nessun movimento",
     "alarm": "Allarme",
-    "ok": "OK"
+    "ok": "OK",
+    "renameFailed": "Impossibile salvare il nome."
   },
   "weather": {
     "now": "Ora",
@@ -258,6 +260,11 @@
     "namesChanged": "Cambiano __changed__ nomi di dispositivi su __total__:",
     "namesNoneSep": "Nessun nome di dispositivo contiene «__separator__».",
     "namesNone": "Nessun nome di dispositivo cambia.",
+    "timeTitle": "Formato ora",
+    "timeHelp": "Come tutti i widget mostrano l'ora. Automatico segue la lingua del telefono o del browser che lo mostra.",
+    "timeAuto": "Automatico",
+    "time24": "24 ore",
+    "time12": "12 ore",
     "webTitle": "Dashboard web",
     "webHelp": "I tuoi widget Widgetkeeper in qualsiasi browser della rete di casa: tablet, computer, TV o Nest Hub. Attivali, aggiungi qui sotto ogni schermo per il suo codice di accesso, poi crea le dashboard sulla pagina stessa.",
     "webEnable": "Attiva le dashboard web",
@@ -660,7 +667,9 @@
       "gift": "Regalo",
       "sparkles": "Scintille",
       "dashboard": "Dashboard"
-    }
+    },
+    "tapAgain": "Tocca di nuovo",
+    "hold": "Tieni premuto"
   },
   "price": {
     "now": "Ora",

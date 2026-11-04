@@ -5,7 +5,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, formatSince, baseTitle, applyColors, onTap, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, formatSince, baseTitle, applyColors, onTap, messageLine, tileNames } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -22,6 +22,7 @@
     noVibration: 'No vibration',
     nothingDetected: 'Nothing detected',
     since: 'since __time__',
+    renameFailed: 'Could not save the name.',
   };
 
   const COLORS = ['grey', 'blue', 'red', 'orange', 'yellow', 'green', 'purple', 'teal', 'cyan', 'indigo', 'pink', 'brown'];
@@ -33,7 +34,8 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, t?: (key: string, tokens?: object) => string, locale?: string, timeFormat?: string, title?: string,
-   *   idleColor?: string, activeColor?: string, onHeight?: (h: number) => void }} opts
+   *   idleColor?: string, activeColor?: string, renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
+   *   onHeight?: (h: number) => void }} opts
    */
   function createSensorDotsWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -48,7 +50,21 @@
     const message = messageLine(() => render(), { clear: () => { devices = []; } });
     let openId = null; // the device whose overlay is open
 
+    // Typed names (Rename tiles), by device id: a row per sensor with its dot and a field, in place of the grid.
+    const typed = tileNames(opts, () => render(), (id) => {
+      const row = renameRows.get(id);
+      if (row) {
+        row.classList.remove('shake');
+        void row.offsetWidth; // restart the animation
+        row.classList.add('shake');
+      }
+      setMessage(t('renameFailed'), true);
+    });
+    /** @type {Map<string, HTMLElement>} */
+    const renameRows = new Map();
+    const nameOf = d => typed.name(d.id, d.name);
     root.classList.add('sd');
+    root.classList.toggle('renaming', typed.renaming);
     applyColors(root, { style: opts.colorStyle });
     root.dataset.idle = colorOf(opts.idleColor, 'grey');
     root.dataset.active = colorOf(opts.activeColor, 'blue');
@@ -57,6 +73,7 @@
     const title = typeof opts.title === 'string' ? opts.title.trim() : '';
     if (title) el('div', { class: 'sd-header', dir: 'auto', text: title }, tileEl);
     const grid = el('div', { class: 'sd-grid' }, tileEl);
+    const renameList = el('div', { class: 'sd-rename-list' }, tileEl);
     const messageEl = el('div', { class: 'sd-message', dir: 'auto' }, root);
     // The overlay, over the row of the dot it's open for. In the grid (absolutely positioned, as Light
     // Controls' swatch panel) so it can cover the row; the dots are kept before it.
@@ -157,12 +174,37 @@
         return;
       }
       panel.dataset.level = levelOf(d);
-      panelName.textContent = 'missing' in d ? '' : d.name;
+      panelName.textContent = 'missing' in d ? '' : nameOf(d);
       panelName.style.display = 'missing' in d ? 'none' : '';
       panelState.textContent = stateText(d);
       panel.style.display = '';
       panel.style.top = `${cell.offsetTop}px`;
       panel.style.height = `${cell.offsetHeight}px`;
+    }
+
+    /** Rename tiles: a row per sensor (a missing one has none), its dot and its name's field, in the settings' order. */
+    function renderRename() {
+      const shown = devices.filter(d => !('missing' in d));
+      const ids = new Set(shown.map(d => d.id));
+      for (const [id, row] of renameRows) {
+        if (!ids.has(id)) { row.remove(); renameRows.delete(id); }
+      }
+      let placed = null;
+      for (const d of shown) {
+        let row = renameRows.get(d.id);
+        if (!row) {
+          row = el('div', { class: 'sd-rename-row', 'data-device': d.id });
+          el('span', { class: 'sd-panel-dot' }, row);
+          renameRows.set(d.id, row);
+        }
+        row.dataset.level = levelOf(d);
+        const field = typed.field(d.id, d.name);
+        if (field.parentNode !== row) row.append(field);
+        // Moves only what is out of place: a moved field loses the focus.
+        const want = placed ? placed.nextSibling : renameList.firstChild;
+        if (row !== want) renameList.insertBefore(row, want);
+        placed = row;
+      }
     }
 
     let lastHeight = 0;
@@ -178,8 +220,9 @@
         cell.dataset.level = level;
         cell.classList.toggle('open', d.id === openId);
         cell.setAttribute('aria-expanded', String(d.id === openId));
-        cell.setAttribute('aria-label', 'missing' in d ? t('unavailable') : `${d.name}: ${stateText(d)}`);
+        cell.setAttribute('aria-label', 'missing' in d ? t('unavailable') : `${nameOf(d)}: ${stateText(d)}`);
       }
+      if (typed.renaming) renderRename();
       renderPanel();
       tileEl.style.display = devices.length ? '' : 'none';
       messageEl.textContent = message.text || '';
@@ -193,7 +236,7 @@
     // The width changes the number of dots per row, so the height and the overlay's row.
     if (typeof ResizeObserver === 'function') new ResizeObserver(() => render()).observe(grid);
 
-    return { setState, pushChange, setMessage, render, t, open: (id) => { openId = id; render(); } };
+    return { setState, setNames: typed.set, pushChange, setMessage, render, t, open: (id) => { openId = id; render(); } };
   }
 
   window.createSensorDotsWidget = createSensorDotsWidget;

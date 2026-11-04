@@ -679,6 +679,10 @@
     "getHistory": {
       "method": "GET",
       "path": "/history"
+    },
+    "getTimeFormat": {
+      "method": "GET",
+      "path": "/time-format"
     }
   }
 }

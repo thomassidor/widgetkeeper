@@ -1,4 +1,5 @@
 import type { App } from 'homey';
+import { timeFormatRoutes } from '../../lib/timeFormat.js';
 import type WidgetkeeperApp from '../../app.js';
 import { idList, logged, logPerf } from '../../lib/widgetApi.js';
 import { tileNameRoutes, withTileNames } from '../../lib/TileNameService.js';
@@ -6,6 +7,7 @@ import { tileNameRoutes, withTileNames } from '../../lib/TileNameService.js';
 type Homey = App['homey'];
 
 export default {
+  ...timeFormatRoutes,
   ...tileNameRoutes,
 
   async getState({ homey, query }: {

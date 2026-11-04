@@ -1,9 +1,11 @@
 import type { App } from 'homey';
+import { timeFormatRoutes } from '../../lib/timeFormat.js';
 import { timelineState } from '../../lib/timelineState.js';
 
 type Homey = App['homey'];
 
 export default {
+  ...timeFormatRoutes,
   /**
    * `slots`: each value, as picked; `from`: the window's start (epoch ms, on the phone's clock). `{rows, language}`: one
    * entry per value (`timelineState()` in lib/timelineState.ts).

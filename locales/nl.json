@@ -76,7 +76,8 @@
     "vibration": "Trilling",
     "noVibration": "Geen trilling",
     "nothingDetected": "Niets gedetecteerd",
-    "since": "sinds __time__"
+    "since": "sinds __time__",
+    "renameFailed": "Kon de naam niet opslaan."
   },
   "roomhealth": {
     "selectDevices": "Kies sensoren in de widgetinstellingen.",
@@ -128,7 +129,8 @@
     "motion": "Beweging",
     "noMotion": "Geen beweging",
     "alarm": "Alarm",
-    "ok": "OK"
+    "ok": "OK",
+    "renameFailed": "Kon de naam niet opslaan."
   },
   "weather": {
     "now": "Nu",
@@ -258,6 +260,11 @@
     "namesChanged": "__changed__ van __total__ apparaatnamen veranderen:",
     "namesNoneSep": "Geen apparaatnaam bevat “__separator__”.",
     "namesNone": "Geen apparaatnaam verandert.",
+    "timeTitle": "Tijdnotatie",
+    "timeHelp": "Hoe elke widget tijden toont. Automatisch volgt de taal van de telefoon of browser waarop het wordt getoond.",
+    "timeAuto": "Automatisch",
+    "time24": "24-uurs",
+    "time12": "12-uurs",
     "webTitle": "Webdashboards",
     "webHelp": "Je Widgetkeeper-widgets in elke browser op je thuisnetwerk: een tablet, computer, tv of Nest Hub. Zet ze aan, voeg hieronder elk scherm toe voor zijn inlogcode en bouw de dashboards op de pagina zelf.",
     "webEnable": "Webdashboards inschakelen",
@@ -660,7 +667,9 @@
       "gift": "Cadeau",
       "sparkles": "Sterretjes",
       "dashboard": "Dashboard"
-    }
+    },
+    "tapAgain": "Tik nogmaals",
+    "hold": "Vasthouden"
   },
   "price": {
     "now": "Nu",

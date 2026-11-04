@@ -451,6 +451,9 @@
      * the numbers, `now` the word for now.
      */
     function timeLabels(svg, { from, to, unit }, { pw, top, base, nf, date, now }) {
+      // A clock hour: `6:00`, or `6 AM` in 12 hours (the app's time format).
+      const { uses12Hours, hourLabel, clockTime } = window.WidgetkeeperKit;
+      const axisHour = ms => (uses12Hours() ? hourLabel(ms) : clockTime(ms, { pad: false }));
       const span = to - from;
       const ly = base + X_LABEL_GAP;
       if (!unit && span <= 6 * HOUR) {
@@ -473,7 +476,7 @@
       if (span <= DAY + HOUR) {
         d.setMinutes(0, 0, 0);
         for (d.setHours(d.getHours() + 1); d.getTime() < to; d.setHours(d.getHours() + 1)) {
-          if (d.getHours() % 6 === 0) candidates.push({ at: d.getTime(), label: d.getHours() + ':00' });
+          if (d.getHours() % 6 === 0) candidates.push({ at: d.getTime(), label: axisHour(d.getTime()) });
         }
       } else if (span <= 8 * DAY + HOUR) {
         d.setHours(12, 0, 0, 0);
@@ -736,7 +739,6 @@
         : { minimumFractionDigits: d, maximumFractionDigits: d });
       return nfCache[key].format(v);
     };
-    const pad2 = n => String(n).padStart(2, '0');
 
     applyColors(root, spec.colors || { style: opts.colorStyle }); // on the root, so the chart markup stays as it was
     const wrap = el('div', { class: `ew ew-frame ${cls}${legendBelow ? ' legend-below' : ''}` }, root);
@@ -799,7 +801,8 @@
       width: root.clientWidth || 368,
       kit: createKit(),
       wrap, header, boxes,
-      hhmm: ms => { const d = new Date(ms); return pad2(d.getHours()) + ':' + pad2(d.getMinutes()); },
+      /** A time in the app's time format: `14:05`, or `2:05 PM` in 12 hours (the kit's `clockTime()`). */
+      hhmm: ms => window.WidgetkeeperKit.clockTime(ms),
       /** A date in Homey's language (`{weekday: 'short', day: 'numeric'}` → `tir. 14`). */
       date: (ms, o) => {
         try { return new Intl.DateTimeFormat(frame.language || 'en', o).format(new Date(ms)); } catch (e) { return new Date(ms).toLocaleDateString(undefined, o); }
@@ -911,7 +914,7 @@
    * @param {{ create: (link: any) => any, query: () => string | null, need: string, state: (res: any) => any[], again?: (res: any) => number | null }} spec
    */
   function wireChart(Homey, { frame }, { create, query, need, state, again }) {
-    const { wireFrame, onDeviceNames } = window.WidgetkeeperKit;
+    const { wireFrame, onDeviceNames, wireTimeFormat } = window.WidgetkeeperKit;
     const link = wireFrame(Homey, frame);
     const widget = create(link);
     let loaded = false;
@@ -927,6 +930,9 @@
       try {
         const res = await Homey.api('GET', `/state?${q}${link.perfParam()}`);
         widget.setState(...state(res));
+        // The times (axes, tapped points) follow the app's time format, drawn again when it changes; asked once a
+        // chart is shown (a widget without its values asks nothing).
+        if (!loaded) wireTimeFormat(Homey, load);
         loaded = true;
         // Something in the answer is still coming (Chart · Totals' prices): asked for again that soon, once.
         const ms = again ? again(res) : null;

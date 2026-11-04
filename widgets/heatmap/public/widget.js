@@ -3,7 +3,7 @@
  * lowest to the highest value shown, with a scale and a legend. Plain browser JS (served as-is).
  */
 (function () {
-  const { el, COLORS, applyColors, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, COLORS, applyColors, messageLine, hourLabel, clockTime } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const LEVELS = 5;
@@ -186,14 +186,14 @@
         const cells = el('div', { class: 'hm-cells' }, grid);
         row.cells.forEach((v, i) => {
           const c = el('div', { class: v == null ? 'hm-cell none' : `hm-cell l${level(v, min, max, cap.type === 'boolean')}` }, cells);
-          const from = String(i * step).padStart(2, '0');
-          c.title = `${weekdayName(row.date, true)} ${from}:00${v == null ? '' : ` · ${numberFormat(cap, v, min, max)}`}`;
+          const from = clockTime(new Date(2000, 0, 1, i * step).getTime());
+          c.title = `${weekdayName(row.date, true)} ${from}${v == null ? '' : ` · ${numberFormat(cap, v, min, max)}`}`;
         });
       }
       el('div', {}, grid);
       const axis = el('div', { class: 'hm-axis' }, grid);
       for (const h of AXIS_HOURS) {
-        const label = el('span', { text: String(h).padStart(2, '0') }, axis);
+        const label = el('span', { text: hourLabel(h) }, axis); // `06`, or `6 AM` in 12 hours
         label.style.left = `${(h / 24) * 100}%`;
         if (h === 0) label.classList.add('start');
         if (h === 24) label.classList.add('end');

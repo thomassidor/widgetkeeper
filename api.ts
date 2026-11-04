@@ -2,6 +2,7 @@ import type { App } from 'homey';
 import type WidgetkeeperApp from './app.js';
 import { deviceNamesState, setDeviceNames } from './lib/deviceNames.js';
 import { KeyError, scopesAllow, type KeyUse } from './lib/PersonalApiKey.js';
+import { setTimeFormat, timeFormatOf } from './lib/timeFormat.js';
 import { idList } from './lib/widgetApi.js';
 import { MAX_DASHBOARDS, MAX_SECTIONS, MAX_WIDGETS } from './lib/WebDashboardService.js';
 import { autocompleteKeyUse, callWidgetRoute, pageKeyUse, type WidgetApis } from './lib/widgetRoutes.js';
@@ -109,6 +110,16 @@ export default {
   async putDeviceNames({ homey, body }: { homey: Homey, body: { mode?: unknown, separator?: unknown } }) {
     const app = homey.app as WidgetkeeperApp;
     return setDeviceNames(homey, (...args) => app.log(...args), body);
+  },
+
+  /** Used by the app settings page: the widgets' time format, `{timeFormat}` (`auto`, `24` or `12`). */
+  async getTimeFormat({ homey }: { homey: Homey }) {
+    return { timeFormat: timeFormatOf(homey) };
+  },
+
+  /** Used by the app settings page: `{timeFormat}` → `{ok, timeFormat}`, sent to open widgets; `{ok: false}` for another value. */
+  async putTimeFormat({ homey, body }: { homey: Homey, body: { timeFormat?: unknown } }) {
+    return setTimeFormat(homey, body);
   },
 
   /**

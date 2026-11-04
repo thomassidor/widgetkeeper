@@ -22,6 +22,8 @@ function setup() {
 
 const names = { instance: 'w1', key: 'd1', name: 'Sofa' };
 const setName = (type: string): Route => [type, 'POST', '/names', {}, names, [['tileNames.set', ['w1', 'd1', 'Sofa']]]];
+/** The app's time format (`lib/timeFormat.ts`), spread into every widget that shows a time: no service call. */
+const timeFormat = (type: string): Route => [type, 'GET', '/time-format', {}, {}, []];
 
 type Route = [type: string, method: string, path: string, query: Record<string, string>, body: object, calls: ServiceCall[]];
 
@@ -128,6 +130,8 @@ const ROUTES: Route[] = [
   ['values', 'GET', '/state', { slots: 'a:measure_temperature,b:measure_power', seconds: ',measure_humidity' }, {},
     [['values.getState', [['a:measure_temperature', 'b:measure_power'], ['', 'measure_humidity']]]]],
   setName('values'),
+  setName('valueboard'),
+  setName('sensordots'),
   // Every device with the value when none were picked.
   ['combined', 'GET', '/state', { capabilityId: 'measure_temperature', deviceIds: 'a,b' }, {}, [['combined.getState', ['measure_temperature', ['a', 'b']]]]],
   ['combined', 'GET', '/state', { capabilityId: 'measure_power' }, {}, [['combined.getState', ['measure_power', []]]]],
@@ -142,6 +146,26 @@ const ROUTES: Route[] = [
   ['varpresets', 'POST', '/set', {}, { id: 'v1', value: 3 }, [['variables.set', ['v1', 3]]]],
   ['weather', 'GET', '/forecast', {}, {}, [['weather.getForecast', []]]],
   ['webpage', 'GET', '/location', {}, {}, []],
+  timeFormat('cameras'),
+  timeFormat('charts'),
+  timeFormat('clock'),
+  timeFormat('compare'),
+  timeFormat('dailyrange'),
+  timeFormat('electricity'),
+  timeFormat('gauge'),
+  timeFormat('heatmap'),
+  timeFormat('lines'),
+  timeFormat('locks'),
+  timeFormat('pollen'),
+  timeFormat('price'),
+  timeFormat('scatter'),
+  timeFormat('sensordots'),
+  timeFormat('stacked'),
+  timeFormat('timeline'),
+  timeFormat('timers'),
+  timeFormat('totals'),
+  timeFormat('typicalday'),
+  timeFormat('weather'),
   ['webpage', 'GET', '/check', { url: 'https://x.example/?a=1' }, {}, [['frameCheck.check', ['https://x.example/?a=1']]]],
 ];
 

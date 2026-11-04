@@ -4,7 +4,7 @@ Extra dashboard widgets for Homey Pro, made to sit naturally next to Homey's own
 
 <img src="docs/showcase/home.png" alt="Widgetkeeper widgets on a Homey dashboard on a tablet" width="100%">
 
-**Contents:** [Widgets](#widgets) · [Web dashboards](#web-dashboards) · [Dashboard examples](#dashboard-examples) · [Colour style](#colour-style) · [Device names](#device-names) · [Tile names](#tile-names) · [API key](#api-key) · [Installation](#installation) · [Troubleshooting](#troubleshooting)
+**Contents:** [Widgets](#widgets) · [Web dashboards](#web-dashboards) · [Dashboard examples](#dashboard-examples) · [Colour style](#colour-style) · [Device names](#device-names) · [Time format](#time-format) · [Tile names](#tile-names) · [API key](#api-key) · [Installation](#installation) · [Troubleshooting](#troubleshooting)
 
 ## Widgets
 Every widget follows Homey's light and dark mode and is translated into all 13 of Homey's languages. Tap one for what it does and its settings.
@@ -320,6 +320,9 @@ Every widget with a coloured state has a **Colour style** setting: *Muted* is th
 If your device names say more than the device, such as *Ceiling lamp | Kitchen*, choose under **Apps → Widgetkeeper → Configure → Device names** which part every widget shows: the full name (the default), the part before or after a separator you type, the last word, or the name without its room (*Kitchen ceiling lamp* in the Kitchen shows as *Ceiling lamp*).
 
 The page shows a few of your own names as they'll look. Device lists in widget settings, Flow tokens and [names typed on tiles](#tile-names) stay as they are.
+
+## Time format
+Every widget that shows a time (the Clock, the charts' axes, the price strips, Timers' end times, *since 18:17* …) shows it in 24 or 12 hours as you choose under **Apps → Widgetkeeper → Configure → Time format**. *Automatic* (the default) follows the language of the phone or browser that shows the dashboard. Open widgets change at once.
 
 ## Tile names
 <img src="docs/clips/rename.webp" alt="Rename tiles: the setting turned on, names typed on two Light Controls tiles, and the setting turned off again with the names kept" width="358">

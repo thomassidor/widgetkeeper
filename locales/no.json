@@ -76,7 +76,8 @@
     "vibration": "Vibrasjon",
     "noVibration": "Ingen vibrasjon",
     "nothingDetected": "Ingenting registrert",
-    "since": "siden __time__"
+    "since": "siden __time__",
+    "renameFailed": "Kunne ikke lagre navnet."
   },
   "roomhealth": {
     "selectDevices": "Velg sensorer i widgetinnstillingene.",
@@ -128,7 +129,8 @@
     "motion": "Bevegelse",
     "noMotion": "Ingen bevegelse",
     "alarm": "Alarm",
-    "ok": "OK"
+    "ok": "OK",
+    "renameFailed": "Kunne ikke lagre navnet."
   },
   "weather": {
     "now": "Nå",
@@ -258,6 +260,11 @@
     "namesChanged": "__changed__ av __total__ enhetsnavn endres:",
     "namesNoneSep": "Ingen enhetsnavn inneholder «__separator__».",
     "namesNone": "Ingen enhetsnavn endres.",
+    "timeTitle": "Tidsformat",
+    "timeHelp": "Hvordan alle widgeter viser klokkeslett. Automatisk følger språket på telefonen eller nettleseren som viser den.",
+    "timeAuto": "Automatisk",
+    "time24": "24 timer",
+    "time12": "12 timer",
     "webTitle": "Nettdashbord",
     "webHelp": "Widgetkeeper-widgetene dine i en hvilken som helst nettleser på hjemmenettet: nettbrett, datamaskin, TV eller Nest Hub. Slå dem på, legg til hver skjerm nedenfor for påloggingskoden, og bygg dashbordene på selve siden.",
     "webEnable": "Slå på nettdashbord",
@@ -660,7 +667,9 @@
       "gift": "Gave",
       "sparkles": "Glitter",
       "dashboard": "Dashbord"
-    }
+    },
+    "tapAgain": "Trykk igjen",
+    "hold": "Hold inne"
   },
   "price": {
     "now": "Nå",

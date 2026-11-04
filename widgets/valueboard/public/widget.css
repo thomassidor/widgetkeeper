@@ -123,3 +123,23 @@ html, body { background: transparent !important; }
 .vb.wk-deep [data-tone] .vb-label { color: color-mix(in srgb, var(--vb-on) 80%, transparent); }
 /* Vivid cells: the lines between them in the tile's colour, so the fills sit apart. */
 .vb.wk-deep .vb-cell[data-tone] { box-shadow: inset -1px -1px 0 var(--vb-tile); }
+
+/* Rename tiles: each group's name as a field, grouped by room its devices' under it, indented (Room Health's field). */
+.vb-renaming { display: flex; flex-direction: column; gap: var(--homey-su-1, 4px); padding: 10px 12px; }
+.vb-rename-device { padding-left: var(--homey-su-4, 16px); }
+.vb .wk-rename {
+  width: 100%; min-width: 0; height: 24px; margin: 0; padding: 0 6px;
+  font: inherit; font-size: var(--vb-fs-small); color: var(--vb-text);
+  background: color-mix(in srgb, var(--vb-text) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--vb-text) 24%, transparent); border-radius: 8px; outline: none;
+  user-select: text; -webkit-user-select: text;
+}
+.vb-rename-group .wk-rename { font-weight: var(--vb-medium); }
+.vb .wk-rename::placeholder { color: var(--vb-muted); opacity: 1; }
+.vb .wk-rename:focus { border-color: var(--wk-blue-bright, #2F8DF6); }
+.vb-rename-row.shake { animation: vb-shake .35s; }
+@keyframes vb-shake {
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+.vb-renaming .vb-head { padding: 0; }

@@ -10,6 +10,14 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Tap for every device:** a tap opens each device's value under the tile, sorted, the ones outside the range marked.
 - **Median**, besides the average. A device that reports the value in other units than the others is left out of the sum or average, and the tile says so.
 
+### Settings made alike across the widgets
+- **Time format for the whole app:** 24 or 12 hours (or Automatic, the phone's or browser's language) under **Apps → Widgetkeeper → Configure → Time format**, for every widget that shows a time: now also the charts' axes and tapped times, the Electricity Overview and Energy Price Strip, the Weather Forecast's hours, the Heatmap, Daily Profile and Timers' end times. It replaces the Time format setting of the Clock, Cameras, Locks and Doors, Pollen and UV and Activity Dots: a widget set to 24 or 12 hours there now follows the app's, so set it once on that page.
+- **Rename tiles** in Value Board (its rooms and devices) and Activity Dots (each sensor).
+- **Flow Buttons: activate with a double or long press**, as Device Quick Actions, so a stray tap can't start a Flow.
+- **Green when fine** in Value Matrix (on, as before; off leaves a value inside its range plain) and Combined Value (off; on colours the tile green inside the OK range).
+- Light Controls, Lights by Room, Curtains, Thermostat Presets, Variable Presets and Variables now vibrate on a tap that changes something, as the other widgets that act.
+- The same words for the same settings: *Tiles per row* (Flow Buttons, Dashboard Shortcuts, Variables; everywhere its options from the fewest), each button's *Name* (Keypad, Variable Presets), *Colour* (Variable Presets), *Layout* (Weather Forecast), and grey last in Activity Dots' colours.
+
 ## 1.2.0
 
 ### New: Device names

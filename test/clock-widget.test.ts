@@ -4,7 +4,8 @@ import { clockWeather } from '../widgets/clock/api.js';
 import { loadMount, loadWidget } from './helpers/loadWidget.js';
 
 let win: any;
-beforeAll(() => { win = loadWidget('clock'); loadMount('clock'); });
+// Automatic (the screen's language) unless a test says: the times' own tests.
+beforeAll(() => { win = loadWidget('clock'); loadMount('clock'); win.WidgetkeeperKit.setTimeFormat('auto'); });
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date('2026-10-06T18:40:20+02:00')); });
 afterEach(() => { vi.useRealTimers(); document.body.innerHTML = ''; });
 
@@ -144,7 +145,7 @@ describe('mount', () => {
 
   it("shows the time without waiting long for the weather, which follows", async () => {
     let answer: (v: any) => void = () => {};
-    const { Homey, root } = mount(() => new Promise((resolve) => { answer = resolve; })); // MET is slow
+    const { Homey, root } = mount((_method, path) => (path === '/time-format' ? Promise.resolve({ timeFormat: 'auto' }) : new Promise((resolve) => { answer = resolve; }))); // MET is slow
     await vi.advanceTimersByTimeAsync(1000);
     expect(Homey.ready).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(600);

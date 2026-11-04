@@ -389,7 +389,8 @@ describe('mount', () => {
     expect(slides[0].querySelector('.tm-preset')).not.toBeNull();
     expect(slides[1].textContent).toContain('Fridge');
 
-    const bodies = Homey.api.mock.calls.filter(c => c[1] === '/call').map(c => c[2]);
+    // The pages' own requests (Timers also asks for the app's time format).
+    const bodies = Homey.api.mock.calls.filter(c => c[1] === '/call' && c[2].path !== '/time-format').map(c => c[2]);
     // The Timers page asks for its own instance (the dashboard widget's id), and the smart-rotate watcher too.
     expect(bodies.filter(b => b.type === 'timers').every(b => b.query.instance === 'w-timers')).toBe(true);
     expect(bodies.find(b => b.type === 'values').query.slots).toBe('dev:measure_temperature');
@@ -453,7 +454,7 @@ describe('mount', () => {
     });
     const root = mount(Homey);
     await vi.advanceTimersByTimeAsync(500);
-    const types = () => Homey.api.mock.calls.filter(c => c[1] === '/call').map(c => c[2].type);
+    const types = () => Homey.api.mock.calls.filter(c => c[1] === '/call' && c[2].path !== '/time-format').map(c => c[2].type);
     expect(types()).toEqual(['values']); // the Timers page waits for the page on screen
     answerValues({ state: valuesState, tileNames: {} });
     await vi.advanceTimersByTimeAsync(10e3);

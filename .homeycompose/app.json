@@ -80,6 +80,14 @@
       "method": "PUT",
       "path": "/device-names"
     },
+    "getTimeFormat": {
+      "method": "GET",
+      "path": "/time-format"
+    },
+    "putTimeFormat": {
+      "method": "PUT",
+      "path": "/time-format"
+    },
     "getWebSetup": {
       "method": "GET",
       "path": "/web/setup"

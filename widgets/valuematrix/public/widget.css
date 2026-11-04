@@ -104,6 +104,8 @@ html, body { background: transparent !important; }
 .vm.wk-deep [data-level="good"] { background: var(--wk-green); color: var(--wk-on-green); }
 .vm.wk-deep [data-level="out"] { background: var(--wk-orange); color: var(--wk-on-orange); }
 .vm.wk-deep [data-level="far"] { background: var(--wk-red); color: var(--wk-on-red); }
+/* Green when fine off: a value inside its range on the plain track, as one without a range. */
+.vm.vm-plain-fine .vm-cell[data-level="good"] { background: var(--vm-track); color: inherit; }
 
 /* The legend: a swatch and a word per level. */
 .vm-legend {

@@ -19,3 +19,4 @@ paths:
 - `GET /state` entries: `{id, name, kind, zone, caps: {windowcoverings_*: {value, setable}}}`. `POST /set {deviceId, position}` (the device's own scale) or `{deviceId, action: open|close}`. Realtime `curtains:state`.
 - Colour style (`colorStyle`, Muted/Vivid; CLAUDE.md *Widget styling*, `kit.css`): last, with `color` (an open or moving tile, blue by default; `--ct-accent` is `--wk-c`). Vivid: the open tile is the shade, solid, with `--wk-on` text, fill and a 22 % track.
 - Shared with Light Controls through the kit (2026-10-30): the bar (`wireBar()`), the tiles with `groupByZone` (`roomTiles()`), the optimistic values (`optimistic()`) and `shake()`.
+- A tap that moves a curtain (or a bar's release) calls `Homey.hapticFeedback()` since the settings review (2026-11-04): the mount's `haptic()` in `onSet`, at most once per 300 ms, in a `try`.

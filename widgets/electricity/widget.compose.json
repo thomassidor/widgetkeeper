@@ -647,6 +647,10 @@
     "getSnapshot": {
       "method": "GET",
       "path": "/snapshot"
+    },
+    "getTimeFormat": {
+      "method": "GET",
+      "path": "/time-format"
     }
   }
 }

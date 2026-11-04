@@ -12,6 +12,15 @@ window.mountVarPresetsWidget = function (Homey, { root, frame }) {
   const link = wireFrame(Homey, frame);
 
   const settings = Homey.getSettings() || {};
+  // A tap that changes something vibrates, as on the other widgets that act (the settings review, 2026-11-04). Homey's
+  // haptic throws unless a touch has just ended (a click, a key, a late send): nothing then.
+  // Once for a room's lights or presets' several values sent together.
+  let hapticAt = 0;
+  const haptic = () => {
+    if (Date.now() - hapticAt < 300) return;
+    hapticAt = Date.now();
+    try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not now */ }
+  };
   const variableId = settings.variable && settings.variable.id && settings.variable.id !== 'none' ? settings.variable.id : null;
   let loaded = false;
   let loadedAt = 0;
@@ -24,6 +33,7 @@ window.mountVarPresetsWidget = function (Homey, { root, frame }) {
     icon: settings.icon && settings.icon.id,
     title: settings.title,
     onSet: async (value) => {
+      haptic();
       const res = await Homey.api('POST', '/set', { id: variableId, value });
       if (res && res.ok === false) throw Object.assign(new Error(res.reason), { reason: res.reason });
       return res;

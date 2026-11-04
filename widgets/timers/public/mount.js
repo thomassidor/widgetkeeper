@@ -6,7 +6,7 @@
 window.mountTimersWidget = function (Homey, { root, frame }) {
   const REFRESH_MS = 5 * 60e3; // resyncs in case a realtime event was missed
 
-  const { wireFrame } = window.WidgetkeeperKit;
+  const { wireFrame, wireTimeFormat } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -49,6 +49,8 @@ window.mountTimersWidget = function (Homey, { root, frame }) {
   Homey.on('timers:state', (data) => {
     if (data && data.instance === instance) widget.setState(data);
   });
+  // The end times follow the app's time format: drawn again when it changes.
+  wireTimeFormat(Homey, () => { if (loaded) load(); });
   // A tablet waking up: its timers may have moved on while it slept.
   document.addEventListener('visibilitychange', () => { if (!document.hidden && loaded) load(); });
 

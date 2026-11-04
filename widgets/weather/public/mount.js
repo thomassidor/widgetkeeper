@@ -7,7 +7,7 @@ window.mountWeatherWidget = function (Homey, { root, frame }) {
   // The app only refetches from MET when its forecast expires (~30 min); this picks that up.
   const REFRESH_MS = 5 * 60e3;
 
-  const { wireFrame } = window.WidgetkeeperKit;
+  const { wireFrame, wireTimeFormat } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -41,6 +41,8 @@ window.mountWeatherWidget = function (Homey, { root, frame }) {
     ready();
   }
 
+  // The hours follow the app's time format: drawn again when it changes.
+  wireTimeFormat(Homey, () => { if (loaded) load(); });
   setInterval(load, REFRESH_MS);
   load();
 };

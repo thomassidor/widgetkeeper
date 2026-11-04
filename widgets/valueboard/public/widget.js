@@ -6,7 +6,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, setMask, formatNumber, formatValue, valueGlyph, TIGHT_UNITS, applyColors, onTap, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, setMask, formatNumber, formatValue, valueGlyph, TIGHT_UNITS, applyColors, onTap, messageLine, tileNames } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -22,6 +22,7 @@
     noMotion: 'No motion',
     alarm: 'Alarm',
     ok: 'OK',
+    renameFailed: 'Could not save the name.',
   };
 
   const REVEAL_MS = 4000; // how long a tapped value's name shows (Compact)
@@ -104,6 +105,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ layout?: string, groupBy?: string, columns?: number|string, greenWhenFine?: boolean, colorStyle?: string,
+   *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
    *   t?: (key: string, tokens?: object) => string, onHeight?: (h: number) => void }} opts
    */
   function createValueBoardWidget(root, opts = {}) {
@@ -122,7 +124,16 @@
     let reveal = null; // { group, key }: the value a tap named in its group's heading (Compact)
     let revealTimer = null;
 
+    // Typed names (Rename tiles): a room's (`zone:<id>`) and a device's (its id), over their own.
+    // A name that couldn't be saved shakes its row (drawn with the message that says so).
+    let shaking = null;
+    const typed = tileNames(opts, () => render(), (key) => {
+      shaking = key;
+      setTimeout(() => { if (shaking === key) shaking = null; }, 400);
+      setMessage(t('renameFailed'), true);
+    });
     root.classList.add('vb', compact ? 'vb-compact' : 'vb-tiles');
+    root.classList.toggle('renaming', typed.renaming);
     root.dataset.columns = ['2', '4'].includes(String(opts.columns)) ? String(opts.columns) : '3';
     applyColors(root, { style: opts.colorStyle });
     const body = el('div', { class: 'vb-body' }, root);
@@ -139,7 +150,7 @@
       const v = d && Array.isArray(d.values) ? d.values.find(x => x.capabilityId === capabilityId) : null;
       if (!v) return;
       v.value = value;
-      render();
+      if (!typed.renaming) render(); // renaming shows no values
     }
 
     /** A message under the groups. Persistent messages also clear them. */
@@ -164,9 +175,14 @@
       return level === 'fine' && !green ? null : level;
     }
 
+    /** A device's shown name: its typed one, else its own. */
+    const deviceName = v => typed.name(v.deviceId, v.deviceName);
+    /** A group's shown name: the room's or the device's typed one, else its own. */
+    const groupName = g => typed.name(g.key, g.name);
+
     /** What a value is: the device and the value's title grouped by room, the title alone grouped by device. */
     function nameOf(v) {
-      return byDevice ? v.title : `${v.deviceName} · ${v.title}`;
+      return byDevice ? v.title : `${deviceName(v)} · ${v.title}`;
     }
 
     function icon(parent, v) {
@@ -191,7 +207,7 @@
 
     function tilesGroup(group) {
       const node = el('section', { class: 'vb-tile vb-group', 'data-group': group.key }, body);
-      el('div', { class: 'vb-head', dir: 'auto', text: group.missing ? t('unavailable') : group.name }, node);
+      el('div', { class: 'vb-head', dir: 'auto', text: group.missing ? t('unavailable') : groupName(group) }, node);
       if (group.missing) { node.classList.add('missing'); return; }
       const grid = el('div', { class: 'vb-grid' }, node);
       for (const v of group.values) {
@@ -204,7 +220,7 @@
         const apart = typeof v.value === 'number' && isFinite(v.value) && v.units && !TIGHT_UNITS.test(v.units);
         const num = el('span', { class: 'vb-num', text: apart ? formatNumber(v, v.value) : value }, line);
         if (apart) el('span', { class: 'vb-unit', text: v.units }, num);
-        el('div', { class: 'vb-label', dir: 'auto', text: byDevice ? v.title : v.deviceName }, cell);
+        el('div', { class: 'vb-label', dir: 'auto', text: byDevice ? v.title : deviceName(v) }, cell);
       }
     }
 
@@ -212,7 +228,7 @@
       const node = el('section', { class: 'vb-group', 'data-group': group.key }, tile);
       const named = reveal && reveal.group === group.key ? group.values.find(v => v.key === reveal.key) : null;
       const head = el('div', { class: 'vb-head', dir: 'auto' }, node);
-      head.textContent = group.missing ? t('unavailable') : named ? nameOf(named) : group.name;
+      head.textContent = group.missing ? t('unavailable') : named ? nameOf(named) : groupName(group);
       head.classList.toggle('naming', !!named);
       if (group.missing) { node.classList.add('missing'); return; }
       const line = el('div', { class: 'vb-line' }, node);
@@ -227,6 +243,32 @@
       }
     }
 
+    /**
+     * Rename tiles: in place of the values, each group's name as a field, and grouped by room each of its devices' under
+     * it (a device once), so the names are typed where they show. A missing device has none.
+     */
+    function renameGroup(group) {
+      const node = el('section', { class: 'vb-tile vb-group vb-renaming', 'data-group': group.key }, body);
+      if (group.missing) {
+        node.classList.add('missing');
+        el('div', { class: 'vb-head', dir: 'auto', text: t('unavailable') }, node);
+        return;
+      }
+      const row = (key, own, cls) => {
+        const line = el('div', { class: `vb-rename-row ${cls}${key === shaking ? ' shake' : ''}`, 'data-rename': key }, node);
+        line.append(typed.field(key, own));
+      };
+      row(group.key, group.name, 'vb-rename-group');
+      if (byDevice) return;
+      const seen = new Set();
+      for (const v of group.values) {
+        if (seen.has(v.deviceId)) continue;
+        seen.add(v.deviceId);
+        // A device alone in its own group (no known room) is named by the group's field.
+        if (v.deviceId !== group.key) row(v.deviceId, v.deviceName, 'vb-rename-device');
+      }
+    }
+
     let lastHeight = 0;
     function reportHeight() {
       const h = Math.ceil(root.getBoundingClientRect().height);
@@ -236,9 +278,17 @@
     function render() {
       const groups = valueBoardGroups(devices, opts.groupBy);
       if (reveal && !groups.some(g => g.key === reveal.group && g.values.some(v => v.key === reveal.key))) reveal = null;
+      // A field being typed in isn't taken away (moving it would end the typing): drawn once it's left.
+      const active = document.activeElement;
+      if (typed.renaming && active && active.classList.contains('wk-rename') && body.contains(active)) {
+        active.addEventListener('blur', () => render(), { once: true });
+        return;
+      }
       body.textContent = '';
       body.classList.toggle('has-named', !!reveal);
-      if (compact) {
+      if (typed.renaming) {
+        for (const g of groups) renameGroup(g);
+      } else if (compact) {
         if (groups.length) {
           const tile = el('div', { class: 'vb-tile' }, body);
           for (const g of groups) compactGroup(g, tile);
@@ -257,7 +307,7 @@
     // The width changes how many values fit on a line, so the height.
     if (typeof ResizeObserver === 'function') new ResizeObserver(() => reportHeight()).observe(body);
 
-    return { setState, pushChange, setMessage, render, t };
+    return { setState, setNames: typed.set, pushChange, setMessage, render, t };
   }
 
   window.createValueBoardWidget = createValueBoardWidget;

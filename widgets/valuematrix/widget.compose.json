@@ -223,6 +223,41 @@
       }
     },
     {
+      "id": "greenWhenFine",
+      "type": "checkbox",
+      "value": true,
+      "title": {
+        "en": "Green when fine",
+        "nl": "Groen als het goed is",
+        "de": "Grün, wenn in Ordnung",
+        "fr": "Vert si tout va bien",
+        "it": "Verde se va bene",
+        "sv": "Grönt när det är bra",
+        "no": "Grønt når det er bra",
+        "es": "Verde si está bien",
+        "da": "Grøn når det er fint",
+        "ru": "Зелёный, если всё в норме",
+        "pl": "Zielony, gdy w normie",
+        "ko": "정상이면 초록색",
+        "ar": "أخضر عندما يكون جيدًا"
+      },
+      "hint": {
+        "en": "Shows the values inside their range in green, not grey.",
+        "nl": "Toont waarden binnen hun bereik in groen, niet grijs.",
+        "de": "Zeigt Werte innerhalb ihres Bereichs grün statt grau.",
+        "fr": "Affiche en vert, et non en gris, les valeurs dans leur plage.",
+        "it": "Mostra in verde, non in grigio, i valori entro il loro intervallo.",
+        "sv": "Visar värden inom sitt intervall i grönt, inte grått.",
+        "no": "Viser verdier innenfor området i grønt, ikke grått.",
+        "es": "Muestra en verde, no en gris, los valores dentro de su rango.",
+        "da": "Viser værdier inden for deres interval i grønt, ikke gråt.",
+        "ru": "Показывает значения в пределах диапазона зелёным, а не серым.",
+        "pl": "Pokazuje wartości w zakresie na zielono, a nie na szaro.",
+        "ko": "범위 안의 값을 회색 대신 초록색으로 표시합니다.",
+        "ar": "يعرض القيم الواقعة ضمن نطاقها باللون الأخضر بدل الرمادي."
+      }
+    },
+    {
       "id": "col1",
       "type": "autocomplete",
       "title": {

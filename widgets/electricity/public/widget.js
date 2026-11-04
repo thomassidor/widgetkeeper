@@ -4,7 +4,7 @@
  * measurement used below. The drawing itself is chart.js (`window.WidgetkeeperChart`), shared with Charts.
  */
 (function () {
-  const { lowestSlot, applyColors } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { lowestSlot, applyColors, clockTime, hourLabel, uses12Hours } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart; // chart.js, loaded first
@@ -93,10 +93,11 @@
     // Negative power (solar export) gets a real minus sign: −1,5k.
     const kW = v => C.compactNumber(nf, v);
     const watts = v => (v < 0 ? '−' + nf(-v) : nf(v));
-    const pad2 = n => String(n).padStart(2, '0');
-    const hhmm = ms => { const d = new Date(ms); return pad2(d.getHours()) + ':' + pad2(d.getMinutes()); };
-    const hhmmss = ms => hhmm(ms) + ':' + pad2(new Date(ms).getSeconds());
-    const hour = ms => new Date(ms).getHours() + ':00';
+    // Times in the app's time format (the settings page's): `14:05` in 24 hours, `2:05 PM` in 12.
+    const hhmm = ms => clockTime(ms);
+    const hhmmss = ms => clockTime(ms, { seconds: true });
+    // An axis hour: `6:00` in 24 hours, `6 AM` in 12.
+    const hour = ms => (uses12Hours() ? hourLabel(ms) : clockTime(ms, { pad: false }));
     /** Relative live-axis label: 1h, 30m, 2,5m, 30s. */
     const ago = ms => C.ago(ms, nf);
     const weekday = (ms, lang) => new Intl.DateTimeFormat(lang || 'en', { weekday: 'short' }).format(new Date(ms));

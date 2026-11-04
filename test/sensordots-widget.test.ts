@@ -5,7 +5,8 @@ import { loadWidget } from './helpers/loadWidget.js';
 import { touch as fireTouch } from './helpers/touch.js';
 
 let win: any;
-beforeAll(() => { win = loadWidget('sensordots'); });
+// Automatic (the screen's language) unless a test says: the times' own tests.
+beforeAll(() => { win = loadWidget('sensordots'); win.WidgetkeeperKit.setTimeFormat('auto'); });
 beforeEach(() => { vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(new Date('2026-10-08T18:40:00')); });
 afterEach(() => { vi.useRealTimers(); document.body.innerHTML = ''; });
 
@@ -258,5 +259,50 @@ describe('activityAlarms', () => {
       'alarm_motion', 'alarm_presence.zone2', 'alarm_contact', 'alarm_person', 'alarm_vehicle', 'alarm_pet',
       'alarm_vibration', 'alarm_vibration.x',
     ]);
+  });
+});
+
+describe('Rename tiles (1.3.0)', () => {
+  const list = () => [
+    { id: 'a', name: 'Back door', alarms: [{ capabilityId: 'alarm_contact', title: 'Contact', value: true }] },
+    { id: 'b', name: 'Hall', alarms: [{ capabilityId: 'alarm_motion', title: 'Motion', value: false }] },
+    { id: 'gone', missing: true },
+  ];
+  function make(opts: object = {}) {
+    const root = document.createElement('div');
+    document.body.append(root);
+    const w = win.createSensorDotsWidget(root, opts);
+    w.setState({ devices: list(), language: 'en' });
+    return { root, w };
+  }
+
+  it('shows a typed name in the overlay and the dot\'s label', () => {
+    const { root, w } = make();
+    w.setNames({ a: 'Garden door' });
+    expect(root.querySelector('[data-device="a"]')!.getAttribute('aria-label')).toMatch(/^Garden door: Open/);
+    w.open('a');
+    expect(root.querySelector('.sd-panel-name')!.textContent).toBe('Garden door');
+  });
+
+  it('renaming: a row per sensor with its dot and a field in place of the dots; a change is saved, a failure said', async () => {
+    let fail = false;
+    const onRename = vi.fn(async () => { if (fail) throw new Error('busy'); });
+    const { root, w } = make({ renameTiles: true, onRename });
+    expect(root.classList.contains('renaming')).toBe(true);
+    const rows = () => [...root.querySelectorAll<HTMLElement>('.sd-rename-row')];
+    expect(rows().map(r => [r.dataset.device, r.dataset.level, r.querySelector('input')!.placeholder])).toEqual([['a', 'active', 'Back door'], ['b', 'idle', 'Hall']]);
+    const field = rows()[1].querySelector('input')!;
+    field.value = 'Hallway ';
+    field.dispatchEvent(new Event('change'));
+    expect(onRename).toHaveBeenCalledWith('b', 'Hallway');
+    // A realtime change keeps the same field.
+    w.pushChange({ deviceId: 'b', capabilityId: 'alarm_motion', value: true, t: Date.now() });
+    expect(rows()[1].querySelector('input')).toBe(field);
+    expect(rows()[1].dataset.level).toBe('active');
+    fail = true;
+    field.value = 'Hall 2';
+    field.dispatchEvent(new Event('change'));
+    await vi.waitFor(() => expect(root.querySelector('.sd-message')!.textContent).toBe('Could not save the name.'));
+    expect(rows()[1].classList.contains('shake')).toBe(true);
   });
 });

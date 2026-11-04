@@ -1,7 +1,9 @@
 import type { App } from 'homey';
+import { timeFormatRoutes } from '../../lib/timeFormat.js';
 import type WidgetkeeperApp from '../../app.js';
 import { STATE_ALARMS, type SensorAlarm } from '../../lib/SensorAlarmService.js';
 import { idList, logged, logPerf } from '../../lib/widgetApi.js';
+import { tileNameRoutes, withTileNames } from '../../lib/TileNameService.js';
 
 type Homey = App['homey'];
 
@@ -17,6 +19,8 @@ export function activityAlarms(alarms: SensorAlarm[]): SensorAlarm[] {
 }
 
 export default {
+  ...timeFormatRoutes,
+  ...tileNameRoutes,
   /** Sensor Alarms' state, with only the motion, presence, contact, vibration and camera detections of each device. */
   async getState({ homey, query }: {
     homey: Homey,
@@ -24,12 +28,12 @@ export default {
   }) {
     const app = homey.app as WidgetkeeperApp;
     logPerf(app, 'Sensor dots', query);
-    return logged(app, 'Sensor dots state failed:', async () => {
+    return withTileNames(homey, query, logged(app, 'Sensor dots state failed:', async () => {
       const devices = await app.sensorAlarms.getState(idList(query.deviceIds));
       return {
         devices: devices.map(d => ('missing' in d ? d : { ...d, alarms: activityAlarms(d.alarms) })),
         language: homey.i18n.getLanguage(),
       };
-    });
+    }));
   },
 };

@@ -5,7 +5,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, lowestSlot, applyColors, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, lowestSlot, applyColors, messageLine, hourLabel } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const HOUR = 36e5;
@@ -73,7 +73,6 @@
       nfCache[d] = nfCache[d] || new Intl.NumberFormat(opts.locale || undefined, { minimumFractionDigits: d, maximumFractionDigits: d });
       return nfCache[d].format(v);
     };
-    const pad2 = n => String(n).padStart(2, '0');
     /** The short weekday in Homey's language (the midnight label). */
     const weekdays = {};
     const weekday = ms => {
@@ -182,7 +181,7 @@
         const d = new Date(b.start);
         const h = d.getHours();
         if (d.getMinutes() || h % step || k < count * 0.18 || k > count * 0.92) return;
-        ticks.push({ at: k / count, text: h === 0 ? weekday(b.start) : pad2(h) });
+        ticks.push({ at: k / count, text: h === 0 ? weekday(b.start) : hourLabel(h) }); // `06`, or `6 AM` in 12 hours
       });
       return { level, label: t(level), value: nf(price, 2), unit, bars: window, ticks, len };
     }

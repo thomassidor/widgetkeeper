@@ -11,6 +11,15 @@ window.mountVariablesWidget = function (Homey, { root, frame }) {
   const link = wireFrame(Homey, frame);
 
   const settings = Homey.getSettings() || {};
+  // A tap that changes something vibrates, as on the other widgets that act (the settings review, 2026-11-04). Homey's
+  // haptic throws unless a touch has just ended (a click, a key, a late send): nothing then.
+  // Once for a room's lights or presets' several values sent together.
+  let hapticAt = 0;
+  const haptic = () => {
+    if (Date.now() - hapticAt < 300) return;
+    hapticAt = Date.now();
+    try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not now */ }
+  };
   // Each slot setting is an autocomplete item whose id is the Logic variable's id (`none` empties it).
   const picked = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     .map(n => ({ id: settings[`slot${n}`] && settings[`slot${n}`].id, name: settings[`name${n}`] }))
@@ -40,6 +49,7 @@ window.mountVariablesWidget = function (Homey, { root, frame }) {
     readOnly: settings.readOnly === true,
     // Read only never sets anything (so it needs no API key).
     onSet: settings.readOnly === true ? undefined : async (id, value) => {
+      haptic();
       const res = await Homey.api('POST', '/set', { id, value });
       // No usable API key: the widget says what to do (see the app settings).
       if (res && res.ok === false) throw Object.assign(new Error(res.reason), { reason: res.reason });

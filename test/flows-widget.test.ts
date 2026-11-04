@@ -167,3 +167,64 @@ describe('name override', () => {
     expect(rows()[0].querySelector('.fb-name')!.textContent).toBe('Flow not found');
   });
 });
+
+describe('Activate with (press, 1.3.0)', () => {
+  const FLOWS = [{ id: 'flow:a', name: 'Alarm on', enabled: true, triggerable: true, advanced: false }];
+  function make(press: string) {
+    const root = document.createElement('div');
+    document.body.append(root);
+    const onTrigger = vi.fn(async () => {});
+    const onHaptic = vi.fn();
+    const w = win.createFlowsWidget(root, { press, buttons: [{ id: 'flow:a' }], onTrigger, onHaptic });
+    w.setState(FLOWS);
+    const row = root.querySelector<HTMLElement>('.fb-row')!;
+    return { root, row, onTrigger, onHaptic, name: () => row.querySelector('.fb-name')!.textContent };
+  }
+
+  it('Double: the first tap asks again (red, Tap again), the second within 3 s starts the flow', async () => {
+    const { row, onTrigger, name } = make('double');
+    row.click();
+    expect([onTrigger.mock.calls.length, row.classList.contains('confirm'), name()]).toEqual([0, true, 'Tap again']);
+    row.click();
+    expect(onTrigger).toHaveBeenCalledWith('flow:a');
+    expect(row.classList.contains('confirm')).toBe(false);
+    await vi.advanceTimersByTimeAsync(2000);
+    // Too late: it asks again.
+    row.click();
+    await vi.advanceTimersByTimeAsync(3100);
+    expect([row.classList.contains('confirm'), name()]).toEqual([false, 'Alarm on']);
+    row.click();
+    expect(onTrigger).toHaveBeenCalledTimes(1);
+  });
+
+  it('Long: a tap only says Hold; holding until full starts it and vibrates as the finger lifts', async () => {
+    const { row, onTrigger, onHaptic, name } = make('long');
+    row.click();
+    expect([onTrigger.mock.calls.length, name()]).toEqual([0, 'Hold']);
+    await vi.advanceTimersByTimeAsync(1600);
+    expect(name()).toBe('Alarm on');
+    const touch = (type: string) => {
+      const e = new Event(type, { bubbles: true, cancelable: true });
+      Object.assign(e, { changedTouches: [{ clientX: 5, clientY: 5 }], touches: [{ clientX: 5, clientY: 5 }] });
+      row.dispatchEvent(e);
+    };
+    touch('touchstart');
+    expect(row.classList.contains('holding')).toBe(true);
+    await vi.advanceTimersByTimeAsync(650);
+    expect(onTrigger).toHaveBeenCalledWith('flow:a');
+    onHaptic.mockClear();
+    touch('touchend');
+    await vi.advanceTimersByTimeAsync(10);
+    expect(onHaptic).toHaveBeenCalled();
+  });
+
+  it('Single, and a flow that is off whatever the setting: a tap acts at once', () => {
+    expect((() => { const m = make('single'); m.row.click(); return m.onTrigger.mock.calls.length; })()).toBe(1);
+    const root = document.createElement('div');
+    document.body.append(root);
+    const w = win.createFlowsWidget(root, { press: 'double', buttons: [{ id: 'flow:a' }] });
+    w.setState([{ ...FLOWS[0], enabled: false }]);
+    root.querySelector<HTMLElement>('.fb-row')!.click();
+    expect(root.querySelector('.fb-message')!.textContent).toBe('Alarm on is turned off.');
+  });
+});

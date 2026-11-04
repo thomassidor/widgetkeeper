@@ -76,7 +76,8 @@
     "vibration": "Vibration",
     "noVibration": "Keine Vibration",
     "nothingDetected": "Nichts erkannt",
-    "since": "seit __time__"
+    "since": "seit __time__",
+    "renameFailed": "Der Name konnte nicht gespeichert werden."
   },
   "roomhealth": {
     "selectDevices": "Wähle Sensoren in den Widget-Einstellungen.",
@@ -128,7 +129,8 @@
     "motion": "Bewegung",
     "noMotion": "Keine Bewegung",
     "alarm": "Alarm",
-    "ok": "OK"
+    "ok": "OK",
+    "renameFailed": "Der Name konnte nicht gespeichert werden."
   },
   "weather": {
     "now": "Jetzt",
@@ -258,6 +260,11 @@
     "namesChanged": "__changed__ von __total__ Gerätenamen ändern sich:",
     "namesNoneSep": "Kein Gerätename enthält „__separator__“.",
     "namesNone": "Kein Gerätename ändert sich.",
+    "timeTitle": "Zeitformat",
+    "timeHelp": "Wie alle Widgets Uhrzeiten zeigen. Automatisch folgt der Sprache des Telefons oder Browsers, auf dem es angezeigt wird.",
+    "timeAuto": "Automatisch",
+    "time24": "24 Stunden",
+    "time12": "12 Stunden",
     "webTitle": "Web-Dashboards",
     "webHelp": "Deine Widgetkeeper-Widgets in jedem Browser im Heimnetz: Tablet, Computer, TV oder Nest Hub. Schalte sie ein, füge unten jeden Bildschirm für seinen Anmeldecode hinzu und baue die Dashboards auf der Seite selbst.",
     "webEnable": "Web-Dashboards einschalten",
@@ -660,7 +667,9 @@
       "gift": "Geschenk",
       "sparkles": "Funkeln",
       "dashboard": "Dashboard"
-    }
+    },
+    "tapAgain": "Erneut tippen",
+    "hold": "Halten"
   },
   "price": {
     "now": "Jetzt",

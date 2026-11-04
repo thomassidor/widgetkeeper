@@ -179,3 +179,20 @@ describe('createValueMatrixWidget', () => {
     expect(root.querySelector('.vm-message')!.textContent).toBe('Pick the values to show in the widget settings.');
   });
 });
+
+describe('Green when fine (1.3.0)', () => {
+  it('is on unless turned off: off leaves a value inside its range plain and the legend without OK', () => {
+    const make = (opts: object) => {
+      const root = document.createElement('div');
+      document.body.append(root);
+      win.createValueMatrixWidget(root, { columns: [{ capabilityId: 'measure_temperature', range: '18-24' }], ...opts });
+      return root;
+    };
+    const on = make({});
+    const off = make({ greenWhenFine: false });
+    expect([on.classList.contains('vm-plain-fine'), off.classList.contains('vm-plain-fine')]).toEqual([false, true]);
+    const keys = (root: HTMLElement) => [...root.querySelectorAll<HTMLElement>('.vm-swatch')].map(s => s.dataset.level);
+    expect(keys(on)).toEqual(['good', 'out', 'far']);
+    expect(keys(off)).toEqual(['out', 'far']);
+  });
+});

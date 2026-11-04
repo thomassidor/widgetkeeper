@@ -174,13 +174,58 @@
     };
   }
 
+  /**
+   * The app's Time format (the settings page's card, the app setting `timeFormat`: `auto`, `24` or `12`; 1.3.0, it
+   * replaced the widgets' own setting), for every widget on the page. The last one read is kept in the screen's
+   * storage, so a widget draws its times right before the app answers; `wireTimeFormat()` reads and follows it.
+   */
+  const TIME_FORMAT_KEY = 'widgetkeeper.timeFormat';
+  const isTimeFormat = v => v === 'auto' || v === '24' || v === '12';
+  let timeFormatNow = 'auto';
+  try {
+    const stored = window.localStorage && window.localStorage.getItem(TIME_FORMAT_KEY);
+    if (isTimeFormat(stored)) timeFormatNow = stored;
+  } catch { /* no storage: Automatic until the app answers */ }
+
+  /** The page's time format: `auto`, `24` or `12`. @returns {'auto' | '24' | '12'} */
+  function getTimeFormat() {
+    return /** @type {'auto' | '24' | '12'} */ (timeFormatNow);
+  }
+
+  /** Sets the page's time format (anything else is `auto`) and keeps it for the next load; whether it changed. */
+  function setTimeFormat(value) {
+    const v = isTimeFormat(value) ? value : 'auto';
+    if (v === timeFormatNow) return false;
+    timeFormatNow = v;
+    try { if (window.localStorage) window.localStorage.setItem(TIME_FORMAT_KEY, v); } catch { /* kept for this page only */ }
+    return true;
+  }
+
+  /**
+   * A mount's time format: the app's `GET /time-format` (every widget that shows a time has the route) now, and its
+   * realtime `timeformat:state`; `changed()` (the mount's redraw or reload) when it differs from the one drawn with.
+   */
+  function wireTimeFormat(Homey, changed) {
+    const apply = (res) => {
+      // An answer without one (an older app's) changes nothing.
+      if (res && isTimeFormat(res.timeFormat) && setTimeFormat(res.timeFormat) && changed) changed();
+    };
+    try { Homey.on('timeformat:state', apply); } catch { /* the stored one stays */ }
+    // After the widget's own first request (asked for in this tick or its promises), which carries the load marks.
+    setTimeout(() => {
+      try {
+        Promise.resolve(Homey.api('GET', '/time-format')).then(apply, () => { /* the stored one stays */ });
+      } catch { /* the stored one stays */ }
+    }, 0);
+  }
+
   const timeFormats = new Map();
   /**
-   * Hours and minutes in `locale` (else the screen's), which picks 24 or 12 hours unless the widget's `timeFormat`
-   * setting (`24`, `12`; `auto` or anything else leaves it) says. `hour` is Intl's (`numeric` by default), or
-   * `2-digit-24`: two digits in 24 hours only (the Clock's `07:05`).
+   * Hours and minutes in `locale` (else the screen's), which picks 24 or 12 hours unless `timeFormat` (`24`, `12`;
+   * `auto` or anything else leaves it; missing: the app's, `getTimeFormat()`) says. `hour` is Intl's (`numeric` by
+   * default), or `2-digit-24`: two digits in 24 hours only (the Clock's `07:05`).
    */
-  function timeFormatter(locale, timeFormat, hour = 'numeric') {
+  function timeFormatter(locale, timeFormat = timeFormatNow, hour = 'numeric') {
     const id = `${locale || ''}|${timeFormat}|${hour}`;
     if (!timeFormats.has(id)) {
       const o = /** @type {Intl.DateTimeFormatOptions} */ ({ hour: hour === '2-digit-24' ? 'numeric' : hour, minute: '2-digit' });
@@ -193,6 +238,54 @@
       timeFormats.set(id, f);
     }
     return timeFormats.get(id);
+  }
+
+  /** Whether times show in 12 hours: `timeFormat` (missing: the app's) says so, or Automatic and the screen's locale. */
+  function uses12Hours(locale, timeFormat = timeFormatNow) {
+    if (timeFormat === '12') return true;
+    if (timeFormat === '24') return false;
+    return timeFormatter(locale, 'auto').resolvedOptions().hour12 === true;
+  }
+
+  const pad2 = n => String(n).padStart(2, '0');
+  const twelveHours = new Map();
+  function twelveHourFormat(locale, o) {
+    const id = `${locale || ''}|${JSON.stringify(o)}`;
+    if (!twelveHours.has(id)) {
+      const opts = /** @type {Intl.DateTimeFormatOptions} */ ({ ...o, hour: 'numeric', hour12: true });
+      let f;
+      try { f = new Intl.DateTimeFormat(locale || undefined, opts); } catch { f = new Intl.DateTimeFormat('en', opts); }
+      twelveHours.set(id, f);
+    }
+    return twelveHours.get(id);
+  }
+
+  /**
+   * A clock time for the charts, the price strips, the Electricity Overview and Timers: in 24 hours `14:05` (`pad`:
+   * `06:05`, else `6:05`; with `seconds` `14:05:09`), as these widgets always wrote it; in 12 hours the locale's
+   * (`2:05 PM`). The app's time format unless `timeFormat` says.
+   * @param {number} ms
+   * @param {{ locale?: string, timeFormat?: string, pad?: boolean, seconds?: boolean }} [o]
+   */
+  function clockTime(ms, { locale, timeFormat = timeFormatNow, pad = true, seconds = false } = {}) {
+    const d = new Date(ms);
+    if (!uses12Hours(locale, timeFormat)) {
+      return `${pad ? pad2(d.getHours()) : d.getHours()}:${pad2(d.getMinutes())}${seconds ? `:${pad2(d.getSeconds())}` : ''}`;
+    }
+    return twelveHourFormat(locale, seconds ? { minute: '2-digit', second: '2-digit' } : { minute: '2-digit' }).format(d);
+  }
+
+  /**
+   * A whole hour's label on an axis or a column: in 24 hours the hour alone (`14`; `pad`: `06`, else `6`), in 12
+   * hours the locale's (`2 PM`). `hour` is an hour of the day (0–24: an axis' end is `24`, `12 AM` in 12 hours) or a
+   * time in ms.
+   * @param {number} hour
+   * @param {{ locale?: string, timeFormat?: string, pad?: boolean }} [o]
+   */
+  function hourLabel(hour, { locale, timeFormat = timeFormatNow, pad = true } = {}) {
+    const h = hour <= 24 ? hour : new Date(hour).getHours();
+    if (!uses12Hours(locale, timeFormat)) return pad ? pad2(h) : String(h);
+    return twelveHourFormat(locale, {}).format(new Date(2000, 0, 1, h % 24));
   }
 
   /**
@@ -741,17 +834,19 @@
    * a failed first load replaces them. `tileNames` (the mount's `wireTileNames()`) reads the names with it; `query()`
    * adds to the request; `setState(state)` hands the answer to the widget (default `widget.setState(state)`), and
    * `onState(state)` runs after each good one. `more` are ids picked another way (the Cameras widget's Camera slots),
-   * after the `devices` setting's, a repeat left out. Ready is told after the first load, once the
+   * after the `devices` setting's, a repeat left out. `times`: the widget shows times, so it follows the app's time
+   * format (`wireTimeFormat()`). Ready is told after the first load, once the
    * text font is in (at most 1 s), so the names don't pop in after the icons.
    * @param {any} Homey
    * @param {{ ready: (opts?: object) => Promise<void>, perfParam: (sep?: string) => string }} link the mount's `wireFrame()`
    * @param {any} widget
    * @param {{ event?: string | null, tileNames?: { state: (path: string) => Promise<any> } | null, query?: () => string,
    *   need?: (ids: string[]) => string | null, watches?: (id: string) => boolean, setState?: ((state: any) => void) | null,
-   *   onState?: ((state: any) => void) | null, more?: string[] }} [opts]
+   *   onState?: ((state: any) => void) | null, more?: string[], times?: boolean }} [opts]
    */
   function wireDeviceState(Homey, link, widget, {
     event = null, tileNames = null, query = () => '', need = () => null, watches = () => false, setState = null, onState = null, more = [],
+    times = false,
   } = {}) {
     let deviceIds = [];
     let loaded = false;
@@ -793,6 +888,8 @@
         onDeviceNames(Homey, load);
         load();
       });
+    // A widget that shows times draws them again when the app's time format changes.
+    if (times) wireTimeFormat(Homey, () => { if (loaded) load(); });
     return {
       /** The `devices` setting's ids, then `more` (empty until read). */
       ids: () => deviceIds,
@@ -1266,6 +1363,7 @@
 
   window.WidgetkeeperKit = {
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
+    getTimeFormat, setTimeFormat, wireTimeFormat, uses12Hours, clockTime, hourLabel,
     formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     onDeviceNames, colorStyle, applyColors, sound, optimistic, shake, wireBar, roomTiles, knownValue, okRange, okLevel,
   };

@@ -1,10 +1,12 @@
 import type { App } from 'homey';
+import { timeFormatRoutes } from '../../lib/timeFormat.js';
 import type WidgetkeeperApp from '../../app.js';
 import { logPerf } from '../../lib/widgetApi.js';
 
 type Homey = App['homey'];
 
 export default {
+  ...timeFormatRoutes,
   /**
    * The Electricity Overview's hourly price slots (24 back, the current hour, 24 ahead; 36 with `hours=36`),
    * and in quarter-hour markets the same span in 15-minute slots (`quarters`, else null), without a meter:

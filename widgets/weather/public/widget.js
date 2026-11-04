@@ -4,7 +4,7 @@
  * in pages of two rows that scroll a page at a time. Plain browser JS (served as-is).
  */
 (function () {
-  const { el } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, hourLabel } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const SHOWN_HOURS = 36;
@@ -246,7 +246,7 @@
       const date = new Date(h.t);
       const midnight = date.getHours() === 0;
       const col = el('div', { class: `wf-col${midnight && i > 0 ? ' wf-newday' : ''}`, 'data-t': h.t }, parent);
-      const label = i === 0 ? t('now') : midnight ? weekdayFmt.format(date) : String(date.getHours()).padStart(2, '0');
+      const label = i === 0 ? t('now') : midnight ? weekdayFmt.format(date) : hourLabel(date.getHours()); // `14`, or `2 PM` in 12 hours
       el('div', { class: `wf-hour${i === 0 || midnight ? ' strong' : ''}`, dir: 'auto', text: label }, col);
       const iconBox = el('div', { class: 'wf-icon' }, col);
       if (h.symbol && /^[a-z_]+$/.test(h.symbol)) {

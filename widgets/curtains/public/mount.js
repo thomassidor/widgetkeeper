@@ -9,6 +9,15 @@ window.mountCurtainsWidget = function (Homey, { root, frame }) {
   const link = wireFrame(Homey, frame);
 
   const settings = Homey.getSettings() || {};
+  // A tap that changes something vibrates, as on the other widgets that act (the settings review, 2026-11-04). Homey's
+  // haptic throws unless a touch has just ended (a click, a key, a late send): nothing then.
+  // Once for a room's lights or presets' several values sent together.
+  let hapticAt = 0;
+  const haptic = () => {
+    if (Date.now() - hapticAt < 300) return;
+    hapticAt = Date.now();
+    try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not now */ }
+  };
   const tileNames = wireTileNames(Homey, names => widget.setNames(names));
   const widget = window.createCurtainsWidget(root, {
     colorStyle: settings.colorStyle,
@@ -23,7 +32,7 @@ window.mountCurtainsWidget = function (Homey, { root, frame }) {
     showState: settings.showState !== false,
     // A percentage (`5`); unset (a widget placed before the setting) is the widget's default, 5 %.
     ends: settings.ends != null && settings.ends !== '' ? Number(settings.ends) / 100 : undefined,
-    onSet: (deviceId, change) => Homey.api('POST', '/set', { deviceId, ...change }),
+    onSet: (deviceId, change) => { haptic(); return Homey.api('POST', '/set', { deviceId, ...change }); },
     onHeight: link.setHeight,
   });
 

@@ -231,6 +231,28 @@ it('Device names: the line, the separator only for its two choices, the examples
   expect([$('namesLine').textContent, $('namesSepGroup').hidden, $('namesCount').textContent]).toEqual(['namesRoom', true, 'namesNone']);
 });
 
+it('Time format: the line and the choice, saved at once; put back when saving fails', () => {
+  let stored = 'auto';
+  let fail = false;
+  const { calls, $ } = loadPage((method, path, body) => {
+    if (path !== '/time-format') return undefined;
+    if (method === 'GET') return { timeFormat: stored };
+    if (fail) return { ok: false };
+    stored = body.timeFormat;
+    return { ok: true, timeFormat: stored };
+  });
+  const select = $('timeFormat') as unknown as HTMLSelectElement;
+  expect([$('timeLine').textContent, select.value, select.disabled]).toEqual(['timeAuto', 'auto', false]);
+  select.value = '12';
+  select.dispatchEvent(new Event('change'));
+  expect(calls.at(-1)).toEqual(['PUT', '/time-format', { timeFormat: '12' }]);
+  expect([$('timeLine').textContent, select.value]).toEqual(['time12', '12']);
+  fail = true;
+  select.value = '24';
+  select.dispatchEvent(new Event('change'));
+  expect([$('timeLine').textContent, select.value, select.disabled]).toEqual(['time12', '12', false]);
+});
+
 it('Screens and browsers: adds one with a key, shows its code and address once, gives one a new code and removes one', () => {
   let screens: any[] = [{ id: 's0', name: 'Hall', created: 1, used: 0, needsPassword: true }];
   const { calls, $, typeIn, click } = loadPage((method, path, body) => {

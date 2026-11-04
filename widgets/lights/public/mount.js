@@ -12,6 +12,15 @@ window.mountLightsWidget = function (Homey, { root, frame }) {
   let groupLights = new Set();
 
   const settings = Homey.getSettings() || {};
+  // A tap that changes something vibrates, as on the other widgets that act (the settings review, 2026-11-04). Homey's
+  // haptic throws unless a touch has just ended (a click, a key, a late send): nothing then.
+  // Once for a room's lights or presets' several values sent together.
+  let hapticAt = 0;
+  const haptic = () => {
+    if (Date.now() - hapticAt < 300) return;
+    hapticAt = Date.now();
+    try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not now */ }
+  };
   const tileNames = wireTileNames(Homey, names => widget.setNames(names));
   const widget = window.createLightsWidget(root, {
     colorStyle: settings.colorStyle,
@@ -23,7 +32,7 @@ window.mountLightsWidget = function (Homey, { root, frame }) {
     palette: settings.palette,
     barMin: settings.barMin,
     roomLevel: settings.roomLevel,
-    onSet: (deviceId, change) => Homey.api('POST', '/set', { deviceId, ...change }),
+    onSet: (deviceId, change) => { haptic(); return Homey.api('POST', '/set', { deviceId, ...change }); },
     onMood: async (id) => {
       const res = await Homey.api('POST', '/mood', { id });
       // No usable API key: the widget says what to do (see the app settings).

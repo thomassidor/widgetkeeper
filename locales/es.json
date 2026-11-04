@@ -76,7 +76,8 @@
     "vibration": "Vibración",
     "noVibration": "Sin vibración",
     "nothingDetected": "Nada detectado",
-    "since": "desde __time__"
+    "since": "desde __time__",
+    "renameFailed": "No se pudo guardar el nombre."
   },
   "roomhealth": {
     "selectDevices": "Elige sensores en los ajustes del widget.",
@@ -128,7 +129,8 @@
     "motion": "Movimiento",
     "noMotion": "Sin movimiento",
     "alarm": "Alarma",
-    "ok": "OK"
+    "ok": "OK",
+    "renameFailed": "No se pudo guardar el nombre."
   },
   "weather": {
     "now": "Ahora",
@@ -258,6 +260,11 @@
     "namesChanged": "Cambian __changed__ de __total__ nombres de dispositivos:",
     "namesNoneSep": "Ningún nombre de dispositivo contiene «__separator__».",
     "namesNone": "Ningún nombre de dispositivo cambia.",
+    "timeTitle": "Formato de hora",
+    "timeHelp": "Cómo muestran la hora todos los widgets. Automático sigue el idioma del teléfono o del navegador que lo muestra.",
+    "timeAuto": "Automático",
+    "time24": "24 horas",
+    "time12": "12 horas",
     "webTitle": "Paneles web",
     "webHelp": "Tus widgets de Widgetkeeper en cualquier navegador de tu red doméstica: tableta, ordenador, TV o Nest Hub. Actívalos, añade abajo cada pantalla para su código de acceso y crea los paneles en la propia página.",
     "webEnable": "Activar los paneles web",
@@ -660,7 +667,9 @@
       "gift": "Regalo",
       "sparkles": "Destellos",
       "dashboard": "Panel"
-    }
+    },
+    "tapAgain": "Toca otra vez",
+    "hold": "Mantén pulsado"
   },
   "price": {
     "now": "Ahora",

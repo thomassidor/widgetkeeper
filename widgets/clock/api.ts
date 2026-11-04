@@ -1,4 +1,5 @@
 import type { App } from 'homey';
+import { timeFormatRoutes } from '../../lib/timeFormat.js';
 import type WidgetkeeperApp from '../../app.js';
 import { localHour } from '../../lib/heatmap.js';
 import type { Forecast } from '../../lib/WeatherService.js';
@@ -38,6 +39,7 @@ export function clockWeather(forecast: Forecast, timeZone: string): ClockWeather
 }
 
 export default {
+  ...timeFormatRoutes,
   /** `{language, weather}`; the weather (the Weather Forecast's, so no extra MET traffic) only with `weather=1`. */
   async getClock({ homey, query }: {
     homey: Homey,

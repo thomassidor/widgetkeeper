@@ -6,7 +6,7 @@
 window.mountHeatmapWidget = function (Homey, { root, frame }) {
   const REFRESH_MS = 5 * 60e3; // the hour cells change at most hourly; keeps a recorded on/off value's request time fresh
 
-  const { wireFrame, onDeviceNames } = window.WidgetkeeperKit;
+  const { wireFrame, onDeviceNames, wireTimeFormat } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -52,6 +52,8 @@ window.mountHeatmapWidget = function (Homey, { root, frame }) {
 
   setInterval(load, REFRESH_MS);
   onDeviceNames(Homey, load);
+  // The hours follow the app's time format: drawn again when it changes.
+  wireTimeFormat(Homey, () => { if (loaded) load(); });
   load();
 };
 /** The classes index.html puts on its body; the Smart Stack puts them on the slide. */

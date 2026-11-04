@@ -4,7 +4,7 @@
  * `window.WidgetkeeperChart`, loaded first). Plain browser JS (served as-is).
  */
 (function () {
-  const { scaled, formatNumber, timeSpan } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { scaled, formatNumber, timeSpan, clockTime } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart;
@@ -104,7 +104,7 @@
       const tapped = state.sel != null;
       const h = tapped ? state.sel : new Date(Math.min(now(), d.win.to - 1)).getHours();
       const value = tapped ? todayAt(h, d) : current(s);
-      const at = `${String(h).padStart(2, '0')}:00`;
+      const at = clockTime(new Date(2000, 0, 1, h).getTime()); // `14:00`, or `2:00 PM` in 12 hours
       const has = v => typeof v === 'number' && isFinite(v);
       column({ value: has(value) ? formatNumber(s.capability, value, tapped) : null, units: has(value) ? units : '', tightUnits: units, sub: tapped ? at : t('now') });
       const usual = d.hours[h].avg;

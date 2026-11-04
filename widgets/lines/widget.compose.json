@@ -2447,6 +2447,10 @@
     "getState": {
       "method": "GET",
       "path": "/state"
+    },
+    "getTimeFormat": {
+      "method": "GET",
+      "path": "/time-format"
     }
   }
 }

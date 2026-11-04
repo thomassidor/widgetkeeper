@@ -19,3 +19,4 @@ paths:
 - The legend keeps Less → More and Nothing reported on one line (the user asked): 16 px swatches, below 300 px (`@container hm`) 9 px without letter spacing, which fits every language; Nothing reported ellipsizes as a last resort.
 - Labels 12/16. `.hm-frame` copies `.tw-frame`. No realtime; refetch every 5 min.
 - Colour style (`colorStyle`, Muted/Vivid; CLAUDE.md *Widget styling*, `kit.css`): after `color`. Muted: the accent is the colour's shade (`--wk-<colour>-shade`) with the ramp as before; Vivid: the bright colour and a steeper ramp (20/44/66/86 %). The user swapped them (round 2, 2026-10-18).
+- The hour axis and a cell's title follow the app's Time format (CLAUDE.md, 1.3.0): `hourLabel()` (`06`, `24` at the end, as before; `6 AM`, `12 AM` in 12 hours) and `clockTime()`; the mount reloads when it changes.

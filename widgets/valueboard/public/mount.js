@@ -4,13 +4,16 @@
  * `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountValueBoardWidget = function (Homey, { root, frame }) {
-  const { wireFrame, wireDeviceState } = window.WidgetkeeperKit;
+  const { wireFrame, wireTileNames, wireDeviceState } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
   const settings = Homey.getSettings() || {};
 
+  const tileNames = wireTileNames(Homey, names => widget.setNames(names));
   const widget = window.createValueBoardWidget(root, {
+    renameTiles: settings.renameTiles === true,
+    onRename: (key, name) => tileNames.rename(key, name),
     layout: settings.layout,
     groupBy: settings.groupBy,
     columns: settings.columns,
@@ -20,9 +23,10 @@ window.mountValueBoardWidget = function (Homey, { root, frame }) {
     onHeight: link.setHeight,
   });
 
-  // The devices' values with their rooms, now and every 5 min, and their realtime changes.
+  // The devices' values with their rooms and tile names, now and every 5 min, and their realtime changes.
   wireDeviceState(Homey, link, widget, {
     event: 'valueboard:state',
+    tileNames,
     query: () => (settings.values === 'all' ? '&values=all' : ''),
   });
 };

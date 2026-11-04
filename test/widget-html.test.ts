@@ -106,6 +106,21 @@ describe('copied widget helpers', () => {
   });
 });
 
+describe('haptic feedback', () => {
+  // A tap that starts, sets or switches something vibrates (the settings review, 2026-11-04: six widgets that act didn't).
+  // The rest only show, open a panel or move between pages (the Smart Stack's own).
+  const ACTING = ['combined', 'curtains', 'dayssince', 'flows', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions',
+    'shortcuts', 'stack', 'thermostat', 'timers', 'variables', 'varpresets'];
+  it('every widget whose taps act calls Homey.hapticFeedback(), in a try', () => {
+    for (const id of WIDGETS) {
+      if (!existsSync(`widgets/${id}/public/mount.js`)) continue;
+      const mount = readFileSync(`widgets/${id}/public/mount.js`, 'utf8');
+      expect([id, mount.includes('Homey.hapticFeedback()')]).toEqual([id, ACTING.includes(id)]);
+      if (ACTING.includes(id)) expect(mount, id).toMatch(/try \{ if \(Homey\.hapticFeedback\) Homey\.hapticFeedback\(\); \}/);
+    }
+  });
+});
+
 describe('shared files', () => {
   /** The files an index.html loads besides its own widget.*, mount.js and the kit (kit.js, kit.css): `<widget>/<name>` (`../electricity/chart.js` → `electricity/chart.js`). */
   const shared = (id: string, ext: string) => {

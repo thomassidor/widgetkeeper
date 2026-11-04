@@ -21,19 +21,19 @@
       "id": "columns",
       "type": "dropdown",
       "title": {
-        "en": "Columns",
-        "nl": "Kolommen",
-        "de": "Spalten",
-        "fr": "Colonnes",
-        "it": "Colonne",
-        "sv": "Kolumner",
-        "no": "Kolonner",
-        "es": "Columnas",
-        "da": "Kolonner",
-        "ru": "Столбцы",
-        "pl": "Kolumny",
-        "ko": "열",
-        "ar": "الأعمدة"
+        "en": "Tiles per row",
+        "nl": "Tegels per rij",
+        "de": "Kacheln pro Zeile",
+        "fr": "Tuiles par ligne",
+        "it": "Riquadri per riga",
+        "sv": "Rutor per rad",
+        "no": "Fliser per rad",
+        "es": "Mosaicos por fila",
+        "da": "Felter pr. række",
+        "ru": "Плиток в ряду",
+        "pl": "Kafelków w rzędzie",
+        "ko": "행당 타일",
+        "ar": "البلاطات في كل صف"
       },
       "value": "1",
       "values": [
@@ -144,6 +144,97 @@
             "pl": "Żywe",
             "ko": "선명하게",
             "ar": "زاهية"
+          }
+        }
+      ]
+    },
+    {
+      "id": "press",
+      "type": "dropdown",
+      "title": {
+        "en": "Activate with",
+        "nl": "Activeren met",
+        "de": "Auslösen mit",
+        "fr": "Activer par",
+        "it": "Attiva con",
+        "sv": "Aktivera med",
+        "no": "Aktiver med",
+        "es": "Activar con",
+        "da": "Aktivér med",
+        "ru": "Срабатывание",
+        "pl": "Uruchamiaj przez",
+        "ko": "실행 방식",
+        "ar": "التفعيل بـ"
+      },
+      "hint": {
+        "en": "Double press: the first tap turns the row red and asks for a second within 3 seconds. Long press: hold the row until it has filled. So a stray tap can't start a Flow.",
+        "nl": "Dubbele tik: de eerste tik kleurt de rij rood en vraagt binnen 3 seconden om een tweede. Lang indrukken: houd de rij vast tot hij gevuld is. Zo start een verdwaalde tik geen Flow.",
+        "de": "Doppelt tippen: Das erste Tippen färbt die Zeile rot und verlangt innerhalb von 3 Sekunden ein zweites. Lange drücken: Halte die Zeile, bis sie gefüllt ist. So startet ein versehentliches Tippen keinen Flow.",
+        "fr": "Double appui : le premier appui colore la ligne en rouge et en demande un second dans les 3 secondes. Appui long : maintenez la ligne jusqu'à ce qu'elle soit remplie. Ainsi, un appui accidentel ne lance pas un Flow.",
+        "it": "Doppio tocco: il primo tocco colora la riga di rosso e ne chiede un secondo entro 3 secondi. Pressione lunga: tieni premuta la riga finché non si riempie. Così un tocco accidentale non avvia un Flow.",
+        "sv": "Dubbeltryck: det första trycket gör raden röd och ber om ett andra inom 3 sekunder. Långt tryck: håll in raden tills den har fyllts. Så startar ett oavsiktligt tryck inte ett Flow.",
+        "no": "Dobbelttrykk: det første trykket gjør raden rød og ber om et nytt innen 3 sekunder. Langt trykk: hold inne raden til den er fylt. Slik starter ikke et utilsiktet trykk en Flow.",
+        "es": "Doble toque: el primer toque pone la fila en rojo y pide otro en 3 segundos. Pulsación larga: mantén pulsada la fila hasta que se llene. Así un toque accidental no inicia un Flow.",
+        "da": "Dobbelttryk: det første tryk gør rækken rød og beder om et til inden for 3 sekunder. Langt tryk: hold rækken inde, til den er fyldt. Så starter et utilsigtet tryk ikke et Flow.",
+        "ru": "Двойное нажатие: первое нажатие окрашивает строку в красный и ждёт второго в течение 3 секунд. Долгое нажатие: удерживайте строку, пока она не заполнится. Так случайное нажатие не запустит Flow.",
+        "pl": "Podwójne dotknięcie: pierwsze dotknięcie barwi wiersz na czerwono i czeka 3 sekundy na drugie. Długie przytrzymanie: przytrzymaj wiersz, aż się wypełni. Dzięki temu przypadkowe dotknięcie nie uruchomi Flow.",
+        "ko": "두 번 탭: 첫 번째 탭은 줄을 빨간색으로 바꾸고 3초 안에 한 번 더 탭하도록 요청합니다. 길게 누르기: 줄이 가득 찰 때까지 누르고 있으세요. 그래서 실수로 탭해도 Flow가 시작되지 않습니다.",
+        "ar": "نقرة مزدوجة: النقرة الأولى تجعل الصف أحمر وتطلب نقرة ثانية خلال 3 ثوانٍ. ضغطة مطوّلة: اضغط على الصف حتى يمتلئ. وبذلك لا تبدأ نقرة عابرة أي Flow."
+      },
+      "value": "single",
+      "values": [
+        {
+          "id": "single",
+          "title": {
+            "en": "Single press",
+            "nl": "Enkele tik",
+            "de": "Einmal tippen",
+            "fr": "Appui simple",
+            "it": "Tocco singolo",
+            "sv": "Ett tryck",
+            "no": "Ett trykk",
+            "es": "Toque simple",
+            "da": "Ét tryk",
+            "ru": "Одно нажатие",
+            "pl": "Jedno dotknięcie",
+            "ko": "한 번 탭",
+            "ar": "نقرة واحدة"
+          }
+        },
+        {
+          "id": "double",
+          "title": {
+            "en": "Double press",
+            "nl": "Dubbele tik",
+            "de": "Doppelt tippen",
+            "fr": "Double appui",
+            "it": "Doppio tocco",
+            "sv": "Dubbeltryck",
+            "no": "Dobbelttrykk",
+            "es": "Doble toque",
+            "da": "Dobbelttryk",
+            "ru": "Двойное нажатие",
+            "pl": "Podwójne dotknięcie",
+            "ko": "두 번 탭",
+            "ar": "نقرة مزدوجة"
+          }
+        },
+        {
+          "id": "long",
+          "title": {
+            "en": "Long press",
+            "nl": "Lang indrukken",
+            "de": "Lange drücken",
+            "fr": "Appui long",
+            "it": "Pressione lunga",
+            "sv": "Långt tryck",
+            "no": "Langt trykk",
+            "es": "Pulsación larga",
+            "da": "Langt tryk",
+            "ru": "Долгое нажатие",
+            "pl": "Długie przytrzymanie",
+            "ko": "길게 누르기",
+            "ar": "ضغطة مطوّلة"
           }
         }
       ]

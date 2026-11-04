@@ -1,6 +1,7 @@
 import { inspect } from 'node:util';
 import type Homey from 'homey';
 import { DEVICE_NAMES_SETTING, nameRule } from './deviceNames.js';
+import { timeFormatOf } from './timeFormat.js';
 import { heatmapCaps } from './HeatmapService.js';
 import { healthCaps } from './RoomHealthService.js';
 import { alarmCaps } from './SensorAlarmService.js';
@@ -46,6 +47,7 @@ export default class Diagnostics {
       debugLog: this.homey.settings.get(DEBUG_LOG_SETTING) === true,
       // How the widgets show device names (the report's own names are always the full ones).
       deviceNames: nameRule(this.homey.settings.get(DEVICE_NAMES_SETTING)),
+      timeFormat: timeFormatOf(this.homey),
       electricity: await (this.homey.app as any)?.electricity?.describe?.().catch((err: unknown) => String(err)) ?? null,
       weather: (this.homey.app as any)?.weather?.describe?.() ?? null,
       pollen: (this.homey.app as any)?.pollen?.describe?.() ?? null,

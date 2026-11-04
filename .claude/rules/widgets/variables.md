@@ -19,3 +19,4 @@ paths:
 - `GET /state?ids=a,b` (`{id, name, type, value}` or missing, in order), `POST /set {id, value}`. Realtime `variables:state`, only for ids asked for in the last 10 min. Diagnostics' `variables`: connection and counts, never values.
 - `dev/variables-preview.html` (`Broken flag` fails). The Energy and Security showcases have one.
 - Colour style (`colorStyle`, Muted/Vivid; CLAUDE.md *Widget styling*, `kit.css`): after `columns`, with `color` (the switch and the read-only dot, blue by default; `--vr-accent` is `--wk-c`). Vivid: a row that's on is the shade, solid, with `--wk-on` text, a 40 % switch track and the dot in `--wk-on`.
+- `columns` is titled *Tiles per row* (Device Values' strings) since the settings review (2026-11-04; *Columns* before). A tap that sets a variable calls `Homey.hapticFeedback()` (the mount's `haptic()` in `onSet`, at most once per 300 ms, in a `try`).

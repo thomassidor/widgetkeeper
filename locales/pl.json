@@ -76,7 +76,8 @@
     "vibration": "Wibracje",
     "noVibration": "Brak wibracji",
     "nothingDetected": "Nic nie wykryto",
-    "since": "od __time__"
+    "since": "od __time__",
+    "renameFailed": "Nie udało się zapisać nazwy."
   },
   "roomhealth": {
     "selectDevices": "Wybierz czujniki w ustawieniach widżetu.",
@@ -128,7 +129,8 @@
     "motion": "Ruch",
     "noMotion": "Brak ruchu",
     "alarm": "Alarm",
-    "ok": "OK"
+    "ok": "OK",
+    "renameFailed": "Nie udało się zapisać nazwy."
   },
   "weather": {
     "now": "Teraz",
@@ -258,6 +260,11 @@
     "namesChanged": "Zmieni się __changed__ z __total__ nazw urządzeń:",
     "namesNoneSep": "Żadna nazwa urządzenia nie zawiera „__separator__”.",
     "namesNone": "Żadna nazwa urządzenia się nie zmienia.",
+    "timeTitle": "Format godziny",
+    "timeHelp": "Jak wszystkie widżety pokazują godziny. Automatycznie: według języka telefonu lub przeglądarki, która go wyświetla.",
+    "timeAuto": "Automatycznie",
+    "time24": "24-godzinny",
+    "time12": "12-godzinny",
     "webTitle": "Pulpity webowe",
     "webHelp": "Twoje widżety Widgetkeeper w dowolnej przeglądarce w sieci domowej: tablet, komputer, TV lub Nest Hub. Włącz je, dodaj poniżej każdy ekran, by dostać jego kod logowania, a pulpity buduj na samej stronie.",
     "webEnable": "Włącz pulpity webowe",
@@ -660,7 +667,9 @@
       "gift": "Prezent",
       "sparkles": "Iskry",
       "dashboard": "Pulpit"
-    }
+    },
+    "tapAgain": "Stuknij ponownie",
+    "hold": "Przytrzymaj"
   },
   "price": {
     "now": "Teraz",

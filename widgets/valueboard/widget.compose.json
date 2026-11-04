@@ -22,6 +22,41 @@
   },
   "settings": [
     {
+      "id": "renameTiles",
+      "type": "checkbox",
+      "title": {
+        "en": "Rename tiles",
+        "nl": "Tegels hernoemen",
+        "de": "Kacheln umbenennen",
+        "fr": "Renommer les tuiles",
+        "it": "Rinomina riquadri",
+        "sv": "Byt namn på rutor",
+        "no": "Gi nytt navn til fliser",
+        "es": "Renombrar mosaicos",
+        "da": "Omdøb felter",
+        "ru": "Переименовать плитки",
+        "pl": "Zmień nazwy kafelków",
+        "ko": "타일 이름 바꾸기",
+        "ar": "إعادة تسمية المربعات"
+      },
+      "hint": {
+        "en": "To name the rooms and devices: turn this on and save the widget, then leave the dashboard's edit mode. Each room and device shows a text field: type its name, or leave it empty to keep its own name. Then edit the widget again and turn this off.",
+        "nl": "Ruimtes en apparaten een naam geven: zet dit aan en sla de widget op, en verlaat dan de bewerkmodus van het dashboard. Elke ruimte en elk apparaat toont een tekstveld: typ de naam, of laat het leeg om de eigen naam te houden. Bewerk daarna de widget opnieuw en zet dit uit.",
+        "de": "Räume und Geräte benennen: Schalte dies ein, speichere das Widget und verlasse den Bearbeitungsmodus des Dashboards. Jeder Raum und jedes Gerät zeigt ein Textfeld: Gib den Namen ein oder lass es leer, um den eigenen Namen zu behalten. Bearbeite danach das Widget erneut und schalte dies aus.",
+        "fr": "Pour nommer les pièces et les appareils : activez ceci, enregistrez le widget, puis quittez le mode édition du tableau de bord. Chaque pièce et chaque appareil affiche un champ de texte : tapez son nom, ou laissez-le vide pour garder son nom d'origine. Modifiez ensuite le widget à nouveau et désactivez ceci.",
+        "it": "Per dare un nome alle stanze e ai dispositivi: attiva questa opzione e salva il widget, poi esci dalla modalità di modifica della dashboard. Ogni stanza e ogni dispositivo mostra un campo di testo: scrivi il nome, o lascialo vuoto per mantenere il nome originale. Poi modifica di nuovo il widget e disattiva questa opzione.",
+        "sv": "Så namnger du rummen och enheterna: slå på detta och spara widgeten, och lämna sedan instrumentpanelens redigeringsläge. Varje rum och enhet visar ett textfält: skriv namnet, eller lämna det tomt för att behålla det egna namnet. Redigera sedan widgeten igen och slå av detta.",
+        "no": "Slik gir du rommene og enhetene navn: slå på dette og lagre widgeten, og gå så ut av dashbordets redigeringsmodus. Hvert rom og hver enhet viser et tekstfelt: skriv navnet, eller la det stå tomt for å beholde det opprinnelige navnet. Rediger så widgeten igjen og slå av dette.",
+        "es": "Para poner nombre a las habitaciones y los dispositivos: activa esto y guarda el widget, luego sal del modo de edición del panel. Cada habitación y cada dispositivo muestra un campo de texto: escribe su nombre, o déjalo vacío para mantener su nombre original. Después edita el widget de nuevo y desactiva esto.",
+        "da": "Sådan navngiver du rummene og enhederne: slå dette til og gem widgetten, og forlad så dashboardets redigeringstilstand. Hvert rum og hver enhed viser et tekstfelt: skriv navnet, eller lad det stå tomt for at beholde det oprindelige navn. Redigér derefter widgetten igen, og slå dette fra.",
+        "ru": "Чтобы назвать комнаты и устройства: включите это и сохраните виджет, затем выйдите из режима редактирования панели. У каждой комнаты и каждого устройства появится текстовое поле: введите название или оставьте его пустым, чтобы оставить исходное имя. Затем снова откройте настройки виджета и выключите это.",
+        "pl": "Aby nazwać pokoje i urządzenia: włącz to i zapisz widżet, a potem wyjdź z trybu edycji pulpitu. Każdy pokój i każde urządzenie pokaże pole tekstowe: wpisz nazwę albo zostaw je puste, aby zachować pierwotną nazwę. Potem ponownie edytuj widżet i wyłącz to.",
+        "ko": "방과 기기 이름을 정하려면: 이 옵션을 켜고 위젯을 저장한 뒤 대시보드 편집 모드를 나가세요. 각 방과 기기에 입력란이 나타납니다. 이름을 입력하거나 비워 두면 원래 이름이 그대로 쓰입니다. 그런 다음 위젯을 다시 편집해 이 옵션을 끄세요.",
+        "ar": "لتسمية الغرف والأجهزة: شغّل هذا الخيار واحفظ الأداة، ثم اخرج من وضع تحرير لوحة التحكم. يظهر حقل نصي لكل غرفة ولكل جهاز: اكتب الاسم، أو اتركه فارغًا لإبقاء الاسم الأصلي. بعد ذلك حرّر الأداة مجددًا وأوقف هذا الخيار."
+      },
+      "value": false
+    },
+    {
       "id": "layout",
       "type": "dropdown",
       "value": "tiles",
@@ -429,6 +464,10 @@
     "getState": {
       "method": "GET",
       "path": "/state"
+    },
+    "setName": {
+      "method": "POST",
+      "path": "/names"
     }
   }
 }

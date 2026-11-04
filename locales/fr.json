@@ -76,7 +76,8 @@
     "vibration": "Vibration",
     "noVibration": "Aucune vibration",
     "nothingDetected": "Rien détecté",
-    "since": "depuis __time__"
+    "since": "depuis __time__",
+    "renameFailed": "Impossible d'enregistrer le nom."
   },
   "roomhealth": {
     "selectDevices": "Choisissez des capteurs dans les réglages.",
@@ -128,7 +129,8 @@
     "motion": "Mouvement",
     "noMotion": "Aucun mouvement",
     "alarm": "Alarme",
-    "ok": "OK"
+    "ok": "OK",
+    "renameFailed": "Impossible d'enregistrer le nom."
   },
   "weather": {
     "now": "Actuel",
@@ -258,6 +260,11 @@
     "namesChanged": "__changed__ noms d'appareils sur __total__ changent :",
     "namesNoneSep": "Aucun nom d'appareil ne contient « __separator__ ».",
     "namesNone": "Aucun nom d'appareil ne change.",
+    "timeTitle": "Format de l'heure",
+    "timeHelp": "Comment tous les widgets affichent l'heure. Automatique suit la langue du téléphone ou du navigateur qui l'affiche.",
+    "timeAuto": "Automatique",
+    "time24": "24 heures",
+    "time12": "12 heures",
     "webTitle": "Tableaux de bord web",
     "webHelp": "Vos widgets Widgetkeeper dans n'importe quel navigateur de votre réseau domestique : tablette, ordinateur, TV ou Nest Hub. Activez-les, ajoutez chaque écran ci-dessous pour obtenir son code de connexion, puis créez les tableaux de bord sur la page elle-même.",
     "webEnable": "Activer les tableaux de bord web",
@@ -660,7 +667,9 @@
       "gift": "Cadeau",
       "sparkles": "Étincelles",
       "dashboard": "Tableau de bord"
-    }
+    },
+    "tapAgain": "Touchez encore",
+    "hold": "Maintenez"
   },
   "price": {
     "now": "Maint.",

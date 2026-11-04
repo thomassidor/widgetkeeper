@@ -4,14 +4,16 @@
  * `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountSensorDotsWidget = function (Homey, { root, frame }) {
-  const { wireFrame, wireDeviceState } = window.WidgetkeeperKit;
+  const { wireFrame, wireTileNames, wireDeviceState } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
   const settings = Homey.getSettings() || {};
+  const tileNames = wireTileNames(Homey, names => widget.setNames(names));
   const widget = window.createSensorDotsWidget(root, {
+    renameTiles: settings.renameTiles === true,
+    onRename: (key, name) => tileNames.rename(key, name),
     colorStyle: settings.colorStyle,
-    timeFormat: settings.timeFormat,
     t: (key, tokens) => Homey.__(key, tokens),
     title: typeof settings.title === 'string' ? settings.title : '',
     idleColor: settings.idleColor,
@@ -20,7 +22,7 @@ window.mountSensorDotsWidget = function (Homey, { root, frame }) {
   });
 
   // The devices' alarms, now and every 5 min, and their changes: Sensor Alarms' tracking and events, shared with that widget.
-  wireDeviceState(Homey, link, widget, { event: 'sensoralarms:state' });
+  wireDeviceState(Homey, link, widget, { event: 'sensoralarms:state', tileNames, times: true });
 };
 /** The classes index.html puts on its body; the Smart Stack puts them on the slide. */
 window.mountSensorDotsWidget.frameClass = 'homey-widget-full';

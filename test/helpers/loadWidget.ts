@@ -8,13 +8,23 @@ import { compileFunction } from 'node:vm';
  * the current DOM environment, unchanged, and returns `window`.
  */
 export function loadWidget(name: WidgetName): any {
-  loadFile(KIT);
+  loadKit();
   for (const dep of DEPS[name] || []) loadFile(dep);
   return loadScript(name, 'widget.js');
 }
 
 /** The shared kit, which every index.html loads first (`../spacer/kit.js`). */
 export const KIT = 'spacer/kit.js';
+
+/**
+ * Loads the kit with the app's time format at 24 hours, as the widgets' times were written before it was a setting:
+ * Node's own locale (en-US) would make Automatic 12 hours. A test of the format sets its own (`setTimeFormat()`).
+ */
+function loadKit() {
+  try { window.localStorage?.removeItem('widgetkeeper.timeFormat'); } catch { /* none */ }
+  loadFile(KIT);
+  (window as any).WidgetkeeperKit.setTimeFormat('24');
+}
 
 /**
  * The scripts a widget's index.html loads from another widget's folder (or a shared file in its own) before its
@@ -39,7 +49,7 @@ export const DEPS: Partial<Record<WidgetName, string[]>> = {
 
 /** Runs a widget's `public/mount.js` (which wires it to a Homey) the same way; load its widget.js first. */
 export function loadMount(name: WidgetName): any {
-  if (!(window as any).WidgetkeeperKit) loadFile(KIT);
+  if (!(window as any).WidgetkeeperKit) loadKit();
   return loadScript(name, 'mount.js');
 }
 

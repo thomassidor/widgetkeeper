@@ -250,8 +250,9 @@ const BUILD = {
       w('sensordots', 'Cameras · purple/yellow', { idleColor: 'purple', activeColor: 'yellow' }, cams),
       w('sensordots', 'Vibration sensors', { title: 'Vibration' }, vibration),
       w('sensordots', 'One dot', {}, motion.slice(0, 1)),
-      w('sensordots', '12-hour times (tap a dot)', { title: '12-hour', timeFormat: '12' }, [...contact.slice(0, 3), ...motion.slice(0, 3)]),
-      w('sensordots', '24-hour times (tap a dot)', { title: '24-hour', timeFormat: '24' }, [...contact.slice(0, 3), ...motion.slice(0, 3)]),
+      // Times in the app's Time format (the settings page's card).
+      w('sensordots', 'Times (tap a dot)', { title: 'Times' }, [...contact.slice(0, 3), ...motion.slice(0, 3)]),
+      renaming('sensordots', 'Rename tiles', { title: 'Rename tiles' }, [...contact.slice(0, 2), ...motion.slice(0, 2)], contact[0] ? { [contact[0]]: 'Typed name' } : {}),
       w('sensordots', 'Grey active · with a deleted device', { title: 'Odd ones', idleColor: 'grey', activeColor: 'grey' }, [...motion.slice(0, 2), MISSING]),
     ] };
   },
@@ -298,6 +299,7 @@ const BUILD = {
       w('valuematrix', 'Rooms · °C, %, CO₂, radon (usual ranges)', cols(temp, hum, co2, radon), climate),
       w('valuematrix', 'Strict: 21–22 °C, 45–50 %, CO₂ <600 (orange and red)',
         { ...cols(temp, hum, co2), range1: '21–22', range2: '45-50', range3: '<600' }, climate),
+      w('valuematrix', 'Green when fine off (inside the range plain)', { ...cols(temp, hum, co2), greenWhenFine: false }, climate),
       w('valuematrix', 'Devices · no legend', { ...cols(temp, hum, co2), rows: 'devices', showLegend: false }, climate.slice(0, 6)),
       w('valuematrix', 'Power (no range, header "Watt") · battery >30 · deleted device',
         { ...cols(power, battery), header1: 'Watt', range2: '>30', rows: 'devices' }, [...plugs.slice(0, 3), ...batteries.slice(0, 3), MISSING]),
@@ -321,10 +323,9 @@ const BUILD = {
   pollen: () => ({ cols: 3, widgets: [
     w('pollen', 'Defaults (compact: birch, grass, mugwort, UV)'),
     w('pollen', 'Detailed', { density: 'detailed' }),
-    w('pollen', 'All six types · 12-hour', { showAlder: true, showOlive: true, showRagweed: true, timeFormat: '12' }),
+    w('pollen', 'All six types', { showAlder: true, showOlive: true, showRagweed: true }),
     w('pollen', 'Detailed · all six · no UV', { density: 'detailed', showAlder: true, showOlive: true, showRagweed: true, showUv: false }),
     w('pollen', 'UV only', { showBirch: false, showGrass: false, showMugwort: false }),
-    w('pollen', 'Detailed · 24-hour', { density: 'detailed', timeFormat: '24' }),
     w('pollen', 'Nothing chosen', { showUv: false, showBirch: false, showGrass: false, showMugwort: false }),
   ] }),
 
@@ -374,8 +375,7 @@ const BUILD = {
       w('cameras', 'Live until tapped', { liveFor: 'tap' }, cams.slice(0, 2)),
       w('cameras', 'Live 30 s', { liveFor: '30' }, cams.slice(0, 1)),
       w('cameras', 'Live view off (a tap does nothing)', { liveView: false }, cams.slice(0, 2)),
-      w('cameras', '12-hour times (a late snapshot shows its time) · 60 s', { refresh: '60', timeFormat: '12' }, cams.slice(0, 2)),
-      w('cameras', '24-hour times · 60 s', { refresh: '60', timeFormat: '24' }, cams.slice(0, 2)),
+      w('cameras', 'Every 60 s (a late snapshot shows its time)', { refresh: '60' }, cams.slice(0, 2)),
       renaming('cameras', 'Rename tiles', {}, cams.slice(0, 2), cams[0] ? { [cams[0]]: 'Typed name' } : {}),
       w('cameras', 'Camera slots after a device, it again in Camera 1 (shows once)', slots('camera', [repeat, ...others].filter(Boolean).slice(0, 6)), cams.slice(0, 1)),
       w('cameras', 'Camera slots only', slots('camera', slotCams)),
@@ -438,17 +438,19 @@ const BUILD = {
     const two = where(d => has(d, 'measure_temperature'), 2);
     return { cols: 3, widgets: [
       w('combined', 'Average temperature · range · dots', { capability: temp, name: 'Indoor temperature' }, climate),
-      w('combined', 'Sum of power · share · no range', { capability: power, show: 'sum', range: false, name: 'Power now' }, plugs),
+      w('combined', 'OK range 10–35 · green when fine', { capability: temp, okRange: '10–35', greenWhenFine: true }, climate),
+      w('combined', 'Batteries under 20 % · OK range >20 · green when fine', { capability: battery, show: 'out', okRange: '>20', greenWhenFine: true }, batteries),
+      w('combined', 'Sum of power · share · no range', { capability: power, show: 'sum', showRange: false, name: 'Power now' }, plugs),
       w('combined', 'Lowest battery · every device with one (none picked)', { capability: battery, show: 'min', name: 'Lowest battery' }),
       w('combined', 'Highest humidity · Muted orange', { capability: hum, show: 'max', color: 'orange' }, humid),
       w('combined', 'Lowest – highest temperature', { capability: temp, show: 'range' }, climate),
       w('combined', 'Sum of power · Vivid green', { capability: power, show: 'sum', color: 'green', colorStyle: 'deep' }, plugs.slice(0, 3)),
       w('combined', 'Brightness (0–1 %) · Vivid, no colour', { capability: dim, colorStyle: 'deep' }, lamps),
       w('combined', 'Two devices · chart off', { capability: temp, chart: false }, two),
-      w('combined', 'Chart and range off', { capability: power, show: 'sum', range: false, chart: false }, plugs),
+      w('combined', 'Chart and range off', { capability: power, show: 'sum', showRange: false, chart: false }, plugs),
       w('combined', 'A deleted device and one without the value', { capability: temp }, [...climate.slice(0, 3), MISSING, ...plugs.slice(0, 1)]),
       w('combined', 'Pill · average · dots', { capability: temp, tileStyle: 'pill' }, climate),
-      w('combined', 'Pill · sum · share', { capability: power, tileStyle: 'pill', show: 'sum', range: false }, plugs),
+      w('combined', 'Pill · sum · share', { capability: power, tileStyle: 'pill', show: 'sum', showRange: false }, plugs),
       w('combined', 'Pill · lowest battery · Vivid purple', { capability: battery, tileStyle: 'pill', show: 'min', color: 'purple', colorStyle: 'deep' }, batteries),
       w('combined', 'None of the devices has the value', { capability: temp }, lamps.filter(id => !climate.includes(id)).slice(0, 2)),
       w('combined', 'No value picked', {}, climate.slice(0, 3)),
@@ -958,6 +960,9 @@ const BUILD = {
       w('flows', '2 columns · every colour', { columns: '2', ...all }),
       w('flows', 'No icons (play) · renamed', { ...button(1, flows[0], { name: 'Renamed flow' }), ...button(2, flows[1]), ...button(3, flows[2], { color: 'grey' }) }),
       w('flows', 'Gap and a deleted flow', { ...button(1, flows[0], { icon: icon('heart') }), ...button(3, { id: 'flow:missing-flow-0000', name: 'Deleted flow' }) }),
+      // A tap doesn't start these: Double asks again (red), Long fills while held.
+      w('flows', 'Double press', { press: 'double', ...button(1, flows[0]), ...button(2, flows[1], { color: 'green' }) }),
+      w('flows', 'Long press', { press: 'long', ...button(1, flows[0]), ...button(2, flows[1], { color: 'orange' }) }),
       w('flows', 'Nothing picked'),
     ] };
   },
@@ -1011,8 +1016,8 @@ const BUILD = {
       w('locks', 'Everything · list', { view: 'list' }, [...locks, ...garages, ...contacts]),
       w('locks', 'One lock · list', { view: 'list' }, locks.slice(0, 1)),
       w('locks', 'With a deleted device', {}, [...locks, MISSING]),
-      w('locks', 'Everything · 12-hour times', { timeFormat: '12' }, [...locks, ...garages, ...contacts]),
-      w('locks', 'Everything · list · 24-hour times', { view: 'list', timeFormat: '24' }, [...locks, ...garages, ...contacts]),
+      w('locks', 'Everything', {}, [...locks, ...garages, ...contacts]),
+      w('locks', 'Everything · list', { view: 'list' }, [...locks, ...garages, ...contacts]),
       renaming('locks', 'Rename tiles (the list shows)', {}, locks, locks[0] ? { [locks[0]]: 'Typed name' } : {}),
     ].filter(Boolean) };
   },
@@ -1085,8 +1090,6 @@ const BUILD = {
     w('clock', 'Defaults (weather)'),
     w('clock', 'No weather', { showWeather: false }),
     w('clock', ''), // no title
-    w('clock', '24-hour', { timeFormat: '24' }),
-    w('clock', '12-hour', { timeFormat: '12' }),
   ] }),
 
   // Web Page: a 550 × 512 map gadget at the Homey's location, a page that may be tapped, a site that refuses frames,

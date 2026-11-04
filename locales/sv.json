@@ -76,7 +76,8 @@
     "vibration": "Vibration",
     "noVibration": "Ingen vibration",
     "nothingDetected": "Inget upptäckt",
-    "since": "sedan __time__"
+    "since": "sedan __time__",
+    "renameFailed": "Kunde inte spara namnet."
   },
   "roomhealth": {
     "selectDevices": "Välj sensorer i widgetinställningarna.",
@@ -128,7 +129,8 @@
     "motion": "Rörelse",
     "noMotion": "Ingen rörelse",
     "alarm": "Larm",
-    "ok": "OK"
+    "ok": "OK",
+    "renameFailed": "Kunde inte spara namnet."
   },
   "weather": {
     "now": "Nu",
@@ -258,6 +260,11 @@
     "namesChanged": "__changed__ av __total__ enhetsnamn ändras:",
     "namesNoneSep": "Inget enhetsnamn innehåller ”__separator__”.",
     "namesNone": "Inget enhetsnamn ändras.",
+    "timeTitle": "Tidsformat",
+    "timeHelp": "Hur alla widgetar visar tider. Automatiskt följer språket i telefonen eller webbläsaren som visar den.",
+    "timeAuto": "Automatiskt",
+    "time24": "24 timmar",
+    "time12": "12 timmar",
     "webTitle": "Webbinstrumentpaneler",
     "webHelp": "Dina Widgetkeeper-widgetar i valfri webbläsare i hemnätverket: surfplatta, dator, tv eller Nest Hub. Slå på dem, lägg till varje skärm nedan för dess inloggningskod och bygg sedan panelerna på själva sidan.",
     "webEnable": "Slå på webbinstrumentpaneler",
@@ -660,7 +667,9 @@
       "gift": "Present",
       "sparkles": "Glitter",
       "dashboard": "Instrumentpanel"
-    }
+    },
+    "tapAgain": "Tryck igen",
+    "hold": "Håll in"
   },
   "price": {
     "now": "Nu",

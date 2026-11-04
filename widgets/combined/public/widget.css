@@ -167,12 +167,17 @@ html, body { background: transparent !important; }
  */
 .cv .cv-tile[data-level="out"] { --cv-bg: color-mix(in srgb, var(--wk-orange) var(--cv-mix), var(--cv-tile)); }
 .cv .cv-tile[data-level="far"] { --cv-bg: color-mix(in srgb, var(--wk-red) var(--cv-mix), var(--cv-tile)); }
+/* Green when fine: inside the OK range, green (as Value Matrix's cells). */
+.cv .cv-tile[data-level="good"] { --cv-bg: color-mix(in srgb, var(--wk-green) var(--cv-mix), var(--cv-tile)); }
 .cv.wk-deep .cv-tile[data-level] {
   --cv-bg: var(--wk-orange); --cv-text: var(--wk-on-orange); --cv-muted: color-mix(in srgb, var(--wk-on-orange) 80%, transparent);
   --cv-accent: var(--cv-text); --cv-track: color-mix(in srgb, var(--cv-text) 25%, var(--cv-bg)); --cv-dot: color-mix(in srgb, var(--cv-text) 60%, var(--cv-bg));
 }
 .cv.wk-deep .cv-tile[data-level="far"] {
   --cv-bg: var(--wk-red); --cv-text: var(--wk-on-red); --cv-muted: color-mix(in srgb, var(--wk-on-red) 80%, transparent);
+}
+.cv.wk-deep .cv-tile[data-level="good"] {
+  --cv-bg: var(--wk-green); --cv-text: var(--wk-on-green); --cv-muted: color-mix(in srgb, var(--wk-on-green) 80%, transparent);
 }
 .cv.wk-deep .cv-tile[data-level]::after { display: none; }
 .cv.wk-deep.cv-pill .cv-tile[data-level] .cv-icon { color: var(--cv-text); }

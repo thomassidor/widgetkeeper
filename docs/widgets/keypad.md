@@ -18,7 +18,7 @@ Starting a Flow needs an [API key](../../README.md#api-key) with **Start Flows**
 
 **Background: State colour** fills the whole widget with the ticked button's colour, so a small Keypad still shows from across the room whether the alarm is armed: red for *Armed*, green for *Disarmed*. It's a light tint, stronger with Vivid. A grey button, or a state no button has, leaves it plain, which is also the default.
 
-**Settings:** a title, the state (a device value or a variable), the code (one, or Any code), show the keypad (when a button needs it, or always), compact layout, [colour style](../../README.md#colour-style), background (plain or the state's colour), and per button: a Flow, the state's value it stands for, a label, an icon, a colour and whether it needs the code.
+**Settings:** a title, the state (a device value or a variable), the code (one, or Any code), show the keypad (when a button needs it, or always), compact layout, [colour style](../../README.md#colour-style), background (plain or the state's colour), and per button: a Flow, the state's value it stands for, a name, an icon, a colour and whether it needs the code.
 
 ## Looks
 

@@ -88,7 +88,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ t?: (key: string, tokens?: object) => string, show?: string, name?: string, range?: boolean, chart?: boolean,
-   *   okRange?: string, tileStyle?: string, color?: string, colorStyle?: string, onHeight?: (h: number) => void,
+   *   okRange?: string, greenWhenFine?: boolean, tileStyle?: string, color?: string, colorStyle?: string, onHeight?: (h: number) => void,
    *   onTap?: () => void }} opts
    */
   function createCombinedWidget(root, opts = {}) {
@@ -317,7 +317,8 @@
           valueEl.textContent = '–';
         }
         const level = c ? tileLevel(c, f) : 'plain';
-        if (PAST.includes(level)) tile.dataset.level = level;
+        // Inside the OK range: green only with Green when fine, else plain.
+        if (PAST.includes(level) || (level === 'good' && opts.greenWhenFine === true)) tile.dataset.level = level;
         else delete tile.dataset.level;
         const line = c ? lineText(c, f) : t('notRead', { count: total, total });
         // The pill's value line carries the value first, then the line; the tile's line is under the name.

@@ -25,3 +25,4 @@ paths:
   - The first column is "Now"; midnight shows the weekday in Homey's language with a divider. The dark frame `.wf-frame` copies `.tw-frame`.
 - Native `overflow-x` scrolling without `preventDefault`, so vertical swipes still scroll the dashboard; a mouse drags it. Untested on Android: if the dashboard cancels it there, add ‹ › paging buttons (taps work).
 - Footer: today's and tomorrow's high and low (`Today ↑10° ↓4°  Tomorrow ↑8° ↓-2°`, coloured), from all 48 hours in the device's local days, today from the current hour on; in compact, `mm · m/s` on the right.
+- `density` is titled *Layout* (Pollen and UV's strings, the same Compact/Detailed) since the settings review (2026-11-04; *Hour columns* before). The hour labels are the kit's `hourLabel()`: `14` in 24 hours as before, `2 PM` in 12 (the app's Time format, CLAUDE.md); the mount reloads when it changes.

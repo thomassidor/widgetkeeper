@@ -20,11 +20,12 @@ window.mountCombinedWidget = function (Homey, { root, frame }) {
     show: settings.show,
     name: settings.name,
     okRange: settings.okRange,
-    range: settings.range !== false,
+    range: settings.showRange !== false,
     chart: settings.chart !== false,
     tileStyle: settings.tileStyle,
     color: settings.color,
     colorStyle: settings.colorStyle,
+    greenWhenFine: settings.greenWhenFine === true,
     onHeight: link.setHeight,
     // Throws without a touch just before it (a click on a web dashboard).
     onTap: () => { try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not on every platform */ } },
