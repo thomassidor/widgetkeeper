@@ -153,6 +153,8 @@ const BUILD = {
       wide(w('electricity', 'Separate usage · smooth', { separateUsage: true, smooth: true }, m)),
       w('electricity', 'Defaults', {}, m),
       w('electricity', 'Compact', { layout: 'compact' }, m),
+      w('electricity', 'Separate usage · teal', { separateUsage: true, usageColor: 'teal' }, m),
+      w('electricity', 'Usage on the live chart · orange · Vivid', { usageColor: 'orange', colorStyle: 'deep' }, m),
       w('electricity', '60 min · smooth · separate usage · purple', { liveWindow: '60', smooth: true, separateUsage: true, usageColor: 'purple' }, m),
       w('electricity', '30 min window', { liveWindow: '30' }, m),
       w('electricity', '5 min window · compact', { liveWindow: '5', layout: 'compact' }, m),
@@ -596,6 +598,7 @@ const BUILD = {
     ];
     const out = spans.map(([title, span]) => w('sparklines', title, { ...span, ...slots('slot', set.slice(0, 4)) }));
     out.push(
+      w('sparklines', 'Smooth lines', { smooth: true, ...slots('slot', set.slice(0, 2)) }),
       w('sparklines', 'Purple', { color: 'purple', ...slots('slot', set.slice(0, 2)) }),
       w('sparklines', 'Green · Vivid', { color: 'green', colorStyle: 'deep', ...slots('slot', set.slice(0, 2)) }),
       w('sparklines', '1 column · 7 days · six', { count: 7, span: 'days', columns: '1', ...slots('slot', set) }),
@@ -730,6 +733,7 @@ const BUILD = {
       w('stacked', 'A value in other units', { ...slots([...layers.slice(0, 2), ...(temp ? [temp] : [])]) }),
       w('stacked', 'With a deleted device', { ...withTotal, ...slots([missing, ...layers.slice(0, 2)]) }),
       w('stacked', 'Typed names in the legend', { ...withTotal, ...slots(layers.slice(0, 3)), name1: 'Typed name', name2: 'Another' }),
+      w('stacked', 'Smooth areas', { ...withTotal, ...slots(layers.slice(0, 3)), smooth: true }),
       w('stacked', 'Legend hidden', { ...withTotal, ...slots(layers.slice(0, 3)), legend: 'hidden' }),
       w('stacked', 'A total alone', withTotal),
       w('stacked', 'Nothing picked'),

@@ -25,6 +25,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Widen the last tile** in Curtains, Device Quick Actions, Device Values and Sensor Alarms: at 2 per row, the last of an odd number of tiles fills the row.
 - **Hide the legend** in Chart · Basic, Lines and Stacked (a typed title stays in Lines and Stacked).
 - **A colour for Sparklines**, and for the Energy Price Strip's bars when *Colour by price level* is off.
+- **Smooth chart lines** in Chart · Stacked (areas) and Sparklines; the numbers stay exact.
+- **Electricity Overview: any colour for the usage history**, not only Neutral or Purple.
+- **Settings in one order** across the widgets: rename first, then what to show, the layout and display options, colour and colour style, then each tile's settings. Nothing you've set changes.
 - The same words for the same settings: *Smooth chart lines* everywhere, *Tiles per row* (Flow Buttons, Dashboard Shortcuts, Variables; everywhere its options from the fewest), each button's *Name* (Keypad, Variable Presets), *Colour* (Variable Presets), *Layout* (Weather Forecast), and grey last in Activity Dots' colours.
 
 ## 1.2.0

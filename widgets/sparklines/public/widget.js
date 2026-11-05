@@ -54,10 +54,12 @@
   /**
    * The line and area paths for `points` (`[t, v]`, oldest first) drawn over `[from, to]` in a `w` × `h`
    * box, and the lowest and highest value shown. x is by time; y runs from the lowest value (bottom) to
-   * the highest (top). A flat series sits in the middle. Null with fewer than 2 points in the span.
+   * the highest (top). A flat series sits in the middle. Null with fewer than 2 points in the span. With `smooth` the
+   * line is rounded off (the kit's `smoothValues()`); the scale and the lowest and highest stay the real values.
    * @param {[number, number][]} points
+   * @param {number} from @param {number} to @param {number} w @param {number} h @param {boolean} [smooth]
    */
-  function sparkPath(points, from, to, w, h) {
+  function sparkPath(points, from, to, w, h, smooth = false) {
     const shown = points.filter(p => p[0] >= from && p[0] <= to && typeof p[1] === 'number' && isFinite(p[1]));
     if (shown.length < 2) return null;
     let min = Infinity;
@@ -65,7 +67,8 @@
     for (const [, v] of shown) { if (v < min) min = v; if (v > max) max = v; }
     const x = t => Math.round((t - from) / (to - from) * w * 10) / 10;
     const y = v => Math.round((max === min ? h / 2 : PAD + (1 - (v - min) / (max - min)) * (h - 2 * PAD)) * 10) / 10;
-    const xy = shown.map(([t, v]) => [x(t), y(v)]);
+    const drawn = smooth ? window.WidgetkeeperKit.smoothValues(shown.map(p => p[1])) : shown.map(p => p[1]);
+    const xy = shown.map(([t], i) => [x(t), y(drawn[i])]);
     const line = xy.map(([px, py], i) => `${i ? 'L' : 'M'}${px} ${py}`).join('');
     const area = `${line}L${xy[xy.length - 1][0]} ${h}L${xy[0][0]} ${h}Z`;
     const [dx, dy] = xy[xy.length - 1];
@@ -90,7 +93,7 @@
 
   /**
    * @param {HTMLElement} root
-   * @param {{ colorStyle?: string, color?: string, t?: (key: string, tokens?: object) => string, span?: string, columns?: number|string,
+   * @param {{ colorStyle?: string, color?: string, smooth?: boolean, t?: (key: string, tokens?: object) => string, span?: string, columns?: number|string,
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
    *   now?: () => number, onHeight?: (h: number) => void }} opts
    */
@@ -203,7 +206,7 @@
       // The value holds until it changes (Homey doesn't log repeats), so the line runs on to now (not yesterday's).
       const live = end === at && !('missing' in s) && typeof s.value === 'number' && isFinite(s.value);
       if (live && lastT(points) < at) points = points.concat([[at, s.value]]);
-      const p = sparkPath(points.filter(q => q[0] <= end), from, to, w, h);
+      const p = sparkPath(points.filter(q => q[0] <= end), from, to, w, h, opts.smooth === true);
       tile.line.setAttribute('d', p ? p.line : '');
       tile.area.setAttribute('d', p ? p.area : '');
       tile.dot.style.display = p ? '' : 'none';

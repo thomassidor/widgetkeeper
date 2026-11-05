@@ -252,79 +252,6 @@
       ]
     },
     {
-      "id": "colorStyle",
-      "type": "dropdown",
-      "title": {
-        "en": "Colour style",
-        "nl": "Kleurstijl",
-        "de": "Farbstil",
-        "fr": "Style de couleur",
-        "it": "Stile colori",
-        "sv": "Färgstil",
-        "no": "Fargestil",
-        "es": "Estilo de color",
-        "da": "Farvestil",
-        "ru": "Цветовой стиль",
-        "pl": "Styl kolorów",
-        "ko": "색상 스타일",
-        "ar": "نمط الألوان"
-      },
-      "hint": {
-        "en": "Vivid fills the ticked button with a darker shade of its colour and white text.",
-        "nl": "Levendig vult de aangevinkte knop met een donkerdere tint van zijn kleur en witte tekst.",
-        "de": "Kräftig füllt die abgehakte Taste mit einem dunkleren Ton ihrer Farbe und weißer Schrift.",
-        "fr": "Vives remplit le bouton coché d’une teinte plus foncée de sa couleur, avec un texte blanc.",
-        "it": "Vivaci riempie il pulsante spuntato con una tonalità più scura del suo colore e testo bianco.",
-        "sv": "Livfulla fyller den förbockade knappen med en mörkare nyans av dess färg och vit text.",
-        "no": "Livlige fyller den avhakede knappen med en mørkere nyanse av fargen og hvit tekst.",
-        "es": "Vivos rellena el botón marcado con un tono más oscuro de su color y texto blanco.",
-        "da": "Livlige fylder den afkrydsede knap med en mørkere nuance af dens farve og hvid tekst.",
-        "ru": "«Яркие» заливают отмеченную кнопку более тёмным оттенком её цвета с белым текстом.",
-        "pl": "Żywe wypełniają zaznaczony przycisk ciemniejszym odcieniem jego koloru z białym tekstem.",
-        "ko": "선명하게는 체크된 버튼을 그 색의 더 어두운 색조와 흰색 글자로 채웁니다.",
-        "ar": "«زاهية» تملأ الزر المعلَّم بدرجة أغمق من لونه ونص أبيض."
-      },
-      "value": "soft",
-      "values": [
-        {
-          "id": "soft",
-          "title": {
-            "en": "Muted",
-            "nl": "Gedempt",
-            "de": "Gedämpft",
-            "fr": "Atténuées",
-            "it": "Smorzati",
-            "sv": "Dämpade",
-            "no": "Dempede",
-            "es": "Suaves",
-            "da": "Dæmpede",
-            "ru": "Приглушённые",
-            "pl": "Stonowane",
-            "ko": "차분하게",
-            "ar": "هادئة"
-          }
-        },
-        {
-          "id": "deep",
-          "title": {
-            "en": "Vivid",
-            "nl": "Levendig",
-            "de": "Kräftig",
-            "fr": "Vives",
-            "it": "Vivaci",
-            "sv": "Livfulla",
-            "no": "Livlige",
-            "es": "Vivos",
-            "da": "Livlige",
-            "ru": "Яркие",
-            "pl": "Żywe",
-            "ko": "선명하게",
-            "ar": "زاهية"
-          }
-        }
-      ]
-    },
-    {
       "id": "background",
       "type": "dropdown",
       "title": {
@@ -393,6 +320,79 @@
             "pl": "Kolor stanu",
             "ko": "상태 색상",
             "ar": "لون الحالة"
+          }
+        }
+      ]
+    },
+    {
+      "id": "colorStyle",
+      "type": "dropdown",
+      "title": {
+        "en": "Colour style",
+        "nl": "Kleurstijl",
+        "de": "Farbstil",
+        "fr": "Style de couleur",
+        "it": "Stile colori",
+        "sv": "Färgstil",
+        "no": "Fargestil",
+        "es": "Estilo de color",
+        "da": "Farvestil",
+        "ru": "Цветовой стиль",
+        "pl": "Styl kolorów",
+        "ko": "색상 스타일",
+        "ar": "نمط الألوان"
+      },
+      "hint": {
+        "en": "Vivid fills the ticked button with a darker shade of its colour and white text.",
+        "nl": "Levendig vult de aangevinkte knop met een donkerdere tint van zijn kleur en witte tekst.",
+        "de": "Kräftig füllt die abgehakte Taste mit einem dunkleren Ton ihrer Farbe und weißer Schrift.",
+        "fr": "Vives remplit le bouton coché d’une teinte plus foncée de sa couleur, avec un texte blanc.",
+        "it": "Vivaci riempie il pulsante spuntato con una tonalità più scura del suo colore e testo bianco.",
+        "sv": "Livfulla fyller den förbockade knappen med en mörkare nyans av dess färg och vit text.",
+        "no": "Livlige fyller den avhakede knappen med en mørkere nyanse av fargen og hvit tekst.",
+        "es": "Vivos rellena el botón marcado con un tono más oscuro de su color y texto blanco.",
+        "da": "Livlige fylder den afkrydsede knap med en mørkere nuance af dens farve og hvid tekst.",
+        "ru": "«Яркие» заливают отмеченную кнопку более тёмным оттенком её цвета с белым текстом.",
+        "pl": "Żywe wypełniają zaznaczony przycisk ciemniejszym odcieniem jego koloru z białym tekstem.",
+        "ko": "선명하게는 체크된 버튼을 그 색의 더 어두운 색조와 흰색 글자로 채웁니다.",
+        "ar": "«زاهية» تملأ الزر المعلَّم بدرجة أغمق من لونه ونص أبيض."
+      },
+      "value": "soft",
+      "values": [
+        {
+          "id": "soft",
+          "title": {
+            "en": "Muted",
+            "nl": "Gedempt",
+            "de": "Gedämpft",
+            "fr": "Atténuées",
+            "it": "Smorzati",
+            "sv": "Dämpade",
+            "no": "Dempede",
+            "es": "Suaves",
+            "da": "Dæmpede",
+            "ru": "Приглушённые",
+            "pl": "Stonowane",
+            "ko": "차분하게",
+            "ar": "هادئة"
+          }
+        },
+        {
+          "id": "deep",
+          "title": {
+            "en": "Vivid",
+            "nl": "Levendig",
+            "de": "Kräftig",
+            "fr": "Vives",
+            "it": "Vivaci",
+            "sv": "Livfulla",
+            "no": "Livlige",
+            "es": "Vivos",
+            "da": "Livlige",
+            "ru": "Яркие",
+            "pl": "Żywe",
+            "ko": "선명하게",
+            "ar": "زاهية"
           }
         }
       ]

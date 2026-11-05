@@ -10,6 +10,18 @@
 /* `usageColor: purple`: Homey's own purple (--theme-color-purple in the Homey web app), lighter in dark mode. */
 .ew.usage-purple { --ew-usage: #7500FB; }
 .homey-dark-mode .ew.usage-purple { --ew-usage: #9033FC; }
+/* The rest of the palette (1.3.0, Neutral stays the default): kit.css's bright colours, on the widget's root (`.wk`). */
+.ew.usage-blue { --ew-usage: var(--wk-blue-bright); }
+.ew.usage-red { --ew-usage: var(--wk-red-bright); }
+.ew.usage-orange { --ew-usage: var(--wk-orange-bright); }
+.ew.usage-yellow { --ew-usage: var(--wk-yellow-bright); }
+.ew.usage-green { --ew-usage: var(--wk-green-bright); }
+.ew.usage-teal { --ew-usage: var(--wk-teal-bright); }
+.ew.usage-cyan { --ew-usage: var(--wk-cyan-bright); }
+.ew.usage-indigo { --ew-usage: var(--wk-indigo-bright); }
+.ew.usage-pink { --ew-usage: var(--wk-pink-bright); }
+.ew.usage-brown { --ew-usage: var(--wk-brown-bright); }
+.ew.usage-grey { --ew-usage: var(--wk-grey-bright); }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }

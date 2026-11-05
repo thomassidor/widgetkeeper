@@ -6,7 +6,7 @@
 window.mountElectricityWidget = function (Homey, { root, frame }) {
   const REFRESH_MS = 5 * 60e3; // usage history resolution; also keeps the app's meter subscription alive
 
-  const { wireFrame, getDeviceIds, wireTimeFormat } = window.WidgetkeeperKit;
+  const { wireFrame, getDeviceIds, wireTimeFormat, COLORS } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -28,7 +28,7 @@ window.mountElectricityWidget = function (Homey, { root, frame }) {
     separateUsage: settings.separateUsage === true,
     liveWindow: Number(settings.liveWindow) || 10,
     smooth: settings.smooth === true,
-    usageColor: settings.usageColor === 'purple' ? 'purple' : 'neutral',
+    usageColor: COLORS.includes(settings.usageColor) ? settings.usageColor : 'neutral',
   });
 
   function ready() {

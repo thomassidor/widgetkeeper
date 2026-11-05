@@ -18,7 +18,6 @@
   const X_LABEL_H = 14;
   const LABEL_PAD = 8; // y label ↔ axis
   const LABEL_MIN_GAP = 16; // min vertical distance between y labels
-  const SMOOTH_PASSES = 6; // `smooth`: averaging passes over a trace
   const STEP_RADIUS = 5; // `smooth`: corner radius on step lines
   const TOUCH_HOLD_MS = 3000; // a touch selection stays this long after the finger lifts
   const REFRESH_MS = 5 * 60e3; // a chart widget's refetch (`wireChart()`)
@@ -69,15 +68,6 @@
   function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
   function show(node, on) { node.style.display = on ? '' : 'none'; }
   function f1(n) { return Math.round(n * 10) / 10; }
-
-  /** Smoothed values for the `smooth` setting: six [1 2 1]/4 passes; the ends stay put. */
-  function smoothValues(vs) {
-    let q = vs;
-    for (let k = 0; k < SMOOTH_PASSES; k++) {
-      q = q.map((v, i) => i === 0 || i === q.length - 1 ? v : (q[i - 1] + 2 * v + q[i + 1]) / 4);
-    }
-    return q;
-  }
 
   /**
    * Path segments (after the M) through `pts` ([x, y] with rising x): a monotone cubic
@@ -978,7 +968,7 @@
 
   window.WidgetkeeperChart = {
     MIN, HOUR, L, X_LABEL_GAP, X_LABEL_H, LABEL_PAD, LABEL_MIN_GAP,
-    niceStep, ticks, el, clear, show, f1, smoothValues, linePath, stepPath, p985, p015,
+    niceStep, ticks, el, clear, show, f1, smoothValues: window.WidgetkeeperKit.smoothValues, linePath, stepPath, p985, p015,
     compactNumber, ago, stepDecimals, axisLabel, buckets, alignSeries, profile, trendLine, barUnit, useBuckets, meterTotal, calendarLabels, createKit, attachScrub, pointerX,
     createFrame, wireChart, keepLive, pushLive, currencyUnits, typedName,
   };

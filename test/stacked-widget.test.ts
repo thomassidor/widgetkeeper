@@ -136,3 +136,24 @@ describe('typed names and a hidden legend (1.3.0)', () => {
     expect(titled.textContent).not.toContain('Oven');
   });
 });
+
+describe('smooth (areas, 1.3.0)', () => {
+  const at = NOW;
+  const spiky = (name: string) => ({ deviceId: name, capabilityId: 'measure_power', name, capability: { title: 'Power', units: 'W', decimals: 0 }, value: 100,
+    points: Array.from({ length: 80 }, (_, i) => [at - (80 - i) * 15 * 60e3, i % 2 ? 500 : 100]) });
+  const paths = (opts: object) => {
+    const root = document.createElement('div');
+    document.body.append(root);
+    const w = win.createStackedWidget(root, { count: 2, ...opts });
+    w.setState([spiky('Oven'), spiky('Heat pump')], 'en');
+    return { lines: [...root.querySelectorAll('.sk-line')].map(p => p.getAttribute('d')), header: root.querySelector('.ew-header')!.textContent };
+  };
+  it('rounds off the areas; the header stays the same, and bars ignore it', () => {
+    const plain = paths({});
+    const smooth = paths({ smooth: true });
+    expect(smooth.lines.length).toBe(plain.lines.length);
+    expect(smooth.lines).not.toEqual(plain.lines);
+    expect(smooth.header).toBe(plain.header);
+    expect(paths({ style: 'bars', smooth: true }).lines).toEqual(paths({ style: 'bars' }).lines);
+  });
+});

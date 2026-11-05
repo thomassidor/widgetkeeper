@@ -1,4 +1,5 @@
 // @vitest-environment happy-dom
+import { readFileSync } from 'node:fs';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { loadWidget } from './helpers/loadWidget.js';
 
@@ -409,5 +410,17 @@ describe('15-minute prices', () => {
   it('ignores quarters that do not cover the slots', () => {
     const { q } = widget(snapshot({ quarters: quarters().slice(0, 10) }, { 24: 1.5 }));
     expect(q('.ew-hval.price')!.textContent).toBe('1,50 kr./kWh');
+  });
+});
+
+describe('the usage colour (1.3.0)', () => {
+  it('offers Neutral first and the whole palette; CSS has every colour, and Purple keeps its own', () => {
+    const setting = JSON.parse(readFileSync('widgets/electricity/widget.compose.json', 'utf8')).settings.find((s: any) => s.id === 'usageColor');
+    expect(setting.value).toBe('neutral');
+    const ids = setting.values.map((v: any) => v.id);
+    expect(ids).toEqual(['neutral', ...win.WidgetkeeperKit.COLORS]);
+    const css = readFileSync('widgets/electricity/public/widget.css', 'utf8');
+    for (const c of win.WidgetkeeperKit.COLORS) expect(css).toContain(`.ew.usage-${c} {`);
+    expect(css).toContain('.ew.usage-purple { --ew-usage: #7500FB; }');
   });
 });

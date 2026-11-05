@@ -36,7 +36,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, colors?: string[], t?: (key: string) => string, locale?: string, language?: string,
-   *   now?: () => number, total?: boolean, count?: number, span?: string, style?: string, legend?: string, title?: string, names?: string[],
+   *   now?: () => number, total?: boolean, count?: number, span?: string, style?: string, legend?: string, title?: string, names?: string[], smooth?: boolean,
    *   showHeader?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createStackedWidget(root, opts = {}) {
@@ -45,6 +45,19 @@
     const bars = opts.style === 'bars';
     const legendBelow = opts.legend === 'below';
     const legendHidden = opts.legend === 'hidden'; // a typed title still shows
+    const smooth = opts.smooth === true && opts.style !== 'bars';
+    /** Values with their runs between gaps (null) rounded off, each run on its own. */
+    const smoothRuns = (vs) => {
+      const out = vs.slice();
+      for (let i = 0; i < vs.length;) {
+        if (typeof vs[i] !== 'number') { i++; continue; }
+        let end = i;
+        while (end < vs.length && typeof vs[end] === 'number') end++;
+        out.splice(i, end - i, ...C.smoothValues(vs.slice(i, end)));
+        i = end;
+      }
+      return out;
+    };
     const title = typeof opts.title === 'string' ? opts.title.trim() : '';
     const hasTotal = opts.total === true;
     const count = Math.max(1, Math.min(MAX, Number(opts.count) || 1)); // layers
@@ -246,11 +259,15 @@
       // Each layer's band in each row: from the sum below it to the sum with it, Other at the bottom of the upper stack.
       const n = p.drawable.length;
       const order = p.total ? [n, ...p.drawable.map((_, k) => k)] : p.drawable.map((_, k) => k);
-      const bands = rows.map((r) => {
+      // With `smooth` (areas only) each layer's run of values is rounded off before stacking, so the layers still meet;
+      // the header, a tap and the scale keep the real values.
+      const drawnOf = get => (smooth ? smoothRuns(rows.map(get)) : rows.map(get));
+      const shown = order.map(k => drawnOf(r => (k === n ? r.other : r.values[k])));
+      const bands = rows.map((r, j) => {
         let up = 0, down = 0;
         const out = [];
-        for (const k of order) {
-          const v = k === n ? r.other : r.values[k];
+        for (const [o, k] of order.entries()) {
+          const v = shown[o][j];
           if (!num(v) || v === 0) { out[k] = null; continue; }
           if (v > 0) { out[k] = [up, up + v]; up += v; } else { out[k] = [down + v, down]; down += v; }
         }
@@ -302,7 +319,8 @@
       }
       // The total, where picked: a line over the stack.
       if (p.total) {
-        const pts = rows.map((r, j) => (num(r.total) ? [bars ? x((r.t + r.end) / 2) : (j === 0 ? x(r.t) : j === rows.length - 1 ? x(r.end) : x((r.t + r.end) / 2)), y(r.total)] : null)).filter(Boolean);
+        const totals = drawnOf(r => r.total);
+        const pts = rows.map((r, j) => (num(totals[j]) ? [bars ? x((r.t + r.end) / 2) : (j === 0 ? x(r.t) : j === rows.length - 1 ? x(r.end) : x((r.t + r.end) / 2)), y(totals[j])] : null)).filter(Boolean);
         if (pts.length > 1) C.el('svg:path', { class: 'sk-total', d: C.linePath(pts, false) }, svg);
       }
       if (win.end < win.to) C.el('svg:rect', { class: 'future', x: f1(x(win.end)), y: top - 6, width: f1(x(win.to) - x(win.end)), height: f1(base - top + 6) }, svg);

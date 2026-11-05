@@ -76,79 +76,6 @@
       ]
     },
     {
-      "id": "colorStyle",
-      "type": "dropdown",
-      "title": {
-        "en": "Colour style",
-        "nl": "Kleurstijl",
-        "de": "Farbstil",
-        "fr": "Style de couleur",
-        "it": "Stile colori",
-        "sv": "Färgstil",
-        "no": "Fargestil",
-        "es": "Estilo de color",
-        "da": "Farvestil",
-        "ru": "Цветовой стиль",
-        "pl": "Styl kolorów",
-        "ko": "색상 스타일",
-        "ar": "نمط الألوان"
-      },
-      "hint": {
-        "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
-        "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
-        "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
-        "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
-        "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
-        "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
-        "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
-        "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
-        "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
-        "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
-        "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
-        "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
-        "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
-      },
-      "value": "soft",
-      "values": [
-        {
-          "id": "soft",
-          "title": {
-            "en": "Muted",
-            "nl": "Gedempt",
-            "de": "Gedämpft",
-            "fr": "Atténuées",
-            "it": "Smorzati",
-            "sv": "Dämpade",
-            "no": "Dempede",
-            "es": "Suaves",
-            "da": "Dæmpede",
-            "ru": "Приглушённые",
-            "pl": "Stonowane",
-            "ko": "차분하게",
-            "ar": "هادئة"
-          }
-        },
-        {
-          "id": "deep",
-          "title": {
-            "en": "Vivid",
-            "nl": "Levendig",
-            "de": "Kräftig",
-            "fr": "Vives",
-            "it": "Vivaci",
-            "sv": "Livfulla",
-            "no": "Livlige",
-            "es": "Vivos",
-            "da": "Livlige",
-            "ru": "Яркие",
-            "pl": "Żywe",
-            "ko": "선명하게",
-            "ar": "زاهية"
-          }
-        }
-      ]
-    },
-    {
       "id": "press",
       "type": "dropdown",
       "title": {
@@ -235,6 +162,79 @@
             "pl": "Długie przytrzymanie",
             "ko": "길게 누르기",
             "ar": "ضغطة مطوّلة"
+          }
+        }
+      ]
+    },
+    {
+      "id": "colorStyle",
+      "type": "dropdown",
+      "title": {
+        "en": "Colour style",
+        "nl": "Kleurstijl",
+        "de": "Farbstil",
+        "fr": "Style de couleur",
+        "it": "Stile colori",
+        "sv": "Färgstil",
+        "no": "Fargestil",
+        "es": "Estilo de color",
+        "da": "Farvestil",
+        "ru": "Цветовой стиль",
+        "pl": "Styl kolorów",
+        "ko": "색상 스타일",
+        "ar": "نمط الألوان"
+      },
+      "hint": {
+        "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
+        "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
+        "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
+        "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
+        "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
+        "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
+        "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
+        "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
+        "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
+        "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
+        "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
+        "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
+        "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
+      },
+      "value": "soft",
+      "values": [
+        {
+          "id": "soft",
+          "title": {
+            "en": "Muted",
+            "nl": "Gedempt",
+            "de": "Gedämpft",
+            "fr": "Atténuées",
+            "it": "Smorzati",
+            "sv": "Dämpade",
+            "no": "Dempede",
+            "es": "Suaves",
+            "da": "Dæmpede",
+            "ru": "Приглушённые",
+            "pl": "Stonowane",
+            "ko": "차분하게",
+            "ar": "هادئة"
+          }
+        },
+        {
+          "id": "deep",
+          "title": {
+            "en": "Vivid",
+            "nl": "Levendig",
+            "de": "Kräftig",
+            "fr": "Vives",
+            "it": "Vivaci",
+            "sv": "Livfulla",
+            "no": "Livlige",
+            "es": "Vivos",
+            "da": "Livlige",
+            "ru": "Яркие",
+            "pl": "Żywe",
+            "ko": "선명하게",
+            "ar": "زاهية"
           }
         }
       ]

@@ -12689,6 +12689,41 @@
           ]
         },
         {
+          "id": "smooth",
+          "type": "checkbox",
+          "title": {
+            "en": "Smooth chart lines",
+            "nl": "Vloeiende grafieklijnen",
+            "de": "Geglättete Diagrammlinien",
+            "fr": "Lisser les courbes",
+            "it": "Linee del grafico smussate",
+            "sv": "Utjämnade diagramlinjer",
+            "no": "Glatte diagramlinjer",
+            "es": "Suavizar las líneas del gráfico",
+            "da": "Udglattede graflinjer",
+            "ru": "Сглаживать линии графиков",
+            "pl": "Wygładzone linie wykresów",
+            "ko": "차트 선 부드럽게",
+            "ar": "تنعيم خطوط المخطط"
+          },
+          "hint": {
+            "en": "Rounds off spikes in the lines. The numbers at the top stay exact. Only with Areas.",
+            "nl": "Rondt pieken in de lijnen af. De getallen bovenaan blijven exact. Alleen bij Vlakken.",
+            "de": "Glättet Spitzen in den Linien. Die Zahlen oben bleiben exakt. Nur bei Flächen.",
+            "fr": "Adoucit les pics des courbes. Les valeurs en haut restent exactes. Seulement avec Aires.",
+            "it": "Smussa i picchi delle linee. I valori in alto restano esatti. Solo con Aree.",
+            "sv": "Rundar av toppar i linjerna. Siffrorna överst förblir exakta. Bara med Ytor.",
+            "no": "Runder av topper i linjene. Tallene øverst forblir nøyaktige. Bare med Flater.",
+            "es": "Suaviza los picos de las líneas. Los valores de arriba siguen exactos. Solo con Áreas.",
+            "da": "Runder spidser i linjerne af. Tallene øverst forbliver præcise. Kun med Flader.",
+            "ru": "Сглаживает пики линий. Значения вверху остаются точными. Только для стиля «Области».",
+            "pl": "Wygładza skoki na liniach. Liczby u góry pozostają dokładne. Tylko przy stylu Obszary.",
+            "ko": "선의 급격한 변화를 부드럽게 합니다. 위쪽 숫자는 정확하게 유지됩니다. 영역에서만 적용됩니다.",
+            "ar": "يخفف القمم في الخطوط. تبقى الأرقام في الأعلى دقيقة. مع مساحات فقط."
+          },
+          "value": false
+        },
+        {
           "id": "legend",
           "type": "dropdown",
           "title": {
@@ -21932,6 +21967,155 @@
           ]
         },
         {
+          "id": "press",
+          "type": "dropdown",
+          "title": {
+            "en": "Activate with",
+            "nl": "Activeren met",
+            "de": "Auslösen mit",
+            "fr": "Activer par",
+            "it": "Attiva con",
+            "sv": "Aktivera med",
+            "no": "Aktiver med",
+            "es": "Activar con",
+            "da": "Aktivér med",
+            "ru": "Срабатывание",
+            "pl": "Uruchamiaj przez",
+            "ko": "실행 방식",
+            "ar": "التفعيل بـ"
+          },
+          "hint": {
+            "en": "Double press: the first tap turns the tile red and asks for a second within 3 seconds. Long press: hold the tile until it has filled. So a stray tap can't unlock a door.",
+            "nl": "Dubbele tik: de eerste tik kleurt de tegel rood en vraagt binnen 3 seconden om een tweede. Lang indrukken: houd de tegel vast tot hij gevuld is. Zo ontgrendelt een verdwaalde tik geen deur.",
+            "de": "Doppelt tippen: Das erste Tippen färbt die Kachel rot und verlangt innerhalb von 3 Sekunden ein zweites. Lange drücken: Halte die Kachel, bis sie gefüllt ist. So entriegelt ein versehentliches Tippen keine Tür.",
+            "fr": "Double appui : le premier appui colore la tuile en rouge et en demande un second dans les 3 secondes. Appui long : maintenez la tuile jusqu'à ce qu'elle soit remplie. Ainsi, un appui accidentel ne déverrouille pas une porte.",
+            "it": "Doppio tocco: il primo tocco colora il riquadro di rosso e ne chiede un secondo entro 3 secondi. Pressione lunga: tieni premuto il riquadro finché non si riempie. Così un tocco accidentale non sblocca una porta.",
+            "sv": "Dubbeltryck: det första trycket gör rutan röd och ber om ett andra inom 3 sekunder. Långt tryck: håll in rutan tills den har fyllts. Så låser ett oavsiktligt tryck inte upp en dörr.",
+            "no": "Dobbelttrykk: det første trykket gjør flisen rød og ber om et nytt innen 3 sekunder. Langt trykk: hold inne flisen til den er fylt. Slik låser ikke et utilsiktet trykk opp en dør.",
+            "es": "Doble toque: el primer toque pone el mosaico en rojo y pide otro en 3 segundos. Pulsación larga: mantén pulsado el mosaico hasta que se llene. Así un toque accidental no desbloquea una puerta.",
+            "da": "Dobbelttryk: det første tryk gør feltet rødt og beder om et til inden for 3 sekunder. Langt tryk: hold feltet inde, til det er fyldt. Så låser et utilsigtet tryk ikke en dør op.",
+            "ru": "Двойное нажатие: первое нажатие окрашивает плитку в красный и ждёт второго в течение 3 секунд. Долгое нажатие: удерживайте плитку, пока она не заполнится. Так случайное нажатие не отопрёт дверь.",
+            "pl": "Podwójne dotknięcie: pierwsze dotknięcie barwi kafelek na czerwono i czeka 3 sekundy na drugie. Długie przytrzymanie: przytrzymaj kafelek, aż się wypełni. Dzięki temu przypadkowe dotknięcie nie odblokuje drzwi.",
+            "ko": "두 번 탭: 첫 번째 탭은 타일을 빨간색으로 바꾸고 3초 안에 한 번 더 탭하도록 요청합니다. 길게 누르기: 타일이 가득 찰 때까지 누르고 있으세요. 그래서 실수로 탭해도 문 잠금이 해제되지 않습니다.",
+            "ar": "نقرة مزدوجة: النقرة الأولى تجعل المربع أحمر وتطلب نقرة ثانية خلال 3 ثوانٍ. ضغطة مطوّلة: اضغط على المربع حتى يمتلئ. وبذلك لا تفتح نقرة عابرة قفل باب."
+          },
+          "value": "single",
+          "values": [
+            {
+              "id": "single",
+              "title": {
+                "en": "Single press",
+                "nl": "Enkele tik",
+                "de": "Einmal tippen",
+                "fr": "Appui simple",
+                "it": "Tocco singolo",
+                "sv": "Ett tryck",
+                "no": "Ett trykk",
+                "es": "Toque simple",
+                "da": "Ét tryk",
+                "ru": "Одно нажатие",
+                "pl": "Jedno dotknięcie",
+                "ko": "한 번 탭",
+                "ar": "نقرة واحدة"
+              }
+            },
+            {
+              "id": "double",
+              "title": {
+                "en": "Double press",
+                "nl": "Dubbele tik",
+                "de": "Doppelt tippen",
+                "fr": "Double appui",
+                "it": "Doppio tocco",
+                "sv": "Dubbeltryck",
+                "no": "Dobbelttrykk",
+                "es": "Doble toque",
+                "da": "Dobbelttryk",
+                "ru": "Двойное нажатие",
+                "pl": "Podwójne dotknięcie",
+                "ko": "두 번 탭",
+                "ar": "نقرة مزدوجة"
+              }
+            },
+            {
+              "id": "long",
+              "title": {
+                "en": "Long press",
+                "nl": "Lang indrukken",
+                "de": "Lange drücken",
+                "fr": "Appui long",
+                "it": "Pressione lunga",
+                "sv": "Långt tryck",
+                "no": "Langt trykk",
+                "es": "Pulsación larga",
+                "da": "Langt tryk",
+                "ru": "Долгое нажатие",
+                "pl": "Długie przytrzymanie",
+                "ko": "길게 누르기",
+                "ar": "ضغطة مطوّلة"
+              }
+            }
+          ]
+        },
+        {
+          "id": "pressFor",
+          "type": "dropdown",
+          "title": {
+            "en": "  – Tiles",
+            "nl": "  – Tegels",
+            "de": "  – Kacheln",
+            "fr": "  – Tuiles",
+            "it": "  – Riquadri",
+            "sv": "  – Rutor",
+            "no": "  – Fliser",
+            "es": "  – Mosaicos",
+            "da": "  – Felter",
+            "ru": "  – Плитки",
+            "pl": "  – Kafelki",
+            "ko": "  – 타일",
+            "ar": "  – المربعات"
+          },
+          "value": "all",
+          "values": [
+            {
+              "id": "all",
+              "title": {
+                "en": "Every tile",
+                "nl": "Elke tegel",
+                "de": "Jede Kachel",
+                "fr": "Chaque tuile",
+                "it": "Ogni riquadro",
+                "sv": "Varje ruta",
+                "no": "Hver flis",
+                "es": "Cada mosaico",
+                "da": "Hvert felt",
+                "ru": "Все плитки",
+                "pl": "Każdy kafelek",
+                "ko": "모든 타일",
+                "ar": "كل المربعات"
+              }
+            },
+            {
+              "id": "locks",
+              "title": {
+                "en": "Locks and garage doors",
+                "nl": "Sloten en garagedeuren",
+                "de": "Schlösser und Garagentore",
+                "fr": "Serrures et portes de garage",
+                "it": "Serrature e porte del garage",
+                "sv": "Lås och garageportar",
+                "no": "Låser og garasjeporter",
+                "es": "Cerraduras y puertas de garaje",
+                "da": "Låse og garageporte",
+                "ru": "Замки и гаражные ворота",
+                "pl": "Zamki i bramy garażowe",
+                "ko": "잠금장치 및 차고 문",
+                "ar": "الأقفال وأبواب المرآب"
+              }
+            }
+          ]
+        },
+        {
           "id": "color",
           "type": "dropdown",
           "title": {
@@ -22256,155 +22440,6 @@
               }
             }
           ]
-        },
-        {
-          "id": "press",
-          "type": "dropdown",
-          "title": {
-            "en": "Activate with",
-            "nl": "Activeren met",
-            "de": "Auslösen mit",
-            "fr": "Activer par",
-            "it": "Attiva con",
-            "sv": "Aktivera med",
-            "no": "Aktiver med",
-            "es": "Activar con",
-            "da": "Aktivér med",
-            "ru": "Срабатывание",
-            "pl": "Uruchamiaj przez",
-            "ko": "실행 방식",
-            "ar": "التفعيل بـ"
-          },
-          "hint": {
-            "en": "Double press: the first tap turns the tile red and asks for a second within 3 seconds. Long press: hold the tile until it has filled. So a stray tap can't unlock a door.",
-            "nl": "Dubbele tik: de eerste tik kleurt de tegel rood en vraagt binnen 3 seconden om een tweede. Lang indrukken: houd de tegel vast tot hij gevuld is. Zo ontgrendelt een verdwaalde tik geen deur.",
-            "de": "Doppelt tippen: Das erste Tippen färbt die Kachel rot und verlangt innerhalb von 3 Sekunden ein zweites. Lange drücken: Halte die Kachel, bis sie gefüllt ist. So entriegelt ein versehentliches Tippen keine Tür.",
-            "fr": "Double appui : le premier appui colore la tuile en rouge et en demande un second dans les 3 secondes. Appui long : maintenez la tuile jusqu'à ce qu'elle soit remplie. Ainsi, un appui accidentel ne déverrouille pas une porte.",
-            "it": "Doppio tocco: il primo tocco colora il riquadro di rosso e ne chiede un secondo entro 3 secondi. Pressione lunga: tieni premuto il riquadro finché non si riempie. Così un tocco accidentale non sblocca una porta.",
-            "sv": "Dubbeltryck: det första trycket gör rutan röd och ber om ett andra inom 3 sekunder. Långt tryck: håll in rutan tills den har fyllts. Så låser ett oavsiktligt tryck inte upp en dörr.",
-            "no": "Dobbelttrykk: det første trykket gjør flisen rød og ber om et nytt innen 3 sekunder. Langt trykk: hold inne flisen til den er fylt. Slik låser ikke et utilsiktet trykk opp en dør.",
-            "es": "Doble toque: el primer toque pone el mosaico en rojo y pide otro en 3 segundos. Pulsación larga: mantén pulsado el mosaico hasta que se llene. Así un toque accidental no desbloquea una puerta.",
-            "da": "Dobbelttryk: det første tryk gør feltet rødt og beder om et til inden for 3 sekunder. Langt tryk: hold feltet inde, til det er fyldt. Så låser et utilsigtet tryk ikke en dør op.",
-            "ru": "Двойное нажатие: первое нажатие окрашивает плитку в красный и ждёт второго в течение 3 секунд. Долгое нажатие: удерживайте плитку, пока она не заполнится. Так случайное нажатие не отопрёт дверь.",
-            "pl": "Podwójne dotknięcie: pierwsze dotknięcie barwi kafelek na czerwono i czeka 3 sekundy na drugie. Długie przytrzymanie: przytrzymaj kafelek, aż się wypełni. Dzięki temu przypadkowe dotknięcie nie odblokuje drzwi.",
-            "ko": "두 번 탭: 첫 번째 탭은 타일을 빨간색으로 바꾸고 3초 안에 한 번 더 탭하도록 요청합니다. 길게 누르기: 타일이 가득 찰 때까지 누르고 있으세요. 그래서 실수로 탭해도 문 잠금이 해제되지 않습니다.",
-            "ar": "نقرة مزدوجة: النقرة الأولى تجعل المربع أحمر وتطلب نقرة ثانية خلال 3 ثوانٍ. ضغطة مطوّلة: اضغط على المربع حتى يمتلئ. وبذلك لا تفتح نقرة عابرة قفل باب."
-          },
-          "value": "single",
-          "values": [
-            {
-              "id": "single",
-              "title": {
-                "en": "Single press",
-                "nl": "Enkele tik",
-                "de": "Einmal tippen",
-                "fr": "Appui simple",
-                "it": "Tocco singolo",
-                "sv": "Ett tryck",
-                "no": "Ett trykk",
-                "es": "Toque simple",
-                "da": "Ét tryk",
-                "ru": "Одно нажатие",
-                "pl": "Jedno dotknięcie",
-                "ko": "한 번 탭",
-                "ar": "نقرة واحدة"
-              }
-            },
-            {
-              "id": "double",
-              "title": {
-                "en": "Double press",
-                "nl": "Dubbele tik",
-                "de": "Doppelt tippen",
-                "fr": "Double appui",
-                "it": "Doppio tocco",
-                "sv": "Dubbeltryck",
-                "no": "Dobbelttrykk",
-                "es": "Doble toque",
-                "da": "Dobbelttryk",
-                "ru": "Двойное нажатие",
-                "pl": "Podwójne dotknięcie",
-                "ko": "두 번 탭",
-                "ar": "نقرة مزدوجة"
-              }
-            },
-            {
-              "id": "long",
-              "title": {
-                "en": "Long press",
-                "nl": "Lang indrukken",
-                "de": "Lange drücken",
-                "fr": "Appui long",
-                "it": "Pressione lunga",
-                "sv": "Långt tryck",
-                "no": "Langt trykk",
-                "es": "Pulsación larga",
-                "da": "Langt tryk",
-                "ru": "Долгое нажатие",
-                "pl": "Długie przytrzymanie",
-                "ko": "길게 누르기",
-                "ar": "ضغطة مطوّلة"
-              }
-            }
-          ]
-        },
-        {
-          "id": "pressFor",
-          "type": "dropdown",
-          "title": {
-            "en": "  – Tiles",
-            "nl": "  – Tegels",
-            "de": "  – Kacheln",
-            "fr": "  – Tuiles",
-            "it": "  – Riquadri",
-            "sv": "  – Rutor",
-            "no": "  – Fliser",
-            "es": "  – Mosaicos",
-            "da": "  – Felter",
-            "ru": "  – Плитки",
-            "pl": "  – Kafelki",
-            "ko": "  – 타일",
-            "ar": "  – المربعات"
-          },
-          "value": "all",
-          "values": [
-            {
-              "id": "all",
-              "title": {
-                "en": "Every tile",
-                "nl": "Elke tegel",
-                "de": "Jede Kachel",
-                "fr": "Chaque tuile",
-                "it": "Ogni riquadro",
-                "sv": "Varje ruta",
-                "no": "Hver flis",
-                "es": "Cada mosaico",
-                "da": "Hvert felt",
-                "ru": "Все плитки",
-                "pl": "Każdy kafelek",
-                "ko": "모든 타일",
-                "ar": "كل المربعات"
-              }
-            },
-            {
-              "id": "locks",
-              "title": {
-                "en": "Locks and garage doors",
-                "nl": "Sloten en garagedeuren",
-                "de": "Schlösser und Garagentore",
-                "fr": "Serrures et portes de garage",
-                "it": "Serrature e porte del garage",
-                "sv": "Lås och garageportar",
-                "no": "Låser og garasjeporter",
-                "es": "Cerraduras y puertas de garaje",
-                "da": "Låse og garageporte",
-                "ru": "Замки и гаражные ворота",
-                "pl": "Zamki i bramy garażowe",
-                "ko": "잠금장치 및 차고 문",
-                "ar": "الأقفال وأبواب المرآب"
-              }
-            }
-          ]
         }
       ],
       "api": {
@@ -22644,79 +22679,6 @@
           ]
         },
         {
-          "id": "colorStyle",
-          "type": "dropdown",
-          "title": {
-            "en": "Colour style",
-            "nl": "Kleurstijl",
-            "de": "Farbstil",
-            "fr": "Style de couleur",
-            "it": "Stile colori",
-            "sv": "Färgstil",
-            "no": "Fargestil",
-            "es": "Estilo de color",
-            "da": "Farvestil",
-            "ru": "Цветовой стиль",
-            "pl": "Styl kolorów",
-            "ko": "색상 스타일",
-            "ar": "نمط الألوان"
-          },
-          "hint": {
-            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
-            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
-            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
-            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
-            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
-            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
-            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
-            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
-            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
-            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
-            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
-            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
-            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
-          },
-          "value": "soft",
-          "values": [
-            {
-              "id": "soft",
-              "title": {
-                "en": "Muted",
-                "nl": "Gedempt",
-                "de": "Gedämpft",
-                "fr": "Atténuées",
-                "it": "Smorzati",
-                "sv": "Dämpade",
-                "no": "Dempede",
-                "es": "Suaves",
-                "da": "Dæmpede",
-                "ru": "Приглушённые",
-                "pl": "Stonowane",
-                "ko": "차분하게",
-                "ar": "هادئة"
-              }
-            },
-            {
-              "id": "deep",
-              "title": {
-                "en": "Vivid",
-                "nl": "Levendig",
-                "de": "Kräftig",
-                "fr": "Vives",
-                "it": "Vivaci",
-                "sv": "Livfulla",
-                "no": "Livlige",
-                "es": "Vivos",
-                "da": "Livlige",
-                "ru": "Яркие",
-                "pl": "Żywe",
-                "ko": "선명하게",
-                "ar": "زاهية"
-              }
-            }
-          ]
-        },
-        {
           "id": "percentFill",
           "type": "checkbox",
           "title": {
@@ -22824,6 +22786,79 @@
           "value": 20,
           "min": 0,
           "max": 100
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
+            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
+            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
+            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
+            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
+            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
+            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
+            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
+            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
+            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
+            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
+            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
+            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
+              }
+            }
+          ]
         },
         {
           "id": "slot1",
@@ -23451,152 +23486,6 @@
           "value": false
         },
         {
-          "id": "usageColor",
-          "type": "dropdown",
-          "title": {
-            "en": "Usage history colour",
-            "nl": "Kleur verbruiksgeschiedenis",
-            "de": "Farbe des Verbrauchsverlaufs",
-            "fr": "Couleur de l'historique",
-            "it": "Colore cronologia consumi",
-            "sv": "Färg på förbrukningshistorik",
-            "no": "Farge på forbrukshistorikk",
-            "es": "Color del historial de consumo",
-            "da": "Farve på forbrugshistorik",
-            "ru": "Цвет истории потребления",
-            "pl": "Kolor historii zużycia",
-            "ko": "사용 기록 색상",
-            "ar": "لون سجل الاستهلاك"
-          },
-          "hint": {
-            "en": "Only with “Show usage history” on.",
-            "nl": "Alleen als “Verbruiksgeschiedenis tonen” aan staat.",
-            "de": "Nur wenn „Verbrauchsverlauf anzeigen“ aktiv ist.",
-            "fr": "Seulement si « Afficher l'historique de consommation » est activé.",
-            "it": "Solo con “Mostra cronologia consumi” attivo.",
-            "sv": "Bara när ”Visa förbrukningshistorik” är på.",
-            "no": "Bare når «Vis forbrukshistorikk» er på.",
-            "es": "Solo con «Mostrar historial de consumo» activado.",
-            "da": "Kun når “Vis forbrugshistorik” er slået til.",
-            "ru": "Только если включено «Показывать историю потребления».",
-            "pl": "Tylko gdy „Pokaż historię zużycia” jest włączone.",
-            "ko": "“사용량 기록 표시”을(를) 켠 경우에만 적용됩니다.",
-            "ar": "فقط عند تفعيل «عرض سجل الاستهلاك»."
-          },
-          "value": "neutral",
-          "values": [
-            {
-              "id": "neutral",
-              "title": {
-                "en": "Neutral",
-                "nl": "Neutraal",
-                "de": "Neutral",
-                "fr": "Neutre",
-                "it": "Neutro",
-                "sv": "Neutral",
-                "no": "Nøytral",
-                "es": "Neutro",
-                "da": "Neutral",
-                "ru": "Нейтральный",
-                "pl": "Neutralny",
-                "ko": "중립",
-                "ar": "محايد"
-              }
-            },
-            {
-              "id": "purple",
-              "title": {
-                "en": "Purple",
-                "nl": "Paars",
-                "de": "Lila",
-                "fr": "Violet",
-                "it": "Viola",
-                "sv": "Lila",
-                "no": "Lilla",
-                "es": "Morado",
-                "da": "Lilla",
-                "ru": "Фиолетовый",
-                "pl": "Fioletowy",
-                "ko": "보라색",
-                "ar": "بنفسجي"
-              }
-            }
-          ]
-        },
-        {
-          "id": "colorStyle",
-          "type": "dropdown",
-          "title": {
-            "en": "Colour style",
-            "nl": "Kleurstijl",
-            "de": "Farbstil",
-            "fr": "Style de couleur",
-            "it": "Stile colori",
-            "sv": "Färgstil",
-            "no": "Fargestil",
-            "es": "Estilo de color",
-            "da": "Farvestil",
-            "ru": "Цветовой стиль",
-            "pl": "Styl kolorów",
-            "ko": "색상 스타일",
-            "ar": "نمط الألوان"
-          },
-          "hint": {
-            "en": "Vivid fills the area under the lines with more colour.",
-            "nl": "Levendig vult het vlak onder de lijnen met meer kleur.",
-            "de": "Kräftig füllt die Fläche unter den Linien mit mehr Farbe.",
-            "fr": "Vives remplit la zone sous les courbes avec plus de couleur.",
-            "it": "Vivaci riempie l'area sotto le linee con più colore.",
-            "sv": "Livfulla fyller ytan under linjerna med mer färg.",
-            "no": "Livlige fyller flaten under linjene med mer farge.",
-            "es": "Vivos rellena el área bajo las líneas con más color.",
-            "da": "Livlige fylder fladen under linjerne med mere farve.",
-            "ru": "«Яркие» заливают область под линиями ярче.",
-            "pl": "Żywe wypełniają obszar pod liniami mocniejszym kolorem.",
-            "ko": "선명하게는 선 아래 영역을 더 진한 색으로 채웁니다.",
-            "ar": "«زاهية» تملأ المساحة تحت الخطوط بلون أكثر."
-          },
-          "value": "soft",
-          "values": [
-            {
-              "id": "soft",
-              "title": {
-                "en": "Muted",
-                "nl": "Gedempt",
-                "de": "Gedämpft",
-                "fr": "Atténuées",
-                "it": "Smorzati",
-                "sv": "Dämpade",
-                "no": "Dempede",
-                "es": "Suaves",
-                "da": "Dæmpede",
-                "ru": "Приглушённые",
-                "pl": "Stonowane",
-                "ko": "차분하게",
-                "ar": "هادئة"
-              }
-            },
-            {
-              "id": "deep",
-              "title": {
-                "en": "Vivid",
-                "nl": "Levendig",
-                "de": "Kräftig",
-                "fr": "Vives",
-                "it": "Vivaci",
-                "sv": "Livfulla",
-                "no": "Livlige",
-                "es": "Vivos",
-                "da": "Livlige",
-                "ru": "Яркие",
-                "pl": "Żywe",
-                "ko": "선명하게",
-                "ar": "زاهية"
-              }
-            }
-          ]
-        },
-        {
           "id": "smooth",
           "type": "checkbox",
           "title": {
@@ -23736,6 +23625,350 @@
                 "pl": "Następne 12 i 24 godziny",
                 "ko": "향후 12시간 및 24시간",
                 "ar": "الـ 12 و24 ساعة القادمة"
+              }
+            }
+          ]
+        },
+        {
+          "id": "usageColor",
+          "type": "dropdown",
+          "title": {
+            "en": "Usage history colour",
+            "nl": "Kleur verbruiksgeschiedenis",
+            "de": "Farbe des Verbrauchsverlaufs",
+            "fr": "Couleur de l'historique",
+            "it": "Colore cronologia consumi",
+            "sv": "Färg på förbrukningshistorik",
+            "no": "Farge på forbrukshistorikk",
+            "es": "Color del historial de consumo",
+            "da": "Farve på forbrugshistorik",
+            "ru": "Цвет истории потребления",
+            "pl": "Kolor historii zużycia",
+            "ko": "사용 기록 색상",
+            "ar": "لون سجل الاستهلاك"
+          },
+          "hint": {
+            "en": "Only with “Show usage history” on.",
+            "nl": "Alleen als “Verbruiksgeschiedenis tonen” aan staat.",
+            "de": "Nur wenn „Verbrauchsverlauf anzeigen“ aktiv ist.",
+            "fr": "Seulement si « Afficher l'historique de consommation » est activé.",
+            "it": "Solo con “Mostra cronologia consumi” attivo.",
+            "sv": "Bara när ”Visa förbrukningshistorik” är på.",
+            "no": "Bare når «Vis forbrukshistorikk» er på.",
+            "es": "Solo con «Mostrar historial de consumo» activado.",
+            "da": "Kun når “Vis forbrugshistorik” er slået til.",
+            "ru": "Только если включено «Показывать историю потребления».",
+            "pl": "Tylko gdy „Pokaż historię zużycia” jest włączone.",
+            "ko": "“사용량 기록 표시”을(를) 켠 경우에만 적용됩니다.",
+            "ar": "فقط عند تفعيل «عرض سجل الاستهلاك»."
+          },
+          "value": "neutral",
+          "values": [
+            {
+              "id": "neutral",
+              "title": {
+                "en": "Neutral",
+                "nl": "Neutraal",
+                "de": "Neutral",
+                "fr": "Neutre",
+                "it": "Neutro",
+                "sv": "Neutral",
+                "no": "Nøytral",
+                "es": "Neutro",
+                "da": "Neutral",
+                "ru": "Нейтральный",
+                "pl": "Neutralny",
+                "ko": "중립",
+                "ar": "محايد"
+              }
+            },
+            {
+              "id": "blue",
+              "title": {
+                "en": "Blue",
+                "nl": "Blauw",
+                "de": "Blau",
+                "fr": "Bleu",
+                "it": "Blu",
+                "sv": "Blå",
+                "no": "Blå",
+                "es": "Azul",
+                "da": "Blå",
+                "ru": "Синий",
+                "pl": "Niebieski",
+                "ko": "파랑",
+                "ar": "أزرق"
+              }
+            },
+            {
+              "id": "red",
+              "title": {
+                "en": "Red",
+                "nl": "Rood",
+                "de": "Rot",
+                "fr": "Rouge",
+                "it": "Rosso",
+                "sv": "Röd",
+                "no": "Rød",
+                "es": "Rojo",
+                "da": "Rød",
+                "ru": "Красный",
+                "pl": "Czerwony",
+                "ko": "빨강",
+                "ar": "أحمر"
+              }
+            },
+            {
+              "id": "orange",
+              "title": {
+                "en": "Orange",
+                "nl": "Oranje",
+                "de": "Orange",
+                "fr": "Orange",
+                "it": "Arancione",
+                "sv": "Orange",
+                "no": "Oransje",
+                "es": "Naranja",
+                "da": "Orange",
+                "ru": "Оранжевый",
+                "pl": "Pomarańczowy",
+                "ko": "주황",
+                "ar": "برتقالي"
+              }
+            },
+            {
+              "id": "yellow",
+              "title": {
+                "en": "Yellow",
+                "nl": "Geel",
+                "de": "Gelb",
+                "fr": "Jaune",
+                "it": "Giallo",
+                "sv": "Gul",
+                "no": "Gul",
+                "es": "Amarillo",
+                "da": "Gul",
+                "ru": "Жёлтый",
+                "pl": "Żółty",
+                "ko": "노랑",
+                "ar": "أصفر"
+              }
+            },
+            {
+              "id": "green",
+              "title": {
+                "en": "Green",
+                "nl": "Groen",
+                "de": "Grün",
+                "fr": "Vert",
+                "it": "Verde",
+                "sv": "Grön",
+                "no": "Grønn",
+                "es": "Verde",
+                "da": "Grøn",
+                "ru": "Зелёный",
+                "pl": "Zielony",
+                "ko": "초록",
+                "ar": "أخضر"
+              }
+            },
+            {
+              "id": "purple",
+              "title": {
+                "en": "Purple",
+                "nl": "Paars",
+                "de": "Lila",
+                "fr": "Violet",
+                "it": "Viola",
+                "sv": "Lila",
+                "no": "Lilla",
+                "es": "Morado",
+                "da": "Lilla",
+                "ru": "Фиолетовый",
+                "pl": "Fioletowy",
+                "ko": "보라",
+                "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid fills the area under the lines with more colour.",
+            "nl": "Levendig vult het vlak onder de lijnen met meer kleur.",
+            "de": "Kräftig füllt die Fläche unter den Linien mit mehr Farbe.",
+            "fr": "Vives remplit la zone sous les courbes avec plus de couleur.",
+            "it": "Vivaci riempie l'area sotto le linee con più colore.",
+            "sv": "Livfulla fyller ytan under linjerna med mer färg.",
+            "no": "Livlige fyller flaten under linjene med mer farge.",
+            "es": "Vivos rellena el área bajo las líneas con más color.",
+            "da": "Livlige fylder fladen under linjerne med mere farve.",
+            "ru": "«Яркие» заливают область под линиями ярче.",
+            "pl": "Żywe wypełniają obszar pod liniami mocniejszym kolorem.",
+            "ko": "선명하게는 선 아래 영역을 더 진한 색으로 채웁니다.",
+            "ar": "«زاهية» تملأ المساحة تحت الخطوط بلون أكثر."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
               }
             }
           ]
@@ -24350,79 +24583,6 @@
           ]
         },
         {
-          "id": "colorStyle",
-          "type": "dropdown",
-          "title": {
-            "en": "Colour style",
-            "nl": "Kleurstijl",
-            "de": "Farbstil",
-            "fr": "Style de couleur",
-            "it": "Stile colori",
-            "sv": "Färgstil",
-            "no": "Fargestil",
-            "es": "Estilo de color",
-            "da": "Farvestil",
-            "ru": "Цветовой стиль",
-            "pl": "Styl kolorów",
-            "ko": "색상 스타일",
-            "ar": "نمط الألوان"
-          },
-          "hint": {
-            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
-            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
-            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
-            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
-            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
-            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
-            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
-            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
-            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
-            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
-            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
-            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
-            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
-          },
-          "value": "soft",
-          "values": [
-            {
-              "id": "soft",
-              "title": {
-                "en": "Muted",
-                "nl": "Gedempt",
-                "de": "Gedämpft",
-                "fr": "Atténuées",
-                "it": "Smorzati",
-                "sv": "Dämpade",
-                "no": "Dempede",
-                "es": "Suaves",
-                "da": "Dæmpede",
-                "ru": "Приглушённые",
-                "pl": "Stonowane",
-                "ko": "차분하게",
-                "ar": "هادئة"
-              }
-            },
-            {
-              "id": "deep",
-              "title": {
-                "en": "Vivid",
-                "nl": "Levendig",
-                "de": "Kräftig",
-                "fr": "Vives",
-                "it": "Vivaci",
-                "sv": "Livfulla",
-                "no": "Livlige",
-                "es": "Vivos",
-                "da": "Livlige",
-                "ru": "Яркие",
-                "pl": "Żywe",
-                "ko": "선명하게",
-                "ar": "زاهية"
-              }
-            }
-          ]
-        },
-        {
           "id": "press",
           "type": "dropdown",
           "title": {
@@ -24509,6 +24669,79 @@
                 "pl": "Długie przytrzymanie",
                 "ko": "길게 누르기",
                 "ar": "ضغطة مطوّلة"
+              }
+            }
+          ]
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
+            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
+            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
+            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
+            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
+            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
+            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
+            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
+            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
+            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
+            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
+            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
+            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
               }
             }
           ]
@@ -27220,6 +27453,76 @@
           ]
         },
         {
+          "id": "showScale",
+          "type": "checkbox",
+          "title": {
+            "en": "Show scale",
+            "nl": "Schaal tonen",
+            "de": "Skala anzeigen",
+            "fr": "Afficher l'échelle",
+            "it": "Mostra scala",
+            "sv": "Visa skala",
+            "no": "Vis skala",
+            "es": "Mostrar escala",
+            "da": "Vis skala",
+            "ru": "Показывать шкалу",
+            "pl": "Pokaż skalę",
+            "ko": "눈금 표시",
+            "ar": "إظهار المقياس"
+          },
+          "hint": {
+            "en": "The bar from the lowest to the highest value, with the current value.",
+            "nl": "De balk van de laagste tot de hoogste waarde, met de huidige waarde.",
+            "de": "Der Balken vom niedrigsten bis zum höchsten Wert, mit dem aktuellen Wert.",
+            "fr": "La barre de la valeur la plus basse à la plus haute, avec la valeur actuelle.",
+            "it": "La barra dal valore più basso al più alto, con il valore attuale.",
+            "sv": "Stapeln från lägsta till högsta värdet, med det aktuella värdet.",
+            "no": "Linjen fra laveste til høyeste verdi, med gjeldende verdi.",
+            "es": "La barra del valor más bajo al más alto, con el valor actual.",
+            "da": "Bjælken fra laveste til højeste værdi, med den aktuelle værdi.",
+            "ru": "Полоса от наименьшего до наибольшего значения с текущим значением.",
+            "pl": "Pasek od najniższej do najwyższej wartości, z bieżącą wartością.",
+            "ko": "최저값부터 최고값까지의 막대와 현재 값.",
+            "ar": "الشريط من أدنى قيمة إلى أعلاها، مع القيمة الحالية."
+          },
+          "value": true
+        },
+        {
+          "id": "showLegend",
+          "type": "checkbox",
+          "title": {
+            "en": "Show legend",
+            "nl": "Legenda tonen",
+            "de": "Legende anzeigen",
+            "fr": "Afficher la légende",
+            "it": "Mostra legenda",
+            "sv": "Visa förklaring",
+            "no": "Vis tegnforklaring",
+            "es": "Mostrar leyenda",
+            "da": "Vis forklaring",
+            "ru": "Показывать легенду",
+            "pl": "Pokaż legendę",
+            "ko": "범례 표시",
+            "ar": "إظهار وسيلة الإيضاح"
+          },
+          "hint": {
+            "en": "Less to more, and what the hatched cells mean.",
+            "nl": "Minder tot meer, en wat de gearceerde vakjes betekenen.",
+            "de": "Weniger bis mehr und was die schraffierten Felder bedeuten.",
+            "fr": "De moins à plus, et ce que signifient les cases hachurées.",
+            "it": "Da meno a più, e cosa significano le celle tratteggiate.",
+            "sv": "Mindre till mer, och vad de streckade rutorna betyder.",
+            "no": "Mindre til mer, og hva de skraverte rutene betyr.",
+            "es": "De menos a más, y qué significan las celdas rayadas.",
+            "da": "Mindre til mere, og hvad de skraverede felter betyder.",
+            "ru": "От меньшего к большему и что означают заштрихованные ячейки.",
+            "pl": "Od mniej do więcej oraz co oznaczają zakreskowane pola.",
+            "ko": "적음에서 많음까지, 그리고 빗금 칸의 의미.",
+            "ar": "من الأقل إلى الأكثر، ومعنى الخلايا المظللة."
+          },
+          "value": true
+        },
+        {
           "id": "color",
           "type": "dropdown",
           "title": {
@@ -27529,76 +27832,6 @@
               }
             }
           ]
-        },
-        {
-          "id": "showScale",
-          "type": "checkbox",
-          "title": {
-            "en": "Show scale",
-            "nl": "Schaal tonen",
-            "de": "Skala anzeigen",
-            "fr": "Afficher l'échelle",
-            "it": "Mostra scala",
-            "sv": "Visa skala",
-            "no": "Vis skala",
-            "es": "Mostrar escala",
-            "da": "Vis skala",
-            "ru": "Показывать шкалу",
-            "pl": "Pokaż skalę",
-            "ko": "눈금 표시",
-            "ar": "إظهار المقياس"
-          },
-          "hint": {
-            "en": "The bar from the lowest to the highest value, with the current value.",
-            "nl": "De balk van de laagste tot de hoogste waarde, met de huidige waarde.",
-            "de": "Der Balken vom niedrigsten bis zum höchsten Wert, mit dem aktuellen Wert.",
-            "fr": "La barre de la valeur la plus basse à la plus haute, avec la valeur actuelle.",
-            "it": "La barra dal valore più basso al più alto, con il valore attuale.",
-            "sv": "Stapeln från lägsta till högsta värdet, med det aktuella värdet.",
-            "no": "Linjen fra laveste til høyeste verdi, med gjeldende verdi.",
-            "es": "La barra del valor más bajo al más alto, con el valor actual.",
-            "da": "Bjælken fra laveste til højeste værdi, med den aktuelle værdi.",
-            "ru": "Полоса от наименьшего до наибольшего значения с текущим значением.",
-            "pl": "Pasek od najniższej do najwyższej wartości, z bieżącą wartością.",
-            "ko": "최저값부터 최고값까지의 막대와 현재 값.",
-            "ar": "الشريط من أدنى قيمة إلى أعلاها، مع القيمة الحالية."
-          },
-          "value": true
-        },
-        {
-          "id": "showLegend",
-          "type": "checkbox",
-          "title": {
-            "en": "Show legend",
-            "nl": "Legenda tonen",
-            "de": "Legende anzeigen",
-            "fr": "Afficher la légende",
-            "it": "Mostra legenda",
-            "sv": "Visa förklaring",
-            "no": "Vis tegnforklaring",
-            "es": "Mostrar leyenda",
-            "da": "Vis forklaring",
-            "ru": "Показывать легенду",
-            "pl": "Pokaż legendę",
-            "ko": "범례 표시",
-            "ar": "إظهار وسيلة الإيضاح"
-          },
-          "hint": {
-            "en": "Less to more, and what the hatched cells mean.",
-            "nl": "Minder tot meer, en wat de gearceerde vakjes betekenen.",
-            "de": "Weniger bis mehr und was die schraffierten Felder bedeuten.",
-            "fr": "De moins à plus, et ce que signifient les cases hachurées.",
-            "it": "Da meno a più, e cosa significano le celle tratteggiate.",
-            "sv": "Mindre till mer, och vad de streckade rutorna betyder.",
-            "no": "Mindre til mer, og hva de skraverte rutene betyr.",
-            "es": "De menos a más, y qué significan las celdas rayadas.",
-            "da": "Mindre til mere, og hvad de skraverede felter betyder.",
-            "ru": "От меньшего к большему и что означают заштрихованные ячейки.",
-            "pl": "Od mniej do więcej oraz co oznaczają zakreskowane pola.",
-            "ko": "적음에서 많음까지, 그리고 빗금 칸의 의미.",
-            "ar": "من الأقل إلى الأكثر، ومعنى الخلايا المظللة."
-          },
-          "value": true
         }
       ],
       "api": {
@@ -27867,79 +28100,6 @@
           ]
         },
         {
-          "id": "colorStyle",
-          "type": "dropdown",
-          "title": {
-            "en": "Colour style",
-            "nl": "Kleurstijl",
-            "de": "Farbstil",
-            "fr": "Style de couleur",
-            "it": "Stile colori",
-            "sv": "Färgstil",
-            "no": "Fargestil",
-            "es": "Estilo de color",
-            "da": "Farvestil",
-            "ru": "Цветовой стиль",
-            "pl": "Styl kolorów",
-            "ko": "색상 스타일",
-            "ar": "نمط الألوان"
-          },
-          "hint": {
-            "en": "Vivid fills the ticked button with a darker shade of its colour and white text.",
-            "nl": "Levendig vult de aangevinkte knop met een donkerdere tint van zijn kleur en witte tekst.",
-            "de": "Kräftig füllt die abgehakte Taste mit einem dunkleren Ton ihrer Farbe und weißer Schrift.",
-            "fr": "Vives remplit le bouton coché d’une teinte plus foncée de sa couleur, avec un texte blanc.",
-            "it": "Vivaci riempie il pulsante spuntato con una tonalità più scura del suo colore e testo bianco.",
-            "sv": "Livfulla fyller den förbockade knappen med en mörkare nyans av dess färg och vit text.",
-            "no": "Livlige fyller den avhakede knappen med en mørkere nyanse av fargen og hvit tekst.",
-            "es": "Vivos rellena el botón marcado con un tono más oscuro de su color y texto blanco.",
-            "da": "Livlige fylder den afkrydsede knap med en mørkere nuance af dens farve og hvid tekst.",
-            "ru": "«Яркие» заливают отмеченную кнопку более тёмным оттенком её цвета с белым текстом.",
-            "pl": "Żywe wypełniają zaznaczony przycisk ciemniejszym odcieniem jego koloru z białym tekstem.",
-            "ko": "선명하게는 체크된 버튼을 그 색의 더 어두운 색조와 흰색 글자로 채웁니다.",
-            "ar": "«زاهية» تملأ الزر المعلَّم بدرجة أغمق من لونه ونص أبيض."
-          },
-          "value": "soft",
-          "values": [
-            {
-              "id": "soft",
-              "title": {
-                "en": "Muted",
-                "nl": "Gedempt",
-                "de": "Gedämpft",
-                "fr": "Atténuées",
-                "it": "Smorzati",
-                "sv": "Dämpade",
-                "no": "Dempede",
-                "es": "Suaves",
-                "da": "Dæmpede",
-                "ru": "Приглушённые",
-                "pl": "Stonowane",
-                "ko": "차분하게",
-                "ar": "هادئة"
-              }
-            },
-            {
-              "id": "deep",
-              "title": {
-                "en": "Vivid",
-                "nl": "Levendig",
-                "de": "Kräftig",
-                "fr": "Vives",
-                "it": "Vivaci",
-                "sv": "Livfulla",
-                "no": "Livlige",
-                "es": "Vivos",
-                "da": "Livlige",
-                "ru": "Яркие",
-                "pl": "Żywe",
-                "ko": "선명하게",
-                "ar": "زاهية"
-              }
-            }
-          ]
-        },
-        {
           "id": "background",
           "type": "dropdown",
           "title": {
@@ -28008,6 +28168,79 @@
                 "pl": "Kolor stanu",
                 "ko": "상태 색상",
                 "ar": "لون الحالة"
+              }
+            }
+          ]
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid fills the ticked button with a darker shade of its colour and white text.",
+            "nl": "Levendig vult de aangevinkte knop met een donkerdere tint van zijn kleur en witte tekst.",
+            "de": "Kräftig füllt die abgehakte Taste mit einem dunkleren Ton ihrer Farbe und weißer Schrift.",
+            "fr": "Vives remplit le bouton coché d’une teinte plus foncée de sa couleur, avec un texte blanc.",
+            "it": "Vivaci riempie il pulsante spuntato con una tonalità più scura del suo colore e testo bianco.",
+            "sv": "Livfulla fyller den förbockade knappen med en mörkare nyans av dess färg och vit text.",
+            "no": "Livlige fyller den avhakede knappen med en mørkere nyanse av fargen og hvit tekst.",
+            "es": "Vivos rellena el botón marcado con un tono más oscuro de su color y texto blanco.",
+            "da": "Livlige fylder den afkrydsede knap med en mørkere nuance af dens farve og hvid tekst.",
+            "ru": "«Яркие» заливают отмеченную кнопку более тёмным оттенком её цвета с белым текстом.",
+            "pl": "Żywe wypełniają zaznaczony przycisk ciemniejszym odcieniem jego koloru z białym tekstem.",
+            "ko": "선명하게는 체크된 버튼을 그 색의 더 어두운 색조와 흰색 글자로 채웁니다.",
+            "ar": "«زاهية» تملأ الزر المعلَّم بدرجة أغمق من لونه ونص أبيض."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
               }
             }
           ]
@@ -30455,6 +30688,267 @@
           }
         },
         {
+          "id": "switchSpeakers",
+          "type": "checkbox",
+          "value": true,
+          "title": {
+            "en": "Switch speaker from the widget",
+            "nl": "Speaker wisselen vanuit de widget",
+            "de": "Lautsprecher im Widget wechseln",
+            "fr": "Changer d’enceinte depuis le widget",
+            "it": "Cambia altoparlante dal widget",
+            "sv": "Byt högtalare från widgeten",
+            "no": "Bytt høyttaler fra widgeten",
+            "es": "Cambiar de altavoz desde el widget",
+            "da": "Skift højttaler fra widgetten",
+            "ru": "Переключать колонку в виджете",
+            "pl": "Zmiana głośnika z widżetu",
+            "ko": "위젯에서 스피커 전환",
+            "ar": "تبديل مكبر الصوت من الأداة"
+          },
+          "hint": {
+            "en": "Tap the speaker’s name to pick another. Each screen remembers its own choice; the speaker above is the default.",
+            "nl": "Tik op de naam van de speaker om een andere te kiezen. Elk scherm onthoudt zijn keuze; de speaker hierboven is de standaard.",
+            "de": "Tippe auf den Namen des Lautsprechers, um einen anderen zu wählen. Jeder Bildschirm merkt sich seine Wahl; der Lautsprecher oben ist der Standard.",
+            "fr": "Touchez le nom de l’enceinte pour en choisir une autre. Chaque écran retient son choix ; l’enceinte ci-dessus est celle par défaut.",
+            "it": "Tocca il nome dell’altoparlante per sceglierne un altro. Ogni schermo ricorda la sua scelta; quello sopra è il predefinito.",
+            "sv": "Tryck på högtalarens namn för att välja en annan. Varje skärm minns sitt val; högtalaren ovan är standard.",
+            "no": "Trykk på høyttalerens navn for å velge en annen. Hver skjerm husker sitt valg; høyttaleren over er standard.",
+            "es": "Toca el nombre del altavoz para elegir otro. Cada pantalla recuerda su elección; el altavoz de arriba es el predeterminado.",
+            "da": "Tryk på højttalerens navn for at vælge en anden. Hver skærm husker sit valg; højttaleren ovenfor er standard.",
+            "ru": "Нажмите на название колонки, чтобы выбрать другую. Каждый экран запоминает свой выбор; колонка выше — по умолчанию.",
+            "pl": "Stuknij nazwę głośnika, aby wybrać inny. Każdy ekran pamięta swój wybór; głośnik powyżej jest domyślny.",
+            "ko": "스피커 이름을 탭해 다른 스피커를 고르세요. 화면마다 선택을 기억하며, 위의 스피커가 기본값입니다.",
+            "ar": "اضغط على اسم مكبر الصوت لاختيار آخر. تتذكر كل شاشة اختيارها؛ مكبر الصوت أعلاه هو الافتراضي."
+          }
+        },
+        {
+          "id": "volumeLayout",
+          "type": "dropdown",
+          "value": "line",
+          "title": {
+            "en": "Volume",
+            "nl": "Volume",
+            "de": "Lautstärke",
+            "fr": "Volume",
+            "it": "Volume",
+            "sv": "Volym",
+            "no": "Volum",
+            "es": "Volumen",
+            "da": "Lydstyrke",
+            "ru": "Громкость",
+            "pl": "Głośność",
+            "ko": "볼륨",
+            "ar": "مستوى الصوت"
+          },
+          "values": [
+            {
+              "id": "line",
+              "title": {
+                "en": "Bar on its own line",
+                "nl": "Balk op een eigen regel",
+                "de": "Leiste in eigener Zeile",
+                "fr": "Barre sur sa propre ligne",
+                "it": "Barra su una riga propria",
+                "sv": "Reglage på egen rad",
+                "no": "Linje på egen rad",
+                "es": "Barra en su propia línea",
+                "da": "Bjælke på egen linje",
+                "ru": "Полоса отдельной строкой",
+                "pl": "Pasek w osobnym wierszu",
+                "ko": "별도 줄에 막대",
+                "ar": "شريط في سطر مستقل"
+              }
+            },
+            {
+              "id": "buttons",
+              "title": {
+                "en": "− and + next to play",
+                "nl": "− en + naast afspelen",
+                "de": "− und + neben Wiedergabe",
+                "fr": "− et + à côté de lecture",
+                "it": "− e + accanto a riproduci",
+                "sv": "− och + bredvid spela",
+                "no": "− og + ved siden av spill",
+                "es": "− y + junto a reproducir",
+                "da": "− og + ved siden af afspil",
+                "ru": "− и + рядом с воспроизведением",
+                "pl": "− i + obok odtwarzania",
+                "ko": "재생 옆에 − 및 +",
+                "ar": "− و+ بجانب التشغيل"
+              }
+            }
+          ],
+          "hint": {
+            "en": "With − and +, the volume shows as a ring around mute, and shuffle and repeat move to the ⋯ menu when the row has no room.",
+            "nl": "Met − en + toont een ring rond dempen het volume, en shuffle en herhalen staan in het ⋯-menu als de rij geen ruimte heeft.",
+            "de": "Mit − und + zeigt ein Ring um Stumm die Lautstärke; Zufall und Wiederholen stehen im ⋯-Menü, wenn die Zeile keinen Platz hat.",
+            "fr": "Avec − et +, un anneau autour de sourdine montre le volume ; aléatoire et répétition passent dans le menu ⋯ si la ligne manque de place.",
+            "it": "Con − e +, un anello attorno a muto mostra il volume; casuale e ripeti vanno nel menu ⋯ se la riga non ha spazio.",
+            "sv": "Med − och + visar en ring runt ljud av volymen, och blanda och upprepa flyttas till ⋯-menyn när raden saknar plats.",
+            "no": "Med − og + viser en ring rundt demp volumet, og tilfeldig og gjenta flyttes til ⋯-menyen når raden mangler plass.",
+            "es": "Con − y +, un anillo alrededor de silencio muestra el volumen; aleatorio y repetir pasan al menú ⋯ si la fila no tiene espacio.",
+            "da": "Med − og + viser en ring om lyd fra lydstyrken, og bland og gentag flytter til ⋯-menuen, når rækken mangler plads.",
+            "ru": "С − и + громкость показывает кольцо вокруг кнопки звука, а перемешивание и повтор уходят в меню ⋯, если в строке нет места.",
+            "pl": "Przy − i + głośność pokazuje pierścień wokół wyciszenia, a losowo i powtarzanie trafiają do menu ⋯, gdy w wierszu brak miejsca.",
+            "ko": "− 및 + 사용 시 음소거 버튼의 링이 볼륨을 표시하고, 줄에 공간이 없으면 셔플과 반복은 ⋯ 메뉴로 이동합니다.",
+            "ar": "مع − و+ تظهر حلقة حول زر الكتم مستوى الصوت، وينتقل التشغيل العشوائي والتكرار إلى قائمة ⋯ عندما لا يتسع السطر."
+          }
+        },
+        {
+          "id": "volumeStep",
+          "type": "dropdown",
+          "value": "5",
+          "title": {
+            "en": "Volume step",
+            "nl": "Volumestap",
+            "de": "Lautstärkeschritt",
+            "fr": "Pas du volume",
+            "it": "Passo del volume",
+            "sv": "Volymsteg",
+            "no": "Volumsteg",
+            "es": "Paso de volumen",
+            "da": "Lydstyrketrin",
+            "ru": "Шаг громкости",
+            "pl": "Krok głośności",
+            "ko": "볼륨 단계",
+            "ar": "خطوة مستوى الصوت"
+          },
+          "values": [
+            {
+              "id": "2",
+              "title": {
+                "en": "2 %",
+                "nl": "2 %",
+                "de": "2 %",
+                "fr": "2 %",
+                "it": "2 %",
+                "sv": "2 %",
+                "no": "2 %",
+                "es": "2 %",
+                "da": "2 %",
+                "ru": "2 %",
+                "pl": "2 %",
+                "ko": "2 %",
+                "ar": "2 %"
+              }
+            },
+            {
+              "id": "5",
+              "title": {
+                "en": "5 %",
+                "nl": "5 %",
+                "de": "5 %",
+                "fr": "5 %",
+                "it": "5 %",
+                "sv": "5 %",
+                "no": "5 %",
+                "es": "5 %",
+                "da": "5 %",
+                "ru": "5 %",
+                "pl": "5 %",
+                "ko": "5 %",
+                "ar": "5 %"
+              }
+            },
+            {
+              "id": "10",
+              "title": {
+                "en": "10 %",
+                "nl": "10 %",
+                "de": "10 %",
+                "fr": "10 %",
+                "it": "10 %",
+                "sv": "10 %",
+                "no": "10 %",
+                "es": "10 %",
+                "da": "10 %",
+                "ru": "10 %",
+                "pl": "10 %",
+                "ko": "10 %",
+                "ar": "10 %"
+              }
+            }
+          ]
+        },
+        {
+          "id": "maxVolume",
+          "type": "number",
+          "value": 100,
+          "min": 1,
+          "max": 100,
+          "title": {
+            "en": "Maximum volume (%)",
+            "nl": "Maximaal volume (%)",
+            "de": "Maximale Lautstärke (%)",
+            "fr": "Volume maximal (%)",
+            "it": "Volume massimo (%)",
+            "sv": "Högsta volym (%)",
+            "no": "Maks. volum (%)",
+            "es": "Volumen máximo (%)",
+            "da": "Maks. lydstyrke (%)",
+            "ru": "Максимальная громкость (%)",
+            "pl": "Maksymalna głośność (%)",
+            "ko": "최대 볼륨(%)",
+            "ar": "أقصى مستوى صوت (%)"
+          },
+          "hint": {
+            "en": "The volume bar and + stop here. Handy where children use the dashboard.",
+            "nl": "De volumebalk en + stoppen hier. Handig als kinderen het dashboard gebruiken.",
+            "de": "Lautstärkeleiste und + enden hier. Praktisch, wenn Kinder das Dashboard benutzen.",
+            "fr": "La barre de volume et + s’arrêtent ici. Pratique si des enfants utilisent le tableau de bord.",
+            "it": "La barra del volume e + si fermano qui. Utile se il dashboard lo usano i bambini.",
+            "sv": "Volymreglaget och + stannar här. Praktiskt om barn använder instrumentpanelen.",
+            "no": "Volumlinjen og + stopper her. Nyttig når barn bruker dashbordet.",
+            "es": "La barra de volumen y + se detienen aquí. Útil si los niños usan el panel.",
+            "da": "Lydstyrkebjælken og + stopper her. Praktisk, hvis børn bruger dashboardet.",
+            "ru": "Полоса громкости и + останавливаются здесь. Удобно, если панелью пользуются дети.",
+            "pl": "Pasek głośności i + zatrzymują się tutaj. Przydatne, gdy z pulpitu korzystają dzieci.",
+            "ko": "볼륨 막대와 +가 여기서 멈춥니다. 아이들이 대시보드를 쓸 때 유용합니다.",
+            "ar": "يتوقف شريط الصوت و+ هنا. مفيد عندما يستخدم الأطفال لوحة التحكم."
+          }
+        },
+        {
+          "id": "showProgress",
+          "type": "checkbox",
+          "value": true,
+          "title": {
+            "en": "Show progress bar and time",
+            "nl": "Voortgangsbalk en tijd tonen",
+            "de": "Fortschrittsleiste und Zeit zeigen",
+            "fr": "Afficher la progression et la durée",
+            "it": "Mostra barra di avanzamento e tempo",
+            "sv": "Visa förloppsindikator och tid",
+            "no": "Vis fremdriftslinje og tid",
+            "es": "Mostrar barra de progreso y tiempo",
+            "da": "Vis statuslinje og tid",
+            "ru": "Показывать прогресс и время",
+            "pl": "Pokaż pasek postępu i czas",
+            "ko": "진행 막대와 시간 표시",
+            "ar": "إظهار شريط التقدم والوقت"
+          }
+        },
+        {
+          "id": "showShuffle",
+          "type": "checkbox",
+          "value": false,
+          "title": {
+            "en": "Show shuffle and repeat",
+            "nl": "Shuffle en herhalen tonen",
+            "de": "Zufall und Wiederholen zeigen",
+            "fr": "Afficher aléatoire et répétition",
+            "it": "Mostra casuale e ripeti",
+            "sv": "Visa blanda och upprepa",
+            "no": "Vis tilfeldig og gjenta",
+            "es": "Mostrar aleatorio y repetir",
+            "da": "Vis bland og gentag",
+            "ru": "Показывать перемешивание и повтор",
+            "pl": "Pokaż losowo i powtarzanie",
+            "ko": "셔플과 반복 표시",
+            "ar": "إظهار التشغيل العشوائي والتكرار"
+          }
+        },
+        {
           "id": "color",
           "type": "dropdown",
           "title": {
@@ -30779,267 +31273,6 @@
               }
             }
           ]
-        },
-        {
-          "id": "switchSpeakers",
-          "type": "checkbox",
-          "value": true,
-          "title": {
-            "en": "Switch speaker from the widget",
-            "nl": "Speaker wisselen vanuit de widget",
-            "de": "Lautsprecher im Widget wechseln",
-            "fr": "Changer d’enceinte depuis le widget",
-            "it": "Cambia altoparlante dal widget",
-            "sv": "Byt högtalare från widgeten",
-            "no": "Bytt høyttaler fra widgeten",
-            "es": "Cambiar de altavoz desde el widget",
-            "da": "Skift højttaler fra widgetten",
-            "ru": "Переключать колонку в виджете",
-            "pl": "Zmiana głośnika z widżetu",
-            "ko": "위젯에서 스피커 전환",
-            "ar": "تبديل مكبر الصوت من الأداة"
-          },
-          "hint": {
-            "en": "Tap the speaker’s name to pick another. Each screen remembers its own choice; the speaker above is the default.",
-            "nl": "Tik op de naam van de speaker om een andere te kiezen. Elk scherm onthoudt zijn keuze; de speaker hierboven is de standaard.",
-            "de": "Tippe auf den Namen des Lautsprechers, um einen anderen zu wählen. Jeder Bildschirm merkt sich seine Wahl; der Lautsprecher oben ist der Standard.",
-            "fr": "Touchez le nom de l’enceinte pour en choisir une autre. Chaque écran retient son choix ; l’enceinte ci-dessus est celle par défaut.",
-            "it": "Tocca il nome dell’altoparlante per sceglierne un altro. Ogni schermo ricorda la sua scelta; quello sopra è il predefinito.",
-            "sv": "Tryck på högtalarens namn för att välja en annan. Varje skärm minns sitt val; högtalaren ovan är standard.",
-            "no": "Trykk på høyttalerens navn for å velge en annen. Hver skjerm husker sitt valg; høyttaleren over er standard.",
-            "es": "Toca el nombre del altavoz para elegir otro. Cada pantalla recuerda su elección; el altavoz de arriba es el predeterminado.",
-            "da": "Tryk på højttalerens navn for at vælge en anden. Hver skærm husker sit valg; højttaleren ovenfor er standard.",
-            "ru": "Нажмите на название колонки, чтобы выбрать другую. Каждый экран запоминает свой выбор; колонка выше — по умолчанию.",
-            "pl": "Stuknij nazwę głośnika, aby wybrać inny. Każdy ekran pamięta swój wybór; głośnik powyżej jest domyślny.",
-            "ko": "스피커 이름을 탭해 다른 스피커를 고르세요. 화면마다 선택을 기억하며, 위의 스피커가 기본값입니다.",
-            "ar": "اضغط على اسم مكبر الصوت لاختيار آخر. تتذكر كل شاشة اختيارها؛ مكبر الصوت أعلاه هو الافتراضي."
-          }
-        },
-        {
-          "id": "volumeLayout",
-          "type": "dropdown",
-          "value": "line",
-          "title": {
-            "en": "Volume",
-            "nl": "Volume",
-            "de": "Lautstärke",
-            "fr": "Volume",
-            "it": "Volume",
-            "sv": "Volym",
-            "no": "Volum",
-            "es": "Volumen",
-            "da": "Lydstyrke",
-            "ru": "Громкость",
-            "pl": "Głośność",
-            "ko": "볼륨",
-            "ar": "مستوى الصوت"
-          },
-          "values": [
-            {
-              "id": "line",
-              "title": {
-                "en": "Bar on its own line",
-                "nl": "Balk op een eigen regel",
-                "de": "Leiste in eigener Zeile",
-                "fr": "Barre sur sa propre ligne",
-                "it": "Barra su una riga propria",
-                "sv": "Reglage på egen rad",
-                "no": "Linje på egen rad",
-                "es": "Barra en su propia línea",
-                "da": "Bjælke på egen linje",
-                "ru": "Полоса отдельной строкой",
-                "pl": "Pasek w osobnym wierszu",
-                "ko": "별도 줄에 막대",
-                "ar": "شريط في سطر مستقل"
-              }
-            },
-            {
-              "id": "buttons",
-              "title": {
-                "en": "− and + next to play",
-                "nl": "− en + naast afspelen",
-                "de": "− und + neben Wiedergabe",
-                "fr": "− et + à côté de lecture",
-                "it": "− e + accanto a riproduci",
-                "sv": "− och + bredvid spela",
-                "no": "− og + ved siden av spill",
-                "es": "− y + junto a reproducir",
-                "da": "− og + ved siden af afspil",
-                "ru": "− и + рядом с воспроизведением",
-                "pl": "− i + obok odtwarzania",
-                "ko": "재생 옆에 − 및 +",
-                "ar": "− و+ بجانب التشغيل"
-              }
-            }
-          ],
-          "hint": {
-            "en": "With − and +, the volume shows as a ring around mute, and shuffle and repeat move to the ⋯ menu when the row has no room.",
-            "nl": "Met − en + toont een ring rond dempen het volume, en shuffle en herhalen staan in het ⋯-menu als de rij geen ruimte heeft.",
-            "de": "Mit − und + zeigt ein Ring um Stumm die Lautstärke; Zufall und Wiederholen stehen im ⋯-Menü, wenn die Zeile keinen Platz hat.",
-            "fr": "Avec − et +, un anneau autour de sourdine montre le volume ; aléatoire et répétition passent dans le menu ⋯ si la ligne manque de place.",
-            "it": "Con − e +, un anello attorno a muto mostra il volume; casuale e ripeti vanno nel menu ⋯ se la riga non ha spazio.",
-            "sv": "Med − och + visar en ring runt ljud av volymen, och blanda och upprepa flyttas till ⋯-menyn när raden saknar plats.",
-            "no": "Med − og + viser en ring rundt demp volumet, og tilfeldig og gjenta flyttes til ⋯-menyen når raden mangler plass.",
-            "es": "Con − y +, un anillo alrededor de silencio muestra el volumen; aleatorio y repetir pasan al menú ⋯ si la fila no tiene espacio.",
-            "da": "Med − og + viser en ring om lyd fra lydstyrken, og bland og gentag flytter til ⋯-menuen, når rækken mangler plads.",
-            "ru": "С − и + громкость показывает кольцо вокруг кнопки звука, а перемешивание и повтор уходят в меню ⋯, если в строке нет места.",
-            "pl": "Przy − i + głośność pokazuje pierścień wokół wyciszenia, a losowo i powtarzanie trafiają do menu ⋯, gdy w wierszu brak miejsca.",
-            "ko": "− 및 + 사용 시 음소거 버튼의 링이 볼륨을 표시하고, 줄에 공간이 없으면 셔플과 반복은 ⋯ 메뉴로 이동합니다.",
-            "ar": "مع − و+ تظهر حلقة حول زر الكتم مستوى الصوت، وينتقل التشغيل العشوائي والتكرار إلى قائمة ⋯ عندما لا يتسع السطر."
-          }
-        },
-        {
-          "id": "volumeStep",
-          "type": "dropdown",
-          "value": "5",
-          "title": {
-            "en": "Volume step",
-            "nl": "Volumestap",
-            "de": "Lautstärkeschritt",
-            "fr": "Pas du volume",
-            "it": "Passo del volume",
-            "sv": "Volymsteg",
-            "no": "Volumsteg",
-            "es": "Paso de volumen",
-            "da": "Lydstyrketrin",
-            "ru": "Шаг громкости",
-            "pl": "Krok głośności",
-            "ko": "볼륨 단계",
-            "ar": "خطوة مستوى الصوت"
-          },
-          "values": [
-            {
-              "id": "2",
-              "title": {
-                "en": "2 %",
-                "nl": "2 %",
-                "de": "2 %",
-                "fr": "2 %",
-                "it": "2 %",
-                "sv": "2 %",
-                "no": "2 %",
-                "es": "2 %",
-                "da": "2 %",
-                "ru": "2 %",
-                "pl": "2 %",
-                "ko": "2 %",
-                "ar": "2 %"
-              }
-            },
-            {
-              "id": "5",
-              "title": {
-                "en": "5 %",
-                "nl": "5 %",
-                "de": "5 %",
-                "fr": "5 %",
-                "it": "5 %",
-                "sv": "5 %",
-                "no": "5 %",
-                "es": "5 %",
-                "da": "5 %",
-                "ru": "5 %",
-                "pl": "5 %",
-                "ko": "5 %",
-                "ar": "5 %"
-              }
-            },
-            {
-              "id": "10",
-              "title": {
-                "en": "10 %",
-                "nl": "10 %",
-                "de": "10 %",
-                "fr": "10 %",
-                "it": "10 %",
-                "sv": "10 %",
-                "no": "10 %",
-                "es": "10 %",
-                "da": "10 %",
-                "ru": "10 %",
-                "pl": "10 %",
-                "ko": "10 %",
-                "ar": "10 %"
-              }
-            }
-          ]
-        },
-        {
-          "id": "maxVolume",
-          "type": "number",
-          "value": 100,
-          "min": 1,
-          "max": 100,
-          "title": {
-            "en": "Maximum volume (%)",
-            "nl": "Maximaal volume (%)",
-            "de": "Maximale Lautstärke (%)",
-            "fr": "Volume maximal (%)",
-            "it": "Volume massimo (%)",
-            "sv": "Högsta volym (%)",
-            "no": "Maks. volum (%)",
-            "es": "Volumen máximo (%)",
-            "da": "Maks. lydstyrke (%)",
-            "ru": "Максимальная громкость (%)",
-            "pl": "Maksymalna głośność (%)",
-            "ko": "최대 볼륨(%)",
-            "ar": "أقصى مستوى صوت (%)"
-          },
-          "hint": {
-            "en": "The volume bar and + stop here. Handy where children use the dashboard.",
-            "nl": "De volumebalk en + stoppen hier. Handig als kinderen het dashboard gebruiken.",
-            "de": "Lautstärkeleiste und + enden hier. Praktisch, wenn Kinder das Dashboard benutzen.",
-            "fr": "La barre de volume et + s’arrêtent ici. Pratique si des enfants utilisent le tableau de bord.",
-            "it": "La barra del volume e + si fermano qui. Utile se il dashboard lo usano i bambini.",
-            "sv": "Volymreglaget och + stannar här. Praktiskt om barn använder instrumentpanelen.",
-            "no": "Volumlinjen og + stopper her. Nyttig når barn bruker dashbordet.",
-            "es": "La barra de volumen y + se detienen aquí. Útil si los niños usan el panel.",
-            "da": "Lydstyrkebjælken og + stopper her. Praktisk, hvis børn bruger dashboardet.",
-            "ru": "Полоса громкости и + останавливаются здесь. Удобно, если панелью пользуются дети.",
-            "pl": "Pasek głośności i + zatrzymują się tutaj. Przydatne, gdy z pulpitu korzystają dzieci.",
-            "ko": "볼륨 막대와 +가 여기서 멈춥니다. 아이들이 대시보드를 쓸 때 유용합니다.",
-            "ar": "يتوقف شريط الصوت و+ هنا. مفيد عندما يستخدم الأطفال لوحة التحكم."
-          }
-        },
-        {
-          "id": "showProgress",
-          "type": "checkbox",
-          "value": true,
-          "title": {
-            "en": "Show progress bar and time",
-            "nl": "Voortgangsbalk en tijd tonen",
-            "de": "Fortschrittsleiste und Zeit zeigen",
-            "fr": "Afficher la progression et la durée",
-            "it": "Mostra barra di avanzamento e tempo",
-            "sv": "Visa förloppsindikator och tid",
-            "no": "Vis fremdriftslinje og tid",
-            "es": "Mostrar barra de progreso y tiempo",
-            "da": "Vis statuslinje og tid",
-            "ru": "Показывать прогресс и время",
-            "pl": "Pokaż pasek postępu i czas",
-            "ko": "진행 막대와 시간 표시",
-            "ar": "إظهار شريط التقدم والوقت"
-          }
-        },
-        {
-          "id": "showShuffle",
-          "type": "checkbox",
-          "value": false,
-          "title": {
-            "en": "Show shuffle and repeat",
-            "nl": "Shuffle en herhalen tonen",
-            "de": "Zufall und Wiederholen zeigen",
-            "fr": "Afficher aléatoire et répétition",
-            "it": "Mostra casuale e ripeti",
-            "sv": "Visa blanda och upprepa",
-            "no": "Vis tilfeldig og gjenta",
-            "es": "Mostrar aleatorio y repetir",
-            "da": "Vis bland og gentag",
-            "ru": "Показывать перемешивание и повтор",
-            "pl": "Pokaż losowo i powtarzanie",
-            "ko": "셔플과 반복 표시",
-            "ar": "إظهار التشغيل العشوائي والتكرار"
-          }
         },
         {
           "id": "button1",
@@ -32959,79 +33192,6 @@
           "value": false
         },
         {
-          "id": "colorStyle",
-          "type": "dropdown",
-          "title": {
-            "en": "Colour style",
-            "nl": "Kleurstijl",
-            "de": "Farbstil",
-            "fr": "Style de couleur",
-            "it": "Stile colori",
-            "sv": "Färgstil",
-            "no": "Fargestil",
-            "es": "Estilo de color",
-            "da": "Farvestil",
-            "ru": "Цветовой стиль",
-            "pl": "Styl kolorów",
-            "ko": "색상 스타일",
-            "ar": "نمط الألوان"
-          },
-          "hint": {
-            "en": "Vivid shows the colours bright and at full strength.",
-            "nl": "Levendig toont de kleuren fel en op volle sterkte.",
-            "de": "Kräftig zeigt die Farben kräftig und in voller Stärke.",
-            "fr": "Vives affiche les couleurs vives, à pleine intensité.",
-            "it": "Vivaci mostra i colori vivaci e a piena intensità.",
-            "sv": "Livfulla visar färgerna klara och i full styrka.",
-            "no": "Livlige viser fargene klare og med full styrke.",
-            "es": "Vivos muestra los colores vivos y con toda su intensidad.",
-            "da": "Livlige viser farverne klare og i fuld styrke.",
-            "ru": "«Яркие» показывают цвета ярко и в полную силу.",
-            "pl": "Żywe pokazują kolory jaskrawo i w pełnej mocy.",
-            "ko": "선명하게는 색을 선명하고 진하게 표시합니다.",
-            "ar": "«زاهية» تعرض الألوان زاهية وبكامل قوتها."
-          },
-          "value": "soft",
-          "values": [
-            {
-              "id": "soft",
-              "title": {
-                "en": "Muted",
-                "nl": "Gedempt",
-                "de": "Gedämpft",
-                "fr": "Atténuées",
-                "it": "Smorzati",
-                "sv": "Dämpade",
-                "no": "Dempede",
-                "es": "Suaves",
-                "da": "Dæmpede",
-                "ru": "Приглушённые",
-                "pl": "Stonowane",
-                "ko": "차분하게",
-                "ar": "هادئة"
-              }
-            },
-            {
-              "id": "deep",
-              "title": {
-                "en": "Vivid",
-                "nl": "Levendig",
-                "de": "Kräftig",
-                "fr": "Vives",
-                "it": "Vivaci",
-                "sv": "Livfulla",
-                "no": "Livlige",
-                "es": "Vivos",
-                "da": "Livlige",
-                "ru": "Яркие",
-                "pl": "Żywe",
-                "ko": "선명하게",
-                "ar": "زاهية"
-              }
-            }
-          ]
-        },
-        {
           "id": "layout",
           "type": "dropdown",
           "value": "icons",
@@ -33214,6 +33374,79 @@
             "ko": "범위 안의 값을 회색 대신 초록색으로 표시합니다.",
             "ar": "يعرض القيم الواقعة ضمن نطاقها باللون الأخضر بدل الرمادي."
           }
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid shows the colours bright and at full strength.",
+            "nl": "Levendig toont de kleuren fel en op volle sterkte.",
+            "de": "Kräftig zeigt die Farben kräftig und in voller Stärke.",
+            "fr": "Vives affiche les couleurs vives, à pleine intensité.",
+            "it": "Vivaci mostra i colori vivaci e a piena intensità.",
+            "sv": "Livfulla visar färgerna klara och i full styrka.",
+            "no": "Livlige viser fargene klare og med full styrke.",
+            "es": "Vivos muestra los colores vivos y con toda su intensidad.",
+            "da": "Livlige viser farverne klare og i fuld styrke.",
+            "ru": "«Яркие» показывают цвета ярко и в полную силу.",
+            "pl": "Żywe pokazują kolory jaskrawo i w pełnej mocy.",
+            "ko": "선명하게는 색을 선명하고 진하게 표시합니다.",
+            "ar": "«زاهية» تعرض الألوان زاهية وبكامل قوتها."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
+              }
+            }
+          ]
         },
         {
           "id": "tempMin",
@@ -34728,6 +34961,41 @@
           ]
         },
         {
+          "id": "smooth",
+          "type": "checkbox",
+          "title": {
+            "en": "Smooth chart lines",
+            "nl": "Vloeiende grafieklijnen",
+            "de": "Geglättete Diagrammlinien",
+            "fr": "Lisser les courbes",
+            "it": "Linee del grafico smussate",
+            "sv": "Utjämnade diagramlinjer",
+            "no": "Glatte diagramlinjer",
+            "es": "Suavizar las líneas del gráfico",
+            "da": "Udglattede graflinjer",
+            "ru": "Сглаживать линии графиков",
+            "pl": "Wygładzone linie wykresów",
+            "ko": "차트 선 부드럽게",
+            "ar": "تنعيم خطوط المخطط"
+          },
+          "hint": {
+            "en": "Rounds off spikes in the lines. The numbers at the top stay exact.",
+            "nl": "Rondt pieken in de lijnen af. De getallen bovenaan blijven exact.",
+            "de": "Glättet Spitzen in den Linien. Die Zahlen oben bleiben exakt.",
+            "fr": "Adoucit les pics des courbes. Les valeurs en haut restent exactes.",
+            "it": "Smussa i picchi delle linee. I valori in alto restano esatti.",
+            "sv": "Rundar av toppar i linjerna. Siffrorna överst förblir exakta.",
+            "no": "Runder av topper i linjene. Tallene øverst forblir nøyaktige.",
+            "es": "Suaviza los picos de las líneas. Los valores de arriba siguen exactos.",
+            "da": "Runder spidser i linjerne af. Tallene øverst forbliver præcise.",
+            "ru": "Сглаживает пики линий. Значения вверху остаются точными.",
+            "pl": "Wygładza skoki na liniach. Liczby u góry pozostają dokładne.",
+            "ko": "선의 급격한 변화를 부드럽게 합니다. 위쪽 숫자는 정확하게 유지됩니다.",
+            "ar": "يخفف القمم في الخطوط. تبقى الأرقام في الأعلى دقيقة."
+          },
+          "value": false
+        },
+        {
           "id": "color",
           "type": "dropdown",
           "title": {
@@ -35880,6 +36148,41 @@
       "transparent": true,
       "settings": [
         {
+          "id": "sound",
+          "type": "checkbox",
+          "title": {
+            "en": "Beep when a timer is done",
+            "nl": "Piepen als een timer klaar is",
+            "de": "Piepen, wenn ein Timer abgelaufen ist",
+            "fr": "Bip à la fin d'un minuteur",
+            "it": "Bip quando un timer finisce",
+            "sv": "Pip när en timer är klar",
+            "no": "Pip når en tidtaker er ferdig",
+            "es": "Pitido al terminar un temporizador",
+            "da": "Bip, når en timer er færdig",
+            "ru": "Сигнал по окончании таймера",
+            "pl": "Sygnał po końcu minutnika",
+            "ko": "타이머가 끝나면 알림음",
+            "ar": "صفير عند انتهاء المؤقت"
+          },
+          "hint": {
+            "en": "On the screen that shows the widget, for a minute or until you tap it. Phones and tablets only play sound after you've touched the widget once.",
+            "nl": "Op het scherm met de widget, een minuut lang of tot je erop tikt. Telefoons en tablets spelen pas geluid af als je de widget een keer hebt aangeraakt.",
+            "de": "Auf dem Bildschirm mit dem Widget, eine Minute lang oder bis du tippst. Handys und Tablets spielen erst Ton ab, nachdem du das Widget einmal berührt hast.",
+            "fr": "Sur l'écran qui affiche le widget, pendant une minute ou jusqu'à ce que vous le touchiez. Téléphones et tablettes ne jouent le son qu'après un premier contact avec le widget.",
+            "it": "Sullo schermo che mostra il widget, per un minuto o finché non lo tocchi. Telefoni e tablet riproducono suoni solo dopo che hai toccato il widget una volta.",
+            "sv": "På skärmen som visar widgeten, i en minut eller tills du trycker. Telefoner och surfplattor spelar bara ljud efter att du rört widgeten en gång.",
+            "no": "På skjermen som viser widgeten, i ett minutt eller til du trykker. Telefoner og nettbrett spiller bare lyd etter at du har rørt widgeten én gang.",
+            "es": "En la pantalla que muestra el widget, durante un minuto o hasta que lo toques. Los móviles y tabletas solo reproducen sonido después de tocar el widget una vez.",
+            "da": "På skærmen med widgetten, i et minut eller til du trykker. Telefoner og tablets afspiller kun lyd, når du har rørt widgetten én gang.",
+            "ru": "На экране с виджетом, минуту или пока вы не нажмёте. Телефоны и планшеты воспроизводят звук только после первого касания виджета.",
+            "pl": "Na ekranie z widżetem, przez minutę lub do dotknięcia. Telefony i tablety odtwarzają dźwięk dopiero po pierwszym dotknięciu widżetu.",
+            "ko": "위젯이 표시된 화면에서 1분 동안 또는 탭할 때까지 울립니다. 휴대폰과 태블릿은 위젯을 한 번 터치한 후에만 소리를 냅니다.",
+            "ar": "على الشاشة التي تعرض الأداة، لمدة دقيقة أو حتى تلمسها. لا تشغّل الهواتف والأجهزة اللوحية الصوت إلا بعد لمس الأداة مرة."
+          },
+          "value": true
+        },
+        {
           "id": "color",
           "type": "dropdown",
           "title": {
@@ -36402,41 +36705,6 @@
             "ar": "  – الاسم"
           },
           "value": ""
-        },
-        {
-          "id": "sound",
-          "type": "checkbox",
-          "title": {
-            "en": "Beep when a timer is done",
-            "nl": "Piepen als een timer klaar is",
-            "de": "Piepen, wenn ein Timer abgelaufen ist",
-            "fr": "Bip à la fin d'un minuteur",
-            "it": "Bip quando un timer finisce",
-            "sv": "Pip när en timer är klar",
-            "no": "Pip når en tidtaker er ferdig",
-            "es": "Pitido al terminar un temporizador",
-            "da": "Bip, når en timer er færdig",
-            "ru": "Сигнал по окончании таймера",
-            "pl": "Sygnał po końcu minutnika",
-            "ko": "타이머가 끝나면 알림음",
-            "ar": "صفير عند انتهاء المؤقت"
-          },
-          "hint": {
-            "en": "On the screen that shows the widget, for a minute or until you tap it. Phones and tablets only play sound after you've touched the widget once.",
-            "nl": "Op het scherm met de widget, een minuut lang of tot je erop tikt. Telefoons en tablets spelen pas geluid af als je de widget een keer hebt aangeraakt.",
-            "de": "Auf dem Bildschirm mit dem Widget, eine Minute lang oder bis du tippst. Handys und Tablets spielen erst Ton ab, nachdem du das Widget einmal berührt hast.",
-            "fr": "Sur l'écran qui affiche le widget, pendant une minute ou jusqu'à ce que vous le touchiez. Téléphones et tablettes ne jouent le son qu'après un premier contact avec le widget.",
-            "it": "Sullo schermo che mostra il widget, per un minuto o finché non lo tocchi. Telefoni e tablet riproducono suoni solo dopo che hai toccato il widget una volta.",
-            "sv": "På skärmen som visar widgeten, i en minut eller tills du trycker. Telefoner och surfplattor spelar bara ljud efter att du rört widgeten en gång.",
-            "no": "På skjermen som viser widgeten, i ett minutt eller til du trykker. Telefoner og nettbrett spiller bare lyd etter at du har rørt widgeten én gang.",
-            "es": "En la pantalla que muestra el widget, durante un minuto o hasta que lo toques. Los móviles y tabletas solo reproducen sonido después de tocar el widget una vez.",
-            "da": "På skærmen med widgetten, i et minut eller til du trykker. Telefoner og tablets afspiller kun lyd, når du har rørt widgetten én gang.",
-            "ru": "На экране с виджетом, минуту или пока вы не нажмёте. Телефоны и планшеты воспроизводят звук только после первого касания виджета.",
-            "pl": "Na ekranie z widżetem, przez minutę lub do dotknięcia. Telefony i tablety odtwarzają dźwięk dopiero po pierwszym dotknięciu widżetu.",
-            "ko": "위젯이 표시된 화면에서 1분 동안 또는 탭할 때까지 울립니다. 휴대폰과 태블릿은 위젯을 한 번 터치한 후에만 소리를 냅니다.",
-            "ar": "على الشاشة التي تعرض الأداة، لمدة دقيقة أو حتى تلمسها. لا تشغّل الهواتف والأجهزة اللوحية الصوت إلا بعد لمس الأداة مرة."
-          },
-          "value": true
         }
       ],
       "api": {
@@ -36516,79 +36784,6 @@
             "ar": "لتسمية المربعات: شغّل هذا الخيار واحفظ الأداة، ثم اخرج من وضع تحرير لوحة التحكم. يعرض كل مربع حقلًا نصيًا: اكتب اسمه، أو اتركه فارغًا لإبقاء اسم الغرفة. بعد ذلك حرّر الأداة مجددًا وأوقف هذا الخيار."
           },
           "value": false
-        },
-        {
-          "id": "colorStyle",
-          "type": "dropdown",
-          "title": {
-            "en": "Colour style",
-            "nl": "Kleurstijl",
-            "de": "Farbstil",
-            "fr": "Style de couleur",
-            "it": "Stile colori",
-            "sv": "Färgstil",
-            "no": "Fargestil",
-            "es": "Estilo de color",
-            "da": "Farvestil",
-            "ru": "Цветовой стиль",
-            "pl": "Styl kolorów",
-            "ko": "색상 스타일",
-            "ar": "نمط الألوان"
-          },
-          "hint": {
-            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
-            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
-            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
-            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
-            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
-            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
-            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
-            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
-            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
-            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
-            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
-            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
-            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
-          },
-          "value": "soft",
-          "values": [
-            {
-              "id": "soft",
-              "title": {
-                "en": "Muted",
-                "nl": "Gedempt",
-                "de": "Gedämpft",
-                "fr": "Atténuées",
-                "it": "Smorzati",
-                "sv": "Dämpade",
-                "no": "Dempede",
-                "es": "Suaves",
-                "da": "Dæmpede",
-                "ru": "Приглушённые",
-                "pl": "Stonowane",
-                "ko": "차분하게",
-                "ar": "هادئة"
-              }
-            },
-            {
-              "id": "deep",
-              "title": {
-                "en": "Vivid",
-                "nl": "Levendig",
-                "de": "Kräftig",
-                "fr": "Vives",
-                "it": "Vivaci",
-                "sv": "Livfulla",
-                "no": "Livlige",
-                "es": "Vivos",
-                "da": "Livlige",
-                "ru": "Яркие",
-                "pl": "Żywe",
-                "ko": "선명하게",
-                "ar": "زاهية"
-              }
-            }
-          ]
         },
         {
           "id": "rows",
@@ -36717,6 +36912,79 @@
             "ko": "범위 안의 값을 회색 대신 초록색으로 표시합니다.",
             "ar": "يعرض القيم الواقعة ضمن نطاقها باللون الأخضر بدل الرمادي."
           }
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
+            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
+            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
+            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
+            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
+            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
+            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
+            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
+            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
+            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
+            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
+            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
+            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
+              }
+            }
+          ]
         },
         {
           "id": "col1",
@@ -37948,6 +38216,131 @@
           ]
         },
         {
+          "id": "readOnly",
+          "type": "checkbox",
+          "value": false,
+          "title": {
+            "en": "Read only",
+            "nl": "Alleen weergeven",
+            "de": "Nur anzeigen",
+            "fr": "Lecture seule",
+            "it": "Sola lettura",
+            "sv": "Endast visning",
+            "no": "Kun visning",
+            "es": "Solo lectura",
+            "da": "Kun visning",
+            "ru": "Только просмотр",
+            "pl": "Tylko odczyt",
+            "ko": "읽기 전용",
+            "ar": "للعرض فقط"
+          },
+          "hint": {
+            "en": "Shows the values without − and +, switches or typing. No API key needed.",
+            "nl": "Toont de waarden zonder − en +, schakelaars of typen. Geen API-sleutel nodig.",
+            "de": "Zeigt die Werte ohne − und +, Schalter oder Eingabe. Kein API-Schlüssel nötig.",
+            "fr": "Affiche les valeurs sans − et +, interrupteurs ni saisie. Aucune clé API nécessaire.",
+            "it": "Mostra i valori senza − e +, interruttori o digitazione. Nessuna chiave API necessaria.",
+            "sv": "Visar värdena utan − och +, reglage eller inmatning. Ingen API-nyckel behövs.",
+            "no": "Viser verdiene uten − og +, brytere eller inntasting. Ingen API-nøkkel trengs.",
+            "es": "Muestra los valores sin − y +, interruptores ni escritura. No hace falta clave API.",
+            "da": "Viser værdierne uden − og +, kontakter eller indtastning. Ingen API-nøgle nødvendig.",
+            "ru": "Показывает значения без − и +, переключателей и ввода. Ключ API не нужен.",
+            "pl": "Pokazuje wartości bez − i +, przełączników ani wpisywania. Klucz API nie jest potrzebny.",
+            "ko": "− 및 +, 스위치, 입력 없이 값만 표시합니다. API 키가 필요 없습니다.",
+            "ar": "يعرض القيم دون − و + أو المفاتيح أو الكتابة. لا حاجة إلى مفتاح API."
+          }
+        },
+        {
+          "id": "step",
+          "type": "number",
+          "title": {
+            "en": "Step for − and + on numbers",
+            "nl": "Stap voor − en + bij getallen",
+            "de": "Schritt für − und + bei Zahlen",
+            "fr": "Pas pour − et + sur les nombres",
+            "it": "Passo per − e + sui numeri",
+            "sv": "Steg för − och + på tal",
+            "no": "Steg for − og + på tall",
+            "es": "Paso para − y + en números",
+            "da": "Trin for − og + på tal",
+            "ru": "Шаг для − и + у чисел",
+            "pl": "Krok dla − i + przy liczbach",
+            "ko": "숫자의 − 및 + 단계",
+            "ar": "خطوة − و + للأرقام"
+          },
+          "value": 1,
+          "min": 0.001,
+          "max": 1000
+        },
+        {
+          "id": "min",
+          "type": "number",
+          "title": {
+            "en": "Lowest number",
+            "nl": "Laagste getal",
+            "de": "Kleinste Zahl",
+            "fr": "Nombre minimum",
+            "it": "Numero minimo",
+            "sv": "Lägsta tal",
+            "no": "Laveste tall",
+            "es": "Número mínimo",
+            "da": "Laveste tal",
+            "ru": "Наименьшее число",
+            "pl": "Najmniejsza liczba",
+            "ko": "최소 숫자",
+            "ar": "أصغر رقم"
+          },
+          "hint": {
+            "en": "Optional. − stops here, and a lower typed number is raised to it.",
+            "nl": "Optioneel. − stopt hier, en een lager getypt getal wordt erop gezet.",
+            "de": "Optional. − hält hier an, eine kleinere eingegebene Zahl wird darauf angehoben.",
+            "fr": "Facultatif. − s’arrête ici, et un nombre saisi plus petit y est ramené.",
+            "it": "Facoltativo. − si ferma qui, e un numero digitato più basso viene portato a questo.",
+            "sv": "Valfritt. − stannar här, och ett lägre inskrivet tal höjs till det.",
+            "no": "Valgfritt. − stopper her, og et lavere inntastet tall heves til det.",
+            "es": "Opcional. − se detiene aquí, y un número escrito menor se sube a este.",
+            "da": "Valgfrit. − stopper her, og et lavere indtastet tal hæves til det.",
+            "ru": "Необязательно. − останавливается здесь, а меньшее введённое число поднимается до него.",
+            "pl": "Opcjonalnie. − zatrzymuje się tutaj, a mniejsza wpisana liczba jest do niej podnoszona.",
+            "ko": "선택 사항. −는 여기서 멈추고, 더 작은 입력 값은 이 값으로 올라갑니다.",
+            "ar": "اختياري. يتوقف − هنا، ويُرفع الرقم المكتوب الأصغر إليه."
+          }
+        },
+        {
+          "id": "max",
+          "type": "number",
+          "title": {
+            "en": "Highest number",
+            "nl": "Hoogste getal",
+            "de": "Größte Zahl",
+            "fr": "Nombre maximum",
+            "it": "Numero massimo",
+            "sv": "Högsta tal",
+            "no": "Høyeste tall",
+            "es": "Número máximo",
+            "da": "Højeste tal",
+            "ru": "Наибольшее число",
+            "pl": "Największa liczba",
+            "ko": "최대 숫자",
+            "ar": "أكبر رقم"
+          },
+          "hint": {
+            "en": "Optional. + stops here, and a higher typed number is lowered to it.",
+            "nl": "Optioneel. + stopt hier, en een hoger getypt getal wordt erop gezet.",
+            "de": "Optional. + hält hier an, eine größere eingegebene Zahl wird darauf gesenkt.",
+            "fr": "Facultatif. + s’arrête ici, et un nombre saisi plus grand y est ramené.",
+            "it": "Facoltativo. + si ferma qui, e un numero digitato più alto viene portato a questo.",
+            "sv": "Valfritt. + stannar här, och ett högre inskrivet tal sänks till det.",
+            "no": "Valgfritt. + stopper her, og et høyere inntastet tall senkes til det.",
+            "es": "Opcional. + se detiene aquí, y un número escrito mayor se baja a este.",
+            "da": "Valgfrit. + stopper her, og et højere indtastet tal sænkes til det.",
+            "ru": "Необязательно. + останавливается здесь, а большее введённое число опускается до него.",
+            "pl": "Opcjonalnie. + zatrzymuje się tutaj, a większa wpisana liczba jest do niej obniżana.",
+            "ko": "선택 사항. +는 여기서 멈추고, 더 큰 입력 값은 이 값으로 내려갑니다.",
+            "ar": "اختياري. يتوقف + هنا، ويُخفض الرقم المكتوب الأكبر إليه."
+          }
+        },
+        {
           "id": "color",
           "type": "dropdown",
           "title": {
@@ -38272,131 +38665,6 @@
               }
             }
           ]
-        },
-        {
-          "id": "readOnly",
-          "type": "checkbox",
-          "value": false,
-          "title": {
-            "en": "Read only",
-            "nl": "Alleen weergeven",
-            "de": "Nur anzeigen",
-            "fr": "Lecture seule",
-            "it": "Sola lettura",
-            "sv": "Endast visning",
-            "no": "Kun visning",
-            "es": "Solo lectura",
-            "da": "Kun visning",
-            "ru": "Только просмотр",
-            "pl": "Tylko odczyt",
-            "ko": "읽기 전용",
-            "ar": "للعرض فقط"
-          },
-          "hint": {
-            "en": "Shows the values without − and +, switches or typing. No API key needed.",
-            "nl": "Toont de waarden zonder − en +, schakelaars of typen. Geen API-sleutel nodig.",
-            "de": "Zeigt die Werte ohne − und +, Schalter oder Eingabe. Kein API-Schlüssel nötig.",
-            "fr": "Affiche les valeurs sans − et +, interrupteurs ni saisie. Aucune clé API nécessaire.",
-            "it": "Mostra i valori senza − e +, interruttori o digitazione. Nessuna chiave API necessaria.",
-            "sv": "Visar värdena utan − och +, reglage eller inmatning. Ingen API-nyckel behövs.",
-            "no": "Viser verdiene uten − og +, brytere eller inntasting. Ingen API-nøkkel trengs.",
-            "es": "Muestra los valores sin − y +, interruptores ni escritura. No hace falta clave API.",
-            "da": "Viser værdierne uden − og +, kontakter eller indtastning. Ingen API-nøgle nødvendig.",
-            "ru": "Показывает значения без − и +, переключателей и ввода. Ключ API не нужен.",
-            "pl": "Pokazuje wartości bez − i +, przełączników ani wpisywania. Klucz API nie jest potrzebny.",
-            "ko": "− 및 +, 스위치, 입력 없이 값만 표시합니다. API 키가 필요 없습니다.",
-            "ar": "يعرض القيم دون − و + أو المفاتيح أو الكتابة. لا حاجة إلى مفتاح API."
-          }
-        },
-        {
-          "id": "step",
-          "type": "number",
-          "title": {
-            "en": "Step for − and + on numbers",
-            "nl": "Stap voor − en + bij getallen",
-            "de": "Schritt für − und + bei Zahlen",
-            "fr": "Pas pour − et + sur les nombres",
-            "it": "Passo per − e + sui numeri",
-            "sv": "Steg för − och + på tal",
-            "no": "Steg for − og + på tall",
-            "es": "Paso para − y + en números",
-            "da": "Trin for − og + på tal",
-            "ru": "Шаг для − и + у чисел",
-            "pl": "Krok dla − i + przy liczbach",
-            "ko": "숫자의 − 및 + 단계",
-            "ar": "خطوة − و + للأرقام"
-          },
-          "value": 1,
-          "min": 0.001,
-          "max": 1000
-        },
-        {
-          "id": "min",
-          "type": "number",
-          "title": {
-            "en": "Lowest number",
-            "nl": "Laagste getal",
-            "de": "Kleinste Zahl",
-            "fr": "Nombre minimum",
-            "it": "Numero minimo",
-            "sv": "Lägsta tal",
-            "no": "Laveste tall",
-            "es": "Número mínimo",
-            "da": "Laveste tal",
-            "ru": "Наименьшее число",
-            "pl": "Najmniejsza liczba",
-            "ko": "최소 숫자",
-            "ar": "أصغر رقم"
-          },
-          "hint": {
-            "en": "Optional. − stops here, and a lower typed number is raised to it.",
-            "nl": "Optioneel. − stopt hier, en een lager getypt getal wordt erop gezet.",
-            "de": "Optional. − hält hier an, eine kleinere eingegebene Zahl wird darauf angehoben.",
-            "fr": "Facultatif. − s’arrête ici, et un nombre saisi plus petit y est ramené.",
-            "it": "Facoltativo. − si ferma qui, e un numero digitato più basso viene portato a questo.",
-            "sv": "Valfritt. − stannar här, och ett lägre inskrivet tal höjs till det.",
-            "no": "Valgfritt. − stopper her, og et lavere inntastet tall heves til det.",
-            "es": "Opcional. − se detiene aquí, y un número escrito menor se sube a este.",
-            "da": "Valgfrit. − stopper her, og et lavere indtastet tal hæves til det.",
-            "ru": "Необязательно. − останавливается здесь, а меньшее введённое число поднимается до него.",
-            "pl": "Opcjonalnie. − zatrzymuje się tutaj, a mniejsza wpisana liczba jest do niej podnoszona.",
-            "ko": "선택 사항. −는 여기서 멈추고, 더 작은 입력 값은 이 값으로 올라갑니다.",
-            "ar": "اختياري. يتوقف − هنا، ويُرفع الرقم المكتوب الأصغر إليه."
-          }
-        },
-        {
-          "id": "max",
-          "type": "number",
-          "title": {
-            "en": "Highest number",
-            "nl": "Hoogste getal",
-            "de": "Größte Zahl",
-            "fr": "Nombre maximum",
-            "it": "Numero massimo",
-            "sv": "Högsta tal",
-            "no": "Høyeste tall",
-            "es": "Número máximo",
-            "da": "Højeste tal",
-            "ru": "Наибольшее число",
-            "pl": "Największa liczba",
-            "ko": "최대 숫자",
-            "ar": "أكبر رقم"
-          },
-          "hint": {
-            "en": "Optional. + stops here, and a higher typed number is lowered to it.",
-            "nl": "Optioneel. + stopt hier, en een hoger getypt getal wordt erop gezet.",
-            "de": "Optional. + hält hier an, eine größere eingegebene Zahl wird darauf gesenkt.",
-            "fr": "Facultatif. + s’arrête ici, et un nombre saisi plus grand y est ramené.",
-            "it": "Facoltativo. + si ferma qui, e un numero digitato più alto viene portato a questo.",
-            "sv": "Valfritt. + stannar här, och ett högre inskrivet tal sänks till det.",
-            "no": "Valgfritt. + stopper her, og et høyere inntastet tall senkes til det.",
-            "es": "Opcional. + se detiene aquí, y un número escrito mayor se baja a este.",
-            "da": "Valgfrit. + stopper her, og et højere indtastet tal sænkes til det.",
-            "ru": "Необязательно. + останавливается здесь, а большее введённое число опускается до него.",
-            "pl": "Opcjonalnie. + zatrzymuje się tutaj, a większa wpisana liczba jest do niej obniżana.",
-            "ko": "선택 사항. +는 여기서 멈추고, 더 큰 입력 값은 이 값으로 내려갑니다.",
-            "ar": "اختياري. يتوقف + هنا، ويُخفض الرقم المكتوب الأكبر إليه."
-          }
         },
         {
           "id": "slot1",
@@ -40454,79 +40722,6 @@
           ]
         },
         {
-          "id": "colorStyle",
-          "type": "dropdown",
-          "title": {
-            "en": "Colour style",
-            "nl": "Kleurstijl",
-            "de": "Farbstil",
-            "fr": "Style de couleur",
-            "it": "Stile colori",
-            "sv": "Färgstil",
-            "no": "Fargestil",
-            "es": "Estilo de color",
-            "da": "Farvestil",
-            "ru": "Цветовой стиль",
-            "pl": "Styl kolorów",
-            "ko": "색상 스타일",
-            "ar": "نمط الألوان"
-          },
-          "hint": {
-            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
-            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
-            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
-            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
-            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
-            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
-            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
-            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
-            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
-            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
-            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
-            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
-            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
-          },
-          "value": "soft",
-          "values": [
-            {
-              "id": "soft",
-              "title": {
-                "en": "Muted",
-                "nl": "Gedempt",
-                "de": "Gedämpft",
-                "fr": "Atténuées",
-                "it": "Smorzati",
-                "sv": "Dämpade",
-                "no": "Dempede",
-                "es": "Suaves",
-                "da": "Dæmpede",
-                "ru": "Приглушённые",
-                "pl": "Stonowane",
-                "ko": "차분하게",
-                "ar": "هادئة"
-              }
-            },
-            {
-              "id": "deep",
-              "title": {
-                "en": "Vivid",
-                "nl": "Levendig",
-                "de": "Kräftig",
-                "fr": "Vives",
-                "it": "Vivaci",
-                "sv": "Livfulla",
-                "no": "Livlige",
-                "es": "Vivos",
-                "da": "Livlige",
-                "ru": "Яркие",
-                "pl": "Żywe",
-                "ko": "선명하게",
-                "ar": "زاهية"
-              }
-            }
-          ]
-        },
-        {
           "id": "tapEffect",
           "type": "dropdown",
           "title": {
@@ -40633,6 +40828,79 @@
             "ar": "وقت آخر تغيير، بدلًا من سطر ثانٍ حيث لم يحدده تدفق."
           },
           "value": false
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
+            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
+            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
+            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
+            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
+            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
+            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
+            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
+            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
+            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
+            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
+            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
+            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
+              }
+            }
+          ]
         }
       ],
       "api": {

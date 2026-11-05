@@ -223,3 +223,14 @@ describe('the colour setting (1.3.0)', () => {
     expect(widget([], { color: 'nope' }).root.dataset.wkColor).toBeUndefined();
   });
 });
+
+describe('smooth (1.3.0)', () => {
+  it('rounds off the line, keeping the real lowest and highest and the last point', () => {
+    const pts: [number, number][] = [[0, 0], [1, 10], [2, 0], [3, 10], [4, 5]];
+    const plain = win.sparkPath(pts, 0, 4, 100, 36);
+    const smooth = win.sparkPath(pts, 0, 4, 100, 36, true);
+    expect(smooth.line).not.toBe(plain.line);
+    expect([smooth.min, smooth.max]).toEqual([0, 10]);
+    expect(smooth.dot).toEqual(plain.dot);
+  });
+});

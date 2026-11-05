@@ -294,6 +294,76 @@
       ]
     },
     {
+      "id": "showScale",
+      "type": "checkbox",
+      "title": {
+        "en": "Show scale",
+        "nl": "Schaal tonen",
+        "de": "Skala anzeigen",
+        "fr": "Afficher l'échelle",
+        "it": "Mostra scala",
+        "sv": "Visa skala",
+        "no": "Vis skala",
+        "es": "Mostrar escala",
+        "da": "Vis skala",
+        "ru": "Показывать шкалу",
+        "pl": "Pokaż skalę",
+        "ko": "눈금 표시",
+        "ar": "إظهار المقياس"
+      },
+      "hint": {
+        "en": "The bar from the lowest to the highest value, with the current value.",
+        "nl": "De balk van de laagste tot de hoogste waarde, met de huidige waarde.",
+        "de": "Der Balken vom niedrigsten bis zum höchsten Wert, mit dem aktuellen Wert.",
+        "fr": "La barre de la valeur la plus basse à la plus haute, avec la valeur actuelle.",
+        "it": "La barra dal valore più basso al più alto, con il valore attuale.",
+        "sv": "Stapeln från lägsta till högsta värdet, med det aktuella värdet.",
+        "no": "Linjen fra laveste til høyeste verdi, med gjeldende verdi.",
+        "es": "La barra del valor más bajo al más alto, con el valor actual.",
+        "da": "Bjælken fra laveste til højeste værdi, med den aktuelle værdi.",
+        "ru": "Полоса от наименьшего до наибольшего значения с текущим значением.",
+        "pl": "Pasek od najniższej do najwyższej wartości, z bieżącą wartością.",
+        "ko": "최저값부터 최고값까지의 막대와 현재 값.",
+        "ar": "الشريط من أدنى قيمة إلى أعلاها، مع القيمة الحالية."
+      },
+      "value": true
+    },
+    {
+      "id": "showLegend",
+      "type": "checkbox",
+      "title": {
+        "en": "Show legend",
+        "nl": "Legenda tonen",
+        "de": "Legende anzeigen",
+        "fr": "Afficher la légende",
+        "it": "Mostra legenda",
+        "sv": "Visa förklaring",
+        "no": "Vis tegnforklaring",
+        "es": "Mostrar leyenda",
+        "da": "Vis forklaring",
+        "ru": "Показывать легенду",
+        "pl": "Pokaż legendę",
+        "ko": "범례 표시",
+        "ar": "إظهار وسيلة الإيضاح"
+      },
+      "hint": {
+        "en": "Less to more, and what the hatched cells mean.",
+        "nl": "Minder tot meer, en wat de gearceerde vakjes betekenen.",
+        "de": "Weniger bis mehr und was die schraffierten Felder bedeuten.",
+        "fr": "De moins à plus, et ce que signifient les cases hachurées.",
+        "it": "Da meno a più, e cosa significano le celle tratteggiate.",
+        "sv": "Mindre till mer, och vad de streckade rutorna betyder.",
+        "no": "Mindre til mer, og hva de skraverte rutene betyr.",
+        "es": "De menos a más, y qué significan las celdas rayadas.",
+        "da": "Mindre til mere, og hvad de skraverede felter betyder.",
+        "ru": "От меньшего к большему и что означают заштрихованные ячейки.",
+        "pl": "Od mniej do więcej oraz co oznaczają zakreskowane pola.",
+        "ko": "적음에서 많음까지, 그리고 빗금 칸의 의미.",
+        "ar": "من الأقل إلى الأكثر، ومعنى الخلايا المظللة."
+      },
+      "value": true
+    },
+    {
       "id": "color",
       "type": "dropdown",
       "title": {
@@ -603,76 +673,6 @@
           }
         }
       ]
-    },
-    {
-      "id": "showScale",
-      "type": "checkbox",
-      "title": {
-        "en": "Show scale",
-        "nl": "Schaal tonen",
-        "de": "Skala anzeigen",
-        "fr": "Afficher l'échelle",
-        "it": "Mostra scala",
-        "sv": "Visa skala",
-        "no": "Vis skala",
-        "es": "Mostrar escala",
-        "da": "Vis skala",
-        "ru": "Показывать шкалу",
-        "pl": "Pokaż skalę",
-        "ko": "눈금 표시",
-        "ar": "إظهار المقياس"
-      },
-      "hint": {
-        "en": "The bar from the lowest to the highest value, with the current value.",
-        "nl": "De balk van de laagste tot de hoogste waarde, met de huidige waarde.",
-        "de": "Der Balken vom niedrigsten bis zum höchsten Wert, mit dem aktuellen Wert.",
-        "fr": "La barre de la valeur la plus basse à la plus haute, avec la valeur actuelle.",
-        "it": "La barra dal valore più basso al più alto, con il valore attuale.",
-        "sv": "Stapeln från lägsta till högsta värdet, med det aktuella värdet.",
-        "no": "Linjen fra laveste til høyeste verdi, med gjeldende verdi.",
-        "es": "La barra del valor más bajo al más alto, con el valor actual.",
-        "da": "Bjælken fra laveste til højeste værdi, med den aktuelle værdi.",
-        "ru": "Полоса от наименьшего до наибольшего значения с текущим значением.",
-        "pl": "Pasek od najniższej do najwyższej wartości, z bieżącą wartością.",
-        "ko": "최저값부터 최고값까지의 막대와 현재 값.",
-        "ar": "الشريط من أدنى قيمة إلى أعلاها، مع القيمة الحالية."
-      },
-      "value": true
-    },
-    {
-      "id": "showLegend",
-      "type": "checkbox",
-      "title": {
-        "en": "Show legend",
-        "nl": "Legenda tonen",
-        "de": "Legende anzeigen",
-        "fr": "Afficher la légende",
-        "it": "Mostra legenda",
-        "sv": "Visa förklaring",
-        "no": "Vis tegnforklaring",
-        "es": "Mostrar leyenda",
-        "da": "Vis forklaring",
-        "ru": "Показывать легенду",
-        "pl": "Pokaż legendę",
-        "ko": "범례 표시",
-        "ar": "إظهار وسيلة الإيضاح"
-      },
-      "hint": {
-        "en": "Less to more, and what the hatched cells mean.",
-        "nl": "Minder tot meer, en wat de gearceerde vakjes betekenen.",
-        "de": "Weniger bis mehr und was die schraffierten Felder bedeuten.",
-        "fr": "De moins à plus, et ce que signifient les cases hachurées.",
-        "it": "Da meno a più, e cosa significano le celle tratteggiate.",
-        "sv": "Mindre till mer, och vad de streckade rutorna betyder.",
-        "no": "Mindre til mer, og hva de skraverte rutene betyr.",
-        "es": "De menos a más, y qué significan las celdas rayadas.",
-        "da": "Mindre til mere, og hvad de skraverede felter betyder.",
-        "ru": "От меньшего к большему и что означают заштрихованные ячейки.",
-        "pl": "Od mniej do więcej oraz co oznaczają zakreskowane pola.",
-        "ko": "적음에서 많음까지, 그리고 빗금 칸의 의미.",
-        "ar": "من الأقل إلى الأكثر، ومعنى الخلايا المظللة."
-      },
-      "value": true
     }
   ],
   "api": {

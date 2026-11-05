@@ -21,6 +21,7 @@ window.mountStackedWidget = function (Homey, { root, frame }) {
       count: layers.length,
       span: spanSetting(settings, '', { count: 24, unit: 'hours' }), // a number of a unit; missing: 24 hours
       style: settings.style, // missing: areas
+      smooth: settings.smooth === true, // missing: off
       legend: settings.legend, // missing: above
       title: settings.title,
       showHeader: settings.showHeader !== false, // missing: on

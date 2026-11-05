@@ -110,6 +110,21 @@ describe('copied widget helpers', () => {
   });
 });
 
+describe('the settings\' order', () => {
+  const settingsOf = (id: string) => JSON.parse(readFileSync(`widgets/${id}/widget.compose.json`, 'utf8')).settings || [];
+  // Rows of a numbered group, or Room Health's ranges (the one unnumbered list kept after Colour style).
+  const inGroup = (s: any, id: string) => /\d/.test(s.id) || s.title.en.startsWith('\u2003') || (id === 'roomhealth' && /M(in|ax)$/.test(s.id));
+  const ids = WIDGETS.filter(id => existsSync(`widgets/${id}/widget.compose.json`));
+  it.each(ids)('%s: Rename tiles first, Colour right before Colour style, only groups after it', (id) => {
+    const list = settingsOf(id);
+    const at = (k: string) => list.findIndex((s: any) => s.id === k);
+    if (at('renameTiles') >= 0) expect(at('renameTiles')).toBe(0);
+    if (at('colorStyle') < 0) return;
+    if (at('color') >= 0) expect(at('color')).toBe(at('colorStyle') - 1);
+    expect(list.slice(at('colorStyle') + 1).filter((s: any) => !inGroup(s, id)).map((s: any) => s.id)).toEqual([]);
+  });
+});
+
 describe('haptic feedback', () => {
   // A tap that starts, sets or switches something vibrates (the settings review, 2026-11-04: six widgets that act didn't).
   // The rest only show, open a panel or move between pages (the Smart Stack's own).

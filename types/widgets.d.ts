@@ -117,6 +117,7 @@ interface Window {
     setTimeFormat: (value: unknown) => boolean,
     wireTimeFormat: (Homey: any, changed?: () => void) => void,
     uses12Hours: (locale?: string, timeFormat?: unknown) => boolean,
+    smoothValues: (vs: number[]) => number[],
     clockTime: (ms: number, opts?: { locale?: string, timeFormat?: unknown, pad?: boolean, seconds?: boolean }) => string,
     hourLabel: (hour: number, opts?: { locale?: string, timeFormat?: unknown, pad?: boolean }) => string,
     baseTitle: (title: unknown) => string,

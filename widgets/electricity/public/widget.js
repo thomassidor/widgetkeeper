@@ -4,7 +4,7 @@
  * measurement used below. The drawing itself is chart.js (`window.WidgetkeeperChart`), shared with Charts.
  */
 (function () {
-  const { lowestSlot, applyColors, clockTime, hourLabel, uses12Hours } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { lowestSlot, applyColors, clockTime, hourLabel, uses12Hours, COLORS } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const C = window.WidgetkeeperChart; // chart.js, loaded first
@@ -183,7 +183,7 @@
     // ------------------------------------------------------------------ render
 
     function render() {
-      ui.wrap.classList.toggle('usage-purple', state.settings.usageColor === 'purple');
+      for (const c of COLORS) ui.wrap.classList.toggle(`usage-${c}`, state.settings.usageColor === c);
       const ready = !state.message && !!state.data;
       show(ui.message, !!state.message);
       ui.message.textContent = state.message || '';

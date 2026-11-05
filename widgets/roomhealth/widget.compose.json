@@ -60,79 +60,6 @@
       "value": false
     },
     {
-      "id": "colorStyle",
-      "type": "dropdown",
-      "title": {
-        "en": "Colour style",
-        "nl": "Kleurstijl",
-        "de": "Farbstil",
-        "fr": "Style de couleur",
-        "it": "Stile colori",
-        "sv": "Färgstil",
-        "no": "Fargestil",
-        "es": "Estilo de color",
-        "da": "Farvestil",
-        "ru": "Цветовой стиль",
-        "pl": "Styl kolorów",
-        "ko": "색상 스타일",
-        "ar": "نمط الألوان"
-      },
-      "hint": {
-        "en": "Vivid shows the colours bright and at full strength.",
-        "nl": "Levendig toont de kleuren fel en op volle sterkte.",
-        "de": "Kräftig zeigt die Farben kräftig und in voller Stärke.",
-        "fr": "Vives affiche les couleurs vives, à pleine intensité.",
-        "it": "Vivaci mostra i colori vivaci e a piena intensità.",
-        "sv": "Livfulla visar färgerna klara och i full styrka.",
-        "no": "Livlige viser fargene klare og med full styrke.",
-        "es": "Vivos muestra los colores vivos y con toda su intensidad.",
-        "da": "Livlige viser farverne klare og i fuld styrke.",
-        "ru": "«Яркие» показывают цвета ярко и в полную силу.",
-        "pl": "Żywe pokazują kolory jaskrawo i w pełnej mocy.",
-        "ko": "선명하게는 색을 선명하고 진하게 표시합니다.",
-        "ar": "«زاهية» تعرض الألوان زاهية وبكامل قوتها."
-      },
-      "value": "soft",
-      "values": [
-        {
-          "id": "soft",
-          "title": {
-            "en": "Muted",
-            "nl": "Gedempt",
-            "de": "Gedämpft",
-            "fr": "Atténuées",
-            "it": "Smorzati",
-            "sv": "Dämpade",
-            "no": "Dempede",
-            "es": "Suaves",
-            "da": "Dæmpede",
-            "ru": "Приглушённые",
-            "pl": "Stonowane",
-            "ko": "차분하게",
-            "ar": "هادئة"
-          }
-        },
-        {
-          "id": "deep",
-          "title": {
-            "en": "Vivid",
-            "nl": "Levendig",
-            "de": "Kräftig",
-            "fr": "Vives",
-            "it": "Vivaci",
-            "sv": "Livfulla",
-            "no": "Livlige",
-            "es": "Vivos",
-            "da": "Livlige",
-            "ru": "Яркие",
-            "pl": "Żywe",
-            "ko": "선명하게",
-            "ar": "زاهية"
-          }
-        }
-      ]
-    },
-    {
       "id": "layout",
       "type": "dropdown",
       "value": "icons",
@@ -315,6 +242,79 @@
         "ko": "범위 안의 값을 회색 대신 초록색으로 표시합니다.",
         "ar": "يعرض القيم الواقعة ضمن نطاقها باللون الأخضر بدل الرمادي."
       }
+    },
+    {
+      "id": "colorStyle",
+      "type": "dropdown",
+      "title": {
+        "en": "Colour style",
+        "nl": "Kleurstijl",
+        "de": "Farbstil",
+        "fr": "Style de couleur",
+        "it": "Stile colori",
+        "sv": "Färgstil",
+        "no": "Fargestil",
+        "es": "Estilo de color",
+        "da": "Farvestil",
+        "ru": "Цветовой стиль",
+        "pl": "Styl kolorów",
+        "ko": "색상 스타일",
+        "ar": "نمط الألوان"
+      },
+      "hint": {
+        "en": "Vivid shows the colours bright and at full strength.",
+        "nl": "Levendig toont de kleuren fel en op volle sterkte.",
+        "de": "Kräftig zeigt die Farben kräftig und in voller Stärke.",
+        "fr": "Vives affiche les couleurs vives, à pleine intensité.",
+        "it": "Vivaci mostra i colori vivaci e a piena intensità.",
+        "sv": "Livfulla visar färgerna klara och i full styrka.",
+        "no": "Livlige viser fargene klare og med full styrke.",
+        "es": "Vivos muestra los colores vivos y con toda su intensidad.",
+        "da": "Livlige viser farverne klare og i fuld styrke.",
+        "ru": "«Яркие» показывают цвета ярко и в полную силу.",
+        "pl": "Żywe pokazują kolory jaskrawo i w pełnej mocy.",
+        "ko": "선명하게는 색을 선명하고 진하게 표시합니다.",
+        "ar": "«زاهية» تعرض الألوان زاهية وبكامل قوتها."
+      },
+      "value": "soft",
+      "values": [
+        {
+          "id": "soft",
+          "title": {
+            "en": "Muted",
+            "nl": "Gedempt",
+            "de": "Gedämpft",
+            "fr": "Atténuées",
+            "it": "Smorzati",
+            "sv": "Dämpade",
+            "no": "Dempede",
+            "es": "Suaves",
+            "da": "Dæmpede",
+            "ru": "Приглушённые",
+            "pl": "Stonowane",
+            "ko": "차분하게",
+            "ar": "هادئة"
+          }
+        },
+        {
+          "id": "deep",
+          "title": {
+            "en": "Vivid",
+            "nl": "Levendig",
+            "de": "Kräftig",
+            "fr": "Vives",
+            "it": "Vivaci",
+            "sv": "Livfulla",
+            "no": "Livlige",
+            "es": "Vivos",
+            "da": "Livlige",
+            "ru": "Яркие",
+            "pl": "Żywe",
+            "ko": "선명하게",
+            "ar": "زاهية"
+          }
+        }
+      ]
     },
     {
       "id": "tempMin",

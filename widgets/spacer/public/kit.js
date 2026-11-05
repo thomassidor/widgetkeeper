@@ -240,6 +240,15 @@
     return timeFormats.get(id);
   }
 
+  /** Smoothed values for a `smooth` setting: six [1 2 1]/4 passes; the ends stay put. Moved here from the chart module for Sparklines. */
+  function smoothValues(vs) {
+    let q = vs;
+    for (let k = 0; k < 6; k++) {
+      q = q.map((v, i) => (i === 0 || i === q.length - 1 ? v : (q[i - 1] + 2 * v + q[i + 1]) / 4));
+    }
+    return q;
+  }
+
   /** Whether times show in 12 hours: `timeFormat` (missing: the app's) says so, or Automatic and the screen's locale. */
   function uses12Hours(locale, timeFormat = timeFormatNow) {
     if (timeFormat === '12') return true;
@@ -1363,7 +1372,7 @@
 
   window.WidgetkeeperKit = {
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
-    getTimeFormat, setTimeFormat, wireTimeFormat, uses12Hours, clockTime, hourLabel,
+    getTimeFormat, setTimeFormat, wireTimeFormat, uses12Hours, clockTime, hourLabel, smoothValues,
     formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     onDeviceNames, colorStyle, applyColors, sound, optimistic, shake, wireBar, roomTiles, knownValue, okRange, okLevel,
   };

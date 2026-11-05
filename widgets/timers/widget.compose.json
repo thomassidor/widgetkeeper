@@ -18,6 +18,41 @@
   "transparent": true,
   "settings": [
     {
+      "id": "sound",
+      "type": "checkbox",
+      "title": {
+        "en": "Beep when a timer is done",
+        "nl": "Piepen als een timer klaar is",
+        "de": "Piepen, wenn ein Timer abgelaufen ist",
+        "fr": "Bip à la fin d'un minuteur",
+        "it": "Bip quando un timer finisce",
+        "sv": "Pip när en timer är klar",
+        "no": "Pip når en tidtaker er ferdig",
+        "es": "Pitido al terminar un temporizador",
+        "da": "Bip, når en timer er færdig",
+        "ru": "Сигнал по окончании таймера",
+        "pl": "Sygnał po końcu minutnika",
+        "ko": "타이머가 끝나면 알림음",
+        "ar": "صفير عند انتهاء المؤقت"
+      },
+      "hint": {
+        "en": "On the screen that shows the widget, for a minute or until you tap it. Phones and tablets only play sound after you've touched the widget once.",
+        "nl": "Op het scherm met de widget, een minuut lang of tot je erop tikt. Telefoons en tablets spelen pas geluid af als je de widget een keer hebt aangeraakt.",
+        "de": "Auf dem Bildschirm mit dem Widget, eine Minute lang oder bis du tippst. Handys und Tablets spielen erst Ton ab, nachdem du das Widget einmal berührt hast.",
+        "fr": "Sur l'écran qui affiche le widget, pendant une minute ou jusqu'à ce que vous le touchiez. Téléphones et tablettes ne jouent le son qu'après un premier contact avec le widget.",
+        "it": "Sullo schermo che mostra il widget, per un minuto o finché non lo tocchi. Telefoni e tablet riproducono suoni solo dopo che hai toccato il widget una volta.",
+        "sv": "På skärmen som visar widgeten, i en minut eller tills du trycker. Telefoner och surfplattor spelar bara ljud efter att du rört widgeten en gång.",
+        "no": "På skjermen som viser widgeten, i ett minutt eller til du trykker. Telefoner og nettbrett spiller bare lyd etter at du har rørt widgeten én gang.",
+        "es": "En la pantalla que muestra el widget, durante un minuto o hasta que lo toques. Los móviles y tabletas solo reproducen sonido después de tocar el widget una vez.",
+        "da": "På skærmen med widgetten, i et minut eller til du trykker. Telefoner og tablets afspiller kun lyd, når du har rørt widgetten én gang.",
+        "ru": "На экране с виджетом, минуту или пока вы не нажмёте. Телефоны и планшеты воспроизводят звук только после первого касания виджета.",
+        "pl": "Na ekranie z widżetem, przez minutę lub do dotknięcia. Telefony i tablety odtwarzają dźwięk dopiero po pierwszym dotknięciu widżetu.",
+        "ko": "위젯이 표시된 화면에서 1분 동안 또는 탭할 때까지 울립니다. 휴대폰과 태블릿은 위젯을 한 번 터치한 후에만 소리를 냅니다.",
+        "ar": "على الشاشة التي تعرض الأداة، لمدة دقيقة أو حتى تلمسها. لا تشغّل الهواتف والأجهزة اللوحية الصوت إلا بعد لمس الأداة مرة."
+      },
+      "value": true
+    },
+    {
       "id": "color",
       "type": "dropdown",
       "title": {
@@ -540,41 +575,6 @@
         "ar": "  – الاسم"
       },
       "value": ""
-    },
-    {
-      "id": "sound",
-      "type": "checkbox",
-      "title": {
-        "en": "Beep when a timer is done",
-        "nl": "Piepen als een timer klaar is",
-        "de": "Piepen, wenn ein Timer abgelaufen ist",
-        "fr": "Bip à la fin d'un minuteur",
-        "it": "Bip quando un timer finisce",
-        "sv": "Pip när en timer är klar",
-        "no": "Pip når en tidtaker er ferdig",
-        "es": "Pitido al terminar un temporizador",
-        "da": "Bip, når en timer er færdig",
-        "ru": "Сигнал по окончании таймера",
-        "pl": "Sygnał po końcu minutnika",
-        "ko": "타이머가 끝나면 알림음",
-        "ar": "صفير عند انتهاء المؤقت"
-      },
-      "hint": {
-        "en": "On the screen that shows the widget, for a minute or until you tap it. Phones and tablets only play sound after you've touched the widget once.",
-        "nl": "Op het scherm met de widget, een minuut lang of tot je erop tikt. Telefoons en tablets spelen pas geluid af als je de widget een keer hebt aangeraakt.",
-        "de": "Auf dem Bildschirm mit dem Widget, eine Minute lang oder bis du tippst. Handys und Tablets spielen erst Ton ab, nachdem du das Widget einmal berührt hast.",
-        "fr": "Sur l'écran qui affiche le widget, pendant une minute ou jusqu'à ce que vous le touchiez. Téléphones et tablettes ne jouent le son qu'après un premier contact avec le widget.",
-        "it": "Sullo schermo che mostra il widget, per un minuto o finché non lo tocchi. Telefoni e tablet riproducono suoni solo dopo che hai toccato il widget una volta.",
-        "sv": "På skärmen som visar widgeten, i en minut eller tills du trycker. Telefoner och surfplattor spelar bara ljud efter att du rört widgeten en gång.",
-        "no": "På skjermen som viser widgeten, i ett minutt eller til du trykker. Telefoner og nettbrett spiller bare lyd etter at du har rørt widgeten én gang.",
-        "es": "En la pantalla que muestra el widget, durante un minuto o hasta que lo toques. Los móviles y tabletas solo reproducen sonido después de tocar el widget una vez.",
-        "da": "På skærmen med widgetten, i et minut eller til du trykker. Telefoner og tablets afspiller kun lyd, når du har rørt widgetten én gang.",
-        "ru": "На экране с виджетом, минуту или пока вы не нажмёте. Телефоны и планшеты воспроизводят звук только после первого касания виджета.",
-        "pl": "Na ekranie z widżetem, przez minutę lub do dotknięcia. Telefony i tablety odtwarzają dźwięk dopiero po pierwszym dotknięciu widżetu.",
-        "ko": "위젯이 표시된 화면에서 1분 동안 또는 탭할 때까지 울립니다. 휴대폰과 태블릿은 위젯을 한 번 터치한 후에만 소리를 냅니다.",
-        "ar": "على الشاشة التي تعرض الأداة، لمدة دقيقة أو حتى تلمسها. لا تشغّل الهواتف والأجهزة اللوحية الصوت إلا بعد لمس الأداة مرة."
-      },
-      "value": true
     }
   ],
   "api": {

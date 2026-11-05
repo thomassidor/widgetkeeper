@@ -400,6 +400,41 @@
       ]
     },
     {
+      "id": "smooth",
+      "type": "checkbox",
+      "title": {
+        "en": "Smooth chart lines",
+        "nl": "Vloeiende grafieklijnen",
+        "de": "Geglättete Diagrammlinien",
+        "fr": "Lisser les courbes",
+        "it": "Linee del grafico smussate",
+        "sv": "Utjämnade diagramlinjer",
+        "no": "Glatte diagramlinjer",
+        "es": "Suavizar las líneas del gráfico",
+        "da": "Udglattede graflinjer",
+        "ru": "Сглаживать линии графиков",
+        "pl": "Wygładzone linie wykresów",
+        "ko": "차트 선 부드럽게",
+        "ar": "تنعيم خطوط المخطط"
+      },
+      "hint": {
+        "en": "Rounds off spikes in the lines. The numbers at the top stay exact.",
+        "nl": "Rondt pieken in de lijnen af. De getallen bovenaan blijven exact.",
+        "de": "Glättet Spitzen in den Linien. Die Zahlen oben bleiben exakt.",
+        "fr": "Adoucit les pics des courbes. Les valeurs en haut restent exactes.",
+        "it": "Smussa i picchi delle linee. I valori in alto restano esatti.",
+        "sv": "Rundar av toppar i linjerna. Siffrorna överst förblir exakta.",
+        "no": "Runder av topper i linjene. Tallene øverst forblir nøyaktige.",
+        "es": "Suaviza los picos de las líneas. Los valores de arriba siguen exactos.",
+        "da": "Runder spidser i linjerne af. Tallene øverst forbliver præcise.",
+        "ru": "Сглаживает пики линий. Значения вверху остаются точными.",
+        "pl": "Wygładza skoki na liniach. Liczby u góry pozostają dokładne.",
+        "ko": "선의 급격한 변화를 부드럽게 합니다. 위쪽 숫자는 정확하게 유지됩니다.",
+        "ar": "يخفف القمم في الخطوط. تبقى الأرقام في الأعلى دقيقة."
+      },
+      "value": false
+    },
+    {
       "id": "color",
       "type": "dropdown",
       "title": {

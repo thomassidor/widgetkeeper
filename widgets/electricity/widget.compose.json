@@ -353,152 +353,6 @@
       "value": false
     },
     {
-      "id": "usageColor",
-      "type": "dropdown",
-      "title": {
-        "en": "Usage history colour",
-        "nl": "Kleur verbruiksgeschiedenis",
-        "de": "Farbe des Verbrauchsverlaufs",
-        "fr": "Couleur de l'historique",
-        "it": "Colore cronologia consumi",
-        "sv": "Färg på förbrukningshistorik",
-        "no": "Farge på forbrukshistorikk",
-        "es": "Color del historial de consumo",
-        "da": "Farve på forbrugshistorik",
-        "ru": "Цвет истории потребления",
-        "pl": "Kolor historii zużycia",
-        "ko": "사용 기록 색상",
-        "ar": "لون سجل الاستهلاك"
-      },
-      "hint": {
-        "en": "Only with “Show usage history” on.",
-        "nl": "Alleen als “Verbruiksgeschiedenis tonen” aan staat.",
-        "de": "Nur wenn „Verbrauchsverlauf anzeigen“ aktiv ist.",
-        "fr": "Seulement si « Afficher l'historique de consommation » est activé.",
-        "it": "Solo con “Mostra cronologia consumi” attivo.",
-        "sv": "Bara när ”Visa förbrukningshistorik” är på.",
-        "no": "Bare når «Vis forbrukshistorikk» er på.",
-        "es": "Solo con «Mostrar historial de consumo» activado.",
-        "da": "Kun når “Vis forbrugshistorik” er slået til.",
-        "ru": "Только если включено «Показывать историю потребления».",
-        "pl": "Tylko gdy „Pokaż historię zużycia” jest włączone.",
-        "ko": "“사용량 기록 표시”을(를) 켠 경우에만 적용됩니다.",
-        "ar": "فقط عند تفعيل «عرض سجل الاستهلاك»."
-      },
-      "value": "neutral",
-      "values": [
-        {
-          "id": "neutral",
-          "title": {
-            "en": "Neutral",
-            "nl": "Neutraal",
-            "de": "Neutral",
-            "fr": "Neutre",
-            "it": "Neutro",
-            "sv": "Neutral",
-            "no": "Nøytral",
-            "es": "Neutro",
-            "da": "Neutral",
-            "ru": "Нейтральный",
-            "pl": "Neutralny",
-            "ko": "중립",
-            "ar": "محايد"
-          }
-        },
-        {
-          "id": "purple",
-          "title": {
-            "en": "Purple",
-            "nl": "Paars",
-            "de": "Lila",
-            "fr": "Violet",
-            "it": "Viola",
-            "sv": "Lila",
-            "no": "Lilla",
-            "es": "Morado",
-            "da": "Lilla",
-            "ru": "Фиолетовый",
-            "pl": "Fioletowy",
-            "ko": "보라색",
-            "ar": "بنفسجي"
-          }
-        }
-      ]
-    },
-    {
-      "id": "colorStyle",
-      "type": "dropdown",
-      "title": {
-        "en": "Colour style",
-        "nl": "Kleurstijl",
-        "de": "Farbstil",
-        "fr": "Style de couleur",
-        "it": "Stile colori",
-        "sv": "Färgstil",
-        "no": "Fargestil",
-        "es": "Estilo de color",
-        "da": "Farvestil",
-        "ru": "Цветовой стиль",
-        "pl": "Styl kolorów",
-        "ko": "색상 스타일",
-        "ar": "نمط الألوان"
-      },
-      "hint": {
-        "en": "Vivid fills the area under the lines with more colour.",
-        "nl": "Levendig vult het vlak onder de lijnen met meer kleur.",
-        "de": "Kräftig füllt die Fläche unter den Linien mit mehr Farbe.",
-        "fr": "Vives remplit la zone sous les courbes avec plus de couleur.",
-        "it": "Vivaci riempie l'area sotto le linee con più colore.",
-        "sv": "Livfulla fyller ytan under linjerna med mer färg.",
-        "no": "Livlige fyller flaten under linjene med mer farge.",
-        "es": "Vivos rellena el área bajo las líneas con más color.",
-        "da": "Livlige fylder fladen under linjerne med mere farve.",
-        "ru": "«Яркие» заливают область под линиями ярче.",
-        "pl": "Żywe wypełniają obszar pod liniami mocniejszym kolorem.",
-        "ko": "선명하게는 선 아래 영역을 더 진한 색으로 채웁니다.",
-        "ar": "«زاهية» تملأ المساحة تحت الخطوط بلون أكثر."
-      },
-      "value": "soft",
-      "values": [
-        {
-          "id": "soft",
-          "title": {
-            "en": "Muted",
-            "nl": "Gedempt",
-            "de": "Gedämpft",
-            "fr": "Atténuées",
-            "it": "Smorzati",
-            "sv": "Dämpade",
-            "no": "Dempede",
-            "es": "Suaves",
-            "da": "Dæmpede",
-            "ru": "Приглушённые",
-            "pl": "Stonowane",
-            "ko": "차분하게",
-            "ar": "هادئة"
-          }
-        },
-        {
-          "id": "deep",
-          "title": {
-            "en": "Vivid",
-            "nl": "Levendig",
-            "de": "Kräftig",
-            "fr": "Vives",
-            "it": "Vivaci",
-            "sv": "Livfulla",
-            "no": "Livlige",
-            "es": "Vivos",
-            "da": "Livlige",
-            "ru": "Яркие",
-            "pl": "Żywe",
-            "ko": "선명하게",
-            "ar": "زاهية"
-          }
-        }
-      ]
-    },
-    {
       "id": "smooth",
       "type": "checkbox",
       "title": {
@@ -638,6 +492,350 @@
             "pl": "Następne 12 i 24 godziny",
             "ko": "향후 12시간 및 24시간",
             "ar": "الـ 12 و24 ساعة القادمة"
+          }
+        }
+      ]
+    },
+    {
+      "id": "usageColor",
+      "type": "dropdown",
+      "title": {
+        "en": "Usage history colour",
+        "nl": "Kleur verbruiksgeschiedenis",
+        "de": "Farbe des Verbrauchsverlaufs",
+        "fr": "Couleur de l'historique",
+        "it": "Colore cronologia consumi",
+        "sv": "Färg på förbrukningshistorik",
+        "no": "Farge på forbrukshistorikk",
+        "es": "Color del historial de consumo",
+        "da": "Farve på forbrugshistorik",
+        "ru": "Цвет истории потребления",
+        "pl": "Kolor historii zużycia",
+        "ko": "사용 기록 색상",
+        "ar": "لون سجل الاستهلاك"
+      },
+      "hint": {
+        "en": "Only with “Show usage history” on.",
+        "nl": "Alleen als “Verbruiksgeschiedenis tonen” aan staat.",
+        "de": "Nur wenn „Verbrauchsverlauf anzeigen“ aktiv ist.",
+        "fr": "Seulement si « Afficher l'historique de consommation » est activé.",
+        "it": "Solo con “Mostra cronologia consumi” attivo.",
+        "sv": "Bara när ”Visa förbrukningshistorik” är på.",
+        "no": "Bare når «Vis forbrukshistorikk» er på.",
+        "es": "Solo con «Mostrar historial de consumo» activado.",
+        "da": "Kun når “Vis forbrugshistorik” er slået til.",
+        "ru": "Только если включено «Показывать историю потребления».",
+        "pl": "Tylko gdy „Pokaż historię zużycia” jest włączone.",
+        "ko": "“사용량 기록 표시”을(를) 켠 경우에만 적용됩니다.",
+        "ar": "فقط عند تفعيل «عرض سجل الاستهلاك»."
+      },
+      "value": "neutral",
+      "values": [
+        {
+          "id": "neutral",
+          "title": {
+            "en": "Neutral",
+            "nl": "Neutraal",
+            "de": "Neutral",
+            "fr": "Neutre",
+            "it": "Neutro",
+            "sv": "Neutral",
+            "no": "Nøytral",
+            "es": "Neutro",
+            "da": "Neutral",
+            "ru": "Нейтральный",
+            "pl": "Neutralny",
+            "ko": "중립",
+            "ar": "محايد"
+          }
+        },
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        },
+        {
+          "id": "teal",
+          "title": {
+            "en": "Teal",
+            "nl": "Blauwgroen",
+            "de": "Petrol",
+            "fr": "Bleu canard",
+            "it": "Verde acqua",
+            "sv": "Blågrön",
+            "no": "Blågrønn",
+            "es": "Verde azulado",
+            "da": "Blågrøn",
+            "ru": "Бирюзовый",
+            "pl": "Morski",
+            "ko": "청록",
+            "ar": "أزرق مخضر"
+          }
+        },
+        {
+          "id": "cyan",
+          "title": {
+            "en": "Cyan",
+            "nl": "Cyaan",
+            "de": "Cyan",
+            "fr": "Cyan",
+            "it": "Ciano",
+            "sv": "Cyan",
+            "no": "Cyan",
+            "es": "Cian",
+            "da": "Cyan",
+            "ru": "Голубой",
+            "pl": "Cyjan",
+            "ko": "하늘",
+            "ar": "سماوي"
+          }
+        },
+        {
+          "id": "indigo",
+          "title": {
+            "en": "Indigo",
+            "nl": "Indigo",
+            "de": "Indigo",
+            "fr": "Indigo",
+            "it": "Indaco",
+            "sv": "Indigo",
+            "no": "Indigo",
+            "es": "Índigo",
+            "da": "Indigo",
+            "ru": "Индиго",
+            "pl": "Indygo",
+            "ko": "남색",
+            "ar": "نيلي"
+          }
+        },
+        {
+          "id": "pink",
+          "title": {
+            "en": "Pink",
+            "nl": "Roze",
+            "de": "Rosa",
+            "fr": "Rose",
+            "it": "Rosa",
+            "sv": "Rosa",
+            "no": "Rosa",
+            "es": "Rosa",
+            "da": "Lyserød",
+            "ru": "Розовый",
+            "pl": "Różowy",
+            "ko": "분홍",
+            "ar": "وردي"
+          }
+        },
+        {
+          "id": "brown",
+          "title": {
+            "en": "Brown",
+            "nl": "Bruin",
+            "de": "Braun",
+            "fr": "Marron",
+            "it": "Marrone",
+            "sv": "Brun",
+            "no": "Brun",
+            "es": "Marrón",
+            "da": "Brun",
+            "ru": "Коричневый",
+            "pl": "Brązowy",
+            "ko": "갈색",
+            "ar": "بني"
+          }
+        },
+        {
+          "id": "grey",
+          "title": {
+            "en": "Grey",
+            "nl": "Grijs",
+            "de": "Grau",
+            "fr": "Gris",
+            "it": "Grigio",
+            "sv": "Grå",
+            "no": "Grå",
+            "es": "Gris",
+            "da": "Grå",
+            "ru": "Серый",
+            "pl": "Szary",
+            "ko": "회색",
+            "ar": "رمادي"
+          }
+        }
+      ]
+    },
+    {
+      "id": "colorStyle",
+      "type": "dropdown",
+      "title": {
+        "en": "Colour style",
+        "nl": "Kleurstijl",
+        "de": "Farbstil",
+        "fr": "Style de couleur",
+        "it": "Stile colori",
+        "sv": "Färgstil",
+        "no": "Fargestil",
+        "es": "Estilo de color",
+        "da": "Farvestil",
+        "ru": "Цветовой стиль",
+        "pl": "Styl kolorów",
+        "ko": "색상 스타일",
+        "ar": "نمط الألوان"
+      },
+      "hint": {
+        "en": "Vivid fills the area under the lines with more colour.",
+        "nl": "Levendig vult het vlak onder de lijnen met meer kleur.",
+        "de": "Kräftig füllt die Fläche unter den Linien mit mehr Farbe.",
+        "fr": "Vives remplit la zone sous les courbes avec plus de couleur.",
+        "it": "Vivaci riempie l'area sotto le linee con più colore.",
+        "sv": "Livfulla fyller ytan under linjerna med mer färg.",
+        "no": "Livlige fyller flaten under linjene med mer farge.",
+        "es": "Vivos rellena el área bajo las líneas con más color.",
+        "da": "Livlige fylder fladen under linjerne med mere farve.",
+        "ru": "«Яркие» заливают область под линиями ярче.",
+        "pl": "Żywe wypełniają obszar pod liniami mocniejszym kolorem.",
+        "ko": "선명하게는 선 아래 영역을 더 진한 색으로 채웁니다.",
+        "ar": "«زاهية» تملأ المساحة تحت الخطوط بلون أكثر."
+      },
+      "value": "soft",
+      "values": [
+        {
+          "id": "soft",
+          "title": {
+            "en": "Muted",
+            "nl": "Gedempt",
+            "de": "Gedämpft",
+            "fr": "Atténuées",
+            "it": "Smorzati",
+            "sv": "Dämpade",
+            "no": "Dempede",
+            "es": "Suaves",
+            "da": "Dæmpede",
+            "ru": "Приглушённые",
+            "pl": "Stonowane",
+            "ko": "차분하게",
+            "ar": "هادئة"
+          }
+        },
+        {
+          "id": "deep",
+          "title": {
+            "en": "Vivid",
+            "nl": "Levendig",
+            "de": "Kräftig",
+            "fr": "Vives",
+            "it": "Vivaci",
+            "sv": "Livfulla",
+            "no": "Livlige",
+            "es": "Vivos",
+            "da": "Livlige",
+            "ru": "Яркие",
+            "pl": "Żywe",
+            "ko": "선명하게",
+            "ar": "زاهية"
           }
         }
       ]

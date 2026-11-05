@@ -21,6 +21,7 @@ window.mountSparklinesWidget = function (Homey, { root, frame }) {
   const widget = window.createSparklinesWidget(root, {
     colorStyle: settings.colorStyle,
     color: settings.color,
+    smooth: settings.smooth === true,
     t: (key, tokens) => Homey.__(key, tokens),
     renameTiles: settings.renameTiles === true,
     onRename: (key, name) => tileNames.rename(key, name),
