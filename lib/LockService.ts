@@ -1,6 +1,6 @@
 import type Homey from 'homey';
 import { getAppApi, lastUpdatedMs } from './appApi.js';
-import { devicesAndZones, matches, withNone, type AutocompleteItem } from './autocomplete.js';
+import { devicesAndZones, hintRow, matches, nameOrder, withNone, type AutocompleteItem } from './autocomplete.js';
 import { capValuesText, copyCaps, describeCapability, presentCaps, readCaps, type CapState } from './capabilities.js';
 import DeviceTracker, { type TrackedEntry } from './DeviceTracker.js';
 import { deviceNamer } from './deviceNames.js';
@@ -163,10 +163,12 @@ export default class LockService {
         found.set(id, entry);
       }
     }
+    if (!found.size) return [hintRow(this.homey.__('autocomplete.noLocks') || 'No locks with a button to open')];
+    const order = nameOrder(this.homey);
     const items = [...found]
       .filter(([id, c]) => matches(query, c.title, id, ...c.locks))
-      .sort(([a, x], [b, y]) => Number(y.button) - Number(x.button) || x.title.localeCompare(y.title) || a.localeCompare(b))
-      .map(([id, c]) => ({ name: c.title, description: [id, c.locks.sort((a, b) => a.localeCompare(b)).join(', ')].join(' · '), id }));
+      .sort(([a, x], [b, y]) => Number(y.button) - Number(x.button) || order(x.title, y.title) || a.localeCompare(b))
+      .map(([id, c]) => ({ name: c.title, description: [id, c.locks.sort(order).join(', ')].join(' · '), id }));
     return withNone(this.homey.__('values.none') || 'None', query, items);
   }
 

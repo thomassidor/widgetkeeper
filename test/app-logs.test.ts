@@ -78,7 +78,7 @@ describe('app log slots', () => {
   it('lists the logged numbers as `App · Title`, by the query', async () => {
     const homey = fakeHomey(api());
     const slot = logSlot(LOGS[1].id)!;
-    expect(await listLogSlots(homey, '')).toEqual([{ name: 'Better Logic Library · Fj.Forbrug1dag', id: slot }]);
+    expect(await listLogSlots(homey, '')).toEqual([{ name: 'Better Logic Library · Fj.Forbrug1dag', image: expect.stringMatching(/^data:image\/png/), id: slot }]);
     expect(await listLogSlots(homey, 'forbrug')).toHaveLength(1);
     expect(await listLogSlots(homey, 'better')).toHaveLength(1);
     expect(await listLogSlots(homey, 'nothing')).toEqual([]);

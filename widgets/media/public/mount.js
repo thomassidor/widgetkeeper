@@ -13,7 +13,7 @@ window.mountMediaWidget = function (Homey, { root, frame }) {
   const settings = Homey.getSettings() || {};
   // The speaker in the settings is the default; with switching, each screen remembers the one it picked last
   // (per widget instance, in this screen's storage; it can come back empty, which means the default).
-  const defaultId = (settings.device && settings.device.id) || null;
+  const defaultId = (settings.device && settings.device.id !== 'none' && settings.device.id) || null;
   const canSwitch = settings.switchSpeakers !== false;
   let instanceId = 'default';
   try { instanceId = Homey.getWidgetInstanceId() || 'default'; } catch (e) { /* older apps */ }

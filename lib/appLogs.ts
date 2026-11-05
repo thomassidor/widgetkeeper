@@ -1,6 +1,7 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
-import { matches, type AutocompleteItem } from './autocomplete.js';
+import { matches, nameOrder, type AutocompleteItem } from './autocomplete.js';
+import { valueGlyphImage } from './valueGlyphs.js';
 import { limitInsights } from './insightsLog.js';
 import { sharedCache } from './sharedCache.js';
 
@@ -106,6 +107,7 @@ export function isAppLog(log: any): boolean {
 export async function listAppLogs(homey: Homey.App['homey']): Promise<AppLog[]> {
   const logs = (await allLogs(homey)).filter(isAppLog);
   const names = logs.some(l => !l.ownerName) ? await appNames(homey) : new Map<string, string>();
+  const order = nameOrder(homey);
   return logs
     .map((l: any): AppLog => ({
       id: String(l.id),
@@ -118,7 +120,7 @@ export async function listAppLogs(homey: Homey.App['homey']): Promise<AppLog[]> 
       decimals: typeof l.decimals === 'number' ? l.decimals : null,
       lastValue: l.lastValue ?? null,
     }))
-    .sort((a, b) => String(a.ownerName ?? a.ownerUri).localeCompare(String(b.ownerName ?? b.ownerUri)) || a.title.localeCompare(b.title));
+    .sort((a, b) => order(String(a.ownerName ?? a.ownerUri), String(b.ownerName ?? b.ownerUri)) || order(a.title, b.title));
 }
 
 /** The app's logged numbers as a chart value setting lists them: `App · Title`, the units as the description. */
@@ -127,7 +129,7 @@ export async function listLogSlots(homey: Homey.App['homey'], query: string): Pr
   for (const l of await listAppLogs(homey)) {
     const id = l.type === 'number' ? logSlot(l.id) : null;
     const name = `${l.ownerName ?? l.ownerUri.slice(APP_URI.length)} · ${l.title}`;
-    if (id && matches(query, name, l.units ?? undefined)) out.push({ name, ...(l.units ? { description: l.units } : {}), id });
+    if (id && matches(query, name, l.units ?? undefined)) out.push({ name, ...(l.units ? { description: l.units } : {}), image: valueGlyphImage(l.id), id });
   }
   return out;
 }

@@ -18,7 +18,6 @@
   },
   "thermostat": {
     "selectDevice": "Velg en termostat i widgetinnstillingene.",
-    "selectDeviceFirst": "Velg en termostat først, og åpne deretter denne innstillingen på nytt.",
     "unchanged": "Ikke endre",
     "off": "Av",
     "error": "Kunne ikke laste inn termostaten.",
@@ -325,7 +324,6 @@
   },
   "heatmap": {
     "selectDevice": "Velg en enhet og en verdi i widgetinnstillingene.",
-    "selectDeviceFirst": "Velg en enhet først",
     "onOff": "Av/på",
     "error": "Kunne ikke laste inn historikken.",
     "now": "__value__ nå",
@@ -354,7 +352,7 @@
     "off": "Av",
     "renameFailed": "Kunne ikke lagre navnet.",
     "none": "Ingen",
-    "pickTileFirst": "Velg flis __n__ først."
+    "pickTileFirst": "Velg flis __n__ først"
   },
   "combined": {
     "selectValue": "Velg en verdi i widgetinnstillingene.",
@@ -549,7 +547,6 @@
   },
   "varpresets": {
     "selectVariable": "Velg en variabel i widgetinnstillingene.",
-    "selectVariableFirst": "Velg en variabel først, og åpne deretter denne innstillingen på nytt.",
     "noPresets": "Velg verdiene til knappene i widgetinnstillingene.",
     "missing": "Fant ikke variabelen",
     "error": "Kunne ikke laste variabelen.",
@@ -598,7 +595,6 @@
     "keyScope": "API-nøkkelen kan ikke gjøre dette: den trenger Start Flows, eller Variabler for en variabel.",
     "keyInvalid": "API-nøkkelen ble ikke godtatt.",
     "variable": "Variabel",
-    "selectStateFirst": "Velg Tilstand fra først, og åpne så denne innstillingen igjen.",
     "cantSet": "Kan ikke settes: gi knappen en flyt",
     "codeNone": "Ingen koder ennå: legg til en i appinnstillingene",
     "codeDigits": "En kode på __n__ sifre",
@@ -1118,5 +1114,21 @@
     "syncTime": "Tid",
     "syncAll": "Synkroniser alle nå",
     "syncCount": "__count__ synkroniserte dashbord"
+  },
+  "autocomplete": {
+    "pickThermostat": "Velg en termostat først",
+    "pickDevice": "Velg en enhet først",
+    "pickVariable": "Velg en variabel først",
+    "pickState": "Velg Tilstand fra først",
+    "deviceNotFound": "Fant ikke enheten",
+    "noThermostats": "Fant ingen termostater",
+    "noHeatmapDevices": "Fant ingen enheter med loggede verdier",
+    "noSpeakers": "Fant ingen høyttalere",
+    "noCameras": "Fant ingen kameraer",
+    "noFlows": "Ingen Flows som kan startes manuelt",
+    "noVariables": "Fant ingen variabler",
+    "noDashboards": "Ingen nettdashbord ennå",
+    "noLocks": "Ingen låser med en knapp for å åpne",
+    "more": "__count__ til: skriv videre"
   }
 }

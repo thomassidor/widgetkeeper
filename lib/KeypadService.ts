@@ -1,7 +1,7 @@
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
-import { devicesAndZones, matches, withNone, type AutocompleteItem } from './autocomplete.js';
+import { byName, devicesAndZones, filterItems, hintRow, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { describeCapability, type CapabilityDescription } from './capabilities.js';
 import type FlowService from './FlowService.js';
 import { parseFlowId, type FlowEntry } from './FlowService.js';
@@ -191,11 +191,11 @@ export default class KeypadService {
 
   /** "State from": `None`, the Logic variables, then every device value (Device Values' list), each id prefixed by its kind. */
   async listSources(query: string): Promise<Item[]> {
-    const [variables, slots] = await Promise.all([this.deps.variables.listVariables(query), this.deps.values.listSlots(query)]);
+    const [variables, slots] = await Promise.all([this.deps.variables.listVariables(''), this.deps.values.listSlots(query)]);
     const variable = this.__('keypad.variable', 'Variable');
     const items: Item[] = [
-      ...variables.filter(i => i.id !== 'none')
-        .map(i => ({ ...i, id: `var:${i.id}`, description: [variable, i.description].filter(Boolean).join(' · ') })),
+      ...filterItems(query, variables.filter(i => i.id !== 'none')
+        .map(i => ({ ...i, id: `var:${i.id}`, description: [variable, i.description].filter(Boolean).join(' · ') }))),
       ...slots.filter(i => i.id !== 'none').map(i => ({ ...i, id: `cap:${i.id}` })),
     ];
     return withNone(this.__('variables.none', 'None'), query, items);
@@ -208,11 +208,12 @@ export default class KeypadService {
    */
   async listStateValues(sourceId: unknown, query: string): Promise<Item[]> {
     const source = parseSource(sourceId);
-    if (!source) throw new Error(this.__('keypad.selectStateFirst', 'Pick State from first, then open this setting again.'));
+    const none = this.__('variables.none', 'None');
+    if (!source) return [hintRow(none, this.__('autocomplete.pickState', 'Pick State from first'))];
     if (source.kind === 'variable') return this.deps.variables.listPresetValues(source.id, query);
     const [devices] = await devicesAndZones(this.homey);
     const raw = devices.find(d => d.id === source.deviceId)?.capabilitiesObj?.[source.capabilityId];
-    if (!raw) throw new Error(this.__('keypad.missing', 'Device or variable not found'));
+    if (!raw) return [hintRow(none, this.__('autocomplete.deviceNotFound', 'Device not found'))];
     const cap = describeCapability(raw, source.capabilityId);
     const notes = (value: unknown) => [
       value === raw.value ? this.__('varpresets.currentValue', 'Current value') : null,
@@ -239,7 +240,7 @@ export default class KeypadService {
         : typeof current === 'string' && current !== '' && current.length <= MAX_PRESET_TEXT;
       if (usable && current !== typed && matches(query, String(current))) items.push(item(current, String(current)));
     }
-    return withNone(this.__('variables.none', 'None'), query, items);
+    return withNone(none, query, items);
   }
 
   /** The `code` setting: `None`, Any code, then the codes made on the app settings page by name (`A 4-digit code`). */
@@ -295,7 +296,7 @@ export default class KeypadService {
 
   /** The codes, by name, without their hashes. */
   listCodes(): CodeInfo[] {
-    return this.stored().map(({ id, name, digits }) => ({ id, name, digits })).sort((a, b) => a.name.localeCompare(b.name));
+    return this.stored().map(({ id, name, digits }) => ({ id, name, digits })).sort(byName(this.homey));
   }
 
   /**

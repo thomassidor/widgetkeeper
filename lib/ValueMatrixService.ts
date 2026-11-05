@@ -1,6 +1,7 @@
 import type Homey from 'homey';
-import { devicesAndZones, matches, withNone, type AutocompleteItem } from './autocomplete.js';
+import { devicesAndZones, filterItems, nameOrder, withNone, type AutocompleteItem } from './autocomplete.js';
 import { describeCapability } from './capabilities.js';
+import { valueGlyphImage } from './valueGlyphs.js';
 import DeviceTracker, { readZones, zoneRef, type TrackedEntry } from './DeviceTracker.js';
 import { deviceNamer } from './deviceNames.js';
 import Timings from './Timings.js';
@@ -115,13 +116,13 @@ export default class ValueMatrixService {
         byId.set(id, { title: c.title, units: c.units, count: 1 });
       }
     }
-    const items: AutocompleteItem[] = [];
+    const all: AutocompleteItem[] = [];
     for (const [id, c] of byId) {
-      if (!matches(query, c.title, id, c.units ?? undefined)) continue;
       const count = this.homey.__('valuematrix.devices', { count: c.count }) || `${c.count} devices`;
-      items.push({ name: c.title, description: [c.units, count].filter(Boolean).join(' · '), id });
+      all.push({ name: c.title, description: [c.units, count].filter(Boolean).join(' · '), image: valueGlyphImage(id), id });
     }
-    items.sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
+    const order = nameOrder(this.homey);
+    const items = filterItems(query, all, i => [i.id]).sort((a, b) => order(a.name, b.name) || a.id.localeCompare(b.id));
     return withNone(this.homey.__('valuematrix.none') || 'None', query, items);
   }
 

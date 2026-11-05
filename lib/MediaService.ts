@@ -1,6 +1,6 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
-import { devicesAndZones, listDevicesWhere, matches, withNone, type AutocompleteItem } from './autocomplete.js';
+import { devicesAndZones, filterItems, listDevicesWhere, withNone, type AutocompleteItem } from './autocomplete.js';
 import { capabilityValues, presentCaps } from './capabilities.js';
 import DeviceTracker, { isTransientError, readFresh, type TrackedEntry } from './DeviceTracker.js';
 import { deviceImage, fetchDeviceIcon, fetchImageBase64 } from './deviceIcon.js';
@@ -222,7 +222,7 @@ export default class MediaService {
 
   /** Every speaker, by name, described by its zone. */
   listDevices(query: string): Promise<AutocompleteItem[]> {
-    return listDevicesWhere(this.homey, query, isSpeaker);
+    return listDevicesWhere(this.homey, query, isSpeaker, { empty: this.homey.__('autocomplete.noSpeakers') || 'No speakers found' });
   }
 
   /**
@@ -237,14 +237,14 @@ export default class MediaService {
       this.deviceCards(deviceId).catch(() => []),
       this.speakerAppCards(deviceId).catch(() => []),
     ]) : [[], []];
-    const cards = [
+    const cards = filterItems(query, [
       ...own.map(c => ({ name: c.title, description: speakerAction, id: `card:${c.id}` })),
       ...app.map(c => ({
         name: c.title,
         description: c.ownerName ? `${appAction} · ${c.ownerName}` : appAction,
         id: `card:${c.id}`,
       })),
-    ].filter(c => matches(query, c.name));
+    ]);
     const flows = (await this.flows.listFlows(query).catch(() => [])).filter(f => f.id !== 'none');
     return withNone(this.homey.__('flows.none') || 'None', query, [...cards, ...flows]);
   }

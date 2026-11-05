@@ -50,6 +50,7 @@ const { api: homeyApi, close } = await connect();
 /** A widget's autocomplete items, as Homey's widget settings ask for them (`settings` as `{key: id}`). */
 async function autocomplete(widget, settingId, settings = {}, query = '') {
   const p = new URLSearchParams({ settingId, query });
+  p.set('settings[wholeList][id]', '1'); // the lists stop at 100 rows for people; these pick from all of them
   for (const [k, id] of Object.entries(settings)) p.set(`settings[${k}][id]`, id);
   const items = await homeyApi('GET', `/api/manager/dashboards/appwidget/${encodeURIComponent(`homey:app:${APP_ID}:${widget}`)}/autocomplete?${p}`);
   return (Array.isArray(items) ? items : []).map(({ image, ...item }) => item);
@@ -653,8 +654,8 @@ const BUILD = {
     const powers = await ranked(capIs(/:measure_power$/));
     const co2s = powers.length ? [] : await ranked(capIs(/:measure_co2$/));
     const batteries = await ranked(capIs(/:measure_battery$/));
-    // A percentage other than a battery (the autocomplete's description ends in the units).
-    const percents = await ranked(i => !/:measure_battery$/.test(i.id) && /(^| · )%$/.test(i.description || ''));
+    // A percentage other than a battery (the autocomplete's description ends in the reading or the units).
+    const percents = await ranked(i => !/:measure_battery$/.test(i.id) && /%$/.test(i.description || ''));
     const temp = temps[0]?.item || fallback(/:measure_temperature$/);
     const rise = powers[0] || co2s[0];
     const high = rise?.item || fallback(/:measure_co2$/);

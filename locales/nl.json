@@ -18,7 +18,6 @@
   },
   "thermostat": {
     "selectDevice": "Kies een thermostaat in de widgetinstellingen.",
-    "selectDeviceFirst": "Kies eerst een thermostaat en open deze instelling daarna opnieuw.",
     "unchanged": "Niet wijzigen",
     "off": "Uit",
     "error": "Kan de thermostaat niet laden.",
@@ -325,7 +324,6 @@
   },
   "heatmap": {
     "selectDevice": "Kies een apparaat en een waarde in de widgetinstellingen.",
-    "selectDeviceFirst": "Kies eerst een apparaat",
     "onOff": "Aan/uit",
     "error": "Kan de geschiedenis niet laden.",
     "now": "Nu __value__",
@@ -354,7 +352,7 @@
     "off": "Uit",
     "renameFailed": "Kon de naam niet opslaan.",
     "none": "Geen",
-    "pickTileFirst": "Kies eerst Tegel __n__."
+    "pickTileFirst": "Kies eerst Tegel __n__"
   },
   "combined": {
     "selectValue": "Kies een waarde in de widgetinstellingen.",
@@ -549,7 +547,6 @@
   },
   "varpresets": {
     "selectVariable": "Kies een variabele in de widgetinstellingen.",
-    "selectVariableFirst": "Kies eerst een variabele en open deze instelling daarna opnieuw.",
     "noPresets": "Kies de waarden van de knoppen in de widgetinstellingen.",
     "missing": "Variabele niet gevonden",
     "error": "Kon de variabele niet laden.",
@@ -598,7 +595,6 @@
     "keyScope": "De API-sleutel mag dit niet: hij heeft Flows starten nodig, of Variabelen voor een variabele.",
     "keyInvalid": "De API-sleutel is niet geaccepteerd.",
     "variable": "Variabele",
-    "selectStateFirst": "Kies eerst Status van en open deze instelling dan opnieuw.",
     "cantSet": "Kan niet worden ingesteld: geef de knop een flow",
     "codeNone": "Nog geen codes: voeg er een toe in de app-instellingen",
     "codeDigits": "Een code van __n__ cijfers",
@@ -1118,5 +1114,21 @@
     "syncTime": "Tijd",
     "syncAll": "Alles nu synchroniseren",
     "syncCount": "__count__ gesynchroniseerde dashboards"
+  },
+  "autocomplete": {
+    "pickThermostat": "Kies eerst een thermostaat",
+    "pickDevice": "Kies eerst een apparaat",
+    "pickVariable": "Kies eerst een variabele",
+    "pickState": "Kies eerst Status van",
+    "deviceNotFound": "Apparaat niet gevonden",
+    "noThermostats": "Geen thermostaten gevonden",
+    "noHeatmapDevices": "Geen apparaten met gelogde waarden gevonden",
+    "noSpeakers": "Geen speakers gevonden",
+    "noCameras": "Geen camera's gevonden",
+    "noFlows": "Geen Flows die je handmatig kunt starten",
+    "noVariables": "Geen variabelen gevonden",
+    "noDashboards": "Nog geen webdashboards",
+    "noLocks": "Geen sloten met een knop om te openen",
+    "more": "__count__ meer: typ verder"
   }
 }

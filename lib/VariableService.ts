@@ -1,6 +1,7 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
-import { matches, withNone, type AutocompleteItem } from './autocomplete.js';
+import { isTransientError } from './DeviceTracker.js';
+import { byName, filterItems, hintRow, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import PersonalApiKey from './PersonalApiKey.js';
 import Timings from './Timings.js';
 
@@ -106,10 +107,10 @@ export default class VariableService {
     const api = await getAppApi(this.homey);
     const all = Object.values(await api.logic.getVariables({ $cache: false }) as Record<string, any>)
       .map(toVariable).filter((v): v is Variable => v !== null && (!types || types.includes(v.type)));
-    const items = all
-      .filter(v => matches(query, v.name))
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map(v => ({ name: v.name, description: `${this.typeTitle(v.type)} · ${this.valueText(v)}`, id: v.id, type: v.type }));
+    if (!all.length) return [hintRow(this.homey.__('autocomplete.noVariables') || 'No variables found')];
+    const items = filterItems(query, all
+      .sort(byName(this.homey))
+      .map(v => ({ name: v.name, description: `${this.typeTitle(v.type)} · ${this.valueText(v)}`, id: v.id, type: v.type })));
     return withNone(this.homey.__('variables.none') || 'None', query, items);
   }
 
@@ -120,12 +121,14 @@ export default class VariableService {
    * the choice); `None` first empties the button.
    */
   async listPresetValues(variableId: string | undefined, query: string): Promise<AutocompleteItem[]> {
-    if (!variableId || variableId === 'none') {
-      throw new Error(this.homey.__('varpresets.selectVariableFirst') || 'Select a variable first, then reopen this setting.');
-    }
+    const none = this.homey.__('variables.none') || 'None';
+    if (!variableId || variableId === 'none') return [hintRow(none, this.homey.__('autocomplete.pickVariable') || 'Pick a variable first')];
     const api = await getAppApi(this.homey);
-    const v = toVariable(await api.logic.getVariable({ id: variableId }).catch(() => null));
-    if (!v) throw new Error(this.homey.__('varpresets.missing') || 'Variable not found');
+    const v = toVariable(await api.logic.getVariable({ id: variableId }).catch((err: unknown) => {
+      if (isTransientError(err)) throw err;
+      return null;
+    }));
+    if (!v) return [hintRow(none, this.homey.__('varpresets.missing') || 'Variable not found')];
     const typeTitle = this.typeTitle(v.type);
     const currentText = this.homey.__('varpresets.currentValue') || 'Current value';
     const item = (value: boolean | number | string, name: string) => ({

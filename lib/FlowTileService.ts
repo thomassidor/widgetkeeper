@@ -1,5 +1,5 @@
 import type Homey from 'homey';
-import { matches, type AutocompleteItem } from './autocomplete.js';
+import { byName, filterItems, matches, nameOrder, type AutocompleteItem } from './autocomplete.js';
 import { DebouncedSetting, isReservedKey } from './storedSetting.js';
 import { parseTileColor, type TileColor } from './tileColors.js';
 
@@ -333,13 +333,13 @@ export default class FlowTileService {
     const q = (query || '').trim().slice(0, MAX_NAME);
     const names = new Map<string, string>([[boardKey(DEFAULT_BOARD), DEFAULT_BOARD]]);
     for (const [key, b] of Object.entries(this.boards)) names.set(key, b.name);
-    const items: (AutocompleteItem & { any?: boolean })[] = [...names.entries()]
-      .filter(([, name]) => matches(q, name))
-      .sort((a, b) => a[1].localeCompare(b[1]))
+    const order = nameOrder(this.homey);
+    const items: (AutocompleteItem & { any?: boolean })[] = filterItems(q, [...names.entries()]
+      .sort((a, b) => order(a[1], b[1]))
       .map(([key, name]) => {
         const n = Object.keys(this.boards[key]?.tiles ?? {}).length;
         return { name, id: name, description: this.homey.__('flowtiles.tileCount', { count: n }) || `Tiles: ${n}` };
-      });
+      }));
     if (create && q && boardKey(q) && !names.has(boardKey(q))) {
       items.push({ name: q, id: q, description: this.homey.__('flowtiles.newBoard') || 'New board' });
     }
@@ -356,7 +356,7 @@ export default class FlowTileService {
     for (const b of boards) for (const [key, t] of Object.entries(b.tiles)) if (!names.has(key)) names.set(key, { name: t.name, board: b.name });
     const items: (AutocompleteItem & { any?: boolean })[] = [...names.values()]
       .filter(t => matches(q, t.name))
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .sort(byName(this.homey))
       .map(t => ({ name: t.name, id: t.name, description: t.board }));
     if (create && q && flowTileKey(q) && !names.has(flowTileKey(q))) {
       items.push({ name: q, id: q, description: this.homey.__('flowtiles.newTile') || 'New tile' });

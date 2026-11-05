@@ -111,8 +111,8 @@ describe('listColumns', () => {
     const { service } = setup();
     const items = await service.listColumns('');
     expect(items[0]).toEqual({ name: 'None', id: 'none' });
-    expect(items.slice(1)).toEqual([
-      { name: 'CO2', description: 'ppm · 1 devices', id: 'measure_co2' },
+    expect(items.slice(1)).toMatchObject([
+      { name: 'CO2', description: 'ppm · 1 devices', id: 'measure_co2', image: expect.stringMatching(/^data:image\/png/) },
       { name: 'Humidity', description: '% · 1 devices', id: 'measure_humidity' },
       { name: 'Temperature', description: '°C · 2 devices', id: 'measure_temperature' },
     ]);

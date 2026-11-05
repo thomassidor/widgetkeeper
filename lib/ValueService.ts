@@ -1,7 +1,8 @@
 import type Homey from 'homey';
 import { findLog, parseLogSlot } from './appLogs.js';
-import { devicesAndZones, listCapabilitySlots, matches, withNone, type AutocompleteItem } from './autocomplete.js';
-import { describeCapability, type CapabilityDescription } from './capabilities.js';
+import { devicesAndZones, hintRow, listCapabilitySlots, matches, withNone, type AutocompleteItem } from './autocomplete.js';
+import { capabilityReading, describeCapability, type CapabilityDescription } from './capabilities.js';
+import { valueGlyphImage } from './valueGlyphs.js';
 import DeviceTracker, { type TrackedEntry } from './DeviceTracker.js';
 import { fetchSvgIcon } from './deviceIcon.js';
 import { deviceNamer } from './deviceNames.js';
@@ -128,12 +129,15 @@ export default class ValueService {
     const s = parseSlot(slot || '');
     const [devices] = s ? await devicesAndZones(this.homey) : [[]];
     const device = s && devices.find(d => d.id === s.deviceId);
-    if (!s || !device) return [{ name: none, description: this.homey.__('values.pickTileFirst', { n: tile }), id: 'none' }];
+    if (!s || !device) return [hintRow(none, this.homey.__('values.pickTileFirst', { n: tile }) || `Pick Tile ${tile} first`)];
     const items: AutocompleteItem[] = [];
     for (const id of valueCaps(device)) {
       if (id === s.capabilityId) continue;
       const c = describeCapability(device.capabilitiesObj[id], id);
-      if (matches(query, c.title, id)) items.push({ name: c.title, description: c.units || undefined, id: `${device.id}:${id}` });
+      if (matches(query, c.title, id, c.units)) {
+        const value = device.capabilitiesObj[id]?.value;
+        items.push({ name: c.title, description: capabilityReading(this.homey, c, value) ?? (c.units || undefined), image: valueGlyphImage(id, value), id: `${device.id}:${id}` });
+      }
     }
     return withNone(none, query, items);
   }

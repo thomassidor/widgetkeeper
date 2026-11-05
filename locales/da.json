@@ -18,7 +18,6 @@
   },
   "thermostat": {
     "selectDevice": "Vælg en termostat i widgetindstillingerne.",
-    "selectDeviceFirst": "Vælg først en termostat, og åbn så denne indstilling igen.",
     "unchanged": "Ingen ændring",
     "off": "Fra",
     "error": "Kunne ikke indlæse termostaten.",
@@ -325,7 +324,6 @@
   },
   "heatmap": {
     "selectDevice": "Vælg en enhed og en værdi i widgettens indstillinger.",
-    "selectDeviceFirst": "Vælg en enhed først",
     "onOff": "Tænd/sluk",
     "error": "Kunne ikke hente historikken.",
     "now": "__value__ nu",
@@ -354,7 +352,7 @@
     "off": "Fra",
     "renameFailed": "Kunne ikke gemme navnet.",
     "none": "Ingen",
-    "pickTileFirst": "Vælg felt __n__ først."
+    "pickTileFirst": "Vælg felt __n__ først"
   },
   "combined": {
     "selectValue": "Vælg en værdi i widgetindstillingerne.",
@@ -549,7 +547,6 @@
   },
   "varpresets": {
     "selectVariable": "Vælg en variabel i widgetindstillingerne.",
-    "selectVariableFirst": "Vælg først en variabel, og åbn så denne indstilling igen.",
     "noPresets": "Vælg knappernes værdier i widgetindstillingerne.",
     "missing": "Variablen findes ikke",
     "error": "Kunne ikke hente variablen.",
@@ -598,7 +595,6 @@
     "keyScope": "API-nøglen må ikke gøre dette: den skal have Start Flows, eller Variabler for en variabel.",
     "keyInvalid": "API-nøglen blev ikke godkendt.",
     "variable": "Variabel",
-    "selectStateFirst": "Vælg Tilstand fra først, og åbn så denne indstilling igen.",
     "cantSet": "Kan ikke sættes: giv knappen et flow",
     "codeNone": "Ingen koder endnu: tilføj en i app-indstillingerne",
     "codeDigits": "En kode på __n__ cifre",
@@ -1118,5 +1114,21 @@
     "syncTime": "Tid",
     "syncAll": "Synkroniser alle nu",
     "syncCount": "__count__ synkroniserede dashboards"
+  },
+  "autocomplete": {
+    "pickThermostat": "Vælg en termostat først",
+    "pickDevice": "Vælg en enhed først",
+    "pickVariable": "Vælg en variabel først",
+    "pickState": "Vælg Tilstand fra først",
+    "deviceNotFound": "Enheden blev ikke fundet",
+    "noThermostats": "Ingen termostater fundet",
+    "noHeatmapDevices": "Ingen enheder med loggede værdier fundet",
+    "noSpeakers": "Ingen højttalere fundet",
+    "noCameras": "Ingen kameraer fundet",
+    "noFlows": "Ingen Flows, der kan startes manuelt",
+    "noVariables": "Ingen variabler fundet",
+    "noDashboards": "Ingen webdashboards endnu",
+    "noLocks": "Ingen låse med en knap til at åbne",
+    "more": "__count__ mere: skriv videre"
   }
 }

@@ -24,6 +24,7 @@
     "web-showcase": "node scripts/render-web-showcase.mjs",
     "forum-images": "node scripts/render-forum-images.mjs",
     "flow-icons": "node scripts/render-flow-icons.mjs",
+    "value-glyphs": "node scripts/render-value-glyphs.mjs",
     "web-socket": "node scripts/build-web-socket.mjs",
     "qr-code": "node scripts/build-qr-code.mjs",
     "chart-settings": "node scripts/chart-settings.mjs",

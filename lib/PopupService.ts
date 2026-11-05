@@ -1,6 +1,6 @@
 import { randomBytes, timingSafeEqual } from 'node:crypto';
 import type Homey from 'homey';
-import { listDevicesWhere, matches, type AutocompleteItem } from './autocomplete.js';
+import { listDevicesWhere, matches, nameOrder, type AutocompleteItem } from './autocomplete.js';
 import { cameraImage, type Snapshot } from './CameraService.js';
 import type CameraService from './CameraService.js';
 import { DebouncedSetting, isReservedKey } from './storedSetting.js';
@@ -243,7 +243,7 @@ export default class PopupService {
       }
     }
     const screen = t('popups.screenName', 'Popups widget');
-    for (const [, name] of [...names.entries()].filter(([, n]) => matches(q, n)).sort((a, b) => a[1].localeCompare(b[1]))) {
+    for (const [, name] of [...names.entries()].filter(([, n]) => matches(q, n)).sort((a, b) => nameOrder(this.homey)(a[1], b[1]))) {
       items.push({ id: `name:${name}`, name, description: screen });
     }
     if (q && !names.has(screenKey(q))) items.push({ id: `name:${q}`, name: q, description: t('popups.screenNew', 'New screen name') });

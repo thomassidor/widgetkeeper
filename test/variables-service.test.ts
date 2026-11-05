@@ -90,9 +90,10 @@ describe('listPresetValues', () => {
 
   it('asks for the variable first, and says when it is gone', async () => {
     const { service } = setup();
-    await expect(service.listPresetValues(undefined, '')).rejects.toThrow(/variable first/);
-    await expect(service.listPresetValues('none', '')).rejects.toThrow(/variable first/);
-    await expect(service.listPresetValues('gone', '')).rejects.toThrow(/not found/);
+    for (const id of [undefined, 'none']) {
+      expect(await service.listPresetValues(id, '')).toEqual([{ name: 'None', description: 'Pick a variable first', id: 'none', hint: true }]);
+    }
+    expect(await service.listPresetValues('gone', '')).toEqual([{ name: 'None', description: 'Variable not found', id: 'none', hint: true }]);
   });
 });
 

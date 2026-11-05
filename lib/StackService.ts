@@ -1,5 +1,5 @@
 import type Homey from 'homey';
-import { matches, type AutocompleteItem } from './autocomplete.js';
+import { filterItems, nameOrder, type AutocompleteItem } from './autocomplete.js';
 import PersonalApiKey, { KeyError } from './PersonalApiKey.js';
 import { sharedCache } from './sharedCache.js';
 import Timings from './Timings.js';
@@ -116,13 +116,13 @@ export default class StackService {
       return [{ id: 'none', name: this.homey.__(`stack.${err.reason}`) || err.reason, description: this.homey.__('stack.keyHint') || 'Widgetkeeper → Configure: an API key with the Homey permission.' }];
     }
     const appId = this.homey.manifest.id;
-    return dashboards
-      .filter(d => matches(query, d.name))
-      .sort((a, b) => String(a.name).localeCompare(String(b.name)))
+    const order = nameOrder(this.homey);
+    return filterItems(query, [...dashboards]
+      .sort((a, b) => order(String(a.name), String(b.name)))
       .map((d) => {
         const count = dashboardPages(d, appId).length;
         return { id: d.id, name: d.name, description: this.homey.__('stack.pageCount', { count }) || `${count} Widgetkeeper widgets` };
-      });
+      }));
   }
 
   // ---------------------------------------------------------------- state

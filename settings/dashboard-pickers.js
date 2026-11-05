@@ -448,6 +448,13 @@
       if (!device) search.focus();
     }
 
+    /** Whether a list's row is what the setting holds: by id, or for the thermostat's presets (no id) by what they set. */
+    function isChosen(current, item) {
+      if (!current || current.id === 'none') return false;
+      if (current.id !== undefined || item.id !== undefined) return current.id === item.id;
+      return current.capabilityId !== undefined && current.capabilityId === item.capabilityId && current.value === item.value;
+    }
+
     /** An autocomplete setting: the choice, and a search through the app's own listener (with the draft's settings). */
     function autocompletePicker(def, s, draft, changed = () => {}) {
       const wrap = el('div', 'wd-picker');
@@ -484,7 +491,13 @@
           if (mine !== seq) return;
           list.textContent = '';
           if (!items || !items.length) list.append(el('p', 'wd-hint', t('nothingFound')));
+          const current = draft.settings[s.id];
           for (const item of items || []) {
+            // A row that only says something (`hintRow()`): `Pick a device first`, `12 more: keep typing`.
+            if (item.hint) {
+              list.append(el('p', 'wd-hint', item.description || item.name));
+              continue;
+            }
             const row = button('wd-option', '', () => {
               const chosen = {};
               for (const k in item) if (k !== 'image') chosen[k] = item[k];
@@ -503,6 +516,13 @@
             text.append(el('span', 'wd-option-name', item.name));
             if (item.description) text.append(el('span', 'wd-hint', item.description));
             row.append(text);
+            if (isChosen(current, item)) {
+              row.classList.add('current');
+              row.setAttribute('aria-current', 'true');
+              const mark = icon('check');
+              mark.classList.add('wd-option-mark');
+              row.append(mark);
+            }
             list.append(row);
           }
         } catch (err) {
@@ -514,6 +534,34 @@
       search.addEventListener('input', () => {
         clearTimeout(timer);
         timer = setTimeout(load, 250);
+      });
+      // The arrows go from the search to the rows and between them, Enter in the search takes the first (a row is a
+      // button: Enter on one presses it), Escape on a row goes back to the search.
+      const rows = () => [...list.querySelectorAll('.wd-option')];
+      search.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (rows()[0]) rows()[0].focus();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (rows()[0]) rows()[0].click();
+        }
+      });
+      list.addEventListener('keydown', (e) => {
+        const all = rows();
+        const at = all.indexOf(e.target);
+        if (at < 0) return;
+        if (e.key === 'ArrowDown' && all[at + 1]) {
+          e.preventDefault();
+          all[at + 1].focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          (all[at - 1] || search).focus();
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          e.stopPropagation();
+          search.focus();
+        }
       });
       function toggle(on = !open) {
         open = on;
@@ -532,6 +580,6 @@
       return wrap;
     }
 
-    Object.assign(wd, { autocompletePicker, devicePicker, valuePicker });
+    Object.assign(wd, { autocompletePicker, devicePicker, valuePicker, isChosen });
   });
 })();

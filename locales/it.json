@@ -18,7 +18,6 @@
   },
   "thermostat": {
     "selectDevice": "Seleziona un termostato nelle impostazioni del widget.",
-    "selectDeviceFirst": "Seleziona prima un termostato, poi riapri questa impostazione.",
     "unchanged": "Non modificare",
     "off": "Spento",
     "error": "Impossibile caricare il termostato.",
@@ -325,7 +324,6 @@
   },
   "heatmap": {
     "selectDevice": "Scegli un dispositivo e un valore nelle impostazioni del widget.",
-    "selectDeviceFirst": "Scegli prima un dispositivo",
     "onOff": "Acceso/spento",
     "error": "Impossibile caricare la cronologia.",
     "now": "Ora __value__",
@@ -354,7 +352,7 @@
     "off": "Spento",
     "renameFailed": "Impossibile salvare il nome.",
     "none": "Nessuno",
-    "pickTileFirst": "Scegli prima il riquadro __n__."
+    "pickTileFirst": "Scegli prima il riquadro __n__"
   },
   "combined": {
     "selectValue": "Scegli un valore nelle impostazioni del widget.",
@@ -549,7 +547,6 @@
   },
   "varpresets": {
     "selectVariable": "Scegli una variabile nelle impostazioni.",
-    "selectVariableFirst": "Seleziona prima una variabile, poi riapri questa impostazione.",
     "noPresets": "Scegli i valori dei pulsanti nelle impostazioni.",
     "missing": "Variabile non trovata",
     "error": "Impossibile caricare la variabile.",
@@ -598,7 +595,6 @@
     "keyScope": "La chiave API non può farlo: le serve Avvia i Flow, o Variabili per una variabile.",
     "keyInvalid": "La chiave API non è stata accettata.",
     "variable": "Variabile",
-    "selectStateFirst": "Scegli prima Stato da, poi riapri questa impostazione.",
     "cantSet": "Non impostabile: assegna un flow al pulsante",
     "codeNone": "Ancora nessun codice: aggiungine uno nelle impostazioni dell’app",
     "codeDigits": "Un codice di __n__ cifre",
@@ -1118,5 +1114,21 @@
     "syncTime": "Ora",
     "syncAll": "Sincronizza tutto ora",
     "syncCount": "__count__ dashboard sincronizzate"
+  },
+  "autocomplete": {
+    "pickThermostat": "Scegli prima un termostato",
+    "pickDevice": "Scegli prima un dispositivo",
+    "pickVariable": "Scegli prima una variabile",
+    "pickState": "Scegli prima Stato da",
+    "deviceNotFound": "Dispositivo non trovato",
+    "noThermostats": "Nessun termostato trovato",
+    "noHeatmapDevices": "Nessun dispositivo con valori registrati",
+    "noSpeakers": "Nessun altoparlante trovato",
+    "noCameras": "Nessuna telecamera trovata",
+    "noFlows": "Nessun Flow avviabile manualmente",
+    "noVariables": "Nessuna variabile trovata",
+    "noDashboards": "Ancora nessuna dashboard web",
+    "noLocks": "Nessuna serratura con un pulsante di apertura",
+    "more": "Altri __count__: continua a digitare"
   }
 }

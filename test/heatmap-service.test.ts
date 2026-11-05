@@ -170,8 +170,11 @@ describe('HeatmapService', () => {
     const homey = fakeHomey(fakeApi({ devices: [sensor(), plain] }));
     const service = new HeatmapService(homey, () => {});
     expect((await service.listDevices('')).map(d => d.id)).toEqual(['hue']);
-    expect(await service.listCapabilities('hue', 'lum')).toEqual([{ name: 'Luminance', description: 'lx', id: 'measure_luminance' }]);
-    await expect(service.listCapabilities(undefined, '')).rejects.toThrow();
+    expect(await service.listCapabilities('hue', 'lum')).toMatchObject([{ name: 'Luminance', id: 'measure_luminance', image: expect.stringMatching(/^data:image\/png/) }]);
+    for (const id of [undefined, 'none']) {
+      expect(await service.listCapabilities(id, '')).toEqual([{ name: 'Pick a device first', id: 'none', hint: true }]);
+    }
+    expect(await service.listCapabilities('gone', '')).toEqual([{ name: 'Device not found', id: 'none', hint: true }]);
   });
 
   it('reads a number from Insights (last7Days, full log id) and caches it for 5 min', async () => {

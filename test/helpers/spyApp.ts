@@ -44,6 +44,8 @@ export function spyApp() {
             const key = `${service}.${method}`;
             return (...args: unknown[]) => {
               calls.push([key, args]);
+              // An autocomplete's list is an array (`finishList()` sorts it).
+              if (/^list|Items$/.test(method) && !RETURNS[key]) return Promise.resolve([]);
               return (RETURNS[key] ?? (async () => ({})))(...args);
             };
           },

@@ -1,7 +1,8 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
-import { listDevicesWhere, matches, type AutocompleteItem } from './autocomplete.js';
-import { describeCapability } from './capabilities.js';
+import { hintRow, listDevicesWhere, matches, type AutocompleteItem } from './autocomplete.js';
+import { capabilityReading, describeCapability } from './capabilities.js';
+import { valueGlyphImage } from './valueGlyphs.js';
 import { isTransientError } from './DeviceTracker.js';
 import { fetchDeviceIcon } from './deviceIcon.js';
 import { deviceNamer } from './deviceNames.js';
@@ -220,16 +221,28 @@ export default class HeatmapService {
   // ---------------------------------------------------------------- settings autocomplete
 
   listDevices(query: string): Promise<AutocompleteItem[]> {
-    return listDevicesWhere(this.homey, query, d => heatmapCaps(d).length > 0);
+    return listDevicesWhere(this.homey, query, d => heatmapCaps(d).length > 0, {
+      empty: this.homey.__('autocomplete.noHeatmapDevices') || 'No devices with logged values found',
+    });
   }
 
   async listCapabilities(deviceId: string | undefined, query: string): Promise<AutocompleteItem[]> {
-    if (!deviceId) throw new Error(this.homey.__('heatmap.selectDeviceFirst') || 'Select a device first');
+    if (!deviceId || deviceId === 'none') return [hintRow(this.homey.__('autocomplete.pickDevice') || 'Pick a device first')];
     const api = await getAppApi(this.homey);
-    const device = await api.devices.getDevice({ id: deviceId });
+    let device: any;
+    try {
+      device = await api.devices.getDevice({ id: deviceId });
+    } catch (err) {
+      if (isTransientError(err)) throw err;
+      return [hintRow(this.homey.__('autocomplete.deviceNotFound') || 'Device not found')];
+    }
+    const unitsOf = (c: HeatmapCapability) => c.units ?? (c.type === 'boolean' ? this.homey.__('heatmap.onOff') || 'On/off' : undefined);
     return heatmapCaps(device)
-      .map(c => ({ name: c.title, description: c.units ?? (c.type === 'boolean' ? this.homey.__('heatmap.onOff') || 'On/off' : undefined), id: c.id }))
-      .filter(c => matches(query, c.name, c.id));
+      .filter(c => matches(query, c.title, c.id, unitsOf(c)))
+      .map((c) => {
+        const value = device.capabilitiesObj[c.id]?.value;
+        return { name: c.title, description: capabilityReading(this.homey, describeCapability(device.capabilitiesObj[c.id], c.id), value) ?? unitsOf(c), image: valueGlyphImage(c.id, value), id: c.id };
+      });
   }
 
   // ---------------------------------------------------------------- history
