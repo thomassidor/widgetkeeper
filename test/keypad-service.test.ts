@@ -141,8 +141,8 @@ describe("Keypad: the buttons' values", () => {
     const { keypad, variables } = setup();
     expect(await keypad.listStateValues('var:v1', 'y')).toEqual([{ name: 'Yes', id: 'boolean:true', value: true, type: 'boolean' }]);
     expect(variables.listPresetValues).toHaveBeenCalledWith('v1', 'y');
-    await expect(keypad.listStateValues(undefined, '')).rejects.toThrow(/State from first/);
-    await expect(keypad.listStateValues('cap:alarm:nope', '')).rejects.toThrow(/not found/);
+    expect(await keypad.listStateValues(undefined, '')).toEqual([{ name: 'None', description: 'Pick State from first', id: 'none', hint: true }]);
+    expect(await keypad.listStateValues('cap:alarm:nope', '')).toEqual([{ name: 'None', description: 'Device not found', id: 'none', hint: true }]);
   });
 
   it('checks a value against the capability', () => {

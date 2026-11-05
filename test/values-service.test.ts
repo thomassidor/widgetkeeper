@@ -48,12 +48,12 @@ describe('valueCaps', () => {
 describe('listSlots', () => {
   it('lists every device × capability pair, sorted, with zone and units', async () => {
     const { service } = setup();
-    expect(await service.listSlots('')).toEqual([
+    expect((await service.listSlots('')).map(({ image, ...row }) => row)).toEqual([
       { name: 'None', id: 'none' },
-      { name: 'Aircon · Mode', description: 'Bedroom', id: 'ac:mode' },
-      { name: 'Aircon · Turned on', description: 'Bedroom', id: 'ac:onoff' },
-      { name: 'Stue · Humidity', description: 'Living room · %', id: 'sensor:measure_humidity' },
-      { name: 'Stue · Temperature', description: 'Living room · °C', id: 'sensor:measure_temperature' },
+      { name: 'Aircon · Mode', description: 'Bedroom · Heat', id: 'ac:mode' },
+      { name: 'Aircon · Turned on', description: 'Bedroom · On', id: 'ac:onoff' },
+      { name: 'Stue · Humidity', description: 'Living room · 48%', id: 'sensor:measure_humidity' },
+      { name: 'Stue · Temperature', description: 'Living room · 21.5°C', id: 'sensor:measure_temperature' },
     ]);
   });
 
@@ -68,9 +68,9 @@ describe('listSlots', () => {
 describe('listSecondValues', () => {
   it("lists the other values of Tile N's device, by title, with None first", async () => {
     const { service } = setup();
-    expect(await service.listSecondValues('sensor:measure_temperature', '', 1)).toEqual([
+    expect((await service.listSecondValues('sensor:measure_temperature', '', 1)).map(({ image, ...row }) => row)).toEqual([
       { name: 'None', id: 'none' },
-      { name: 'Humidity', description: '%', id: 'sensor:measure_humidity' },
+      { name: 'Humidity', description: '48%', id: 'sensor:measure_humidity' },
     ]);
     expect((await service.listSecondValues('ac:onoff', '', 2)).map(i => i.id)).toEqual(['none', 'ac:mode']);
     expect((await service.listSecondValues('ac:onoff', 'mode', 2)).map(i => i.id)).toEqual(['ac:mode']);
@@ -80,7 +80,7 @@ describe('listSecondValues', () => {
     const { service, homey } = setup();
     homey.__ = (key: string, tokens?: any) => (key === 'values.none' ? 'None' : `${key} ${tokens?.n}`);
     for (const slot of [undefined, 'none', 'gone:onoff']) {
-      expect(await service.listSecondValues(slot, '', 3)).toEqual([{ name: 'None', description: 'values.pickTileFirst 3', id: 'none' }]);
+      expect(await service.listSecondValues(slot, '', 3)).toEqual([{ name: 'None', description: 'values.pickTileFirst 3', id: 'none', hint: true }]);
     }
   });
 });

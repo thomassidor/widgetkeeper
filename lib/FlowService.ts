@@ -1,6 +1,6 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
-import { matches, withNone, type AutocompleteItem } from './autocomplete.js';
+import { byName, filterItems, hintRow, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { FLOW_ICON_IMAGES } from './flowIconImages.js';
 import PersonalApiKey from './PersonalApiKey.js';
 import { sharedCache } from './sharedCache.js';
@@ -79,13 +79,14 @@ export default class FlowService {
     const { flows, folders } = await this.read(AUTOCOMPLETE_CACHE_MS);
     const advanced = this.homey.__('flows.advanced') || 'Advanced Flow';
     const standard = this.homey.__('flows.standard') || 'Flow';
-    const items = [...flows.values()]
-      .filter(f => f.triggerable && matches(query, f.name))
-      .sort((a, b) => a.name.localeCompare(b.name))
+    const startable = [...flows.values()].filter(f => f.triggerable);
+    if (!startable.length) return [hintRow(this.homey.__('autocomplete.noFlows') || 'No Flows that can be started by hand')];
+    const items = filterItems(query, startable
+      .sort(byName(this.homey))
       .map(f => {
         const folder = f.folder ? folders.get(f.folder) : undefined;
         return { name: f.name, description: [f.advanced ? advanced : standard, folder].filter(Boolean).join(' · '), id: f.id };
-      });
+      }));
     return withNone(this.homey.__('flows.none') || 'None', query, items);
   }
 
@@ -100,11 +101,10 @@ export default class FlowService {
    * optional icons), "None" comes first, so an icon can be removed again; the widgets skip the id `none`.
    */
   listIcons(query: string, { none = false } = {}): AutocompleteItem[] {
-    const language = this.homey.i18n.getLanguage();
     const items = FLOW_ICONS
       .map(id => ({ id, name: this.homey.__(`flows.icons.${id}`) || id, image: iconImage(id) }))
       .filter(i => matches(query, i.name, i.id))
-      .sort((a, b) => a.name.localeCompare(b.name, language));
+      .sort(byName(this.homey));
     return none ? withNone(this.homey.__('flows.none') || 'None', query, items) : items;
   }
 

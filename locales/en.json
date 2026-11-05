@@ -18,7 +18,6 @@
   },
   "thermostat": {
     "selectDevice": "Select a thermostat in the widget settings.",
-    "selectDeviceFirst": "Select a thermostat first, then reopen this setting.",
     "unchanged": "Don't change",
     "off": "Off",
     "error": "Could not load the thermostat.",
@@ -325,7 +324,6 @@
   },
   "heatmap": {
     "selectDevice": "Select a device and a value in the widget settings.",
-    "selectDeviceFirst": "Select a device first",
     "onOff": "On/off",
     "error": "Could not load the history.",
     "now": "__value__ now",
@@ -354,7 +352,7 @@
     "off": "Off",
     "renameFailed": "Could not save the name.",
     "none": "None",
-    "pickTileFirst": "Pick Tile __n__ first."
+    "pickTileFirst": "Pick Tile __n__ first"
   },
   "combined": {
     "selectValue": "Pick a value in the widget settings.",
@@ -549,7 +547,6 @@
   },
   "varpresets": {
     "selectVariable": "Pick a variable in the widget settings.",
-    "selectVariableFirst": "Select a variable first, then reopen this setting.",
     "noPresets": "Pick the buttons’ values in the widget settings.",
     "missing": "Variable not found",
     "error": "Could not load the variable.",
@@ -598,7 +595,6 @@
     "keyScope": "The API key may not do this: it needs Start Flows, or Variables for a variable.",
     "keyInvalid": "The API key was not accepted.",
     "variable": "Variable",
-    "selectStateFirst": "Pick State from first, then open this setting again.",
     "cantSet": "Can’t be set: give the button a Flow",
     "codeNone": "No codes yet: add one in the app settings",
     "codeDigits": "A __n__-digit code",
@@ -1118,5 +1114,21 @@
     "syncTime": "Time",
     "syncAll": "Sync all now",
     "syncCount": "__count__ synced dashboards"
+  },
+  "autocomplete": {
+    "pickThermostat": "Pick a thermostat first",
+    "pickDevice": "Pick a device first",
+    "pickVariable": "Pick a variable first",
+    "pickState": "Pick State from first",
+    "deviceNotFound": "Device not found",
+    "noThermostats": "No thermostats found",
+    "noHeatmapDevices": "No devices with logged values found",
+    "noSpeakers": "No speakers found",
+    "noCameras": "No cameras found",
+    "noFlows": "No Flows that can be started by hand",
+    "noVariables": "No variables found",
+    "noDashboards": "No web dashboards yet",
+    "noLocks": "No locks with a button to open",
+    "more": "__count__ more: keep typing"
   }
 }

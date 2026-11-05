@@ -240,7 +240,8 @@ describe('autocomplete', () => {
     const homey = fakeHomey(fakeApi({ devices: [plug, lamp], zones: { z1: { name: 'Stue' } } }));
     expect(await listDevicesWhere(homey, '', d => !!d.capabilitiesObj.onoff)).toEqual([{ name: 'Plug', description: 'Stue', id: 'p' }]);
     expect(await listDevicesWhere(homey, 'stue', () => true)).toEqual([{ name: 'Plug', description: 'Stue', id: 'p' }]);
-    expect(await listCapabilitySlots(homey, '', d => Object.keys(d.capabilitiesObj))).toEqual([
+    const slots = await listCapabilitySlots(homey, '', d => Object.keys(d.capabilitiesObj));
+    expect(slots.map(({ image, ...row }) => row)).toEqual([
       { name: 'None', id: 'none' },
       { name: 'Lamp · dim', description: undefined, id: 'l:dim' }, // an empty title falls back to the id
       { name: 'Plug · On', description: 'Stue', id: 'p:onoff' },

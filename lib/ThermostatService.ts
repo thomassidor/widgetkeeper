@@ -1,6 +1,6 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
-import { listDevicesWhere, matches, type AutocompleteItem } from './autocomplete.js';
+import { hintRow, listDevicesWhere, matches, type AutocompleteItem } from './autocomplete.js';
 import { capabilityValues, describeCapability } from './capabilities.js';
 import DeviceTracker, { isTransientError, type TrackedEntry } from './DeviceTracker.js';
 import Timings from './Timings.js';
@@ -227,12 +227,13 @@ export default class ThermostatService {
   // ---------------------------------------------------------------- settings autocomplete
 
   listDevices(query: string): Promise<AutocompleteItem[]> {
-    return listDevicesWhere(this.homey, query, isThermostat);
+    return listDevicesWhere(this.homey, query, isThermostat, { empty: this.homey.__('autocomplete.noThermostats') || 'No thermostats found' });
   }
 
   /** Every value of every settable enum capability, e.g. "Fan speed: Medium". */
   async listEnumOptions(deviceId: string | undefined, query: string): Promise<PresetOption[]> {
     const device = await this.getDeviceForSettings(deviceId);
+    if ('hint' in device) return [device.hint];
     const items: PresetOption[] = [];
     for (const id of relevantCaps(device)) {
       const info = capInfo(device.capabilitiesObj[id], id);
@@ -240,12 +241,13 @@ export default class ThermostatService {
         items.push({ name: `${info.title}: ${v.title}`, capabilityId: id, value: v.id });
       }
     }
-    return [this.unchanged(), ...items.filter(i => matches(query, i.name))];
+    return this.withUnchanged(query, items.filter(i => matches(query, i.name)));
   }
 
   /** Target temperatures within the capability's range and step. */
   async listTemperatures(deviceId: string | undefined, query: string): Promise<PresetOption[]> {
     const device = await this.getDeviceForSettings(deviceId);
+    if ('hint' in device) return [device.hint];
     const cap = device.capabilitiesObj?.target_temperature;
     if (!cap) return [this.unchanged()];
     const min = typeof cap.min === 'number' ? cap.min : 16;
@@ -253,23 +255,36 @@ export default class ThermostatService {
     const step = typeof cap.step === 'number' && cap.step > 0 ? cap.step : 0.5;
     const units = typeof cap.units === 'string' ? cap.units : '°C';
     const items: PresetOption[] = [];
-    // Every value (a fine step has hundreds), then the search, then the first 200 of what's left: so any setpoint can be
-    // found by typing it.
+    // Every value (a fine step has hundreds), then the search; the list's cap (`finishList()`) comes after that, so any
+    // setpoint can be found by typing it.
     for (let v = min; v <= max + 1e-9 && items.length < 5000; v += step) {
       const value = Math.round(v * 100) / 100;
       items.push({ name: `${value} ${units}`, capabilityId: 'target_temperature', value });
     }
-    return [this.unchanged(), ...items.filter(i => matches(query, i.name)).slice(0, 200)];
+    return this.withUnchanged(query, items.filter(i => matches(query, i.name)));
   }
 
   private unchanged(): PresetOption {
     return { name: this.homey.__('thermostat.unchanged') || "Don't change" };
   }
 
-  private async getDeviceForSettings(deviceId: string | undefined) {
-    if (!deviceId) throw new Error(this.homey.__('thermostat.selectDeviceFirst') || 'Select a thermostat first, then reopen this setting.');
+  /** `Don't change` first, as `None` is: left out when the query doesn't match it. */
+  private withUnchanged(query: string, items: PresetOption[]): PresetOption[] {
+    const unchanged = this.unchanged();
+    return matches(query, unchanged.name) ? [unchanged, ...items] : items;
+  }
+
+  /** The device a button's options are read from, or the row that says why there's none. */
+  private async getDeviceForSettings(deviceId: string | undefined): Promise<any> {
+    const says = (text: string) => ({ hint: hintRow(this.unchanged().name, text) });
+    if (!deviceId || deviceId === 'none') return says(this.homey.__('autocomplete.pickThermostat') || 'Pick a thermostat first');
     const api = await getAppApi(this.homey);
-    return api.devices.getDevice({ id: deviceId });
+    try {
+      return await api.devices.getDevice({ id: deviceId });
+    } catch (err) {
+      if (isTransientError(err)) throw err;
+      return says(this.homey.__('autocomplete.deviceNotFound') || 'Device not found');
+    }
   }
 
 }

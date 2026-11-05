@@ -18,7 +18,6 @@
   },
   "thermostat": {
     "selectDevice": "Selecciona un termostato en los ajustes del widget.",
-    "selectDeviceFirst": "Selecciona primero un termostato y luego vuelve a abrir este ajuste.",
     "unchanged": "No cambiar",
     "off": "Apagado",
     "error": "No se pudo cargar el termostato.",
@@ -325,7 +324,6 @@
   },
   "heatmap": {
     "selectDevice": "Elige un dispositivo y un valor en los ajustes del widget.",
-    "selectDeviceFirst": "Elige primero un dispositivo",
     "onOff": "Encendido/apagado",
     "error": "No se pudo cargar el historial.",
     "now": "__value__ ahora",
@@ -354,7 +352,7 @@
     "off": "Apagado",
     "renameFailed": "No se pudo guardar el nombre.",
     "none": "Ninguno",
-    "pickTileFirst": "Elige primero el mosaico __n__."
+    "pickTileFirst": "Elige primero el mosaico __n__"
   },
   "combined": {
     "selectValue": "Elige un valor en los ajustes del widget.",
@@ -549,7 +547,6 @@
   },
   "varpresets": {
     "selectVariable": "Elige una variable en los ajustes.",
-    "selectVariableFirst": "Selecciona primero una variable y luego vuelve a abrir este ajuste.",
     "noPresets": "Elige los valores de los botones en los ajustes.",
     "missing": "Variable no encontrada",
     "error": "No se pudo cargar la variable.",
@@ -598,7 +595,6 @@
     "keyScope": "La clave API no puede hacer esto: necesita Iniciar Flows, o Variables para una variable.",
     "keyInvalid": "La clave API no se aceptó.",
     "variable": "Variable",
-    "selectStateFirst": "Elige primero Estado de y vuelve a abrir este ajuste.",
     "cantSet": "No se puede poner: dale un flujo al botón",
     "codeNone": "Aún no hay códigos: añade uno en los ajustes de la app",
     "codeDigits": "Un código de __n__ dígitos",
@@ -1118,5 +1114,21 @@
     "syncTime": "Hora",
     "syncAll": "Sincronizar todo ahora",
     "syncCount": "__count__ paneles sincronizados"
+  },
+  "autocomplete": {
+    "pickThermostat": "Elige primero un termostato",
+    "pickDevice": "Elige primero un dispositivo",
+    "pickVariable": "Elige primero una variable",
+    "pickState": "Elige primero Estado de",
+    "deviceNotFound": "Dispositivo no encontrado",
+    "noThermostats": "No se encontraron termostatos",
+    "noHeatmapDevices": "No hay dispositivos con valores registrados",
+    "noSpeakers": "No se encontraron altavoces",
+    "noCameras": "No se encontraron cámaras",
+    "noFlows": "No hay Flows que se puedan iniciar a mano",
+    "noVariables": "No se encontraron variables",
+    "noDashboards": "Aún no hay paneles web",
+    "noLocks": "No hay cerraduras con botón de apertura",
+    "more": "__count__ más: sigue escribiendo"
   }
 }

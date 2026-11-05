@@ -1,5 +1,5 @@
 import type Homey from 'homey';
-import { matches, type AutocompleteItem } from './autocomplete.js';
+import { matches, nameOrder, type AutocompleteItem } from './autocomplete.js';
 import { isReservedKey } from './storedSetting.js';
 import { parseTileColor, type TileColor } from './tileColors.js';
 
@@ -95,9 +95,10 @@ export default class TextLineService {
     const boards = this.boards();
     const names = new Map<string, string>([[boardKey(DEFAULT_BOARD), DEFAULT_BOARD]]);
     for (const [key, line] of Object.entries(boards)) names.set(key, line.name);
+    const order = nameOrder(this.homey);
     const items: AutocompleteItem[] = [...names.entries()]
       .filter(([, name]) => matches(q, name))
-      .sort((a, b) => a[1].localeCompare(b[1]))
+      .sort((a, b) => order(a[1], b[1]))
       .map(([key, name]) => ({
         name,
         id: name,

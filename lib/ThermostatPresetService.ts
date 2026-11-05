@@ -1,5 +1,5 @@
 import type Homey from 'homey';
-import { matches, type AutocompleteItem } from './autocomplete.js';
+import { matches, nameOrder, type AutocompleteItem } from './autocomplete.js';
 import { KeyError } from './PersonalApiKey.js';
 import { dashboardPages } from './StackService.js';
 import type { CapValue } from './ThermostatService.js';
@@ -78,7 +78,7 @@ export default class ThermostatPresetService {
     let keyProblem: KeyError | null = null;
     try {
       native = this.nativeWidgets(await this.deps.stack.dashboards(true))
-        .sort((a, b) => a.dashboard.localeCompare(b.dashboard));
+        .sort((a, b) => nameOrder(this.homey)(a.dashboard, b.dashboard));
     } catch (err) {
       if (err instanceof KeyError) keyProblem = err;
       else this.log("Thermostat Presets cards: Homey's dashboards could not be read:", err);

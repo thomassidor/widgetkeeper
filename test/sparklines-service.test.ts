@@ -144,10 +144,10 @@ describe('downsample', () => {
 describe('listSlots', () => {
   it('lists every logged number as Device · Capability, with zone and units', async () => {
     const { service } = setup();
-    expect(await service.listSlots('')).toEqual([
+    expect((await service.listSlots('')).map(({ image, ...row }) => row)).toEqual([
       { name: 'None', id: 'none' },
-      { name: 'Stue · Humidity', description: 'Living room · %', id: 'sensor:measure_humidity' },
-      { name: 'Stue · Temperature', description: 'Living room · °C', id: 'sensor:measure_temperature' },
+      { name: 'Stue · Humidity', description: 'Living room · 48%', id: 'sensor:measure_humidity' },
+      { name: 'Stue · Temperature', description: 'Living room · 21.5°C', id: 'sensor:measure_temperature' },
     ]);
     expect((await service.listSlots('temp')).map(i => i.id)).toEqual(['sensor:measure_temperature']);
   });

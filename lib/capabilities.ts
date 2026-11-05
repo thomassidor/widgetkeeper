@@ -1,3 +1,5 @@
+import type Homey from 'homey';
+
 /** A capability as most widgets read it: its value and whether the widget may set it. */
 export type CapState = { value: unknown, setable: boolean };
 
@@ -34,6 +36,27 @@ export function describeCapability(cap: any, id: string): CapabilityDescription 
     max: typeof cap?.max === 'number' ? cap.max : null,
     values: cap?.type === 'enum' ? capabilityValues(cap) : null,
   };
+}
+
+/**
+ * A capability's value for an autocomplete row's description, as the kit's `formatValue()` shows it on a tile but in
+ * Homey's language (the tiles use the device's); null without a value worth showing (none, or a long text).
+ */
+export function capabilityReading(homey: Homey.App['homey'], cap: CapabilityDescription, value: unknown): string | null {
+  if (typeof value === 'boolean') return homey.__(`values.${value ? 'on' : 'off'}`) || (value ? 'On' : 'Off');
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    const percent = cap.units === '%' && cap.max === 1 && (cap.min == null || cap.min === 0);
+    const v = percent ? value * 100 : value;
+    const digits = percent ? 0 : cap.decimals != null ? Math.max(0, Math.min(cap.decimals, 4)) : 1;
+    let language: string | undefined;
+    try { language = homey.i18n.getLanguage(); } catch { /* the default */ }
+    const text = new Intl.NumberFormat(language, { minimumFractionDigits: 0, maximumFractionDigits: digits }).format(v);
+    if (!cap.units) return text;
+    return /^(°|%)/.test(cap.units) ? `${text}${cap.units}` : `${text} ${cap.units}`;
+  }
+  if (value == null || value === '') return null;
+  const text = (cap.values ?? []).find(v => v.id === String(value))?.title ?? String(value);
+  return text.length <= 24 ? text : null;
 }
 
 /** The capabilities of `ids` the device has, in that order. */

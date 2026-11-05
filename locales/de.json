@@ -18,7 +18,6 @@
   },
   "thermostat": {
     "selectDevice": "Wähle in den Widget-Einstellungen ein Thermostat aus.",
-    "selectDeviceFirst": "Wähle zuerst ein Thermostat aus und öffne diese Einstellung dann erneut.",
     "unchanged": "Nicht ändern",
     "off": "Aus",
     "error": "Das Thermostat konnte nicht geladen werden.",
@@ -325,7 +324,6 @@
   },
   "heatmap": {
     "selectDevice": "Wähle ein Gerät und einen Wert in den Widget-Einstellungen.",
-    "selectDeviceFirst": "Wähle zuerst ein Gerät",
     "onOff": "Ein/Aus",
     "error": "Verlauf konnte nicht geladen werden.",
     "now": "Jetzt __value__",
@@ -354,7 +352,7 @@
     "off": "Aus",
     "renameFailed": "Der Name konnte nicht gespeichert werden.",
     "none": "Keine",
-    "pickTileFirst": "Wähle zuerst Kachel __n__."
+    "pickTileFirst": "Wähle zuerst Kachel __n__"
   },
   "combined": {
     "selectValue": "Wähle einen Wert in den Widget-Einstellungen.",
@@ -549,7 +547,6 @@
   },
   "varpresets": {
     "selectVariable": "Wähle eine Variable in den Widget-Einstellungen.",
-    "selectVariableFirst": "Wähle zuerst eine Variable aus und öffne diese Einstellung dann erneut.",
     "noPresets": "Wähle die Werte der Tasten in den Widget-Einstellungen.",
     "missing": "Variable nicht gefunden",
     "error": "Die Variable konnte nicht geladen werden.",
@@ -598,7 +595,6 @@
     "keyScope": "Der API-Schlüssel darf das nicht: Er braucht Flows starten, oder Variablen für eine Variable.",
     "keyInvalid": "Der API-Schlüssel wurde nicht akzeptiert.",
     "variable": "Variable",
-    "selectStateFirst": "Wähle zuerst Zustand aus und öffne diese Einstellung dann erneut.",
     "cantSet": "Nicht setzbar: Gib der Taste einen Flow",
     "codeNone": "Noch keine Codes: Füge einen in den App-Einstellungen hinzu",
     "codeDigits": "Ein Code mit __n__ Ziffern",
@@ -1118,5 +1114,21 @@
     "syncTime": "Uhrzeit",
     "syncAll": "Alle jetzt synchronisieren",
     "syncCount": "__count__ synchronisierte Dashboards"
+  },
+  "autocomplete": {
+    "pickThermostat": "Wähle zuerst ein Thermostat",
+    "pickDevice": "Wähle zuerst ein Gerät",
+    "pickVariable": "Wähle zuerst eine Variable",
+    "pickState": "Wähle zuerst Zustand aus",
+    "deviceNotFound": "Gerät nicht gefunden",
+    "noThermostats": "Keine Thermostate gefunden",
+    "noHeatmapDevices": "Keine Geräte mit aufgezeichneten Werten gefunden",
+    "noSpeakers": "Keine Lautsprecher gefunden",
+    "noCameras": "Keine Kameras gefunden",
+    "noFlows": "Keine Flows, die sich von Hand starten lassen",
+    "noVariables": "Keine Variablen gefunden",
+    "noDashboards": "Noch keine Web-Dashboards",
+    "noLocks": "Keine Schlösser mit einer Taste zum Öffnen",
+    "more": "__count__ weitere: weiter tippen"
   }
 }

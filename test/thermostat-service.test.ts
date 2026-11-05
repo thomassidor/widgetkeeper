@@ -184,10 +184,10 @@ describe('listTemperatures', () => {
     expect(values).toEqual([16, 16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7, 16.8, 16.9, 17]);
   });
 
-  it('caps the list at 200 items, after the search, so any setpoint can be found', async () => {
+  it('lists every setpoint for the list\'s cap (finishList), so any can be found by typing it', async () => {
     const { service } = setup([aircon({ target_temperature: { value: 20, min: 0, max: 100, step: 0.1 } })]);
-    expect(await service.listTemperatures('dev1', '')).toHaveLength(201);
-    expect((await service.listTemperatures('dev1', '26.5')).map(i => i.name)).toEqual(["Don't change", '26.5 °C']);
+    expect(await service.listTemperatures('dev1', '')).toHaveLength(1002);
+    expect((await service.listTemperatures('dev1', '26.5')).map(i => i.name)).toEqual(['26.5 °C']);
   });
 
   it('falls back to 16–30 °C in 0.5 steps', async () => {
@@ -198,15 +198,19 @@ describe('listTemperatures', () => {
     expect(items.at(-1)!.name).toBe('30 °C');
   });
 
-  it('filters by the query but keeps "Don\'t change"', async () => {
+  it('filters by the query, "Don\'t change" too', async () => {
     const { service } = setup();
     const names = (await service.listTemperatures('dev1', '22')).map(i => i.name);
-    expect(names).toEqual(["Don't change", '22 °C', '22.5 °C']);
+    expect(names).toEqual(['22 °C', '22.5 °C']);
+    expect((await service.listTemperatures('dev1', 'change')).map(i => i.name)).toEqual(["Don't change"]);
   });
 
   it('needs a device', async () => {
     const { service } = setup();
-    await expect(service.listTemperatures(undefined, '')).rejects.toThrow('Select a thermostat first');
+    const says = (description: string) => [{ name: "Don't change", description, id: 'none', hint: true }];
+    expect(await service.listTemperatures(undefined, '')).toEqual(says('Pick a thermostat first'));
+    expect(await service.listEnumOptions('none', '')).toEqual(says('Pick a thermostat first'));
+    expect(await service.listTemperatures('gone', '')).toEqual(says('Device not found'));
   });
 });
 
@@ -222,7 +226,7 @@ describe('listEnumOptions', () => {
 
   it('filters by the query', async () => {
     const { service } = setup();
-    expect((await service.listEnumOptions('dev1', 'high')).map(i => i.name)).toEqual(["Don't change", 'Fan speed: High']);
+    expect((await service.listEnumOptions('dev1', 'high')).map(i => i.name)).toEqual(['Fan speed: High']);
   });
 });
 

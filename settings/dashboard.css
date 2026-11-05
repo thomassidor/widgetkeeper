@@ -504,6 +504,8 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-option input { width: 18px; height: 18px; margin: 0; flex: none; accent-color: var(--wd-accent); }
 .wd-option-image { width: 24px; height: 24px; flex: none; border-radius: 12px; }
 .wd-option-text { display: flex; flex-direction: column; min-width: 0; }
+.wd-option.current { background: color-mix(in srgb, var(--wd-accent) 12%, transparent); }
+.wd-option-mark { flex: none; width: 18px; height: 18px; margin-left: auto; fill: none; stroke: var(--wd-accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .wd-option-name { font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
 
 /* The widget's devices in its settings: the chosen ones in order (drag the grip), then the button for the picker. */

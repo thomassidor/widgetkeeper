@@ -107,8 +107,10 @@ export default class CameraService {
    * `devices` setting's filter can only ask for classes.
    */
   async listCameras(query: string): Promise<AutocompleteItem[]> {
-    const items = await listDevicesWhere(this.homey, query, d => d?.class === 'camera' || d?.class === 'doorbell' || hasCameraMedia(d));
-    return withNone(this.homey.__('values.none') || 'None', query, items);
+    const items = await listDevicesWhere(this.homey, query, d => d?.class === 'camera' || d?.class === 'doorbell' || hasCameraMedia(d), {
+      empty: this.homey.__('autocomplete.noCameras') || 'No cameras found',
+    });
+    return items[0]?.id === 'none' ? items : withNone(this.homey.__('values.none') || 'None', query, items);
   }
 
   /** One entry per device, in the order asked for. A deleted device doesn't fail the others. */

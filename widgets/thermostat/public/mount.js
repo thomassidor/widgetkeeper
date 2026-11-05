@@ -20,7 +20,8 @@ window.mountThermostatWidget = function (Homey, { root, frame }) {
     hapticAt = Date.now();
     try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not now */ }
   };
-  const deviceId = (settings.device && settings.device.id) || null;
+  // `none`: a row that only said something (`No thermostats found`) was tapped.
+  const deviceId = (settings.device && settings.device.id !== 'none' && settings.device.id) || null;
   // The value beside the name: a Device Values slot `<deviceId>:<capabilityId>` (`None`'s id has no colon).
   const sensor = settings.sensor && String(settings.sensor.id || '').includes(':') ? settings.sensor.id : null;
   // Sent with a button's tap, so the Flow card *… was tapped* knows the button (a stack page has the original's id).

@@ -149,7 +149,7 @@ describe('counters', () => {
       vi.advanceTimersByTime(1000);
     }
     expect(service.describe().counters).toBe(50);
-    expect(service.listCounters('Counter 0')).toEqual([]);
+    expect(service.listCounters('Counter 0').map(i => i.name)).not.toContain('Counter 0');
     expect(service.listCounters('Counter 2').map(i => i.name)).toContain('Counter 2');
   });
 });

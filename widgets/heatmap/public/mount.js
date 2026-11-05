@@ -11,8 +11,9 @@ window.mountHeatmapWidget = function (Homey, { root, frame }) {
   const link = wireFrame(Homey, frame);
 
   const settings = Homey.getSettings() || {};
-  const deviceId = (settings.device && settings.device.id) || null;
-  const capabilityId = (settings.capability && settings.capability.id) || null;
+  // `none`: a row that only said something (`Pick a device first`) was tapped.
+  const deviceId = (settings.device && settings.device.id !== 'none' && settings.device.id) || null;
+  const capabilityId = (settings.capability && settings.capability.id !== 'none' && settings.capability.id) || null;
   let loaded = false;
 
   const widget = window.createHeatmapWidget(root, {

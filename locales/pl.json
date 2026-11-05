@@ -18,7 +18,6 @@
   },
   "thermostat": {
     "selectDevice": "Wybierz termostat w ustawieniach widżetu.",
-    "selectDeviceFirst": "Najpierw wybierz termostat, a potem ponownie otwórz to ustawienie.",
     "unchanged": "Bez zmian",
     "off": "Wył.",
     "error": "Nie można wczytać termostatu.",
@@ -325,7 +324,6 @@
   },
   "heatmap": {
     "selectDevice": "Wybierz urządzenie i wartość w ustawieniach widżetu.",
-    "selectDeviceFirst": "Najpierw wybierz urządzenie",
     "onOff": "Wł./wył.",
     "error": "Nie udało się wczytać historii.",
     "now": "Teraz __value__",
@@ -354,7 +352,7 @@
     "off": "Wył.",
     "renameFailed": "Nie udało się zapisać nazwy.",
     "none": "Brak",
-    "pickTileFirst": "Najpierw wybierz kafelek __n__."
+    "pickTileFirst": "Najpierw wybierz kafelek __n__"
   },
   "combined": {
     "selectValue": "Wybierz wartość w ustawieniach widżetu.",
@@ -549,7 +547,6 @@
   },
   "varpresets": {
     "selectVariable": "Wybierz zmienną w ustawieniach widżetu.",
-    "selectVariableFirst": "Najpierw wybierz zmienną, a potem ponownie otwórz to ustawienie.",
     "noPresets": "Wybierz wartości przycisków w ustawieniach widżetu.",
     "missing": "Nie znaleziono zmiennej",
     "error": "Nie udało się wczytać zmiennej.",
@@ -598,7 +595,6 @@
     "keyScope": "Klucz API nie może tego zrobić: potrzebuje uprawnienia Rozpoczynanie Flow albo Zmienne dla zmiennej.",
     "keyInvalid": "Klucz API nie został zaakceptowany.",
     "variable": "Zmienna",
-    "selectStateFirst": "Najpierw wybierz Stan z, a potem otwórz to ustawienie ponownie.",
     "cantSet": "Nie da się ustawić: przypisz przyciskowi Flow",
     "codeNone": "Brak kodów: dodaj kod w ustawieniach aplikacji",
     "codeDigits": "Kod z __n__ cyfr",
@@ -1118,5 +1114,21 @@
     "syncTime": "Godzina",
     "syncAll": "Synchronizuj wszystkie teraz",
     "syncCount": "Synchronizowane pulpity: __count__"
+  },
+  "autocomplete": {
+    "pickThermostat": "Najpierw wybierz termostat",
+    "pickDevice": "Najpierw wybierz urządzenie",
+    "pickVariable": "Najpierw wybierz zmienną",
+    "pickState": "Najpierw wybierz Stan z",
+    "deviceNotFound": "Nie znaleziono urządzenia",
+    "noThermostats": "Nie znaleziono termostatów",
+    "noHeatmapDevices": "Brak urządzeń z zapisanymi wartościami",
+    "noSpeakers": "Nie znaleziono głośników",
+    "noCameras": "Nie znaleziono kamer",
+    "noFlows": "Brak Flow do uruchomienia ręcznego",
+    "noVariables": "Nie znaleziono zmiennych",
+    "noDashboards": "Nie ma jeszcze pulpitów web",
+    "noLocks": "Brak zamków z przyciskiem otwierania",
+    "more": "Jeszcze __count__: pisz dalej"
   }
 }

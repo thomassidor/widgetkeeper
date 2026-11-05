@@ -1,4 +1,5 @@
 import type WidgetkeeperApp from '../app.js';
+import { finishList } from './autocomplete.js';
 import { VALUE_SETTINGS } from './SparklineService.js';
 
 /**
@@ -27,8 +28,10 @@ const CAMERA_SLOTS = [1, 2, 3, 4, 5, 6];
  */
 export function widgetAutocompletes(app: WidgetkeeperApp): Record<string, Record<string, AutocompleteListener>> {
   const table: Record<string, Record<string, AutocompleteListener>> = {};
-  const add = (widget: string, setting: string, fn: AutocompleteListener) => {
-    (table[widget] ??= {})[setting] = fn;
+  // Every list ends the same way: best matches first, then at most `MAX_ROWS` (`settings.wholeList`, not a setting of
+  // any widget: everything, for `npm run test-dashboards`, which picks devices by capability from the whole list).
+  const add = (widget: string, setting: string, fn: AutocompleteListener, { cap = true } = {}) => {
+    (table[widget] ??= {})[setting] = async (query, settings) => finishList(app.homey, query, await fn(query, settings), { cap: cap && !settings?.wholeList });
   };
 
   // Thermostat: the device, the value beside its name (Device Values' pairs), then per-button options read from the device.
@@ -56,7 +59,7 @@ export function widgetAutocompletes(app: WidgetkeeperApp): Record<string, Record
   // Combined value: the value it folds, from the same list.
   add('combined', 'capability', query => app.combined.listCapabilities(query));
   // Flow tiles: the board, by name (what's typed is a new one, which a Flow card fills later).
-  add('flowtiles', 'board', async query => app.flowTiles.listBoards(query, { create: true }));
+  add('flowtiles', 'board', async query => app.flowTiles.listBoards(query, { create: true }), { cap: false });
 
   // Sparklines and the chart widgets: each value from Sparklines' list (logged numbers; Chart · Totals' meters first,
   // Chart · Stacked's power first, Chart · Timeline's booleans and numbers), by `VALUE_SETTINGS`.

@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import type Homey from 'homey';
 import { repeatKeys, type default as TileNameService } from './TileNameService.js';
 import { listAppLogs, logSlot } from './appLogs.js';
-import { devicesAndZones, matches, withNone, type AutocompleteItem } from './autocomplete.js';
+import { byName, devicesAndZones, filterItems, hintRow, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { describeCapability } from './capabilities.js';
 import { driverIconPath, libraryIconUrl } from './deviceIcon.js';
 import { deviceApp } from './MediaService.js';
@@ -632,7 +632,7 @@ export default class WebDashboardService {
       .filter(d => !other || !foreign.app || deviceApp(d) === `homey:app:${other.appId}`)
       .map(d => webDevice(d, zones))
       .filter(d => matches(query, d.name, d.zone?.name))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort(byName(this.homey));
   }
 
   /**
@@ -655,7 +655,7 @@ export default class WebDashboardService {
       if (caps.length) out.push({ ...webDevice(d, zones), caps });
     }
     out.push(...await logs);
-    return out.sort((a, b) => a.name.localeCompare(b.name));
+    return out.sort(byName(this.homey));
   }
 
   /**
@@ -717,19 +717,19 @@ export default class WebDashboardService {
 
   /** Dashboard Shortcuts' `dashboardN` autocomplete: `None`, then every web dashboard by name, with its widget count. */
   dashboardItems(query: string): AutocompleteItem[] {
+    if (!this.list().length) return [hintRow(this.homey.__('autocomplete.noDashboards') || 'No web dashboards yet')];
     return withNone(this.homey.__('shortcuts.none') || 'None', query, this.dashboardList(query));
   }
 
   /** Every web dashboard matching the query, by name, with its widget count (also the Popups cards' screens). */
   dashboardList(query: string): AutocompleteItem[] {
-    return this.list()
+    return filterItems(query, this.list()
       .map((d) => {
         const name = d.name || this.homey.__('web.untitled') || 'Dashboard';
         const count = d.columns.reduce((n, c) => n + c.length, 0);
         return { id: d.id, name, description: this.homey.__('web.widgetCount', { count }) || `${count} widgets` };
-      })
-      .filter(i => matches(query, i.name))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      }))
+      .sort(byName(this.homey));
   }
 
   /** The app's strings (`locales/<lang>.json`) in Homey's language, as Homey gives a widget frame (`Homey.__`). */

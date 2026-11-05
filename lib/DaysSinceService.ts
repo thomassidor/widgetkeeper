@@ -1,5 +1,5 @@
 import type Homey from 'homey';
-import { matches, withNone, type AutocompleteItem } from './autocomplete.js';
+import { byName, filterItems, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { localHour } from './heatmap.js';
 import { DebouncedSetting, isReservedKey } from './storedSetting.js';
 
@@ -266,10 +266,9 @@ export default class DaysSinceService {
   listCounters(query: string, { none = false, create = false, any = false } = {}): (AutocompleteItem & { any?: boolean })[] {
     const q = (query || '').trim().slice(0, MAX_NAME);
     const now = Date.now();
-    const items: (AutocompleteItem & { any?: boolean })[] = [...this.counters.values()]
-      .filter(c => matches(q, c.name))
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map(c => ({ name: c.name, id: c.name, description: this.describeDays(c, now) }));
+    const items: (AutocompleteItem & { any?: boolean })[] = filterItems(q, [...this.counters.values()]
+      .sort(byName(this.homey))
+      .map(c => ({ name: c.name, id: c.name, description: this.describeDays(c, now) })));
     const typed = counterKey(q);
     if (create && typed && !this.counters.has(typed)) {
       items.push({ name: q, id: q, description: this.homey.__('dayssince.newCounter') || 'New counter' });
