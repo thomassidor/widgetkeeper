@@ -449,3 +449,14 @@ describe('vertical blinds (openAt: middle)', () => {
     expect(state('a')).toBe('50% open');
   });
 });
+
+describe('Widen the last tile (1.3.0)', () => {
+  const wideOf = (root: HTMLElement, sel: string) => [...root.querySelectorAll<HTMLElement>(sel)].map(t => t.classList.contains("wide"));
+  const three = () => ['a', 'b', 'c'].map(id => ({ id, missing: true }));
+  it('the last of an odd number spans the row; not off, or with an even number', () => {
+    const on = (list: any[], wideLast = true) => wideOf(widget(list, { wideLast }).root, '.ct-tile');
+    expect(on(three())).toEqual([false, false, true]);
+    expect(on(three(), false)).toEqual([false, false, false]);
+    expect(on(three().slice(0, 2))).toEqual([false, false]);
+  });
+});

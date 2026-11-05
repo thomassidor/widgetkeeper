@@ -90,7 +90,7 @@
 
   /**
    * @param {HTMLElement} root
-   * @param {{ colorStyle?: string, t?: (key: string, tokens?: object) => string, span?: string, columns?: number|string,
+   * @param {{ colorStyle?: string, color?: string, t?: (key: string, tokens?: object) => string, span?: string, columns?: number|string,
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
    *   now?: () => number, onHeight?: (h: number) => void }} opts
    */
@@ -113,7 +113,7 @@
     const message = messageLine(() => render(), { clear: () => { slots = []; } });
 
     root.classList.add('sl');
-    applyColors(root, { style: opts.colorStyle });
+    applyColors(root, { style: opts.colorStyle, color: opts.color }); // no colour (placed before the setting): Homey's blue
     const names = tileNames(opts, () => render(), (key) => {
       const i = nameKeys(slots).indexOf(key);
       const tile = i >= 0 ? tiles.get(`${keyOf(slots[i])}#${i}`) : null;

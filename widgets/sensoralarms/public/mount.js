@@ -18,6 +18,7 @@ window.mountSensorAlarmsWidget = function (Homey, { root, frame }) {
     columns: settings.columns,
     onRename: (key, name) => tileNames.rename(key, name),
     includeStates: settings.includeStates === true,
+    wideLast: settings.wideLast === true,
     onHeight: link.setHeight,
   });
 

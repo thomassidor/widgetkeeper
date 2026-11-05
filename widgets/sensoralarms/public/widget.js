@@ -26,7 +26,7 @@
    * @param {{ colorStyle?: string, t?: (key: string, tokens?: object) => string, includeStates?: boolean,
    *   columns?: number|string,
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
-   *   onHeight?: (h: number) => void }} opts
+   *   wideLast?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createSensorAlarmsWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -192,6 +192,8 @@
         const want = placed ? placed.nextSibling : grid.firstChild;
         if (tile.tile !== want) grid.insertBefore(tile.tile, want);
         placed = tile.tile;
+        // `wideLast`: at 2 per row, the last of an odd number of tiles spans the row.
+        tile.tile.classList.toggle('wide', !!opts.wideLast && columns === 2 && devices.length % 2 === 1 && d === devices[devices.length - 1]);
         const missing = 'missing' in d;
         tile.name.textContent = missing ? '' : typed.name(d.id, d.name);
         if (typed.renaming && !missing) {

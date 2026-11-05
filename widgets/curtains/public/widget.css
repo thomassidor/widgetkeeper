@@ -31,6 +31,8 @@ html, body { background: transparent !important; }
 .ct [dir="auto"] { text-align: left; }
 
 .ct-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--homey-su-3, 12px); }
+/* `wideLast`: the last of an odd number of tiles spans the row. */
+.ct-tile.wide { grid-column: 1 / -1; }
 
 /* A curtain tile (104px): the icon and the action pill, the name, the state and the position bar. */
 .ct-tile {

@@ -51,7 +51,8 @@ html, body { background: transparent !important; }
 .pb [data-level="low"] { --pb-level: var(--pb-green); }
 .pb [data-level="medium"] { --pb-level: var(--pb-yellow); }
 .pb [data-level="high"] { --pb-level: var(--pb-red); }
-/* Without the level colours (the tint setting off) every bar is Homey's blue. */
+/* Without the level colours (the tint setting off) every bar is the colour setting's, blue by default. */
+.pb[data-wk-color] { --pb-blue: var(--wk-c-bright); }
 .pb.no-tint [data-level] { --pb-level: var(--pb-blue); }
 
 .pb-now { flex: 0 0 auto; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
@@ -94,7 +95,7 @@ html, body { background: transparent !important; }
 .pb.wk-deep .pb-bar[data-level="low"] { --pb-level: var(--wk-green); }
 .pb.wk-deep .pb-bar[data-level="medium"] { --pb-level: var(--wk-yellow); }
 .pb.wk-deep .pb-bar[data-level="high"] { --pb-level: var(--wk-red); }
-.pb.wk-deep.no-tint .pb-bar[data-level] { --pb-level: var(--wk-blue); }
+.pb.wk-deep.no-tint .pb-bar[data-level] { --pb-level: var(--wk-c, var(--wk-blue)); }
 .pb.wk-deep .pb-bar:not(.none):not(.now) { background: var(--pb-level, var(--pb-muted)); }
 .pb.wk-deep .pb-bar.now[data-level="low"] { background: var(--pb-green); }
 .pb.wk-deep .pb-bar.now[data-level="medium"] { background: var(--pb-yellow); }

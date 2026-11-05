@@ -215,3 +215,11 @@ describe('live values', () => {
     expect(text('.sl-min')).toEqual(['↓18']);
   });
 });
+
+describe('the colour setting (1.3.0)', () => {
+  it('sets the palette colour on the root; none (placed before the setting) leaves Homey\'s blue', () => {
+    expect(widget([], { color: 'purple' }).root.dataset.wkColor).toBe('purple');
+    expect(widget([]).root.dataset.wkColor).toBeUndefined();
+    expect(widget([], { color: 'nope' }).root.dataset.wkColor).toBeUndefined();
+  });
+});

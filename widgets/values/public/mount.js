@@ -34,6 +34,7 @@ window.mountValuesWidget = function (Homey, { root, frame }) {
     percentFill: settings.percentFill === true,
     redBelow: settings.redBelow,
     yellowBelow: settings.yellowBelow,
+    wideLast: settings.wideLast === true,
     onHeight: link.setHeight,
   });
 

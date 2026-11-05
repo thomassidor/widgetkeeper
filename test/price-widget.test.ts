@@ -162,3 +162,10 @@ describe('15-minute prices', () => {
     expect(chart().dataset.quarters).toBeUndefined();
   });
 });
+
+describe('the colour setting (1.3.0)', () => {
+  it('sets the palette colour on the root; none (placed before the setting) leaves blue', () => {
+    expect(widget(snapshot(), { tint: false, color: 'purple' }).root.dataset.wkColor).toBe('purple');
+    expect(widget(snapshot(), { tint: false }).root.dataset.wkColor).toBeUndefined();
+  });
+});

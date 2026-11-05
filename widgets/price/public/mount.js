@@ -18,6 +18,7 @@ window.mountPriceWidget = function (Homey, { root, frame }) {
     t: (key, tokens) => Homey.__(key, tokens),
     hours: settings.hours,
     tint: settings.tint !== false,
+    color: settings.color,
     onHeight: link.setHeight,
   });
 

@@ -87,7 +87,7 @@
    * @param {{ colorStyle?: string, color?: string, t?: (key: string, tokens?: object) => string,
    *   onSet?: (deviceId: string, change: {action?: string, position?: number}) => Promise<any>,
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
-   *   onHeight?: (h: number) => void, groupByZone?: boolean, between?: string, invert?: boolean, openAt?: string, showState?: boolean,
+   *   wideLast?: boolean, onHeight?: (h: number) => void, groupByZone?: boolean, between?: string, invert?: boolean, openAt?: string, showState?: boolean,
    *   ends?: number }} opts
    */
   function createCurtainsWidget(root, opts = {}) {
@@ -429,6 +429,8 @@
         const want = prev ? prev.nextSibling : grid.firstChild;
         if (tile.tile !== want) grid.insertBefore(tile.tile, want);
         prev = tile.tile;
+        // `wideLast`: the last of an odd number of tiles (missing ones too) spans the row.
+        tile.tile.classList.toggle('wide', !!opts.wideLast && items.length % 2 === 1 && item === items[items.length - 1]);
         if (!('members' in item)) {
           for (const c of ['open', 'moving', 'heading', 'no-position']) tile.tile.classList.remove(c);
           tile.tile.classList.add('missing');

@@ -2535,19 +2535,19 @@
           "id": "smooth1",
           "type": "checkbox",
           "title": {
-            "en": "  – Smooth line",
-            "nl": "  – Vloeiende lijn",
-            "de": "  – Geglättete Linie",
-            "fr": "  – Ligne lissée",
-            "it": "  – Linea smussata",
-            "sv": "  – Utjämnad linje",
-            "no": "  – Glatt linje",
-            "es": "  – Línea suavizada",
-            "da": "  – Udglattet linje",
-            "ru": "  – Сглаженная линия",
-            "pl": "  – Wygładzona linia",
-            "ko": "  – 부드러운 선",
-            "ar": "  – خط منعّم"
+            "en": "  – Smooth chart lines",
+            "nl": "  – Vloeiende grafieklijnen",
+            "de": "  – Geglättete Diagrammlinien",
+            "fr": "  – Lisser les courbes",
+            "it": "  – Linee del grafico smussate",
+            "sv": "  – Utjämnade diagramlinjer",
+            "no": "  – Glatte diagramlinjer",
+            "es": "  – Suavizar las líneas del gráfico",
+            "da": "  – Udglattede graflinjer",
+            "ru": "  – Сглаживать линии графиков",
+            "pl": "  – Wygładzone linie wykresów",
+            "ko": "  – 차트 선 부드럽게",
+            "ar": "  – تنعيم خطوط المخطط"
           },
           "value": false
         },
@@ -3320,19 +3320,19 @@
           "id": "smooth2",
           "type": "checkbox",
           "title": {
-            "en": "  – Smooth line",
-            "nl": "  – Vloeiende lijn",
-            "de": "  – Geglättete Linie",
-            "fr": "  – Ligne lissée",
-            "it": "  – Linea smussata",
-            "sv": "  – Utjämnad linje",
-            "no": "  – Glatt linje",
-            "es": "  – Línea suavizada",
-            "da": "  – Udglattet linje",
-            "ru": "  – Сглаженная линия",
-            "pl": "  – Wygładzona linia",
-            "ko": "  – 부드러운 선",
-            "ar": "  – خط منعّم"
+            "en": "  – Smooth chart lines",
+            "nl": "  – Vloeiende grafieklijnen",
+            "de": "  – Geglättete Diagrammlinien",
+            "fr": "  – Lisser les courbes",
+            "it": "  – Linee del grafico smussate",
+            "sv": "  – Utjämnade diagramlinjer",
+            "no": "  – Glatte diagramlinjer",
+            "es": "  – Suavizar las líneas del gráfico",
+            "da": "  – Udglattede graflinjer",
+            "ru": "  – Сглаживать линии графиков",
+            "pl": "  – Wygładzone linie wykresów",
+            "ko": "  – 차트 선 부드럽게",
+            "ar": "  – تنعيم خطوط المخطط"
           },
           "value": false
         },
@@ -3533,19 +3533,19 @@
           "id": "smooth",
           "type": "checkbox",
           "title": {
-            "en": "Smooth line",
-            "nl": "Vloeiende lijn",
-            "de": "Geglättete Linie",
-            "fr": "Ligne lissée",
-            "it": "Linea smussata",
-            "sv": "Utjämnad linje",
-            "no": "Glatt linje",
-            "es": "Línea suavizada",
-            "da": "Udglattet linje",
-            "ru": "Сглаженная линия",
-            "pl": "Wygładzona linia",
-            "ko": "부드러운 선",
-            "ar": "خط منعّم"
+            "en": "Smooth chart lines",
+            "nl": "Vloeiende grafieklijnen",
+            "de": "Geglättete Diagrammlinien",
+            "fr": "Lisser les courbes",
+            "it": "Linee del grafico smussate",
+            "sv": "Utjämnade diagramlinjer",
+            "no": "Glatte diagramlinjer",
+            "es": "Suavizar las líneas del gráfico",
+            "da": "Udglattede graflinjer",
+            "ru": "Сглаживать линии графиков",
+            "pl": "Wygładzone linie wykresów",
+            "ko": "차트 선 부드럽게",
+            "ar": "تنعيم خطوط المخطط"
           },
           "value": false
         },
@@ -7242,19 +7242,19 @@
           "id": "smooth",
           "type": "checkbox",
           "title": {
-            "en": "Smooth line",
-            "nl": "Vloeiende lijn",
-            "de": "Geglättete Linie",
-            "fr": "Ligne lissée",
-            "it": "Linea smussata",
-            "sv": "Utjämnad linje",
-            "no": "Glatt linje",
-            "es": "Línea suavizada",
-            "da": "Udglattet linje",
-            "ru": "Сглаженная линия",
-            "pl": "Wygładzona linia",
-            "ko": "부드러운 선",
-            "ar": "خط منعّم"
+            "en": "Smooth chart lines",
+            "nl": "Vloeiende grafieklijnen",
+            "de": "Geglättete Diagrammlinien",
+            "fr": "Lisser les courbes",
+            "it": "Linee del grafico smussate",
+            "sv": "Utjämnade diagramlinjer",
+            "no": "Glatte diagramlinjer",
+            "es": "Suavizar las líneas del gráfico",
+            "da": "Udglattede graflinjer",
+            "ru": "Сглаживать линии графиков",
+            "pl": "Wygładzone linie wykresów",
+            "ko": "차트 선 부드럽게",
+            "ar": "تنعيم خطوط المخطط"
           },
           "value": false
         },
@@ -17861,6 +17861,41 @@
           "value": false
         },
         {
+          "id": "wideLast",
+          "type": "checkbox",
+          "title": {
+            "en": "Widen the last tile",
+            "nl": "Laatste tegel verbreden",
+            "de": "Letzte Kachel verbreitern",
+            "fr": "Élargir la dernière tuile",
+            "it": "Allarga l'ultimo riquadro",
+            "sv": "Bredda sista rutan",
+            "no": "Gjør siste flis bred",
+            "es": "Ensanchar el último mosaico",
+            "da": "Gør sidste felt bredt",
+            "ru": "Растянуть последнюю плитку",
+            "pl": "Poszerz ostatni kafelek",
+            "ko": "마지막 타일 넓게",
+            "ar": "توسيع البلاطة الأخيرة"
+          },
+          "hint": {
+            "en": "With an odd number of tiles, the last one fills the whole row.",
+            "nl": "Bij een oneven aantal tegels vult de laatste de hele rij.",
+            "de": "Bei einer ungeraden Zahl von Kacheln füllt die letzte die ganze Reihe.",
+            "fr": "Avec un nombre impair de tuiles, la dernière occupe toute la ligne.",
+            "it": "Con un numero dispari di riquadri, l'ultimo occupa tutta la riga.",
+            "sv": "Med ett udda antal rutor fyller den sista hela raden.",
+            "no": "Med et oddetall fliser fyller den siste hele raden.",
+            "es": "Con un número impar de mosaicos, el último ocupa toda la fila.",
+            "da": "Med et ulige antal felter fylder det sidste hele rækken.",
+            "ru": "При нечётном числе плиток последняя занимает весь ряд.",
+            "pl": "Przy nieparzystej liczbie kafelków ostatni zajmuje cały rząd.",
+            "ko": "타일 수가 홀수이면 마지막 타일이 한 줄을 모두 차지합니다.",
+            "ar": "مع عدد فردي من البلاطات، تملأ الأخيرة الصف كله."
+          },
+          "value": false
+        },
+        {
           "id": "color",
           "type": "dropdown",
           "title": {
@@ -21716,6 +21751,41 @@
           ]
         },
         {
+          "id": "wideLast",
+          "type": "checkbox",
+          "title": {
+            "en": "Widen the last tile",
+            "nl": "Laatste tegel verbreden",
+            "de": "Letzte Kachel verbreitern",
+            "fr": "Élargir la dernière tuile",
+            "it": "Allarga l'ultimo riquadro",
+            "sv": "Bredda sista rutan",
+            "no": "Gjør siste flis bred",
+            "es": "Ensanchar el último mosaico",
+            "da": "Gør sidste felt bredt",
+            "ru": "Растянуть последнюю плитку",
+            "pl": "Poszerz ostatni kafelek",
+            "ko": "마지막 타일 넓게",
+            "ar": "توسيع البلاطة الأخيرة"
+          },
+          "hint": {
+            "en": "With an odd number of tiles, the last one fills the whole row.",
+            "nl": "Bij een oneven aantal tegels vult de laatste de hele rij.",
+            "de": "Bei einer ungeraden Zahl von Kacheln füllt die letzte die ganze Reihe.",
+            "fr": "Avec un nombre impair de tuiles, la dernière occupe toute la ligne.",
+            "it": "Con un numero dispari di riquadri, l'ultimo occupa tutta la riga.",
+            "sv": "Med ett udda antal rutor fyller den sista hela raden.",
+            "no": "Med et oddetall fliser fyller den siste hele raden.",
+            "es": "Con un número impar de mosaicos, el último ocupa toda la fila.",
+            "da": "Med et ulige antal felter fylder det sidste hele rækken.",
+            "ru": "При нечётном числе плиток последняя занимает весь ряд.",
+            "pl": "Przy nieparzystej liczbie kafelków ostatni zajmuje cały rząd.",
+            "ko": "타일 수가 홀수이면 마지막 타일이 한 줄을 모두 차지합니다.",
+            "ar": "مع عدد فردي من البلاطات، تملأ الأخيرة الصف كله."
+          },
+          "value": false
+        },
+        {
           "id": "tileStyle",
           "type": "dropdown",
           "title": {
@@ -22464,6 +22534,41 @@
               }
             }
           ]
+        },
+        {
+          "id": "wideLast",
+          "type": "checkbox",
+          "title": {
+            "en": "Widen the last tile",
+            "nl": "Laatste tegel verbreden",
+            "de": "Letzte Kachel verbreitern",
+            "fr": "Élargir la dernière tuile",
+            "it": "Allarga l'ultimo riquadro",
+            "sv": "Bredda sista rutan",
+            "no": "Gjør siste flis bred",
+            "es": "Ensanchar el último mosaico",
+            "da": "Gør sidste felt bredt",
+            "ru": "Растянуть последнюю плитку",
+            "pl": "Poszerz ostatni kafelek",
+            "ko": "마지막 타일 넓게",
+            "ar": "توسيع البلاطة الأخيرة"
+          },
+          "hint": {
+            "en": "With an odd number of tiles, the last one fills the whole row.",
+            "nl": "Bij een oneven aantal tegels vult de laatste de hele rij.",
+            "de": "Bei einer ungeraden Zahl von Kacheln füllt die letzte die ganze Reihe.",
+            "fr": "Avec un nombre impair de tuiles, la dernière occupe toute la ligne.",
+            "it": "Con un numero dispari di riquadri, l'ultimo occupa tutta la riga.",
+            "sv": "Med ett udda antal rutor fyller den sista hela raden.",
+            "no": "Med et oddetall fliser fyller den siste hele raden.",
+            "es": "Con un número impar de mosaicos, el último ocupa toda la fila.",
+            "da": "Med et ulige antal felter fylder det sidste hele rækken.",
+            "ru": "При нечётном числе плиток последняя занимает весь ряд.",
+            "pl": "Przy nieparzystej liczbie kafelków ostatni zajmuje cały rząd.",
+            "ko": "타일 수가 홀수이면 마지막 타일이 한 줄을 모두 차지합니다.",
+            "ar": "مع عدد فردي من البلاطات، تملأ الأخيرة الصف كله."
+          },
+          "value": false
         },
         {
           "id": "tileStyle",
@@ -23812,21 +23917,274 @@
             "ar": "اللون حسب مستوى السعر"
           },
           "hint": {
-            "en": "Colours the bars green, yellow or red by where each hour's price sits in its day's range. Off: all blue.",
-            "nl": "Kleurt de staven groen, geel of rood, naargelang de prijs van elk uur binnen de prijzen van die dag valt. Uit: alles blauw.",
-            "de": "Färbt die Balken grün, gelb oder rot, je nachdem, wo der Preis jeder Stunde in der Spanne ihres Tages liegt. Aus: alle blau.",
-            "fr": "Colore les barres en vert, jaune ou rouge selon la place du prix de chaque heure dans la plage de sa journée. Désactivé : toutes bleues.",
-            "it": "Colora le barre di verde, giallo o rosso in base a dove si trova il prezzo di ogni ora nella fascia del suo giorno. Disattivo: tutte blu.",
-            "sv": "Färgar staplarna gröna, gula eller röda efter var varje timmes pris ligger bland dagens priser. Av: alla blå.",
-            "no": "Farger søylene grønne, gule eller røde etter hvor hver times pris ligger blant dagens priser. Av: alle blå.",
-            "es": "Colorea las barras de verde, amarillo o rojo según dónde quede el precio de cada hora en el rango de su día. Desactivado: todas azules.",
-            "da": "Farver søjlerne grønne, gule eller røde efter, hvor hver times pris ligger blandt dagens priser. Fra: alle blå.",
-            "ru": "Окрашивает столбики в зелёный, жёлтый или красный в зависимости от того, где цена часа в диапазоне его дня. Выкл.: все синие.",
-            "pl": "Barwi słupki na zielono, żółto lub czerwono zależnie od tego, gdzie cena każdej godziny wypada w zakresie jej dnia. Wył.: wszystkie niebieskie.",
-            "ko": "각 시간의 가격이 그날의 가격 범위에서 어디에 있는지에 따라 막대를 녹색, 노란색 또는 빨간색으로 표시합니다. 꺼짐: 모두 파란색.",
-            "ar": "يلوّن الأعمدة بالأخضر أو الأصفر أو الأحمر حسب موقع سعر كل ساعة ضمن نطاق يومها. إيقاف: كلها زرقاء."
+            "en": "Colours the bars green, yellow or red by where each hour's price sits in its day's range. Off: all one colour.",
+            "nl": "Kleurt de staven groen, geel of rood, naargelang de prijs van elk uur binnen de prijzen van die dag valt. Uit: alles in één kleur.",
+            "de": "Färbt die Balken grün, gelb oder rot, je nachdem, wo der Preis jeder Stunde in der Spanne ihres Tages liegt. Aus: alle in einer Farbe.",
+            "fr": "Colore les barres en vert, jaune ou rouge selon la place du prix de chaque heure dans la plage de sa journée. Désactivé : toutes d'une même couleur.",
+            "it": "Colora le barre di verde, giallo o rosso in base a dove si trova il prezzo di ogni ora nella fascia del suo giorno. Disattivo: tutte di un colore.",
+            "sv": "Färgar staplarna gröna, gula eller röda efter var varje timmes pris ligger bland dagens priser. Av: alla i en färg.",
+            "no": "Farger søylene grønne, gule eller røde etter hvor hver times pris ligger blant dagens priser. Av: alle i én farge.",
+            "es": "Colorea las barras de verde, amarillo o rojo según dónde quede el precio de cada hora en el rango de su día. Desactivado: todas de un color.",
+            "da": "Farver søjlerne grønne, gule eller røde efter, hvor hver times pris ligger blandt dagens priser. Fra: alle i én farve.",
+            "ru": "Окрашивает столбики в зелёный, жёлтый или красный в зависимости от того, где цена часа в диапазоне его дня. Выкл.: все одного цвета.",
+            "pl": "Barwi słupki na zielono, żółto lub czerwono zależnie od tego, gdzie cena każdej godziny wypada w zakresie jej dnia. Wył.: wszystkie w jednym kolorze.",
+            "ko": "각 시간의 가격이 그날의 가격 범위에서 어디에 있는지에 따라 막대를 녹색, 노란색 또는 빨간색으로 표시합니다. 꺼짐: 모두 한 가지 색.",
+            "ar": "يلوّن الأعمدة بالأخضر أو الأصفر أو الأحمر حسب موقع سعر كل ساعة ضمن نطاق يومها. إيقاف: كلها بلون واحد."
           },
           "value": true
+        },
+        {
+          "id": "color",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour",
+            "nl": "Kleur",
+            "de": "Farbe",
+            "fr": "Couleur",
+            "it": "Colore",
+            "sv": "Färg",
+            "no": "Farge",
+            "es": "Color",
+            "da": "Farve",
+            "ru": "Цвет",
+            "pl": "Kolor",
+            "ko": "색상",
+            "ar": "اللون"
+          },
+          "hint": {
+            "en": "The colour of a tile that's on.",
+            "nl": "De kleur van een tegel die aan staat.",
+            "de": "Die Farbe einer eingeschalteten Kachel.",
+            "fr": "La couleur d'une tuile allumée.",
+            "it": "Il colore di un riquadro acceso.",
+            "sv": "Färgen på en ruta som är på.",
+            "no": "Fargen på en flis som er på.",
+            "es": "El color de un mosaico encendido.",
+            "da": "Farven på et felt, der er tændt.",
+            "ru": "Цвет включённой плитки.",
+            "pl": "Kolor włączonego kafelka.",
+            "ko": "켜진 타일의 색입니다.",
+            "ar": "لون البلاطة المشغّلة."
+          },
+          "value": "blue",
+          "values": [
+            {
+              "id": "blue",
+              "title": {
+                "en": "Blue",
+                "nl": "Blauw",
+                "de": "Blau",
+                "fr": "Bleu",
+                "it": "Blu",
+                "sv": "Blå",
+                "no": "Blå",
+                "es": "Azul",
+                "da": "Blå",
+                "ru": "Синий",
+                "pl": "Niebieski",
+                "ko": "파랑",
+                "ar": "أزرق"
+              }
+            },
+            {
+              "id": "red",
+              "title": {
+                "en": "Red",
+                "nl": "Rood",
+                "de": "Rot",
+                "fr": "Rouge",
+                "it": "Rosso",
+                "sv": "Röd",
+                "no": "Rød",
+                "es": "Rojo",
+                "da": "Rød",
+                "ru": "Красный",
+                "pl": "Czerwony",
+                "ko": "빨강",
+                "ar": "أحمر"
+              }
+            },
+            {
+              "id": "orange",
+              "title": {
+                "en": "Orange",
+                "nl": "Oranje",
+                "de": "Orange",
+                "fr": "Orange",
+                "it": "Arancione",
+                "sv": "Orange",
+                "no": "Oransje",
+                "es": "Naranja",
+                "da": "Orange",
+                "ru": "Оранжевый",
+                "pl": "Pomarańczowy",
+                "ko": "주황",
+                "ar": "برتقالي"
+              }
+            },
+            {
+              "id": "yellow",
+              "title": {
+                "en": "Yellow",
+                "nl": "Geel",
+                "de": "Gelb",
+                "fr": "Jaune",
+                "it": "Giallo",
+                "sv": "Gul",
+                "no": "Gul",
+                "es": "Amarillo",
+                "da": "Gul",
+                "ru": "Жёлтый",
+                "pl": "Żółty",
+                "ko": "노랑",
+                "ar": "أصفر"
+              }
+            },
+            {
+              "id": "green",
+              "title": {
+                "en": "Green",
+                "nl": "Groen",
+                "de": "Grün",
+                "fr": "Vert",
+                "it": "Verde",
+                "sv": "Grön",
+                "no": "Grønn",
+                "es": "Verde",
+                "da": "Grøn",
+                "ru": "Зелёный",
+                "pl": "Zielony",
+                "ko": "초록",
+                "ar": "أخضر"
+              }
+            },
+            {
+              "id": "purple",
+              "title": {
+                "en": "Purple",
+                "nl": "Paars",
+                "de": "Lila",
+                "fr": "Violet",
+                "it": "Viola",
+                "sv": "Lila",
+                "no": "Lilla",
+                "es": "Morado",
+                "da": "Lilla",
+                "ru": "Фиолетовый",
+                "pl": "Fioletowy",
+                "ko": "보라",
+                "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
+            }
+          ]
         },
         {
           "id": "colorStyle",
@@ -33275,6 +33633,41 @@
           ]
         },
         {
+          "id": "wideLast",
+          "type": "checkbox",
+          "title": {
+            "en": "Widen the last tile",
+            "nl": "Laatste tegel verbreden",
+            "de": "Letzte Kachel verbreitern",
+            "fr": "Élargir la dernière tuile",
+            "it": "Allarga l'ultimo riquadro",
+            "sv": "Bredda sista rutan",
+            "no": "Gjør siste flis bred",
+            "es": "Ensanchar el último mosaico",
+            "da": "Gør sidste felt bredt",
+            "ru": "Растянуть последнюю плитку",
+            "pl": "Poszerz ostatni kafelek",
+            "ko": "마지막 타일 넓게",
+            "ar": "توسيع البلاطة الأخيرة"
+          },
+          "hint": {
+            "en": "With an odd number of tiles, the last one fills the whole row.",
+            "nl": "Bij een oneven aantal tegels vult de laatste de hele rij.",
+            "de": "Bei einer ungeraden Zahl von Kacheln füllt die letzte die ganze Reihe.",
+            "fr": "Avec un nombre impair de tuiles, la dernière occupe toute la ligne.",
+            "it": "Con un numero dispari di riquadri, l'ultimo occupa tutta la riga.",
+            "sv": "Med ett udda antal rutor fyller den sista hela raden.",
+            "no": "Med et oddetall fliser fyller den siste hele raden.",
+            "es": "Con un número impar de mosaicos, el último ocupa toda la fila.",
+            "da": "Med et ulige antal felter fylder det sidste hele rækken.",
+            "ru": "При нечётном числе плиток последняя занимает весь ряд.",
+            "pl": "Przy nieparzystej liczbie kafelków ostatni zajmuje cały rząd.",
+            "ko": "타일 수가 홀수이면 마지막 타일이 한 줄을 모두 차지합니다.",
+            "ar": "مع عدد فردي من البلاطات، تملأ الأخيرة الصف كله."
+          },
+          "value": false
+        },
+        {
           "id": "includeStates",
           "type": "checkbox",
           "title": {
@@ -34330,6 +34723,244 @@
                 "pl": "2",
                 "ko": "2",
                 "ar": "2"
+              }
+            }
+          ]
+        },
+        {
+          "id": "color",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour",
+            "nl": "Kleur",
+            "de": "Farbe",
+            "fr": "Couleur",
+            "it": "Colore",
+            "sv": "Färg",
+            "no": "Farge",
+            "es": "Color",
+            "da": "Farve",
+            "ru": "Цвет",
+            "pl": "Kolor",
+            "ko": "색상",
+            "ar": "اللون"
+          },
+          "value": "blue",
+          "values": [
+            {
+              "id": "blue",
+              "title": {
+                "en": "Blue",
+                "nl": "Blauw",
+                "de": "Blau",
+                "fr": "Bleu",
+                "it": "Blu",
+                "sv": "Blå",
+                "no": "Blå",
+                "es": "Azul",
+                "da": "Blå",
+                "ru": "Синий",
+                "pl": "Niebieski",
+                "ko": "파랑",
+                "ar": "أزرق"
+              }
+            },
+            {
+              "id": "red",
+              "title": {
+                "en": "Red",
+                "nl": "Rood",
+                "de": "Rot",
+                "fr": "Rouge",
+                "it": "Rosso",
+                "sv": "Röd",
+                "no": "Rød",
+                "es": "Rojo",
+                "da": "Rød",
+                "ru": "Красный",
+                "pl": "Czerwony",
+                "ko": "빨강",
+                "ar": "أحمر"
+              }
+            },
+            {
+              "id": "orange",
+              "title": {
+                "en": "Orange",
+                "nl": "Oranje",
+                "de": "Orange",
+                "fr": "Orange",
+                "it": "Arancione",
+                "sv": "Orange",
+                "no": "Oransje",
+                "es": "Naranja",
+                "da": "Orange",
+                "ru": "Оранжевый",
+                "pl": "Pomarańczowy",
+                "ko": "주황",
+                "ar": "برتقالي"
+              }
+            },
+            {
+              "id": "yellow",
+              "title": {
+                "en": "Yellow",
+                "nl": "Geel",
+                "de": "Gelb",
+                "fr": "Jaune",
+                "it": "Giallo",
+                "sv": "Gul",
+                "no": "Gul",
+                "es": "Amarillo",
+                "da": "Gul",
+                "ru": "Жёлтый",
+                "pl": "Żółty",
+                "ko": "노랑",
+                "ar": "أصفر"
+              }
+            },
+            {
+              "id": "green",
+              "title": {
+                "en": "Green",
+                "nl": "Groen",
+                "de": "Grün",
+                "fr": "Vert",
+                "it": "Verde",
+                "sv": "Grön",
+                "no": "Grønn",
+                "es": "Verde",
+                "da": "Grøn",
+                "ru": "Зелёный",
+                "pl": "Zielony",
+                "ko": "초록",
+                "ar": "أخضر"
+              }
+            },
+            {
+              "id": "purple",
+              "title": {
+                "en": "Purple",
+                "nl": "Paars",
+                "de": "Lila",
+                "fr": "Violet",
+                "it": "Viola",
+                "sv": "Lila",
+                "no": "Lilla",
+                "es": "Morado",
+                "da": "Lilla",
+                "ru": "Фиолетовый",
+                "pl": "Fioletowy",
+                "ko": "보라",
+                "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
               }
             }
           ]

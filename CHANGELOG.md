@@ -21,7 +21,11 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Flow Buttons: activate with a double or long press**, as Device Quick Actions, so a stray tap can't start a Flow.
 - **Green when fine** in Value Matrix (on, as before; off leaves a value inside its range plain) and Combined Value (off; on colours the tile green inside the OK range).
 - Light Controls, Lights by Room, Curtains, Thermostat Presets, Variable Presets and Variables now vibrate on a tap that changes something, as the other widgets that act.
-- The same words for the same settings: *Tiles per row* (Flow Buttons, Dashboard Shortcuts, Variables; everywhere its options from the fewest), each button's *Name* (Keypad, Variable Presets), *Colour* (Variable Presets), *Layout* (Weather Forecast), and grey last in Activity Dots' colours.
+- **Name a chart's values:** Chart · Lines, Stacked, Timeline and Ranking take an optional name per value, in place of the device's.
+- **Widen the last tile** in Curtains, Device Quick Actions, Device Values and Sensor Alarms: at 2 per row, the last of an odd number of tiles fills the row.
+- **Hide the legend** in Chart · Basic, Lines and Stacked (a typed title stays in Lines and Stacked).
+- **A colour for Sparklines**, and for the Energy Price Strip's bars when *Colour by price level* is off.
+- The same words for the same settings: *Smooth chart lines* everywhere, *Tiles per row* (Flow Buttons, Dashboard Shortcuts, Variables; everywhere its options from the fewest), each button's *Name* (Keypad, Variable Presets), *Colour* (Variable Presets), *Layout* (Weather Forecast), and grey last in Activity Dots' colours.
 
 ## 1.2.0
 

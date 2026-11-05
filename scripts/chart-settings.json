@@ -1044,19 +1044,19 @@
       "id": "smooth{n}",
       "type": "checkbox",
       "title": {
-        "en": "  – Smooth line",
-        "nl": "  – Vloeiende lijn",
-        "de": "  – Geglättete Linie",
-        "fr": "  – Ligne lissée",
-        "it": "  – Linea smussata",
-        "sv": "  – Utjämnad linje",
-        "no": "  – Glatt linje",
-        "es": "  – Línea suavizada",
-        "da": "  – Udglattet linje",
-        "ru": "  – Сглаженная линия",
-        "pl": "  – Wygładzona linia",
-        "ko": "  – 부드러운 선",
-        "ar": "  – خط منعّم"
+        "en": "  – Smooth chart lines",
+        "nl": "  – Vloeiende grafieklijnen",
+        "de": "  – Geglättete Diagrammlinien",
+        "fr": "  – Lisser les courbes",
+        "it": "  – Linee del grafico smussate",
+        "sv": "  – Utjämnade diagramlinjer",
+        "no": "  – Glatte diagramlinjer",
+        "es": "  – Suavizar las líneas del gráfico",
+        "da": "  – Udglattede graflinjer",
+        "ru": "  – Сглаживать линии графиков",
+        "pl": "  – Wygładzone linie wykresów",
+        "ko": "  – 차트 선 부드럽게",
+        "ar": "  – تنعيم خطوط المخطط"
       },
       "value": false
     },
@@ -3594,6 +3594,10 @@
         "top": true
       },
       "sparklines.columns",
+      {
+        "use": "color",
+        "top": true
+      },
       "sparklines.colorStyle",
       "sparklines.slot:1",
       {

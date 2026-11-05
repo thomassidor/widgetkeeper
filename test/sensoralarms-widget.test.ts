@@ -204,3 +204,15 @@ describe('alarm panel', () => {
     expect(root.querySelector('.sa-panel')).not.toBeNull();
   });
 });
+
+describe('Widen the last tile (1.3.0)', () => {
+  const wideOf = (root: HTMLElement, sel: string) => [...root.querySelectorAll<HTMLElement>(sel)].map(t => t.classList.contains("wide"));
+  const three = () => ['a', 'b', 'c'].map(id => ({ id, missing: true }));
+  it('at 2 per row the last of an odd number spans the row; not at 3, off, or with an even number', () => {
+    const on = (list: any[], columns: string, wideLast = true) => wideOf(widget(list, undefined, { columns, wideLast }).root, '.sa-tile');
+    expect(on(three(), '2')).toEqual([false, false, true]);
+    expect(on(three(), '3')).toEqual([false, false, false]);
+    expect(on(three(), '2', false)).toEqual([false, false, false]);
+    expect(on(three().slice(0, 2), '2')).toEqual([false, false]);
+  });
+});

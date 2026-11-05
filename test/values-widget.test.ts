@@ -289,3 +289,15 @@ describe('render', () => {
     expect(tiles()).toHaveLength(0);
   });
 });
+
+describe('Widen the last tile (1.3.0)', () => {
+  const wideOf = (root: HTMLElement, sel: string) => [...root.querySelectorAll<HTMLElement>(sel)].map(t => t.classList.contains("wide"));
+  const three = () => ['a', 'b', 'c'].map(deviceId => ({ deviceId, capabilityId: 'measure_temperature', missing: true }));
+  it('at 2 per row the last of an odd number spans the row; not at 3, off, or with an even number', () => {
+    const on = (list: any[], columns: string, wideLast = true) => wideOf(widget(list, columns, { wideLast }).root, '.vt-tile');
+    expect(on(three(), '2')).toEqual([false, false, true]);
+    expect(on(three(), '3')).toEqual([false, false, false]);
+    expect(on(three(), '2', false)).toEqual([false, false, false]);
+    expect(on(three().slice(0, 2), '2')).toEqual([false, false]);
+  });
+});

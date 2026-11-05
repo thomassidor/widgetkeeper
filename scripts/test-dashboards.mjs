@@ -216,6 +216,7 @@ const BUILD = {
       w('quickactions', 'Double press · locks only', { press: 'double', pressFor: 'locks' }, [...locks, ...others]),
       w('quickactions', 'Long press · every tile', { press: 'long' }, [...lights.slice(0, 3), ...locks]),
       w('quickactions', '2 per row · lights and plugs', { columns: '2' }, [...lights.slice(0, 3), ...sockets]),
+      w('quickactions', '2 per row · widen the last of three', { columns: '2', wideLast: true }, [...lights, ...sockets].slice(0, 3)),
       w('quickactions', 'One device', {}, lights.slice(0, 1)),
       w('quickactions', 'Two + a deleted device', {}, [...lights.slice(1, 3), MISSING]),
       renaming('quickactions', 'Rename tiles', {}, [...lights.slice(0, 3), MISSING], lights[0] ? { [lights[0]]: 'Typed name' } : {}),
@@ -230,6 +231,7 @@ const BUILD = {
     const none = where(d => !(d.capabilities ?? []).some(c => c.startsWith('alarm_')), 1);
     return { cols: 3, widgets: [
       w('sensoralarms', 'Defaults · alarm sensors', {}, counted),
+      w('sensoralarms', 'Widen the last of three', { wideLast: true }, counted.slice(0, 3)),
       w('sensoralarms', 'Motion and contact counted', { includeStates: true }, [...states, ...counted.slice(0, 2)]),
       w('sensoralarms', 'Motion and contact not counted', {}, states),
       w('sensoralarms', '3 per row · alarm sensors', { columns: '3' }, [...counted, ...states].slice(0, 6)),
@@ -278,6 +280,28 @@ const BUILD = {
       w('roomhealth', "A heat pump's room temperature · deleted device", {}, [...roomSub, MISSING]),
       w('roomhealth', 'No devices picked'),
       renaming('roomhealth', 'Rename tiles', {}, air.slice(0, 3), air.length ? { [`zone:${zoneOf(air[0])}`]: 'Typed room name' } : {}),
+    ] };
+  },
+
+  // Value Board: every setting's values, on the sensors, plugs and alarms (no device is switched: it only shows values).
+  valueboard: () => {
+    const climate = where(d => d.class === 'sensor' && (has(d, 'measure_temperature') || has(d, 'measure_humidity') || has(d, 'measure_co2')), 8);
+    const plugs = where(d => has(d, 'measure_power') && cls(d) === 'socket', 3);
+    const batteries = where(d => has(d, 'measure_battery'), 6);
+    const set = [...new Set([...climate, ...plugs])];
+    return { cols: 3, widgets: [
+      wide(w('valueboard', 'Rooms · tiles · readings (defaults)', {}, set)),
+      w('valueboard', 'Compact (tap a value)', { layout: 'compact' }, set),
+      w('valueboard', 'By device', { groupBy: 'devices' }, set.slice(0, 4)),
+      w('valueboard', 'Compact · by device', { layout: 'compact', groupBy: 'devices' }, set.slice(0, 4)),
+      w('valueboard', 'All values (switches, dim, modes)', { values: 'all' }, plugs),
+      w('valueboard', '2 per row', { columns: '2' }, set.slice(0, 4)),
+      w('valueboard', '4 per row', { columns: '4' }, set.slice(0, 4)),
+      w('valueboard', 'Green when fine · batteries', { greenWhenFine: true }, batteries),
+      w('valueboard', 'Vivid · green when fine', { colorStyle: 'deep', greenWhenFine: true }, batteries),
+      w('valueboard', 'With a deleted device', {}, [...set.slice(0, 2), MISSING]),
+      w('valueboard', 'Nothing picked'),
+      renaming('valueboard', 'Rename tiles', {}, set.slice(0, 3), set[0] ? { [set[0]]: 'Typed name' } : {}),
     ] };
   },
 
@@ -418,6 +442,7 @@ const BUILD = {
       // A second value left from another device (Tile 1 changed since): the tile shows only its value.
       w('values', 'Second value of another device: left out', { ...slots('slot', [temps[0]]), ...slots('second', [otherDevice]) }),
       w('values', 'Gaps and a deleted device', { ...slots('slot', [temps[0], null, missing, null, batteries[0]]) }),
+      w('values', '2 per row · widen the last of three', { columns: '2', wideLast: true, ...slots('slot', temps.slice(0, 3)) }),
       w('values', 'Nothing picked'),
       // The same value twice: the second tile's key is `#2`.
       renaming('values', 'Rename tiles · a value twice', slots('slot', [temps[0], temps[0], temps[1]]), [], temps[0] ? { [`${temps[0].id}#2`]: 'Typed name' } : {}),
@@ -571,6 +596,8 @@ const BUILD = {
     ];
     const out = spans.map(([title, span]) => w('sparklines', title, { ...span, ...slots('slot', set.slice(0, 4)) }));
     out.push(
+      w('sparklines', 'Purple', { color: 'purple', ...slots('slot', set.slice(0, 2)) }),
+      w('sparklines', 'Green · Vivid', { color: 'green', colorStyle: 'deep', ...slots('slot', set.slice(0, 2)) }),
       w('sparklines', '1 column · 7 days · six', { count: 7, span: 'days', columns: '1', ...slots('slot', set) }),
       w('sparklines', '1 hour · 1 column · power', { count: 1, span: 'hours', columns: '1', ...slots('slot', set.slice(1, 2)) }),
       w('sparklines', 'Deleted device', { slot1: { id: `${MISSING}:measure_temperature`, name: 'Deleted device · Temperature' } }),
@@ -1042,6 +1069,9 @@ const BUILD = {
     w('price', '24 h', { hours: '24' }),
     w('price', '36 h', { hours: '36' }),
     w('price', '12 h · not by level', { tint: false }),
+    w('price', 'Not by level · purple', { tint: false, color: 'purple' }),
+    w('price', 'Not by level · orange · Vivid', { tint: false, color: 'orange', colorStyle: 'deep' }),
+    w('price', 'By level · the colour unused', { color: 'purple' }),
     w('price', '24 h · spot prices', { hours: '24', priceCosts: false }),
     w('price', '36 h · spot · not by level', { hours: '36', priceCosts: false, tint: false }),
   ] }),
@@ -1079,6 +1109,7 @@ const BUILD = {
     const set = ids.length ? ids : [MISSING];
     return { cols: 2, widgets: [
       w('curtains', `Defaults${note}`, {}, set),
+      w('curtains', `Widen the last of three${note}`, { wideLast: true }, set.slice(0, 3)),
       w('curtains', `Reverse of last move · inverted${note}`, { between: 'reverse', invert: true }, set),
       w('curtains', `No state line${note}`, { showState: false }, set),
       w('curtains', `Exact ends (0%)${note}`, { ends: '0' }, set),

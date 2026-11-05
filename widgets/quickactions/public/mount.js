@@ -26,6 +26,7 @@ window.mountQuickActionsWidget = function (Homey, { root, frame }) {
     onHaptic: () => {
       try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not on every platform */ }
     },
+    wideLast: settings.wideLast === true,
     onHeight: link.setHeight,
   });
 

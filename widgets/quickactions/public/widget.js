@@ -73,7 +73,7 @@
    *   color?: string, colorStyle?: string, press?: 'single' | 'double' | 'long', pressFor?: 'all' | 'locks',
    *   onTrigger?: (deviceId: string, value: boolean) => Promise<any>, onHaptic?: () => void,
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
-   *   onHeight?: (h: number) => void }} opts
+   *   wideLast?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createQuickActionsWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -276,6 +276,8 @@
         const want = placed ? placed.nextSibling : grid.firstChild;
         if (tile.button !== want) grid.insertBefore(tile.button, want);
         placed = tile.button;
+        // `wideLast`: at 2 per row, the last of an odd number of tiles spans the row.
+        tile.button.classList.toggle('wide', !!opts.wideLast && root.dataset.columns === '2' && devices.length % 2 === 1 && d === devices[devices.length - 1]);
         const qa = !('missing' in d) ? d.quickAction : null;
         const until = pressed.get(d.id);
         const isPressed = !!until && Date.now() < until;

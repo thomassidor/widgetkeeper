@@ -57,7 +57,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, t?: (key: string, tokens?: object) => string, locale?: string, hours?: string | number,
-   *   tint?: boolean, now?: () => number, onHeight?: (h: number) => void }} opts
+   *   tint?: boolean, color?: string, now?: () => number, onHeight?: (h: number) => void }} opts
    */
   function createPriceWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -89,7 +89,7 @@
     let slotTimer = null;
 
     root.classList.add('pb');
-    applyColors(root, { style: opts.colorStyle });
+    applyColors(root, { style: opts.colorStyle, color: opts.color }); // the bars with `tint` off; missing: blue
     if (opts.tint === false) root.classList.add('no-tint');
     const tile = el('div', { class: 'pb-tile' }, root);
     const nowCell = el('div', { class: 'pb-now' }, tile);

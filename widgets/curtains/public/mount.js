@@ -33,6 +33,7 @@ window.mountCurtainsWidget = function (Homey, { root, frame }) {
     // A percentage (`5`); unset (a widget placed before the setting) is the widget's default, 5 %.
     ends: settings.ends != null && settings.ends !== '' ? Number(settings.ends) / 100 : undefined,
     onSet: (deviceId, change) => { haptic(); return Homey.api('POST', '/set', { deviceId, ...change }); },
+    wideLast: settings.wideLast === true,
     onHeight: link.setHeight,
   });
 

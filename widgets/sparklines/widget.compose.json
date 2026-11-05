@@ -400,6 +400,244 @@
       ]
     },
     {
+      "id": "color",
+      "type": "dropdown",
+      "title": {
+        "en": "Colour",
+        "nl": "Kleur",
+        "de": "Farbe",
+        "fr": "Couleur",
+        "it": "Colore",
+        "sv": "Färg",
+        "no": "Farge",
+        "es": "Color",
+        "da": "Farve",
+        "ru": "Цвет",
+        "pl": "Kolor",
+        "ko": "색상",
+        "ar": "اللون"
+      },
+      "value": "blue",
+      "values": [
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        },
+        {
+          "id": "teal",
+          "title": {
+            "en": "Teal",
+            "nl": "Blauwgroen",
+            "de": "Petrol",
+            "fr": "Bleu canard",
+            "it": "Verde acqua",
+            "sv": "Blågrön",
+            "no": "Blågrønn",
+            "es": "Verde azulado",
+            "da": "Blågrøn",
+            "ru": "Бирюзовый",
+            "pl": "Morski",
+            "ko": "청록",
+            "ar": "أزرق مخضر"
+          }
+        },
+        {
+          "id": "cyan",
+          "title": {
+            "en": "Cyan",
+            "nl": "Cyaan",
+            "de": "Cyan",
+            "fr": "Cyan",
+            "it": "Ciano",
+            "sv": "Cyan",
+            "no": "Cyan",
+            "es": "Cian",
+            "da": "Cyan",
+            "ru": "Голубой",
+            "pl": "Cyjan",
+            "ko": "하늘",
+            "ar": "سماوي"
+          }
+        },
+        {
+          "id": "indigo",
+          "title": {
+            "en": "Indigo",
+            "nl": "Indigo",
+            "de": "Indigo",
+            "fr": "Indigo",
+            "it": "Indaco",
+            "sv": "Indigo",
+            "no": "Indigo",
+            "es": "Índigo",
+            "da": "Indigo",
+            "ru": "Индиго",
+            "pl": "Indygo",
+            "ko": "남색",
+            "ar": "نيلي"
+          }
+        },
+        {
+          "id": "pink",
+          "title": {
+            "en": "Pink",
+            "nl": "Roze",
+            "de": "Rosa",
+            "fr": "Rose",
+            "it": "Rosa",
+            "sv": "Rosa",
+            "no": "Rosa",
+            "es": "Rosa",
+            "da": "Lyserød",
+            "ru": "Розовый",
+            "pl": "Różowy",
+            "ko": "분홍",
+            "ar": "وردي"
+          }
+        },
+        {
+          "id": "brown",
+          "title": {
+            "en": "Brown",
+            "nl": "Bruin",
+            "de": "Braun",
+            "fr": "Marron",
+            "it": "Marrone",
+            "sv": "Brun",
+            "no": "Brun",
+            "es": "Marrón",
+            "da": "Brun",
+            "ru": "Коричневый",
+            "pl": "Brązowy",
+            "ko": "갈색",
+            "ar": "بني"
+          }
+        },
+        {
+          "id": "grey",
+          "title": {
+            "en": "Grey",
+            "nl": "Grijs",
+            "de": "Grau",
+            "fr": "Gris",
+            "it": "Grigio",
+            "sv": "Grå",
+            "no": "Grå",
+            "es": "Gris",
+            "da": "Grå",
+            "ru": "Серый",
+            "pl": "Szary",
+            "ko": "회색",
+            "ar": "رمادي"
+          }
+        }
+      ]
+    },
+    {
       "id": "colorStyle",
       "type": "dropdown",
       "title": {
