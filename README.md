@@ -209,6 +209,11 @@ Three one-tap presets for a thermostat, heat pump or air conditioner<br clear="l
 <a href="docs/widgets/timers.md"><b>Timers</b></a><br>
 Kitchen timers from one-tap presets, with a Flow card when one runs out<br clear="left"></p>
 
+<a name="value-board"></a>
+<p><a href="docs/widgets/valueboard.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/valueboard-dark.png"><img src="docs/previews/valueboard-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/valueboard.md"><b>Value Board</b></a><br>
+Every value of the devices you pick in one widget, by room or by device<br clear="left"></p>
+
 <a name="value-matrix"></a>
 <p><a href="docs/widgets/valuematrix.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/valuematrix-dark.png"><img src="docs/previews/valuematrix-light.png" alt="" width="120" align="left"></picture></a>
 <a href="docs/widgets/valuematrix.md"><b>Value Matrix</b></a><br>

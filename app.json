@@ -17438,6 +17438,812 @@
       },
       "id": "clock"
     },
+    "combined": {
+      "name": {
+        "en": "Combined Value",
+        "nl": "Gecombineerde waarde",
+        "de": "Kombinierter Wert",
+        "fr": "Valeur combinée",
+        "it": "Valore combinato",
+        "sv": "Kombinerat värde",
+        "no": "Kombinert verdi",
+        "es": "Valor combinado",
+        "da": "Samlet værdi",
+        "ru": "Сводное значение",
+        "pl": "Wartość łączna",
+        "ko": "통합 값",
+        "ar": "قيمة مجمّعة"
+      },
+      "height": 104,
+      "transparent": true,
+      "devices": {
+        "type": "global",
+        "singular": false
+      },
+      "settings": [
+        {
+          "id": "capability",
+          "type": "autocomplete",
+          "title": {
+            "en": "Value",
+            "nl": "Waarde",
+            "de": "Wert",
+            "fr": "Valeur",
+            "it": "Valore",
+            "sv": "Värde",
+            "no": "Verdi",
+            "es": "Valor",
+            "da": "Værdi",
+            "ru": "Значение",
+            "pl": "Wartość",
+            "ko": "값",
+            "ar": "القيمة"
+          },
+          "hint": {
+            "en": "The value to combine, from the widget's devices that have it; with no devices picked, from every device that has it.",
+            "nl": "De waarde om te combineren, van de apparaten van de widget die haar hebben; zonder gekozen apparaten van elk apparaat dat haar heeft.",
+            "de": "Der zu kombinierende Wert, von den Geräten des Widgets, die ihn haben; ohne gewählte Geräte von jedem Gerät, das ihn hat.",
+            "fr": "La valeur à combiner, des appareils du widget qui l'ont ; sans appareil choisi, de tous les appareils qui l'ont.",
+            "it": "Il valore da combinare, dai dispositivi del widget che lo hanno; senza dispositivi scelti, da tutti quelli che lo hanno.",
+            "sv": "Värdet som ska kombineras, från widgetens enheter som har det; utan valda enheter från varje enhet som har det.",
+            "no": "Verdien som skal kombineres, fra widgetens enheter som har den; uten valgte enheter fra hver enhet som har den.",
+            "es": "El valor que se combina, de los dispositivos del widget que lo tienen; sin dispositivos elegidos, de todos los que lo tienen.",
+            "da": "Værdien, der samles, fra widgettens enheder, der har den; uden valgte enheder fra hver enhed, der har den.",
+            "ru": "Значение для объединения — с устройств виджета, у которых оно есть; если устройства не выбраны, со всех устройств, у которых оно есть.",
+            "pl": "Wartość do połączenia, z urządzeń widżetu, które ją mają; bez wybranych urządzeń z każdego urządzenia, które ją ma.",
+            "ko": "합칠 값입니다. 이 값이 있는 위젯의 기기에서 가져오며, 선택한 기기가 없으면 이 값이 있는 모든 기기에서 가져옵니다.",
+            "ar": "القيمة المراد جمعها، من أجهزة الأداة التي تملكها؛ وإن لم تختر أي جهاز فمن كل جهاز يملكها."
+          }
+        },
+        {
+          "id": "show",
+          "type": "dropdown",
+          "title": {
+            "en": "Show",
+            "nl": "Toon",
+            "de": "Anzeigen",
+            "fr": "Afficher",
+            "it": "Mostra",
+            "sv": "Visa",
+            "no": "Vis",
+            "es": "Mostrar",
+            "da": "Vis",
+            "ru": "Показывать",
+            "pl": "Pokaż",
+            "ko": "표시",
+            "ar": "العرض"
+          },
+          "value": "avg",
+          "values": [
+            {
+              "id": "avg",
+              "title": {
+                "en": "Average",
+                "nl": "Gemiddelde",
+                "de": "Durchschnitt",
+                "fr": "Moyenne",
+                "it": "Media",
+                "sv": "Medelvärde",
+                "no": "Gjennomsnitt",
+                "es": "Media",
+                "da": "Gennemsnit",
+                "ru": "Среднее",
+                "pl": "Średnia",
+                "ko": "평균",
+                "ar": "المتوسط"
+              }
+            },
+            {
+              "id": "median",
+              "title": {
+                "en": "Median",
+                "nl": "Mediaan",
+                "de": "Median",
+                "fr": "Médiane",
+                "it": "Mediana",
+                "sv": "Median",
+                "no": "Median",
+                "es": "Mediana",
+                "da": "Median",
+                "ru": "Медиана",
+                "pl": "Mediana",
+                "ko": "중앙값",
+                "ar": "الوسيط"
+              }
+            },
+            {
+              "id": "sum",
+              "title": {
+                "en": "Sum",
+                "nl": "Som",
+                "de": "Summe",
+                "fr": "Somme",
+                "it": "Somma",
+                "sv": "Summa",
+                "no": "Sum",
+                "es": "Suma",
+                "da": "Sum",
+                "ru": "Сумма",
+                "pl": "Suma",
+                "ko": "합계",
+                "ar": "المجموع"
+              }
+            },
+            {
+              "id": "min",
+              "title": {
+                "en": "Lowest",
+                "nl": "Laagste",
+                "de": "Niedrigster",
+                "fr": "Le plus bas",
+                "it": "Il più basso",
+                "sv": "Lägsta",
+                "no": "Laveste",
+                "es": "El más bajo",
+                "da": "Laveste",
+                "ru": "Наименьшее",
+                "pl": "Najniższa",
+                "ko": "최저",
+                "ar": "الأدنى"
+              }
+            },
+            {
+              "id": "max",
+              "title": {
+                "en": "Highest",
+                "nl": "Hoogste",
+                "de": "Höchster",
+                "fr": "Le plus haut",
+                "it": "Il più alto",
+                "sv": "Högsta",
+                "no": "Høyeste",
+                "es": "El más alto",
+                "da": "Højeste",
+                "ru": "Наибольшее",
+                "pl": "Najwyższa",
+                "ko": "최고",
+                "ar": "الأعلى"
+              }
+            },
+            {
+              "id": "range",
+              "title": {
+                "en": "Lowest – highest",
+                "nl": "Laagste – hoogste",
+                "de": "Niedrigster – höchster",
+                "fr": "Plus bas – plus haut",
+                "it": "Più basso – più alto",
+                "sv": "Lägsta – högsta",
+                "no": "Laveste – høyeste",
+                "es": "Más bajo – más alto",
+                "da": "Laveste – højeste",
+                "ru": "Наименьшее – наибольшее",
+                "pl": "Najniższa – najwyższa",
+                "ko": "최저 – 최고",
+                "ar": "الأدنى – الأعلى"
+              }
+            },
+            {
+              "id": "out",
+              "title": {
+                "en": "Number outside the OK range",
+                "nl": "Aantal buiten het OK-bereik",
+                "de": "Anzahl außerhalb des OK-Bereichs",
+                "fr": "Nombre hors de la plage OK",
+                "it": "Numero fuori dall'intervallo OK",
+                "sv": "Antal utanför OK-intervallet",
+                "no": "Antall utenfor OK-området",
+                "es": "Número fuera del rango OK",
+                "da": "Antal uden for OK-intervallet",
+                "ru": "Сколько вне диапазона нормы",
+                "pl": "Liczba poza zakresem OK",
+                "ko": "정상 범위 밖의 개수",
+                "ar": "العدد خارج النطاق الجيد"
+              }
+            }
+          ]
+        },
+        {
+          "id": "name",
+          "type": "text",
+          "title": {
+            "en": "Name",
+            "nl": "Naam",
+            "de": "Name",
+            "fr": "Nom",
+            "it": "Nome",
+            "sv": "Namn",
+            "no": "Navn",
+            "es": "Nombre",
+            "da": "Navn",
+            "ru": "Название",
+            "pl": "Nazwa",
+            "ko": "이름",
+            "ar": "الاسم"
+          },
+          "hint": {
+            "en": "Empty: the value's name, such as Temperature.",
+            "nl": "Leeg: de naam van de waarde, zoals Temperatuur.",
+            "de": "Leer: der Name des Werts, etwa Temperatur.",
+            "fr": "Vide : le nom de la valeur, comme Température.",
+            "it": "Vuoto: il nome del valore, come Temperatura.",
+            "sv": "Tomt: värdets namn, som Temperatur.",
+            "no": "Tomt: verdiens navn, som Temperatur.",
+            "es": "Vacío: el nombre del valor, como Temperatura.",
+            "da": "Tomt: værdiens navn, som Temperatur.",
+            "ru": "Пусто: название значения, например «Температура».",
+            "pl": "Puste: nazwa wartości, np. Temperatura.",
+            "ko": "비워 두면 값의 이름(예: 온도)이 쓰입니다.",
+            "ar": "فارغ: اسم القيمة، مثل درجة الحرارة."
+          },
+          "value": ""
+        },
+        {
+          "id": "okRange",
+          "type": "text",
+          "title": {
+            "en": "OK range",
+            "nl": "OK-bereik",
+            "de": "OK-Bereich",
+            "fr": "Plage OK",
+            "it": "Intervallo OK",
+            "sv": "OK-intervall",
+            "no": "OK-område",
+            "es": "Rango OK",
+            "da": "OK-interval",
+            "ru": "Диапазон нормы",
+            "pl": "Zakres OK",
+            "ko": "정상 범위",
+            "ar": "النطاق الجيد"
+          },
+          "hint": {
+            "en": "In the value's unit: 18–24, <1000 or >20. Outside it the tile turns orange, and red once it's past by half the range (or half the limit); devices outside it get an orange or red dot. Empty: none.",
+            "nl": "In de eenheid van de waarde: 18–24, <1000 of >20. Daarbuiten wordt de tegel oranje, en rood zodra het er een half bereik (of de helft van de grens) voorbij is; apparaten daarbuiten krijgen een oranje of rode stip. Leeg: geen.",
+            "de": "In der Einheit des Werts: 18–24, <1000 oder >20. Außerhalb wird die Kachel orange und rot, sobald der Wert um den halben Bereich (oder die halbe Grenze) darüber hinaus liegt; Geräte außerhalb bekommen einen orangen oder roten Punkt. Leer: keiner.",
+            "fr": "Dans l'unité de la valeur : 18–24, <1000 ou >20. Dehors, la tuile devient orange, et rouge une fois dépassée de la moitié de la plage (ou de la moitié de la limite) ; les appareils dehors ont un point orange ou rouge. Vide : aucune.",
+            "it": "Nell'unità del valore: 18–24, <1000 o >20. Fuori il riquadro diventa arancione, e rosso quando lo supera di metà intervallo (o di metà limite); i dispositivi fuori hanno un punto arancione o rosso. Vuoto: nessuno.",
+            "sv": "I värdets enhet: 18–24, <1000 eller >20. Utanför blir rutan orange, och röd när värdet ligger ett halvt intervall (eller en halv gräns) utanför; enheter utanför får en orange eller röd prick. Tomt: inget.",
+            "no": "I verdiens enhet: 18–24, <1000 eller >20. Utenfor blir flisen oransje, og rød når verdien er et halvt område (eller en halv grense) utenfor; enheter utenfor får en oransje eller rød prikk. Tomt: ingen.",
+            "es": "En la unidad del valor: 18–24, <1000 o >20. Fuera, el mosaico se vuelve naranja, y rojo cuando lo supera en medio rango (o en la mitad del límite); los dispositivos fuera tienen un punto naranja o rojo. Vacío: ninguno.",
+            "da": "I værdiens enhed: 18–24, <1000 eller >20. Udenfor bliver feltet orange, og rødt, når værdien ligger et halvt interval (eller en halv grænse) udenfor; enheder udenfor får en orange eller rød prik. Tomt: intet.",
+            "ru": "В единицах значения: 18–24, <1000 или >20. Вне его плитка становится оранжевой, а красной, когда выходит за диапазон на его половину (или на половину предела); у устройств вне его оранжевая или красная точка. Пусто: без диапазона.",
+            "pl": "W jednostce wartości: 18–24, <1000 lub >20. Poza nim kafelek robi się pomarańczowy, a czerwony, gdy wykracza o połowę zakresu (lub połowę limitu); urządzenia poza nim mają pomarańczową lub czerwoną kropkę. Puste: bez zakresu.",
+            "ko": "값의 단위로: 18–24, <1000 또는 >20. 범위 밖이면 타일이 주황색, 범위의 절반(또는 한계의 절반)만큼 벗어나면 빨간색이 되고, 범위 밖의 기기는 주황색이나 빨간색 점으로 표시됩니다. 비워 두면 범위 없음.",
+            "ar": "بوحدة القيمة: 18–24 أو <1000 أو >20. خارجه يصبح المربع برتقاليًا، وأحمر متى تجاوزه بنصف النطاق (أو نصف الحد)؛ وتظهر الأجهزة خارجه بنقطة برتقالية أو حمراء. فارغ: بلا نطاق."
+          },
+          "value": ""
+        },
+        {
+          "id": "greenWhenFine",
+          "type": "checkbox",
+          "value": false,
+          "title": {
+            "en": "Green when fine",
+            "nl": "Groen als het goed is",
+            "de": "Grün, wenn in Ordnung",
+            "fr": "Vert si tout va bien",
+            "it": "Verde se va bene",
+            "sv": "Grönt när det är bra",
+            "no": "Grønt når det er bra",
+            "es": "Verde si está bien",
+            "da": "Grøn når det er fint",
+            "ru": "Зелёный, если всё в норме",
+            "pl": "Zielony, gdy w normie",
+            "ko": "정상이면 초록색",
+            "ar": "أخضر عندما يكون جيدًا"
+          },
+          "hint": {
+            "en": "Shows the values inside their range in green, not grey.",
+            "nl": "Toont waarden binnen hun bereik in groen, niet grijs.",
+            "de": "Zeigt Werte innerhalb ihres Bereichs grün statt grau.",
+            "fr": "Affiche en vert, et non en gris, les valeurs dans leur plage.",
+            "it": "Mostra in verde, non in grigio, i valori entro il loro intervallo.",
+            "sv": "Visar värden inom sitt intervall i grönt, inte grått.",
+            "no": "Viser verdier innenfor området i grønt, ikke grått.",
+            "es": "Muestra en verde, no en gris, los valores dentro de su rango.",
+            "da": "Viser værdier inden for deres interval i grønt, ikke gråt.",
+            "ru": "Показывает значения в пределах диапазона зелёным, а не серым.",
+            "pl": "Pokazuje wartości w zakresie na zielono, a nie na szaro.",
+            "ko": "범위 안의 값을 회색 대신 초록색으로 표시합니다.",
+            "ar": "يعرض القيم الواقعة ضمن نطاقها باللون الأخضر بدل الرمادي."
+          }
+        },
+        {
+          "id": "showRange",
+          "type": "checkbox",
+          "title": {
+            "en": "Show the range",
+            "nl": "Bereik tonen",
+            "de": "Spanne anzeigen",
+            "fr": "Afficher l'écart",
+            "it": "Mostra l'intervallo",
+            "sv": "Visa spannet",
+            "no": "Vis spennet",
+            "es": "Mostrar el rango",
+            "da": "Vis spændet",
+            "ru": "Показывать диапазон",
+            "pl": "Pokaż zakres",
+            "ko": "범위 표시",
+            "ar": "عرض النطاق"
+          },
+          "hint": {
+            "en": "The lowest to the highest reading, under the name.",
+            "nl": "De laagste tot de hoogste meting, onder de naam.",
+            "de": "Der niedrigste bis höchste Messwert, unter dem Namen.",
+            "fr": "De la mesure la plus basse à la plus haute, sous le nom.",
+            "it": "Dalla lettura più bassa alla più alta, sotto il nome.",
+            "sv": "Lägsta till högsta mätvärde, under namnet.",
+            "no": "Laveste til høyeste måling, under navnet.",
+            "es": "De la lectura más baja a la más alta, bajo el nombre.",
+            "da": "Laveste til højeste måling, under navnet.",
+            "ru": "От наименьшего до наибольшего показания, под названием.",
+            "pl": "Od najniższego do najwyższego odczytu, pod nazwą.",
+            "ko": "이름 아래에 최저부터 최고 측정값까지 표시합니다.",
+            "ar": "من أدنى قراءة إلى أعلاها، تحت الاسم."
+          },
+          "value": true
+        },
+        {
+          "id": "chart",
+          "type": "checkbox",
+          "title": {
+            "en": "Show the chart",
+            "nl": "Grafiek tonen",
+            "de": "Diagramm anzeigen",
+            "fr": "Afficher le graphique",
+            "it": "Mostra il grafico",
+            "sv": "Visa diagrammet",
+            "no": "Vis diagrammet",
+            "es": "Mostrar el gráfico",
+            "da": "Vis diagrammet",
+            "ru": "Показывать график",
+            "pl": "Pokaż wykres",
+            "ko": "차트 표시",
+            "ar": "عرض المخطط"
+          },
+          "hint": {
+            "en": "Each device against the others: a dot on a scale, or for a sum each device's share.",
+            "nl": "Elk apparaat tegenover de andere: een stip op een schaal, of bij een som het aandeel van elk apparaat.",
+            "de": "Jedes Gerät im Vergleich zu den anderen: ein Punkt auf einer Skala, bei einer Summe der Anteil jedes Geräts.",
+            "fr": "Chaque appareil face aux autres : un point sur une échelle, ou pour une somme la part de chaque appareil.",
+            "it": "Ogni dispositivo rispetto agli altri: un punto su una scala, o per una somma la quota di ciascuno.",
+            "sv": "Varje enhet mot de andra: en punkt på en skala, eller för en summa varje enhets andel.",
+            "no": "Hver enhet mot de andre: et punkt på en skala, eller for en sum hver enhets andel.",
+            "es": "Cada dispositivo frente a los demás: un punto en una escala o, en una suma, la parte de cada uno.",
+            "da": "Hver enhed over for de andre: en prik på en skala, eller ved en sum hver enheds andel.",
+            "ru": "Каждое устройство относительно других: точка на шкале, а для суммы — доля каждого устройства.",
+            "pl": "Każde urządzenie na tle innych: punkt na skali, a dla sumy udział każdego urządzenia.",
+            "ko": "각 기기를 다른 기기와 비교합니다. 눈금 위의 점으로, 합계라면 기기별 비율로 표시합니다.",
+            "ar": "كل جهاز مقارنةً بالآخرين: نقطة على مقياس، أو في المجموع حصة كل جهاز."
+          },
+          "value": true
+        },
+        {
+          "id": "tileStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Tile style",
+            "nl": "Tegelstijl",
+            "de": "Kachelstil",
+            "fr": "Style des tuiles",
+            "it": "Stile dei riquadri",
+            "sv": "Rutstil",
+            "no": "Flisstil",
+            "es": "Estilo de mosaico",
+            "da": "Feltstil",
+            "ru": "Стиль плиток",
+            "pl": "Styl kafelków",
+            "ko": "타일 스타일",
+            "ar": "نمط البلاطات"
+          },
+          "hint": {
+            "en": "Pill: the icon beside the name and value, like Sensor Alarms' tiles.",
+            "nl": "Pil: het pictogram naast de naam en waarde, zoals de tegels van Sensoralarmen.",
+            "de": "Kapsel: das Symbol neben Name und Wert, wie die Kacheln von Sensoralarme.",
+            "fr": "Pilule : l'icône à côté du nom et de la valeur, comme les tuiles d'Alarmes des capteurs.",
+            "it": "Pillola: l'icona accanto al nome e al valore, come i riquadri di Allarmi sensori.",
+            "sv": "Kapsel: ikonen bredvid namnet och värdet, som rutorna i Sensorlarm.",
+            "no": "Kapsel: ikonet ved siden av navnet og verdien, som flisene i Sensoralarmer.",
+            "es": "Píldora: el icono junto al nombre y el valor, como los mosaicos de Alarmas de sensores.",
+            "da": "Kapsel: ikonet ved siden af navnet og værdien, som felterne i Sensoralarmer.",
+            "ru": "Капсула: значок рядом с именем и значением, как плитки «Тревоги датчиков».",
+            "pl": "Pigułka: ikona obok nazwy i wartości, jak kafelki Alarmów czujników.",
+            "ko": "알약형: 센서 알람의 타일처럼 아이콘이 이름과 값 옆에 놓입니다.",
+            "ar": "كبسولة: الأيقونة بجانب الاسم والقيمة، مثل بلاطات إنذارات المستشعرات."
+          },
+          "value": "compact",
+          "values": [
+            {
+              "id": "compact",
+              "title": {
+                "en": "Compact",
+                "nl": "Compact",
+                "de": "Kompakt",
+                "fr": "Compact",
+                "it": "Compatto",
+                "sv": "Kompakt",
+                "no": "Kompakt",
+                "es": "Compacto",
+                "da": "Kompakt",
+                "ru": "Компактный",
+                "pl": "Kompaktowy",
+                "ko": "컴팩트",
+                "ar": "مدمج"
+              }
+            },
+            {
+              "id": "pill",
+              "title": {
+                "en": "Pill",
+                "nl": "Pil",
+                "de": "Kapsel",
+                "fr": "Pilule",
+                "it": "Pillola",
+                "sv": "Kapsel",
+                "no": "Kapsel",
+                "es": "Píldora",
+                "da": "Kapsel",
+                "ru": "Капсула",
+                "pl": "Pigułka",
+                "ko": "알약형",
+                "ar": "كبسولة"
+              }
+            }
+          ]
+        },
+        {
+          "id": "color",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour",
+            "nl": "Kleur",
+            "de": "Farbe",
+            "fr": "Couleur",
+            "it": "Colore",
+            "sv": "Färg",
+            "no": "Farge",
+            "es": "Color",
+            "da": "Farve",
+            "ru": "Цвет",
+            "pl": "Kolor",
+            "ko": "색상",
+            "ar": "اللون"
+          },
+          "hint": {
+            "en": "A tinted tile (Default: a plain tile).",
+            "nl": "Een gekleurde tegel (Standaard: een gewone tegel).",
+            "de": "Eine getönte Kachel (Standard: eine schlichte Kachel).",
+            "fr": "Une tuile teintée (Par défaut : une tuile simple).",
+            "it": "Un riquadro colorato (Predefinito: un riquadro semplice).",
+            "sv": "En tonad ruta (Standard: en vanlig ruta).",
+            "no": "En farget flis (Standard: en vanlig flis).",
+            "es": "Un mosaico teñido (Predeterminado: un mosaico normal).",
+            "da": "Et tonet felt (Standard: et almindeligt felt).",
+            "ru": "Тонированная плитка (по умолчанию: обычная плитка).",
+            "pl": "Zabarwiony kafelek (Domyślny: zwykły kafelek).",
+            "ko": "색이 입혀진 타일입니다(기본값: 일반 타일).",
+            "ar": "بلاطة ملوّنة (الافتراضي: بلاطة عادية)."
+          },
+          "value": "default",
+          "values": [
+            {
+              "id": "default",
+              "title": {
+                "en": "Default",
+                "nl": "Standaard",
+                "de": "Standard",
+                "fr": "Par défaut",
+                "it": "Predefinito",
+                "sv": "Standard",
+                "no": "Standard",
+                "es": "Predeterminado",
+                "da": "Standard",
+                "ru": "По умолчанию",
+                "pl": "Domyślny",
+                "ko": "기본값",
+                "ar": "افتراضي"
+              }
+            },
+            {
+              "id": "blue",
+              "title": {
+                "en": "Blue",
+                "nl": "Blauw",
+                "de": "Blau",
+                "fr": "Bleu",
+                "it": "Blu",
+                "sv": "Blå",
+                "no": "Blå",
+                "es": "Azul",
+                "da": "Blå",
+                "ru": "Синий",
+                "pl": "Niebieski",
+                "ko": "파랑",
+                "ar": "أزرق"
+              }
+            },
+            {
+              "id": "red",
+              "title": {
+                "en": "Red",
+                "nl": "Rood",
+                "de": "Rot",
+                "fr": "Rouge",
+                "it": "Rosso",
+                "sv": "Röd",
+                "no": "Rød",
+                "es": "Rojo",
+                "da": "Rød",
+                "ru": "Красный",
+                "pl": "Czerwony",
+                "ko": "빨강",
+                "ar": "أحمر"
+              }
+            },
+            {
+              "id": "orange",
+              "title": {
+                "en": "Orange",
+                "nl": "Oranje",
+                "de": "Orange",
+                "fr": "Orange",
+                "it": "Arancione",
+                "sv": "Orange",
+                "no": "Oransje",
+                "es": "Naranja",
+                "da": "Orange",
+                "ru": "Оранжевый",
+                "pl": "Pomarańczowy",
+                "ko": "주황",
+                "ar": "برتقالي"
+              }
+            },
+            {
+              "id": "yellow",
+              "title": {
+                "en": "Yellow",
+                "nl": "Geel",
+                "de": "Gelb",
+                "fr": "Jaune",
+                "it": "Giallo",
+                "sv": "Gul",
+                "no": "Gul",
+                "es": "Amarillo",
+                "da": "Gul",
+                "ru": "Жёлтый",
+                "pl": "Żółty",
+                "ko": "노랑",
+                "ar": "أصفر"
+              }
+            },
+            {
+              "id": "green",
+              "title": {
+                "en": "Green",
+                "nl": "Groen",
+                "de": "Grün",
+                "fr": "Vert",
+                "it": "Verde",
+                "sv": "Grön",
+                "no": "Grønn",
+                "es": "Verde",
+                "da": "Grøn",
+                "ru": "Зелёный",
+                "pl": "Zielony",
+                "ko": "초록",
+                "ar": "أخضر"
+              }
+            },
+            {
+              "id": "purple",
+              "title": {
+                "en": "Purple",
+                "nl": "Paars",
+                "de": "Lila",
+                "fr": "Violet",
+                "it": "Viola",
+                "sv": "Lila",
+                "no": "Lilla",
+                "es": "Morado",
+                "da": "Lilla",
+                "ru": "Фиолетовый",
+                "pl": "Fioletowy",
+                "ko": "보라",
+                "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
+            }
+          ]
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
+            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
+            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
+            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
+            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
+            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
+            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
+            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
+            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
+            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
+            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
+            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
+            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
+              }
+            }
+          ]
+        }
+      ],
+      "api": {
+        "getState": {
+          "method": "GET",
+          "path": "/state"
+        }
+      },
+      "id": "combined"
+    },
     "curtains": {
       "name": {
         "en": "Curtains",
@@ -27157,6 +27963,499 @@
       },
       "id": "flows"
     },
+    "flowtiles": {
+      "name": {
+        "en": "Flow Tiles",
+        "nl": "Flowtegels",
+        "de": "Flow-Kacheln",
+        "fr": "Tuiles de flow",
+        "it": "Riquadri dei flow",
+        "sv": "Flödesrutor",
+        "no": "Flytfliser",
+        "es": "Mosaicos de flujo",
+        "da": "Flowfelter",
+        "ru": "Плитки потоков",
+        "pl": "Kafelki Flow",
+        "ko": "플로우 타일",
+        "ar": "مربعات التدفقات"
+      },
+      "height": 64,
+      "transparent": true,
+      "settings": [
+        {
+          "id": "board",
+          "type": "autocomplete",
+          "title": {
+            "en": "Board",
+            "nl": "Bord",
+            "de": "Tafel",
+            "fr": "Tableau",
+            "it": "Bacheca",
+            "sv": "Tavla",
+            "no": "Tavle",
+            "es": "Tablero",
+            "da": "Tavle",
+            "ru": "Доска",
+            "pl": "Tablica",
+            "ko": "보드",
+            "ar": "اللوحة"
+          },
+          "hint": {
+            "en": "The board the Flow cards write the tiles on (Tiles when none is picked). Widgets with the same board show the same tiles.",
+            "nl": "Het bord waarop de Flow-kaarten de tegels zetten (Tiles als er geen is gekozen). Widgets met hetzelfde bord tonen dezelfde tegels.",
+            "de": "Die Tafel, auf die die Flow-Karten die Kacheln schreiben (Tiles, wenn keine gewählt ist). Widgets mit derselben Tafel zeigen dieselben Kacheln.",
+            "fr": "Le tableau sur lequel les cartes Flow écrivent les tuiles (Tiles si aucun n'est choisi). Les widgets du même tableau montrent les mêmes tuiles.",
+            "it": "La bacheca su cui le schede Flow scrivono i riquadri (Tiles se non ne è scelta nessuna). I widget con la stessa bacheca mostrano gli stessi riquadri.",
+            "sv": "Tavlan som Flow-korten skriver rutorna på (Tiles om ingen är vald). Widgetar med samma tavla visar samma rutor.",
+            "no": "Tavlen Flow-kortene skriver flisene på (Tiles hvis ingen er valgt). Widgeter med samme tavle viser de samme flisene.",
+            "es": "El tablero en el que las tarjetas de Flow escriben los mosaicos (Tiles si no se elige ninguno). Los widgets con el mismo tablero muestran los mismos mosaicos.",
+            "da": "Tavlen, Flow-kortene skriver felterne på (Tiles, hvis ingen er valgt). Widgets med samme tavle viser de samme felter.",
+            "ru": "Доска, на которую карточки Flow пишут плитки (Tiles, если не выбрана). Виджеты с одной доской показывают одни и те же плитки.",
+            "pl": "Tablica, na której karty Flow zapisują kafelki (Tiles, gdy żadna nie jest wybrana). Widżety z tą samą tablicą pokazują te same kafelki.",
+            "ko": "Flow 카드가 타일을 쓰는 보드입니다(선택하지 않으면 Tiles). 보드가 같은 위젯은 같은 타일을 표시합니다.",
+            "ar": "اللوحة التي تكتب عليها بطاقات Flow المربعات (Tiles إن لم تُختر لوحة). تعرض الأدوات ذات اللوحة نفسها المربعات نفسها."
+          }
+        },
+        {
+          "id": "only",
+          "type": "text",
+          "title": {
+            "en": "Show only",
+            "nl": "Alleen tonen",
+            "de": "Nur zeigen",
+            "fr": "Afficher seulement",
+            "it": "Mostra solo",
+            "sv": "Visa bara",
+            "no": "Vis bare",
+            "es": "Mostrar solo",
+            "da": "Vis kun",
+            "ru": "Показывать только",
+            "pl": "Pokaż tylko",
+            "ko": "다음만 표시",
+            "ar": "اعرض فقط"
+          },
+          "hint": {
+            "en": "Tile names separated by commas, shown in that order. Empty shows every tile of the board.",
+            "nl": "Tegelnamen gescheiden door komma's, in die volgorde getoond. Leeg toont elke tegel van het bord.",
+            "de": "Kachelnamen durch Kommas getrennt, in dieser Reihenfolge gezeigt. Leer zeigt jede Kachel der Tafel.",
+            "fr": "Noms de tuiles séparés par des virgules, affichés dans cet ordre. Vide affiche toutes les tuiles du tableau.",
+            "it": "Nomi dei riquadri separati da virgole, mostrati in quell'ordine. Vuoto mostra tutti i riquadri della bacheca.",
+            "sv": "Rutnamn åtskilda med kommatecken, visade i den ordningen. Tomt visar alla rutor på tavlan.",
+            "no": "Flisnavn skilt med komma, vist i den rekkefølgen. Tomt viser alle flisene på tavlen.",
+            "es": "Nombres de mosaicos separados por comas, mostrados en ese orden. Vacío muestra todos los mosaicos del tablero.",
+            "da": "Feltnavne adskilt med komma, vist i den rækkefølge. Tomt viser alle tavlens felter.",
+            "ru": "Названия плиток через запятую, в этом порядке. Пусто — все плитки доски.",
+            "pl": "Nazwy kafelków oddzielone przecinkami, pokazane w tej kolejności. Puste pokazuje wszystkie kafelki tablicy.",
+            "ko": "쉼표로 구분한 타일 이름이며, 그 순서대로 표시됩니다. 비워 두면 보드의 모든 타일을 표시합니다.",
+            "ar": "أسماء المربعات مفصولة بفواصل، تُعرض بهذا الترتيب. الفارغ يعرض كل مربعات اللوحة."
+          },
+          "value": ""
+        },
+        {
+          "id": "order",
+          "type": "dropdown",
+          "title": {
+            "en": "Order",
+            "nl": "Volgorde",
+            "de": "Reihenfolge",
+            "fr": "Ordre",
+            "it": "Ordine",
+            "sv": "Ordning",
+            "no": "Rekkefølge",
+            "es": "Orden",
+            "da": "Rækkefølge",
+            "ru": "Порядок",
+            "pl": "Kolejność",
+            "ko": "순서",
+            "ar": "الترتيب"
+          },
+          "value": "added",
+          "values": [
+            {
+              "id": "added",
+              "title": {
+                "en": "As added",
+                "nl": "Zoals toegevoegd",
+                "de": "Wie hinzugefügt",
+                "fr": "Ordre d'ajout",
+                "it": "Come aggiunti",
+                "sv": "Som de lades till",
+                "no": "Slik de ble lagt til",
+                "es": "Según se añadieron",
+                "da": "Som tilføjet",
+                "ru": "По добавлению",
+                "pl": "Według dodania",
+                "ko": "추가한 순서",
+                "ar": "حسب الإضافة"
+              }
+            },
+            {
+              "id": "name",
+              "title": {
+                "en": "By name",
+                "nl": "Op naam",
+                "de": "Nach Name",
+                "fr": "Par nom",
+                "it": "Per nome",
+                "sv": "Efter namn",
+                "no": "Etter navn",
+                "es": "Por nombre",
+                "da": "Efter navn",
+                "ru": "По названию",
+                "pl": "Według nazwy",
+                "ko": "이름순",
+                "ar": "حسب الاسم"
+              }
+            }
+          ]
+        },
+        {
+          "id": "columns",
+          "type": "dropdown",
+          "title": {
+            "en": "Tiles per row",
+            "nl": "Tegels per rij",
+            "de": "Kacheln pro Zeile",
+            "fr": "Tuiles par ligne",
+            "it": "Riquadri per riga",
+            "sv": "Rutor per rad",
+            "no": "Fliser per rad",
+            "es": "Mosaicos por fila",
+            "da": "Felter pr. række",
+            "ru": "Плиток в ряду",
+            "pl": "Kafelków w rzędzie",
+            "ko": "행당 타일",
+            "ar": "البلاطات في كل صف"
+          },
+          "value": "3",
+          "values": [
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            },
+            {
+              "id": "3",
+              "title": {
+                "en": "3",
+                "nl": "3",
+                "de": "3",
+                "fr": "3",
+                "it": "3",
+                "sv": "3",
+                "no": "3",
+                "es": "3",
+                "da": "3",
+                "ru": "3",
+                "pl": "3",
+                "ko": "3",
+                "ar": "3"
+              }
+            }
+          ]
+        },
+        {
+          "id": "tileStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Tile style",
+            "nl": "Tegelstijl",
+            "de": "Kachelstil",
+            "fr": "Style des tuiles",
+            "it": "Stile dei riquadri",
+            "sv": "Rutstil",
+            "no": "Flisstil",
+            "es": "Estilo de mosaico",
+            "da": "Feltstil",
+            "ru": "Стиль плиток",
+            "pl": "Styl kafelków",
+            "ko": "타일 스타일",
+            "ar": "نمط البلاطات"
+          },
+          "hint": {
+            "en": "Pill: the icon beside the name and value, like Sensor Alarms' tiles.",
+            "nl": "Pil: het pictogram naast de naam en waarde, zoals de tegels van Sensoralarmen.",
+            "de": "Kapsel: das Symbol neben Name und Wert, wie die Kacheln von Sensoralarme.",
+            "fr": "Pilule : l'icône à côté du nom et de la valeur, comme les tuiles d'Alarmes des capteurs.",
+            "it": "Pillola: l'icona accanto al nome e al valore, come i riquadri di Allarmi sensori.",
+            "sv": "Kapsel: ikonen bredvid namnet och värdet, som rutorna i Sensorlarm.",
+            "no": "Kapsel: ikonet ved siden av navnet og verdien, som flisene i Sensoralarmer.",
+            "es": "Píldora: el icono junto al nombre y el valor, como los mosaicos de Alarmas de sensores.",
+            "da": "Kapsel: ikonet ved siden af navnet og værdien, som felterne i Sensoralarmer.",
+            "ru": "Капсула: значок рядом с именем и значением, как плитки «Тревоги датчиков».",
+            "pl": "Pigułka: ikona obok nazwy i wartości, jak kafelki Alarmów czujników.",
+            "ko": "알약형: 센서 알람의 타일처럼 아이콘이 이름과 값 옆에 놓입니다.",
+            "ar": "كبسولة: الأيقونة بجانب الاسم والقيمة، مثل بلاطات إنذارات المستشعرات."
+          },
+          "value": "compact",
+          "values": [
+            {
+              "id": "compact",
+              "title": {
+                "en": "Compact",
+                "nl": "Compact",
+                "de": "Kompakt",
+                "fr": "Compact",
+                "it": "Compatto",
+                "sv": "Kompakt",
+                "no": "Kompakt",
+                "es": "Compacto",
+                "da": "Kompakt",
+                "ru": "Компактный",
+                "pl": "Kompaktowy",
+                "ko": "컴팩트",
+                "ar": "مدمج"
+              }
+            },
+            {
+              "id": "pill",
+              "title": {
+                "en": "Pill",
+                "nl": "Pil",
+                "de": "Kapsel",
+                "fr": "Pilule",
+                "it": "Pillola",
+                "sv": "Kapsel",
+                "no": "Kapsel",
+                "es": "Píldora",
+                "da": "Kapsel",
+                "ru": "Капсула",
+                "pl": "Pigułka",
+                "ko": "알약형",
+                "ar": "كبسولة"
+              }
+            }
+          ]
+        },
+        {
+          "id": "tapEffect",
+          "type": "dropdown",
+          "title": {
+            "en": "On tap",
+            "nl": "Bij tikken",
+            "de": "Beim Antippen",
+            "fr": "Au toucher",
+            "it": "Al tocco",
+            "sv": "Vid tryck",
+            "no": "Ved trykk",
+            "es": "Al tocar",
+            "da": "Ved tryk",
+            "ru": "При нажатии",
+            "pl": "Po dotknięciu",
+            "ko": "누를 때",
+            "ar": "عند النقر"
+          },
+          "hint": {
+            "en": "For tiles a Flow listens to (the card A Flow Tile was tapped).",
+            "nl": "Voor tegels waar een Flow naar luistert (de kaart Op een Flowtegel is getikt).",
+            "de": "Für Kacheln, auf die ein Flow hört (die Karte Eine Flow-Kachel wurde angetippt).",
+            "fr": "Pour les tuiles qu'un Flow écoute (la carte Une Tuile de flow a été touchée).",
+            "it": "Per i riquadri ascoltati da un Flow (la scheda È stato toccato un Riquadro dei flow).",
+            "sv": "För rutor som ett flöde lyssnar på (kortet En Flödesruta trycktes).",
+            "no": "For fliser en flyt lytter til (kortet En Flytflis ble trykket).",
+            "es": "Para los mosaicos que escucha un flujo (la tarjeta Se tocó un Mosaico de flujo).",
+            "da": "For felter, et flow lytter til (kortet Der blev trykket på et Flowfelt).",
+            "ru": "Для плиток, которые слушает поток (карточка «Нажата плитка потока»).",
+            "pl": "Dla kafelków, których słucha Flow (karta Dotknięto Kafelka Flow).",
+            "ko": "플로우가 듣고 있는 타일에 적용됩니다(카드: 플로우 타일을 눌렀을 때).",
+            "ar": "للمربعات التي يستمع إليها تدفق (البطاقة: تم النقر على مربع تدفق)."
+          },
+          "value": "highlight",
+          "values": [
+            {
+              "id": "highlight",
+              "title": {
+                "en": "Highlight",
+                "nl": "Oplichten",
+                "de": "Aufleuchten",
+                "fr": "Surbrillance",
+                "it": "Evidenzia",
+                "sv": "Markera",
+                "no": "Fremhev",
+                "es": "Resaltar",
+                "da": "Fremhæv",
+                "ru": "Подсветка",
+                "pl": "Podświetlenie",
+                "ko": "강조",
+                "ar": "تمييز"
+              }
+            },
+            {
+              "id": "none",
+              "title": {
+                "en": "None",
+                "nl": "Geen",
+                "de": "Keine",
+                "fr": "Aucun",
+                "it": "Nessuno",
+                "sv": "Ingen",
+                "no": "Ingen",
+                "es": "Ninguno",
+                "da": "Ingen",
+                "ru": "Нет",
+                "pl": "Brak",
+                "ko": "없음",
+                "ar": "بلا"
+              }
+            }
+          ]
+        },
+        {
+          "id": "showAge",
+          "type": "checkbox",
+          "title": {
+            "en": "Show when it changed",
+            "nl": "Tonen wanneer het veranderde",
+            "de": "Zeigen, wann es sich änderte",
+            "fr": "Afficher quand elle a changé",
+            "it": "Mostra quando è cambiato",
+            "sv": "Visa när den ändrades",
+            "no": "Vis når den endret seg",
+            "es": "Mostrar cuándo cambió",
+            "da": "Vis, hvornår det ændrede sig",
+            "ru": "Показывать время изменения",
+            "pl": "Pokaż, kiedy się zmienił",
+            "ko": "변경 시각 표시",
+            "ar": "إظهار وقت التغيير"
+          },
+          "hint": {
+            "en": "The time of the last change, in place of a second line where a Flow set none.",
+            "nl": "Het tijdstip van de laatste wijziging, in plaats van een tweede regel waar een Flow die niet instelde.",
+            "de": "Die Zeit der letzten Änderung, anstelle einer zweiten Zeile, wo ein Flow keine gesetzt hat.",
+            "fr": "L'heure du dernier changement, à la place d'une deuxième ligne là où un Flow n'en a pas défini.",
+            "it": "L'ora dell'ultima modifica, al posto di una seconda riga dove un Flow non l'ha impostata.",
+            "sv": "Tiden för den senaste ändringen, i stället för en andra rad där ett flöde inte angav någon.",
+            "no": "Tidspunktet for siste endring, i stedet for en andre linje der en flyt ikke anga noen.",
+            "es": "La hora del último cambio, en lugar de una segunda línea donde un flujo no puso ninguna.",
+            "da": "Tidspunktet for den seneste ændring, i stedet for en anden linje, hvor et flow ikke angav nogen.",
+            "ru": "Время последнего изменения вместо второй строки, если поток её не задал.",
+            "pl": "Czas ostatniej zmiany, zamiast drugiej linii tam, gdzie Flow jej nie ustawił.",
+            "ko": "플로우가 두 번째 줄을 정하지 않은 곳에 마지막 변경 시각을 표시합니다.",
+            "ar": "وقت آخر تغيير، بدلًا من سطر ثانٍ حيث لم يحدده تدفق."
+          },
+          "value": false
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
+            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
+            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
+            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
+            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
+            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
+            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
+            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
+            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
+            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
+            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
+            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
+            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
+              }
+            }
+          ]
+        }
+      ],
+      "api": {
+        "getState": {
+          "method": "GET",
+          "path": "/state"
+        },
+        "tap": {
+          "method": "POST",
+          "path": "/tap"
+        },
+        "getTimeFormat": {
+          "method": "GET",
+          "path": "/time-format"
+        }
+      },
+      "id": "flowtiles"
+    },
     "heatmap": {
       "name": {
         "en": "Insights Heatmap",
@@ -36727,6 +38026,480 @@
       },
       "id": "timers"
     },
+    "valueboard": {
+      "name": {
+        "en": "Value Board",
+        "nl": "Waardenbord",
+        "de": "Wertetafel",
+        "fr": "Tableau de valeurs",
+        "it": "Tabellone dei valori",
+        "sv": "Värdetavla",
+        "no": "Verditavle",
+        "es": "Panel de valores",
+        "da": "Værditavle",
+        "ru": "Табло значений",
+        "pl": "Tablica wartości",
+        "ko": "값 보드",
+        "ar": "لوحة القيم"
+      },
+      "height": 300,
+      "transparent": true,
+      "devices": {
+        "type": "global",
+        "singular": false
+      },
+      "settings": [
+        {
+          "id": "renameTiles",
+          "type": "checkbox",
+          "title": {
+            "en": "Rename tiles",
+            "nl": "Tegels hernoemen",
+            "de": "Kacheln umbenennen",
+            "fr": "Renommer les tuiles",
+            "it": "Rinomina riquadri",
+            "sv": "Byt namn på rutor",
+            "no": "Gi nytt navn til fliser",
+            "es": "Renombrar mosaicos",
+            "da": "Omdøb felter",
+            "ru": "Переименовать плитки",
+            "pl": "Zmień nazwy kafelków",
+            "ko": "타일 이름 바꾸기",
+            "ar": "إعادة تسمية المربعات"
+          },
+          "hint": {
+            "en": "To name the rooms and devices: turn this on and save the widget, then leave the dashboard's edit mode. Each room and device shows a text field: type its name, or leave it empty to keep its own name. Then edit the widget again and turn this off.",
+            "nl": "Ruimtes en apparaten een naam geven: zet dit aan en sla de widget op, en verlaat dan de bewerkmodus van het dashboard. Elke ruimte en elk apparaat toont een tekstveld: typ de naam, of laat het leeg om de eigen naam te houden. Bewerk daarna de widget opnieuw en zet dit uit.",
+            "de": "Räume und Geräte benennen: Schalte dies ein, speichere das Widget und verlasse den Bearbeitungsmodus des Dashboards. Jeder Raum und jedes Gerät zeigt ein Textfeld: Gib den Namen ein oder lass es leer, um den eigenen Namen zu behalten. Bearbeite danach das Widget erneut und schalte dies aus.",
+            "fr": "Pour nommer les pièces et les appareils : activez ceci, enregistrez le widget, puis quittez le mode édition du tableau de bord. Chaque pièce et chaque appareil affiche un champ de texte : tapez son nom, ou laissez-le vide pour garder son nom d'origine. Modifiez ensuite le widget à nouveau et désactivez ceci.",
+            "it": "Per dare un nome alle stanze e ai dispositivi: attiva questa opzione e salva il widget, poi esci dalla modalità di modifica della dashboard. Ogni stanza e ogni dispositivo mostra un campo di testo: scrivi il nome, o lascialo vuoto per mantenere il nome originale. Poi modifica di nuovo il widget e disattiva questa opzione.",
+            "sv": "Så namnger du rummen och enheterna: slå på detta och spara widgeten, och lämna sedan instrumentpanelens redigeringsläge. Varje rum och enhet visar ett textfält: skriv namnet, eller lämna det tomt för att behålla det egna namnet. Redigera sedan widgeten igen och slå av detta.",
+            "no": "Slik gir du rommene og enhetene navn: slå på dette og lagre widgeten, og gå så ut av dashbordets redigeringsmodus. Hvert rom og hver enhet viser et tekstfelt: skriv navnet, eller la det stå tomt for å beholde det opprinnelige navnet. Rediger så widgeten igjen og slå av dette.",
+            "es": "Para poner nombre a las habitaciones y los dispositivos: activa esto y guarda el widget, luego sal del modo de edición del panel. Cada habitación y cada dispositivo muestra un campo de texto: escribe su nombre, o déjalo vacío para mantener su nombre original. Después edita el widget de nuevo y desactiva esto.",
+            "da": "Sådan navngiver du rummene og enhederne: slå dette til og gem widgetten, og forlad så dashboardets redigeringstilstand. Hvert rum og hver enhed viser et tekstfelt: skriv navnet, eller lad det stå tomt for at beholde det oprindelige navn. Redigér derefter widgetten igen, og slå dette fra.",
+            "ru": "Чтобы назвать комнаты и устройства: включите это и сохраните виджет, затем выйдите из режима редактирования панели. У каждой комнаты и каждого устройства появится текстовое поле: введите название или оставьте его пустым, чтобы оставить исходное имя. Затем снова откройте настройки виджета и выключите это.",
+            "pl": "Aby nazwać pokoje i urządzenia: włącz to i zapisz widżet, a potem wyjdź z trybu edycji pulpitu. Każdy pokój i każde urządzenie pokaże pole tekstowe: wpisz nazwę albo zostaw je puste, aby zachować pierwotną nazwę. Potem ponownie edytuj widżet i wyłącz to.",
+            "ko": "방과 기기 이름을 정하려면: 이 옵션을 켜고 위젯을 저장한 뒤 대시보드 편집 모드를 나가세요. 각 방과 기기에 입력란이 나타납니다. 이름을 입력하거나 비워 두면 원래 이름이 그대로 쓰입니다. 그런 다음 위젯을 다시 편집해 이 옵션을 끄세요.",
+            "ar": "لتسمية الغرف والأجهزة: شغّل هذا الخيار واحفظ الأداة، ثم اخرج من وضع تحرير لوحة التحكم. يظهر حقل نصي لكل غرفة ولكل جهاز: اكتب الاسم، أو اتركه فارغًا لإبقاء الاسم الأصلي. بعد ذلك حرّر الأداة مجددًا وأوقف هذا الخيار."
+          },
+          "value": false
+        },
+        {
+          "id": "layout",
+          "type": "dropdown",
+          "value": "tiles",
+          "title": {
+            "en": "Layout",
+            "nl": "Indeling",
+            "de": "Layout",
+            "fr": "Disposition",
+            "it": "Layout",
+            "sv": "Layout",
+            "no": "Oppsett",
+            "es": "Diseño",
+            "da": "Layout",
+            "ru": "Макет",
+            "pl": "Układ",
+            "ko": "레이아웃",
+            "ar": "التخطيط"
+          },
+          "hint": {
+            "en": "Compact shows each group's values on lines, without names: tap a value to see what it is.",
+            "nl": "Compact toont de waarden van elke groep op regels, zonder namen: tik op een waarde om te zien wat het is.",
+            "de": "Kompakt zeigt die Werte jeder Gruppe in Zeilen, ohne Namen: Tippe auf einen Wert, um zu sehen, was er ist.",
+            "fr": "Compact affiche les valeurs de chaque groupe en lignes, sans noms : touchez une valeur pour voir ce que c'est.",
+            "it": "Compatto mostra i valori di ogni gruppo su righe, senza nomi: tocca un valore per vedere cos'è.",
+            "sv": "Kompakt visar varje grupps värden på rader, utan namn: tryck på ett värde för att se vad det är.",
+            "no": "Kompakt viser hver gruppes verdier på linjer, uten navn: trykk på en verdi for å se hva den er.",
+            "es": "Compacto muestra los valores de cada grupo en líneas, sin nombres: toca un valor para ver qué es.",
+            "da": "Kompakt viser hver gruppes værdier på linjer, uden navne: tryk på en værdi for at se, hvad den er.",
+            "ru": "«Компактно» показывает значения каждой группы строками, без названий: нажмите на значение, чтобы узнать, что это.",
+            "pl": "Kompaktowy pokazuje wartości każdej grupy w wierszach, bez nazw: dotknij wartości, aby zobaczyć, co to jest.",
+            "ko": "간단히는 각 그룹의 값을 이름 없이 줄로 표시합니다. 값을 탭하면 무엇인지 볼 수 있습니다.",
+            "ar": "«مضغوط» يعرض قيم كل مجموعة في أسطر بلا أسماء: المس قيمة لترى ما هي."
+          },
+          "values": [
+            {
+              "id": "tiles",
+              "title": {
+                "en": "Tiles",
+                "nl": "Tegels",
+                "de": "Kacheln",
+                "fr": "Tuiles",
+                "it": "Riquadri",
+                "sv": "Rutor",
+                "no": "Fliser",
+                "es": "Mosaicos",
+                "da": "Felter",
+                "ru": "Плитки",
+                "pl": "Kafelki",
+                "ko": "타일",
+                "ar": "بلاطات"
+              }
+            },
+            {
+              "id": "compact",
+              "title": {
+                "en": "Compact",
+                "nl": "Compact",
+                "de": "Kompakt",
+                "fr": "Compact",
+                "it": "Compatto",
+                "sv": "Kompakt",
+                "no": "Kompakt",
+                "es": "Compacto",
+                "da": "Kompakt",
+                "ru": "Компактно",
+                "pl": "Kompaktowy",
+                "ko": "간단히",
+                "ar": "مضغوط"
+              }
+            }
+          ]
+        },
+        {
+          "id": "groupBy",
+          "type": "dropdown",
+          "value": "rooms",
+          "title": {
+            "en": "Group by",
+            "nl": "Groeperen op",
+            "de": "Gruppieren nach",
+            "fr": "Regrouper par",
+            "it": "Raggruppa per",
+            "sv": "Gruppera efter",
+            "no": "Grupper etter",
+            "es": "Agrupar por",
+            "da": "Gruppér efter",
+            "ru": "Группировать по",
+            "pl": "Grupuj według",
+            "ko": "그룹 기준",
+            "ar": "التجميع حسب"
+          },
+          "values": [
+            {
+              "id": "rooms",
+              "title": {
+                "en": "Rooms",
+                "nl": "Ruimtes",
+                "de": "Räume",
+                "fr": "Pièces",
+                "it": "Stanze",
+                "sv": "Rum",
+                "no": "Rom",
+                "es": "Habitaciones",
+                "da": "Rum",
+                "ru": "Комнатам",
+                "pl": "Pomieszczenia",
+                "ko": "방",
+                "ar": "الغرف"
+              }
+            },
+            {
+              "id": "devices",
+              "title": {
+                "en": "Devices",
+                "nl": "Apparaten",
+                "de": "Geräte",
+                "fr": "Appareils",
+                "it": "Dispositivi",
+                "sv": "Enheter",
+                "no": "Enheter",
+                "es": "Dispositivos",
+                "da": "Enheder",
+                "ru": "Устройствам",
+                "pl": "Urządzenia",
+                "ko": "기기",
+                "ar": "الأجهزة"
+              }
+            }
+          ]
+        },
+        {
+          "id": "values",
+          "type": "dropdown",
+          "value": "readings",
+          "title": {
+            "en": "Values",
+            "nl": "Waarden",
+            "de": "Werte",
+            "fr": "Valeurs",
+            "it": "Valori",
+            "sv": "Värden",
+            "no": "Verdier",
+            "es": "Valores",
+            "da": "Værdier",
+            "ru": "Значения",
+            "pl": "Wartości",
+            "ko": "값",
+            "ar": "القيم"
+          },
+          "hint": {
+            "en": "Readings are what the devices measure, their meters and their alarms. All values adds switches, dim levels, set temperatures and modes.",
+            "nl": "Metingen zijn wat de apparaten meten, hun meters en hun alarmen. Alle waarden voegt schakelaars, dimniveaus, ingestelde temperaturen en modi toe.",
+            "de": "Messwerte sind, was die Geräte messen, ihre Zähler und ihre Alarme. Alle Werte fügt Schalter, Dimmstufen, Solltemperaturen und Modi hinzu.",
+            "fr": "Les mesures sont ce que mesurent les appareils, leurs compteurs et leurs alarmes. Toutes les valeurs ajoute interrupteurs, niveaux de variation, températures de consigne et modes.",
+            "it": "Le letture sono ciò che misurano i dispositivi, i loro contatori e i loro allarmi. Tutti i valori aggiunge interruttori, livelli di luminosità, temperature impostate e modalità.",
+            "sv": "Mätvärden är det enheterna mäter, deras mätare och deras larm. Alla värden lägger till brytare, dimnivåer, inställda temperaturer och lägen.",
+            "no": "Målinger er det enhetene måler, målerne deres og alarmene deres. Alle verdier legger til brytere, dimmenivåer, innstilte temperaturer og moduser.",
+            "es": "Las lecturas son lo que miden los dispositivos, sus contadores y sus alarmas. Todos los valores añade interruptores, niveles de atenuación, temperaturas fijadas y modos.",
+            "da": "Målinger er det, enhederne måler, deres målere og deres alarmer. Alle værdier tilføjer kontakter, dæmpningsniveauer, indstillede temperaturer og tilstande.",
+            "ru": "Показания — это то, что измеряют устройства, их счётчики и тревоги. «Все значения» добавляет выключатели, яркость, заданные температуры и режимы.",
+            "pl": "Odczyty to to, co mierzą urządzenia, ich liczniki i alarmy. Wszystkie wartości dodaje przełączniki, poziomy jasności, ustawione temperatury i tryby.",
+            "ko": "측정값은 기기가 측정하는 값, 계량기, 경보입니다. 모든 값은 스위치, 밝기, 설정 온도, 모드를 더합니다.",
+            "ar": "القراءات هي ما تقيسه الأجهزة وعداداتها وإنذاراتها. «كل القيم» يضيف المفاتيح ومستويات الإضاءة ودرجات الحرارة المضبوطة والأوضاع."
+          },
+          "values": [
+            {
+              "id": "readings",
+              "title": {
+                "en": "Readings",
+                "nl": "Metingen",
+                "de": "Messwerte",
+                "fr": "Mesures",
+                "it": "Letture",
+                "sv": "Mätvärden",
+                "no": "Målinger",
+                "es": "Lecturas",
+                "da": "Målinger",
+                "ru": "Показания",
+                "pl": "Odczyty",
+                "ko": "측정값",
+                "ar": "القراءات"
+              }
+            },
+            {
+              "id": "all",
+              "title": {
+                "en": "All values",
+                "nl": "Alle waarden",
+                "de": "Alle Werte",
+                "fr": "Toutes les valeurs",
+                "it": "Tutti i valori",
+                "sv": "Alla värden",
+                "no": "Alle verdier",
+                "es": "Todos los valores",
+                "da": "Alle værdier",
+                "ru": "Все значения",
+                "pl": "Wszystkie wartości",
+                "ko": "모든 값",
+                "ar": "كل القيم"
+              }
+            }
+          ]
+        },
+        {
+          "id": "columns",
+          "type": "dropdown",
+          "title": {
+            "en": "Tiles per row",
+            "nl": "Tegels per rij",
+            "de": "Kacheln pro Zeile",
+            "fr": "Tuiles par ligne",
+            "it": "Riquadri per riga",
+            "sv": "Rutor per rad",
+            "no": "Fliser per rad",
+            "es": "Mosaicos por fila",
+            "da": "Felter pr. række",
+            "ru": "Плиток в ряду",
+            "pl": "Kafelków w rzędzie",
+            "ko": "행당 타일",
+            "ar": "البلاطات في كل صف"
+          },
+          "value": "3",
+          "values": [
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            },
+            {
+              "id": "3",
+              "title": {
+                "en": "3",
+                "nl": "3",
+                "de": "3",
+                "fr": "3",
+                "it": "3",
+                "sv": "3",
+                "no": "3",
+                "es": "3",
+                "da": "3",
+                "ru": "3",
+                "pl": "3",
+                "ko": "3",
+                "ar": "3"
+              }
+            },
+            {
+              "id": "4",
+              "title": {
+                "en": "4",
+                "nl": "4",
+                "de": "4",
+                "fr": "4",
+                "it": "4",
+                "sv": "4",
+                "no": "4",
+                "es": "4",
+                "da": "4",
+                "ru": "4",
+                "pl": "4",
+                "ko": "4",
+                "ar": "4"
+              }
+            }
+          ],
+          "hint": {
+            "en": "In the Tiles layout.",
+            "nl": "In de indeling Tegels.",
+            "de": "Im Layout Kacheln.",
+            "fr": "Dans la disposition Tuiles.",
+            "it": "Nel layout Riquadri.",
+            "sv": "I layouten Rutor.",
+            "no": "I oppsettet Fliser.",
+            "es": "En el diseño Mosaicos.",
+            "da": "I layoutet Felter.",
+            "ru": "В макете «Плитки».",
+            "pl": "W układzie Kafelki.",
+            "ko": "타일 레이아웃에서.",
+            "ar": "في تخطيط البلاطات."
+          }
+        },
+        {
+          "id": "greenWhenFine",
+          "type": "checkbox",
+          "value": false,
+          "title": {
+            "en": "Green when fine",
+            "nl": "Groen als het goed is",
+            "de": "Grün, wenn in Ordnung",
+            "fr": "Vert si tout va bien",
+            "it": "Verde se va bene",
+            "sv": "Grönt när det är bra",
+            "no": "Grønt når det er bra",
+            "es": "Verde si está bien",
+            "da": "Grøn når det er fint",
+            "ru": "Зелёный, если всё в норме",
+            "pl": "Zielony, gdy w normie",
+            "ko": "정상이면 초록색",
+            "ar": "أخضر عندما يكون جيدًا"
+          },
+          "hint": {
+            "en": "Batteries, alarms and air quality are judged: low or alarming is yellow or red. This shows the fine ones in green, not grey.",
+            "nl": "Batterijen, alarmen en luchtkwaliteit worden beoordeeld: laag of alarmerend is geel of rood. Dit toont de goede in groen, niet grijs.",
+            "de": "Batterien, Alarme und Luftqualität werden bewertet: niedrig oder alarmierend ist gelb oder rot. Dies zeigt die guten grün statt grau.",
+            "fr": "Batteries, alarmes et qualité de l'air sont évaluées : faible ou en alarme, c'est jaune ou rouge. Ceci affiche les bonnes en vert, et non en gris.",
+            "it": "Batterie, allarmi e qualità dell'aria vengono valutati: basso o in allarme è giallo o rosso. Questo mostra quelli a posto in verde, non in grigio.",
+            "sv": "Batterier, larm och luftkvalitet bedöms: lågt eller larmande är gult eller rött. Detta visar de bra i grönt, inte grått.",
+            "no": "Batterier, alarmer og luftkvalitet vurderes: lavt eller alarmerende er gult eller rødt. Dette viser de gode i grønt, ikke grått.",
+            "es": "Se valoran baterías, alarmas y calidad del aire: bajo o en alarma es amarillo o rojo. Esto muestra los correctos en verde, no en gris.",
+            "da": "Batterier, alarmer og luftkvalitet vurderes: lavt eller alarmerende er gult eller rødt. Dette viser de gode i grønt, ikke gråt.",
+            "ru": "Оцениваются батареи, тревоги и качество воздуха: низкое или тревожное — жёлтое или красное. Это показывает нормальные зелёным, а не серым.",
+            "pl": "Oceniane są baterie, alarmy i jakość powietrza: niskie lub alarmujące są żółte lub czerwone. To pokazuje dobre na zielono, a nie na szaro.",
+            "ko": "배터리, 경보, 공기질을 평가합니다. 낮거나 경보면 노란색 또는 빨간색입니다. 이 설정은 정상인 값을 회색 대신 초록색으로 표시합니다.",
+            "ar": "تُقيَّم البطاريات والإنذارات وجودة الهواء: المنخفض أو المُنذِر أصفر أو أحمر. هذا يعرض الجيدة بالأخضر بدل الرمادي."
+          }
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid shows the colours bright and at full strength.",
+            "nl": "Levendig toont de kleuren fel en op volle sterkte.",
+            "de": "Kräftig zeigt die Farben kräftig und in voller Stärke.",
+            "fr": "Vives affiche les couleurs vives, à pleine intensité.",
+            "it": "Vivaci mostra i colori vivaci e a piena intensità.",
+            "sv": "Livfulla visar färgerna klara och i full styrka.",
+            "no": "Livlige viser fargene klare og med full styrke.",
+            "es": "Vivos muestra los colores vivos y con toda su intensidad.",
+            "da": "Livlige viser farverne klare og i fuld styrke.",
+            "ru": "«Яркие» показывают цвета ярко и в полную силу.",
+            "pl": "Żywe pokazują kolory jaskrawo i w pełnej mocy.",
+            "ko": "선명하게는 색을 선명하고 진하게 표시합니다.",
+            "ar": "«زاهية» تعرض الألوان زاهية وبكامل قوتها."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
+              }
+            }
+          ]
+        }
+      ],
+      "api": {
+        "getState": {
+          "method": "GET",
+          "path": "/state"
+        },
+        "setName": {
+          "method": "POST",
+          "path": "/names"
+        }
+      },
+      "id": "valueboard"
+    },
     "valuematrix": {
       "name": {
         "en": "Value Matrix",
@@ -39619,1779 +41392,6 @@
         }
       },
       "id": "webpage"
-    },
-    "combined": {
-      "name": {
-        "en": "Combined Value",
-        "nl": "Gecombineerde waarde",
-        "de": "Kombinierter Wert",
-        "fr": "Valeur combinée",
-        "it": "Valore combinato",
-        "sv": "Kombinerat värde",
-        "no": "Kombinert verdi",
-        "es": "Valor combinado",
-        "da": "Samlet værdi",
-        "ru": "Сводное значение",
-        "pl": "Wartość łączna",
-        "ko": "통합 값",
-        "ar": "قيمة مجمّعة"
-      },
-      "height": 104,
-      "transparent": true,
-      "devices": {
-        "type": "global",
-        "singular": false
-      },
-      "settings": [
-        {
-          "id": "capability",
-          "type": "autocomplete",
-          "title": {
-            "en": "Value",
-            "nl": "Waarde",
-            "de": "Wert",
-            "fr": "Valeur",
-            "it": "Valore",
-            "sv": "Värde",
-            "no": "Verdi",
-            "es": "Valor",
-            "da": "Værdi",
-            "ru": "Значение",
-            "pl": "Wartość",
-            "ko": "값",
-            "ar": "القيمة"
-          },
-          "hint": {
-            "en": "The value to combine, from the widget's devices that have it; with no devices picked, from every device that has it.",
-            "nl": "De waarde om te combineren, van de apparaten van de widget die haar hebben; zonder gekozen apparaten van elk apparaat dat haar heeft.",
-            "de": "Der zu kombinierende Wert, von den Geräten des Widgets, die ihn haben; ohne gewählte Geräte von jedem Gerät, das ihn hat.",
-            "fr": "La valeur à combiner, des appareils du widget qui l'ont ; sans appareil choisi, de tous les appareils qui l'ont.",
-            "it": "Il valore da combinare, dai dispositivi del widget che lo hanno; senza dispositivi scelti, da tutti quelli che lo hanno.",
-            "sv": "Värdet som ska kombineras, från widgetens enheter som har det; utan valda enheter från varje enhet som har det.",
-            "no": "Verdien som skal kombineres, fra widgetens enheter som har den; uten valgte enheter fra hver enhet som har den.",
-            "es": "El valor que se combina, de los dispositivos del widget que lo tienen; sin dispositivos elegidos, de todos los que lo tienen.",
-            "da": "Værdien, der samles, fra widgettens enheder, der har den; uden valgte enheder fra hver enhed, der har den.",
-            "ru": "Значение для объединения — с устройств виджета, у которых оно есть; если устройства не выбраны, со всех устройств, у которых оно есть.",
-            "pl": "Wartość do połączenia, z urządzeń widżetu, które ją mają; bez wybranych urządzeń z każdego urządzenia, które ją ma.",
-            "ko": "합칠 값입니다. 이 값이 있는 위젯의 기기에서 가져오며, 선택한 기기가 없으면 이 값이 있는 모든 기기에서 가져옵니다.",
-            "ar": "القيمة المراد جمعها، من أجهزة الأداة التي تملكها؛ وإن لم تختر أي جهاز فمن كل جهاز يملكها."
-          }
-        },
-        {
-          "id": "show",
-          "type": "dropdown",
-          "title": {
-            "en": "Show",
-            "nl": "Toon",
-            "de": "Anzeigen",
-            "fr": "Afficher",
-            "it": "Mostra",
-            "sv": "Visa",
-            "no": "Vis",
-            "es": "Mostrar",
-            "da": "Vis",
-            "ru": "Показывать",
-            "pl": "Pokaż",
-            "ko": "표시",
-            "ar": "العرض"
-          },
-          "value": "avg",
-          "values": [
-            {
-              "id": "avg",
-              "title": {
-                "en": "Average",
-                "nl": "Gemiddelde",
-                "de": "Durchschnitt",
-                "fr": "Moyenne",
-                "it": "Media",
-                "sv": "Medelvärde",
-                "no": "Gjennomsnitt",
-                "es": "Media",
-                "da": "Gennemsnit",
-                "ru": "Среднее",
-                "pl": "Średnia",
-                "ko": "평균",
-                "ar": "المتوسط"
-              }
-            },
-            {
-              "id": "median",
-              "title": {
-                "en": "Median",
-                "nl": "Mediaan",
-                "de": "Median",
-                "fr": "Médiane",
-                "it": "Mediana",
-                "sv": "Median",
-                "no": "Median",
-                "es": "Mediana",
-                "da": "Median",
-                "ru": "Медиана",
-                "pl": "Mediana",
-                "ko": "중앙값",
-                "ar": "الوسيط"
-              }
-            },
-            {
-              "id": "sum",
-              "title": {
-                "en": "Sum",
-                "nl": "Som",
-                "de": "Summe",
-                "fr": "Somme",
-                "it": "Somma",
-                "sv": "Summa",
-                "no": "Sum",
-                "es": "Suma",
-                "da": "Sum",
-                "ru": "Сумма",
-                "pl": "Suma",
-                "ko": "합계",
-                "ar": "المجموع"
-              }
-            },
-            {
-              "id": "min",
-              "title": {
-                "en": "Lowest",
-                "nl": "Laagste",
-                "de": "Niedrigster",
-                "fr": "Le plus bas",
-                "it": "Il più basso",
-                "sv": "Lägsta",
-                "no": "Laveste",
-                "es": "El más bajo",
-                "da": "Laveste",
-                "ru": "Наименьшее",
-                "pl": "Najniższa",
-                "ko": "최저",
-                "ar": "الأدنى"
-              }
-            },
-            {
-              "id": "max",
-              "title": {
-                "en": "Highest",
-                "nl": "Hoogste",
-                "de": "Höchster",
-                "fr": "Le plus haut",
-                "it": "Il più alto",
-                "sv": "Högsta",
-                "no": "Høyeste",
-                "es": "El más alto",
-                "da": "Højeste",
-                "ru": "Наибольшее",
-                "pl": "Najwyższa",
-                "ko": "최고",
-                "ar": "الأعلى"
-              }
-            },
-            {
-              "id": "range",
-              "title": {
-                "en": "Lowest – highest",
-                "nl": "Laagste – hoogste",
-                "de": "Niedrigster – höchster",
-                "fr": "Plus bas – plus haut",
-                "it": "Più basso – più alto",
-                "sv": "Lägsta – högsta",
-                "no": "Laveste – høyeste",
-                "es": "Más bajo – más alto",
-                "da": "Laveste – højeste",
-                "ru": "Наименьшее – наибольшее",
-                "pl": "Najniższa – najwyższa",
-                "ko": "최저 – 최고",
-                "ar": "الأدنى – الأعلى"
-              }
-            },
-            {
-              "id": "out",
-              "title": {
-                "en": "Number outside the OK range",
-                "nl": "Aantal buiten het OK-bereik",
-                "de": "Anzahl außerhalb des OK-Bereichs",
-                "fr": "Nombre hors de la plage OK",
-                "it": "Numero fuori dall'intervallo OK",
-                "sv": "Antal utanför OK-intervallet",
-                "no": "Antall utenfor OK-området",
-                "es": "Número fuera del rango OK",
-                "da": "Antal uden for OK-intervallet",
-                "ru": "Сколько вне диапазона нормы",
-                "pl": "Liczba poza zakresem OK",
-                "ko": "정상 범위 밖의 개수",
-                "ar": "العدد خارج النطاق الجيد"
-              }
-            }
-          ]
-        },
-        {
-          "id": "name",
-          "type": "text",
-          "title": {
-            "en": "Name",
-            "nl": "Naam",
-            "de": "Name",
-            "fr": "Nom",
-            "it": "Nome",
-            "sv": "Namn",
-            "no": "Navn",
-            "es": "Nombre",
-            "da": "Navn",
-            "ru": "Название",
-            "pl": "Nazwa",
-            "ko": "이름",
-            "ar": "الاسم"
-          },
-          "hint": {
-            "en": "Empty: the value's name, such as Temperature.",
-            "nl": "Leeg: de naam van de waarde, zoals Temperatuur.",
-            "de": "Leer: der Name des Werts, etwa Temperatur.",
-            "fr": "Vide : le nom de la valeur, comme Température.",
-            "it": "Vuoto: il nome del valore, come Temperatura.",
-            "sv": "Tomt: värdets namn, som Temperatur.",
-            "no": "Tomt: verdiens navn, som Temperatur.",
-            "es": "Vacío: el nombre del valor, como Temperatura.",
-            "da": "Tomt: værdiens navn, som Temperatur.",
-            "ru": "Пусто: название значения, например «Температура».",
-            "pl": "Puste: nazwa wartości, np. Temperatura.",
-            "ko": "비워 두면 값의 이름(예: 온도)이 쓰입니다.",
-            "ar": "فارغ: اسم القيمة، مثل درجة الحرارة."
-          },
-          "value": ""
-        },
-        {
-          "id": "okRange",
-          "type": "text",
-          "title": {
-            "en": "OK range",
-            "nl": "OK-bereik",
-            "de": "OK-Bereich",
-            "fr": "Plage OK",
-            "it": "Intervallo OK",
-            "sv": "OK-intervall",
-            "no": "OK-område",
-            "es": "Rango OK",
-            "da": "OK-interval",
-            "ru": "Диапазон нормы",
-            "pl": "Zakres OK",
-            "ko": "정상 범위",
-            "ar": "النطاق الجيد"
-          },
-          "hint": {
-            "en": "In the value's unit: 18–24, <1000 or >20. Outside it the tile turns orange, and red once it's past by half the range (or half the limit); devices outside it get an orange or red dot. Empty: none.",
-            "nl": "In de eenheid van de waarde: 18–24, <1000 of >20. Daarbuiten wordt de tegel oranje, en rood zodra het er een half bereik (of de helft van de grens) voorbij is; apparaten daarbuiten krijgen een oranje of rode stip. Leeg: geen.",
-            "de": "In der Einheit des Werts: 18–24, <1000 oder >20. Außerhalb wird die Kachel orange und rot, sobald der Wert um den halben Bereich (oder die halbe Grenze) darüber hinaus liegt; Geräte außerhalb bekommen einen orangen oder roten Punkt. Leer: keiner.",
-            "fr": "Dans l'unité de la valeur : 18–24, <1000 ou >20. Dehors, la tuile devient orange, et rouge une fois dépassée de la moitié de la plage (ou de la moitié de la limite) ; les appareils dehors ont un point orange ou rouge. Vide : aucune.",
-            "it": "Nell'unità del valore: 18–24, <1000 o >20. Fuori il riquadro diventa arancione, e rosso quando lo supera di metà intervallo (o di metà limite); i dispositivi fuori hanno un punto arancione o rosso. Vuoto: nessuno.",
-            "sv": "I värdets enhet: 18–24, <1000 eller >20. Utanför blir rutan orange, och röd när värdet ligger ett halvt intervall (eller en halv gräns) utanför; enheter utanför får en orange eller röd prick. Tomt: inget.",
-            "no": "I verdiens enhet: 18–24, <1000 eller >20. Utenfor blir flisen oransje, og rød når verdien er et halvt område (eller en halv grense) utenfor; enheter utenfor får en oransje eller rød prikk. Tomt: ingen.",
-            "es": "En la unidad del valor: 18–24, <1000 o >20. Fuera, el mosaico se vuelve naranja, y rojo cuando lo supera en medio rango (o en la mitad del límite); los dispositivos fuera tienen un punto naranja o rojo. Vacío: ninguno.",
-            "da": "I værdiens enhed: 18–24, <1000 eller >20. Udenfor bliver feltet orange, og rødt, når værdien ligger et halvt interval (eller en halv grænse) udenfor; enheder udenfor får en orange eller rød prik. Tomt: intet.",
-            "ru": "В единицах значения: 18–24, <1000 или >20. Вне его плитка становится оранжевой, а красной, когда выходит за диапазон на его половину (или на половину предела); у устройств вне его оранжевая или красная точка. Пусто: без диапазона.",
-            "pl": "W jednostce wartości: 18–24, <1000 lub >20. Poza nim kafelek robi się pomarańczowy, a czerwony, gdy wykracza o połowę zakresu (lub połowę limitu); urządzenia poza nim mają pomarańczową lub czerwoną kropkę. Puste: bez zakresu.",
-            "ko": "값의 단위로: 18–24, <1000 또는 >20. 범위 밖이면 타일이 주황색, 범위의 절반(또는 한계의 절반)만큼 벗어나면 빨간색이 되고, 범위 밖의 기기는 주황색이나 빨간색 점으로 표시됩니다. 비워 두면 범위 없음.",
-            "ar": "بوحدة القيمة: 18–24 أو <1000 أو >20. خارجه يصبح المربع برتقاليًا، وأحمر متى تجاوزه بنصف النطاق (أو نصف الحد)؛ وتظهر الأجهزة خارجه بنقطة برتقالية أو حمراء. فارغ: بلا نطاق."
-          },
-          "value": ""
-        },
-        {
-          "id": "greenWhenFine",
-          "type": "checkbox",
-          "value": false,
-          "title": {
-            "en": "Green when fine",
-            "nl": "Groen als het goed is",
-            "de": "Grün, wenn in Ordnung",
-            "fr": "Vert si tout va bien",
-            "it": "Verde se va bene",
-            "sv": "Grönt när det är bra",
-            "no": "Grønt når det er bra",
-            "es": "Verde si está bien",
-            "da": "Grøn når det er fint",
-            "ru": "Зелёный, если всё в норме",
-            "pl": "Zielony, gdy w normie",
-            "ko": "정상이면 초록색",
-            "ar": "أخضر عندما يكون جيدًا"
-          },
-          "hint": {
-            "en": "Shows the values inside their range in green, not grey.",
-            "nl": "Toont waarden binnen hun bereik in groen, niet grijs.",
-            "de": "Zeigt Werte innerhalb ihres Bereichs grün statt grau.",
-            "fr": "Affiche en vert, et non en gris, les valeurs dans leur plage.",
-            "it": "Mostra in verde, non in grigio, i valori entro il loro intervallo.",
-            "sv": "Visar värden inom sitt intervall i grönt, inte grått.",
-            "no": "Viser verdier innenfor området i grønt, ikke grått.",
-            "es": "Muestra en verde, no en gris, los valores dentro de su rango.",
-            "da": "Viser værdier inden for deres interval i grønt, ikke gråt.",
-            "ru": "Показывает значения в пределах диапазона зелёным, а не серым.",
-            "pl": "Pokazuje wartości w zakresie na zielono, a nie na szaro.",
-            "ko": "범위 안의 값을 회색 대신 초록색으로 표시합니다.",
-            "ar": "يعرض القيم الواقعة ضمن نطاقها باللون الأخضر بدل الرمادي."
-          }
-        },
-        {
-          "id": "showRange",
-          "type": "checkbox",
-          "title": {
-            "en": "Show the range",
-            "nl": "Bereik tonen",
-            "de": "Spanne anzeigen",
-            "fr": "Afficher l'écart",
-            "it": "Mostra l'intervallo",
-            "sv": "Visa spannet",
-            "no": "Vis spennet",
-            "es": "Mostrar el rango",
-            "da": "Vis spændet",
-            "ru": "Показывать диапазон",
-            "pl": "Pokaż zakres",
-            "ko": "범위 표시",
-            "ar": "عرض النطاق"
-          },
-          "hint": {
-            "en": "The lowest to the highest reading, under the name.",
-            "nl": "De laagste tot de hoogste meting, onder de naam.",
-            "de": "Der niedrigste bis höchste Messwert, unter dem Namen.",
-            "fr": "De la mesure la plus basse à la plus haute, sous le nom.",
-            "it": "Dalla lettura più bassa alla più alta, sotto il nome.",
-            "sv": "Lägsta till högsta mätvärde, under namnet.",
-            "no": "Laveste til høyeste måling, under navnet.",
-            "es": "De la lectura más baja a la más alta, bajo el nombre.",
-            "da": "Laveste til højeste måling, under navnet.",
-            "ru": "От наименьшего до наибольшего показания, под названием.",
-            "pl": "Od najniższego do najwyższego odczytu, pod nazwą.",
-            "ko": "이름 아래에 최저부터 최고 측정값까지 표시합니다.",
-            "ar": "من أدنى قراءة إلى أعلاها، تحت الاسم."
-          },
-          "value": true
-        },
-        {
-          "id": "chart",
-          "type": "checkbox",
-          "title": {
-            "en": "Show the chart",
-            "nl": "Grafiek tonen",
-            "de": "Diagramm anzeigen",
-            "fr": "Afficher le graphique",
-            "it": "Mostra il grafico",
-            "sv": "Visa diagrammet",
-            "no": "Vis diagrammet",
-            "es": "Mostrar el gráfico",
-            "da": "Vis diagrammet",
-            "ru": "Показывать график",
-            "pl": "Pokaż wykres",
-            "ko": "차트 표시",
-            "ar": "عرض المخطط"
-          },
-          "hint": {
-            "en": "Each device against the others: a dot on a scale, or for a sum each device's share.",
-            "nl": "Elk apparaat tegenover de andere: een stip op een schaal, of bij een som het aandeel van elk apparaat.",
-            "de": "Jedes Gerät im Vergleich zu den anderen: ein Punkt auf einer Skala, bei einer Summe der Anteil jedes Geräts.",
-            "fr": "Chaque appareil face aux autres : un point sur une échelle, ou pour une somme la part de chaque appareil.",
-            "it": "Ogni dispositivo rispetto agli altri: un punto su una scala, o per una somma la quota di ciascuno.",
-            "sv": "Varje enhet mot de andra: en punkt på en skala, eller för en summa varje enhets andel.",
-            "no": "Hver enhet mot de andre: et punkt på en skala, eller for en sum hver enhets andel.",
-            "es": "Cada dispositivo frente a los demás: un punto en una escala o, en una suma, la parte de cada uno.",
-            "da": "Hver enhed over for de andre: en prik på en skala, eller ved en sum hver enheds andel.",
-            "ru": "Каждое устройство относительно других: точка на шкале, а для суммы — доля каждого устройства.",
-            "pl": "Każde urządzenie na tle innych: punkt na skali, a dla sumy udział każdego urządzenia.",
-            "ko": "각 기기를 다른 기기와 비교합니다. 눈금 위의 점으로, 합계라면 기기별 비율로 표시합니다.",
-            "ar": "كل جهاز مقارنةً بالآخرين: نقطة على مقياس، أو في المجموع حصة كل جهاز."
-          },
-          "value": true
-        },
-        {
-          "id": "tileStyle",
-          "type": "dropdown",
-          "title": {
-            "en": "Tile style",
-            "nl": "Tegelstijl",
-            "de": "Kachelstil",
-            "fr": "Style des tuiles",
-            "it": "Stile dei riquadri",
-            "sv": "Rutstil",
-            "no": "Flisstil",
-            "es": "Estilo de mosaico",
-            "da": "Feltstil",
-            "ru": "Стиль плиток",
-            "pl": "Styl kafelków",
-            "ko": "타일 스타일",
-            "ar": "نمط البلاطات"
-          },
-          "hint": {
-            "en": "Pill: the icon beside the name and value, like Sensor Alarms' tiles.",
-            "nl": "Pil: het pictogram naast de naam en waarde, zoals de tegels van Sensoralarmen.",
-            "de": "Kapsel: das Symbol neben Name und Wert, wie die Kacheln von Sensoralarme.",
-            "fr": "Pilule : l'icône à côté du nom et de la valeur, comme les tuiles d'Alarmes des capteurs.",
-            "it": "Pillola: l'icona accanto al nome e al valore, come i riquadri di Allarmi sensori.",
-            "sv": "Kapsel: ikonen bredvid namnet och värdet, som rutorna i Sensorlarm.",
-            "no": "Kapsel: ikonet ved siden av navnet og verdien, som flisene i Sensoralarmer.",
-            "es": "Píldora: el icono junto al nombre y el valor, como los mosaicos de Alarmas de sensores.",
-            "da": "Kapsel: ikonet ved siden af navnet og værdien, som felterne i Sensoralarmer.",
-            "ru": "Капсула: значок рядом с именем и значением, как плитки «Тревоги датчиков».",
-            "pl": "Pigułka: ikona obok nazwy i wartości, jak kafelki Alarmów czujników.",
-            "ko": "알약형: 센서 알람의 타일처럼 아이콘이 이름과 값 옆에 놓입니다.",
-            "ar": "كبسولة: الأيقونة بجانب الاسم والقيمة، مثل بلاطات إنذارات المستشعرات."
-          },
-          "value": "compact",
-          "values": [
-            {
-              "id": "compact",
-              "title": {
-                "en": "Compact",
-                "nl": "Compact",
-                "de": "Kompakt",
-                "fr": "Compact",
-                "it": "Compatto",
-                "sv": "Kompakt",
-                "no": "Kompakt",
-                "es": "Compacto",
-                "da": "Kompakt",
-                "ru": "Компактный",
-                "pl": "Kompaktowy",
-                "ko": "컴팩트",
-                "ar": "مدمج"
-              }
-            },
-            {
-              "id": "pill",
-              "title": {
-                "en": "Pill",
-                "nl": "Pil",
-                "de": "Kapsel",
-                "fr": "Pilule",
-                "it": "Pillola",
-                "sv": "Kapsel",
-                "no": "Kapsel",
-                "es": "Píldora",
-                "da": "Kapsel",
-                "ru": "Капсула",
-                "pl": "Pigułka",
-                "ko": "알약형",
-                "ar": "كبسولة"
-              }
-            }
-          ]
-        },
-        {
-          "id": "color",
-          "type": "dropdown",
-          "title": {
-            "en": "Colour",
-            "nl": "Kleur",
-            "de": "Farbe",
-            "fr": "Couleur",
-            "it": "Colore",
-            "sv": "Färg",
-            "no": "Farge",
-            "es": "Color",
-            "da": "Farve",
-            "ru": "Цвет",
-            "pl": "Kolor",
-            "ko": "색상",
-            "ar": "اللون"
-          },
-          "hint": {
-            "en": "A tinted tile (Default: a plain tile).",
-            "nl": "Een gekleurde tegel (Standaard: een gewone tegel).",
-            "de": "Eine getönte Kachel (Standard: eine schlichte Kachel).",
-            "fr": "Une tuile teintée (Par défaut : une tuile simple).",
-            "it": "Un riquadro colorato (Predefinito: un riquadro semplice).",
-            "sv": "En tonad ruta (Standard: en vanlig ruta).",
-            "no": "En farget flis (Standard: en vanlig flis).",
-            "es": "Un mosaico teñido (Predeterminado: un mosaico normal).",
-            "da": "Et tonet felt (Standard: et almindeligt felt).",
-            "ru": "Тонированная плитка (по умолчанию: обычная плитка).",
-            "pl": "Zabarwiony kafelek (Domyślny: zwykły kafelek).",
-            "ko": "색이 입혀진 타일입니다(기본값: 일반 타일).",
-            "ar": "بلاطة ملوّنة (الافتراضي: بلاطة عادية)."
-          },
-          "value": "default",
-          "values": [
-            {
-              "id": "default",
-              "title": {
-                "en": "Default",
-                "nl": "Standaard",
-                "de": "Standard",
-                "fr": "Par défaut",
-                "it": "Predefinito",
-                "sv": "Standard",
-                "no": "Standard",
-                "es": "Predeterminado",
-                "da": "Standard",
-                "ru": "По умолчанию",
-                "pl": "Domyślny",
-                "ko": "기본값",
-                "ar": "افتراضي"
-              }
-            },
-            {
-              "id": "blue",
-              "title": {
-                "en": "Blue",
-                "nl": "Blauw",
-                "de": "Blau",
-                "fr": "Bleu",
-                "it": "Blu",
-                "sv": "Blå",
-                "no": "Blå",
-                "es": "Azul",
-                "da": "Blå",
-                "ru": "Синий",
-                "pl": "Niebieski",
-                "ko": "파랑",
-                "ar": "أزرق"
-              }
-            },
-            {
-              "id": "red",
-              "title": {
-                "en": "Red",
-                "nl": "Rood",
-                "de": "Rot",
-                "fr": "Rouge",
-                "it": "Rosso",
-                "sv": "Röd",
-                "no": "Rød",
-                "es": "Rojo",
-                "da": "Rød",
-                "ru": "Красный",
-                "pl": "Czerwony",
-                "ko": "빨강",
-                "ar": "أحمر"
-              }
-            },
-            {
-              "id": "orange",
-              "title": {
-                "en": "Orange",
-                "nl": "Oranje",
-                "de": "Orange",
-                "fr": "Orange",
-                "it": "Arancione",
-                "sv": "Orange",
-                "no": "Oransje",
-                "es": "Naranja",
-                "da": "Orange",
-                "ru": "Оранжевый",
-                "pl": "Pomarańczowy",
-                "ko": "주황",
-                "ar": "برتقالي"
-              }
-            },
-            {
-              "id": "yellow",
-              "title": {
-                "en": "Yellow",
-                "nl": "Geel",
-                "de": "Gelb",
-                "fr": "Jaune",
-                "it": "Giallo",
-                "sv": "Gul",
-                "no": "Gul",
-                "es": "Amarillo",
-                "da": "Gul",
-                "ru": "Жёлтый",
-                "pl": "Żółty",
-                "ko": "노랑",
-                "ar": "أصفر"
-              }
-            },
-            {
-              "id": "green",
-              "title": {
-                "en": "Green",
-                "nl": "Groen",
-                "de": "Grün",
-                "fr": "Vert",
-                "it": "Verde",
-                "sv": "Grön",
-                "no": "Grønn",
-                "es": "Verde",
-                "da": "Grøn",
-                "ru": "Зелёный",
-                "pl": "Zielony",
-                "ko": "초록",
-                "ar": "أخضر"
-              }
-            },
-            {
-              "id": "purple",
-              "title": {
-                "en": "Purple",
-                "nl": "Paars",
-                "de": "Lila",
-                "fr": "Violet",
-                "it": "Viola",
-                "sv": "Lila",
-                "no": "Lilla",
-                "es": "Morado",
-                "da": "Lilla",
-                "ru": "Фиолетовый",
-                "pl": "Fioletowy",
-                "ko": "보라",
-                "ar": "بنفسجي"
-              }
-            },
-            {
-              "id": "teal",
-              "title": {
-                "en": "Teal",
-                "nl": "Blauwgroen",
-                "de": "Petrol",
-                "fr": "Bleu canard",
-                "it": "Verde acqua",
-                "sv": "Blågrön",
-                "no": "Blågrønn",
-                "es": "Verde azulado",
-                "da": "Blågrøn",
-                "ru": "Бирюзовый",
-                "pl": "Morski",
-                "ko": "청록",
-                "ar": "أزرق مخضر"
-              }
-            },
-            {
-              "id": "cyan",
-              "title": {
-                "en": "Cyan",
-                "nl": "Cyaan",
-                "de": "Cyan",
-                "fr": "Cyan",
-                "it": "Ciano",
-                "sv": "Cyan",
-                "no": "Cyan",
-                "es": "Cian",
-                "da": "Cyan",
-                "ru": "Голубой",
-                "pl": "Cyjan",
-                "ko": "하늘",
-                "ar": "سماوي"
-              }
-            },
-            {
-              "id": "indigo",
-              "title": {
-                "en": "Indigo",
-                "nl": "Indigo",
-                "de": "Indigo",
-                "fr": "Indigo",
-                "it": "Indaco",
-                "sv": "Indigo",
-                "no": "Indigo",
-                "es": "Índigo",
-                "da": "Indigo",
-                "ru": "Индиго",
-                "pl": "Indygo",
-                "ko": "남색",
-                "ar": "نيلي"
-              }
-            },
-            {
-              "id": "pink",
-              "title": {
-                "en": "Pink",
-                "nl": "Roze",
-                "de": "Rosa",
-                "fr": "Rose",
-                "it": "Rosa",
-                "sv": "Rosa",
-                "no": "Rosa",
-                "es": "Rosa",
-                "da": "Lyserød",
-                "ru": "Розовый",
-                "pl": "Różowy",
-                "ko": "분홍",
-                "ar": "وردي"
-              }
-            },
-            {
-              "id": "brown",
-              "title": {
-                "en": "Brown",
-                "nl": "Bruin",
-                "de": "Braun",
-                "fr": "Marron",
-                "it": "Marrone",
-                "sv": "Brun",
-                "no": "Brun",
-                "es": "Marrón",
-                "da": "Brun",
-                "ru": "Коричневый",
-                "pl": "Brązowy",
-                "ko": "갈색",
-                "ar": "بني"
-              }
-            },
-            {
-              "id": "grey",
-              "title": {
-                "en": "Grey",
-                "nl": "Grijs",
-                "de": "Grau",
-                "fr": "Gris",
-                "it": "Grigio",
-                "sv": "Grå",
-                "no": "Grå",
-                "es": "Gris",
-                "da": "Grå",
-                "ru": "Серый",
-                "pl": "Szary",
-                "ko": "회색",
-                "ar": "رمادي"
-              }
-            }
-          ]
-        },
-        {
-          "id": "colorStyle",
-          "type": "dropdown",
-          "title": {
-            "en": "Colour style",
-            "nl": "Kleurstijl",
-            "de": "Farbstil",
-            "fr": "Style de couleur",
-            "it": "Stile colori",
-            "sv": "Färgstil",
-            "no": "Fargestil",
-            "es": "Estilo de color",
-            "da": "Farvestil",
-            "ru": "Цветовой стиль",
-            "pl": "Styl kolorów",
-            "ko": "색상 스타일",
-            "ar": "نمط الألوان"
-          },
-          "hint": {
-            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
-            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
-            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
-            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
-            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
-            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
-            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
-            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
-            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
-            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
-            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
-            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
-            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
-          },
-          "value": "soft",
-          "values": [
-            {
-              "id": "soft",
-              "title": {
-                "en": "Muted",
-                "nl": "Gedempt",
-                "de": "Gedämpft",
-                "fr": "Atténuées",
-                "it": "Smorzati",
-                "sv": "Dämpade",
-                "no": "Dempede",
-                "es": "Suaves",
-                "da": "Dæmpede",
-                "ru": "Приглушённые",
-                "pl": "Stonowane",
-                "ko": "차분하게",
-                "ar": "هادئة"
-              }
-            },
-            {
-              "id": "deep",
-              "title": {
-                "en": "Vivid",
-                "nl": "Levendig",
-                "de": "Kräftig",
-                "fr": "Vives",
-                "it": "Vivaci",
-                "sv": "Livfulla",
-                "no": "Livlige",
-                "es": "Vivos",
-                "da": "Livlige",
-                "ru": "Яркие",
-                "pl": "Żywe",
-                "ko": "선명하게",
-                "ar": "زاهية"
-              }
-            }
-          ]
-        }
-      ],
-      "api": {
-        "getState": {
-          "method": "GET",
-          "path": "/state"
-        }
-      },
-      "id": "combined"
-    },
-    "flowtiles": {
-      "name": {
-        "en": "Flow Tiles",
-        "nl": "Flowtegels",
-        "de": "Flow-Kacheln",
-        "fr": "Tuiles de flow",
-        "it": "Riquadri dei flow",
-        "sv": "Flödesrutor",
-        "no": "Flytfliser",
-        "es": "Mosaicos de flujo",
-        "da": "Flowfelter",
-        "ru": "Плитки потоков",
-        "pl": "Kafelki Flow",
-        "ko": "플로우 타일",
-        "ar": "مربعات التدفقات"
-      },
-      "height": 64,
-      "transparent": true,
-      "settings": [
-        {
-          "id": "board",
-          "type": "autocomplete",
-          "title": {
-            "en": "Board",
-            "nl": "Bord",
-            "de": "Tafel",
-            "fr": "Tableau",
-            "it": "Bacheca",
-            "sv": "Tavla",
-            "no": "Tavle",
-            "es": "Tablero",
-            "da": "Tavle",
-            "ru": "Доска",
-            "pl": "Tablica",
-            "ko": "보드",
-            "ar": "اللوحة"
-          },
-          "hint": {
-            "en": "The board the Flow cards write the tiles on (Tiles when none is picked). Widgets with the same board show the same tiles.",
-            "nl": "Het bord waarop de Flow-kaarten de tegels zetten (Tiles als er geen is gekozen). Widgets met hetzelfde bord tonen dezelfde tegels.",
-            "de": "Die Tafel, auf die die Flow-Karten die Kacheln schreiben (Tiles, wenn keine gewählt ist). Widgets mit derselben Tafel zeigen dieselben Kacheln.",
-            "fr": "Le tableau sur lequel les cartes Flow écrivent les tuiles (Tiles si aucun n'est choisi). Les widgets du même tableau montrent les mêmes tuiles.",
-            "it": "La bacheca su cui le schede Flow scrivono i riquadri (Tiles se non ne è scelta nessuna). I widget con la stessa bacheca mostrano gli stessi riquadri.",
-            "sv": "Tavlan som Flow-korten skriver rutorna på (Tiles om ingen är vald). Widgetar med samma tavla visar samma rutor.",
-            "no": "Tavlen Flow-kortene skriver flisene på (Tiles hvis ingen er valgt). Widgeter med samme tavle viser de samme flisene.",
-            "es": "El tablero en el que las tarjetas de Flow escriben los mosaicos (Tiles si no se elige ninguno). Los widgets con el mismo tablero muestran los mismos mosaicos.",
-            "da": "Tavlen, Flow-kortene skriver felterne på (Tiles, hvis ingen er valgt). Widgets med samme tavle viser de samme felter.",
-            "ru": "Доска, на которую карточки Flow пишут плитки (Tiles, если не выбрана). Виджеты с одной доской показывают одни и те же плитки.",
-            "pl": "Tablica, na której karty Flow zapisują kafelki (Tiles, gdy żadna nie jest wybrana). Widżety z tą samą tablicą pokazują te same kafelki.",
-            "ko": "Flow 카드가 타일을 쓰는 보드입니다(선택하지 않으면 Tiles). 보드가 같은 위젯은 같은 타일을 표시합니다.",
-            "ar": "اللوحة التي تكتب عليها بطاقات Flow المربعات (Tiles إن لم تُختر لوحة). تعرض الأدوات ذات اللوحة نفسها المربعات نفسها."
-          }
-        },
-        {
-          "id": "only",
-          "type": "text",
-          "title": {
-            "en": "Show only",
-            "nl": "Alleen tonen",
-            "de": "Nur zeigen",
-            "fr": "Afficher seulement",
-            "it": "Mostra solo",
-            "sv": "Visa bara",
-            "no": "Vis bare",
-            "es": "Mostrar solo",
-            "da": "Vis kun",
-            "ru": "Показывать только",
-            "pl": "Pokaż tylko",
-            "ko": "다음만 표시",
-            "ar": "اعرض فقط"
-          },
-          "hint": {
-            "en": "Tile names separated by commas, shown in that order. Empty shows every tile of the board.",
-            "nl": "Tegelnamen gescheiden door komma's, in die volgorde getoond. Leeg toont elke tegel van het bord.",
-            "de": "Kachelnamen durch Kommas getrennt, in dieser Reihenfolge gezeigt. Leer zeigt jede Kachel der Tafel.",
-            "fr": "Noms de tuiles séparés par des virgules, affichés dans cet ordre. Vide affiche toutes les tuiles du tableau.",
-            "it": "Nomi dei riquadri separati da virgole, mostrati in quell'ordine. Vuoto mostra tutti i riquadri della bacheca.",
-            "sv": "Rutnamn åtskilda med kommatecken, visade i den ordningen. Tomt visar alla rutor på tavlan.",
-            "no": "Flisnavn skilt med komma, vist i den rekkefølgen. Tomt viser alle flisene på tavlen.",
-            "es": "Nombres de mosaicos separados por comas, mostrados en ese orden. Vacío muestra todos los mosaicos del tablero.",
-            "da": "Feltnavne adskilt med komma, vist i den rækkefølge. Tomt viser alle tavlens felter.",
-            "ru": "Названия плиток через запятую, в этом порядке. Пусто — все плитки доски.",
-            "pl": "Nazwy kafelków oddzielone przecinkami, pokazane w tej kolejności. Puste pokazuje wszystkie kafelki tablicy.",
-            "ko": "쉼표로 구분한 타일 이름이며, 그 순서대로 표시됩니다. 비워 두면 보드의 모든 타일을 표시합니다.",
-            "ar": "أسماء المربعات مفصولة بفواصل، تُعرض بهذا الترتيب. الفارغ يعرض كل مربعات اللوحة."
-          },
-          "value": ""
-        },
-        {
-          "id": "order",
-          "type": "dropdown",
-          "title": {
-            "en": "Order",
-            "nl": "Volgorde",
-            "de": "Reihenfolge",
-            "fr": "Ordre",
-            "it": "Ordine",
-            "sv": "Ordning",
-            "no": "Rekkefølge",
-            "es": "Orden",
-            "da": "Rækkefølge",
-            "ru": "Порядок",
-            "pl": "Kolejność",
-            "ko": "순서",
-            "ar": "الترتيب"
-          },
-          "value": "added",
-          "values": [
-            {
-              "id": "added",
-              "title": {
-                "en": "As added",
-                "nl": "Zoals toegevoegd",
-                "de": "Wie hinzugefügt",
-                "fr": "Ordre d'ajout",
-                "it": "Come aggiunti",
-                "sv": "Som de lades till",
-                "no": "Slik de ble lagt til",
-                "es": "Según se añadieron",
-                "da": "Som tilføjet",
-                "ru": "По добавлению",
-                "pl": "Według dodania",
-                "ko": "추가한 순서",
-                "ar": "حسب الإضافة"
-              }
-            },
-            {
-              "id": "name",
-              "title": {
-                "en": "By name",
-                "nl": "Op naam",
-                "de": "Nach Name",
-                "fr": "Par nom",
-                "it": "Per nome",
-                "sv": "Efter namn",
-                "no": "Etter navn",
-                "es": "Por nombre",
-                "da": "Efter navn",
-                "ru": "По названию",
-                "pl": "Według nazwy",
-                "ko": "이름순",
-                "ar": "حسب الاسم"
-              }
-            }
-          ]
-        },
-        {
-          "id": "columns",
-          "type": "dropdown",
-          "title": {
-            "en": "Tiles per row",
-            "nl": "Tegels per rij",
-            "de": "Kacheln pro Zeile",
-            "fr": "Tuiles par ligne",
-            "it": "Riquadri per riga",
-            "sv": "Rutor per rad",
-            "no": "Fliser per rad",
-            "es": "Mosaicos por fila",
-            "da": "Felter pr. række",
-            "ru": "Плиток в ряду",
-            "pl": "Kafelków w rzędzie",
-            "ko": "행당 타일",
-            "ar": "البلاطات في كل صف"
-          },
-          "value": "3",
-          "values": [
-            {
-              "id": "1",
-              "title": {
-                "en": "1",
-                "nl": "1",
-                "de": "1",
-                "fr": "1",
-                "it": "1",
-                "sv": "1",
-                "no": "1",
-                "es": "1",
-                "da": "1",
-                "ru": "1",
-                "pl": "1",
-                "ko": "1",
-                "ar": "1"
-              }
-            },
-            {
-              "id": "2",
-              "title": {
-                "en": "2",
-                "nl": "2",
-                "de": "2",
-                "fr": "2",
-                "it": "2",
-                "sv": "2",
-                "no": "2",
-                "es": "2",
-                "da": "2",
-                "ru": "2",
-                "pl": "2",
-                "ko": "2",
-                "ar": "2"
-              }
-            },
-            {
-              "id": "3",
-              "title": {
-                "en": "3",
-                "nl": "3",
-                "de": "3",
-                "fr": "3",
-                "it": "3",
-                "sv": "3",
-                "no": "3",
-                "es": "3",
-                "da": "3",
-                "ru": "3",
-                "pl": "3",
-                "ko": "3",
-                "ar": "3"
-              }
-            }
-          ]
-        },
-        {
-          "id": "tileStyle",
-          "type": "dropdown",
-          "title": {
-            "en": "Tile style",
-            "nl": "Tegelstijl",
-            "de": "Kachelstil",
-            "fr": "Style des tuiles",
-            "it": "Stile dei riquadri",
-            "sv": "Rutstil",
-            "no": "Flisstil",
-            "es": "Estilo de mosaico",
-            "da": "Feltstil",
-            "ru": "Стиль плиток",
-            "pl": "Styl kafelków",
-            "ko": "타일 스타일",
-            "ar": "نمط البلاطات"
-          },
-          "hint": {
-            "en": "Pill: the icon beside the name and value, like Sensor Alarms' tiles.",
-            "nl": "Pil: het pictogram naast de naam en waarde, zoals de tegels van Sensoralarmen.",
-            "de": "Kapsel: das Symbol neben Name und Wert, wie die Kacheln von Sensoralarme.",
-            "fr": "Pilule : l'icône à côté du nom et de la valeur, comme les tuiles d'Alarmes des capteurs.",
-            "it": "Pillola: l'icona accanto al nome e al valore, come i riquadri di Allarmi sensori.",
-            "sv": "Kapsel: ikonen bredvid namnet och värdet, som rutorna i Sensorlarm.",
-            "no": "Kapsel: ikonet ved siden av navnet og verdien, som flisene i Sensoralarmer.",
-            "es": "Píldora: el icono junto al nombre y el valor, como los mosaicos de Alarmas de sensores.",
-            "da": "Kapsel: ikonet ved siden af navnet og værdien, som felterne i Sensoralarmer.",
-            "ru": "Капсула: значок рядом с именем и значением, как плитки «Тревоги датчиков».",
-            "pl": "Pigułka: ikona obok nazwy i wartości, jak kafelki Alarmów czujników.",
-            "ko": "알약형: 센서 알람의 타일처럼 아이콘이 이름과 값 옆에 놓입니다.",
-            "ar": "كبسولة: الأيقونة بجانب الاسم والقيمة، مثل بلاطات إنذارات المستشعرات."
-          },
-          "value": "compact",
-          "values": [
-            {
-              "id": "compact",
-              "title": {
-                "en": "Compact",
-                "nl": "Compact",
-                "de": "Kompakt",
-                "fr": "Compact",
-                "it": "Compatto",
-                "sv": "Kompakt",
-                "no": "Kompakt",
-                "es": "Compacto",
-                "da": "Kompakt",
-                "ru": "Компактный",
-                "pl": "Kompaktowy",
-                "ko": "컴팩트",
-                "ar": "مدمج"
-              }
-            },
-            {
-              "id": "pill",
-              "title": {
-                "en": "Pill",
-                "nl": "Pil",
-                "de": "Kapsel",
-                "fr": "Pilule",
-                "it": "Pillola",
-                "sv": "Kapsel",
-                "no": "Kapsel",
-                "es": "Píldora",
-                "da": "Kapsel",
-                "ru": "Капсула",
-                "pl": "Pigułka",
-                "ko": "알약형",
-                "ar": "كبسولة"
-              }
-            }
-          ]
-        },
-        {
-          "id": "tapEffect",
-          "type": "dropdown",
-          "title": {
-            "en": "On tap",
-            "nl": "Bij tikken",
-            "de": "Beim Antippen",
-            "fr": "Au toucher",
-            "it": "Al tocco",
-            "sv": "Vid tryck",
-            "no": "Ved trykk",
-            "es": "Al tocar",
-            "da": "Ved tryk",
-            "ru": "При нажатии",
-            "pl": "Po dotknięciu",
-            "ko": "누를 때",
-            "ar": "عند النقر"
-          },
-          "hint": {
-            "en": "For tiles a Flow listens to (the card A Flow Tile was tapped).",
-            "nl": "Voor tegels waar een Flow naar luistert (de kaart Op een Flowtegel is getikt).",
-            "de": "Für Kacheln, auf die ein Flow hört (die Karte Eine Flow-Kachel wurde angetippt).",
-            "fr": "Pour les tuiles qu'un Flow écoute (la carte Une Tuile de flow a été touchée).",
-            "it": "Per i riquadri ascoltati da un Flow (la scheda È stato toccato un Riquadro dei flow).",
-            "sv": "För rutor som ett flöde lyssnar på (kortet En Flödesruta trycktes).",
-            "no": "For fliser en flyt lytter til (kortet En Flytflis ble trykket).",
-            "es": "Para los mosaicos que escucha un flujo (la tarjeta Se tocó un Mosaico de flujo).",
-            "da": "For felter, et flow lytter til (kortet Der blev trykket på et Flowfelt).",
-            "ru": "Для плиток, которые слушает поток (карточка «Нажата плитка потока»).",
-            "pl": "Dla kafelków, których słucha Flow (karta Dotknięto Kafelka Flow).",
-            "ko": "플로우가 듣고 있는 타일에 적용됩니다(카드: 플로우 타일을 눌렀을 때).",
-            "ar": "للمربعات التي يستمع إليها تدفق (البطاقة: تم النقر على مربع تدفق)."
-          },
-          "value": "highlight",
-          "values": [
-            {
-              "id": "highlight",
-              "title": {
-                "en": "Highlight",
-                "nl": "Oplichten",
-                "de": "Aufleuchten",
-                "fr": "Surbrillance",
-                "it": "Evidenzia",
-                "sv": "Markera",
-                "no": "Fremhev",
-                "es": "Resaltar",
-                "da": "Fremhæv",
-                "ru": "Подсветка",
-                "pl": "Podświetlenie",
-                "ko": "강조",
-                "ar": "تمييز"
-              }
-            },
-            {
-              "id": "none",
-              "title": {
-                "en": "None",
-                "nl": "Geen",
-                "de": "Keine",
-                "fr": "Aucun",
-                "it": "Nessuno",
-                "sv": "Ingen",
-                "no": "Ingen",
-                "es": "Ninguno",
-                "da": "Ingen",
-                "ru": "Нет",
-                "pl": "Brak",
-                "ko": "없음",
-                "ar": "بلا"
-              }
-            }
-          ]
-        },
-        {
-          "id": "showAge",
-          "type": "checkbox",
-          "title": {
-            "en": "Show when it changed",
-            "nl": "Tonen wanneer het veranderde",
-            "de": "Zeigen, wann es sich änderte",
-            "fr": "Afficher quand elle a changé",
-            "it": "Mostra quando è cambiato",
-            "sv": "Visa när den ändrades",
-            "no": "Vis når den endret seg",
-            "es": "Mostrar cuándo cambió",
-            "da": "Vis, hvornår det ændrede sig",
-            "ru": "Показывать время изменения",
-            "pl": "Pokaż, kiedy się zmienił",
-            "ko": "변경 시각 표시",
-            "ar": "إظهار وقت التغيير"
-          },
-          "hint": {
-            "en": "The time of the last change, in place of a second line where a Flow set none.",
-            "nl": "Het tijdstip van de laatste wijziging, in plaats van een tweede regel waar een Flow die niet instelde.",
-            "de": "Die Zeit der letzten Änderung, anstelle einer zweiten Zeile, wo ein Flow keine gesetzt hat.",
-            "fr": "L'heure du dernier changement, à la place d'une deuxième ligne là où un Flow n'en a pas défini.",
-            "it": "L'ora dell'ultima modifica, al posto di una seconda riga dove un Flow non l'ha impostata.",
-            "sv": "Tiden för den senaste ändringen, i stället för en andra rad där ett flöde inte angav någon.",
-            "no": "Tidspunktet for siste endring, i stedet for en andre linje der en flyt ikke anga noen.",
-            "es": "La hora del último cambio, en lugar de una segunda línea donde un flujo no puso ninguna.",
-            "da": "Tidspunktet for den seneste ændring, i stedet for en anden linje, hvor et flow ikke angav nogen.",
-            "ru": "Время последнего изменения вместо второй строки, если поток её не задал.",
-            "pl": "Czas ostatniej zmiany, zamiast drugiej linii tam, gdzie Flow jej nie ustawił.",
-            "ko": "플로우가 두 번째 줄을 정하지 않은 곳에 마지막 변경 시각을 표시합니다.",
-            "ar": "وقت آخر تغيير، بدلًا من سطر ثانٍ حيث لم يحدده تدفق."
-          },
-          "value": false
-        },
-        {
-          "id": "colorStyle",
-          "type": "dropdown",
-          "title": {
-            "en": "Colour style",
-            "nl": "Kleurstijl",
-            "de": "Farbstil",
-            "fr": "Style de couleur",
-            "it": "Stile colori",
-            "sv": "Färgstil",
-            "no": "Fargestil",
-            "es": "Estilo de color",
-            "da": "Farvestil",
-            "ru": "Цветовой стиль",
-            "pl": "Styl kolorów",
-            "ko": "색상 스타일",
-            "ar": "نمط الألوان"
-          },
-          "hint": {
-            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
-            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
-            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
-            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
-            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
-            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
-            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
-            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
-            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
-            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
-            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
-            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
-            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
-          },
-          "value": "soft",
-          "values": [
-            {
-              "id": "soft",
-              "title": {
-                "en": "Muted",
-                "nl": "Gedempt",
-                "de": "Gedämpft",
-                "fr": "Atténuées",
-                "it": "Smorzati",
-                "sv": "Dämpade",
-                "no": "Dempede",
-                "es": "Suaves",
-                "da": "Dæmpede",
-                "ru": "Приглушённые",
-                "pl": "Stonowane",
-                "ko": "차분하게",
-                "ar": "هادئة"
-              }
-            },
-            {
-              "id": "deep",
-              "title": {
-                "en": "Vivid",
-                "nl": "Levendig",
-                "de": "Kräftig",
-                "fr": "Vives",
-                "it": "Vivaci",
-                "sv": "Livfulla",
-                "no": "Livlige",
-                "es": "Vivos",
-                "da": "Livlige",
-                "ru": "Яркие",
-                "pl": "Żywe",
-                "ko": "선명하게",
-                "ar": "زاهية"
-              }
-            }
-          ]
-        }
-      ],
-      "api": {
-        "getState": {
-          "method": "GET",
-          "path": "/state"
-        },
-        "tap": {
-          "method": "POST",
-          "path": "/tap"
-        },
-        "getTimeFormat": {
-          "method": "GET",
-          "path": "/time-format"
-        }
-      },
-      "id": "flowtiles"
-    },
-    "valueboard": {
-      "name": {
-        "en": "Value Board",
-        "nl": "Waardenbord",
-        "de": "Wertetafel",
-        "fr": "Tableau de valeurs",
-        "it": "Tabellone dei valori",
-        "sv": "Värdetavla",
-        "no": "Verditavle",
-        "es": "Panel de valores",
-        "da": "Værditavle",
-        "ru": "Табло значений",
-        "pl": "Tablica wartości",
-        "ko": "값 보드",
-        "ar": "لوحة القيم"
-      },
-      "height": 300,
-      "transparent": true,
-      "devices": {
-        "type": "global",
-        "singular": false
-      },
-      "settings": [
-        {
-          "id": "renameTiles",
-          "type": "checkbox",
-          "title": {
-            "en": "Rename tiles",
-            "nl": "Tegels hernoemen",
-            "de": "Kacheln umbenennen",
-            "fr": "Renommer les tuiles",
-            "it": "Rinomina riquadri",
-            "sv": "Byt namn på rutor",
-            "no": "Gi nytt navn til fliser",
-            "es": "Renombrar mosaicos",
-            "da": "Omdøb felter",
-            "ru": "Переименовать плитки",
-            "pl": "Zmień nazwy kafelków",
-            "ko": "타일 이름 바꾸기",
-            "ar": "إعادة تسمية المربعات"
-          },
-          "hint": {
-            "en": "To name the rooms and devices: turn this on and save the widget, then leave the dashboard's edit mode. Each room and device shows a text field: type its name, or leave it empty to keep its own name. Then edit the widget again and turn this off.",
-            "nl": "Ruimtes en apparaten een naam geven: zet dit aan en sla de widget op, en verlaat dan de bewerkmodus van het dashboard. Elke ruimte en elk apparaat toont een tekstveld: typ de naam, of laat het leeg om de eigen naam te houden. Bewerk daarna de widget opnieuw en zet dit uit.",
-            "de": "Räume und Geräte benennen: Schalte dies ein, speichere das Widget und verlasse den Bearbeitungsmodus des Dashboards. Jeder Raum und jedes Gerät zeigt ein Textfeld: Gib den Namen ein oder lass es leer, um den eigenen Namen zu behalten. Bearbeite danach das Widget erneut und schalte dies aus.",
-            "fr": "Pour nommer les pièces et les appareils : activez ceci, enregistrez le widget, puis quittez le mode édition du tableau de bord. Chaque pièce et chaque appareil affiche un champ de texte : tapez son nom, ou laissez-le vide pour garder son nom d'origine. Modifiez ensuite le widget à nouveau et désactivez ceci.",
-            "it": "Per dare un nome alle stanze e ai dispositivi: attiva questa opzione e salva il widget, poi esci dalla modalità di modifica della dashboard. Ogni stanza e ogni dispositivo mostra un campo di testo: scrivi il nome, o lascialo vuoto per mantenere il nome originale. Poi modifica di nuovo il widget e disattiva questa opzione.",
-            "sv": "Så namnger du rummen och enheterna: slå på detta och spara widgeten, och lämna sedan instrumentpanelens redigeringsläge. Varje rum och enhet visar ett textfält: skriv namnet, eller lämna det tomt för att behålla det egna namnet. Redigera sedan widgeten igen och slå av detta.",
-            "no": "Slik gir du rommene og enhetene navn: slå på dette og lagre widgeten, og gå så ut av dashbordets redigeringsmodus. Hvert rom og hver enhet viser et tekstfelt: skriv navnet, eller la det stå tomt for å beholde det opprinnelige navnet. Rediger så widgeten igjen og slå av dette.",
-            "es": "Para poner nombre a las habitaciones y los dispositivos: activa esto y guarda el widget, luego sal del modo de edición del panel. Cada habitación y cada dispositivo muestra un campo de texto: escribe su nombre, o déjalo vacío para mantener su nombre original. Después edita el widget de nuevo y desactiva esto.",
-            "da": "Sådan navngiver du rummene og enhederne: slå dette til og gem widgetten, og forlad så dashboardets redigeringstilstand. Hvert rum og hver enhed viser et tekstfelt: skriv navnet, eller lad det stå tomt for at beholde det oprindelige navn. Redigér derefter widgetten igen, og slå dette fra.",
-            "ru": "Чтобы назвать комнаты и устройства: включите это и сохраните виджет, затем выйдите из режима редактирования панели. У каждой комнаты и каждого устройства появится текстовое поле: введите название или оставьте его пустым, чтобы оставить исходное имя. Затем снова откройте настройки виджета и выключите это.",
-            "pl": "Aby nazwać pokoje i urządzenia: włącz to i zapisz widżet, a potem wyjdź z trybu edycji pulpitu. Każdy pokój i każde urządzenie pokaże pole tekstowe: wpisz nazwę albo zostaw je puste, aby zachować pierwotną nazwę. Potem ponownie edytuj widżet i wyłącz to.",
-            "ko": "방과 기기 이름을 정하려면: 이 옵션을 켜고 위젯을 저장한 뒤 대시보드 편집 모드를 나가세요. 각 방과 기기에 입력란이 나타납니다. 이름을 입력하거나 비워 두면 원래 이름이 그대로 쓰입니다. 그런 다음 위젯을 다시 편집해 이 옵션을 끄세요.",
-            "ar": "لتسمية الغرف والأجهزة: شغّل هذا الخيار واحفظ الأداة، ثم اخرج من وضع تحرير لوحة التحكم. يظهر حقل نصي لكل غرفة ولكل جهاز: اكتب الاسم، أو اتركه فارغًا لإبقاء الاسم الأصلي. بعد ذلك حرّر الأداة مجددًا وأوقف هذا الخيار."
-          },
-          "value": false
-        },
-        {
-          "id": "layout",
-          "type": "dropdown",
-          "value": "tiles",
-          "title": {
-            "en": "Layout",
-            "nl": "Indeling",
-            "de": "Layout",
-            "fr": "Disposition",
-            "it": "Layout",
-            "sv": "Layout",
-            "no": "Oppsett",
-            "es": "Diseño",
-            "da": "Layout",
-            "ru": "Макет",
-            "pl": "Układ",
-            "ko": "레이아웃",
-            "ar": "التخطيط"
-          },
-          "hint": {
-            "en": "Compact shows each group's values on lines, without names: tap a value to see what it is.",
-            "nl": "Compact toont de waarden van elke groep op regels, zonder namen: tik op een waarde om te zien wat het is.",
-            "de": "Kompakt zeigt die Werte jeder Gruppe in Zeilen, ohne Namen: Tippe auf einen Wert, um zu sehen, was er ist.",
-            "fr": "Compact affiche les valeurs de chaque groupe en lignes, sans noms : touchez une valeur pour voir ce que c'est.",
-            "it": "Compatto mostra i valori di ogni gruppo su righe, senza nomi: tocca un valore per vedere cos'è.",
-            "sv": "Kompakt visar varje grupps värden på rader, utan namn: tryck på ett värde för att se vad det är.",
-            "no": "Kompakt viser hver gruppes verdier på linjer, uten navn: trykk på en verdi for å se hva den er.",
-            "es": "Compacto muestra los valores de cada grupo en líneas, sin nombres: toca un valor para ver qué es.",
-            "da": "Kompakt viser hver gruppes værdier på linjer, uden navne: tryk på en værdi for at se, hvad den er.",
-            "ru": "«Компактно» показывает значения каждой группы строками, без названий: нажмите на значение, чтобы узнать, что это.",
-            "pl": "Kompaktowy pokazuje wartości każdej grupy w wierszach, bez nazw: dotknij wartości, aby zobaczyć, co to jest.",
-            "ko": "간단히는 각 그룹의 값을 이름 없이 줄로 표시합니다. 값을 탭하면 무엇인지 볼 수 있습니다.",
-            "ar": "«مضغوط» يعرض قيم كل مجموعة في أسطر بلا أسماء: المس قيمة لترى ما هي."
-          },
-          "values": [
-            {
-              "id": "tiles",
-              "title": {
-                "en": "Tiles",
-                "nl": "Tegels",
-                "de": "Kacheln",
-                "fr": "Tuiles",
-                "it": "Riquadri",
-                "sv": "Rutor",
-                "no": "Fliser",
-                "es": "Mosaicos",
-                "da": "Felter",
-                "ru": "Плитки",
-                "pl": "Kafelki",
-                "ko": "타일",
-                "ar": "بلاطات"
-              }
-            },
-            {
-              "id": "compact",
-              "title": {
-                "en": "Compact",
-                "nl": "Compact",
-                "de": "Kompakt",
-                "fr": "Compact",
-                "it": "Compatto",
-                "sv": "Kompakt",
-                "no": "Kompakt",
-                "es": "Compacto",
-                "da": "Kompakt",
-                "ru": "Компактно",
-                "pl": "Kompaktowy",
-                "ko": "간단히",
-                "ar": "مضغوط"
-              }
-            }
-          ]
-        },
-        {
-          "id": "groupBy",
-          "type": "dropdown",
-          "value": "rooms",
-          "title": {
-            "en": "Group by",
-            "nl": "Groeperen op",
-            "de": "Gruppieren nach",
-            "fr": "Regrouper par",
-            "it": "Raggruppa per",
-            "sv": "Gruppera efter",
-            "no": "Grupper etter",
-            "es": "Agrupar por",
-            "da": "Gruppér efter",
-            "ru": "Группировать по",
-            "pl": "Grupuj według",
-            "ko": "그룹 기준",
-            "ar": "التجميع حسب"
-          },
-          "values": [
-            {
-              "id": "rooms",
-              "title": {
-                "en": "Rooms",
-                "nl": "Ruimtes",
-                "de": "Räume",
-                "fr": "Pièces",
-                "it": "Stanze",
-                "sv": "Rum",
-                "no": "Rom",
-                "es": "Habitaciones",
-                "da": "Rum",
-                "ru": "Комнатам",
-                "pl": "Pomieszczenia",
-                "ko": "방",
-                "ar": "الغرف"
-              }
-            },
-            {
-              "id": "devices",
-              "title": {
-                "en": "Devices",
-                "nl": "Apparaten",
-                "de": "Geräte",
-                "fr": "Appareils",
-                "it": "Dispositivi",
-                "sv": "Enheter",
-                "no": "Enheter",
-                "es": "Dispositivos",
-                "da": "Enheder",
-                "ru": "Устройствам",
-                "pl": "Urządzenia",
-                "ko": "기기",
-                "ar": "الأجهزة"
-              }
-            }
-          ]
-        },
-        {
-          "id": "values",
-          "type": "dropdown",
-          "value": "readings",
-          "title": {
-            "en": "Values",
-            "nl": "Waarden",
-            "de": "Werte",
-            "fr": "Valeurs",
-            "it": "Valori",
-            "sv": "Värden",
-            "no": "Verdier",
-            "es": "Valores",
-            "da": "Værdier",
-            "ru": "Значения",
-            "pl": "Wartości",
-            "ko": "값",
-            "ar": "القيم"
-          },
-          "hint": {
-            "en": "Readings are what the devices measure, their meters and their alarms. All values adds switches, dim levels, set temperatures and modes.",
-            "nl": "Metingen zijn wat de apparaten meten, hun meters en hun alarmen. Alle waarden voegt schakelaars, dimniveaus, ingestelde temperaturen en modi toe.",
-            "de": "Messwerte sind, was die Geräte messen, ihre Zähler und ihre Alarme. Alle Werte fügt Schalter, Dimmstufen, Solltemperaturen und Modi hinzu.",
-            "fr": "Les mesures sont ce que mesurent les appareils, leurs compteurs et leurs alarmes. Toutes les valeurs ajoute interrupteurs, niveaux de variation, températures de consigne et modes.",
-            "it": "Le letture sono ciò che misurano i dispositivi, i loro contatori e i loro allarmi. Tutti i valori aggiunge interruttori, livelli di luminosità, temperature impostate e modalità.",
-            "sv": "Mätvärden är det enheterna mäter, deras mätare och deras larm. Alla värden lägger till brytare, dimnivåer, inställda temperaturer och lägen.",
-            "no": "Målinger er det enhetene måler, målerne deres og alarmene deres. Alle verdier legger til brytere, dimmenivåer, innstilte temperaturer og moduser.",
-            "es": "Las lecturas son lo que miden los dispositivos, sus contadores y sus alarmas. Todos los valores añade interruptores, niveles de atenuación, temperaturas fijadas y modos.",
-            "da": "Målinger er det, enhederne måler, deres målere og deres alarmer. Alle værdier tilføjer kontakter, dæmpningsniveauer, indstillede temperaturer og tilstande.",
-            "ru": "Показания — это то, что измеряют устройства, их счётчики и тревоги. «Все значения» добавляет выключатели, яркость, заданные температуры и режимы.",
-            "pl": "Odczyty to to, co mierzą urządzenia, ich liczniki i alarmy. Wszystkie wartości dodaje przełączniki, poziomy jasności, ustawione temperatury i tryby.",
-            "ko": "측정값은 기기가 측정하는 값, 계량기, 경보입니다. 모든 값은 스위치, 밝기, 설정 온도, 모드를 더합니다.",
-            "ar": "القراءات هي ما تقيسه الأجهزة وعداداتها وإنذاراتها. «كل القيم» يضيف المفاتيح ومستويات الإضاءة ودرجات الحرارة المضبوطة والأوضاع."
-          },
-          "values": [
-            {
-              "id": "readings",
-              "title": {
-                "en": "Readings",
-                "nl": "Metingen",
-                "de": "Messwerte",
-                "fr": "Mesures",
-                "it": "Letture",
-                "sv": "Mätvärden",
-                "no": "Målinger",
-                "es": "Lecturas",
-                "da": "Målinger",
-                "ru": "Показания",
-                "pl": "Odczyty",
-                "ko": "측정값",
-                "ar": "القراءات"
-              }
-            },
-            {
-              "id": "all",
-              "title": {
-                "en": "All values",
-                "nl": "Alle waarden",
-                "de": "Alle Werte",
-                "fr": "Toutes les valeurs",
-                "it": "Tutti i valori",
-                "sv": "Alla värden",
-                "no": "Alle verdier",
-                "es": "Todos los valores",
-                "da": "Alle værdier",
-                "ru": "Все значения",
-                "pl": "Wszystkie wartości",
-                "ko": "모든 값",
-                "ar": "كل القيم"
-              }
-            }
-          ]
-        },
-        {
-          "id": "columns",
-          "type": "dropdown",
-          "title": {
-            "en": "Tiles per row",
-            "nl": "Tegels per rij",
-            "de": "Kacheln pro Zeile",
-            "fr": "Tuiles par ligne",
-            "it": "Riquadri per riga",
-            "sv": "Rutor per rad",
-            "no": "Fliser per rad",
-            "es": "Mosaicos por fila",
-            "da": "Felter pr. række",
-            "ru": "Плиток в ряду",
-            "pl": "Kafelków w rzędzie",
-            "ko": "행당 타일",
-            "ar": "البلاطات في كل صف"
-          },
-          "value": "3",
-          "values": [
-            {
-              "id": "2",
-              "title": {
-                "en": "2",
-                "nl": "2",
-                "de": "2",
-                "fr": "2",
-                "it": "2",
-                "sv": "2",
-                "no": "2",
-                "es": "2",
-                "da": "2",
-                "ru": "2",
-                "pl": "2",
-                "ko": "2",
-                "ar": "2"
-              }
-            },
-            {
-              "id": "3",
-              "title": {
-                "en": "3",
-                "nl": "3",
-                "de": "3",
-                "fr": "3",
-                "it": "3",
-                "sv": "3",
-                "no": "3",
-                "es": "3",
-                "da": "3",
-                "ru": "3",
-                "pl": "3",
-                "ko": "3",
-                "ar": "3"
-              }
-            },
-            {
-              "id": "4",
-              "title": {
-                "en": "4",
-                "nl": "4",
-                "de": "4",
-                "fr": "4",
-                "it": "4",
-                "sv": "4",
-                "no": "4",
-                "es": "4",
-                "da": "4",
-                "ru": "4",
-                "pl": "4",
-                "ko": "4",
-                "ar": "4"
-              }
-            }
-          ],
-          "hint": {
-            "en": "In the Tiles layout.",
-            "nl": "In de indeling Tegels.",
-            "de": "Im Layout Kacheln.",
-            "fr": "Dans la disposition Tuiles.",
-            "it": "Nel layout Riquadri.",
-            "sv": "I layouten Rutor.",
-            "no": "I oppsettet Fliser.",
-            "es": "En el diseño Mosaicos.",
-            "da": "I layoutet Felter.",
-            "ru": "В макете «Плитки».",
-            "pl": "W układzie Kafelki.",
-            "ko": "타일 레이아웃에서.",
-            "ar": "في تخطيط البلاطات."
-          }
-        },
-        {
-          "id": "greenWhenFine",
-          "type": "checkbox",
-          "value": false,
-          "title": {
-            "en": "Green when fine",
-            "nl": "Groen als het goed is",
-            "de": "Grün, wenn in Ordnung",
-            "fr": "Vert si tout va bien",
-            "it": "Verde se va bene",
-            "sv": "Grönt när det är bra",
-            "no": "Grønt når det er bra",
-            "es": "Verde si está bien",
-            "da": "Grøn når det er fint",
-            "ru": "Зелёный, если всё в норме",
-            "pl": "Zielony, gdy w normie",
-            "ko": "정상이면 초록색",
-            "ar": "أخضر عندما يكون جيدًا"
-          },
-          "hint": {
-            "en": "Batteries, alarms and air quality are judged: low or alarming is yellow or red. This shows the fine ones in green, not grey.",
-            "nl": "Batterijen, alarmen en luchtkwaliteit worden beoordeeld: laag of alarmerend is geel of rood. Dit toont de goede in groen, niet grijs.",
-            "de": "Batterien, Alarme und Luftqualität werden bewertet: niedrig oder alarmierend ist gelb oder rot. Dies zeigt die guten grün statt grau.",
-            "fr": "Batteries, alarmes et qualité de l'air sont évaluées : faible ou en alarme, c'est jaune ou rouge. Ceci affiche les bonnes en vert, et non en gris.",
-            "it": "Batterie, allarmi e qualità dell'aria vengono valutati: basso o in allarme è giallo o rosso. Questo mostra quelli a posto in verde, non in grigio.",
-            "sv": "Batterier, larm och luftkvalitet bedöms: lågt eller larmande är gult eller rött. Detta visar de bra i grönt, inte grått.",
-            "no": "Batterier, alarmer og luftkvalitet vurderes: lavt eller alarmerende er gult eller rødt. Dette viser de gode i grønt, ikke grått.",
-            "es": "Se valoran baterías, alarmas y calidad del aire: bajo o en alarma es amarillo o rojo. Esto muestra los correctos en verde, no en gris.",
-            "da": "Batterier, alarmer og luftkvalitet vurderes: lavt eller alarmerende er gult eller rødt. Dette viser de gode i grønt, ikke gråt.",
-            "ru": "Оцениваются батареи, тревоги и качество воздуха: низкое или тревожное — жёлтое или красное. Это показывает нормальные зелёным, а не серым.",
-            "pl": "Oceniane są baterie, alarmy i jakość powietrza: niskie lub alarmujące są żółte lub czerwone. To pokazuje dobre na zielono, a nie na szaro.",
-            "ko": "배터리, 경보, 공기질을 평가합니다. 낮거나 경보면 노란색 또는 빨간색입니다. 이 설정은 정상인 값을 회색 대신 초록색으로 표시합니다.",
-            "ar": "تُقيَّم البطاريات والإنذارات وجودة الهواء: المنخفض أو المُنذِر أصفر أو أحمر. هذا يعرض الجيدة بالأخضر بدل الرمادي."
-          }
-        },
-        {
-          "id": "colorStyle",
-          "type": "dropdown",
-          "title": {
-            "en": "Colour style",
-            "nl": "Kleurstijl",
-            "de": "Farbstil",
-            "fr": "Style de couleur",
-            "it": "Stile colori",
-            "sv": "Färgstil",
-            "no": "Fargestil",
-            "es": "Estilo de color",
-            "da": "Farvestil",
-            "ru": "Цветовой стиль",
-            "pl": "Styl kolorów",
-            "ko": "색상 스타일",
-            "ar": "نمط الألوان"
-          },
-          "hint": {
-            "en": "Vivid shows the colours bright and at full strength.",
-            "nl": "Levendig toont de kleuren fel en op volle sterkte.",
-            "de": "Kräftig zeigt die Farben kräftig und in voller Stärke.",
-            "fr": "Vives affiche les couleurs vives, à pleine intensité.",
-            "it": "Vivaci mostra i colori vivaci e a piena intensità.",
-            "sv": "Livfulla visar färgerna klara och i full styrka.",
-            "no": "Livlige viser fargene klare og med full styrke.",
-            "es": "Vivos muestra los colores vivos y con toda su intensidad.",
-            "da": "Livlige viser farverne klare og i fuld styrke.",
-            "ru": "«Яркие» показывают цвета ярко и в полную силу.",
-            "pl": "Żywe pokazują kolory jaskrawo i w pełnej mocy.",
-            "ko": "선명하게는 색을 선명하고 진하게 표시합니다.",
-            "ar": "«زاهية» تعرض الألوان زاهية وبكامل قوتها."
-          },
-          "value": "soft",
-          "values": [
-            {
-              "id": "soft",
-              "title": {
-                "en": "Muted",
-                "nl": "Gedempt",
-                "de": "Gedämpft",
-                "fr": "Atténuées",
-                "it": "Smorzati",
-                "sv": "Dämpade",
-                "no": "Dempede",
-                "es": "Suaves",
-                "da": "Dæmpede",
-                "ru": "Приглушённые",
-                "pl": "Stonowane",
-                "ko": "차분하게",
-                "ar": "هادئة"
-              }
-            },
-            {
-              "id": "deep",
-              "title": {
-                "en": "Vivid",
-                "nl": "Levendig",
-                "de": "Kräftig",
-                "fr": "Vives",
-                "it": "Vivaci",
-                "sv": "Livfulla",
-                "no": "Livlige",
-                "es": "Vivos",
-                "da": "Livlige",
-                "ru": "Яркие",
-                "pl": "Żywe",
-                "ko": "선명하게",
-                "ar": "زاهية"
-              }
-            }
-          ]
-        }
-      ],
-      "api": {
-        "getState": {
-          "method": "GET",
-          "path": "/state"
-        },
-        "setName": {
-          "method": "POST",
-          "path": "/names"
-        }
-      },
-      "id": "valueboard"
     }
   },
   "esm": true,

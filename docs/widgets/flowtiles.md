@@ -16,5 +16,14 @@ Each card changes only its part, so one Flow can set the value every minute whil
 
 **Settings:** board, show only (tile names separated by commas, in that order), order (as added or by name), 1, 2 or 3 columns, compact or pill tile, [colour style](../../README.md#colour-style), on tap (highlight or none), show when it changed.
 
+## Looks
+
+<p>
+<img src="../variants/flowtiles-light.webp" alt="Flow Tiles: Light" width="300" align="top">
+<img src="../variants/flowtiles-vivid.webp" alt="Flow Tiles: Vivid" width="300" align="top">
+<img src="../variants/flowtiles-pill.webp" alt="Flow Tiles: Pill tiles" width="300" align="top">
+<img src="../variants/flowtiles-three.webp" alt="Flow Tiles: Light · Three per row" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

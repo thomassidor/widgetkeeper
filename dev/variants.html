@@ -20,7 +20,7 @@
   <script>
     // Every widget's files, in the order they depend on: the kit first, and the shared chart and presets before their users.
     const WIDGETS = ['electricity', 'thermostat', 'quickactions', 'sensoralarms', 'sensordots', 'roomhealth', 'valuematrix', 'weather', 'heatmap', 'cameras',
-      'values', 'variables', 'varpresets', 'keypad', 'flows', 'shortcuts', 'price', 'timers', 'locks', 'lights', 'lightrooms', 'curtains', 'media', 'sparklines',
+      'values', 'combined', 'flowtiles', 'valueboard', 'variables', 'varpresets', 'keypad', 'flows', 'shortcuts', 'price', 'timers', 'locks', 'lights', 'lightrooms', 'curtains', 'media', 'sparklines',
       'charts', 'totals', 'scatter', 'compare', 'timeline', 'stacked', 'lines', 'gauge', 'dailyrange', 'typicalday', 'clock', 'textline', 'dayssince', 'pollen', 'webpage', 'stack'];
     const css = ['spacer/public/kit', 'electricity/public/chart', 'thermostat/public/presets', ...WIDGETS.map(w => `${w}/public/widget`)];
     const js = ['spacer/public/kit', 'electricity/public/chart', 'thermostat/public/presets', ...WIDGETS.map(w => `${w}/public/widget`)];

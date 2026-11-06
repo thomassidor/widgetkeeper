@@ -33,6 +33,27 @@
       MOUNT.sensordots(el, withOpts(closed ? { ...w, open: null } : w, o));
     },
     stack: (el, o) => MOUNT.stack(el, withOpts(findWidget('stack'), o)),
+    // A made-up house's rooms, as dev/valueboard-preview.html's: Value Board has no README screenshot.
+    valueboard: (el, o) => {
+      const n = (capabilityId, title, value, units = null, more = {}) => ({
+        capabilityId, title, type: typeof value === 'boolean' ? 'boolean' : 'number', units, decimals: null, min: null, max: null, values: null, value, ...more,
+      });
+      const T = t => n('measure_temperature', 'Temperature', t, '°C', { decimals: 1 });
+      const H = h => n('measure_humidity', 'Humidity', h, '%');
+      const B = b => n('measure_battery', 'Battery', b, '%');
+      const W = w => n('measure_power', 'Power', w, 'W');
+      const zone = (id, name) => ({ id, name });
+      const living = zone('living', 'Living room'), kitchen = zone('kitchen', 'Kitchen'), bed = zone('bed', 'Bedroom');
+      createValueBoardWidget(el, o).setState([
+        { id: 'thermo', zone: living, name: 'Thermostat', values: [T(21.4), H(41)] },
+        { id: 'tv', zone: living, name: 'TV', values: [W(86)] },
+        { id: 'balcony', zone: living, name: 'Balcony door', values: [n('alarm_contact', 'Contact', false), B(64)] },
+        { id: 'fridge', zone: kitchen, name: 'Fridge', values: [T(4.1), W(42)] },
+        { id: 'kair', zone: kitchen, name: 'Air sensor', values: [T(22), H(48), B(18)] },
+        { id: 'bair', zone: bed, name: 'Air monitor', values: [T(19.2), H(52), n('measure_co2', 'CO₂', 1140, 'ppm')] },
+        { id: 'window', zone: bed, name: 'Window', values: [n('alarm_contact', 'Contact', true), B(91)] },
+      ]);
+    },
   };
 
   /** The frame Homey gives a widget that isn't transparent, as in screenshots.html. */
@@ -89,6 +110,9 @@
     totals: [LIGHT, VIVID, v('month', 'This month, a bar a day', { period: 'thisMonth', compare: false, color: 'green' }), v('week', 'Light · This week', { period: 'thisWeek', compare: false, color: 'orange' }, true)],
     typicalday: [LIGHT, VIVID, v('no-band', 'Without the band', { band: false, color: 'purple' }), v('smooth', 'Light · Smooth', { smooth: true, color: 'green' }, true)],
     valuematrix: [LIGHT, VIVID, v('devices', 'A row per device', { rows: 'devices' }), v('no-legend', 'Light · Without the legend', { showLegend: false }, true)],
+    combined: [LIGHT, VIVID, v('no-chart', 'Without the chart', { chart: false }), v('orange', 'Light · Orange', { color: 'orange' }, true)],
+    flowtiles: [LIGHT, VIVID, v('pill', 'Pill tiles', { tileStyle: 'pill' }), v('three', 'Light · Three per row', { columns: '3' }, true)],
+    valueboard: [LIGHT, VIVID, v('compact', 'Compact', { layout: 'compact' }), v('green', 'Light · Green when fine', { greenWhenFine: true }, true)],
     values: [LIGHT, VIVID, v('pill', 'Pill tiles', { columns: '2', tileStyle: 'pill' }), v('no-fill', 'Light · Without the fills', { percentFill: false }, true)],
     variables: [LIGHT, VIVID, v('two', 'Two columns', { columns: '2' }), v('read-only', 'Light · Read only', { readOnly: true }, true)],
     varpresets: [LIGHT, VIVID, v('compact', 'Compact', { layout: 'compact' }), v('yellow', 'Light · Yellow', { color: 'yellow' }, true)],

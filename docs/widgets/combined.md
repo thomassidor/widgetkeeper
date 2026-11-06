@@ -8,5 +8,14 @@ One value read from several devices, folded into one: the average (or median) te
 
 **Settings:** the value, the devices, show (average, median, sum, lowest, highest, lowest – highest, number outside the OK range), name, OK range, green when fine (inside the OK range), show the range, show the chart, compact or pill tile, colour, [colour style](../../README.md#colour-style).
 
+## Looks
+
+<p>
+<img src="../variants/combined-light.webp" alt="Combined Value: Light" width="300" align="top">
+<img src="../variants/combined-vivid.webp" alt="Combined Value: Vivid" width="300" align="top">
+<img src="../variants/combined-no-chart.webp" alt="Combined Value: Without the chart" width="300" align="top">
+<img src="../variants/combined-orange.webp" alt="Combined Value: Light · Orange" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)
