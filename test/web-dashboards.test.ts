@@ -155,6 +155,20 @@ describe('web dashboards: storage', () => {
     expect(web.describe()).toEqual({ enabled: true, remote: false, dashboards: 1, widgets: 0 });
   });
 
+  it('turns a chart span from before 1.2.0 into the time span settings, which the manifest no longer lists as old values', () => {
+    const { web } = setup();
+    const saved = web.save({ name: 'Old', columns: [[
+      { id: 'a', type: 'charts', settings: { span1: '7d', span2: 'lastMonth', count1: 3 } },
+      { id: 'b', type: 'sparklines', settings: { span: 'today' } },
+      { id: 'c', type: 'charts', settings: { span1: 'weeks', count1: 2, span2: 'nonsense' } },
+    ]] });
+    const [a, b, c] = saved.columns[0];
+    expect(a.settings).toMatchObject({ span1: 'days', count1: 7, leaveOut1: false, span2: 'calMonths', count2: 1, leaveOut2: true });
+    expect(b.settings).toMatchObject({ span: 'calDays', count: 1, leaveOut: false });
+    expect(c.settings).toMatchObject({ span1: 'weeks', count1: 2 }); // already new, or unknown: as any other setting
+    expect(web.list().find(d => d.id === saved.id)).toEqual(saved); // the same again when read
+  });
+
   it("keeps a wide widget's span within the columns and its place in each column it covers", () => {
     const { web } = setup();
     const saved = web.save({

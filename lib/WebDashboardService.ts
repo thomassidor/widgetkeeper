@@ -10,6 +10,7 @@ import { slotCaps, VALUE_SETTINGS } from './SparklineService.js';
 import { isReservedKey } from './storedSetting.js';
 import { valueCaps } from './ValueService.js';
 import type { AutocompleteListener, SettingItem } from './widgetAutocompletes.js';
+import { withOldSpans } from './oldSpans.js';
 
 /** The app setting with the web dashboards (`WebDashboard[]`). */
 export const WEB_DASHBOARDS_SETTING = 'webDashboards';
@@ -824,9 +825,10 @@ export default class WebDashboardService {
         ...(w.trusted === true ? { trusted: true as const } : {}), ...(w.scaled === true ? { scaled: true as const } : {}),
       };
     }
-    const given = w.settings && typeof w.settings === 'object' ? w.settings as Record<string, unknown> : {};
+    const defs: any[] = Array.isArray(def.settings) ? def.settings : [];
+    const given = withOldSpans(defs, w.settings && typeof w.settings === 'object' ? w.settings as Record<string, unknown> : {});
     const settings: Record<string, unknown> = {};
-    for (const s of Array.isArray(def.settings) ? def.settings : []) {
+    for (const s of defs) {
       const value = Object.prototype.hasOwnProperty.call(given, s.id) ? settingValue(s, given[s.id]) : undefined;
       settings[s.id] = value === undefined ? (s.value ?? null) : value;
     }

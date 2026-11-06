@@ -108,7 +108,6 @@ interface Window {
     isTimeSpan: (span: unknown) => boolean,
     sixHourLog: (entry: { step?: number } | null | undefined) => boolean,
     spanSetting: (settings: Record<string, any>, n?: string | number, defaults?: { count: number, unit: string }) => string,
-    spanFields: (stored: unknown, n?: string | number) => Record<string, any>,
     wireFrame: (Homey: any, frame: HTMLElement) => {
       height: () => number,
       setHeight: () => void,

@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { loadWidget } from './helpers/loadWidget.js';
+import { OLD_SPANS } from '../lib/oldSpans.js';
 
 const MIN = 60e3;
 const HOUR = 60 * MIN;
@@ -398,12 +399,11 @@ describe('weeks, months and years (wk-104)', () => {
       expect(of({ span1: '7d' })).toBe('7d');
       expect(of({})).toBe('24h');
       expect(kit().spanSetting({}, '', { count: 1, unit: 'calWeeks' })).toBe('1w!');
-      // The web editor shows a stored one as its number and unit.
-      expect(kit().spanFields('7d', 2)).toEqual({ count2: 7, span2: 'days', leaveOut2: false });
-      expect(kit().spanFields('lastMonth', 1)).toEqual({ count1: 1, span1: 'calMonths', leaveOut1: true });
-      expect([kit().spanFields('hours', 1), kit().spanFields(undefined, 1)]).toEqual([{}, {}]);
-      // … which is the same window.
-      for (const old of ['1h', '24h', 'today', 'yesterday', '5d', 'thisWeek', 'lastYear']) expect(span(of(kit().spanFields(old, 1)))).toEqual(span(old));
+      // A web dashboard's stored one is turned over (lib/oldSpans.ts): the same window, for each of them.
+      expect(OLD_SPANS.size).toBe(15);
+      for (const [old, { count, span: unit, leaveOut }] of OLD_SPANS) {
+        expect(span(of({ count1: count, span1: unit, leaveOut1: leaveOut })), String(old)).toEqual(span(old as string));
+      }
     });
   });
 

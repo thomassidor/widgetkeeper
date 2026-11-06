@@ -246,3 +246,113 @@ describe('the nightly sync', () => {
     sync.stop();
   });
 });
+
+describe('a sync and what happens around it', () => {
+  /** Linked and synced once: `web1` with a Clock (`a`) and a Timers (`b`), Homey's copy under its own ids. */
+  async function linked(extra: Record<string, any> = {}) {
+    const s = setup({ dashboards: { h1: { id: 'h1', name: 'Hall', columns: [{ id: 'c1', widgets: [] }] }, ...extra } });
+    s.web.save({ id: 'web1', name: 'Hall', columns: [[
+      { id: 'a', type: 'clock', title: 'A', settings: {}, deviceIds: [] },
+      { id: 'b', type: 'timers', title: 'B', settings: {}, deviceIds: [] },
+    ]] });
+    await s.sync.link('web1', { homeyId: 'h1', start: 'web' });
+    return s;
+  }
+  const webNow = (web: WebDashboardService) => web.list().find(d => d.id === 'web1')!;
+  const titles = (d: any) => (d.columns as any[]).flatMap((c: any) => (c.widgets ?? c).map((w: any) => w.title));
+  const retitled = (d: any, title: string) => ({ ...d, columns: d.columns.map((c: any[]) => c.map(w => (w.id === 'a' ? { ...w, title } : w))) });
+
+  it('keeps an edit saved while the Homey dashboard is being read', async () => {
+    const { web, sync, store, dash } = await linked();
+    const read = dash.getDashboard.getMockImplementation()!;
+    dash.getDashboard.mockImplementationOnce(async (a: any) => {
+      web.save(retitled(webNow(web), 'Edited'));
+      return read(a);
+    });
+    expect(await sync.sync('web1')).toMatchObject({ ok: true });
+    expect(titles(webNow(web))).toEqual(['Edited', 'B']);
+    expect(titles(store.get('h1'))).toEqual(['Edited', 'B']);
+  });
+
+  it('keeps an edit saved while the Homey dashboard is being written, and syncs it too', async () => {
+    const { web, sync, store, dash } = await linked();
+    // A change on Homey, so this sync writes both sides; a change on the web, so it writes Homey at all.
+    store.get('h1').columns[0].widgets[1].title = 'From Homey';
+    web.save({ ...webNow(web), name: 'From web' });
+    const write = dash.updateDashboard.getMockImplementation()!;
+    dash.updateDashboard.mockImplementationOnce(async (a: any) => {
+      const out = await write(a);
+      web.save(retitled(webNow(web), 'Edited'));
+      return out;
+    });
+    expect(await sync.sync('web1')).toMatchObject({ ok: true });
+    expect(titles(webNow(web))).toEqual(['Edited', 'From Homey']);
+    expect(titles(store.get('h1'))).toEqual(['Edited', 'From Homey']);
+    expect(webNow(web).name).toBe('From web');
+    // Nothing left over: the next sync has nothing to do.
+    dash.updateDashboard.mockClear();
+    expect(await sync.sync('web1')).toMatchObject({ ok: true, conflicts: [] });
+    expect(dash.updateDashboard).not.toHaveBeenCalled();
+  });
+
+  it("takes a tile name along when a web widget's sync starts over", async () => {
+    const { web, sync, store, dash, tileNames } = await linked();
+    web.save({ ...webNow(web), columns: [[...webNow(web).columns[0], { id: 'n', type: 'lights', title: 'New', settings: {}, deviceIds: [] }]] });
+    store.get('h1').columns[0].widgets[1].title = 'From Homey';
+    tileNames.set('web-web1-n', 'd1', 'Lamp');
+    const write = dash.updateDashboard.getMockImplementation()!;
+    dash.updateDashboard.mockImplementationOnce(async (a: any) => {
+      const out = await write(a);
+      web.save(retitled(webNow(web), 'Edited'));
+      return out;
+    });
+    expect(await sync.sync('web1')).toMatchObject({ ok: true });
+    const onHomey = store.get('h1').columns[0].widgets.find((w: any) => w.title === 'New');
+    expect(tileNames.get(onHomey.id).names).toEqual({ d1: 'Lamp' });
+    expect(tileNames.get('web-web1-n').names).toEqual({ d1: 'Lamp' });
+  });
+
+  it("doesn't bring back a widget deleted on the web when Homey's write fails", async () => {
+    const { web, sync, store, dash } = await linked();
+    web.save({ ...webNow(web), columns: [webNow(web).columns[0].filter(w => w.id !== 'b')] });
+    dash.updateDashboard.mockRejectedValueOnce(new Error('Homey said no'));
+    expect(await sync.sync('web1')).toMatchObject({ ok: false, reason: 'failed' });
+    expect(await sync.sync('web1')).toMatchObject({ ok: true });
+    expect(titles(webNow(web))).toEqual(['A']);
+    expect(titles(store.get('h1'))).toEqual(['A']);
+  });
+
+  it("doesn't double a widget new on the web when Homey took the write but its answer was lost", async () => {
+    const { web, sync, store, dash } = await linked();
+    web.save({ ...webNow(web), columns: [[...webNow(web).columns[0], { id: 'n', type: 'clock', title: 'New', settings: {}, deviceIds: [] }]] });
+    const write = dash.updateDashboard.getMockImplementation()!;
+    dash.updateDashboard.mockImplementationOnce(async (a: any) => {
+      await write(a);
+      throw new Error('Connection lost');
+    });
+    expect(await sync.sync('web1')).toMatchObject({ ok: false, reason: 'failed' });
+    expect(await sync.sync('web1')).toMatchObject({ ok: true });
+    expect(titles(webNow(web))).toEqual(['A', 'B', 'New']);
+    expect(titles(store.get('h1'))).toEqual(['A', 'B', 'New']);
+  });
+
+  it('leaves both sides alone while web dashboards are turned off, and takes it up again', async () => {
+    const { homey, web, sync, store, dash } = await linked();
+    store.get('h1').columns[0].widgets[0].title = 'From Homey';
+    homey.settings.set(WEB_ENABLED_SETTING, false);
+    dash.getDashboard.mockClear();
+    expect(await sync.syncAll()).toEqual({});
+    expect(dash.getDashboard).not.toHaveBeenCalled();
+    expect(sync.status().web1).toBeTruthy();
+    homey.settings.set(WEB_ENABLED_SETTING, true);
+    expect((await sync.syncAll()).web1).toMatchObject({ ok: true });
+    expect(titles(webNow(web))).toEqual(['From Homey', 'B']);
+  });
+
+  it("brings a Homey chart's span from before 1.2.0 over as the same span", async () => {
+    const { web, sync } = setup({ dashboards: { h1: { id: 'h1', name: 'Energy', columns: [{ id: 'c1', widgets: [ours('w1', 'charts', { settings: { span1: '7d' } })] }] } } });
+    web.save({ id: 'web1', name: '', columns: [[]] });
+    await sync.link('web1', { homeyId: 'h1', start: 'homey' });
+    expect(webNow(web).columns[0][0].settings).toMatchObject({ span1: 'days', count1: 7, leaveOut1: false });
+  });
+});

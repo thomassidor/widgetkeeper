@@ -105,7 +105,8 @@
 
     /**
      * A sync that changed this side: the dashboards again from the app, and the one on screen redrawn (its editor too:
-     * every change there is saved at once, so nothing is lost; after the save under way).
+     * every change there is saved at once, so nothing is lost; after the save under way). A drag or resize under way
+     * ends without its change (the redraw ends it): its drop would save the dashboard as it was before the sync.
      */
     async function takeIn(id, at) {
       if (taken.get(id) === at) return;
@@ -122,7 +123,7 @@
       wd.syncLinks = setup.sync || {};
       const fresh = wd.dashboards.find(d => d.id === id);
       const shown = wd.current && wd.current.dashboard && wd.current.dashboard.id === id;
-      if (shown && fresh && !wd.drag && !wd.resizing) {
+      if (shown && fresh) {
         wd.renderDashboard(fresh, wd.current.editing);
         toast(t('syncUpdated'));
       } else if (/^(#\/(edit)?)?$/.test(location.hash)) {

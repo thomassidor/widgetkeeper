@@ -246,11 +246,11 @@ export default class WebSyncService {
     return p;
   }
 
-  /** Every linked dashboard, one after another. */
+  /** Every linked dashboard, one after another; none while web dashboards are turned off (the links stay). */
   async syncAll(): Promise<Record<string, LastSync>> {
     const out: Record<string, LastSync> = {};
     for (const id of Object.keys(this.links)) {
-      if (this.stopped) break;
+      if (this.stopped || !this.deps.web.enabled) break; // turned off, even with the night's run under way
       out[id] = await this.sync(id).catch(err => ({ at: Date.now(), ok: false, reason: 'failed' as const, conflicts: [String(err)] }));
     }
     return out;
@@ -279,18 +279,23 @@ export default class WebSyncService {
     return result;
   }
 
-  private async once(id: string, link: Link): Promise<LastSync> {
+  /** `tries`: how often it may start over because the web dashboard was saved while Homey's was being written. */
+  private async once(id: string, link: Link, tries = 3): Promise<LastSync> {
     const { web, tileNames, key } = this.deps;
-    const webDash = web.list().find(d => d.id === id);
-    if (!webDash) {
+    const readWeb = () => {
+      const dashboard = web.list().find(d => d.id === id);
+      if (dashboard) return dashboard;
       this.unlink(id);
       throw new SyncError('webGone');
-    }
+    };
+    readWeb();
     const homeyDash = await key.run<HomeyDashboard>(api => api.dashboards.getDashboard({ id: link.homeyId }))
       .catch((err: unknown) => {
         if (isNotFound(err)) throw new SyncError('homeyGone');
         throw err;
       });
+    // Read after the wait, so an edit saved meanwhile is merged. From here on nothing waits until Homey's is written.
+    const webDash = readWeb();
     const byHomey = new Map(Object.entries(link.idMap).map(([k, h]) => [h, k]));
     const homeyIds = new Set((homeyDash.columns ?? []).flatMap(c => (c.widgets ?? []).map(w => String(w.id))));
     const opts: HomeySyncOptions = {
@@ -332,15 +337,16 @@ export default class WebSyncService {
     // Every kept widget's Homey id (new ones for widgets from the web), and only those.
     const idMap: Record<string, string> = {};
     for (const k of Object.keys(merged.homey.widgets)) idMap[k] = homeyIdOf(k);
-    link.idMap = idMap;
+    // Until Homey's write is through, the old ids too: a widget dropped here is still on Homey if it fails, and a new one
+    // may be there if its answer was lost. Without either, the next sync would take them for widgets added on Homey.
+    link.idMap = { ...link.idMap, ...idMap };
 
     const homeyOut = toHomey(homeyDash, merged.homey, h.opaque, opts, k => idMap[k], this.newId);
     if (hasChanges(merged.changes.homey) || !link.base) {
       const { id: _id, ...body } = homeyOut;
       await key.run(api => api.dashboards.updateDashboard({ id: link.homeyId, dashboard: body }));
     }
-    let savedWeb: WebDashboard = webDash;
-    if (hasChanges(merged.changes.web)) savedWeb = web.save(toWeb(webDash as WebSyncDashboard, merged.web, w.opaque));
+    link.idMap = idMap;
 
     // Tile names, on both sides' instances, only where they changed.
     const given: Record<string, Record<string, string>> = {};
@@ -353,6 +359,17 @@ export default class WebSyncService {
       if (JSON.stringify(want) !== JSON.stringify(names(idMap[k]))) given[idMap[k]] = want;
     }
     if (Object.keys(given).length) tileNames.replace(instance => Object.prototype.hasOwnProperty.call(given, instance), given);
+
+    let savedWeb: WebDashboard = webDash;
+    if (hasChanges(merged.changes.web)) {
+      // An edit saved while Homey's was written isn't in this merge, so saving it would undo the edit. The bases stay,
+      // and a new merge finds Homey as just written (the same as here for what this one did) and the edit on top.
+      if (JSON.stringify(readWeb()) !== JSON.stringify(webDash)) {
+        if (tries <= 1) throw new SyncError('failed');
+        return this.once(id, link, tries - 1);
+      }
+      savedWeb = web.save(toWeb(webDash as WebSyncDashboard, merged.web, w.opaque));
+    }
 
     // The new bases: each side as it is now (the web as saved, so its own normalising is in it).
     const baseWeb = withNames(webView(savedWeb as WebSyncDashboard).view, webInstance);

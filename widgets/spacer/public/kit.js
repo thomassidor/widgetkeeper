@@ -331,19 +331,6 @@
     return `${count}${unit}${unit.endsWith('!') && settings[`leaveOut${n}`] === true ? '-' : ''}`;
   }
 
-  /**
-   * A span stored before 1.2.0 (`7d`, `today`, `lastMonth` …) in `span<n>` as the time span block's settings
-   * (`{count<n>, span<n>, leaveOut<n>}`), for the web dashboards' editor to show; `{}` for anything else.
-   */
-  function spanFields(stored, n = '') {
-    if (typeof stored !== 'string' || own(SETTING_UNITS, stored)) return {};
-    const p = parseSpan(stored);
-    if (!p) return {};
-    const code = Object.keys(SPAN_UNITS).find(k => SPAN_UNITS[k] === p.unit) + (p.whole ? '!' : '');
-    const unit = Object.keys(SETTING_UNITS).find(k => SETTING_UNITS[k] === code);
-    return { [`count${n}`]: p.count, [`span${n}`]: unit, [`leaveOut${n}`]: p.skip };
-  }
-
   /** Why a write through the personal API key failed (`KeyProblem` in lib/PersonalApiKey.ts): each has its own message. */
   const KEY_PROBLEMS = ['noKey', 'keyScope', 'keyInvalid'];
 
@@ -1165,7 +1152,7 @@
 
   window.WidgetkeeperKit = {
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, undoTextZoom, el, setMask, tileNames, timeFormatter,
-    formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, spanFields, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
+    formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     onDeviceNames, colorStyle, applyColors, sound, optimistic, shake, wireBar, roomTiles,
   };
 })();

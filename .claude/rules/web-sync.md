@@ -51,13 +51,18 @@ ways, on demand or every night at a time set in the web dashboards' Settings; a 
   key, fills each side's tile names into its view (`web-<id>-<key>` and the Homey widget id), merges, refuses past
   `MAX_WIDGETS` (`tooMany`, nothing written), writes both sides' previous state to
   `/userdata/web-sync-backup-<id>.json` (no backup, no sync), then `updateDashboard` (only when Homey's side changed,
-  or the first time), `WebDashboardService.save()` (only when the web side changed), the tile names that changed
-  (`tileNames.replace()`, one write), and the new bases from what was written (the web as saved). A widget from the
-  web gets a random UUID on Homey (`idMap`). Failures keep the base and are the link's `lastSync`
+  or the first time), the tile names that changed (`tileNames.replace()`, one write), `WebDashboardService.save()`
+  (only when the web side changed), and the new bases from what was written (the web as saved). A widget from the
+  web gets a random UUID on Homey (`idMap`). The web dashboard is read after Homey's, so the merge has any edit saved
+  during that read; one saved while Homey's is written makes the sync start over instead of saving over it (the bases
+  unchanged, at most three times, then `failed`), which is why the tile names are written before the web. Until Homey's
+  write is through `idMap` holds the old ids too: a failed or lost write mustn't make a widget look added on Homey.
+  Failures keep the base and are the link's `lastSync`
   (`{ok: false, reason}`: `noKey`, `keyScope` (a read-only key fails on `updateDashboard`), `keyInvalid`, `homeyGone`,
   `webGone` (unlinks), `tooMany`, `failed`, logged); a passing error is retried once after 3 s.
 - Nightly: `webSyncSchedule` `{nightly, time}` (missing: on, 03:00), `nextLocalTime()` in the Homey's time zone (a time
-  a DST change skips comes an hour later), every link one after another, then the next night.
+  a DST change skips comes an hour later), every link one after another, then the next night; `syncAll()` does nothing while web dashboards are turned off
+  (the links stay, and opening a dashboard syncs it once they're back on).
 - Routes: `GET /web/sync` (`{schedule, links}`), `PUT /web/sync` (schedule), `POST /web/sync` (all now),
   `GET /web/sync/homey` (`{ok, dashboards: [{id, name, linked}]}` or `{ok: false, reason}`),
   `PUT /web/dashboards/:id/sync` (link; with only `{prefer}` on a linked one, changes it),
@@ -80,7 +85,8 @@ ways, on demand or every night at a time set in the web dashboards' Settings; a 
   before the widget count (`.wd-dash-count.synced`, so an unlinked card's line is as before and `docs/web` renders stay).
 - A sync that changed the web side (the event going from syncing to done with `changes.web`) reloads `/web/setup` after
   `wd.saving` and redraws the dashboard on screen, its editor too (every change there is already saved), with
-  *Updated from Homey*; on the front page, the list.
+  *Updated from Homey*; on the front page, the list. A drag or resize under way ends without its change: its drop would
+  save the dashboard from before the sync (`test/web-sync-page.test.ts`).
 - The front page's Settings dialog: a *Sync with Homey dashboards* card between the backup and This browser: Sync every
   night (switch), Time (`<input type="time">`, hidden while off), Sync all now (with the count; disabled with none).
 - Strings `web.sync*` in all 13 languages. `dev/mock-web-api.js` answers the sync routes (made-up Homey dashboards
