@@ -233,6 +233,10 @@
       "method": "POST",
       "path": "/web/logout"
     },
+    "getWebDim": {
+      "method": "GET",
+      "path": "/web/dim"
+    },
     "getWebPopups": {
       "method": "GET",
       "path": "/web/popups"

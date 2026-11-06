@@ -184,3 +184,15 @@
   background: var(--homey-color-orange, #F07A1F); color: #000000;
   font-size: 10px; font-weight: 700; line-height: 14px; text-align: center; pointer-events: none;
 }
+
+/*
+ * Reduced motion, for every widget and the web dashboards page (each loads this file): movement ends at once, while
+ * `transitionend` and `animationend` still fire. A busy spinner is what says something is happening, so Flow Buttons' and
+ * the Keypad's keep turning (their own rules, with a higher specificity).
+ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-delay: 0s !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-delay: 0s !important; transition-duration: .01ms !important; scroll-behavior: auto !important;
+  }
+}

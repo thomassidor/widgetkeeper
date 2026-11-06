@@ -70,6 +70,7 @@ export default class Diagnostics {
       webSync: (this.homey.app as any)?.webSync?.describe?.() ?? null,
       webPassword: (this.homey.app as any)?.webPassword?.describe?.() ?? null,
       webScreens: (this.homey.app as any)?.webScreens?.describe?.() ?? null,
+      webDim: (this.homey.app as any)?.webDim?.describe?.() ?? null,
       popups: (this.homey.app as any)?.popups?.describe?.() ?? null,
     };
     try {

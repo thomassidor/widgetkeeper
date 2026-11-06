@@ -110,7 +110,7 @@
         setLive(true);
         checkVersion();
         if (lostAt != null && Date.now() - lostAt > STALE_AFTER_MS) wd.reloadFrames();
-        if (lostAt != null) wd.refreshPopups();
+        if (lostAt != null) { wd.refreshPopups(); wd.refreshDim(); }
         lostAt = null;
       } catch (err) {
         fail(err);

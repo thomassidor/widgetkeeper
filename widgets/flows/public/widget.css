@@ -137,6 +137,7 @@ html, body { background: transparent !important; }
 }
 .fb-row[data-color="grey"].running .fb-button::after { border-top-color: var(--fb-text); border-right-color: var(--fb-text); }
 @keyframes fb-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .fb-row.running .fb-button::after { animation-duration: .7s !important; animation-iteration-count: infinite !important; } }
 .fb-row.done .fb-glyph { animation: fb-pop .25s ease-out; }
 @keyframes fb-pop { from { transform: scale(.4); opacity: 0; } }
 

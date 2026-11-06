@@ -124,6 +124,7 @@ html, body { margin: 0; }
   animation: kp-spin .8s linear infinite;
 }
 @keyframes kp-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .kp-spin { animation-duration: .8s !important; animation-iteration-count: infinite !important; } }
 .kp-btn.missing, .kp-btn.unavailable { opacity: .5; }
 
 /*

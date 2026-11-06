@@ -46,6 +46,7 @@ import VariableService from './lib/VariableService.js';
 import WeatherService from './lib/WeatherService.js';
 import WebDashboardService from './lib/WebDashboardService.js';
 import WebSyncService from './lib/WebSyncService.js';
+import WebDim, { WEB_DIM_CARD } from './lib/WebDim.js';
 import WebPassword, { WEB_PASSWORD_REMOVE_CARD } from './lib/WebPassword.js';
 import WebScreens from './lib/WebScreens.js';
 import { widgetAutocompletes } from './lib/widgetAutocompletes.js';
@@ -92,6 +93,7 @@ export default class WidgetkeeperApp extends Homey.App {
   webSync!: WebSyncService;
   /** The web dashboards' optional password and the browsers signed in with it. */
   webPassword!: WebPassword;
+  webDim!: WebDim;
   webScreens!: WebScreens;
   /** Messages and questions that Flows show on web dashboards and Popups widgets. */
   popups!: PopupService;
@@ -183,6 +185,8 @@ export default class WidgetkeeperApp extends Homey.App {
     this.webPassword = new WebPassword(this.homey, log);
     this.homey.flow.getActionCard(WEB_PASSWORD_REMOVE_CARD).registerRunListener(async () => this.webPassword.clear());
     this.webScreens = new WebScreens(this.homey, this.webPassword, log);
+    this.webDim = new WebDim(this.homey);
+    this.homey.flow.getActionCard(WEB_DIM_CARD).registerRunListener(async (args: { screen?: { id?: string }, level: number }) => this.webDim.set(args.screen?.id, args.level));
     this.popups = new PopupService(this.homey, { cameras: this.cameras, web: this.web }, log, debug);
     this.registerPopupFlows();
     this.registerAutocompletes();
@@ -395,7 +399,7 @@ export default class WidgetkeeperApp extends Homey.App {
     const screens = async (query: string) => this.popups.targetItems(query);
     const pictures = async (query: string) => this.popups.pictureItems(query);
     const seconds = (args: Shown) => args.duration * (args.unit === 'minutes' ? 60 : 1);
-    for (const id of [POPUP_SHOW_CARD, POPUP_ASK_CARD, POPUP_SHOW_IMAGE_CARD, POPUP_ASK_IMAGE_CARD, POPUP_CLOSE_CARD]) {
+    for (const id of [POPUP_SHOW_CARD, POPUP_ASK_CARD, POPUP_SHOW_IMAGE_CARD, POPUP_ASK_IMAGE_CARD, POPUP_CLOSE_CARD, WEB_DIM_CARD]) {
       this.homey.flow.getActionCard(id).registerArgumentAutocompleteListener('screen', screens);
     }
     for (const id of [POPUP_SHOW_CARD, POPUP_ASK_CARD]) {

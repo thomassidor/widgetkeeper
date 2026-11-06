@@ -39,7 +39,12 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Widgets read again when you come back** to a dashboard hidden for 30 seconds or more.
 - **Web dashboards update themselves:** an open page, such as a wall tablet's, reloads after the app is updated. It waits while someone is editing or a dialog is open, and doesn't reload in the browser's full screen, which a reload would leave.
 
+### Web dashboards by themselves
+- **Rotate dashboards:** a browser goes through the dashboards you tick, every so many seconds. A touch pauses it for a minute.
+- **Dim at set times,** and the Flow card *Dim the web dashboards*, for every browser or one screen name.
+
 ### Web dashboards' editor
+- **Add widget has a search and groups,** in place of one long list.
 - **Undo:** removing or moving a widget offers Undo for 8 seconds.
 
 ### Settings made alike across the widgets

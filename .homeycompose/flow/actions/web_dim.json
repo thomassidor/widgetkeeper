@@ -1,0 +1,121 @@
+{
+  "id": "web_dim",
+  "title": {
+    "en": "Dim the web dashboards",
+    "nl": "De webdashboards dimmen",
+    "de": "Web-Dashboards abdunkeln",
+    "fr": "Assombrir les tableaux de bord web",
+    "it": "Attenua le dashboard web",
+    "sv": "Dämpa webbinstrumentpanelerna",
+    "no": "Demp nettdashbordene",
+    "es": "Atenuar los paneles web",
+    "da": "Dæmp webdashboards",
+    "ru": "Затемнить веб-панели",
+    "pl": "Przyciemnij pulpity webowe",
+    "ko": "웹 대시보드 어둡게 하기",
+    "ar": "تعتيم لوحات الويب"
+  },
+  "titleFormatted": {
+    "en": "Dim [[screen]] by [[level]] %",
+    "nl": "Dim [[screen]] met [[level]] %",
+    "de": "[[screen]] um [[level]] % abdunkeln",
+    "fr": "Assombrir [[screen]] de [[level]] %",
+    "it": "Attenua [[screen]] del [[level]] %",
+    "sv": "Dämpa [[screen]] med [[level]] %",
+    "no": "Demp [[screen]] med [[level]] %",
+    "es": "Atenuar [[screen]] un [[level]] %",
+    "da": "Dæmp [[screen]] med [[level]] %",
+    "ru": "Затемнить [[screen]] на [[level]] %",
+    "pl": "Przyciemnij [[screen]] o [[level]] %",
+    "ko": "[[screen]]을(를) [[level]] % 어둡게 하기",
+    "ar": "تعتيم [[screen]] بنسبة [[level]] %"
+  },
+  "hint": {
+    "en": "Web dashboards only: every browser, or those showing a dashboard with a Popups widget of that screen name. 0 is not dimmed. It lasts until another Flow, a change of the browser's Dim, or the start or end of its set times.",
+    "nl": "Alleen webdashboards: elke browser, of die een dashboard tonen met een Pop-ups-widget met die schermnaam. 0 is niet gedimd. Het blijft tot een andere Flow, een wijziging van Dim in de browser, of het begin of einde van de ingestelde tijden.",
+    "de": "Nur Web-Dashboards: jeder Browser oder die, die ein Dashboard mit einem Popups-Widget mit diesem Bildschirmnamen zeigen. 0 ist nicht abgedunkelt. Es gilt bis zu einem anderen Flow, einer Änderung von Abdunkeln im Browser oder Beginn oder Ende seiner festgelegten Zeiten.",
+    "fr": "Tableaux de bord web uniquement : chaque navigateur, ou ceux affichant un tableau de bord avec un widget Pop-ups de ce nom d'écran. 0 n'assombrit pas. Cela dure jusqu'à un autre Flow, un changement d'Assombrir dans le navigateur, ou le début ou la fin de ses horaires.",
+    "it": "Solo dashboard web: ogni browser, o quelli che mostrano una dashboard con un widget Popup con quel nome di schermo. 0 non attenua. Dura fino a un altro Flow, una modifica di Attenua nel browser, o l'inizio o la fine dei suoi orari.",
+    "sv": "Endast webbinstrumentpaneler: varje webbläsare, eller de som visar en panel med en Popup-fönster-widget med det skärmnamnet. 0 är inte dämpat. Det gäller till ett annat Flow, en ändring av Dämpa i webbläsaren, eller början eller slutet av dess tider.",
+    "no": "Bare nettdashbord: alle nettlesere, eller de som viser et dashbord med en Popup-vinduer-widget med det skjermnavnet. 0 er ikke dempet. Det varer til en annen Flow, en endring av Demp i nettleseren, eller starten eller slutten av tidene.",
+    "es": "Solo paneles web: todos los navegadores, o los que muestran un panel con un widget Ventanas emergentes con ese nombre de pantalla. 0 no atenúa. Dura hasta otro Flow, un cambio de Atenuar en el navegador, o el inicio o el fin de sus horas.",
+    "da": "Kun webdashboards: alle browsere, eller dem der viser et dashboard med en Popups-widget med det skærmnavn. 0 er ikke dæmpet. Det varer til en anden Flow, en ændring af Dæmp i browseren, eller starten eller slutningen af dens tidsrum.",
+    "ru": "Только веб-панели: все браузеры или те, что показывают панель с виджетом «Всплывающие окна» с этим именем экрана. 0 — без затемнения. Действует до другого Flow, изменения затемнения в браузере или начала либо конца заданного времени.",
+    "pl": "Tylko pulpity webowe: każda przeglądarka lub te, które pokazują pulpit z widżetem Okna wyskakujące o tej nazwie ekranu. 0 to brak przyciemnienia. Trwa do innego Flow, zmiany Przyciemnienia w przeglądarce albo początku lub końca ustawionych godzin.",
+    "ko": "웹 대시보드만 해당: 모든 브라우저 또는 그 화면 이름의 팝업 위젯이 있는 대시보드를 표시하는 브라우저. 0은 어둡게 하지 않습니다. 다른 Flow, 브라우저의 어둡게 변경, 또는 설정한 시간의 시작이나 끝까지 유지됩니다.",
+    "ar": "لوحات الويب فقط: كل متصفح، أو التي تعرض لوحة فيها أداة النوافذ المنبثقة باسم الشاشة هذا. 0 يعني بلا تعتيم. يستمر حتى Flow آخر أو تغيير التعتيم في المتصفح أو بداية أو نهاية أوقاته."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "screen",
+      "title": {
+        "en": "Screen",
+        "nl": "Scherm",
+        "de": "Bildschirm",
+        "fr": "Écran",
+        "it": "Schermo",
+        "sv": "Skärm",
+        "no": "Skjerm",
+        "es": "Pantalla",
+        "da": "Skærm",
+        "ru": "Экран",
+        "pl": "Ekran",
+        "ko": "화면",
+        "ar": "الشاشة"
+      },
+      "placeholder": {
+        "en": "Screen",
+        "nl": "Scherm",
+        "de": "Bildschirm",
+        "fr": "Écran",
+        "it": "Schermo",
+        "sv": "Skärm",
+        "no": "Skjerm",
+        "es": "Pantalla",
+        "da": "Skærm",
+        "ru": "Экран",
+        "pl": "Ekran",
+        "ko": "화면",
+        "ar": "الشاشة"
+      }
+    },
+    {
+      "type": "number",
+      "name": "level",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "title": {
+        "en": "Dim (%)",
+        "nl": "Dimmen (%)",
+        "de": "Abdunkeln (%)",
+        "fr": "Assombrir (%)",
+        "it": "Attenua (%)",
+        "sv": "Dämpa (%)",
+        "no": "Demp (%)",
+        "es": "Atenuar (%)",
+        "da": "Dæmp (%)",
+        "ru": "Затемнение (%)",
+        "pl": "Przyciemnienie (%)",
+        "ko": "어둡게 (%)",
+        "ar": "التعتيم (%)"
+      },
+      "placeholder": {
+        "en": "50",
+        "nl": "50",
+        "de": "50",
+        "fr": "50",
+        "it": "50",
+        "sv": "50",
+        "no": "50",
+        "es": "50",
+        "da": "50",
+        "ru": "50",
+        "pl": "50",
+        "ko": "50",
+        "ar": "50"
+      }
+    }
+  ]
+}

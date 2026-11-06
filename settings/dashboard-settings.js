@@ -10,6 +10,19 @@
   window.WidgetkeeperWeb.part('settings', (wd) => {
     const { appWidget, button, clone, el, frames, icon, LAYOUT, newId, opts, persist, t, typeOf } = wd;
 
+    /** Add widget's groups: every widget of ours is in one (a test checks), alphabetical by its name inside it. */
+    const WIDGET_GROUPS = [
+      ['groupControl', ['curtains', 'lightrooms', 'lights', 'media', 'quickactions']],
+      ['groupSecurity', ['cameras', 'keypad', 'locks', 'sensoralarms', 'sensordots']],
+      ['groupClimate', ['pollen', 'roomhealth', 'thermostat', 'weather']],
+      ['groupEnergy', ['electricity', 'price']],
+      ['groupValues', ['combined', 'sparklines', 'valueboard', 'valuematrix', 'values']],
+      ['groupCharts', ['charts', 'compare', 'dailyrange', 'gauge', 'heatmap', 'lines', 'scatter', 'stacked', 'timeline', 'totals', 'typicalday']],
+      ['groupFlows', ['flows', 'flowtiles', 'popups', 'variables', 'varpresets']],
+      ['groupTime', ['clock', 'dayssince', 'textline', 'timers']],
+      ['groupLayout', ['shortcuts', 'spacer', 'stack', 'webpage']],
+    ];
+
     /**
      * A colour setting's values drawn as swatches: the widgets' palette (kit.css's bright colours, which `swatch()`'s `wk`
      * class defines; grey too, also for Flow Buttons' own grey). `default` and `neutral` are the widget's own colour, an
@@ -43,28 +56,83 @@
       return { d, body };
     }
 
+    /** Every word typed is somewhere in the text, in any order, any case and with or without accents. */
+    function matchesWords(query, text) {
+      const plain = (s) => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      const hay = plain(text);
+      return plain(query).split(/\s+/).filter(Boolean).every(word => hay.includes(word));
+    }
+
     function chooseWidget(column) {
       const { d, body } = dialog(t('chooseWidget'));
-      d.classList.add('wide');
-      const list = el('div', 'wd-types');
-      for (const def of [...wd.types.values()].sort((a, b) => a.name.localeCompare(b.name))) list.append(typeButton(def));
-      body.append(list);
-      // Then other apps' widgets, by app (only what Homey still offers: not a deprecated one).
+      d.classList.add('wide', 'tall');
+      const tools = el('div', 'wd-devtools');
+      const search = el('input', 'wd-input');
+      search.type = 'search';
+      search.placeholder = t('search');
+      search.setAttribute('aria-label', t('search'));
+      const chips = el('div', 'wd-rooms wrap');
+      tools.append(search, chips);
+      const groupsBox = el('div', 'wd-devgroups');
+      body.append(tools, groupsBox);
+
+      // Each group's widgets by name; a widget in no group (a test forbids it) still shows, in the last. Then other
+      // apps' widgets, by app (only what Homey still offers: not a deprecated one).
+      const types = [...wd.types.values()].sort((a, b) => a.name.localeCompare(b.name));
+      const groups = WIDGET_GROUPS.map(([key, ids], i) => ({
+        key,
+        label: t(key),
+        defs: types.filter(def => ids.includes(def.type) || (i === WIDGET_GROUPS.length - 1 && !WIDGET_GROUPS.some(g => g[1].includes(def.type)))),
+      }));
       const others = [...wd.foreign.values()].filter(f => !f.deprecated)
         .sort((a, b) => a.ownerName.localeCompare(b.ownerName) || a.name.localeCompare(b.name));
-      if (others.length || wd.foreignState !== 'ok') {
-        const head = el('div', 'wd-types-head');
-        head.append(el('h3', 'wd-h2', t('otherApps')));
-        if (wd.foreignState === 'noScope') head.append(el('p', 'wd-muted', t('otherAppsKey')));
-        else if (wd.foreignState === 'failed') head.append(el('p', 'wd-error', t('otherAppsFailed')));
-        body.append(head);
+      if (others.length || wd.foreignState !== 'ok') groups.push({ key: 'otherApps', label: t('otherApps'), defs: others });
+      let group = 'all';
+
+      function drawChips() {
+        chips.textContent = '';
+        const chip = (id, label, n) => {
+          const b = button(`wd-room${group === id ? ' on' : ''}`, '', () => { group = id; drawChips(); draw(); });
+          b.append(el('span', null, label), el('span', 'wd-room-count', String(n)));
+          b.setAttribute('aria-pressed', String(group === id));
+          chips.append(b);
+        };
+        chip('all', t('allWidgets'), groups.reduce((n, g) => n + g.defs.length, 0));
+        for (const g of groups) chip(g.key, g.label, g.defs.length);
       }
-      if (others.length) {
-        const more = el('div', 'wd-types');
-        for (const def of others) more.append(typeButton(def));
-        body.append(more);
+
+      function draw() {
+        groupsBox.textContent = '';
+        const query = search.value;
+        let shown = 0;
+        for (const g of groups) {
+          if (group !== 'all' && group !== g.key) continue;
+          const defs = g.defs.filter(def => matchesWords(query, `${def.name} ${wd.about(def.type)} ${g.label}`));
+          // Other apps' list says so when it couldn't be read, with or without a search.
+          const problem = g.key === 'otherApps' && !query.trim() && wd.foreignState !== 'ok' && wd.foreignState !== null;
+          if (!defs.length && !problem) continue;
+          shown += defs.length;
+          const section = el('section', 'wd-type-group');
+          const head = el('div', 'wd-types-head');
+          head.append(el('h3', 'wd-h2', g.label));
+          if (g.key === 'otherApps' && wd.foreignState === 'noScope') head.append(el('p', 'wd-muted', t('otherAppsKey')));
+          else if (g.key === 'otherApps' && wd.foreignState === 'failed') head.append(el('p', 'wd-error', t('otherAppsFailed')));
+          section.append(head);
+          if (defs.length) {
+            const list = el('div', 'wd-types');
+            for (const def of defs) list.append(typeButton(def));
+            section.append(list);
+          }
+          groupsBox.append(section);
+        }
+        if (!shown && !groupsBox.childElementCount) groupsBox.append(el('p', 'wd-muted', t('noWidgets')));
       }
+      search.addEventListener('input', draw);
+      drawChips();
+      draw();
       d.showModal();
+      // Not where the keyboard would slide up over the list on a tablet.
+      if (window.matchMedia && window.matchMedia('(hover: hover)').matches) search.focus();
 
       function typeButton(def) {
         const b = button('wd-type', '', () => {

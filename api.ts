@@ -160,6 +160,7 @@ export default {
       maxDashboards: MAX_DASHBOARDS, maxWidgets: MAX_WIDGETS,
       maxSections: MAX_SECTIONS,
       popups: app.popups.all(),
+      dim: app.webDim?.state() ?? null,
       sync: app.webSync?.status() ?? {},
     };
   },
@@ -479,6 +480,13 @@ export default {
     const app = homey.app as WidgetkeeperApp;
     assertWebSession(app, query);
     return app.popups.all();
+  },
+
+  /** The web dashboards page: the levels Flows set (after a reconnect, so a screen that was offline catches up). */
+  async getWebDim({ homey, query }: { homey: Homey, query?: Record<string, string> }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    return app.webDim.state();
   },
 
   /** The web dashboards page: a popup's picture, `{type, data}` (a camera's is read again on every call). */

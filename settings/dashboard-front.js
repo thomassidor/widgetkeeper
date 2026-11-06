@@ -8,9 +8,9 @@
   'use strict';
 
   window.WidgetkeeperWeb.part('front', (wd) => {
-    const { applyDim, AWAKE_STORAGE, button, confirmButton, deleted, DIM_STORAGE, dimLevel, DRAG_SLOP, EDGE_PX, el,
+    const { applyDim, AWAKE_STORAGE, button, confirmButton, deleted, DIM_CHANGED_STORAGE, DIM_SCHEDULE_STORAGE, DIM_STORAGE, dimLevel, dimScheduleOf, DRAG_SLOP, EDGE_PX, el,
       failed, icon, keepAwake, LAYOUT, loadSetup, MAX_DIM, newId, request, root, route,
-      storageSet, t, THEME_STORAGE, toast } = wd;
+      storageGet, storageSet, t, THEME_STORAGE, toast } = wd;
 
     /**
      * The front page: the dashboards as cards with a miniature of their columns, then a carousel of the widgets.
@@ -211,17 +211,34 @@
       const show = () => {
         const level = Number(slider.value);
         amount.textContent = level ? `${level} %` : t('dimOff');
-        applyDim(level);
       };
-      slider.addEventListener('input', show);
+      slider.addEventListener('input', () => { show(); applyDim(Number(slider.value)); });
       slider.addEventListener('change', () => {
         show();
         storageSet(DIM_STORAGE, Number(slider.value) ? slider.value : null);
+        dimChanged();
       });
       show();
       const dim = setRow(t('dim'), t('dimText'), amount, slider.id);
       dim.classList.add('wd-dim-row');
       dim.append(slider);
+      const flowNote = el('p', 'wd-hint wd-dim-flow');
+      flowNote.setAttribute('role', 'status');
+      const showFlowNote = () => {
+        const level = wd.dimFlowLevel();
+        flowNote.hidden = level === null;
+        flowNote.textContent = level === null ? '' : t('dimFlowNow', { level });
+      };
+      /** A slider moved by hand: it takes over from a Flow, and the set times say which slider holds now. */
+      function dimChanged() {
+        storageSet(DIM_CHANGED_STORAGE, String(Date.now()));
+        wd.syncDim();
+        showFlowNote();
+      }
+      showFlowNote();
+      dim.append(flowNote);
+      const scheduled = dimTimes(setRow, dimChanged);
+      const rotation = rotateRows(setRow);
       // Dark or light: this browser's own mode for every dashboard, or each one's theme (Automatic). The front page
       // behind redraws in it (the dialog is on body, so it stays).
       const modes = [['auto', 'themeAuto'], ['dark', 'themeDark'], ['light', 'themeLight']].map(([id, key]) => ({ id, title: t(key) }));
@@ -231,10 +248,120 @@
       }, false);
       mode.setAttribute('aria-label', t('darkLight'));
       const card = el('div', 'wd-set-card');
-      card.append(setRow(t('darkLight'), t('darkLightText'), mode), awake, dim, setRow(t('signedIn'), t('forgetKeyText'), forget));
+      card.append(setRow(t('darkLight'), t('darkLightText'), mode), awake, dim, scheduled, rotation, setRow(t('signedIn'), t('forgetKeyText'), forget));
       browser.append(el('h3', 'wd-h2', t('thisBrowser')), card);
       body.append(backupSection(), wd.syncSettingsSection(), browser);
       d.showModal();
+    }
+
+    /** A switch's row with rows under it that show only while it's on. */
+    function switchedRows(setRow, label, hint, id, on, changed) {
+      const box = el('input', 'wd-switch');
+      box.type = 'checkbox';
+      box.id = id;
+      box.setAttribute('role', 'switch');
+      box.checked = on;
+      const row = setRow(label, hint, box, id);
+      row.classList.add('switch');
+      const sub = el('div', 'wd-set-sub');
+      sub.hidden = !on;
+      box.addEventListener('change', () => {
+        sub.hidden = !box.checked;
+        changed(box.checked);
+      });
+      const part = el('div', 'wd-switched');
+      part.append(row, sub);
+      return { part, sub };
+    }
+
+    /** Dim at set times: when, and how much (a second slider, stored like the first when it's let go). */
+    function dimTimes(setRow, dimChanged) {
+      let stored = {};
+      try { stored = JSON.parse(storageGet(DIM_SCHEDULE_STORAGE) || '{}') || {}; } catch (e) { /* none */ }
+      const on = !!dimScheduleOf(stored);
+      const value = { from: on ? stored.from : '22:00', to: on ? stored.to : '07:00', level: on ? Number(stored.level) : 50 };
+      const save = (active) => {
+        storageSet(DIM_SCHEDULE_STORAGE, active && dimScheduleOf(value) ? JSON.stringify(value) : null);
+        dimChanged();
+      };
+      const { part, sub } = switchedRows(setRow, t('dimSchedule'), t('dimScheduleText'), 'wd-dim-schedule', on, save);
+      const time = (id, label, key) => {
+        const input = el('input', 'wd-input wd-time');
+        input.type = 'time';
+        input.id = id;
+        input.value = value[key];
+        input.addEventListener('change', () => {
+          if (!input.value) { input.value = value[key]; return; } // emptied: the last one stays
+          value[key] = input.value;
+          save(true);
+        });
+        return setRow(label, '', input, id);
+      };
+      const slider = el('input', 'wd-dim-slider');
+      slider.id = 'wd-dim-then';
+      slider.type = 'range';
+      slider.min = '0';
+      slider.max = String(MAX_DIM);
+      slider.step = '5';
+      slider.value = String(value.level);
+      const amount = el('span', 'wd-dim-value');
+      const show = () => { amount.textContent = Number(slider.value) ? `${slider.value} %` : t('dimOff'); };
+      slider.addEventListener('input', () => { show(); applyDim(Number(slider.value)); });
+      slider.addEventListener('change', () => {
+        show();
+        value.level = Number(slider.value);
+        save(true);
+      });
+      show();
+      const level = setRow(t('dimThen'), '', amount, slider.id);
+      level.classList.add('wd-dim-row');
+      level.append(slider);
+      sub.append(time('wd-dim-from', t('dimFrom'), 'from'), time('wd-dim-to', t('dimTo'), 'to'), level);
+      return part;
+    }
+
+    /** Rotate dashboards: this browser's list, in the front page's order, and how long each shows. */
+    function rotateRows(setRow) {
+      const config = wd.rotateConfig();
+      const state = { ids: config ? config.ids : [], seconds: config ? config.seconds : wd.ROTATE_DEFAULT_SECONDS };
+      const note = el('p', 'wd-backup-note');
+      note.setAttribute('role', 'status');
+      const save = (on) => {
+        const ticked = wd.dashboards.filter(d => state.ids.includes(d.id));
+        wd.saveRotate(on ? { ids: ticked.map(d => d.id), seconds: state.seconds } : null);
+        note.textContent = on && ticked.length < 2 ? t('rotateNeedTwo') : '';
+      };
+      const { part, sub } = switchedRows(setRow, t('rotate'), t('rotateText'), 'wd-rotate', !!config, save);
+      const seconds = el('input', 'wd-input wd-rotate-seconds');
+      seconds.id = 'wd-rotate-seconds';
+      seconds.type = 'number';
+      seconds.min = String(wd.ROTATE_MIN_SECONDS);
+      seconds.max = String(wd.ROTATE_MAX_SECONDS);
+      seconds.value = String(state.seconds);
+      seconds.addEventListener('change', () => {
+        const typed = Math.round(Number(seconds.value));
+        state.seconds = Math.min(wd.ROTATE_MAX_SECONDS, Math.max(wd.ROTATE_MIN_SECONDS, Number.isFinite(typed) ? typed : wd.ROTATE_DEFAULT_SECONDS));
+        seconds.value = String(state.seconds);
+        save(true);
+      });
+      const list = el('div', 'wd-backup-list wd-rotate-list');
+      for (const dash of wd.dashboards) {
+        const label = el('label', 'wd-backup-item');
+        const input = el('input');
+        input.type = 'checkbox';
+        input.checked = state.ids.includes(dash.id);
+        input.addEventListener('change', () => {
+          state.ids = input.checked ? [...state.ids, dash.id] : state.ids.filter(id => id !== dash.id);
+          save(true);
+        });
+        const name = el('span', 'wd-backup-item-name', dash.name || t('untitled'));
+        name.dir = 'auto';
+        label.append(input, name);
+        list.append(label);
+      }
+      sub.append(setRow(t('rotateEvery'), t('rotateEveryText'), seconds, seconds.id), list, note);
+      if (config) save(true); // says so when a ticked dashboard has been deleted since
+      return part;
     }
 
     /**

@@ -253,6 +253,13 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-page-settings .wd-set-row.inline { row-gap: 10px; }
 .wd-page-settings .wd-set-row.inline.wd-dim-row { display: grid; } /* the value beside the label on a phone too */
 .wd-dim-slider { grid-column: 1 / -1; width: 100%; margin: 0; accent-color: var(--wd-accent); }
+.wd-dim-flow { grid-column: 1 / -1; margin: 0; color: var(--wd-text); }
+.wd-switched + .wd-set-row, .wd-set-row + .wd-switched > .wd-set-row:first-child, .wd-switched + .wd-switched > .wd-set-row:first-child { border-top: 1px solid var(--wd-line); }
+.wd-switched .wd-set-sub[hidden] { display: none; }
+.wd-page-settings .wd-time { width: 120px; }
+.wd-page-settings .wd-rotate-seconds { width: 96px; }
+.wd-rotate-list { margin: 4px 16px 12px; }
+.wd-switched .wd-backup-note { margin: 0 16px 12px; }
 .wd-dim-value { font-size: 14px; line-height: 20px; color: var(--wd-muted); text-align: right; font-variant-numeric: tabular-nums; }
 /* Dim: over the whole page and its frames, letting taps through; the dialogs (the top layer) stay above it. */
 .wd-dim { position: fixed; inset: 0; background: #000; pointer-events: none; z-index: 2147483647; }
@@ -488,6 +495,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-type-about { font-weight: 400; font-size: 12px; line-height: 16px; color: var(--wd-muted); }
 .wd-type:hover { outline: 2px solid var(--wd-accent); outline-offset: -2px; }
 /* Other apps' widgets, under ours in Add widget. */
+.wd-type-group .wd-types-head { margin: 0 0 10px; }
 .wd-types-head { display: flex; flex-direction: column; gap: 4px; margin: 24px 0 12px; }
 .wd-types-head p { margin: 0; font-size: 14px; line-height: 20px; }
 .wd-picker { display: flex; flex-direction: column; gap: 8px; }
@@ -538,6 +546,8 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-dialog.tall .wd-dialog-body { flex: 1 1 auto; min-height: 0; padding-bottom: 0; gap: 12px; }
 .wd-devtools { display: flex; flex-direction: column; gap: 10px; }
 .wd-rooms { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; padding-bottom: 2px; }
+.wd-rooms.wrap { flex-wrap: wrap; overflow: visible; }
+@media (max-width: 720px) { .wd-rooms.wrap { flex-wrap: nowrap; overflow-x: auto; } }
 .wd-room {
   -webkit-appearance: none; appearance: none; border: 1px solid var(--wd-line); margin: 0; cursor: pointer; flex: none;
   display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 12px; border-radius: 16px;

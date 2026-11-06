@@ -113,7 +113,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
       });
       return {
         appId: 'com.thomassidor.widgetkeeper', homeyId: 'preview', language: lang, strings, widgets, dashboards, front,
-        maxDashboards: 64, maxWidgets: 60, maxSections: 20, popups: { popups, now: Date.now() },
+        maxDashboards: 64, maxWidgets: 60, maxSections: 20, popups: { popups, now: Date.now() }, dim: { flows: {}, now: Date.now() },
         codes: codes.map(({ id, name, digits }) => ({ id, name, digits: digits.length })),
         sync: syncLinks,
       };
@@ -138,6 +138,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
       if (syncLinks[id]) syncLinks[id].lastSync = lastSync;
       return lastSync;
     }
+    if (p === '/web/dim') return { flows: {}, now: Date.now() };
     if (p === '/web/popups') return { popups, now: Date.now() };
     const popupImage = p.match(/^\/web\/popups\/([^/]+)\/image$/);
     if (popupImage) {

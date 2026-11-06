@@ -254,6 +254,7 @@ Your Widgetkeeper widgets in any browser: a wall tablet, an old iPad, a computer
 <img src="docs/web/editor.png" alt="A web dashboard being edited in a browser window" width="100%">
 
 - One to six columns, Normal, Narrow, Wide or Fit to window. Drag widgets to move them, copy one to this or another dashboard, or drag its right edge to span several columns.
+- **Add widget** has a search and groups (Lights and control, Charts, Energy …).
 - The settings are the same as on a Homey dashboard, in cards, with devices picked by room.
 - Light, dark or automatic, with a background per dashboard.
 - Put [Dashboard Shortcuts](docs/widgets/shortcuts.md) on each dashboard as a menu, and a [Popups](docs/widgets/popups.md) widget for messages from Flows.
@@ -261,7 +262,10 @@ Your Widgetkeeper widgets in any browser: a wall tablet, an old iPad, a computer
 
 <img src="docs/web/front.png" alt="The web dashboards front page in a browser window: seven dashboards as cards, and the widgets you can add" width="100%">
 
-The front page lists the dashboards; the pen reorders, duplicates and deletes them. Its **Settings** has **Keep screen on**, **Dim** and **Sign out** for this browser, and the [backup](#backup).
+The front page lists the dashboards; the pen reorders, duplicates and deletes them. Its **Settings** has **Keep screen on**, **Dim**, **Dim at set times**, **Rotate dashboards** and **Sign out** for this browser, and the [backup](#backup).
+
+- **Dim at set times:** a second level between two times, by the device's clock. The Flow card *Dim the web dashboards* sets a level too, on every browser or on those showing a dashboard with a [Popups](docs/widgets/popups.md) widget of that screen name. It lasts until another Flow, a moved slider, or the set times next start or end.
+- **Rotate dashboards:** tick two or more dashboards and how many seconds each shows (at least 10). A touch pauses it for a minute, and it waits while a dialog, a popup or the editor is open.
 
 ### Screens and browsers
 Each browser signs in with a code of its own, backed by its own Homey API key:

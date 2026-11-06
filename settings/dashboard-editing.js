@@ -124,7 +124,7 @@
       const sandboxed = !!app && w.trusted !== true;
       if (sandboxed) iframe.setAttribute('sandbox', SANDBOX);
       // Keep screen on's refused video retries on a tap in the widget too (each load is a new window).
-      else iframe.addEventListener('load', () => { try { keepAwake.watch(iframe.contentWindow); } catch (e) { /* not ours */ } });
+      else iframe.addEventListener('load', () => { try { keepAwake.watch(iframe.contentWindow); wd.watchTouches(iframe.contentWindow); } catch (e) { /* not ours */ } });
       iframe.src = `${wd.widgetFolder(w.type)}/index.html?widgetInstanceId=${encodeURIComponent(instance)}`;
       wrap.append(iframe);
       node.append(wrap);

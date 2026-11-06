@@ -26,7 +26,7 @@
    * mountWebDashboards() runs them. A part registers itself with `WidgetkeeperWeb.part(name, fn)`; `fn(wd)` is
    * the code that was once in mountWebDashboards() itself, sharing the page's state and functions through `wd`.
    */
-  const PARTS = ['realtime', 'frames', 'views', 'front', 'editing', 'settings', 'pickers', 'popups', 'sync'];
+  const PARTS = ['realtime', 'frames', 'views', 'front', 'editing', 'settings', 'pickers', 'popups', 'sync', 'screen'];
   window.WidgetkeeperWeb = {
     /** @type {Map<string, (wd: any) => void>} */
     parts: new Map(),
@@ -156,6 +156,17 @@
     dim: 'Dim',
     dimOff: 'Off',
     dimText: 'Darkens the whole page, as if the screen were turned down.',
+    dimSchedule: 'Dim at set times',
+    dimScheduleText: "By this device's clock. A Flow can dim too: the card Dim the web dashboards.",
+    dimFrom: 'From',
+    dimTo: 'To',
+    dimThen: 'Dim in that time',
+    dimFlowNow: 'A Flow has set __level__ % for now. Moving a slider takes over.',
+    rotate: 'Rotate dashboards',
+    rotateText: 'Shows the dashboards you tick in turn. A touch pauses it for a minute.',
+    rotateEvery: 'Seconds on each',
+    rotateEveryText: "At least 10: a dashboard's widgets load again each time it shows.",
+    rotateNeedTwo: 'Tick at least two dashboards.',
     backupTitle: 'Backup',
     backupText: 'The dashboards you choose in one file: their layouts, widgets, settings and the names typed on tiles. A restore brings back the ones you tick and leaves the others.',
     backupDownload: 'Download backup',
@@ -231,6 +242,17 @@
     valueOff: 'Off',
     missingValue: 'Value not found',
     otherApps: 'Other apps',
+    noWidgets: 'No matching widgets.',
+    allWidgets: 'All',
+    groupControl: 'Lights and control',
+    groupSecurity: 'Security and sensors',
+    groupClimate: 'Climate and weather',
+    groupEnergy: 'Energy',
+    groupValues: 'Values',
+    groupCharts: 'Charts',
+    groupFlows: 'Flows and variables',
+    groupTime: 'Time and notes',
+    groupLayout: 'Layout and navigation',
     otherAppsKey: 'Other apps\' widgets need an API key with full access (Homey) in this browser.',
     otherAppsFailed: 'Could not read other apps\' widgets.',
     notInstalled: '__name__ isn\'t installed.',
@@ -300,6 +322,10 @@
   const AWAKE_STORAGE = 'widgetkeeper.web.awake';
   /** Dim, this browser's choice in Settings: a percentage (5 … `MAX_DIM`); absent is off. */
   const DIM_STORAGE = 'widgetkeeper.web.dim';
+  /** Dim at set times, this browser's choice in Settings: `{from: 'HH:MM', to: 'HH:MM', level}`; absent is off. */
+  const DIM_SCHEDULE_STORAGE = 'widgetkeeper.web.dimSchedule';
+  /** When this browser's Dim was last changed by hand (ms): a Flow's level from before that no longer counts. */
+  const DIM_CHANGED_STORAGE = 'widgetkeeper.web.dimChanged';
   /** A dashboard with a code this browser stays on (its id): going back to the dashboards takes its code first. */
   const STAY_STORAGE = 'widgetkeeper.web.stay';
   /** The most the page dims: never black, so the bar's pen and Settings stay findable. */
@@ -568,6 +594,52 @@
     return Number.isFinite(v) ? Math.min(MAX_DIM, Math.max(0, v)) : 0;
   }
 
+  /** A stored schedule as `{from, to, level}` (minutes after midnight, a level of 0 … `MAX_DIM`), or null. */
+  function dimScheduleOf(raw) {
+    let value = raw;
+    try { if (typeof raw === 'string') value = JSON.parse(raw); } catch (e) { return null; }
+    if (!value || typeof value !== 'object') return null;
+    const minutes = (text) => {
+      const m = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(String(text));
+      return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+    };
+    const from = minutes(value.from);
+    const to = minutes(value.to);
+    const level = Math.round(Number(value.level) / 5) * 5;
+    if (from === null || to === null || from === to || !Number.isFinite(level)) return null;
+    return { from, to, level: Math.min(MAX_DIM, Math.max(0, level)) };
+  }
+
+  /** Whether a schedule holds at `now` (a Date; it may run past midnight), and when (ms) that last changed. */
+  function scheduleAt(schedule, now) {
+    if (!schedule) return { active: false, since: -Infinity };
+    const minute = now.getHours() * 60 + now.getMinutes();
+    const { from, to } = schedule;
+    const active = from < to ? minute >= from && minute < to : minute >= from || minute < to;
+    const edge = active ? from : to;
+    const at = new Date(now.getFullYear(), now.getMonth(), now.getDate(), Math.floor(edge / 60), edge % 60).getTime();
+    return { active, since: at > now.getTime() ? new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, Math.floor(edge / 60), edge % 60).getTime() : at };
+  }
+
+  /**
+   * How much the page dims. The set times decide between the two sliders; a Flow's level (`flow`: `{level, at}` on this
+   * browser's clock) goes over them until the set times next start or end, or a slider is moved (`changedAt`).
+   */
+  function dimWanted({ manual, schedule, flow, changedAt, now }) {
+    if (dimFlowHolds({ schedule, flow, changedAt, now })) return flow.level;
+    return scheduleAt(schedule, now).active ? schedule.level : manual;
+  }
+
+  /** Whether a Flow's level still goes over this browser's own choice. */
+  function dimFlowHolds({ schedule, flow, changedAt, now }) {
+    return !!flow && flow.at >= scheduleAt(schedule, now).since && flow.at >= (changedAt || 0);
+  }
+
+  /** This browser's stored choices for `dimWanted()`. */
+  function dimChoices() {
+    return { manual: dimLevel(), schedule: dimScheduleOf(storageGet(DIM_SCHEDULE_STORAGE)), changedAt: Number(storageGet(DIM_CHANGED_STORAGE)) || 0 };
+  }
+
   /**
    * Dims the page as if the screen were turned down: a black layer over everything, the widgets' frames included, that
    * lets taps through. Outside the page's root, so a redraw keeps it; the dialogs are in the top layer, above it.
@@ -686,6 +758,7 @@
       if (wd.setup.language) document.documentElement.lang = wd.setup.language;
       if (wd.setup.disabled || wd.setup.passwordRequired) return; // turned off, or the password first: `route()` says so
       wd.setPopups(wd.setup.popups && wd.setup.popups.popups, wd.setup.popups && wd.setup.popups.now);
+      wd.setDimFlows(wd.setup.dim);
       if (!wd.socketStarted) {
         wd.socketStarted = true;
         wd.connectSocket();
@@ -890,7 +963,7 @@
 
     // ---- The parts (settings/dashboard-<part>.js), each run once with `wd` ------------------------------------------
     Object.assign(wd, { APP_ID, applyDim, appWidget, AWAKE_STORAGE, BACKGROUNDS, bracketQuery, button, clone,
-      confirmButton, darkQuery, DEFAULT_STRINGS, deleted, DIM_STORAGE, dimLevel, DRAG_SLOP, EDGE_PX, el, failed,
+      confirmButton, darkQuery, DEFAULT_STRINGS, deleted, DIM_CHANGED_STORAGE, dimChoices, dimFlowHolds, DIM_SCHEDULE_STORAGE, DIM_STORAGE, dimLevel, dimScheduleOf, dimWanted, DRAG_SLOP, EDGE_PX, el, failed,
       frames, HOMEY_WIDTH, homeyRequest, icon, isScreenCode, keepAwake, KEY_STORAGE, LAYOUT, listeners, loadAll, loadSetup, MAX_DIM,
       newId, opts, persist, request, root, route, SESSION_STORAGE, start, STAY_STORAGE, storageGet, storageSet,
       stringsOf, t, THEME_STORAGE, toast, typeOf, unlocked, useCode });
@@ -904,6 +977,7 @@
 
     function route() {
       queueMicrotask(wd.syncPopups); // once this view is drawn: its popups show, another view's close
+      queueMicrotask(wd.syncDim); // a Flow may have dimmed this dashboard's screen name
       if (!wd.key) { wd.renderKey(); return; }
       if (!wd.setup) { start(); return; }
       if (wd.setup.disabled) { wd.renderOff(); return; }
@@ -968,7 +1042,7 @@
       route();
     });
     keepAwake.set(storageGet(AWAKE_STORAGE) === '1');
-    applyDim(dimLevel());
+    applyDim(dimWanted({ ...dimChoices(), flow: null, now: new Date() }));
     start();
   };
 })();

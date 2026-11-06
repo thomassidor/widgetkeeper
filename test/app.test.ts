@@ -79,6 +79,7 @@ describe('the app: Flow cards', () => {
     ['popup_ask_image', 'popups', 'ask', { screen: { id: 'all' }, question: 'Open?', button1: 'Got it', seconds: 20, droptoken: null },
       [expect.objectContaining({ text: 'Open?', buttons: ['Got it', undefined], seconds: 20 })]],
     ['popup_close', 'popups', 'close', { screen: { id: 'name:hall' } }, ['name:hall']],
+    ['web_dim', 'webDim', 'set', { screen: { id: 'name:hall' }, level: 40 }, ['name:hall', 40]],
     ['textline_set', 'textLines', 'set', { board: { id: 'b1' }, text: 'Hello' }, ['b1', 'Hello']],
     ['textline_set_color', 'textLines', 'set', { board: { name: 'Kitchen' }, text: 'Hi', color: 'red' }, ['Kitchen', 'Hi', 'red']],
     ['textline_clear', 'textLines', 'clear', { board: { id: 'b1' } }, ['b1']],

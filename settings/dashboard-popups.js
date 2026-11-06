@@ -197,7 +197,8 @@
         const total = Math.max(left, p.until - p.createdAt);
         fill.style.transform = `scaleX(${left / total})`;
         requestAnimationFrame(() => requestAnimationFrame(() => {
-          fill.style.transition = `transform ${left}ms linear`;
+          // Important: a slow countdown, not motion for kit.css's reduced-motion rule to cut short.
+          fill.style.setProperty('transition', `transform ${left}ms linear`, 'important');
           fill.style.transform = 'scaleX(0)';
         }));
         d.addEventListener('click', () => { dismissed.add(p.id); shown.close(null); });
@@ -258,6 +259,6 @@
       });
     }
 
-    Object.assign(wd, { refreshPopups, setPopups, syncPopups });
+    Object.assign(wd, { refreshPopups, screenNamesOf, setPopups, syncPopups });
   });
 })();
