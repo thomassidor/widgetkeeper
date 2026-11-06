@@ -9,546 +9,221 @@ Extra dashboard widgets for Homey Pro, made to sit naturally next to Homey's own
 ## Widgets
 Every widget follows Homey's light and dark mode and is translated into all 13 of Homey's languages. Tap one for what it does and its settings.
 
-<p><a href="#activity-dots"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/sensordots-dark.png"><img src="docs/previews/sensordots-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#activity-dots"><b>Activity Dots</b></a><br>
+<a name="activity-dots"></a>
+<a name="sensor-dots"></a>
+<p><a href="docs/widgets/sensordots.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/sensordots-dark.png"><img src="docs/previews/sensordots-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/sensordots.md"><b>Activity Dots</b></a><br>
 Many motion, contact and vibration sensors at a glance, as dots that change colour when active<br clear="left"></p>
 
-<p><a href="#cameras"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/cameras-dark.png"><img src="docs/previews/cameras-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#cameras"><b>Cameras</b></a><br>
+<a name="cameras"></a>
+<p><a href="docs/widgets/cameras.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/cameras-dark.png"><img src="docs/previews/cameras-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/cameras.md"><b>Cameras</b></a><br>
 Two to six cameras in one grid of snapshots; tap one to watch it live<br clear="left"></p>
 
-<p><a href="#chart--basic"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/charts-dark.png"><img src="docs/previews/charts-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--basic"><b>Chart · Basic</b></a><br>
+<a name="chart--basic"></a>
+<a name="charts"></a>
+<a name="time-spans"></a>
+<p><a href="docs/widgets/charts.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/charts-dark.png"><img src="docs/previews/charts-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/charts.md"><b>Chart · Basic</b></a><br>
 How did it go? One value over any span up to two years, or against the period before or a second value<br clear="left"></p>
 
-<p><a href="#chart--daily-profile"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/typicalday-dark.png"><img src="docs/previews/typicalday-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--daily-profile"><b>Chart · Daily Profile</b></a><br>
+<a name="chart--daily-profile"></a>
+<p><a href="docs/widgets/typicalday.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/typicalday-dark.png"><img src="docs/previews/typicalday-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/typicalday.md"><b>Chart · Daily Profile</b></a><br>
 Today's line over the usual day and its spread: is today unusual?<br clear="left"></p>
 
-<p><a href="#chart--gauge"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/gauge-dark.png"><img src="docs/previews/gauge-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--gauge"><b>Chart · Gauge</b></a><br>
+<a name="chart--gauge"></a>
+<p><a href="docs/widgets/gauge.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/gauge-dark.png"><img src="docs/previews/gauge-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/gauge.md"><b>Chart · Gauge</b></a><br>
 One value now on a bar or dial, green to red by level if you like: is the air still good?<br clear="left"></p>
 
-<p><a href="#chart--lines"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/lines-dark.png"><img src="docs/previews/lines-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--lines"><b>Chart · Lines</b></a><br>
+<a name="chart--lines"></a>
+<p><a href="docs/widgets/lines.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/lines-dark.png"><img src="docs/previews/lines-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/lines.md"><b>Chart · Lines</b></a><br>
 Up to six values over time on one chart, a line each: every room's temperature side by side<br clear="left"></p>
 
-<p><a href="#chart--minmax"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/dailyrange-dark.png"><img src="docs/previews/dailyrange-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--minmax"><b>Chart · Min/Max</b></a><br>
+<a name="chart--minmax"></a>
+<p><a href="docs/widgets/dailyrange.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/dailyrange-dark.png"><img src="docs/previews/dailyrange-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/dailyrange.md"><b>Chart · Min/Max</b></a><br>
 Each day's lowest to highest as a bar: how much did it swing?<br clear="left"></p>
 
-<p><a href="#chart--ranking"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/compare-dark.png"><img src="docs/previews/compare-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--ranking"><b>Chart · Ranking</b></a><br>
+<a name="chart--ranking"></a>
+<p><a href="docs/widgets/compare.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/compare-dark.png"><img src="docs/previews/compare-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/compare.md"><b>Chart · Ranking</b></a><br>
 One value across devices, now and its range today, sorted: which room is warmest?<br clear="left"></p>
 
-<p><a href="#chart--scatter-xy"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/scatter-dark.png"><img src="docs/previews/scatter-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--scatter-xy"><b>Chart · Scatter (XY)</b></a><br>
+<a name="chart--scatter-xy"></a>
+<p><a href="docs/widgets/scatter.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/scatter-dark.png"><img src="docs/previews/scatter-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/scatter.md"><b>Chart · Scatter (XY)</b></a><br>
 One value against another, a dot an hour: does the heat pump work harder when it's colder?<br clear="left"></p>
 
-<p><a href="#chart--stacked"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/stacked-dark.png"><img src="docs/previews/stacked-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--stacked"><b>Chart · Stacked</b></a><br>
+<a name="chart--stacked"></a>
+<p><a href="docs/widgets/stacked.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/stacked-dark.png"><img src="docs/previews/stacked-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/stacked.md"><b>Chart · Stacked</b></a><br>
 Several values stacked on one time axis, the rest of a total as Other: who uses the power?<br clear="left"></p>
 
-<p><a href="#chart--timeline"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/timeline-dark.png"><img src="docs/previews/timeline-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--timeline"><b>Chart · Timeline</b></a><br>
+<a name="chart--timeline"></a>
+<p><a href="docs/widgets/timeline.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/timeline-dark.png"><img src="docs/previews/timeline-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/timeline.md"><b>Chart · Timeline</b></a><br>
 When was it on, open or moving? A row per value over the day<br clear="left"></p>
 
-<p><a href="#chart--totals"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/totals-dark.png"><img src="docs/previews/totals-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#chart--totals"><b>Chart · Totals</b></a><br>
+<a name="chart--totals"></a>
+<p><a href="docs/widgets/totals.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/totals-dark.png"><img src="docs/previews/totals-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/totals.md"><b>Chart · Totals</b></a><br>
 How much a value went up per hour, day or month (kWh, rain, hours of TV), like the Energy tab<br clear="left"></p>
 
-<p><a href="#clock"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/clock-dark.png"><img src="docs/previews/clock-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#clock"><b>Clock</b></a><br>
+<a name="clock"></a>
+<p><a href="docs/widgets/clock.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/clock-dark.png"><img src="docs/previews/clock-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/clock.md"><b>Clock</b></a><br>
 The time and the date, with the weather now and today's high and low<br clear="left"></p>
 
-<p><a href="#curtains"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/curtains-dark.png"><img src="docs/previews/curtains-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#curtains"><b>Curtains</b></a><br>
+<a name="curtains"></a>
+<p><a href="docs/widgets/curtains.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/curtains-dark.png"><img src="docs/previews/curtains-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/curtains.md"><b>Curtains</b></a><br>
 Curtains and blinds that open or close with one tap, with a slider for anything in between<br clear="left"></p>
 
-<p><a href="#dashboard-shortcuts"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/shortcuts-dark.png"><img src="docs/previews/shortcuts-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#dashboard-shortcuts"><b>Dashboard Shortcuts</b></a> (web dashboards only)<br>
+<a name="dashboard-shortcuts"></a>
+<p><a href="docs/widgets/shortcuts.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/shortcuts-dark.png"><img src="docs/previews/shortcuts-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/shortcuts.md"><b>Dashboard Shortcuts</b></a> (web dashboards only)<br>
 Your other web dashboards as buttons in your colours and icons, a menu for every dashboard<br clear="left"></p>
 
-<p><a href="#days-since"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/dayssince-dark.png"><img src="docs/previews/dayssince-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#days-since"><b>Days Since</b></a><br>
+<a name="days-since"></a>
+<p><a href="docs/widgets/dayssince.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/dayssince-dark.png"><img src="docs/previews/dayssince-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/dayssince.md"><b>Days Since</b></a><br>
 How long since the plants were watered or the filter changed, amber and then red when it's due; tap to reset<br clear="left"></p>
 
-<p><a href="#device-quick-actions"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/quickactions-dark.png"><img src="docs/previews/quickactions-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#device-quick-actions"><b>Device Quick Actions</b></a><br>
+<a name="device-quick-actions"></a>
+<p><a href="docs/widgets/quickactions.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/quickactions-dark.png"><img src="docs/previews/quickactions-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/quickactions.md"><b>Device Quick Actions</b></a><br>
 Compact tiles that run a device's quick action with one tap<br clear="left"></p>
 
-<p><a href="#device-values"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/values-dark.png"><img src="docs/previews/values-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#device-values"><b>Device Values</b></a><br>
+<a name="device-values"></a>
+<p><a href="docs/widgets/values.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/values-dark.png"><img src="docs/previews/values-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/values.md"><b>Device Values</b></a><br>
 Compact tiles that each show one value, such as a temperature, power or on/off<br clear="left"></p>
 
-<p><a href="#electricity-overview"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/electricity-dark.png"><img src="docs/previews/electricity-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#electricity-overview"><b>Electricity Overview</b></a><br>
+<a name="electricity-overview"></a>
+<p><a href="docs/widgets/electricity.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/electricity-dark.png"><img src="docs/previews/electricity-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/electricity.md"><b>Electricity Overview</b></a><br>
 Live power use, hourly electricity prices and usage history on one card<br clear="left"></p>
 
-<p><a href="#energy-price-strip"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/price-dark.png"><img src="docs/previews/price-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#energy-price-strip"><b>Energy Price Strip</b></a><br>
+<a name="energy-price-strip"></a>
+<a name="price-badge"></a>
+<p><a href="docs/widgets/price.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/price-dark.png"><img src="docs/previews/price-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/price.md"><b>Energy Price Strip</b></a><br>
 The electricity price now and the coming hours as small bars, green, yellow or red<br clear="left"></p>
 
-<p><a href="#flow-buttons"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/flows-dark.png"><img src="docs/previews/flows-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#flow-buttons"><b>Flow Buttons</b></a><br>
+<a name="flow-buttons"></a>
+<p><a href="docs/widgets/flows.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/flows-dark.png"><img src="docs/previews/flows-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/flows.md"><b>Flow Buttons</b></a><br>
 Start flows with one tap: a round button in the colour and icon you pick, with the flow's name<br clear="left"></p>
 
-<p><a href="#insights-heatmap"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/heatmap-dark.png"><img src="docs/previews/heatmap-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#insights-heatmap"><b>Insights Heatmap</b></a><br>
+<a name="insights-heatmap"></a>
+<p><a href="docs/widgets/heatmap.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/heatmap-dark.png"><img src="docs/previews/heatmap-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/heatmap.md"><b>Insights Heatmap</b></a><br>
 A week of one value (light, temperature, motion …) as a grid of weekdays and hours<br clear="left"></p>
 
-<p><a href="#keypad"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/keypad-dark.png"><img src="docs/previews/keypad-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#keypad"><b>Keypad</b></a><br>
+<a name="keypad"></a>
+<p><a href="docs/widgets/keypad.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/keypad-dark.png"><img src="docs/previews/keypad-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/keypad.md"><b>Keypad</b></a><br>
 Up to three buttons behind an optional code that start Flows or set a device or variable, with its state beside them<br clear="left"></p>
 
-<p><a href="#light-controls"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/lights-dark.png"><img src="docs/previews/lights-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#light-controls"><b>Light Controls</b></a><br>
+<a name="light-controls"></a>
+<p><a href="docs/widgets/lights.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/lights-dark.png"><img src="docs/previews/lights-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/lights.md"><b>Light Controls</b></a><br>
 Compact light tiles with brightness, colour and colour temperature: six lights in the space of three<br clear="left"></p>
 
-<p><a href="#lights-by-room"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/lightrooms-dark.png"><img src="docs/previews/lightrooms-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#lights-by-room"><b>Lights by Room</b></a><br>
+<a name="lights-by-room"></a>
+<p><a href="docs/widgets/lightrooms.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/lightrooms-dark.png"><img src="docs/previews/lightrooms-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/lightrooms.md"><b>Lights by Room</b></a><br>
 Every room's lights on a card: switch and dim a room, or open it for each light and the room's Moods<br clear="left"></p>
 
-<p><a href="#locks-and-doors"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/locks-dark.png"><img src="docs/previews/locks-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#locks-and-doors"><b>Locks and Doors</b></a><br>
+<a name="locks-and-doors"></a>
+<p><a href="docs/widgets/locks.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/locks-dark.png"><img src="docs/previews/locks-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/locks.md"><b>Locks and Doors</b></a><br>
 One line that says whether every lock and door is locked and closed<br clear="left"></p>
 
-<p><a href="#media"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/media-dark.png"><img src="docs/previews/media-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#media"><b>Media</b></a><br>
+<a name="media"></a>
+<p><a href="docs/widgets/media.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/media-dark.png"><img src="docs/previews/media-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/media.md"><b>Media</b></a><br>
 A speaker with its album art, mute, a volume that never overshoots and buttons for its sources<br clear="left"></p>
 
-<p><a href="#notes"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/textline-dark.png"><img src="docs/previews/textline-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#notes"><b>Notes</b></a><br>
+<a name="notes"></a>
+<p><a href="docs/widgets/textline.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/textline-dark.png"><img src="docs/previews/textline-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/textline.md"><b>Notes</b></a><br>
 A note on a tile or a handwritten Post-it, typed in or written by your Flows<br clear="left"></p>
 
-<p><a href="#pollen-and-uv"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/pollen-dark.png"><img src="docs/previews/pollen-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#pollen-and-uv"><b>Pollen and UV</b></a><br>
+<a name="pollen-and-uv"></a>
+<p><a href="docs/widgets/pollen.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/pollen-dark.png"><img src="docs/previews/pollen-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/pollen.md"><b>Pollen and UV</b></a><br>
 Today's pollen levels and the UV peak, in Europe<br clear="left"></p>
 
-<p><a href="#popups"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/popups-dark.png"><img src="docs/previews/popups-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#popups"><b>Popups</b></a><br>
+<a name="popups"></a>
+<p><a href="docs/widgets/popups.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/popups-dark.png"><img src="docs/previews/popups-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/popups.md"><b>Popups</b></a><br>
 A Flow's message or question with buttons of your own, with a picture if you like, in front of everything on a phone, tablet or web dashboard<br clear="left"></p>
 
-<p><a href="#room-health"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/roomhealth-dark.png"><img src="docs/previews/roomhealth-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#room-health"><b>Room Health</b></a><br>
+<a name="room-health"></a>
+<p><a href="docs/widgets/roomhealth.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/roomhealth-dark.png"><img src="docs/previews/roomhealth-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/roomhealth.md"><b>Room Health</b></a><br>
 Each room's temperature, humidity and air quality at a glance, turning yellow to red when something is off<br clear="left"></p>
 
-<p><a href="#sensor-alarms"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/sensoralarms-dark.png"><img src="docs/previews/sensoralarms-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#sensor-alarms"><b>Sensor Alarms</b></a><br>
+<a name="sensor-alarms"></a>
+<p><a href="docs/widgets/sensoralarms.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/sensoralarms-dark.png"><img src="docs/previews/sensoralarms-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/sensoralarms.md"><b>Sensor Alarms</b></a><br>
 Tiles that show a sensor's alarm and turn red when one is on<br clear="left"></p>
 
-<p><a href="#smart-stack"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/stack-dark.png"><img src="docs/previews/stack-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#smart-stack"><b>Smart Stack</b></a><br>
+<a name="smart-stack"></a>
+<p><a href="docs/widgets/stack.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/stack-dark.png"><img src="docs/previews/stack-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/stack.md"><b>Smart Stack</b></a><br>
 Several widgets in one spot, one at a time, with the one that matters brought forward<br clear="left"></p>
 
-<p><a href="#spacer"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/spacer-dark.png"><img src="docs/previews/spacer-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#spacer"><b>Spacer</b></a><br>
+<a name="spacer"></a>
+<p><a href="docs/widgets/spacer.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/spacer-dark.png"><img src="docs/previews/spacer-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/spacer.md"><b>Spacer</b></a><br>
 Empty space of the height you set, to line up widgets across columns<br clear="left"></p>
 
-<p><a href="#sparklines"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/sparklines-dark.png"><img src="docs/previews/sparklines-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#sparklines"><b>Sparklines</b></a><br>
+<a name="sparklines"></a>
+<p><a href="docs/widgets/sparklines.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/sparklines-dark.png"><img src="docs/previews/sparklines-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/sparklines.md"><b>Sparklines</b></a><br>
 Tiles with a small chart of a value over the last hour, day or week, with its lowest and highest<br clear="left"></p>
 
-<p><a href="#thermostat-presets"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/thermostat-dark.png"><img src="docs/previews/thermostat-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#thermostat-presets"><b>Thermostat Presets</b></a><br>
+<a name="thermostat-presets"></a>
+<a name="thermostat-shortcuts"></a>
+<p><a href="docs/widgets/thermostat.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/thermostat-dark.png"><img src="docs/previews/thermostat-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/thermostat.md"><b>Thermostat Presets</b></a><br>
 Three one-tap presets for a thermostat, heat pump or air conditioner<br clear="left"></p>
 
-<p><a href="#timers"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/timers-dark.png"><img src="docs/previews/timers-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#timers"><b>Timers</b></a><br>
+<a name="timers"></a>
+<p><a href="docs/widgets/timers.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/timers-dark.png"><img src="docs/previews/timers-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/timers.md"><b>Timers</b></a><br>
 Kitchen timers from one-tap presets, with a Flow card when one runs out<br clear="left"></p>
 
-<p><a href="#value-matrix"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/valuematrix-dark.png"><img src="docs/previews/valuematrix-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#value-matrix"><b>Value Matrix</b></a><br>
+<a name="value-matrix"></a>
+<p><a href="docs/widgets/valuematrix.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/valuematrix-dark.png"><img src="docs/previews/valuematrix-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/valuematrix.md"><b>Value Matrix</b></a><br>
 Devices or rooms against the values you choose, in one table, each cell green, orange or red by its range<br clear="left"></p>
 
-<p><a href="#variable-presets"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/varpresets-dark.png"><img src="docs/previews/varpresets-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#variable-presets"><b>Variable Presets</b></a><br>
+<a name="variable-presets"></a>
+<p><a href="docs/widgets/varpresets.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/varpresets-dark.png"><img src="docs/previews/varpresets-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/varpresets.md"><b>Variable Presets</b></a><br>
 Two to four one-tap buttons that set a variable to the values you pick, like Thermostat Presets<br clear="left"></p>
 
-<p><a href="#variables"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/variables-dark.png"><img src="docs/previews/variables-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#variables"><b>Variables</b></a><br>
+<a name="variables"></a>
+<a name="flow-variables"></a>
+<p><a href="docs/widgets/variables.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/variables-dark.png"><img src="docs/previews/variables-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/variables.md"><b>Variables</b></a><br>
 Compact rows to switch variables on and off or change a number or text, with the full name<br clear="left"></p>
 
-<p><a href="#weather-forecast"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/weather-dark.png"><img src="docs/previews/weather-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#weather-forecast"><b>Weather Forecast</b></a><br>
+<a name="weather-forecast"></a>
+<p><a href="docs/widgets/weather.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/weather-dark.png"><img src="docs/previews/weather-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/weather.md"><b>Weather Forecast</b></a><br>
 The next 36 hours, hour by hour, from MET Norway (yr.no)<br clear="left"></p>
 
-<p><a href="#web-page"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/webpage-dark.png"><img src="docs/previews/webpage-light.png" alt="" width="120" align="left"></picture></a>
-<a href="#web-page"><b>Web Page</b></a><br>
+<a name="web-page"></a>
+<p><a href="docs/widgets/webpage.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/webpage-dark.png"><img src="docs/previews/webpage-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/webpage.md"><b>Web Page</b></a><br>
 Any web page, scaled to fill the widget, with buttons to switch between addresses<br clear="left"></p>
-
-<a name="sensor-dots"></a>
-
-## Activity Dots
-<img src="docs/clips/sensordots.webp" alt="Activity Dots on a Homey dashboard: dots lighting up as someone comes in through the front door, then tapped for the kitchen's motion and the open garage" width="358">
-
-Motion, contact, vibration and camera sensors as a grid of dots that light up while active. Tap a dot for its name and since when, such as *Garage · Open since 18:17*.
-
-**Settings:** sensors, title, idle and active colours, [colour style](#colour-style), time format.
-
-## Cameras
-<img src="docs/screenshots/cameras.png" alt="Cameras on a Homey dashboard" width="358">
-
-Your cameras as a grid of snapshots that refresh every few seconds (cameras with only a video stream show a still from it). Tap one to watch it live.
-
-**Away from home:** snapshots come through Homey's cloud like everything else, but live video connects straight to the Homey, which Homey's cloud doesn't carry. So live view works on your home network, or away from home through a VPN to it (WireGuard, Tailscale, your router's own VPN). Without one, a tap says *Live view needs your home network or a VPN.*
-
-**Settings:** cameras, layout (a large camera at the top or bottom, or one per row), refresh interval, how long live view stays on, time format, [rename tiles](#tile-names), and Camera 1 to 6 for cameras missing from the device list, such as Synology Surveillance Station's: they list every device with a snapshot or video.
-
-<a name="charts"></a>
-
-## Chart · Basic
-<img src="docs/screenshots/charts.png" alt="Chart · Basic on a Homey dashboard: the outdoor temperature as a line, and the power use as bars" width="358">
-
-How did it go? A value over any [time span](#time-spans), as a line, an area or bars, drawn like Electricity Overview's charts. Two values can share one chart, to compare a value with the period before it (today over yesterday) or with a second value on its own scale (the power use against the outdoor temperature), or stack as two charts in one widget.
-
-**Settings:** one value, two stacked or two on one chart (sharing chart 1's span, unless both are whole periods of one unit, such as today and yesterday), one scale for both; per chart the value, [time span](#time-spans), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (a finished period's average); the legend; [colour style](#colour-style).
-
-For totals per hour, day or month, see [Chart · Totals](#chart--totals); for more than two values, [Chart · Lines](#chart--lines).
-
-<a name="time-spans"></a>
-
-**All chart widgets** show their key numbers at the top; tap the chart for any point's. They take any value Homey logs in Insights, which keeps 5-minute steps for a day, hourly ones for about a week and 6-hour averages beyond that, so over longer spans short peaks are smoothed.
-
-**Time spans:** a number and a unit. Minutes to years count back from now (40 minutes, 24 hours, 18 months). Days from midnight, weeks from Monday, months from the 1st and years from 1 January are whole periods, the current one included (3 months from the 1st is this month and the two before); with *Leave out the current period*, the ones before it (yesterday, last week). Up to two years: Insights keeps no more. Charts set up before 1.2.0 keep their span.
-
-## Chart · Daily Profile
-<img src="docs/screenshots/typicalday.png" alt="Chart · Daily Profile on a Homey dashboard: the house's power today as a line, a little over its usual day, which is dashed with its spread as a band, peaking in the morning and the evening" width="358">
-
-Is today unusual? Today's line over the usual day: each hour's average over the last 7 (or 3) days, dashed, with their lowest to highest as a band.
-
-**Settings:** the value, usual day from (the last 7 or 3 days), show the spread, smooth line, scale (fitted or from zero), title, the values at the top, colour, [colour style](#colour-style).
-
-## Chart · Gauge
-<img src="docs/screenshots/gauge.png" alt="Chart · Gauge on a Homey dashboard: the office's CO₂ at 950 ppm on a bar from 0 to 1,500, green up to 1,000, yellow to 1,400 and red above, with today's range of 430 to 1,110 ppm as a thin band under it" width="358">
-
-One value now on a bar: a room's CO₂ or humidity, a battery, the house's power. A percentage goes from 0 to 100; anything else gets a scale fitted around today's values (or another [time span](#time-spans)), or one you set. A thin band under the bar shows the lowest to the highest over the time span.
-
-**Colour by level** paints the bar green, yellow and red and the value in its level's colour: *Higher is worse* for CO₂ or power (yellow from 1,000 and red from 1,400 by default, CO₂'s usual limits in ppm), *Lower is worse* for a battery.
-
-**Layout:** a bar, or a dial with the value in its middle and the range inside the arc.
-
-<img src="docs/screenshots/gaugedial.png" alt="The same gauge as a dial: the office's CO₂ at 950 ppm in the middle of a 240° arc in green, yellow and red stretches, today's range as a thin band inside the arc" width="358">
-
-**Settings:** the value, layout (bar or dial), scale (automatic, or from and to), colour by level with where yellow and red start, [time span](#time-spans) for the range, show the range, title, colour, [colour style](#colour-style).
-
-## Chart · Lines
-<img src="docs/screenshots/lines.png" alt="Chart · Lines on a Homey dashboard: the last 24 hours of four rooms' temperatures, a line each in blue, red, orange and yellow, the living room's and the kitchen's now at the top" width="358">
-
-Up to six values over time on one chart, a line each: every room's temperature, each radiator's power. The last 24 hours by default. The first value's kind of units gets the scale on the left (W and kW share one), a second kind, such as power among temperatures, a scale on the right; a third kind is left out.
-
-**Settings:** values 1 to 6 each with its colour, [time span](#time-spans), style (lines, or lines with areas), scale (fitted or from zero), smooth lines, the legend, title, the values at the top, [colour style](#colour-style).
-
-## Chart · Min/Max
-<img src="docs/screenshots/dailyrange.png" alt="Chart · Min/Max on a Homey dashboard: the outdoor temperature's lowest to highest each day of the last four weeks as floating bars, each with its average" width="358">
-
-Each day's lowest to highest as a bar, its average as a tick: how cold the nights and how warm the afternoons were. The last four weeks by default; other spans get their own bars (an hour each over a day, a month each over a year). Past eight days, Insights' 6-hour averages make the lows and highs a little milder than the real ones.
-
-**Settings:** the value, [time span](#time-spans), average tick, scale (fitted or from zero), title, the values at the top, colour, [colour style](#colour-style).
-
-## Chart · Ranking
-<img src="docs/screenshots/compare.png" alt="Chart · Ranking on a Homey dashboard: six rooms' temperatures, warmest first, each with today's range as a bar and the temperature now as a dot" width="358">
-
-One value from up to eight devices on one scale, sorted: each room's temperature now as a dot and its range today (or over another [time span](#time-spans)) as a bar.
-
-**Settings:** values 1 to 8, [time span](#time-spans) for the ranges, order (highest first, lowest first or as picked), show the range, title, the values at the top, colour, [colour style](#colour-style).
-
-## Chart · Scatter (XY)
-<img src="docs/screenshots/scatter.png" alt="Chart · Scatter (XY) on a Homey dashboard: the heat pump's power against the outdoor temperature over a week, a dot an hour, falling as it gets warmer, with the trend line" width="358">
-
-One value against another, a dot an hour (a minute to a week, by the [time span](#time-spans)), newest strongest, with a trend line whose slope shows at the top: how much more the heat pump draws for each degree colder.
-
-**Settings:** the value across (x) and the value up (y), [time span](#time-spans), one dot per (automatic, hour or day), trend line, fade older dots, title, the values at the top, colour, [colour style](#colour-style).
-
-## Chart · Stacked
-<img src="docs/screenshots/stacked.png" alt="Chart · Stacked on a Homey dashboard: the last 24 hours of the house's power as stacked areas, the rest at the bottom, then the heat pump, the oven and the EV charger" width="358">
-
-Who uses the power? Up to six values of one kind stacked over time, the last 24 hours by default: the heat pump, the oven, the EV charger. With a total, such as the house's meter, the rest shows as Other. Values below zero, such as solar, stack downwards.
-
-**Settings:** the total (optional), values 1 to 6 each with its colour, [time span](#time-spans), style (areas or bars), the legend, title, the values at the top, [colour style](#colour-style).
-
-## Chart · Timeline
-<img src="docs/screenshots/timeline.png" alt="Chart · Timeline on a Homey dashboard: today's heating, hall motion, front door and TV as rows with coloured bands where each was on, open or moving" width="358">
-
-When was it on, open or moving? A row for each of up to eight on/off values (the heating, a motion sensor, a door), over today or up to about two weeks, with a band where it was. Homey keeps only a value's last 50 changes, so the app records them itself from the first time they're shown, shared with the [Insights Heatmap](#insights-heatmap); before that, a row is dotted.
-
-A row can also be a number, on above or below a threshold (the heater above 50 W, the bedroom below 18 °C), from Insights' history.
-
-**Settings:** values 1 to 8 each with its colour, and for a number its threshold and above or below, [time span](#time-spans), title, the values at the top, [colour style](#colour-style).
-
-## Chart · Totals
-<img src="docs/screenshots/totals.png" alt="Chart · Totals on a Homey dashboard: the main meter's kilowatt-hours a month this year, beside last year's, both years' totals at the top" width="358">
-
-How much a value went up per hour, day or month, like the Homey app's Energy tab, optionally beside the period before (March beside last year's March). Any value that only counts up: a meter's kWh or m³, a rain gauge, hours of TV, or a meter that starts again each month or year.
-
-**Cost:** with *Show* set to *Cost (electricity)*, a meter's kWh become what they cost: each hour's use at that hour's electricity price in Homey Energy, with your tariffs and taxes (or your fixed price). Past days' prices are read once and kept, so a year's first load can take a little while. Hours Homey has no price for are left out, and the chart says so.
-
-**Settings:** the value (meters first), show the amount or the cost, [time span](#time-spans), compare with the period before, title, the totals at the top, colour, [colour style](#colour-style).
-
-## Clock
-<img src="docs/screenshots/clock.png" alt="Clock on a Homey dashboard" width="358">
-
-The time and the date in one tile, with the weather now and today's high and low from [MET Norway](https://www.met.no/en), the Weather Forecast's data. The time follows your phone, tablet or browser (24 or 12 hours) unless you pick one, the date Homey's language.
-
-**Settings:** show the weather, time format (automatic, 24-hour or 12-hour).
-
-## Curtains
-<img src="docs/clips/curtains.webp" alt="Curtains on a Homey dashboard: an open curtain tapped closed, a closed one tapped open and sent back with a second tap, and a blind dragged most of the way up" width="358">
-
-Curtains and blinds as tiles: tap to open or close (the corner label says which), or use the slider for anything between. A tap while it moves sends it back.
-
-**Settings:** devices, what a tap does halfway, inverted position (leave it off when the device's own invert setting already flips it), how close to the end counts as open or closed, state line, group by room, colour, [colour style](#colour-style), [rename tiles](#tile-names).
-
-## Dashboard Shortcuts
-<img src="docs/screenshots/shortcuts.png" alt="Dashboard Shortcuts on a web dashboard: Home ringed, with Energy, Security, Climate, Evening and Kitchen" width="358">
-
-For [web dashboards](#web-dashboards) only: your other web dashboards as buttons, each with a round icon in the colour and icon you pick; a tap opens that dashboard. The one you're on is ringed, so the same widget can go on every dashboard as a menu.
-
-**Settings:** up to eight dashboards, each with a colour and an icon; 1 or 2 columns; [colour style](#colour-style); [rename tiles](#tile-names).
-
-## Days Since
-<img src="docs/screenshots/dayssince.png" alt="Days Since on a Homey dashboard: a list of chores with a bar each, plants watered 6 days ago in amber with 1 day left, the vacuum filter 3 months in red and 2 days overdue, and the fish just fed with Undo" width="358">
-
-Counters for things you do every so often, such as watering the plants or changing the vacuum filter, in a list on one card. Each bar fills up towards the day the counter is due, with the time left under it; it turns amber, then red, after the days you set, and then shows how long it's overdue (*+2 d*). Tap a row when it's done to start again from *Today* (with **Undo** for a few seconds). Counters are kept on Homey by name, so every widget and screen with the same counter shows the same one.
-
-Flow cards: *Reset [counter]*, *Set [counter] to [days] days ago*, the trigger *[counter] became overdue* (even with no dashboard open) and the condition *[counter] is overdue*; the last two also take *Any counter*.
-
-**Settings:** days only or days, weeks and months; all counters, or only those that are amber and red (or only red), so the ones far from due don't take up room; [colour style](#colour-style); up to eight counters, each with a name, an icon and the days until amber and red.
-
-## Device Quick Actions
-<img src="docs/screenshots/quickactions.png" alt="Device Quick Actions on a Homey dashboard" width="358">
-
-Half-height tiles that run a device's quick action with one tap (on/off, lock, play/pause, a button), highlighted while it's on.
-
-**Settings:** devices, 3 or 2 per row, compact or pill tiles (like Sensor Alarms', with the state under the name), active style, colour, [colour style](#colour-style), single, double or long press (for every tile, or only locks and garage doors, so a stray tap can't unlock a door), [rename tiles](#tile-names).
-
-## Device Values
-<img src="docs/screenshots/values.png" alt="Device Values on a Homey dashboard" width="358">
-
-Half-height tiles that each show one live device value, optionally with a second value of the same device beside the name, such as a room's humidity next to its temperature. Percentages can fill their tile by level, and the Flow card **Set the tile colour of … to …** colours a tile, such as a fridge going red when it's too warm.
-
-**Settings:** up to six values, each with an optional second value; 3 or 2 per row; compact or pill tiles (like Sensor Alarms'); percentage fill and its limits; [colour style](#colour-style); [rename tiles](#tile-names).
-
-## Electricity Overview
-<img src="docs/screenshots/electricity.png" alt="Electricity Overview on a Homey dashboard" width="358">
-
-Live power use, the hourly price from yesterday to 12 hours ahead (with your tariffs and taxes from Homey Energy), the last 24 hours of usage and the cheapest hour ahead. Tap a chart to see its values. Works with a fixed price too, and shows solar export below zero.
-
-**Settings:** power meter, live time span, prices, tariffs and taxes, usage history, smooth lines, lowest price in 12 h / 24 h, compact layout, [colour style](#colour-style).
-
-<a name="price-badge"></a>
-
-## Energy Price Strip
-<img src="docs/screenshots/price.png" alt="Energy Price Strip on a Homey dashboard" width="358">
-
-The electricity price now, and the coming 12, 24 or 36 hours as small bars in one tile: green, yellow or red by each hour's level in its day, with a dot over the cheapest. Uses the Electricity Overview's prices and needs no meter.
-
-**Settings:** hours ahead, colour by level, [colour style](#colour-style), tariffs and taxes.
-
-## Flow Buttons
-<img src="docs/screenshots/flows.png" alt="Flow Buttons on a Homey dashboard" width="358">
-
-Flows and Advanced Flows as rows with a round button in your colour and icon. Tap a row to start the flow. Needs an [API key](#api-key) with **Start Flows**. The Flow card **Set the button colour of … to …** colours the buttons that start a flow, such as green while an e-bike charges; **Default** gives them their own colour again.
-
-**Settings:** up to eight flows, each with a colour, an icon and an optional name; 1 or 2 columns; [colour style](#colour-style).
-
-## Insights Heatmap
-<img src="docs/screenshots/heatmap.png" alt="Insights Heatmap on a Homey dashboard" width="358">
-
-A week of one Insights value as a grid of days and hours: numbers such as light or temperature, or how much of each hour a sensor was on.
-
-**Settings:** device and value, a title in place of the device's name, this week or the last 3–14 days, hours per column, colour, [colour style](#colour-style), scale, legend.
-
-## Keypad
-<img src="docs/clips/keypad.webp" alt="Keypad on a Homey dashboard: a tap on Disarm opens a keypad, a wrong code is turned down, the right one disarms the alarm, and Arm runs at once without a code" width="358">
-
-Up to three buttons, each behind an optional 3–6 digit code: arm an alarm, unlock a door, allow an hour of TV. A button starts a Flow, or, without one, sets the widget's state to its value; a button with only a label just starts the Keypad's Flow card (below). The state is a device value or a Logic variable, shown on the left; the button with its value is ticked. A list value, such as an alarm's *Armed*, *Partially armed* and *Disarmed*, or a yes/no one, gets a button per value when none is set up, all behind the code.
-
-A tap on a button that wants the code opens a phone's keypad beside the state (in compact, in place of the widget); it sends the code with the last digit. With **Show the keypad: Always**, the keypad stays beside the state with the buttons under it: type the code, then tap the button, or tap the button first. With just one button behind the code, the code alone runs it.
-
-<img src="docs/screenshots/keypad.png" alt="Keypad with Show the keypad: Always: an alarm shown as Armed with Arm ticked, Night, and Disarm behind the code, beside a keypad with two digits typed" width="358">
-
-The codes are made under **Apps → Widgetkeeper → Configure → Keypad codes**: a name, such as *Alarm* or *Kids*, and the digits, typed twice. A widget's **Code** setting picks one by name, so several widgets can share a code and you change it in one place (changing it takes the current code, and adding another takes one of the codes already made; removing it doesn't, and its widgets then refuse their buttons until another is picked). Or it picks **Any code**: then everyone's code works, and the Flow card tells whose it was, so give each person their own (no two codes can share digits). While the codes have different lengths, the keypad has an OK key. Widgetkeeper checks the code on your Homey and keeps only a fingerprint of it, made with a secret only the app has, so the digits are never stored or shown. Five wrong codes in a row lock that code for 30 s, doubling each time up to 15 min, and ten in a row, whichever codes they were, lock them all. The code guards the dashboard (a wall tablet, the children, guests), not your Homey: anyone who can open the Homey app can still start the Flow or change the device there.
-
-**Flow cards:** *A Keypad button was tapped by [code]* (Anyone, Anyone with a code, or one code by name), once a button ran, with the tags **Code** (the code's name, such as *Anna*; empty without one), **Button** and **Keypad** (the widget's title). A Flow started by the button itself gets no tags, so for *Anna disarmed the alarm* use this card. *A wrong code was typed on a Keypad*, at a Keypad or a [web dashboard's code](#code), with **Button**, **Keypad** (the widget's title or the dashboard's name), **Locked** (this try locked the code) and **Tries left**.
-
-Starting a Flow needs an [API key](#api-key) with **Start Flows**, setting a variable one with **Variables**; setting a device needs no key.
-
-**Background: State colour** fills the whole widget with the ticked button's colour, so a small Keypad still shows from across the room whether the alarm is armed: red for *Armed*, green for *Disarmed*. It's a light tint, stronger with Vivid. A grey button, or a state no button has, leaves it plain, which is also the default.
-
-**Settings:** a title, the state (a device value or a variable), the code (one, or Any code), show the keypad (when a button needs it, or always), compact layout, [colour style](#colour-style), background (plain or the state's colour), and per button: a Flow, the state's value it stands for, a label, an icon, a colour and whether it needs the code.
-
-## Light Controls
-<img src="docs/clips/lights.webp" alt="Light Controls on a Homey dashboard: a light turned on, dimmed with the bar, and given a colour and a white" width="358">
-
-Six lights in the space of three of Homey's light cards. Tap a tile to switch it, drag or tap the bar to dim, and tap the colour button for colours and whites. Lights in a room can share one tile, whose bar shows how bright its dimmable lights that are on are: their average, or the brightest. With the *Room's Moods* palette, the colour button starts the room's Homey Moods instead (needs an [API key](#api-key) with **Set Moods**).
-
-**Settings:** lights, group by room, room brightness (average or brightest), widen the last tile, what the bar's far left does, colour palette, [colour style](#colour-style), [rename tiles](#tile-names).
-
-## Lights by Room
-<img src="docs/screenshots/lightrooms.png" alt="Lights by Room on a Homey dashboard: five rooms, the living room open with its Moods and three lights, the bedroom off" width="358">
-
-For many lights in many rooms. The lights you pick are grouped by their Homey room, a card each with the room's icon, how many lights are on and how bright (the dimmable lights that are on: their average, or the brightest), a switch for the whole room and a bar that dims all of it. Tap a room's name to open it: its Homey Moods as a row of buttons, then a row per light that works as in Light Controls (tap to switch, tap or drag the bar to dim, the colour button for colours and whites). Rooms start closed; open as many as you like. Starting a Mood needs an [API key](#api-key) with **Set Moods**.
-
-**Settings:** lights, show the room's Moods, colour palette, room brightness (average or brightest), what the bar's far left does, [colour style](#colour-style), [rename tiles](#tile-names) (the rooms and lights).
-
-## Locks and Doors
-<img src="docs/screenshots/locks.png" alt="Locks and Doors on a Homey dashboard" width="358">
-
-Locks, doors, windows and garage doors in one line: *All locked and closed*, or what isn't, on a red tile. Tap it for the list, with **Lock** and **Close** buttons. A lock that can pull the latch can also get an **Open** button (pick its capability, such as *open_lock* or *open*); tap it twice to open the door.
-
-**Settings:** devices, one line or the full list, allow unlocking, the open door button, [colour style](#colour-style), time format, [rename tiles](#tile-names).
-
-## Media
-<img src="docs/clips/media.webp" alt="Media on a Homey dashboard: the volume turned up, the next track, mute, the TV as the source from behind ⋯, and a switch to another speaker" width="358">
-
-One speaker as a card: album art, the track, play controls, mute, and a volume that moves on every tap but never overshoots or passes your maximum. TV and line-in show as such, not as old album art. Tap the name to switch speaker. Up to eight buttons behind ⋯ run the speaker's own actions (such as *Set source to TV*), its app's, or flows; they need an [API key](#api-key) (**Flows** for actions, **Start Flows** for flows). The large layout puts the album art across the whole widget; tap the art to switch layout (each screen remembers its choice).
-
-**Settings:** layout (compact or large), tap the album art to switch layout, colour, [colour style](#colour-style), speaker, speaker switching, volume as a bar or buttons, volume step and maximum, progress, shuffle and repeat, eight buttons with an icon and a name.
-
-## Notes
-<img src="docs/screenshots/textline.png" alt="Notes on a Homey dashboard: a blue tile and a yellow Post-it note" width="358">
-
-A short message on the dashboard: a tile with a line of text or more, or a tilted, handwritten Post-it note. Type it in the settings, show a Logic text variable, or let a Flow write it with *Write [text] on the note [name]* (optionally in a colour, such as red for *Dryer done*) and *Clear the note [name]*; every Notes widget with that name shows it at once. On the tile, long text is cut off, scrolls, or shows on as many lines as it needs, with the line breaks you type (the tile grows with it); the Post-it wraps it to three lines.
-
-**Settings:** style (tile or Post-it), text from (the message typed in the settings, a Flow card or a text variable), message, note name, variable, alignment, text size, long text, icon, colour, [colour style](#colour-style).
-
-## Pollen and UV
-<img src="docs/screenshots/pollen.png" alt="Pollen and UV on a Homey dashboard: a high UV peak at 13:00, birch moderate, grass high and mugwort low" width="358">
-
-Today's pollen at the Homey's location, a row per type with a bar from low to very high, under the day's UV peak and when it comes. Pollen forecasts cover Europe only; elsewhere the widget says so and shows the UV. Out of season it says there's no pollen in the air.
-
-A level is the day's average in grains per m³, by Astma-Allergi Danmark's bands with a very high band on top. The UV levels are the WHO's.
-
-| From (grains per m³) | Low | Moderate | High | Very high |
-|---|---|---|---|---|
-| Birch, alder, olive | 1 | 30 | 101 | 1,001 |
-| Grass, mugwort, ragweed | 1 | 10 | 51 | 251 |
-
-**Settings:** compact or detailed (with the grains per m³ and the next three days), the UV index, the pollen types (alder, birch, olive, grass, mugwort, ragweed; birch, grass and mugwort by default), [colour style](#colour-style), time format.
-
-Pollen and UV data from [Open-Meteo](https://open-meteo.com), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), generated using Copernicus Atmosphere Monitoring Service information.
-
-## Popups
-<img src="docs/screenshots/popups.png" alt="A popup in the Homey app's browser on a phone: the hallway camera's picture, Someone is at the front door. Unlock it?, and the buttons Unlock and Not now" width="358">
-
-A Flow shows a message, or asks a question with one or two buttons of your own (**Yes** and **No** unless you name them), in front of everything on the screens you choose: a web dashboard, or the phones and tablets showing a Homey dashboard with a Popups widget.
-
-- *Show [text] on [screen] for [duration], picture: [picture], sound: [sound]*: closes after the time, or with a tap on that screen.
-- *Ask [question] on [screen], buttons: [button] and [second button], picture: [picture], wait up to [seconds] seconds, sound: [sound]*: the buttons are yours, such as *Open* and *Ignore*, or one *Got it*; left empty, they're *Yes* and *No*. The first one is highlighted. The first answer from any screen closes it everywhere and goes back to the Flow as the tags **Answer** (yes for the first button, no for the second), **Button** (its text) and **Answered** (no when nobody answered in time), which only reach the next cards in an **Advanced Flow**. It waits at most 85 seconds, as Homey stops a Flow card after 90.
-- *Close the popups on [screen]* closes them early; an open question then ends unanswered.
-- **Picture:** a camera (refreshed while the popup is open) or a picture address. The cards *with an image* take an image tag instead, such as a doorbell's snapshot from its own Flow, taken when the Flow runs, or a text tag holding a picture address.
-- **Sound:** a chime, a doorbell or an alert. Browsers only play sound on a page that has been tapped, so a wall tablet plays it once someone has used the web dashboard; on phones it may stay silent.
-
-<img src="docs/web/popup.png" alt="The same popup over a web dashboard in a browser window, the dashboard dimmed behind it" width="100%">
-
-The screen is **Everywhere** or a Popups widget's name. On a [web dashboard](#web-dashboards), the popup covers the page in every browser showing a dashboard with a Popups widget of that name (Everywhere: every web dashboard). Homey's own dashboards don't let a widget draw over them, so there the Popups widget, blank itself, opens the popup in the Homey app's built-in browser; close that window when you're done. Put one at the bottom of each dashboard that should get popups, so it doesn't push other widgets down, with the same name on every screen that should get the same ones: *Hallway* on the phones' dashboard and on the hallway tablet's web dashboard reaches both at once.
-
-**Settings:** screen name, countdown (a bar under a message running down to its end; off by default, as the Homey app's browser window doesn't close by itself).
-
-## Room Health
-<img src="docs/screenshots/roomhealth.png" alt="Room Health on a Homey dashboard: six rooms with their icons, the kitchen humid, the bedroom stuffy and the office's radon far over" width="358">
-
-The indoor climate of the whole house on one card. The sensors you pick are grouped by their Homey room: each room shows its worst value large (else the temperature), its name, and a mark per value (an icon, or a bar), lined up in the same order in every room. A comfortable value is grey, or green with *Green when fine*; outside its range it turns yellow, then red the further out it is. Tap a room to step through its readings.
-
-| Value | Comfortable by default | Red at |
-|---|---|---|
-| Temperature | 18–24 °C (18 °C is WHO's minimum) | 3 °C outside |
-| Humidity | 30–60 % | 10 points outside |
-| CO₂ | up to 1000 ppm | 1.5 × the limit |
-| Radon | up to 100 Bq/m³ (WHO's reference level) | 1.5 × |
-| PM2.5 | up to 15 μg/m³ (WHO's 24-hour guideline) | 1.5 × |
-| PM10 | up to 45 μg/m³ (WHO's 24-hour guideline) | 1.5 × |
-| VOC | up to 1000 ppb | 1.5 × |
-
-A heat pump's room temperature counts; outdoor and water temperatures don't. Left out on purpose: carbon monoxide (a safety alarm: use [Sensor Alarms](#sensor-alarms)), air quality indexes and VOC in μg/m³ or as an index (their scales differ between devices), and PM1 (no guideline).
-
-**Settings:** sensors, [rename tiles](#tile-names), [colour style](#colour-style), icons or bars, green when fine, the comfortable range of each value (one range for every room).
-
-## Sensor Alarms
-<img src="docs/screenshots/sensoralarms.png" alt="Sensor Alarms on a Homey dashboard" width="358">
-
-Tiles that show *No alarm*, the alarm that's on or how many, and turn red while one is. Every alarm counts, including apps' own such as radon. Tap a tile for all of its alarms.
-
-**Settings:** sensors, count motion and contact, [colour style](#colour-style), [rename tiles](#tile-names).
-
-## Smart Stack
-<img src="docs/clips/stack.webp" width="382" alt="A Smart Stack on a Homey dashboard: it turns through four widgets, is swiped by hand, and brings the cameras forward when someone is at the door">
-
-Widgetkeeper widgets from another dashboard, one at a time in the space of one. It turns every 30 seconds, and swipes or the dots move it by hand. Smart rotate brings a widget forward while something happens on it: music plays, a timer runs, a camera sees someone, a door is open. A Flow card can bring one forward too. Needs an [API key](#api-key) with the **Homey** permission to read the dashboard.
-
-**Settings:** dashboard, interval, smart rotate, pause after a swipe, dots.
-
-## Spacer
-Transparent empty space of the height you set, in pixels (16 at least), to line up widgets across a dashboard's columns. Homey keeps its usual gap above and below it.
-
-**Settings:** height.
-
-## Sparklines
-<img src="docs/screenshots/sparklines.png" alt="Sparklines on a Homey dashboard" width="358">
-
-Device Values' tiles with a small live chart of each value and its highest and lowest.
-
-**Settings:** up to six values, time span (a number and a unit, as [Chart · Basic's](#charts): 40 minutes, 24 hours, 18 months, or whole days, weeks, months or years such as today or last month), 2 or 1 per row, [colour style](#colour-style), [rename tiles](#tile-names). Sparklines set up before 1.2.0 keep their span.
-
-<a name="thermostat-shortcuts"></a>
-
-## Thermostat Presets
-<img src="docs/screenshots/thermostat.png" alt="Thermostat Presets on a Homey dashboard" width="358">
-
-Three one-tap presets for a thermostat, heat pump or air conditioner, such as *Off*, *Heat 21°* and *Heat 24° · Fan level 5*. The matching preset lights up; a preset without a temperature shows the setpoint under the name. Tap the name for the controls: power, the temperature and every mode, fan or swing setting of the device.
-
-Flow cards: *Run [button]*, the condition *[button] is active* and the trigger *[button] was tapped*, with the thermostat and the button's text as tags; the trigger also takes *Any button*. Each picks a button of a widget on one of your dashboards and follows that button's settings. Buttons on Homey's own dashboards are listed with an [API key](#api-key) that has the **Homey** permission; those on web dashboards need none.
-
-**Settings:** the device, a title in place of its name, a value to show beside it (any device value, such as the room temperature), compact layout, [colour style](#colour-style), and per button: power, mode, temperature and one extra option such as the fan speed.
-
-## Timers
-<img src="docs/clips/timers.webp" alt="Timers on a Homey dashboard: a pizza timer started from its preset, given a minute more, paused and resumed, then run out in red and dismissed" width="358">
-
-Up to four preset buttons, such as *Eggs · 7 min*. A started timer takes their place: tap to pause, **+1** for a minute more, **✕** to cancel. It beeps and turns red when done. The timer runs on Homey, so every screen sees it and the Flow card **A timer on the Timers widget finished** fires with no dashboard open.
-
-**Settings:** colour, [colour style](#colour-style), four presets with minutes and an optional name, sound.
-
-## Value Matrix
-<img src="docs/screenshots/valuematrix.png" alt="Value Matrix on a Homey dashboard: six rooms by temperature, humidity, CO₂ and radon, the kitchen humid and the office's radon far over" width="358">
-
-Any devices against any values, in one table. Pick the devices, then up to six values for the columns (temperature, humidity, CO₂, power, battery: any number a device has). The rows are the devices' Homey rooms, each cell the average of the room's devices, or the devices themselves with *Rows: Devices*. A cell is green (OK) inside the column's range, orange (Warning) outside it, and red (Alert) once it's past by half the range; it's striped where a row has no such value.
-
-Type a column's OK range in the value's unit, such as `18–24`, `<1000` or `>10`, or `–` for none. Left empty, the values Room Health knows (temperature in °C, humidity, CO₂, radon, PM2.5, PM10, VOC in ppb) get [its ranges](#room-health), and other values none. The header is the unit (°C, %) or a short name, unless you type your own.
-
-**Settings:** devices, [rename tiles](#tile-names), [colour style](#colour-style), rooms or devices as rows, show legend, and per column the value, its OK range and its header.
-
-## Variable Presets
-<img src="docs/screenshots/varpresets.png" alt="Variable Presets on a Homey dashboard" width="358">
-
-One Logic variable with two to four buttons, each setting it to a value you pick, such as *Home*, *Away* and *Night* for a house mode, or two setpoints. It looks like Thermostat Presets: the button matching the variable lights up in your colour, and when none does, the name shows its value. A yes/no variable without buttons set gets Yes and No. Needs an [API key](#api-key) with **Variables** to change the variable.
-
-**Settings:** the variable, a title instead of its name, an icon, compact layout, the button colour, [colour style](#colour-style), and per button: the value (Yes or No, a number or a text, as the variable is; pick the variable first) and a label.
-
-<a name="flow-variables"></a>
-
-## Variables
-<img src="docs/screenshots/variables.png" alt="Variables on a Homey dashboard" width="358">
-
-Logic variables as compact rows with their full name: a switch for yes/no, − and + for a number, and the text for a string. Tap a number or text to type a value. Needs an [API key](#api-key) with **Variables** to change them. Read only shows the values without anything to tap (a dot and Yes/No for yes/no), and needs no key.
-
-**Settings:** up to ten variables, 1 or 2 columns, colour, [colour style](#colour-style), read only, the − and + step, the lowest and highest number, [rename tiles](#tile-names).
-
-## Weather Forecast
-<img src="docs/screenshots/weather.png" alt="Weather Forecast on a Homey dashboard" width="358">
-
-The next 36 hours from [MET Norway](https://www.met.no/en) ([yr.no](https://www.yr.no)), hour by hour, with today's and tomorrow's high and low. Swipe sideways to see further ahead.
-
-**Settings:** compact or detailed, one or two rows, 1–3 hours per column, colour style: Standard, Warm and cold (coloured temperatures) or [Vivid](#colour-style) (the card on a gradient for the current weather).
-
-Weather data from MET Norway, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Icons: [Yr's weather symbols](https://github.com/metno/weathericons) (MIT).
-
-## Web Page
-<img src="docs/screenshots/webpage.png" alt="Web Page on a Homey dashboard: a rain radar page scaled to fill the widget, with the buttons Now, +2 h and +4 h under it" width="358">
-
-A web page you pick, drawn at the width and height you set and scaled to fill the widget without borders: set them to a fixed-size gadget's size, and it fills the widget on a phone and a tablet alike. Links on the page never open, and unless you let the page be tapped, taps are ignored and a swipe scrolls the dashboard. Two to four buttons in a row under the page switch between their addresses (for a map, the same address with another zoom on each); the widget always opens on the first. `{lat}` and `{lon}` in an address become the Homey's location. Many sites don't allow being shown inside another page (Google, YouTube and most news sites among them): the widget says so, and a site's embed or widget address often works instead. An `http://` page, such as one on your own NAS, can't be shown in a dashboard that's on `https://`, as in the Homey app on an iPhone, also at home: the widget says so. Give the page an `https://` address with a certificate your devices trust, or show it on a [web dashboard](#web-dashboards) at home. You're responsible for following the terms of the site you show.
-
-**Settings:** address, page width and height, let the page be tapped, reload every (15 minutes keeps live data current on a screen that's always on), up to four buttons (a name and an address).
 
 ## Web dashboards
 <img src="docs/web/dashboard.png" alt="A web dashboard with Widgetkeeper widgets in a browser window, with Dashboard Shortcuts at the top as a menu" width="100%">
@@ -579,8 +254,8 @@ The front page shows every dashboard as a card with a miniature of its widgets, 
 - **Look:** light, dark or automatic, and a background per dashboard (Default, Black or White, Slate, Ocean, Forest, Plum, Berry, Sand), each with a light and a dark shade. The sun button in the bar switches between light and dark in this browser only.
 - **Full screen:** the corner button gives the whole screen to the dashboard.
 - **Kiosk browsers:** add `?kiosk=1` to the address (`…/dashboard.html?kiosk=1#/d/<dashboard>`, or `#/d/<dashboard>?kiosk=1`) for a browser such as Fully Kiosk that fills the screen itself: the dashboard's bar, with its back link, name, pen and full screen button, is left out. A browser can't go full screen on its own when the page opens, so use the kiosk browser's own full screen setting for that. Add a [code](#code) to the dashboard too, so nobody can leave it or edit it.
-- **A menu:** put [Dashboard Shortcuts](#dashboard-shortcuts) on every dashboard to jump between them.
-- **Popups:** Flows can show a message or ask Yes or No over a dashboard, in every browser showing it, with a camera's picture if you like. See [Popups](#popups).
+- **A menu:** put [Dashboard Shortcuts](docs/widgets/shortcuts.md) on every dashboard to jump between them.
+- **Popups:** Flows can show a message or ask Yes or No over a dashboard, in every browser showing it, with a camera's picture if you like. See [Popups](docs/widgets/popups.md).
 
 <img src="docs/web/light.png" alt="A light web dashboard, the Kitchen on the Sand background, in a browser window" width="100%">
 
@@ -614,7 +289,7 @@ Each screen in the list has **Opens on**: pick a dashboard, and its code opens t
 Anyone with a code can use its key, so give each screen only the permissions it needs. **New code** makes another (paste the screen's key again, or a new one). **Remove** stops the code; the device keeps what it has until it next loads the page, so for a lost device also delete its key in the Homey web app (**Settings → API Keys**). Repeated wrong codes lock every code for a while.
 
 ### Code
-A dashboard can take a [Keypad](#keypad) code: in its editor, pick one (or Any code) under the lock. Editing it and going back to the dashboards then take the code, so a wall tablet stays on its dashboard and nobody there can change its widgets, a Keypad's code included. The page asks for it and Widgetkeeper checks it; wrong ones lock as at a Keypad. Removing the code under **Keypad codes** opens the dashboard again. Like the Keypad's, it guards the screen, not your Homey: someone with the browser's API key and its developer tools can still get past it.
+A dashboard can take a [Keypad](docs/widgets/keypad.md) code: in its editor, pick one (or Any code) under the lock. Editing it and going back to the dashboards then take the code, so a wall tablet stays on its dashboard and nobody there can change its widgets, a Keypad's code included. The page asks for it and Widgetkeeper checks it; wrong ones lock as at a Keypad. Removing the code under **Keypad codes** opens the dashboard again. Like the Keypad's, it guards the screen, not your Homey: someone with the browser's API key and its developer tools can still get past it.
 
 ### Backup
 In the front page's **Settings**, **Download backup** saves the dashboards you tick in one file: the layouts, the widgets, their settings and tile names. **Restore backup** lists a file's dashboards; after a second tap, the ones you tick replace those they were saved from (or come back, if deleted), and the others stay as they are. Notes' texts and Days Since's counters aren't included, as Homey's own dashboards share them.

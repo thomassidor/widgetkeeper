@@ -75,5 +75,6 @@ locales/                        strings for the widgets, services and pages, in 
 dev/                            browser previews with mock data; the pages the renders use
 scripts/                        renderers, diagnostics, test dashboards
 docs/                           images for the README and the community post
+docs/widgets/                   a page per widget, linked from the README's overview
 test/                           vitest tests; helpers/ has the fake Homey API and the widget loader
 ```

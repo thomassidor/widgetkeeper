@@ -1,11 +1,12 @@
 # Widgetkeeper — notes for Claude
 
-Homey Pro app (`com.thomassidor.widgetkeeper`) of custom dashboard widgets. Never rename a widget id: it breaks widgets already on dashboards. 1.0.0 renamed Price Badge, Thermostat Shortcuts, Sensor Dots and Flow Variables to Energy Price Strip, Thermostat Presets, Activity Dots and Variables; the 0.9.0 changelog and posts keep the old names, and README.md their old anchors (`<a name>`); 1.2.0 renamed Charts to Chart · Basic. The electricity design spec is `temp/Homey electricity dashboard widget.zip` (`temp/` is gitignored).
+Homey Pro app (`com.thomassidor.widgetkeeper`) of custom dashboard widgets. Never rename a widget id: it breaks widgets already on dashboards. 1.0.0 renamed Price Badge, Thermostat Shortcuts, Sensor Dots and Flow Variables to Energy Price Strip, Thermostat Presets, Activity Dots and Variables; the 0.9.0 changelog and posts keep the old names, and README.md's widget overview their old anchors (`<a name>`); 1.2.0 renamed Charts to Chart · Basic. The electricity design spec is `temp/Homey electricity dashboard widget.zip` (`temp/` is gitignored).
 
 ## Notes per widget and area (`.claude/rules/`)
 This file holds what applies across the app. Each widget's notes, and those of the larger areas, are in `.claude/rules/`; Claude Code loads a note when you read a file its `paths:` cover (the widget's folder, service, tests and dev pages).
 - **Before planning or changing a widget, read its note in full**, even if it hasn't loaded yet, and the note of any widget whose parts it borrows (a note saying `Quick Actions' tile`, `Light Controls' bar` or `Flow Buttons' icons` means that widget's code and note).
 - Write new widget detail in that widget's note, not here. A new widget gets a note with `paths:` like its neighbours' and a row below.
+- **The README** (2026-11-06, the user's ask: it had grown too long): each widget's text (screenshot or clip, what it does, Flow cards, Settings) is its own page, `docs/widgets/<id>.md` (by id, so a rename keeps the address), with `[← All widgets](../../README.md#widgets)` at the top and bottom. The README keeps the overview, linking each entry to its page, with an `<a name>` before it for the widget's old heading anchor and any older ones (`#activity-dots`, `#sensor-dots` …; posts link to them), then the app-wide sections (Web dashboards, Colour style, Device names, Tile names, API key …), which the pages link as `../../README.md#…`. Chart · Basic's page holds the time spans (`charts.md#time-spans`). A new widget gets a page and an overview entry.
 
 | Widget | id | Note (`.claude/rules/…`) |
 |---|---|---|
