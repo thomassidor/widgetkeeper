@@ -15,6 +15,20 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Tap for every device:** a tap opens each device's value under the tile, sorted, the ones outside the range marked.
 - **Median**, besides the average. A device that reports the value in other units than the others is left out of the sum or average, and the tile says so.
 
+### New: Value Board
+- **Every value of the devices you pick in one widget,** grouped by room or by device, so a house's readings don't take a dozen Device Values widgets: readings only, or everything including switches and set temperatures.
+- **As tiles** (a tile per group, its values in a grid of 2, 3 or 4 per row) or **compact** (a line of values per group; tap a value for its name).
+- **What needs a look stands out by itself:** a low battery, an open contact, an alarm or high CO₂. Fine values can go green, and rooms and devices can be renamed.
+
+### More icons
+- **155 more icons, 201 in all,** in every icon setting and on the Flow Tiles card. The list opens with the 46 you know; type to find the others by name, in your language.
+
+### Better pickers
+- **Search by words,** in any order, ignoring capitals and accents, in every list of devices and values: *temp kitchen* finds the kitchen's temperatures. Rows whose words start with what you typed come first, and Spot 2 comes before Spot 10.
+- **See what you're picking:** a value's row shows its room, its current reading and a glyph for the kind of value.
+- **Lists say why they're empty,** such as *Pick a device first* or *No speakers found*, and a very long list stops at 100 rows and asks you to keep typing.
+- **In the web dashboards' editor** the current choice is marked, and the arrow keys, Enter and Escape work.
+
 ### Settings made alike across the widgets
 - **Time format for the whole app:** 24 or 12 hours (or Automatic, the phone's or browser's language) under **Apps → Widgetkeeper → Configure → Time format**, for every widget that shows a time: now also the charts' axes and tapped times, the Electricity Overview and Energy Price Strip, the Weather Forecast's hours, the Heatmap, Daily Profile and Timers' end times. It replaces the Time format setting of the Clock, Cameras, Locks and Doors, Pollen and UV and Activity Dots: a widget set to 24 or 12 hours there now follows the app's, so set it once on that page.
 - **Rename tiles** in Value Board (its rooms and devices) and Activity Dots (each sensor).
