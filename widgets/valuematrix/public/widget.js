@@ -43,9 +43,10 @@
     for (const row of rows) {
       if (row.missing) continue;
       row.values = {};
+      row.offline = row.devices.every(d => d.offline);
       const ids = new Set(row.devices.flatMap(d => Object.keys(d.values || {})));
       for (const id of ids) {
-        const read = row.devices.map(d => (d.values || {})[id]).filter(v => typeof v === 'number' && isFinite(v));
+        const read = row.devices.filter(d => !d.offline).map(d => (d.values || {})[id]).filter(v => typeof v === 'number' && isFinite(v));
         row.values[id] = read.length ? read.reduce((a, b) => a + b, 0) / read.length : null;
       }
     }
@@ -193,7 +194,7 @@
         if (row.node !== want) gridEl.insertBefore(row.node, want);
         placed = row.node;
         const missing = !!r.missing;
-        row.node.classList.toggle('missing', missing);
+        row.node.classList.toggle('missing', missing || !!r.offline);
         row.name.textContent = rowName(r);
         let field = null;
         if (typed.renaming && !missing) {
@@ -218,7 +219,7 @@
           const word = level === 'none' ? t('noReading') : LEVEL_WORDS[level] ? t(LEVEL_WORDS[level]) : null;
           spoken.push([c.header, level === 'none' ? null : formatNumber(c, value), word].filter(Boolean).join(' '));
         });
-        row.node.setAttribute('aria-label', missing ? t('unavailable') : [`${rowName(r)}:`, spoken.join(', ')].join(' '));
+        row.node.setAttribute('aria-label', missing ? t('unavailable') : r.offline ? `${rowName(r)}: ${t('unavailable')}` : [`${rowName(r)}:`, spoken.join(', ')].join(' '));
       }
       tileEl.style.display = devices.length && cols.length ? '' : 'none';
       legendEl.style.display = opts.showLegend !== false && cols.some(c => c.range) ? '' : 'none';

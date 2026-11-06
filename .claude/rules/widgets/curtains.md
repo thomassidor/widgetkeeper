@@ -21,3 +21,4 @@ paths:
 - Shared with Light Controls through the kit (2026-10-30): the bar (`wireBar()`), the tiles with `groupByZone` (`roomTiles()`), the optimistic values (`optimistic()`) and `shake()`.
 - A tap that moves a curtain (or a bar's release) calls `Homey.hapticFeedback()` since the settings review (2026-11-04): the mount's `haptic()` in `onSet`, at most once per 300 ms, in a `try`.
 - `wideLast` ("Widen the last tile", after `groupByZone`, off; Light Controls' setting and strings; the settings review's second batch, 2026-11-05): `.wide` on the last of an odd number of tiles as shown (after `groupByZone`, missing ones too).
+- An unavailable curtain (CLAUDE.md *Unavailable devices*): `markOffline()` once all of a tile's curtains are, the mark bottom right; a tap still tries.

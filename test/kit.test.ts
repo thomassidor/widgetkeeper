@@ -355,11 +355,93 @@ describe('wireDeviceState()', () => {
     Homey.api.mockRejectedValueOnce(new Error('offline'));
     await vi.advanceTimersByTimeAsync(0);
     expect(widget.setMessage).toHaveBeenLastCalledWith('error', false);
-    await vi.advanceTimersByTimeAsync(5 * 60e3);
+    await vi.advanceTimersByTimeAsync(5e3); // tried again soon
     expect(widget.setState).toHaveBeenCalledTimes(1);
     Homey.api.mockRejectedValueOnce(new Error('offline'));
     await vi.advanceTimersByTimeAsync(5 * 60e3);
     expect(widget.setMessage).toHaveBeenLastCalledWith('error', true);
+  });
+});
+
+describe('wireRefresh()', () => {
+  const { wireRefresh, markOffline } = (window as any).WidgetkeeperKit;
+  let hidden = false;
+  const setHidden = (v: boolean) => {
+    hidden = v;
+    document.dispatchEvent(new Event('visibilitychange'));
+  };
+  beforeEach(() => {
+    vi.useFakeTimers();
+    hidden = false;
+    Object.defineProperty(document, 'hidden', { configurable: true, get: () => hidden });
+  });
+  afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
+
+  it('reads at its interval, and not at all with none', () => {
+    const load = vi.fn();
+    wireRefresh(load, 60e3);
+    const own = vi.fn();
+    wireRefresh(own, null);
+    vi.advanceTimersByTime(120e3);
+    expect(load).toHaveBeenCalledTimes(2);
+    expect(own).not.toHaveBeenCalled();
+  });
+
+  it('reads when the page is back after 30 s hidden, not after less', () => {
+    const load = vi.fn();
+    wireRefresh(load, null);
+    setHidden(true);
+    vi.advanceTimersByTime(29e3);
+    setHidden(false);
+    expect(load).not.toHaveBeenCalled();
+    setHidden(true);
+    vi.advanceTimersByTime(30e3);
+    setHidden(false);
+    expect(load).toHaveBeenCalledTimes(1);
+  });
+
+  it('tries a failed read again after 5, 15 and 30 s, then leaves it to the refresh, which starts the count over', () => {
+    const refresh = wireRefresh(() => { refresh.failed(); load(); }, 300e3);
+    const load = vi.fn();
+    refresh.failed();
+    vi.advanceTimersByTime(4999);
+    expect(load).toHaveBeenCalledTimes(0);
+    vi.advanceTimersByTime(1);
+    expect(load).toHaveBeenCalledTimes(1);
+    vi.advanceTimersByTime(15e3);
+    expect(load).toHaveBeenCalledTimes(2);
+    vi.advanceTimersByTime(30e3);
+    expect(load).toHaveBeenCalledTimes(3);
+    vi.advanceTimersByTime(250e3 - 1);
+    expect(load).toHaveBeenCalledTimes(3);
+    vi.advanceTimersByTime(1); // the refresh, 300 s in
+    expect(load).toHaveBeenCalledTimes(4);
+    vi.advanceTimersByTime(5e3);
+    expect(load).toHaveBeenCalledTimes(5);
+  });
+
+  it('asks once while a try is waiting', () => {
+    const load = vi.fn();
+    const refresh = wireRefresh(load, null);
+    refresh.failed();
+    refresh.failed();
+    vi.advanceTimersByTime(60e3);
+    expect(load).toHaveBeenCalledTimes(1);
+  });
+
+  it('markOffline() dims a tile and marks it once, and takes it all back', () => {
+    const tile = document.createElement('div');
+    markOffline(tile, true, 'Unavailable');
+    markOffline(tile, true, 'Unavailable');
+    expect(tile.classList.contains('wk-offline')).toBe(true);
+    expect(tile.querySelectorAll('.wk-offline-badge')).toHaveLength(1);
+    expect(tile.querySelector('.wk-offline-badge')!.getAttribute('aria-label')).toBe('Unavailable');
+    markOffline(tile, false, 'Unavailable');
+    expect(tile.className).toBe('');
+    expect(tile.children).toHaveLength(0);
+    markOffline(tile, true);
+    expect(tile.classList.contains('wk-offline')).toBe(true);
+    expect(tile.children).toHaveLength(0);
   });
 });
 

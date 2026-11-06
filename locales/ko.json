@@ -32,7 +32,8 @@
     "anyButton": "아무 버튼",
     "button": "버튼 __n__",
     "web": "__name__ (웹)",
-    "keyItem": "Homey 대시보드의 버튼에는 API 키가 필요합니다"
+    "keyItem": "Homey 대시보드의 버튼에는 API 키가 필요합니다",
+    "unavailable": "사용할 수 없음"
   },
   "quickactions": {
     "selectDevices": "위젯 설정에서 기기를 선택하세요.",
@@ -1268,7 +1269,10 @@
     "syncNightlyText": "동기화된 모든 대시보드, Homey 시간으로 이 시각에.",
     "syncTime": "시각",
     "syncAll": "모두 지금 동기화",
-    "syncCount": "동기화된 대시보드 __count__개"
+    "syncCount": "동기화된 대시보드 __count__개",
+    "undo": "실행 취소",
+    "widgetRemoved": "위젯 제거됨",
+    "widgetMoved": "위젯 이동됨"
   },
   "autocomplete": {
     "pickThermostat": "먼저 온도 조절기를 선택하세요",

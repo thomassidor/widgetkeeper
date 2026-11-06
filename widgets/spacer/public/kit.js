@@ -10,6 +10,10 @@
   /** How long after a touch the browser's own click is ignored (it still sends one after a short swipe). */
   const CLICK_AFTER_TOUCH_MS = 800;
   const DEVICE_REFRESH_MS = 5 * 60e3; // keeps the app's device subscriptions alive and resyncs state
+  /** How soon a failed read is tried again, each once; after these it's the usual refresh's turn. */
+  const RETRY_MS = [5e3, 15e3, 30e3];
+  /** A page hidden this long reads again when it's back: it may have missed realtime changes. */
+  const RESUME_AFTER_MS = 30e3;
 
   /**
    * Flow Buttons' icons, also the icons of Days Since's tiles, Notes, Variable Presets and Media's buttons: drawn on a
@@ -637,6 +641,56 @@
   }
 
   /**
+   * When a mount reads its state again, besides its first read: every `every` ms (null: the mount has its own timer), when
+   * the page is back after being hidden 30 s or more (realtime changes may have been missed meanwhile), and soon after
+   * a failed read: the mount's load calls `failed()`, which tries again after 5, 15 and 30 s, so a busy Homey's error
+   * doesn't stay until the next refresh. A refresh starts the count over.
+   * @param {() => unknown} load
+   * @param {number | null} [every]
+   */
+  function wireRefresh(load, every = DEVICE_REFRESH_MS) {
+    let hiddenAt = null;
+    let tries = 0;
+    let timer = null;
+    if (every) setInterval(() => { tries = 0; load(); }, every);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (hiddenAt == null) hiddenAt = Date.now();
+        return;
+      }
+      const away = hiddenAt == null ? 0 : Date.now() - hiddenAt;
+      hiddenAt = null;
+      if (away >= RESUME_AFTER_MS) { tries = 0; load(); }
+    });
+    return {
+      failed() {
+        if (timer != null || tries >= RETRY_MS.length) return;
+        timer = setTimeout(() => { timer = null; load(); }, RETRY_MS[tries++]);
+      },
+    };
+  }
+
+  /**
+   * Marks a device's tile as unavailable (Homey's `available: false`, or a device that's gone): its content dimmed, as
+   * what it shows is only the last it reported, with a small `!` in the corner saying `label` to a screen reader. Without
+   * `label` only dimmed, for what's too small for a mark. kit.css draws both.
+   * @param {HTMLElement} node
+   * @param {unknown} offline
+   * @param {string} [label]
+   */
+  function markOffline(node, offline, label) {
+    node.classList.toggle('wk-offline', !!offline);
+    let badge = /** @type {HTMLElement | null} */ (node.querySelector(':scope > .wk-offline-badge'));
+    if (!offline || !label) {
+      if (badge) badge.remove();
+      return;
+    }
+    if (!badge) badge = el('span', { class: 'wk-offline-badge', role: 'img', text: '!' }, node);
+    badge.title = label;
+    badge.setAttribute('aria-label', label);
+  }
+
+  /**
    * A device value setting's pick (an autocomplete item whose id is `<deviceId>:<capabilityId>`): the id, or null for none
    * or one that isn't a value (as lib/ValueService.ts' `parseSlot()`).
    * @param {unknown} item
@@ -861,6 +915,7 @@
     let deviceIds = [];
     let loaded = false;
     const ready = () => link.ready({ fonts: true });
+    let refresh = null;
     let loadSeq = 0; // only the latest load's answer counts: an older one that comes in last would undo it
     async function load() {
       const seq = ++loadSeq;
@@ -883,6 +938,7 @@
         console.error(err);
         // A failed refresh keeps the tiles; only a failed first load replaces them with the error.
         widget.setMessage(widget.t('error'), loaded);
+        refresh.failed();
       }
       ready();
     }
@@ -894,7 +950,7 @@
     getDeviceIds(Homey)
       .then((ids) => { deviceIds = [...new Set([...ids, ...more])]; })
       .then(() => {
-        setInterval(load, DEVICE_REFRESH_MS);
+        refresh = wireRefresh(load);
         onDeviceNames(Homey, load);
         load();
       });
@@ -1374,7 +1430,7 @@
   window.WidgetkeeperKit = {
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
     getTimeFormat, setTimeFormat, wireTimeFormat, uses12Hours, clockTime, hourLabel, smoothValues,
-    formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
+    formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, wireRefresh, markOffline, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     onDeviceNames, colorStyle, applyColors, sound, optimistic, shake, wireBar, roomTiles, knownValue, okRange, okLevel,
   };
 })();

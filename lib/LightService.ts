@@ -1,7 +1,7 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
 import { capValuesText, copyCaps, presentCaps, readCaps, type CapState } from './capabilities.js';
-import DeviceTracker, { readZones, zoneRef, type TrackedEntry } from './DeviceTracker.js';
+import DeviceTracker, { readZones, zoneRef, type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { fetchZoneIcon } from './deviceIcon.js';
 import { shownName } from './deviceNames.js';
 import PersonalApiKey from './PersonalApiKey.js';
@@ -19,7 +19,7 @@ export type LightCap = CapState;
 export type LightMember = { id: string, caps: Record<string, LightCap> };
 
 export type LightDevice =
-  | { id: string, name: string, icon: string | null, zone: { id: string, name: string } | null, caps: Record<string, LightCap>, groupLights?: LightMember[] }
+  | { id: string, name: string, icon: string | null, zone: { id: string, name: string } | null, caps: Record<string, LightCap>, groupLights?: LightMember[], offline?: true }
   | { id: string, missing: true };
 
 /** Homey's own group devices (Devices → New group): one light over others, listed in `settings.deviceIds`. */
@@ -178,7 +178,7 @@ export default class LightService {
         return { id, missing: true };
       }
       const zone = zoneRef(await zonesP, t.zone);
-      const entry: LightDevice = { id, name: shownName(this.homey, t.name, zone?.name), icon: t.icon, zone, caps: copyCaps(t.caps) };
+      const entry: LightDevice = { id, name: shownName(this.homey, t.name, zone?.name), icon: t.icon, zone, caps: copyCaps(t.caps), ...offlineFlag(t) };
       if (t.members) entry.groupLights = await this.groupLights(t.members, read);
       return entry;
     }));

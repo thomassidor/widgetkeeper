@@ -4,7 +4,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, applyColors, onTap, touchGuard, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, applyColors, onTap, touchGuard, messageLine, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const OPTIMISTIC_MS = 10e3; // how long a tapped tile shows its new state while waiting for the device
@@ -298,6 +298,7 @@
           tile.state.style.display = key ? '' : 'none';
         }
         tile.button.classList.toggle('missing', 'missing' in d);
+        markOffline(tile.button, !('missing' in d) && d.offline, t('unavailable'));
         setMask(tile.icon, 'missing' in d ? null : d.icon);
         tile.icon.classList.toggle('fallback', 'missing' in d || !d.icon);
         // While asking for the second tap, the action icon shows what it will do (an open padlock to unlock).

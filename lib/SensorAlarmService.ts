@@ -1,7 +1,7 @@
 import type Homey from 'homey';
 import { lastUpdatedMs } from './appApi.js';
 import { describeCapability } from './capabilities.js';
-import DeviceTracker, { type TrackedEntry } from './DeviceTracker.js';
+import DeviceTracker, { type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { deviceNamer } from './deviceNames.js';
 import Timings from './Timings.js';
 
@@ -24,7 +24,7 @@ export type SensorAlarm = {
 };
 
 export type SensorAlarmDevice =
-  | { id: string, name: string, icon: string | null, alarms: SensorAlarm[] }
+  | { id: string, name: string, icon: string | null, alarms: SensorAlarm[], offline?: true }
   | { id: string, missing: true };
 
 type Tracked = TrackedEntry & {
@@ -95,7 +95,7 @@ export default class SensorAlarmService {
     const tm = new Timings();
     const show = await deviceNamer(this.homey, tm, this.log, 'Sensor alarms');
     const out = await this.tracker.each(deviceIds, tm, this.log, 'Sensor alarm device', (t, id): SensorAlarmDevice => (
-      { id, name: show(t.name, t.zone), icon: t.icon, alarms: t.alarms.map(a => ({ ...a })) }
+      { id, name: show(t.name, t.zone), icon: t.icon, alarms: t.alarms.map(a => ({ ...a })), ...offlineFlag(t) }
     ));
     this.debug(`Sensor alarms state for ${deviceIds.length} devices: ${tm.summary()}`);
     return out;

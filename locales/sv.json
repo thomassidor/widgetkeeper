@@ -32,7 +32,8 @@
     "anyButton": "Valfri knapp",
     "button": "Knapp __n__",
     "web": "__name__ (webb)",
-    "keyItem": "Knappar på Homeys instrumentpaneler kräver en API-nyckel"
+    "keyItem": "Knappar på Homeys instrumentpaneler kräver en API-nyckel",
+    "unavailable": "Inte tillgänglig"
   },
   "quickactions": {
     "selectDevices": "Välj enheter i widgetinställningarna.",
@@ -1268,7 +1269,10 @@
     "syncNightlyText": "Varje synkad instrumentpanel, vid den här tiden på Homey.",
     "syncTime": "Tid",
     "syncAll": "Synka alla nu",
-    "syncCount": "__count__ synkade instrumentpaneler"
+    "syncCount": "__count__ synkade instrumentpaneler",
+    "undo": "Ångra",
+    "widgetRemoved": "Widget borttagen",
+    "widgetMoved": "Widget flyttad"
   },
   "autocomplete": {
     "pickThermostat": "Välj en termostat först",

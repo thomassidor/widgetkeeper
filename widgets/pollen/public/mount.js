@@ -30,6 +30,7 @@ window.mountPollenWidget = function (Homey, { root, frame }) {
       loaded = true;
     } catch (err) {
       console.error(err);
+      refresh.failed();
       // A failed refresh keeps what's shown; only a failed first load shows the error.
       widget.setMessage(widget.t('error'), loaded);
     }
@@ -38,7 +39,7 @@ window.mountPollenWidget = function (Homey, { root, frame }) {
 
   // The app's time format (the settings page's): the UV peak's time drawn again when it changes.
   wireTimeFormat(Homey, () => { if (loaded) load(); });
-  setInterval(load, REFRESH_MS);
+  const refresh = window.WidgetkeeperKit.wireRefresh(load, REFRESH_MS);
   load();
 };
 /** The classes index.html puts on its body; the Smart Stack puts them on the slide. */

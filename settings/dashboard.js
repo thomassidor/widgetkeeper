@@ -180,6 +180,9 @@
     moveRight: 'Move right',
     drag: 'Drag to move',
     remove: 'Remove',
+    undo: 'Undo',
+    widgetRemoved: 'Widget removed',
+    widgetMoved: 'Widget moved',
     widgetTitle: 'Title',
     widgetTitleHint: 'Shown above the widget. Leave it empty for none.',
     preview: 'Preview',
@@ -769,6 +772,7 @@
      * takes the app's copy, so a value it corrected (a clamped number, a new widget id) shows and is sent on.
      */
     function persist() {
+      if (wd.dismissUndo) wd.dismissUndo(); // what an Undo would put back is out of date now
       const snapshot = wd.stored(wd.current.dashboard);
       wd.saving = wd.saving.then(async () => {
         if (deleted.has(snapshot.id)) return;
@@ -875,10 +879,13 @@
       toast(message || t('loadFailed'));
     }
 
-    function toast(text) {
+    /** A passing message, with a button when `action` (`{label, run, ms}`) is given. */
+    function toast(text, action) {
       const node = el('div', 'wd-toast', text);
+      if (action) node.append(button('wd-toast-action', action.label, action.run));
       document.body.append(node);
-      setTimeout(() => node.remove(), 4000);
+      setTimeout(() => node.remove(), (action && action.ms) || 4000);
+      return node;
     }
 
     // ---- The parts (settings/dashboard-<part>.js), each run once with `wd` ------------------------------------------

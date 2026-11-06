@@ -32,7 +32,8 @@
     "anyButton": "Dowolny przycisk",
     "button": "Przycisk __n__",
     "web": "__name__ (web)",
-    "keyItem": "Przyciski na pulpitach Homey wymagają klucza API"
+    "keyItem": "Przyciski na pulpitach Homey wymagają klucza API",
+    "unavailable": "Niedostępne"
   },
   "quickactions": {
     "selectDevices": "Wybierz urządzenia w ustawieniach widżetu.",
@@ -1268,7 +1269,10 @@
     "syncNightlyText": "Każdy synchronizowany pulpit, o tej godzinie na Homey.",
     "syncTime": "Godzina",
     "syncAll": "Synchronizuj wszystkie teraz",
-    "syncCount": "Synchronizowane pulpity: __count__"
+    "syncCount": "Synchronizowane pulpity: __count__",
+    "undo": "Cofnij",
+    "widgetRemoved": "Widget usunięty",
+    "widgetMoved": "Widget przeniesiony"
   },
   "autocomplete": {
     "pickThermostat": "Najpierw wybierz termostat",

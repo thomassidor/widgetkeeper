@@ -311,7 +311,7 @@ describe('the old name settings', () => {
     });
     await vi.advanceTimersByTimeAsync(10);
     fail = false;
-    await vi.advanceTimersByTimeAsync(5 * 60e3);
+    await vi.advanceTimersByTimeAsync(5e3); // the failed read tried again
     await vi.advanceTimersByTimeAsync(5 * 60e3);
     const old = JSON.stringify({ a: 'Guests', 'a#2': 'Again' });
     expect(sent()).toEqual([old, old, null]);

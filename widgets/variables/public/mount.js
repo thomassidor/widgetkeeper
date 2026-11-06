@@ -75,6 +75,7 @@ window.mountVariablesWidget = function (Homey, { root, frame }) {
       loaded = true;
     } catch (err) {
       console.error(err);
+      refresh.failed();
       // A failed refresh keeps the rows; only a failed first load replaces them with the error.
       widget.setMessage(widget.t('error'), loaded);
     }
@@ -85,7 +86,7 @@ window.mountVariablesWidget = function (Homey, { root, frame }) {
     if (data) widget.pushChange(data);
   });
 
-  setInterval(load, REFRESH_MS);
+  const refresh = window.WidgetkeeperKit.wireRefresh(load, REFRESH_MS);
   load();
 };
 /** The classes index.html puts on its body; the Smart Stack puts them on the slide. */

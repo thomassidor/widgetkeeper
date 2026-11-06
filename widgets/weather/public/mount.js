@@ -35,6 +35,7 @@ window.mountWeatherWidget = function (Homey, { root, frame }) {
       loaded = true;
     } catch (err) {
       console.error(err);
+      refresh.failed();
       // A failed refresh keeps the forecast already shown.
       if (!loaded) widget.setMessage(widget.t('error'));
     }
@@ -43,7 +44,7 @@ window.mountWeatherWidget = function (Homey, { root, frame }) {
 
   // The hours follow the app's time format: drawn again when it changes.
   wireTimeFormat(Homey, () => { if (loaded) load(); });
-  setInterval(load, REFRESH_MS);
+  const refresh = window.WidgetkeeperKit.wireRefresh(load, REFRESH_MS);
   load();
 };
 /** The classes index.html puts on its body; the Smart Stack puts them on the slide. */

@@ -7,7 +7,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, formatSince, applyColors, onTap: kitOnTap, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, formatSince, applyColors, onTap: kitOnTap, messageLine, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const BUSY_MS = 15e3; // how long a lock may take to report its new state before the button gives up
@@ -85,7 +85,8 @@
     if ('missing' in d) return 'missing';
     const caps = capsOf(d);
     if (caps.some(([id, c]) => isInsecure(id, c.value))) return 'insecure';
-    return caps.length && caps.every(([id, c]) => isSecure(id, c.value)) ? 'secure' : 'unknown';
+    // An unavailable device can't vouch for being secure; one last seen open stays open.
+    return !d.offline && caps.length && caps.every(([id, c]) => isSecure(id, c.value)) ? 'secure' : 'unknown';
   }
 
   /**
@@ -273,6 +274,7 @@
     function stateText(d) {
       if ('missing' in d) return t('unavailable');
       const insecure = lockLevel(d) === 'insecure';
+      if (d.offline && !insecure) return t('unavailable');
       const parts = [];
       for (const [id, c] of capsOf(d)) {
         if (typeof c.value !== 'boolean' || (insecure && !isInsecure(id, c.value))) continue;
@@ -309,7 +311,7 @@
       if (!known.length) return { level: present.length ? 'unknown' : 'missing', title: present.length ? t('noStatus') : t('unavailable'), sub: unavailable };
       // "All locked" only when every device says so: one that hasn't reported yet may well be open.
       const unknown = present.filter(d => lockLevel(d) === 'unknown');
-      if (unknown.length === 1) return { level: 'unknown', title: nameOf(unknown[0]), sub: join(t('noStatus'), unavailable) };
+      if (unknown.length === 1) return { level: 'unknown', title: nameOf(unknown[0]), sub: join(unknown[0].offline ? t('unavailable') : t('noStatus'), unavailable) };
       if (unknown.length > 1) return { level: 'unknown', title: t('countNoStatus', { count: unknown.length }), sub: join(unknown.map(nameOf).join(', '), unavailable) };
       const caps = known.flatMap(d => capsOf(d).map(([id, c]) => [id, c]));
       const hasLock = caps.some(([id]) => id === 'locked');
@@ -367,6 +369,7 @@
         placed = r.row;
         const level = lockLevel(d);
         r.row.dataset.level = level;
+        markOffline(r.row, !('missing' in d) && d.offline, t('unavailable'));
         r.name.textContent = 'missing' in d ? t('unavailable') : nameOf(d);
         if (names.renaming && !('missing' in d)) {
           const field = names.field(d.id, d.name);

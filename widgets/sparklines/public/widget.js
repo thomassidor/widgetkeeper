@@ -4,7 +4,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, formatNumber, formatValue, applyColors, timeSpan, isTimeSpan, sixHourLog, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, formatNumber, formatValue, applyColors, timeSpan, isTimeSpan, sixHourLog, messageLine, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -95,7 +95,7 @@
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, smooth?: boolean, t?: (key: string, tokens?: object) => string, span?: string, columns?: number|string,
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
-   *   now?: () => number, onHeight?: (h: number) => void }} opts
+   *   now?: () => number, labels?: Record<string, string>, onHeight?: (h: number) => void }} opts
    */
   function createSparklinesWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -195,6 +195,8 @@
     }
 
     const setMask = (node, url) => window.WidgetkeeperKit.setMask(node, url, '--sl-mask');
+    /** A gone device's tile keeps the name its setting was picked by (`opts.labels`, by slot), so it's clear which one went. */
+    const lastName = s => (opts.labels && opts.labels[`${s.deviceId}:${s.capabilityId}`]) || t('unavailable');
 
     function drawChart(tile, s) {
       const w = Math.round(tile.plot.getBoundingClientRect().width) || 100;
@@ -232,7 +234,7 @@
         if (tile.tile !== want) grid.insertBefore(tile.tile, want);
         placed = tile.tile;
         const missing = 'missing' in s;
-        tile.name.textContent = missing ? t('unavailable') : names.name(named[i], s.name);
+        tile.name.textContent = missing ? names.name(named[i], lastName(s)) : names.name(named[i], s.name);
         if (names.renaming && !missing) {
           const field = names.field(named[i], s.name);
           if (field.previousSibling !== tile.name) tile.name.after(field);
@@ -241,6 +243,7 @@
         setMask(tile.icon, iconFor(s));
         drawChart(tile, s);
         tile.tile.classList.toggle('missing', missing);
+        markOffline(tile.tile, missing || s.offline, t('unavailable'));
         tile.tile.dataset.capability = s.capabilityId;
         tile.tile.title = missing ? '' : s.capability.title;
       });

@@ -11,6 +11,11 @@ const IDLE_TIMEOUT = 10 * MINUTE;
 /** How long a zones read is shared (a renamed room shows after this). */
 const ZONES_MAX_AGE = MINUTE;
 
+/** What an answer adds for an unavailable device: nothing otherwise, so a working device's answer stays as it was. */
+export function offlineFlag(t: { offline: boolean }): { offline?: true } {
+  return t.offline ? { offline: true } : {};
+}
+
 /** What the tracker keeps on every entry. */
 export type TrackedEntry = {
   /** The tracker's key: the device id, or e.g. `<deviceId>:<capabilityId>`. */
@@ -19,6 +24,8 @@ export type TrackedEntry = {
   name: string,
   /** The device's zone (room) id, from every read: for its room and the Device names setting's *Leave out the room*. */
   zone: string | null,
+  /** Homey says the device is unavailable (`available: false`), from every read: its values are the last it reported. */
+  offline: boolean,
   /** With `iconLog`: the device's icon (`fetchDeviceIcon()`), from every read. */
   icon?: string | null,
   /** The capability instances, destroyed with the entry. */
@@ -182,6 +189,7 @@ export default class DeviceTracker<T extends TrackedEntry> {
     try {
       t.name = device.name;
       t.zone = device.zone ?? null;
+      t.offline = device.available === false;
       if (this.opts.iconLog) t.icon = await this.icon(api, device, tm);
       await this.opts.refresh?.(t, device, api, tm);
     } catch (err) {
@@ -211,7 +219,7 @@ export default class DeviceTracker<T extends TrackedEntry> {
     ]);
     if (this.stopped) throw new Error(`Stopped before ${key} was tracked`); // nothing would ever destroy its instances
     const t = {
-      ...own, key, name: device.name, zone: device.zone ?? null, ...(this.opts.iconLog ? { icon } : {}), instances: [], lastRequested: Date.now(), signature: this.opts.signature(device, key),
+      ...own, key, name: device.name, zone: device.zone ?? null, offline: device.available === false, ...(this.opts.iconLog ? { icon } : {}), instances: [], lastRequested: Date.now(), signature: this.opts.signature(device, key),
     } as unknown as T;
     t.instances = this.opts.listen(t, device);
     this.tracked.set(key, t);

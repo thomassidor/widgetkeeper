@@ -8,12 +8,15 @@
   'use strict';
 
   window.WidgetkeeperWeb.part('realtime', (wd) => {
-    const { APP_ID, listeners, root } = wd;
+    const { APP_ID, listeners, request, root } = wd;
 
     const ACK_TIMEOUT_MS = 10e3;
 
     /** After a realtime outage this long, the frames reload: they may have missed changes (they re-read every 5 min). */
     const STALE_AFTER_MS = 30e3;
+
+    /** How often an open page asks which version of the app is running. */
+    const VERSION_EVERY_MS = 5 * 60e3;
 
     // ---- Realtime: Homey's socket (socket.io v2), as homey-api connects ------------------------------------
 
@@ -105,6 +108,7 @@
         for (const appId of otherApps) subscribeApp(ns, appId);
         retryMs = 2000;
         setLive(true);
+        checkVersion();
         if (lostAt != null && Date.now() - lostAt > STALE_AFTER_MS) wd.reloadFrames();
         if (lostAt != null) wd.refreshPopups();
         lostAt = null;
@@ -143,6 +147,30 @@
       }
     }
 
-    Object.assign(wd, { connectSocket, listenerKey, listenToApp, setLive, stopSocket });
+    // ---- After an app update: the page reloads itself, so a wall tablet doesn't run the old page against the new app ----
+
+    /** Not now: someone is editing or has a dialog open, or a reload would drop the browser out of full screen for good. */
+    function busyToReload() {
+      const page = /** @type {any} */ (document);
+      return !!(wd.current && wd.current.editing) || !!document.querySelector('dialog[open]')
+        || !!(page.fullscreenElement || page.webkitFullscreenElement);
+    }
+
+    /** Reloads when the app runs another version than this page started with; while busy, a later check does. */
+    async function checkVersion() {
+      const started = wd.setup && wd.setup.appVersion;
+      if (!started || document.hidden) return;
+      let version;
+      try {
+        ({ version } = await request('GET', '/web/version'));
+      } catch (err) {
+        return; // the app is restarting, or the Homey can't be reached: the next check
+      }
+      if (typeof version === 'string' && version && version !== started && !busyToReload()) location.reload();
+    }
+
+    setInterval(checkVersion, VERSION_EVERY_MS);
+
+    Object.assign(wd, { checkVersion, connectSocket, listenerKey, listenToApp, setLive, stopSocket });
   });
 })();

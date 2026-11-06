@@ -251,3 +251,80 @@ describe("web dashboards page: a screen's code (takeCode, useCode)", () => {
     expect(down.wd.key).toBe('old-key');
   });
 });
+
+describe('web dashboards page: Undo in the editor (withUndo)', () => {
+  function setup() {
+    const wd: any = { current: { editing: true, dashboard: { id: 'd', columns: [[{ id: 'a' }, { id: 'b' }], []] } }, syncGrid: vi.fn() };
+    const toast = vi.fn((_text: string, _action: any) => ({ remove: vi.fn() }));
+    const persist = vi.fn();
+    const { withUndo } = new Function('wd', 'toast', 'persist', 't', [
+      constant('UNDO_MS'), 'let undoNode = null;', fn('dismissUndo'), fn('withUndo'), 'return { withUndo };',
+    ].join('\n'))(wd, toast, persist, (key: string) => key);
+    return { wd, toast, persist, withUndo };
+  }
+
+  it('offers to put the widgets back after a change, and saves when it does', () => {
+    const { wd, toast, persist, withUndo } = setup();
+    withUndo('widgetRemoved', () => wd.current.dashboard.columns[0].splice(0, 1));
+    expect(wd.current.dashboard.columns[0]).toEqual([{ id: 'b' }]);
+    expect(toast).toHaveBeenCalledWith('widgetRemoved', expect.objectContaining({ label: 'undo', ms: 8000 }));
+    toast.mock.calls[0][1].run();
+    expect(wd.current.dashboard.columns).toEqual([[{ id: 'a' }, { id: 'b' }], []]);
+    expect(persist).toHaveBeenCalledTimes(1);
+    expect(wd.syncGrid).toHaveBeenCalledTimes(1);
+  });
+
+  it('offers nothing when nothing changed (a move at the edge)', () => {
+    const { toast, withUndo } = setup();
+    withUndo('widgetMoved', () => {});
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it("touches nothing once another dashboard is open, or the editor closed", () => {
+    for (const leave of [(wd: any) => { wd.current = { editing: true, dashboard: { id: 'other', columns: [] } }; }, (wd: any) => { wd.current.editing = false; }, (wd: any) => { wd.current = null; }]) {
+      const { wd, toast, persist, withUndo } = setup();
+      withUndo('widgetRemoved', () => wd.current.dashboard.columns[0].splice(0, 1));
+      leave(wd);
+      toast.mock.calls[0][1].run();
+      expect(persist).not.toHaveBeenCalled();
+    }
+  });
+});
+
+describe('web dashboards page: after an app update (checkVersion)', () => {
+  function setup({ version = '1.3.1' as unknown, started = '1.3.0' as unknown, fails = false, busy = {} as Record<string, unknown>, open = false, hidden = false } = {}) {
+    const location = { reload: vi.fn() };
+    const request = vi.fn(async () => { if (fails) throw new Error('restarting'); return { version }; });
+    const wd = { setup: { appVersion: started }, current: busy.editing ? { editing: true } : null };
+    const page = { hidden, fullscreenElement: busy.fullscreen ? {} : null, querySelector: () => (open ? {} : null) };
+    const check = new Function('wd', 'request', 'location', 'document', [fn('busyToReload'), `async ${fn('checkVersion')}`, 'return checkVersion;'].join('\n'))(wd, request, location, page);
+    return { check, location, request };
+  }
+
+  it('reloads when the app runs another version', async () => {
+    const { check, location } = setup();
+    await check();
+    expect(location.reload).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    ['the same version', { version: '1.3.0' }],
+    ['a failed read', { fails: true }],
+    ['an answer without a version', { version: '' }],
+    ['someone editing', { busy: { editing: true } }],
+    ['a dialog open', { open: true }],
+    ['full screen', { busy: { fullscreen: true } }],
+  ])('stays with %s', async (_what, opts) => {
+    const { check, location } = setup(opts);
+    await check();
+    expect(location.reload).not.toHaveBeenCalled();
+  });
+
+  it('asks nothing while hidden, or from a page started before it knew its version', async () => {
+    for (const opts of [{ hidden: true }, { started: null }]) {
+      const { check, request } = setup(opts);
+      await check();
+      expect(request).not.toHaveBeenCalled();
+    }
+  });
+});

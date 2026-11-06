@@ -32,7 +32,8 @@
     "anyButton": "Hvilken som helst knapp",
     "button": "Knapp __n__",
     "web": "__name__ (nett)",
-    "keyItem": "Knapper på Homey-dashbord trenger en API-nøkkel"
+    "keyItem": "Knapper på Homey-dashbord trenger en API-nøkkel",
+    "unavailable": "Utilgjengelig"
   },
   "quickactions": {
     "selectDevices": "Velg enheter i widgetinnstillingene.",
@@ -1268,7 +1269,10 @@
     "syncNightlyText": "Hvert synkroniserte dashbord, på dette tidspunktet på Homey.",
     "syncTime": "Tid",
     "syncAll": "Synkroniser alle nå",
-    "syncCount": "__count__ synkroniserte dashbord"
+    "syncCount": "__count__ synkroniserte dashbord",
+    "undo": "Angre",
+    "widgetRemoved": "Widget fjernet",
+    "widgetMoved": "Widget flyttet"
   },
   "autocomplete": {
     "pickThermostat": "Velg en termostat først",

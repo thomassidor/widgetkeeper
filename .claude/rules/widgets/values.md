@@ -23,3 +23,4 @@ paths:
 - `columns` lists `2` before `3` since the settings review (2026-11-04: every Tiles per row lists its options from the fewest; ids and the default unchanged).
 - `wideLast` ("Widen the last tile", after `columns`, off; Light Controls' setting and strings; the settings review's second batch, 2026-11-05): `.wide` on the last of an odd number of tiles, only at 2 per row (3 per row leaves it alone; the hint doesn't say so).
 - Its settings follow the shared order since 2026-11-05 (CLAUDE.md *Widget settings*); where this note says a setting comes after another, that's from before it.
+- An unavailable device (CLAUDE.md *Unavailable devices*): the kit's `markOffline()` on the tile, its last value kept; the mark bottom right in the compact tile. A missing slot's tile (1.3.0) shows the typed name, else the name its setting was picked by (`opts.labels`, by slot, from the mount), else `Unavailable`, with the mark. Flow Tiles borrows the tile but never sends `offline`.

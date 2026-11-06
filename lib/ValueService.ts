@@ -3,7 +3,7 @@ import { findLog, parseLogSlot } from './appLogs.js';
 import { devicesAndZones, hintRow, listCapabilitySlots, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { capabilityReading, describeCapability, type CapabilityDescription } from './capabilities.js';
 import { valueGlyphImage } from './valueGlyphs.js';
-import DeviceTracker, { type TrackedEntry } from './DeviceTracker.js';
+import DeviceTracker, { type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { fetchSvgIcon } from './deviceIcon.js';
 import { deviceNamer } from './deviceNames.js';
 import { FlowColors, parseTileColor, type TileColor } from './tileColors.js';
@@ -25,7 +25,7 @@ export type ValueCapability = CapabilityDescription & {
 export type ValueSecond = { capabilityId: string, capability: ValueCapability, value: unknown };
 
 export type ValueSlot =
-  | { deviceId: string, capabilityId: string, name: string, capability: ValueCapability, value: unknown, color?: TileColor, second?: ValueSecond }
+  | { deviceId: string, capabilityId: string, name: string, capability: ValueCapability, value: unknown, color?: TileColor, second?: ValueSecond, offline?: true }
   | { deviceId: string, capabilityId: string, missing: true };
 
 type Tracked = TrackedEntry & {
@@ -181,7 +181,7 @@ export default class ValueService {
         const second = await this.second(s.deviceId, seconds[i], s.capabilityId, tm);
         return {
           deviceId: t.deviceId, capabilityId: t.capabilityId, name: show(t.name, t.zone), capability: { ...t.capability }, value: t.value,
-          ...(color ? { color } : {}), ...(second ? { second } : {}),
+          ...(color ? { color } : {}), ...(second ? { second } : {}), ...offlineFlag(t),
         };
       } catch (err) {
         this.log(`Value ${slot} unavailable:`, err);

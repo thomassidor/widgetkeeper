@@ -32,7 +32,8 @@
     "anyButton": "Beliebige Taste",
     "button": "Taste __n__",
     "web": "__name__ (Web)",
-    "keyItem": "Tasten auf Homey-Dashboards brauchen einen API-Schlüssel"
+    "keyItem": "Tasten auf Homey-Dashboards brauchen einen API-Schlüssel",
+    "unavailable": "Nicht verfügbar"
   },
   "quickactions": {
     "selectDevices": "Wähle Geräte in den Widget-Einstellungen.",
@@ -1268,7 +1269,10 @@
     "syncNightlyText": "Jedes synchronisierte Dashboard, zu dieser Uhrzeit auf dem Homey.",
     "syncTime": "Uhrzeit",
     "syncAll": "Alle jetzt synchronisieren",
-    "syncCount": "__count__ synchronisierte Dashboards"
+    "syncCount": "__count__ synchronisierte Dashboards",
+    "undo": "Rückgängig",
+    "widgetRemoved": "Widget entfernt",
+    "widgetMoved": "Widget verschoben"
   },
   "autocomplete": {
     "pickThermostat": "Wähle zuerst ein Thermostat",

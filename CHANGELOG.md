@@ -29,6 +29,19 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Lists say why they're empty,** such as *Pick a device first* or *No speakers found*, and a very long list stops at 100 rows and asks you to keep typing.
 - **In the web dashboards' editor** the current choice is marked, and the arrow keys, Enter and Escape work.
 
+### Devices that drop off
+- **A device Homey calls unavailable no longer looks live.** Its tile is dimmed with a small **!** in the corner, in Device Values, Sparklines, Value Board, Device Quick Actions, Sensor Alarms, Light Controls, Lights by Room, Curtains, Locks and Doors, Room Health and Thermostat Presets; Value Matrix greys its row and Activity Dots draws its dot as a ring.
+- **Its old reading doesn't count:** Combined Value, Room Health and Value Matrix leave it out of their averages and sums. Locks and Doors never says *All locked* while a lock is unavailable, and Sensor Alarms says *Unavailable* rather than *No alarm*; an alarm or open door it last reported stays shown.
+- **A deleted device keeps its name** in Device Values and Sparklines, so you can see which one went.
+
+### Quicker to recover
+- **Widgets try again** 5, 15 and 30 seconds after a failed read, rather than showing the error for up to 5 minutes.
+- **Widgets read again when you come back** to a dashboard hidden for 30 seconds or more.
+- **Web dashboards update themselves:** an open page, such as a wall tablet's, reloads after the app is updated. It waits while someone is editing or a dialog is open, and doesn't reload in the browser's full screen, which a reload would leave.
+
+### Web dashboards' editor
+- **Undo:** removing or moving a widget offers Undo for 8 seconds.
+
 ### Settings made alike across the widgets
 - **Time format for the whole app:** 24 or 12 hours (or Automatic, the phone's or browser's language) under **Apps → Widgetkeeper → Configure → Time format**, for every widget that shows a time: now also the charts' axes and tapped times, the Electricity Overview and Energy Price Strip, the Weather Forecast's hours, the Heatmap, Daily Profile and Timers' end times. It replaces the Time format setting of the Clock, Cameras, Locks and Doors, Pollen and UV and Activity Dots: a widget set to 24 or 12 hours there now follows the app's, so set it once on that page.
 - **Rename tiles** in Value Board (its rooms and devices) and Activity Dots (each sensor).

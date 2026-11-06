@@ -32,7 +32,8 @@
     "anyButton": "Elke knop",
     "button": "Knop __n__",
     "web": "__name__ (web)",
-    "keyItem": "Knoppen op Homey-dashboards hebben een API-sleutel nodig"
+    "keyItem": "Knoppen op Homey-dashboards hebben een API-sleutel nodig",
+    "unavailable": "Niet beschikbaar"
   },
   "quickactions": {
     "selectDevices": "Kies apparaten in de widgetinstellingen.",
@@ -1268,7 +1269,10 @@
     "syncNightlyText": "Elk gesynchroniseerd dashboard, op dit tijdstip op de Homey.",
     "syncTime": "Tijd",
     "syncAll": "Alles nu synchroniseren",
-    "syncCount": "__count__ gesynchroniseerde dashboards"
+    "syncCount": "__count__ gesynchroniseerde dashboards",
+    "undo": "Ongedaan maken",
+    "widgetRemoved": "Widget verwijderd",
+    "widgetMoved": "Widget verplaatst"
   },
   "autocomplete": {
     "pickThermostat": "Kies eerst een thermostaat",

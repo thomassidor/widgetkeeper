@@ -1,6 +1,6 @@
 import type Homey from 'homey';
 import { describeCapability, type CapabilityDescription } from './capabilities.js';
-import DeviceTracker, { readZones, zoneRef, type TrackedEntry } from './DeviceTracker.js';
+import DeviceTracker, { readZones, zoneRef, type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { deviceNamer } from './deviceNames.js';
 import Timings from './Timings.js';
 import { valueCaps } from './ValueService.js';
@@ -14,7 +14,7 @@ export type ValueBoardMode = 'readings' | 'all';
 export type BoardValue = CapabilityDescription & { capabilityId: string, value: unknown };
 
 export type BoardDevice =
-  | { id: string, name: string, zone: { id: string, name: string } | null, values: BoardValue[] }
+  | { id: string, name: string, zone: { id: string, name: string } | null, values: BoardValue[], offline?: true }
   | { id: string, missing: true };
 
 type Tracked = TrackedEntry & {
@@ -94,6 +94,7 @@ export default class ValueBoardService {
       id,
       name: show(t.name, t.zone),
       zone: zoneRef(await zonesP, t.zone),
+      ...offlineFlag(t),
       values: t.caps
         .filter(c => mode === 'all' || isReading(c.capabilityId))
         .map(c => ({ capabilityId: c.capabilityId, ...c.capability, value: t.values[c.capabilityId] ?? null })),

@@ -6,7 +6,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, applyColors, KEY_PROBLEMS, onTap: kitOnTap, touchGuard, messageLine, wireBar } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, applyColors, KEY_PROBLEMS, onTap: kitOnTap, touchGuard, messageLine, wireBar, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   const { glyphs, PALETTES, temperatureColor, hueColor, moodDot, swatchList, setBlend, model } = window.WidgetkeeperKit.lights;
   'use strict';
 
@@ -361,7 +361,7 @@
 
     /** The room's state: Off, All on or "2 of 3 on", with the brightness while a light that dims is on. */
     function roomState(room, on, x) {
-      if (!room.members.length) return t('unavailable');
+      if (!room.members.length || room.members.every(d => d.offline)) return t('unavailable');
       const lit = room.members.filter(isOn).length;
       if (!on) return t('off');
       const state = lit === room.members.length ? t('allOn') : t('someOn', { on: lit, all: room.members.length });
@@ -444,6 +444,7 @@
     function renderRow(d, row) {
       const missing = 'missing' in d || !d.caps || !(d.caps.dim || d.caps.onoff);
       row.row.classList.toggle('missing', missing);
+      markOffline(row.row, !missing && d.offline, t('unavailable'));
       if (missing) {
         row.name.textContent = t('unavailable');
         row.sub.textContent = '';

@@ -1,7 +1,7 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
 import { capValuesText, copyCaps, presentCaps, readCaps, type CapState } from './capabilities.js';
-import DeviceTracker, { readZones, zoneRef, type TrackedEntry } from './DeviceTracker.js';
+import DeviceTracker, { readZones, zoneRef, type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { deviceNamer } from './deviceNames.js';
 import Timings from './Timings.js';
 
@@ -22,7 +22,7 @@ export type CurtainCap = CapState;
 export type CurtainKind = 'curtain' | 'blinds';
 
 export type CurtainDevice =
-  | { id: string, name: string, kind: CurtainKind, zone: { id: string, name: string } | null, caps: Record<string, CurtainCap> }
+  | { id: string, name: string, kind: CurtainKind, zone: { id: string, name: string } | null, caps: Record<string, CurtainCap>, offline?: true }
   | { id: string, missing: true };
 
 export type CurtainChange = { action?: unknown, position?: unknown };
@@ -91,7 +91,7 @@ export default class CurtainService {
     const zonesP = readZones(this.homey, tm, this.log, 'Curtain');
     const show = await deviceNamer(this.homey, tm, this.log, 'Curtain');
     const out = await this.tracker.each(deviceIds, tm, this.log, 'Curtain', async (t, id): Promise<CurtainDevice> => ({
-      id, name: show(t.name, t.zone), kind: t.kind, zone: zoneRef(await zonesP, t.zone), caps: copyCaps(t.caps),
+      id, name: show(t.name, t.zone), kind: t.kind, zone: zoneRef(await zonesP, t.zone), caps: copyCaps(t.caps), ...offlineFlag(t),
     }));
     this.debug(`Curtains state for ${deviceIds.length} devices: ${tm.summary()}`);
     return out;

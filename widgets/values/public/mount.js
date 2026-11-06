@@ -21,6 +21,11 @@ window.mountValuesWidget = function (Homey, { root, frame }) {
     const device = slot.slice(0, slot.indexOf(':'));
     return second && second !== slot && second.startsWith(`${device}:`) ? second.slice(device.length + 1) : '';
   });
+  /** The name each value was picked by: a gone device's tile keeps it. */
+  const labels = Object.fromEntries([1, 2, 3, 4, 5, 6]
+    .map(n => settings[`slot${n}`])
+    .filter(item => slotId(item) && typeof item.name === 'string')
+    .map(item => [item.id, item.name]));
   let loaded = false;
 
   const tileNames = wireTileNames(Homey, names => widget.setNames(names));
@@ -35,6 +40,7 @@ window.mountValuesWidget = function (Homey, { root, frame }) {
     redBelow: settings.redBelow,
     yellowBelow: settings.yellowBelow,
     wideLast: settings.wideLast === true,
+    labels,
     onHeight: link.setHeight,
   });
 
@@ -56,6 +62,7 @@ window.mountValuesWidget = function (Homey, { root, frame }) {
       loaded = true;
     } catch (err) {
       console.error(err);
+      refresh.failed();
       // A failed refresh keeps the tiles; only a failed first load replaces them with the error.
       widget.setMessage(widget.t('error'), loaded);
     }
@@ -71,7 +78,7 @@ window.mountValuesWidget = function (Homey, { root, frame }) {
     if (data) widget.pushColor(data);
   });
 
-  setInterval(load, REFRESH_MS);
+  const refresh = window.WidgetkeeperKit.wireRefresh(load, REFRESH_MS);
   onDeviceNames(Homey, load);
   load();
 };

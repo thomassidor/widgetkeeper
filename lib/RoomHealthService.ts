@@ -1,5 +1,5 @@
 import type Homey from 'homey';
-import DeviceTracker, { readZones, zoneRef, type TrackedEntry } from './DeviceTracker.js';
+import DeviceTracker, { readZones, zoneRef, type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { deviceNamer } from './deviceNames.js';
 import Timings from './Timings.js';
 
@@ -12,7 +12,7 @@ export type Measure = 'temperature' | 'humidity' | 'co2' | 'radon' | 'pm25' | 'p
 export type HealthCap = { measure: Measure, capabilityId: string, scale: number };
 
 export type RoomHealthDevice =
-  | { id: string, name: string, zone: { id: string, name: string } | null, measures: Partial<Record<Measure, { capabilityId: string, value: number | null }>> }
+  | { id: string, name: string, zone: { id: string, name: string } | null, measures: Partial<Record<Measure, { capabilityId: string, value: number | null }>>, offline?: true }
   | { id: string, missing: true };
 
 type Tracked = TrackedEntry & {
@@ -125,6 +125,7 @@ export default class RoomHealthService {
         id,
         name: show(t.name, t.zone),
         zone: zoneRef(await zonesP, t.zone),
+        ...offlineFlag(t),
         measures: Object.fromEntries(t.caps.map(c => [c.measure, { capabilityId: c.capabilityId, value: t.values[c.measure] ?? null }])),
       };
     });

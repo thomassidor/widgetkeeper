@@ -45,13 +45,14 @@ window.mountHeatmapWidget = function (Homey, { root, frame }) {
       loaded = true;
     } catch (err) {
       console.error(err);
+      refresh.failed();
       // A failed refresh keeps the heatmap; only a failed first load replaces it with the error.
       widget.setMessage(widget.t('error'), loaded);
     }
     ready();
   }
 
-  setInterval(load, REFRESH_MS);
+  const refresh = window.WidgetkeeperKit.wireRefresh(load, REFRESH_MS);
   onDeviceNames(Homey, load);
   // The hours follow the app's time format: drawn again when it changes.
   wireTimeFormat(Homey, () => { if (loaded) load(); });

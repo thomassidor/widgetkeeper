@@ -6,7 +6,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, applyColors, icons, onTap, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, applyColors, icons, onTap, messageLine, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -135,10 +135,11 @@
     for (const room of rooms) {
       if (room.missing) continue;
       room.values = {};
+      room.offline = room.sensors.every(s => s.offline);
       for (const m of MEASURES) {
         const has = room.sensors.filter(s => s.measures && s.measures[m]);
         if (!has.length) continue;
-        const read = has.map(s => s.measures[m].value).filter(v => typeof v === 'number' && isFinite(v));
+        const read = has.filter(s => !s.offline).map(s => s.measures[m].value).filter(v => typeof v === 'number' && isFinite(v));
         room.values[m] = read.length ? read.reduce((a, b) => a + b, 0) / read.length : null;
       }
     }
@@ -355,6 +356,7 @@
         const missing = !!room.missing;
         const picked = !!pick && pick.key === room.key;
         cell.node.classList.toggle('missing', missing);
+        markOffline(cell.node, !missing && room.offline, t('unavailable'));
         cell.node.classList.toggle('picking', picked);
         // A tapped reading's name in place of the room's, so it's clear what the value is.
         cell.name.textContent = picked ? t(MEASURE_NAMES[pick.measure]) : roomName(room);
@@ -378,7 +380,7 @@
         const score = shown ? roomHealthScore(shown, v, ranges) : null;
         setLevel(cell.value, score ? score.score : null);
         // For screen readers: the worst problem's word, `Good` or `No readings`, then the readings.
-        const worst = missing ? null : worstOf(room, ranges);
+        const worst = missing || room.offline ? null : worstOf(room, ranges);
         // The room's worst in three steps, which Vivid fills the cell with; a fine room only when it's green.
         const tone = !worst ? null : worst.score > 0 ? (worst.score < 1 / 3 ? 'yellow' : worst.score < 2 / 3 ? 'orange' : 'red') : opts.greenWhenFine === true ? 'green' : null;
         if (tone) cell.node.dataset.tone = tone;

@@ -122,6 +122,12 @@ export default {
     return setTimeFormat(homey, body);
   },
 
+  /** The running app's version: an open web dashboards page reloads itself when it's not the one it started with. */
+  async getWebVersion({ homey, query }: { homey: Homey, query?: Record<string, string> }) {
+    assertWebSession(homey.app as WidgetkeeperApp, query);
+    return { version: homey.manifest.version };
+  },
+
   /**
    * The web dashboards page (`settings/dashboard.html`, opened in a browser with a personal API key): what it needs
    * to start: the widget types and their settings, the app's strings and the dashboards, all in Homey's language.
@@ -143,6 +149,7 @@ export default {
     const [homeyId, strings] = await Promise.all([homey.cloud.getHomeyId(), app.web.appStrings(language)]);
     return {
       appId: homey.manifest.id,
+      appVersion: homey.manifest.version,
       homeyId,
       language,
       strings,

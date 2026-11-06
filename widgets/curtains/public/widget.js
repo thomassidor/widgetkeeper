@@ -4,7 +4,7 @@
  * bottom sets the position (0 = closed, 1 = open). Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, applyColors, onTap: kitOnTap, touchGuard, messageLine, optimistic: hoped, wireBar, roomTiles } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, applyColors, onTap: kitOnTap, touchGuard, messageLine, optimistic: hoped, wireBar, roomTiles, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const OPTIMISTIC_MS = 10e3; // how long a changed tile shows its new value while waiting for the device
@@ -431,6 +431,7 @@
         prev = tile.tile;
         // `wideLast`: the last of an odd number of tiles (missing ones too) spans the row.
         tile.tile.classList.toggle('wide', !!opts.wideLast && items.length % 2 === 1 && item === items[items.length - 1]);
+        markOffline(tile.tile, 'members' in item && item.members.every(m => m.offline), t('unavailable'));
         if (!('members' in item)) {
           for (const c of ['open', 'moving', 'heading', 'no-position']) tile.tile.classList.remove(c);
           tile.tile.classList.add('missing');

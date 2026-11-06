@@ -32,7 +32,8 @@
     "anyButton": "Qualsiasi pulsante",
     "button": "Pulsante __n__",
     "web": "__name__ (web)",
-    "keyItem": "I pulsanti nelle dashboard di Homey richiedono una chiave API"
+    "keyItem": "I pulsanti nelle dashboard di Homey richiedono una chiave API",
+    "unavailable": "Non disponibile"
   },
   "quickactions": {
     "selectDevices": "Scegli i dispositivi nelle impostazioni.",
@@ -1268,7 +1269,10 @@
     "syncNightlyText": "Ogni dashboard sincronizzata, a quest'ora sull'Homey.",
     "syncTime": "Ora",
     "syncAll": "Sincronizza tutto ora",
-    "syncCount": "__count__ dashboard sincronizzate"
+    "syncCount": "__count__ dashboard sincronizzate",
+    "undo": "Annulla",
+    "widgetRemoved": "Widget rimosso",
+    "widgetMoved": "Widget spostato"
   },
   "autocomplete": {
     "pickThermostat": "Scegli prima un termostato",

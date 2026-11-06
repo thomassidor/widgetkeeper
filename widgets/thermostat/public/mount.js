@@ -65,6 +65,7 @@ window.mountThermostatWidget = function (Homey, { root, frame }) {
       else widget.setState(state);
     } catch (err) {
       console.error(err);
+      refresh.failed();
       // A failed refresh keeps the buttons; only a failed first load replaces them with the error.
       widget.setMessage(widget.t('error'), loaded);
     }
@@ -79,7 +80,7 @@ window.mountThermostatWidget = function (Homey, { root, frame }) {
     if (sensor && data && `${data.deviceId}:${data.capabilityId}` === sensor) widget.pushSensor(data.value);
   });
 
-  setInterval(load, REFRESH_MS);
+  const refresh = window.WidgetkeeperKit.wireRefresh(load, REFRESH_MS);
   onDeviceNames(Homey, load);
   load();
 };

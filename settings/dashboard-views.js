@@ -50,6 +50,7 @@
       if (wd.drag) wd.endDrag(false);
       if (wd.resizing) wd.endResize(false);
       wd.sizes.disconnect();
+      if (wd.dismissUndo) wd.dismissUndo();
       setTitle(null);
       root.classList.remove('editing');
       root.textContent = '';

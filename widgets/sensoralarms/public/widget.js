@@ -5,7 +5,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, baseTitle, applyColors, onTap, touchGuard, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, baseTitle, applyColors, onTap, touchGuard, messageLine, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -102,11 +102,11 @@
     function statusText(d) {
       if ('missing' in d) return t('unavailable');
       const counted = (d.alarms || []).filter(a => !a.state || opts.includeStates);
-      if (!counted.length) return t('noSensors');
       const active = activeAlarms(d);
+      if (!counted.length) return d.offline ? t('unavailable') : t('noSensors');
       if (active.length === 1) return active[0];
       if (active.length > 1) return t('alarms', { count: active.length });
-      return t('noAlarm');
+      return d.offline ? t('unavailable') : t('noAlarm');
     }
 
     /**
@@ -206,6 +206,7 @@
         tile.icon.classList.toggle('fallback', missing || !d.icon);
         tile.tile.classList.toggle('alarm', !missing && activeAlarms(d).length > 0);
         tile.tile.classList.toggle('missing', missing);
+        markOffline(tile.tile, !missing && d.offline, t('unavailable'));
         tile.tile.classList.toggle('open', d.id === openId);
         tile.tile.setAttribute('aria-expanded', String(d.id === openId));
       }

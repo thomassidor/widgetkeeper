@@ -1,6 +1,6 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
-import DeviceTracker, { type TrackedEntry } from './DeviceTracker.js';
+import DeviceTracker, { type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { fetchSvgIcon } from './deviceIcon.js';
 import { deviceNamer } from './deviceNames.js';
 import Timings from './Timings.js';
@@ -19,7 +19,7 @@ export type QuickAction = {
 };
 
 export type QuickActionDevice =
-  | { id: string, name: string, icon: string | null, quickAction: QuickAction | null }
+  | { id: string, name: string, icon: string | null, quickAction: QuickAction | null, offline?: true }
   | { id: string, missing: true };
 
 type Tracked = TrackedEntry & {
@@ -108,7 +108,7 @@ export default class QuickActionService {
     const tm = new Timings();
     const show = await deviceNamer(this.homey, tm, this.log, 'Quick actions');
     const out = await this.tracker.each(deviceIds, tm, this.log, 'Quick action device', (t, id): QuickActionDevice => (
-      { id, name: show(t.name, t.zone), icon: t.icon, quickAction: t.quickAction && { ...t.quickAction } }
+      { id, name: show(t.name, t.zone), icon: t.icon, quickAction: t.quickAction && { ...t.quickAction }, ...offlineFlag(t) }
     ));
     this.debug(`Quick actions state for ${deviceIds.length} devices: ${tm.summary()}`);
     return out;

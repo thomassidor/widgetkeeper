@@ -19,6 +19,7 @@
 
   const DEFAULT_STRINGS = {
     selectDevice: 'Select a thermostat in the widget settings.',
+    unavailable: 'Unavailable',
     off: 'Off',
     on: 'On',
     currently: 'Currently __state__',
@@ -94,6 +95,7 @@
     /** The device's state, named by the `title` setting when there is one. */
     function setState(state) {
       core.setState(title && state ? { ...state, name: title } : state);
+      window.WidgetkeeperKit.markOffline(root, state && state.offline, t('unavailable'));
       if (!state) closePanel();
       else if (panelOpen) buildPanel();
     }

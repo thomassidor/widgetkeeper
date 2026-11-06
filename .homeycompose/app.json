@@ -92,6 +92,10 @@
       "method": "GET",
       "path": "/web/setup"
     },
+    "getWebVersion": {
+      "method": "GET",
+      "path": "/web/version"
+    },
     "getWebDevices": {
       "method": "GET",
       "path": "/web/devices"

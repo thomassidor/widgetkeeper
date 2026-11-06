@@ -133,6 +133,8 @@ interface Window {
       ready: (opts?: { fonts?: boolean, waitFor?: (() => Promise<unknown>[]) | null, maxMs?: number, before?: (() => void) | null }) => Promise<void>,
       perfParam: (sep?: string) => string,
     },
+    wireRefresh: (load: () => unknown, every?: number | null) => { failed: () => void },
+    markOffline: (node: HTMLElement, offline: unknown, label?: string) => void,
     getDeviceIds: (Homey: any) => Promise<string[]>,
     slotId: (item: unknown) => string | null,
     wireTileNames: (Homey: any, setNames: (names: any) => void) => { state: (path: string) => Promise<any>, rename: (key: string, name: string) => Promise<any> },

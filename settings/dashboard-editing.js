@@ -153,14 +153,14 @@
         grip,
         el('span', 'wd-tools-name', (def && def.name) || (appWidget(w.type) || { widgetId: w.type }).widgetId),
         el('span', 'wd-spacer'),
-        tool('up', 'wd-move', () => move(w.id, 0, -1), t('moveUp')),
-        tool('down', 'wd-move', () => move(w.id, 0, 1), t('moveDown')),
-        tool('left', 'wd-move', () => move(w.id, -1, 0), t('moveLeft')),
-        tool('right', 'wd-move', () => move(w.id, 1, 0), t('moveRight')),
+        tool('up', 'wd-move', () => withUndo('widgetMoved', () => move(w.id, 0, -1)), t('moveUp')),
+        tool('down', 'wd-move', () => withUndo('widgetMoved', () => move(w.id, 0, 1)), t('moveDown')),
+        tool('left', 'wd-move', () => withUndo('widgetMoved', () => move(w.id, -1, 0)), t('moveLeft')),
+        tool('right', 'wd-move', () => withUndo('widgetMoved', () => move(w.id, 1, 0)), t('moveRight')),
         el('span', 'wd-tools-rule'),
         tool('sliders', 'wd-tool-settings', () => wd.editWidget(w.id), t('settings')),
         tool('copy', 'wd-tool-copy', () => copyTo(w.id), t('copyWidget')),
-        confirmButton('wd-tool danger', icon('close'), () => removeWidget(w.id), t('tapAgain'), t('remove')),
+        confirmButton('wd-tool danger', icon('close'), () => withUndo('widgetRemoved', () => removeWidget(w.id)), t('tapAgain'), t('remove')),
       );
       const [up, down, left, right] = tools.querySelectorAll('.wd-move');
       up.disabled = i === 0;
@@ -178,6 +178,36 @@
         if (i >= 0) return { c, i, widget: columns[c][i] };
       }
       return null;
+    }
+
+    // ---- Undo: every change saves at once, so a widget removed or moved by mistake gets a moment to come back ----
+
+    const UNDO_MS = 8e3;
+    let undoNode = null;
+
+    function dismissUndo() {
+      if (undoNode) undoNode.remove();
+      undoNode = null;
+    }
+
+    /** Runs `change` on the open dashboard's widgets; if it changed them, a toast (`message`) offers to put them back. */
+    function withUndo(message, change) {
+      const { dashboard } = wd.current;
+      const before = JSON.stringify(dashboard.columns);
+      change();
+      if (JSON.stringify(dashboard.columns) === before) return;
+      dismissUndo();
+      undoNode = toast(t(message), {
+        label: t('undo'),
+        ms: UNDO_MS,
+        run() {
+          dismissUndo();
+          if (!wd.current || !wd.current.editing || wd.current.dashboard !== dashboard) return;
+          dashboard.columns = JSON.parse(before);
+          persist();
+          wd.syncGrid();
+        },
+      });
     }
 
     function move(id, dc, di) {
@@ -348,8 +378,10 @@
       wd.drag = null;
       if (!drop || !active || !target || !wd.current) return;
       const at = find(id);
-      if (at && LAYOUT.spanOf(at.widget, at.c, wd.current.dashboard.columns.length) > 1) moveWide(id, target.c, target.y);
-      else moveTo(id, target.c, target.i);
+      withUndo('widgetMoved', () => {
+        if (at && LAYOUT.spanOf(at.widget, at.c, wd.current.dashboard.columns.length) > 1) moveWide(id, target.c, target.y);
+        else moveTo(id, target.c, target.i);
+      });
     }
 
     window.addEventListener('keydown', (e) => {
@@ -572,6 +604,6 @@
       });
     }
 
-    Object.assign(wd, { endDrag, endResize, find, layoutWide, setSpan, setTools, sizes, widgetElement });
+    Object.assign(wd, { dismissUndo, endDrag, endResize, find, layoutWide, setSpan, setTools, sizes, widgetElement });
   });
 })();

@@ -931,6 +931,7 @@
       } catch (err) {
         console.error(err);
         widget.setMessage(widget.t('error'), loaded);
+        refresh.failed();
       }
       link.ready();
     }
@@ -938,7 +939,7 @@
     Homey.on('values:state', (data) => {
       if (data) widget.pushChange(data);
     });
-    setInterval(load, REFRESH_MS);
+    const refresh = window.WidgetkeeperKit.wireRefresh(load, REFRESH_MS);
     onDeviceNames(Homey, load);
     load();
 

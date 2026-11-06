@@ -6,7 +6,7 @@
  * any drag. With `wideLast`, the last of an odd number of tiles spans the row. Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, applyColors, KEY_PROBLEMS, onTap: kitOnTap, touchGuard, messageLine, wireBar, roomTiles } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, applyColors, KEY_PROBLEMS, onTap: kitOnTap, touchGuard, messageLine, wireBar, roomTiles, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const PANEL_MS = 8e3; // the swatch panel closes after this long without a touch
@@ -358,6 +358,7 @@
         prev = tile.tile;
         // `wideLast`: the last of an odd number of tiles (missing ones too) spans the row.
         tile.tile.classList.toggle('wide', !!opts.wideLast && items.length % 2 === 1 && i === items.length - 1);
+        markOffline(tile.tile, 'members' in d && d.members.every(m => m.offline), t('unavailable'));
         if (!('members' in d)) {
           tile.tile.classList.add('missing');
           tile.name.textContent = t('unavailable');

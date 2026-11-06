@@ -15,6 +15,11 @@ window.mountSparklinesWidget = function (Homey, { root, frame }) {
   const slots = [1, 2, 3, 4, 5, 6].map(n => slotId(settings[`slot${n}`])).filter(Boolean);
   // A number of a unit (1.2.0, as the chart widgets'), or the span set before (`24h`, `today` …) until a unit is picked.
   const span = spanSetting(settings, '', { count: 24, unit: 'hours' });
+  /** The name each value was picked by: a gone device's tile keeps it. */
+  const labels = Object.fromEntries([1, 2, 3, 4, 5, 6]
+    .map(n => settings[`slot${n}`])
+    .filter(item => slotId(item) && typeof item.name === 'string')
+    .map(item => [item.id, item.name]));
   let loaded = false;
 
   const tileNames = wireTileNames(Homey, names => widget.setNames(names));
@@ -27,6 +32,7 @@ window.mountSparklinesWidget = function (Homey, { root, frame }) {
     onRename: (key, name) => tileNames.rename(key, name),
     span,
     columns: settings.columns,
+    labels,
     onHeight: link.setHeight,
   });
 
@@ -47,6 +53,7 @@ window.mountSparklinesWidget = function (Homey, { root, frame }) {
       loaded = true;
     } catch (err) {
       console.error(err);
+      refresh.failed();
       // A failed refresh keeps the tiles; only a failed first load replaces them with the error.
       widget.setMessage(widget.t('error'), loaded);
     }
@@ -58,7 +65,7 @@ window.mountSparklinesWidget = function (Homey, { root, frame }) {
     if (data) widget.pushChange(data);
   });
 
-  setInterval(load, REFRESH_MS);
+  const refresh = window.WidgetkeeperKit.wireRefresh(load, REFRESH_MS);
   onDeviceNames(Homey, load);
   load();
 

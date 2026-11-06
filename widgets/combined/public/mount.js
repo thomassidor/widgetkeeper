@@ -40,6 +40,7 @@ window.mountCombinedWidget = function (Homey, { root, frame }) {
   let loaded = false;
   let loadSeq = 0; // only the latest load's answer counts
 
+  let refresh = null;
   async function load() {
     const seq = ++loadSeq;
     if (!capabilityId) {
@@ -57,6 +58,7 @@ window.mountCombinedWidget = function (Homey, { root, frame }) {
     } catch (err) {
       if (seq !== loadSeq) return;
       console.error(err);
+      refresh.failed();
       // A failed refresh keeps the tile; only a failed first load replaces it with the error.
       widget.setMessage(widget.t('error'), loaded);
     }
@@ -71,7 +73,7 @@ window.mountCombinedWidget = function (Homey, { root, frame }) {
   getDeviceIds(Homey)
     .then((ids) => { deviceIds = [...new Set(ids)]; })
     .then(() => {
-      setInterval(load, REFRESH_MS);
+      refresh = window.WidgetkeeperKit.wireRefresh(load, REFRESH_MS);
       onDeviceNames(Homey, load);
       load();
     });

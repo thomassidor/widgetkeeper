@@ -32,7 +32,8 @@
     "anyButton": "أي زر",
     "button": "الزر __n__",
     "web": "__name__ (ويب)",
-    "keyItem": "أزرار لوحات Homey تحتاج إلى مفتاح API"
+    "keyItem": "أزرار لوحات Homey تحتاج إلى مفتاح API",
+    "unavailable": "غير متاح"
   },
   "quickactions": {
     "selectDevices": "اختر الأجهزة في إعدادات الأداة.",
@@ -1268,7 +1269,10 @@
     "syncNightlyText": "كل لوحة متزامنة، في هذا الوقت على Homey.",
     "syncTime": "الوقت",
     "syncAll": "مزامنة الكل الآن",
-    "syncCount": "لوحات متزامنة: __count__"
+    "syncCount": "لوحات متزامنة: __count__",
+    "undo": "تراجع",
+    "widgetRemoved": "تمت إزالة الأداة",
+    "widgetMoved": "تم نقل الأداة"
   },
   "autocomplete": {
     "pickThermostat": "اختر منظم حرارة أولاً",

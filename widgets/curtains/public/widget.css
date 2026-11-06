@@ -150,3 +150,6 @@ html, body { background: transparent !important; }
 }
 .ct .wk-rename::placeholder { color: var(--ct-muted); opacity: 1; }
 .ct .wk-rename:focus { border-color: var(--ct-accent); }
+
+/* An unavailable tile's mark (kit.css): the top right corner holds the action pill, so the bottom one. */
+.ct .wk-offline-badge { top: auto; bottom: 3px; }

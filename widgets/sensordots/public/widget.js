@@ -116,6 +116,7 @@
     function levelOf(d) {
       if ('missing' in d) return 'missing';
       if (activeOf(d).length) return 'active';
+      if (d.offline) return 'missing';
       return (d.alarms || []).some(a => a.value === false) ? 'idle' : 'unknown';
     }
 
@@ -124,6 +125,7 @@
       if ('missing' in d) return t('unavailable');
       const alarms = d.alarms || [];
       const active = activeOf(d);
+      if (d.offline && !active.length) return t('unavailable');
       const from = active.length ? active : alarms;
       let text;
       if (active.length) {

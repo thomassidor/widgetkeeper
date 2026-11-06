@@ -5,7 +5,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, COLORS, tileNames, formatValue, valueGlyph: glyph, applyColors, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, COLORS, tileNames, formatValue, valueGlyph: glyph, applyColors, messageLine, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -63,7 +63,7 @@
    * @param {{ t?: (key: string, tokens?: object) => string, columns?: number|string, tileStyle?: string, colorStyle?: string,
    *   percentFill?: boolean, redBelow?: number|string, yellowBelow?: number|string,
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
-   *   wideLast?: boolean, onHeight?: (h: number) => void }} opts
+   *   wideLast?: boolean, labels?: Record<string, string>, onHeight?: (h: number) => void }} opts
    */
   function createValuesWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -180,6 +180,8 @@
     }
 
     const setMask = (node, url) => window.WidgetkeeperKit.setMask(node, url, '--vt-mask');
+    /** A gone device's tile keeps the name its setting was picked by (`opts.labels`, by slot), so it's clear which one went. */
+    const lastName = s => (opts.labels && opts.labels[`${s.deviceId}:${s.capabilityId}`]) || t('unavailable');
 
     let lastHeight = 0;
     function render() {
@@ -199,7 +201,8 @@
         // `wideLast`: at 2 per row, the last of an odd number of tiles spans the row.
         tile.tile.classList.toggle('wide', !!opts.wideLast && root.dataset.columns === '2' && slots.length % 2 === 1 && i === slots.length - 1);
         const missing = 'missing' in s;
-        tile.name.textContent = missing ? t('unavailable') : typed.name(named[i], s.name);
+        tile.name.textContent = missing ? typed.name(named[i], lastName(s)) : typed.name(named[i], s.name);
+        markOffline(tile.tile, missing || s.offline, t('unavailable'));
         if (typed.renaming && !missing) {
           const field = typed.field(named[i], s.name);
           if (field.previousSibling !== tile.name) tile.name.after(field);

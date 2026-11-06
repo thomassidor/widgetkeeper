@@ -746,6 +746,11 @@ textarea.wd-input { width: 100%; resize: vertical; }
   position: fixed; left: 50%; bottom: 24px; z-index: 10; transform: translateX(-50%); max-width: calc(100vw - 32px);
   padding: 10px 16px; border-radius: 20px; background: #2B2C36; color: #FFFFFF; font-size: 14px; line-height: 20px;
 }
+.wd-toast-action {
+  margin: -4px -8px -4px 12px; padding: 4px 8px; border: 0; border-radius: 12px; background: none;
+  color: #5AA6FF; font: inherit; font-weight: 500; cursor: pointer;
+}
+.wd-toast-action:hover, .wd-toast-action:focus-visible { background: rgba(255, 255, 255, 0.12); }
 
 /* A dashboard's code (its editor and the way back to the dashboards): a phone's keypad in a dialog. */
 .wd-dialog.wd-code { width: min(340px, calc(100vw - 32px)); }

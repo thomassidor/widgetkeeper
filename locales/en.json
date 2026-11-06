@@ -32,7 +32,8 @@
     "anyButton": "Any button",
     "button": "Button __n__",
     "web": "__name__ (web)",
-    "keyItem": "Buttons on Homey's dashboards need an API key"
+    "keyItem": "Buttons on Homey's dashboards need an API key",
+    "unavailable": "Unavailable"
   },
   "quickactions": {
     "selectDevices": "Select devices in the widget settings.",
@@ -1268,7 +1269,10 @@
     "syncNightlyText": "Every synced dashboard, at this time on the Homey.",
     "syncTime": "Time",
     "syncAll": "Sync all now",
-    "syncCount": "__count__ synced dashboards"
+    "syncCount": "__count__ synced dashboards",
+    "undo": "Undo",
+    "widgetRemoved": "Widget removed",
+    "widgetMoved": "Widget moved"
   },
   "autocomplete": {
     "pickThermostat": "Pick a thermostat first",

@@ -32,7 +32,8 @@
     "anyButton": "Любая кнопка",
     "button": "Кнопка __n__",
     "web": "__name__ (веб)",
-    "keyItem": "Для кнопок на панелях Homey нужен API-ключ"
+    "keyItem": "Для кнопок на панелях Homey нужен API-ключ",
+    "unavailable": "Недоступно"
   },
   "quickactions": {
     "selectDevices": "Выберите устройства в настройках виджета.",
@@ -1268,7 +1269,10 @@
     "syncNightlyText": "Каждая синхронизируемая панель, в это время на Homey.",
     "syncTime": "Время",
     "syncAll": "Синхронизировать все",
-    "syncCount": "Синхронизируемых панелей: __count__"
+    "syncCount": "Синхронизируемых панелей: __count__",
+    "undo": "Отменить",
+    "widgetRemoved": "Виджет удалён",
+    "widgetMoved": "Виджет перемещён"
   },
   "autocomplete": {
     "pickThermostat": "Сначала выберите термостат",

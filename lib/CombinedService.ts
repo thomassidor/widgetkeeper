@@ -86,7 +86,8 @@ export default class CombinedService {
     const read = counted.length ? (await this.matrix.getState(counted, [capabilityId])).devices : [];
     const otherUnits: { id: string, units: string }[] = [];
     const out: CombinedDevice[] = read.map((d) => {
-      if ('missing' in d) return { id: d.id, missing: true as const };
+      // An unavailable device's value is only the last it reported: left out of the sum or average, and the tile says so.
+      if ('missing' in d || d.offline) return { id: d.id, missing: true as const };
       const entry: CombinedDevice = { id: d.id, name: d.name, value: d.values[capabilityId] ?? null };
       const u = unitsOf(d.id);
       if (u !== units) {

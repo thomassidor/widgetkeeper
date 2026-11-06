@@ -74,6 +74,7 @@ window.mountElectricityWidget = function (Homey, { root, frame }) {
       widget.render();
     }
   }
+  window.WidgetkeeperKit.wireRefresh(load, null); // its minute tick below does the refreshing
   setTimeout(() => { tick(); setInterval(tick, 60e3); }, 60e3 - (Date.now() % 60e3) + 50);
 
   // The times (the axes, the next low, a scrubbed moment) follow the app's time format: drawn again when it changes.

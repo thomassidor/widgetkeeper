@@ -65,7 +65,7 @@ describe('dashboardPages', () => {
     expect(dashboardPages(null, APP)).toEqual([]);
   });
 
-  it('knows every widget of the app but the stack, the spacer, Days Since, Lights by Room, Value Board, Dashboard Shortcuts, Web Page, Popups and Keypad', () => {
+  it('knows every widget of the app but the stack, the spacer, Lights by Room, Value Board, Dashboard Shortcuts, Web Page, Popups and Keypad', () => {
     const app = JSON.parse(readFileSync('app.json', 'utf8'));
     // Dashboard Shortcuts is web only (deprecated on Homey's dashboards), so a stack never meets it. A Web Page's frame
     // would take the stack's swipes; Popups draws nothing; Lights by Room's list of rooms and Value Board's groups are too tall for a slide (for now), and

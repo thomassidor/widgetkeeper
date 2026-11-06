@@ -149,3 +149,6 @@ html, body { background: transparent !important; }
 .qa .wk-rename:focus { border-color: var(--qa-accent); }
 .qa.renaming .qa-tile:active, .qa.renaming .qa-tile.pressing { transform: none; }
 .qa.renaming .qa-tile.missing > * { opacity: .5; }
+
+/* An unavailable tile's mark (kit.css): the top right corner holds the action icon, so the bottom one. */
+.qa:not(.qa-pill) .wk-offline-badge { top: auto; bottom: 3px; }

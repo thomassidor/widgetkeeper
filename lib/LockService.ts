@@ -2,7 +2,7 @@ import type Homey from 'homey';
 import { getAppApi, lastUpdatedMs } from './appApi.js';
 import { devicesAndZones, hintRow, matches, nameOrder, withNone, type AutocompleteItem } from './autocomplete.js';
 import { capValuesText, copyCaps, describeCapability, presentCaps, readCaps, type CapState } from './capabilities.js';
-import DeviceTracker, { type TrackedEntry } from './DeviceTracker.js';
+import DeviceTracker, { type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { deviceNamer } from './deviceNames.js';
 import Timings from './Timings.js';
 
@@ -21,7 +21,7 @@ export type LockCap = { value: unknown, setable: boolean, lastUpdated: number | 
 
 export type LockDevice =
   /** `open`: the capability that opens (unlatches) the lock, when the widget picked one and this lock has it. */
-  | { id: string, name: string, icon: string | null, caps: Partial<Record<LockCapId, LockCap>>, open?: string }
+  | { id: string, name: string, icon: string | null, caps: Partial<Record<LockCapId, LockCap>>, open?: string, offline?: true }
   | { id: string, missing: true };
 
 type Tracked = TrackedEntry & {
@@ -110,7 +110,7 @@ export default class LockService {
     const tm = new Timings();
     const show = await deviceNamer(this.homey, tm, this.log, 'Lock');
     const out = await this.tracker.each(deviceIds, tm, this.log, 'Lock device', (t, id): LockDevice => ({
-      id, name: show(t.name, t.zone), icon: t.icon, caps: copyCaps(t.caps),
+      id, name: show(t.name, t.zone), icon: t.icon, caps: copyCaps(t.caps), ...offlineFlag(t),
       ...(openCap && t.buttons.includes(openCap) ? { open: openCap } : {}),
     }));
     this.debug(`Locks state for ${deviceIds.length} devices: ${tm.summary()}`);

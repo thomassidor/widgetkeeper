@@ -6,7 +6,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, setMask, formatNumber, formatValue, valueGlyph, TIGHT_UNITS, applyColors, onTap, messageLine, tileNames } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, setMask, formatNumber, formatValue, valueGlyph, TIGHT_UNITS, applyColors, onTap, messageLine, tileNames, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -91,7 +91,7 @@
       const values = (Array.isArray(d.values) ? d.values : [])
         .map((v, i) => ({ v, i }))
         .sort((a, b) => rank(a.v.capabilityId) - rank(b.v.capabilityId) || a.i - b.i)
-        .map(({ v }) => ({ ...v, deviceId: d.id, deviceName: d.name, key: `${d.id}:${v.capabilityId}` }));
+        .map(({ v }) => ({ ...v, deviceId: d.id, deviceName: d.name, key: `${d.id}:${v.capabilityId}`, offline: !!d.offline }));
       if (!values.length) continue;
       const zone = groupBy !== 'devices' && d.zone && d.zone.id ? d.zone : null;
       if (zone && byZone.has(zone.id)) { byZone.get(zone.id).values.push(...values); continue; }
@@ -205,15 +205,21 @@
       render();
     }
 
+    const allOffline = group => group.values.length > 0 && group.values.every(v => v.offline);
+    /** The group's name, saying so when all of it is unavailable (one device among others is marked on its own values). */
+    const headOf = group => (allOffline(group) ? `${groupName(group)} · ${t('unavailable')}` : groupName(group));
+
     function tilesGroup(group) {
       const node = el('section', { class: 'vb-tile vb-group', 'data-group': group.key }, body);
-      el('div', { class: 'vb-head', dir: 'auto', text: group.missing ? t('unavailable') : groupName(group) }, node);
+      el('div', { class: 'vb-head', dir: 'auto', text: group.missing ? t('unavailable') : headOf(group) }, node);
       if (group.missing) { node.classList.add('missing'); return; }
+      const whole = allOffline(group);
       const grid = el('div', { class: 'vb-grid' }, node);
       for (const v of group.values) {
         const value = text(v);
         const cell = el('div', { class: 'vb-cell', 'data-key': v.key, role: 'img', 'aria-label': `${nameOf(v)}: ${value}` }, grid);
         tone(cell, v);
+        markOffline(cell, v.offline, whole ? undefined : t('unavailable'));
         const line = el('div', { class: 'vb-value' }, cell);
         icon(line, v);
         // A unit other than ° and % small after the number, so the number keeps its room.
@@ -228,7 +234,7 @@
       const node = el('section', { class: 'vb-group', 'data-group': group.key }, tile);
       const named = reveal && reveal.group === group.key ? group.values.find(v => v.key === reveal.key) : null;
       const head = el('div', { class: 'vb-head', dir: 'auto' }, node);
-      head.textContent = group.missing ? t('unavailable') : named ? nameOf(named) : groupName(group);
+      head.textContent = group.missing ? t('unavailable') : named ? nameOf(named) : headOf(group);
       head.classList.toggle('naming', !!named);
       if (group.missing) { node.classList.add('missing'); return; }
       const line = el('div', { class: 'vb-line' }, node);
@@ -236,6 +242,7 @@
         const value = text(v);
         const item = el('span', { class: 'vb-item', 'data-key': v.key, role: 'button', tabindex: '0', 'aria-label': `${nameOf(v)}: ${value}` }, line);
         tone(item, v);
+        markOffline(item, v.offline);
         item.classList.toggle('named', !!named && named.key === v.key);
         icon(item, v);
         el('span', { class: 'vb-num', text: value }, item);

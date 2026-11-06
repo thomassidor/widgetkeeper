@@ -2,7 +2,7 @@ import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
 import { hintRow, listDevicesWhere, matches, type AutocompleteItem } from './autocomplete.js';
 import { capabilityValues, describeCapability } from './capabilities.js';
-import DeviceTracker, { isTransientError, type TrackedEntry } from './DeviceTracker.js';
+import DeviceTracker, { isTransientError, type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import Timings from './Timings.js';
 
 const CONFIRM_TIMEOUT = 4000; // wait for a value to be reported before sending the next
@@ -28,6 +28,7 @@ type ThermostatState = {
   icon: string | null, // the device's icon as an SVG data URL (the widget uses it as a mask)
   values: Record<string, unknown>,
   caps: Record<string, CapInfo>,
+  offline?: true,
 };
 
 export type CapValue = { capabilityId: string, value: unknown };
@@ -140,7 +141,7 @@ export default class ThermostatService {
       return { missing: true };
     }
     this.debug(`Thermostat state ${t.name}: ${tm.summary()}`);
-    return { name: t.name, zone: t.zone, icon: t.icon, values: { ...t.values }, caps: t.caps };
+    return { name: t.name, zone: t.zone, icon: t.icon, values: { ...t.values }, caps: t.caps, ...offlineFlag(t) };
   }
 
   /**

@@ -187,3 +187,6 @@ html, body { background: transparent !important; }
   20%, 60% { transform: translateX(-4px); }
   40%, 80% { transform: translateX(4px); }
 }
+
+/* An unavailable tile's mark (kit.css): the top right corner holds the value, so the bottom one. */
+.vt:not(.vt-pill) .wk-offline-badge { top: auto; bottom: 3px; }
