@@ -15,6 +15,7 @@ One Logic variable with two to four buttons, each setting it to a value you pick
 <img src="../variants/varpresets-vivid.webp" alt="Variable Presets: Vivid" width="300" align="top">
 <img src="../variants/varpresets-compact.webp" alt="Variable Presets: Compact" width="300" align="top">
 <img src="../variants/varpresets-yellow.webp" alt="Variable Presets: Light · Yellow" width="300" align="top">
+<img src="../variants/varpresets-switch.webp" alt="Variable Presets: A yes-or-no variable, in Vivid green" width="300" align="top">
 </p>
 
 ---

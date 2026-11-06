@@ -14,7 +14,9 @@ The electricity price now, and the coming 12, 24 or 36 hours as small bars in on
 <img src="../variants/price-light.webp" alt="Energy Price Strip: Light" width="300" align="top">
 <img src="../variants/price-vivid.webp" alt="Energy Price Strip: Vivid" width="300" align="top">
 <img src="../variants/price-24.webp" alt="Energy Price Strip: 24 hours" width="300" align="top">
-<img src="../variants/price-no-tint.webp" alt="Energy Price Strip: Light · Without the tint" width="300" align="top">
+<img src="../variants/price-36.webp" alt="Energy Price Strip: Light · 36 hours" width="300" align="top">
+<img src="../variants/price-no-tint.webp" alt="Energy Price Strip: Light · Without the levels' colours" width="300" align="top">
+<img src="../variants/price-orange.webp" alt="Energy Price Strip: Without the levels' colours, in orange" width="300" align="top">
 </p>
 
 ---

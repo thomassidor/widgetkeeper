@@ -23,7 +23,8 @@ The screen is **Everywhere** or a Popups widget's name. On a [web dashboard](../
 <p>
 <img src="../variants/popups-light.webp" alt="Popups: Light" width="300" align="top">
 <img src="../variants/popups-message.webp" alt="Popups: A message" width="300" align="top">
-<img src="../variants/popups-light-message.webp" alt="Popups: Light · A message" width="300" align="top">
+<img src="../variants/popups-one-button.webp" alt="Popups: A question with one button of your own" width="300" align="top">
+<img src="../variants/popups-countdown.webp" alt="Popups: Light · A message with a picture, counting down" width="300" align="top">
 </p>
 
 ---

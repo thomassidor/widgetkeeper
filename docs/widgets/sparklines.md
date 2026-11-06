@@ -13,8 +13,11 @@ Device Values' tiles with a small live chart of each value and its highest and l
 <p>
 <img src="../variants/sparklines-light.webp" alt="Sparklines: Light" width="300" align="top">
 <img src="../variants/sparklines-vivid.webp" alt="Sparklines: Vivid" width="300" align="top">
-<img src="../variants/sparklines-one.webp" alt="Sparklines: One column" width="300" align="top">
 <img src="../variants/sparklines-light-vivid.webp" alt="Sparklines: Light · Vivid" width="300" align="top">
+<img src="../variants/sparklines-one.webp" alt="Sparklines: One column" width="300" align="top">
+<img src="../variants/sparklines-six.webp" alt="Sparklines: Six tiles, in green" width="300" align="top">
+<img src="../variants/sparklines-smooth.webp" alt="Sparklines: Light · Smooth, in purple" width="300" align="top">
+<img src="../variants/sparklines-offline.webp" alt="Sparklines: A sensor unavailable" width="300" align="top">
 </p>
 
 ---

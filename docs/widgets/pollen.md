@@ -22,8 +22,10 @@ Pollen and UV data from [Open-Meteo](https://open-meteo.com), licensed under [CC
 <p>
 <img src="../variants/pollen-light.webp" alt="Pollen and UV: Light" width="300" align="top">
 <img src="../variants/pollen-vivid.webp" alt="Pollen and UV: Vivid" width="300" align="top">
-<img src="../variants/pollen-detailed.webp" alt="Pollen and UV: Detailed" width="300" align="top">
-<img src="../variants/pollen-light-detailed.webp" alt="Pollen and UV: Light · Detailed" width="300" align="top">
+<img src="../variants/pollen-detailed.webp" alt="Pollen and UV: Detailed: the next days and the numbers" width="300" align="top">
+<img src="../variants/pollen-all.webp" alt="Pollen and UV: Light · All six kinds" width="300" align="top">
+<img src="../variants/pollen-no-uv.webp" alt="Pollen and UV: Without the UV" width="300" align="top">
+<img src="../variants/pollen-low.webp" alt="Pollen and UV: Light · Nothing in the air" width="300" align="top">
 </p>
 
 ---

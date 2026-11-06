@@ -15,6 +15,7 @@ Logic variables as compact rows with their full name: a switch for yes/no, − a
 <img src="../variants/variables-vivid.webp" alt="Variables: Vivid" width="300" align="top">
 <img src="../variants/variables-two.webp" alt="Variables: Two columns" width="300" align="top">
 <img src="../variants/variables-read-only.webp" alt="Variables: Light · Read only" width="300" align="top">
+<img src="../variants/variables-text.webp" alt="Variables: A text variable too, in orange" width="300" align="top">
 </p>
 
 ---

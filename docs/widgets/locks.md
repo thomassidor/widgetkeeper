@@ -14,7 +14,10 @@ Locks, doors, windows and garage doors in one line: *All locked and closed*, or 
 <img src="../variants/locks-light.webp" alt="Locks and Doors: Light" width="300" align="top">
 <img src="../variants/locks-vivid.webp" alt="Locks and Doors: Vivid" width="300" align="top">
 <img src="../variants/locks-summary.webp" alt="Locks and Doors: Summary" width="300" align="top">
-<img src="../variants/locks-light-summary.webp" alt="Locks and Doors: Light · Summary" width="300" align="top">
+<img src="../variants/locks-secure.webp" alt="Locks and Doors: Light · Summary: all locked and closed" width="300" align="top">
+<img src="../variants/locks-unlock.webp" alt="Locks and Doors: Unlocking allowed, with the latch" width="300" align="top">
+<img src="../variants/locks-open.webp" alt="Locks and Doors: Light · Summary, one left open" width="300" align="top">
+<img src="../variants/locks-offline.webp" alt="Locks and Doors: A lock unavailable" width="300" align="top">
 </p>
 
 ---

@@ -13,8 +13,12 @@ Half-height tiles that each show one live device value, optionally with a second
 <p>
 <img src="../variants/values-light.webp" alt="Device Values: Light" width="300" align="top">
 <img src="../variants/values-vivid.webp" alt="Device Values: Vivid" width="300" align="top">
+<img src="../variants/values-mixed.webp" alt="Device Values: Any value, with a second beside the name" width="300" align="top">
+<img src="../variants/values-mixed-light.webp" alt="Device Values: Light · Pill tiles, any value" width="300" align="top">
 <img src="../variants/values-pill.webp" alt="Device Values: Pill tiles" width="300" align="top">
-<img src="../variants/values-no-fill.webp" alt="Device Values: Light · Without the fills" width="300" align="top">
+<img src="../variants/values-no-fill.webp" alt="Device Values: Light · Percentages not filled (the default)" width="300" align="top">
+<img src="../variants/values-wide.webp" alt="Device Values: Five tiles, the last wide" width="300" align="top">
+<img src="../variants/values-offline.webp" alt="Device Values: A device unavailable" width="300" align="top">
 </p>
 
 ---

@@ -15,6 +15,9 @@ Half-height tiles that run a device's quick action with one tap (on/off, lock, p
 <img src="../variants/quickactions-vivid.webp" alt="Device Quick Actions: Vivid" width="300" align="top">
 <img src="../variants/quickactions-pill.webp" alt="Device Quick Actions: Pill tiles" width="300" align="top">
 <img src="../variants/quickactions-purple.webp" alt="Device Quick Actions: Light · Vivid purple" width="300" align="top">
+<img src="../variants/quickactions-lighter.webp" alt="Device Quick Actions: On shown lighter, not tinted" width="300" align="top">
+<img src="../variants/quickactions-wide.webp" alt="Device Quick Actions: Light · Five tiles, the last wide" width="300" align="top">
+<img src="../variants/quickactions-offline.webp" alt="Device Quick Actions: A device unavailable" width="300" align="top">
 </p>
 
 ---

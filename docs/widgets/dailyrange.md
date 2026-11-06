@@ -14,7 +14,8 @@ Each day's lowest to highest as a bar, its average as a tick: how cold the night
 <img src="../variants/dailyrange-light.webp" alt="Chart · Min/Max: Light" width="300" align="top">
 <img src="../variants/dailyrange-vivid.webp" alt="Chart · Min/Max: Vivid" width="300" align="top">
 <img src="../variants/dailyrange-no-average.webp" alt="Chart · Min/Max: Without the average" width="300" align="top">
-<img src="../variants/dailyrange-zero.webp" alt="Chart · Min/Max: Light · From zero" width="300" align="top">
+<img src="../variants/dailyrange-fit.webp" alt="Chart · Min/Max: Indoors: the scale fits the values" width="300" align="top">
+<img src="../variants/dailyrange-zero.webp" alt="Chart · Min/Max: Light · Indoors: the scale from zero" width="300" align="top">
 </p>
 
 ---

@@ -27,6 +27,9 @@ Starting a Flow needs an [API key](../../README.md#api-key) with **Start Flows**
 <img src="../variants/keypad-vivid.webp" alt="Keypad: Vivid" width="300" align="top">
 <img src="../variants/keypad-tap.webp" alt="Keypad: Keypad on a tap" width="300" align="top">
 <img src="../variants/keypad-compact.webp" alt="Keypad: Light · Compact" width="300" align="top">
+<img src="../variants/keypad-state.webp" alt="Keypad: Background in the state's colour: armed" width="300" align="top">
+<img src="../variants/keypad-night.webp" alt="Keypad: Light · State colour: partially armed" width="300" align="top">
+<img src="../variants/keypad-disarmed.webp" alt="Keypad: Vivid · State colour: disarmed" width="300" align="top">
 </p>
 
 ---

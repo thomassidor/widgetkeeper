@@ -15,6 +15,8 @@ Is today unusual? Today's line over the usual day: each hour's average over the 
 <img src="../variants/typicalday-vivid.webp" alt="Chart · Daily Profile: Vivid" width="300" align="top">
 <img src="../variants/typicalday-no-band.webp" alt="Chart · Daily Profile: Without the band" width="300" align="top">
 <img src="../variants/typicalday-smooth.webp" alt="Chart · Daily Profile: Light · Smooth" width="300" align="top">
+<img src="../variants/typicalday-usual3.webp" alt="Chart · Daily Profile: Usual from the last 3 days" width="300" align="top">
+<img src="../variants/typicalday-no-header.webp" alt="Chart · Daily Profile: Light · Without the header" width="300" align="top">
 </p>
 
 ---

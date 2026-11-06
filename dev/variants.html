@@ -28,7 +28,10 @@
     for (const f of js) document.write(`<script src="../widgets/${f}.js"><\/script>`);
   </script>
   <script src="../temp/screenshot-icons.js" onerror="window.ICONS = {}"></script>
+  <script>WidgetkeeperKit.setTimeFormat('24');</script>
+  <script src="../widgets/spacer/public/icons.js"></script>
   <script src="mock-util.js"></script>
+  <script src="mock-heatmap.js"></script>
   <script src="mock-media.js"></script>
   <script src="mock-totals.js"></script>
   <script src="mock-scatter.js"></script>
@@ -74,6 +77,7 @@
 </head>
 <body>
   <script src="mock-dashboard.js"></script>
+  <script src="variants-list.js"></script>
   <script src="variants.js"></script>
 </body>
 </html>

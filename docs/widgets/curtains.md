@@ -15,6 +15,9 @@ Curtains and blinds as tiles: tap to open or close (the corner label says which)
 <img src="../variants/curtains-vivid.webp" alt="Curtains: Vivid" width="300" align="top">
 <img src="../variants/curtains-purple.webp" alt="Curtains: Vivid purple" width="300" align="top">
 <img src="../variants/curtains-no-state.webp" alt="Curtains: Light · Without the state" width="300" align="top">
+<img src="../variants/curtains-rooms.webp" alt="Curtains: Grouped by room" width="300" align="top">
+<img src="../variants/curtains-wide.webp" alt="Curtains: Light · Three curtains, the last tile wide" width="300" align="top">
+<img src="../variants/curtains-offline.webp" alt="Curtains: A curtain unavailable" width="300" align="top">
 </p>
 
 ---

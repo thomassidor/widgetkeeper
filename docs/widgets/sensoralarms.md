@@ -13,8 +13,11 @@ Tiles that show *No alarm*, the alarm that's on or how many, and turn red while 
 <p>
 <img src="../variants/sensoralarms-light.webp" alt="Sensor Alarms: Light" width="300" align="top">
 <img src="../variants/sensoralarms-vivid.webp" alt="Sensor Alarms: Vivid" width="300" align="top">
-<img src="../variants/sensoralarms-three.webp" alt="Sensor Alarms: Three columns" width="300" align="top">
 <img src="../variants/sensoralarms-light-vivid.webp" alt="Sensor Alarms: Light · Vivid" width="300" align="top">
+<img src="../variants/sensoralarms-three.webp" alt="Sensor Alarms: Three columns" width="300" align="top">
+<img src="../variants/sensoralarms-clear.webp" alt="Sensor Alarms: Light · All clear" width="300" align="top">
+<img src="../variants/sensoralarms-wide.webp" alt="Sensor Alarms: Five sensors, the last tile wide" width="300" align="top">
+<img src="../variants/sensoralarms-offline.webp" alt="Sensor Alarms: Light · A sensor unavailable" width="300" align="top">
 </p>
 
 ---

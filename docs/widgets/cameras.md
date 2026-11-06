@@ -14,8 +14,9 @@ Your cameras as a grid of snapshots that refresh every few seconds (cameras with
 
 <p>
 <img src="../variants/cameras-light.webp" alt="Cameras: Light" width="300" align="top">
-<img src="../variants/cameras-top.webp" alt="Cameras: Three, the first large" width="300" align="top">
-<img src="../variants/cameras-single.webp" alt="Cameras: One camera at a time" width="300" align="top">
+<img src="../variants/cameras-top.webp" alt="Cameras: Three cameras, the first large" width="300" align="top">
+<img src="../variants/cameras-bottom.webp" alt="Cameras: Three cameras, the last large" width="300" align="top">
+<img src="../variants/cameras-single.webp" alt="Cameras: Each camera at full width" width="300" align="top">
 </p>
 
 ---

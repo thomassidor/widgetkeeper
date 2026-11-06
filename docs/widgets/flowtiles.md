@@ -23,6 +23,8 @@ Each card changes only its part, so one Flow can set the value every minute whil
 <img src="../variants/flowtiles-vivid.webp" alt="Flow Tiles: Vivid" width="300" align="top">
 <img src="../variants/flowtiles-pill.webp" alt="Flow Tiles: Pill tiles" width="300" align="top">
 <img src="../variants/flowtiles-three.webp" alt="Flow Tiles: Light · Three per row" width="300" align="top">
+<img src="../variants/flowtiles-one.webp" alt="Flow Tiles: One per row" width="300" align="top">
+<img src="../variants/flowtiles-age.webp" alt="Flow Tiles: Light · Showing when each changed" width="300" align="top">
 </p>
 
 ---

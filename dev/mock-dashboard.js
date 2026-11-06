@@ -106,7 +106,7 @@ const SCREENSHOTS = (function () {
 
   // A made-up alarm, armed, its keypad always shown with two digits typed: Arm and Night without the code, Disarm behind it.
   const alarmValue = (value, name) => ({ id: `string:${JSON.stringify(value)}`, name, value, type: 'string' });
-  const keypad = (el, { keypad: shown = 'always', layout, ...o } = {}) => { MOUNT.keypad(el, {
+  const keypad = (el, { keypad: shown = 'always', layout, alarm = 'armed', ...o } = {}) => { MOUNT.keypad(el, {
     opts: o,
     settings: {
       state: { id: 'cap:alarm:homealarm_state' }, title: 'Alarm', code: { id: 'c1', name: 'Alarm' }, keypad: shown, layout,
@@ -116,7 +116,7 @@ const SCREENSHOTS = (function () {
     },
     state: {
       source: {
-        kind: 'capability', deviceId: 'alarm', capabilityId: 'homealarm_state', name: 'Alarm system', value: 'armed',
+        kind: 'capability', deviceId: 'alarm', capabilityId: 'homealarm_state', name: 'Alarm system', value: alarm,
         capability: { title: 'Home Alarm state', type: 'enum', values: [{ id: 'armed', title: 'Armed' }, { id: 'disarmed', title: 'Disarmed' }, { id: 'partially_armed', title: 'Partially armed' }] },
       },
       flows: [],
@@ -203,7 +203,7 @@ const SCREENSHOTS = (function () {
     for (const b of new Uint8Array(buf)) bin += String.fromCharCode(b);
     return { type: 'image/webp', data: btoa(bin) };
   });
-  const popups = (frame, { light = false, popup = {} } = {}) => {
+  const popups = (frame, { light = false, countdown = false, popup = {} } = {}) => {
   frame.srcdoc = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
     + '<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">'
     + '<link rel="stylesheet" href="../settings/popup.css"><script src="../widgets/spacer/public/kit.js"><\/script><script src="../settings/popup.js"><\/script>'
@@ -213,7 +213,7 @@ const SCREENSHOTS = (function () {
     const json = body => new Response(JSON.stringify(body));
     const shown = { kind: 'ask', text: 'Someone is at the front door. Unlock it?', buttons: ['Unlock', 'Not now'], picture: { source: 'camera' }, ...popup };
     frame.contentWindow.mountPopupPage(frame.contentWindow.document.getElementById('app'), {
-      hash: '#id=p1&t=readme',
+      hash: `#id=p1&t=readme${countdown ? '&countdown=1' : ''}`,
       fetch: async url => (url.endsWith('/image') ? json(await picture)
         : json({ closed: false, ...shown, now: Date.now(), until: Date.now() + 60e3, language: 'en' })),
     });

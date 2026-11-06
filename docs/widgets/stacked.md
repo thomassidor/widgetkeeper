@@ -15,6 +15,9 @@ Who uses the power? Up to six values of one kind stacked over time, the last 24 
 <img src="../variants/stacked-vivid.webp" alt="Chart · Stacked: Vivid" width="300" align="top">
 <img src="../variants/stacked-bars.webp" alt="Chart · Stacked: Bars" width="300" align="top">
 <img src="../variants/stacked-legend.webp" alt="Chart · Stacked: Light · Legend below" width="300" align="top">
+<img src="../variants/stacked-no-total.webp" alt="Chart · Stacked: Without a total, no "other"" width="300" align="top">
+<img src="../variants/stacked-smooth.webp" alt="Chart · Stacked: Smooth" width="300" align="top">
+<img src="../variants/stacked-no-header.webp" alt="Chart · Stacked: Light · Without the header or legend" width="300" align="top">
 </p>
 
 ---

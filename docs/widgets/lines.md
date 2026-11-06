@@ -14,7 +14,11 @@ Up to six values over time on one chart, a line each: every room's temperature, 
 <img src="../variants/lines-light.webp" alt="Chart · Lines: Light" width="300" align="top">
 <img src="../variants/lines-vivid.webp" alt="Chart · Lines: Vivid" width="300" align="top">
 <img src="../variants/lines-area.webp" alt="Chart · Lines: Areas" width="300" align="top">
-<img src="../variants/lines-smooth.webp" alt="Chart · Lines: Light · Smooth, legend below" width="300" align="top">
+<img src="../variants/lines-below.webp" alt="Chart · Lines: Light · Legend below" width="300" align="top">
+<img src="../variants/lines-six.webp" alt="Chart · Lines: Six lines, no legend" width="300" align="top">
+<img src="../variants/lines-names.webp" alt="Chart · Lines: Light · Your own names for the lines" width="300" align="top">
+<img src="../variants/lines-raw.webp" alt="Chart · Lines: Power, from zero" width="300" align="top">
+<img src="../variants/lines-smooth.webp" alt="Chart · Lines: Light · The same, smooth" width="300" align="top">
 </p>
 
 ---

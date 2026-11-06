@@ -13,8 +13,10 @@ One value from up to eight devices on one scale, sorted: each room's temperature
 <p>
 <img src="../variants/compare-light.webp" alt="Chart · Ranking: Light" width="300" align="top">
 <img src="../variants/compare-vivid.webp" alt="Chart · Ranking: Vivid" width="300" align="top">
+<img src="../variants/compare-low.webp" alt="Chart · Ranking: Light · Coldest first, in green" width="300" align="top">
 <img src="../variants/compare-no-range.webp" alt="Chart · Ranking: Without the range" width="300" align="top">
-<img src="../variants/compare-green.webp" alt="Chart · Ranking: Light · Green" width="300" align="top">
+<img src="../variants/compare-no-header.webp" alt="Chart · Ranking: Without the header" width="300" align="top">
+<img src="../variants/compare-week.webp" alt="Chart · Ranking: Light · The range over 7 days, three rooms" width="300" align="top">
 </p>
 
 ---

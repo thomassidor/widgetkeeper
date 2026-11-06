@@ -13,8 +13,14 @@ Six lights in the space of three of Homey's light cards. Tap a tile to switch it
 <p>
 <img src="../variants/lights-light.webp" alt="Light Controls: Light" width="300" align="top">
 <img src="../variants/lights-vivid.webp" alt="Light Controls: Vivid" width="300" align="top">
-<img src="../variants/lights-wide.webp" alt="Light Controls: Five lights, the last tile wide" width="300" align="top">
 <img src="../variants/lights-light-vivid.webp" alt="Light Controls: Light · Vivid" width="300" align="top">
+<img src="../variants/lights-wide.webp" alt="Light Controls: Five lights, the last tile wide" width="300" align="top">
+<img src="../variants/lights-rooms.webp" alt="Light Controls: Grouped by room" width="300" align="top">
+<img src="../variants/lights-panel.webp" alt="Light Controls: Its colours, opened" width="300" align="top">
+<img src="../variants/lights-warm.webp" alt="Light Controls: Light · The Warm palette" width="300" align="top">
+<img src="../variants/lights-dusk.webp" alt="Light Controls: The Dusk palette" width="300" align="top">
+<img src="../variants/lights-moods.webp" alt="Light Controls: Light · The room's Moods" width="300" align="top">
+<img src="../variants/lights-offline.webp" alt="Light Controls: A light unavailable" width="300" align="top">
 </p>
 
 ---

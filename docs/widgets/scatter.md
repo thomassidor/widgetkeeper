@@ -15,6 +15,8 @@ One value against another, a dot an hour (a minute to a week, by the [time span]
 <img src="../variants/scatter-vivid.webp" alt="Chart · Scatter (XY): Vivid" width="300" align="top">
 <img src="../variants/scatter-no-trend.webp" alt="Chart · Scatter (XY): Without the trend line" width="300" align="top">
 <img src="../variants/scatter-no-fade.webp" alt="Chart · Scatter (XY): Light · Without the fade" width="300" align="top">
+<img src="../variants/scatter-days.webp" alt="Chart · Scatter (XY): A dot a day, not an hour" width="300" align="top">
+<img src="../variants/scatter-no-header.webp" alt="Chart · Scatter (XY): Light · Without the header" width="300" align="top">
 </p>
 
 ---

@@ -15,6 +15,10 @@ One speaker as a card: album art, the track, play controls, mute, and a volume t
 <img src="../variants/media-vivid.webp" alt="Media: Vivid" width="300" align="top">
 <img src="../variants/media-large.webp" alt="Media: Large" width="300" align="top">
 <img src="../variants/media-line.webp" alt="Media: Light · Large, volume slider" width="300" align="top">
+<img src="../variants/media-progress.webp" alt="Media: Progress and shuffle, in orange" width="300" align="top">
+<img src="../variants/media-speakers.webp" alt="Media: Light · Switching speakers" width="300" align="top">
+<img src="../variants/media-buttons.webp" alt="Media: Your own buttons" width="300" align="top">
+<img src="../variants/media-idle.webp" alt="Media: Light · Nothing playing" width="300" align="top">
 </p>
 
 ---

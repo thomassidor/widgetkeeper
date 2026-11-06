@@ -17,6 +17,9 @@ How much a value went up per hour, day or month, like the Homey app's Energy tab
 <img src="../variants/totals-vivid.webp" alt="Chart · Totals: Vivid" width="300" align="top">
 <img src="../variants/totals-month.webp" alt="Chart · Totals: This month, a bar a day" width="300" align="top">
 <img src="../variants/totals-week.webp" alt="Chart · Totals: Light · This week" width="300" align="top">
+<img src="../variants/totals-cost.webp" alt="Chart · Totals: What it cost: this month against last" width="300" align="top">
+<img src="../variants/totals-today.webp" alt="Chart · Totals: Light · Today, a bar an hour" width="300" align="top">
+<img src="../variants/totals-no-header.webp" alt="Chart · Totals: Without the header" width="300" align="top">
 </p>
 
 ---

@@ -16,7 +16,10 @@ Type a column's OK range in the value's unit, such as `18–24`, `<1000` or `>10
 <img src="../variants/valuematrix-light.webp" alt="Value Matrix: Light" width="300" align="top">
 <img src="../variants/valuematrix-vivid.webp" alt="Value Matrix: Vivid" width="300" align="top">
 <img src="../variants/valuematrix-devices.webp" alt="Value Matrix: A row per device" width="300" align="top">
+<img src="../variants/valuematrix-rooms.webp" alt="Value Matrix: Light · The same, a row per room" width="300" align="top">
 <img src="../variants/valuematrix-no-legend.webp" alt="Value Matrix: Light · Without the legend" width="300" align="top">
+<img src="../variants/valuematrix-no-green.webp" alt="Value Matrix: Only what is off stands out" width="300" align="top">
+<img src="../variants/valuematrix-offline.webp" alt="Value Matrix: A room unavailable" width="300" align="top">
 </p>
 
 ---

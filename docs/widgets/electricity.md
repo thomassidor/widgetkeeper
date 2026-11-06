@@ -15,6 +15,9 @@ Live power use, the hourly price from yesterday to 12 hours ahead (with your tar
 <img src="../variants/electricity-vivid.webp" alt="Electricity Overview: Vivid" width="300" align="top">
 <img src="../variants/electricity-compact.webp" alt="Electricity Overview: Compact" width="300" align="top">
 <img src="../variants/electricity-separate.webp" alt="Electricity Overview: Light · Usage apart, in purple" width="300" align="top">
+<img src="../variants/electricity-no-usage.webp" alt="Electricity Overview: Without the usage line" width="300" align="top">
+<img src="../variants/electricity-no-prices.webp" alt="Electricity Overview: Light · Without prices, smoothed" width="300" align="top">
+<img src="../variants/electricity-window.webp" alt="Electricity Overview: The live chart over 1 minute, lowest in 12 h" width="300" align="top">
 </p>
 
 ---

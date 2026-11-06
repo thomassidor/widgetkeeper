@@ -21,7 +21,11 @@ For totals per hour, day or month, see [Chart · Totals](totals.md); for more th
 <p>
 <img src="../variants/charts-light.webp" alt="Chart · Basic: Light" width="300" align="top">
 <img src="../variants/charts-vivid.webp" alt="Chart · Basic: Vivid" width="300" align="top">
+<img src="../variants/charts-one.webp" alt="Chart · Basic: One chart" width="300" align="top">
 <img src="../variants/charts-overlay.webp" alt="Chart · Basic: Two values on one chart" width="300" align="top">
+<img src="../variants/charts-shared.webp" alt="Chart · Basic: Light · One scale for both, legend below" width="300" align="top">
+<img src="../variants/charts-spans.webp" alt="Chart · Basic: Two time spans: 7 days and 6 hours" width="300" align="top">
+<img src="../variants/charts-negative.webp" alt="Chart · Basic: Light · Below zero in yellow" width="300" align="top">
 <img src="../variants/charts-line.webp" alt="Chart · Basic: Light · Lines, no header" width="300" align="top">
 </p>
 

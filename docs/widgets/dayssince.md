@@ -17,6 +17,7 @@ Flow cards: *Reset [counter]*, *Set [counter] to [days] days ago*, the trigger *
 <img src="../variants/dayssince-vivid.webp" alt="Days Since: Vivid" width="300" align="top">
 <img src="../variants/dayssince-days.webp" alt="Days Since: Counted in days" width="300" align="top">
 <img src="../variants/dayssince-due.webp" alt="Days Since: Light · Only what is due" width="300" align="top">
+<img src="../variants/dayssince-overdue.webp" alt="Days Since: Only what is overdue" width="300" align="top">
 </p>
 
 ---

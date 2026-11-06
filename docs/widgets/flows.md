@@ -14,6 +14,7 @@ Flows and Advanced Flows as rows with a round button in your colour and icon. Ta
 <img src="../variants/flows-light.webp" alt="Flow Buttons: Light" width="300" align="top">
 <img src="../variants/flows-vivid.webp" alt="Flow Buttons: Vivid" width="300" align="top">
 <img src="../variants/flows-one.webp" alt="Flow Buttons: One column" width="300" align="top">
+<img src="../variants/flows-icons.webp" alt="Flow Buttons: Any colour, from the long list of icons" width="300" align="top">
 <img src="../variants/flows-light-vivid.webp" alt="Flow Buttons: Light · Vivid" width="300" align="top">
 </p>
 

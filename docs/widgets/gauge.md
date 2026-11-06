@@ -19,8 +19,12 @@ One value now on a bar: a room's CO₂ or humidity, a battery, the house's power
 <p>
 <img src="../variants/gauge-light.webp" alt="Chart · Gauge: Light" width="300" align="top">
 <img src="../variants/gauge-vivid.webp" alt="Chart · Gauge: Vivid" width="300" align="top">
+<img src="../variants/gauge-plain.webp" alt="Chart · Gauge: Plain: one colour, no levels" width="300" align="top">
 <img src="../variants/gauge-dial.webp" alt="Chart · Gauge: Dial" width="300" align="top">
 <img src="../variants/gauge-light-dial.webp" alt="Chart · Gauge: Light · Dial, Vivid" width="300" align="top">
+<img src="../variants/gauge-battery.webp" alt="Chart · Gauge: Battery: lower is worse" width="300" align="top">
+<img src="../variants/gauge-custom.webp" alt="Chart · Gauge: Light · Your own scale, 400 to 1,200" width="300" align="top">
+<img src="../variants/gauge-no-range.webp" alt="Chart · Gauge: Humidity in teal, without the range" width="300" align="top">
 </p>
 
 ---

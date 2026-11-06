@@ -16,7 +16,9 @@ Flow cards: *Run [button]*, the condition *[button] is active* and the trigger *
 <img src="../variants/thermostat-light.webp" alt="Thermostat Presets: Light" width="300" align="top">
 <img src="../variants/thermostat-vivid.webp" alt="Thermostat Presets: Vivid" width="300" align="top">
 <img src="../variants/thermostat-compact.webp" alt="Thermostat Presets: Compact" width="300" align="top">
-<img src="../variants/thermostat-light-compact.webp" alt="Thermostat Presets: Light · Compact" width="300" align="top">
+<img src="../variants/thermostat-sensor.webp" alt="Thermostat Presets: Light · The room's temperature by the name" width="300" align="top">
+<img src="../variants/thermostat-off.webp" alt="Thermostat Presets: Turned off" width="300" align="top">
+<img src="../variants/thermostat-offline.webp" alt="Thermostat Presets: Unavailable" width="300" align="top">
 </p>
 
 ---

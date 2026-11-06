@@ -15,6 +15,7 @@ Motion, contact, vibration and camera sensors as a grid of dots that light up wh
 <img src="../variants/sensordots-vivid.webp" alt="Activity Dots: Vivid" width="300" align="top">
 <img src="../variants/sensordots-closed.webp" alt="Activity Dots: Panel closed" width="300" align="top">
 <img src="../variants/sensordots-colours.webp" alt="Activity Dots: Light · Green idle, red active" width="300" align="top">
+<img src="../variants/sensordots-offline.webp" alt="Activity Dots: Two sensors unavailable, without a title" width="300" align="top">
 </p>
 
 ---

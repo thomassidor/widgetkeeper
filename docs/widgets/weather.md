@@ -16,8 +16,10 @@ Weather data from MET Norway, licensed under [CC BY 4.0](https://creativecommons
 <img src="../variants/weather-light.webp" alt="Weather Forecast: Light" width="300" align="top">
 <img src="../variants/weather-vivid.webp" alt="Weather Forecast: Vivid" width="300" align="top">
 <img src="../variants/weather-card.webp" alt="Weather Forecast: Card" width="300" align="top">
+<img src="../variants/weather-light-card.webp" alt="Weather Forecast: Light · Card" width="300" align="top">
 <img src="../variants/weather-detailed.webp" alt="Weather Forecast: Detailed" width="300" align="top">
-<img src="../variants/weather-light-rows.webp" alt="Weather Forecast: Light · Two rows" width="300" align="top">
+<img src="../variants/weather-light-rows.webp" alt="Weather Forecast: Light · Two rows, every 2 hours" width="300" align="top">
+<img src="../variants/weather-step.webp" alt="Weather Forecast: Every 3 hours" width="300" align="top">
 </p>
 
 ---

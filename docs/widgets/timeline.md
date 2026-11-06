@@ -16,7 +16,9 @@ A row can also be a number, on above or below a threshold (the heater above 50 W
 <img src="../variants/timeline-light.webp" alt="Chart · Timeline: Light" width="300" align="top">
 <img src="../variants/timeline-vivid.webp" alt="Chart · Timeline: Vivid" width="300" align="top">
 <img src="../variants/timeline-no-header.webp" alt="Chart · Timeline: Without the header" width="300" align="top">
-<img src="../variants/timeline-light-vivid.webp" alt="Chart · Timeline: Light · Vivid" width="300" align="top">
+<img src="../variants/timeline-threshold.webp" alt="Chart · Timeline: Light · Numbers: on above or below a limit" width="300" align="top">
+<img src="../variants/timeline-week.webp" alt="Chart · Timeline: 7 days" width="300" align="top">
+<img src="../variants/timeline-names.webp" alt="Chart · Timeline: Light · Your own names, in Vivid" width="300" align="top">
 </p>
 
 ---

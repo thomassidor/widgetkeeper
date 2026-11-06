@@ -13,8 +13,11 @@ One value read from several devices, folded into one: the average (or median) te
 <p>
 <img src="../variants/combined-light.webp" alt="Combined Value: Light" width="300" align="top">
 <img src="../variants/combined-vivid.webp" alt="Combined Value: Vivid" width="300" align="top">
+<img src="../variants/combined-out.webp" alt="Combined Value: Number outside the OK range, list open" width="300" align="top">
+<img src="../variants/combined-fine.webp" alt="Combined Value: Light · All in the OK range, green when fine" width="300" align="top">
+<img src="../variants/combined-range.webp" alt="Combined Value: Lowest to highest" width="300" align="top">
+<img src="../variants/combined-pill.webp" alt="Combined Value: Light · Pill tiles, in orange" width="300" align="top">
 <img src="../variants/combined-no-chart.webp" alt="Combined Value: Without the chart" width="300" align="top">
-<img src="../variants/combined-orange.webp" alt="Combined Value: Light · Orange" width="300" align="top">
 </p>
 
 ---

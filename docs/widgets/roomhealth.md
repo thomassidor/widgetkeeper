@@ -26,7 +26,11 @@ A heat pump's room temperature counts; outdoor and water temperatures don't. Lef
 <img src="../variants/roomhealth-light.webp" alt="Room Health: Light" width="300" align="top">
 <img src="../variants/roomhealth-vivid.webp" alt="Room Health: Vivid" width="300" align="top">
 <img src="../variants/roomhealth-bars.webp" alt="Room Health: Bars" width="300" align="top">
-<img src="../variants/roomhealth-green.webp" alt="Room Health: Light · Green when fine" width="300" align="top">
+<img src="../variants/roomhealth-green.webp" alt="Room Health: Vivid · Green when fine" width="300" align="top">
+<img src="../variants/roomhealth-two.webp" alt="Room Health: Light · Two per row" width="300" align="top">
+<img src="../variants/roomhealth-four.webp" alt="Room Health: Four per row" width="300" align="top">
+<img src="../variants/roomhealth-open.webp" alt="Room Health: Light · A room opened" width="300" align="top">
+<img src="../variants/roomhealth-offline.webp" alt="Room Health: A room unavailable" width="300" align="top">
 </p>
 
 ---

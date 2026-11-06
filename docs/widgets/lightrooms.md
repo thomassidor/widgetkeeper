@@ -14,7 +14,10 @@ For many lights in many rooms. The lights you pick are grouped by their Homey ro
 <img src="../variants/lightrooms-light.webp" alt="Lights by Room: Light" width="300" align="top">
 <img src="../variants/lightrooms-vivid.webp" alt="Lights by Room: Vivid" width="300" align="top">
 <img src="../variants/lightrooms-no-moods.webp" alt="Lights by Room: Without Moods" width="300" align="top">
-<img src="../variants/lightrooms-light-vivid.webp" alt="Lights by Room: Light · Vivid" width="300" align="top">
+<img src="../variants/lightrooms-closed.webp" alt="Lights by Room: Light · Every room closed" width="300" align="top">
+<img src="../variants/lightrooms-warm.webp" alt="Lights by Room: A light's colours: the Warm palette" width="300" align="top">
+<img src="../variants/lightrooms-default.webp" alt="Lights by Room: Light · The Default palette" width="300" align="top">
+<img src="../variants/lightrooms-offline.webp" alt="Lights by Room: A room unavailable" width="300" align="top">
 </p>
 
 ---

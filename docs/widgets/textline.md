@@ -13,8 +13,10 @@ A short message on the dashboard: a tile with a line of text or more, or a tilte
 <p>
 <img src="../variants/textline-light.webp" alt="Notes: Light" width="300" align="top">
 <img src="../variants/textline-vivid.webp" alt="Notes: Vivid" width="300" align="top">
-<img src="../variants/textline-large.webp" alt="Notes: Large, centred, wrapped" width="300" align="top">
 <img src="../variants/textline-light-vivid.webp" alt="Notes: Light · Vivid" width="300" align="top">
+<img src="../variants/textline-large.webp" alt="Notes: Large, centred, wrapped" width="300" align="top">
+<img src="../variants/textline-colours.webp" alt="Notes: Colours, for the tile and the Post-it" width="300" align="top">
+<img src="../variants/textline-small.webp" alt="Notes: Light · Small, to the right, from a variable" width="300" align="top">
 </p>
 
 ---

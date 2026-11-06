@@ -13,8 +13,11 @@ Up to four preset buttons, such as *Eggs · 7 min*. A started timer takes their 
 <p>
 <img src="../variants/timers-light.webp" alt="Timers: Light" width="300" align="top">
 <img src="../variants/timers-vivid.webp" alt="Timers: Vivid" width="300" align="top">
+<img src="../variants/timers-presets.webp" alt="Timers: Waiting: the presets" width="300" align="top">
+<img src="../variants/timers-paused.webp" alt="Timers: Paused" width="300" align="top">
 <img src="../variants/timers-done.webp" alt="Timers: A timer done" width="300" align="top">
 <img src="../variants/timers-purple.webp" alt="Timers: Light · Vivid purple" width="300" align="top">
+<img src="../variants/timers-presets-light.webp" alt="Timers: Light · Presets in orange" width="300" align="top">
 </p>
 
 ---
