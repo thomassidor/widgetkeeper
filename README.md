@@ -228,82 +228,56 @@ Any web page, scaled to fill the widget, with buttons to switch between addresse
 ## Web dashboards
 <img src="docs/web/dashboard.png" alt="A web dashboard with Widgetkeeper widgets in a browser window, with Dashboard Shortcuts at the top as a menu" width="100%">
 
-Your Widgetkeeper widgets in any browser at home, or [away from home](#away-from-home): a wall tablet, an old iPad, a computer or a TV. They're the same widgets, with the same settings and live updates as on a Homey dashboard, on dashboards you build on the page itself. The dashboards are kept on your Homey, so every browser shows the same ones.
+Your Widgetkeeper widgets in any browser: a wall tablet, an old iPad, a computer or a cast screen. They're the same widgets, with the same settings and live updates as on a Homey dashboard. The dashboards are kept on your Homey, so every browser shows the same ones.
 
 ### Getting started
-1. Open **Apps → Widgetkeeper → Configure** in the Homey app and turn on **Web dashboards**.
-2. Open the address shown there in a browser on your home network: `http://<your Homey's address>/app/com.thomassidor.widgetkeeper/settings/dashboard.html`.
-3. Add the browser under **Screens and browsers** on the same page and type the sign-in code it gets ([how](#screens-and-browsers)). Or, under **Use an API key instead**, paste a Homey API key ([which permissions](#web-dashboards-key)). Then the web dashboards password, if you set one.
-
-### Your dashboards
-<img src="docs/web/front.png" alt="The web dashboards front page in a browser window: seven dashboards as cards, and the widgets you can add" width="100%">
-
-The front page shows every dashboard as a card with a miniature of its widgets, then the widgets you can add. The pen at the top puts it in edit mode: drag the dashboards into order, duplicate one (with its tile names), delete one with a second tap, or hide the widgets. Its **Settings** has the [backup](#backup) and, for this browser only:
-
-- **Keep screen on** while the page is open, for a wall tablet. Browsers only allow this over HTTPS, as on the [away from home](#away-from-home) address; elsewhere the page plays a silent video instead, which works on iPads and iPhones but not in every browser. Where it doesn't, turn off sleep in the device's own settings.
-- **Dim**: darkens the whole page, up to 80 %, for a wall tablet at night.
-- **Sign out**: the browser asks for a sign-in code again.
+1. In the Homey app, open **Apps → Widgetkeeper → Configure** and turn on **Web dashboards**.
+2. Under **Screens and browsers**, add the browser to get its [sign-in code](#screens-and-browsers).
+3. On your home network, open `http://<your Homey's address>/app/com.thomassidor.widgetkeeper/settings/dashboard.html` and type the code.
 
 ### Building a dashboard
 <img src="docs/web/editor.png" alt="A web dashboard being edited in a browser window" width="100%">
 
-- **Columns and widgets:** one to six columns. Add widgets per column, move them by dragging their bar or with the arrows, and remove them with a second tap. The copy button on a widget's bar copies it, settings, devices and tile names included, to this dashboard (right under it) or another one (at the end of a column you pick).
-- **Column width:** Normal, Narrow (a phone's width, as on a Homey dashboard), Wide, or Fit to window, where the columns share the window's width.
-- **Wide widgets:** drag the handle on a widget's right edge (or set **Width** in its settings) to make it span two or more columns, such as a large camera or chart. The columns it covers keep their own widgets above and below it: drag one above or under it. On a phone, where there's one column, it's as wide as the rest.
-- **Settings:** the same as on a Homey dashboard, in cards: the devices, the general settings, and a folding card per button, tile or column that sums up what's set. Devices are picked from a list grouped by room, with a search.
-- **Look:** light, dark or automatic, and a background per dashboard (Default, Black or White, Slate, Ocean, Forest, Plum, Berry, Sand), each with a light and a dark shade. The sun button in the bar switches between light and dark in this browser only.
-- **Full screen:** the corner button gives the whole screen to the dashboard.
-- **Kiosk browsers:** add `?kiosk=1` to the address (`…/dashboard.html?kiosk=1#/d/<dashboard>`, or `#/d/<dashboard>?kiosk=1`) for a browser such as Fully Kiosk that fills the screen itself: the dashboard's bar, with its back link, name, pen and full screen button, is left out. A browser can't go full screen on its own when the page opens, so use the kiosk browser's own full screen setting for that. Add a [code](#code) to the dashboard too, so nobody can leave it or edit it.
-- **A menu:** put [Dashboard Shortcuts](docs/widgets/shortcuts.md) on every dashboard to jump between them.
-- **Popups:** Flows can show a message or ask Yes or No over a dashboard, in every browser showing it, with a camera's picture if you like. See [Popups](docs/widgets/popups.md).
+- One to six columns, Normal, Narrow, Wide or Fit to window. Drag widgets to move them, copy one to this or another dashboard, or drag its right edge to span several columns.
+- The settings are the same as on a Homey dashboard, in cards, with devices picked by room.
+- Light, dark or automatic, with a background per dashboard.
+- Put [Dashboard Shortcuts](docs/widgets/shortcuts.md) on each dashboard as a menu, and a [Popups](docs/widgets/popups.md) widget for messages from Flows.
+- For a kiosk browser such as Fully Kiosk, add `?kiosk=1` to the address to hide the dashboard's bar.
 
-<img src="docs/web/light.png" alt="A light web dashboard, the Kitchen on the Sand background, in a browser window" width="100%">
+<img src="docs/web/front.png" alt="The web dashboards front page in a browser window: seven dashboards as cards, and the widgets you can add" width="100%">
 
-<img src="docs/web/settings.png" alt="A widget's settings on a web dashboard: Flow Buttons' settings in cards, the first button open" width="100%">
-
-### Widgets from other apps
-*Add widget* also lists your other apps' widgets under **Other apps**, with their own settings. They need **Homey** in the browser's key, as Homey only lists them with that. They run sealed off, so their code can't read the page or the browser's key. A widget that doesn't work that way can be trusted in its settings (*Trust this widget*); it then runs as on a Homey dashboard and could read the key.
-
-Some widgets are made for the width they have on a Homey dashboard, and come out taller or shorter in a wider column. *Size as on Homey* in their settings lays them out at a phone's width and scales them to fill the column, so they look as on Homey.
-
-### Away from home
-Turn on **Remote access** under **Apps → Widgetkeeper → Configure** for a second address, `https://<your Homey's id>.connect.athom.com/app/com.thomassidor.widgetkeeper/settings/dashboard.html`, through Homey's cloud like the Homey app. A browser signs in again there, as each address is its own site; sign-in codes and their addresses work there too. Anyone with the address still needs a code or a key, but a [password](#password) is worth setting too. Unlike the home address, this one is encrypted (HTTPS), so it's also the one to use at home on a network you don't fully trust (see [the key](#web-dashboards-key)).
-
-### Password
-On top of the sign-in code or API key, you can set a password under **Apps → Widgetkeeper → Configure → Web dashboards → Away from home**; every browser then asks for it once. Setting or changing it there signs other browsers out, but your [screens](#screens-and-browsers) stay signed in, and repeated wrong passwords lock the sign-in for a while. Changing or removing it asks for the current one; if you forget it, the Flow card **Remove the web dashboards password** removes it.
+The front page lists the dashboards; the pen reorders, duplicates and deletes them. Its **Settings** has **Keep screen on**, **Dim** and **Sign out** for this browser, and the [backup](#backup).
 
 ### Screens and browsers
-Each tablet, phone, computer or screen you can't type on, such as a Google Nest Hub you cast to, signs in with a short code of its own. Under **Apps → Widgetkeeper → Configure → Web dashboards → Screens and browsers**, tap **Add a screen or browser**, then:
+Each browser signs in with a code of its own, backed by its own Homey API key:
 
-1. In the Homey web app, make a key under **Settings → API Keys**, named after the screen.
-2. Tick **Devices**, so it can switch lights, locks and the like, and whatever the [API key](#api-key) table lists for the widgets you'll use.
-3. Paste it with a name for the screen (and the password, if you've set one).
+1. Under **Configure → Web dashboards → Screens and browsers**, tap **Add a screen or browser**.
+2. In the Homey web app (**Settings → API Keys**), make a key with **Devices** and what the [API key](#api-key) table lists for your widgets, and paste it.
+3. Type the code you get, such as `K7QM-3XPA`, on the page, or open its address or QR code on the screen (handy for one you can't type on, such as a cast Nest Hub).
 
-You get a code like `K7QM-3XPA`, shown only once, and an address with it, also as a QR code:
-
-- type the code on the page, or
-- open the address on the screen: `…/dashboard.html#code=K7QM-3XPA`, or `…/dashboard.html#/d/<dashboard>?code=K7QM-3XPA` for one dashboard. It works on every load, so a cast screen that forgets everything still gets in.
-
-Each screen in the list has **Opens on**: pick a dashboard, and its code opens that one instead of the dashboards' front page, so a kitchen tablet or a cast Nest Hub goes straight to its own. An address that names a dashboard still opens that one. Give the dashboard a [code](#code) too, and the screen stays there.
-
-Anyone with a code can use its key, so give each screen only the permissions it needs. **New code** makes another (paste the screen's key again, or a new one). **Remove** stops the code; the device keeps what it has until it next loads the page, so for a lost device also delete its key in the Homey web app (**Settings → API Keys**). Repeated wrong codes lock every code for a while.
+**Opens on** sends a screen straight to one dashboard. **Remove** stops a code; for a lost device, also delete its key in the Homey web app. You can also paste an API key on the page instead of using a code.
 
 ### Code
-A dashboard can take a [Keypad](docs/widgets/keypad.md) code: in its editor, pick one (or Any code) under the lock. Editing it and going back to the dashboards then take the code, so a wall tablet stays on its dashboard and nobody there can change its widgets, a Keypad's code included. The page asks for it and Widgetkeeper checks it; wrong ones lock as at a Keypad. Removing the code under **Keypad codes** opens the dashboard again. Like the Keypad's, it guards the screen, not your Homey: someone with the browser's API key and its developer tools can still get past it.
+Give a dashboard a [Keypad](docs/widgets/keypad.md) code (the lock in its editor), and leaving or editing it asks for the code, so a wall tablet stays on its dashboard. It guards the screen, not your Homey.
+
+### Away from home
+**Remote access** under **Configure** adds a second address through Homey's cloud: `https://<your Homey's id>.connect.athom.com/app/com.thomassidor.widgetkeeper/settings/dashboard.html`. It's encrypted, so it's also the one to use at home on a network you don't fully trust.
+
+### Password
+You can set a password under **Web dashboards → Away from home**, which every browser is asked for once, on top of its code. If you forget it, the Flow card **Remove the web dashboards password** removes it.
 
 ### Backup
-In the front page's **Settings**, **Download backup** saves the dashboards you tick in one file: the layouts, the widgets, their settings and tile names. **Restore backup** lists a file's dashboards; after a second tap, the ones you tick replace those they were saved from (or come back, if deleted), and the others stay as they are. Notes' texts and Days Since's counters aren't included, as Homey's own dashboards share them.
+In the front page's **Settings**, **Download backup** and **Restore backup** save and bring back the dashboards you tick, with their widgets, settings and tile names. Notes' texts and Days Since's counters aren't included.
+
+### Widgets from other apps
+*Add widget* also lists your other apps' widgets. They need a key with the **Homey** permission and run sealed off from the page; *Trust this widget* runs one as on Homey, and *Size as on Homey* scales one made for a phone's width.
 
 ### Web dashboards' key
-Each browser connects with a key of its own, kept in that browser, from its [sign-in code](#screens-and-browsers) or pasted:
+- A widget that changes something needs that permission in the browser's key too (see [API key](#api-key)), and switching devices needs **Devices**. Reading needs nothing extra.
+- The Smart Stack and widgets from other apps need **Homey**.
+- The home address is plain HTTP, so the key crosses your network unencrypted. On a network you don't fully trust, use the [away from home](#away-from-home) address. Give each screen its own key, so a lost one can be revoked alone.
 
-- A key with the **Homey** permission works. A narrower one hasn't been tried, as Homey doesn't document which permission an app's own API takes.
-- A widget that changes something needs that permission in the browser's key too, as in the [API key](#api-key) table, even though the app's key makes the change.
-- Likewise, switching a light, a lock, a curtain, a thermostat or a speaker needs permission to control devices in the browser's key (`homey.device.control`, under **Devices**), though Widgetkeeper makes the change. Reading doesn't: the widgets read devices, cameras, Insights and variables with Widgetkeeper's own permissions, so a browser that may open the page sees everything the widgets show, whatever its key.
-- The Smart Stack and [other apps' widgets](#widgets-from-other-apps) need **Homey**.
-- The home address is plain HTTP, as the Homey serves it: the key (and the password's sign-in) goes unencrypted over your home network with every request, so anything that can watch that network could read it. On a network you don't fully trust, such as one guests share, use the [away from home](#away-from-home) address, which is encrypted, at home too. Give each browser its own key (a [screen](#screens-and-browsers) each), so you can revoke a lost tablet's under **Settings → API Keys** without touching the others.
-
-Turning web dashboards off keeps them on your Homey for when you turn them on again.
+Turning web dashboards off keeps them on your Homey.
 
 ## Dashboard examples
 **Home**
