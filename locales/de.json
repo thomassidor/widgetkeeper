@@ -792,7 +792,7 @@
     "locationError": "Der Standort des Homey konnte nicht gelesen werden.",
     "button": "Button __n__",
     "refused": "Diese Seite lässt sich nicht in einer anderen Seite anzeigen. Such auf der Seite nach einer Einbettungs- oder Widget-Adresse.",
-    "insecure": "Diese http://-Seite kann nicht angezeigt werden, solange Homey über https:// erreicht wird, etwa unterwegs."
+    "insecure": "Diese http://-Seite kann hier nicht angezeigt werden: Ein Dashboard über https://, wie in der Homey-App, erlaubt nur https://-Seiten. Nutze eine https://-Adresse oder zu Hause ein Web-Dashboard."
   },
   "popups": {
     "everywhere": "Überall",

@@ -234,7 +234,7 @@ describe('Web Page widget', () => {
         buttons: [{ name: 'Local', url: 'http://192.168.1.5:3000/d/x' }, { name: 'Web', url: 'https://example.com' }],
       });
       expect(root.querySelector('.wp-note')!.textContent)
-        .toBe("This http:// page can't be shown while Homey is reached over https://, such as away from home.");
+        .toBe("This http:// page can't be shown here: a dashboard on https://, as in the Homey app, only allows https:// pages. Use an https:// address, or a web dashboard at home.");
       expect(check).not.toHaveBeenCalled();
       root.querySelectorAll<HTMLButtonElement>('.wp-btn')[1].click();
       expect(root.classList.contains('wp-has-note')).toBe(false);

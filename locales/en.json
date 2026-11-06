@@ -792,7 +792,7 @@
     "locationError": "Could not read the Homey's location.",
     "button": "Button __n__",
     "refused": "This site doesn't allow being shown inside another page. Look for an embed or widget address on the site.",
-    "insecure": "This http:// page can't be shown while Homey is reached over https://, such as away from home."
+    "insecure": "This http:// page can't be shown here: a dashboard on https://, as in the Homey app, only allows https:// pages. Use an https:// address, or a web dashboard at home."
   },
   "popups": {
     "everywhere": "Everywhere",

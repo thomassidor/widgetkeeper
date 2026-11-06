@@ -792,7 +792,7 @@
     "locationError": "Homey의 위치를 읽을 수 없습니다.",
     "button": "버튼 __n__",
     "refused": "이 사이트는 다른 페이지 안에 표시되는 것을 허용하지 않습니다. 사이트에서 임베드 또는 위젯 주소를 찾아보세요.",
-    "insecure": "Homey에 https://로 연결된 동안(예: 외출 중)에는 이 http:// 페이지를 표시할 수 없습니다."
+    "insecure": "이 http:// 페이지는 여기에 표시할 수 없습니다. Homey 앱처럼 https://로 열린 대시보드는 https:// 페이지만 허용합니다. https:// 주소를 사용하거나 집에서 웹 대시보드를 사용하세요."
   },
   "popups": {
     "everywhere": "모든 곳",

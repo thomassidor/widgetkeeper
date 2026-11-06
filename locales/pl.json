@@ -792,7 +792,7 @@
     "locationError": "Nie udało się odczytać lokalizacji Homey.",
     "button": "Przycisk __n__",
     "refused": "Ta strona nie pozwala na wyświetlanie w innej stronie. Poszukaj na niej adresu do osadzenia lub widżetu.",
-    "insecure": "Strony http:// nie da się wyświetlić, gdy Homey jest otwierany przez https://, np. poza domem."
+    "insecure": "Tej strony http:// nie da się tu wyświetlić: pulpit przez https://, jak w aplikacji Homey, pozwala tylko na strony https://. Użyj adresu https:// albo, w domu, pulpitu webowego."
   },
   "popups": {
     "everywhere": "Wszędzie",

@@ -792,7 +792,7 @@
     "locationError": "Kunde inte läsa Homeys plats.",
     "button": "Knapp __n__",
     "refused": "Den här webbplatsen tillåter inte att visas i en annan sida. Leta efter en inbäddnings- eller widgetadress på webbplatsen.",
-    "insecure": "Den här http://-sidan kan inte visas när Homey nås via https://, som när du inte är hemma."
+    "insecure": "Den här http://-sidan kan inte visas här: en instrumentpanel via https://, som i Homey-appen, tillåter bara https://-sidor. Använd en https://-adress, eller en webbinstrumentpanel hemma."
   },
   "popups": {
     "everywhere": "Överallt",

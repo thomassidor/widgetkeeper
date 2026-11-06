@@ -792,7 +792,7 @@
     "locationError": "Kon de locatie van de Homey niet lezen.",
     "button": "Knop __n__",
     "refused": "Deze site staat niet toe dat hij in een andere pagina wordt getoond. Zoek op de site naar een embed- of widgetadres.",
-    "insecure": "Deze http://-pagina kan niet worden getoond terwijl Homey via https:// wordt bereikt, zoals buitenshuis."
+    "insecure": "Deze http://-pagina kan hier niet worden getoond: een dashboard via https://, zoals in de Homey-app, staat alleen https://-pagina's toe. Gebruik een https://-adres, of thuis een webdashboard."
   },
   "popups": {
     "everywhere": "Overal",
