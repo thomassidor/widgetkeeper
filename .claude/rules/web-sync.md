@@ -5,7 +5,7 @@ paths:
   - "test/dashboard-sync.test.ts"
   - "test/web-sync*.test.ts"
 ---
-# Syncing web dashboards with Homey dashboards (1.2.0, in progress)
+# Syncing web dashboards with Homey dashboards (1.2.0)
 
 The user's ask (2026-11-03): a web dashboard can be linked to a Homey dashboard in its editor and is then synced both
 ways, on demand or every night at a time set in the web dashboards' Settings; a sync icon shows on the linked ones.
@@ -94,9 +94,5 @@ ways, on demand or every night at a time set in the web dashboards' Settings; a 
   failed (its Homey dashboard deleted).
 - Checked in Chromium on the build box (`$EDGE` over DevTools, `dev/web-preview.html`, 2026-11-03): the cards' icons, the
   pill and both dialogs, linking, the bar button, the Settings card, and the editor's drag and drop (a widget dragged
-  by its bar into another column, saved). Not yet on the Homey; the realtime redraw after a sync is untested.
+  by its bar into another column, saved). The user tried sync on the real Homey (2026-11-06): works fine; which cases they tried wasn't noted.
 
-## Still to build
-1. The settings page's API key card: say syncing needs a Homey (everything) key.
-2. README; a check on the real Homey on a test dashboard (edits on both sides, a conflict, a delete, a Homey widget
-   kept, the nightly run, the page in a real browser).

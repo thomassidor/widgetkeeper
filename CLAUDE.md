@@ -54,7 +54,7 @@ This file holds what applies across the app. Each widget's notes, and those of t
 | Popups (and their Flow cards, prompt page and web overlay) | `popups` | `widgets/popups.md` |
 | Keypad | `keypad` | `widgets/keypad.md` |
 
-Areas: `tile-names.md` (Rename tiles in thirteen widgets, `lib/TileNameService.ts`), `web-dashboards.md` (`settings/dashboard.*` and its parts `settings/dashboard-*.js`, `/web/…` routes, the password), `web-sync.md` (syncing web dashboards with Homey dashboards, `lib/dashboardSync.ts`; in progress) and `renders.md` (the render scripts and their pages in `dev/`).
+Areas: `tile-names.md` (Rename tiles in thirteen widgets, `lib/TileNameService.ts`), `web-dashboards.md` (`settings/dashboard.*` and its parts `settings/dashboard-*.js`, `/web/…` routes, the password), `web-sync.md` (syncing web dashboards with Homey dashboards, `lib/dashboardSync.ts`) and `renders.md` (the render scripts and their pages in `dev/`).
 
 ## Build box or PC
 Sessions run on the user's Windows PC or on the NAS build box (the repo `thomassidor/buildbox`, its README): a Linux container on the Synology at home with the Homey CLI, `gh` and Claude Code's Remote Control, for working while away (the cloud relay to the Homey turns down app uploads: every `POST /api/manager/devkit/` came back 500 through it, 2026-11-01). **You're on the box when the folder is under `/work/` and `EDGE` is `/work/buildbox/chromium-render`.** Commands not listed here work the same on both. Where they differ:

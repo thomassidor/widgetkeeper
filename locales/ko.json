@@ -176,7 +176,7 @@
     "varTickCards": "Flow",
     "varForMoods": "조명 제어의 방의 무드",
     "varTickMoods": "Mood 설정",
-    "varForStack": "스마트 스택(대시보드 전용 권한은 없음)",
+    "varForStack": "스마트 스택 및 웹 대시보드 동기화(대시보드 전용 권한은 없음)",
     "varTickStack": "Homey",
     "varNoKey": "다른 위젯에는 키가 필요 없습니다.",
     "kpTitle": "키패드 코드",

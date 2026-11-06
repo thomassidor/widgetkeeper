@@ -176,7 +176,7 @@
     "varTickCards": "Flows",
     "varForMoods": "Rummets Moods i Lysstyring",
     "varTickMoods": "Indstil Moods",
-    "varForStack": "Smart stak (der er ingen tilladelse kun til dashboards)",
+    "varForStack": "Smart stak og synkronisering af webdashboards (der er ingen tilladelse kun til dashboards)",
     "varTickStack": "Homey",
     "varNoKey": "De andre widgets kræver ingen nøgle.",
     "kpTitle": "Kodepanel-koder",

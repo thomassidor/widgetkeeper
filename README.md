@@ -257,6 +257,13 @@ Each browser signs in with a code of its own, backed by its own Homey API key:
 
 **Opens on** sends a screen straight to one dashboard. **Remove** stops a code; for a lost device, also delete its key in the Homey web app. You can also paste an API key on the page instead of using a code.
 
+### Sync with a Homey dashboard
+**Sync** in a dashboard's editor links it to a dashboard in the Homey app, or makes a new one, and keeps the two the same, both ways: on demand, when it's opened and every night (the time is in the front page's **Settings**).
+
+- The first sync copies the side you pick. After that, changes on either side reach the other; when the same thing was changed differently on both, the side you picked wins.
+- Homey's own widgets, such as light groups and device tiles, stay on Homey and don't show on the web.
+- It needs a personal [API key](#api-key) with the **Homey** permission in the app settings.
+
 ### Code
 Give a dashboard a [Keypad](docs/widgets/keypad.md) code (the lock in its editor), and leaving or editing it asks for the code, so a wall tablet stays on its dashboard. It guards the screen, not your Homey.
 
@@ -344,6 +351,7 @@ Homey doesn't let apps change variables, start flows, read dashboards or start M
 | Light Controls' Room's Moods: starting a Mood | **Set Moods** | `homey.mood.set` |
 | Lights by Room: starting a Mood | **Set Moods** | `homey.mood.set` |
 | Smart Stack: reading the dashboard | **Homey** (it allows everything, but there's no permission for dashboards alone) | `homey` |
+| Web dashboards: [syncing with a Homey dashboard](#sync-with-a-homey-dashboard) | **Homey** | `homey` |
 
 Ticking a group's first box (**Flows**, **Moods**, **Homey**) includes the boxes under it. Everything else needs no key: the widgets read devices, Insights, variables, flows and Moods with Widgetkeeper's own permissions.
 

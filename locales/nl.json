@@ -176,7 +176,7 @@
     "varTickCards": "Flows",
     "varForMoods": "Moods van de kamer in Lichtbediening",
     "varTickMoods": "Moods zetten",
-    "varForStack": "Slimme stapel (er is geen recht voor alleen dashboards)",
+    "varForStack": "Slimme stapel en synchroniseren van webdashboards (er is geen recht voor alleen dashboards)",
     "varTickStack": "Homey",
     "varNoKey": "De andere widgets hebben geen sleutel nodig.",
     "kpTitle": "Codepaneel-codes",

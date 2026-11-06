@@ -176,7 +176,7 @@
     "varTickCards": "Flows",
     "varForMoods": "أجواء الغرفة في التحكم بالإضاءة",
     "varTickMoods": "ضبط Moods",
-    "varForStack": "المكدس الذكي (لا يوجد إذن للوحات وحدها)",
+    "varForStack": "المكدس الذكي ومزامنة لوحات الويب (لا يوجد إذن للوحات وحدها)",
     "varTickStack": "Homey",
     "varNoKey": "لا تحتاج الأدوات الأخرى إلى مفتاح.",
     "kpTitle": "رموز لوحة الرمز",

@@ -176,7 +176,7 @@
     "varTickCards": "Flow",
     "varForMoods": "Mood della stanza di Controllo luci",
     "varTickMoods": "Imposta Mood",
-    "varForStack": "Pila intelligente (non c'è un permesso solo per le dashboard)",
+    "varForStack": "Pila intelligente e sincronizzazione delle dashboard web (non c'è un permesso solo per le dashboard)",
     "varTickStack": "Homey",
     "varNoKey": "Gli altri widget funzionano senza chiave.",
     "kpTitle": "Codici del tastierino",

@@ -176,7 +176,7 @@
     "varTickCards": "Flows",
     "varForMoods": "Rummets Moods i Ljusreglage",
     "varTickMoods": "Ställ in Moods",
-    "varForStack": "Smart stapel (det finns ingen behörighet för enbart instrumentpaneler)",
+    "varForStack": "Smart stapel och synk av webbinstrumentpaneler (det finns ingen behörighet för enbart instrumentpaneler)",
     "varTickStack": "Homey",
     "varNoKey": "De andra widgetarna behöver ingen nyckel.",
     "kpTitle": "Knappsatskoder",

@@ -176,7 +176,7 @@
     "varTickCards": "Flow",
     "varForMoods": "Nastroje pokoju w sterowaniu światłem",
     "varTickMoods": "Ustaw Mood",
-    "varForStack": "Inteligentny stos (nie ma osobnego uprawnienia do samych pulpitów)",
+    "varForStack": "Inteligentny stos i synchronizacja pulpitów webowych (nie ma osobnego uprawnienia do samych pulpitów)",
     "varTickStack": "Homey",
     "varNoKey": "Pozostałe widżety działają bez klucza.",
     "kpTitle": "Kody klawiatury kodowej",

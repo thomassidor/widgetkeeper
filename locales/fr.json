@@ -176,7 +176,7 @@
     "varTickCards": "Flows",
     "varForMoods": "Moods de la pièce des commandes d'éclairage",
     "varTickMoods": "Définir les Moods",
-    "varForStack": "Pile intelligente (pas de droit pour les tableaux de bord seuls)",
+    "varForStack": "Pile intelligente et synchro des tableaux de bord web (pas de droit pour les tableaux de bord seuls)",
     "varTickStack": "Homey",
     "varNoKey": "Les autres widgets fonctionnent sans clé.",
     "kpTitle": "Codes du clavier à code",

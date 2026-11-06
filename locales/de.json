@@ -176,7 +176,7 @@
     "varTickCards": "Flows",
     "varForMoods": "Moods des Raums in der Lichtsteuerung",
     "varTickMoods": "Moods festlegen",
-    "varForStack": "Smarter Stapel (es gibt kein Recht nur für Dashboards)",
+    "varForStack": "Smarter Stapel und Synchronisieren von Web-Dashboards (es gibt kein Recht nur für Dashboards)",
     "varTickStack": "Homey",
     "varNoKey": "Die anderen Widgets brauchen keinen Schlüssel.",
     "kpTitle": "Tastenfeld-Codes",

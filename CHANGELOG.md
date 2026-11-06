@@ -10,6 +10,7 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 ### Web dashboards
 - **Sign-in codes:** sign a wall tablet, phone, computer or Nest Hub in with a short code or QR code instead of an API key, each with a key of its own (**Screens and browsers** in the app settings, with the steps to make the key). **Opens on** sends each screen straight to a dashboard of its own. The page asks for the code first, with the API key behind *Use an API key instead*; **Forget the key** is now **Sign out**.
 - The app settings' Web dashboards card reads in the order you set it up: the address, screens and browsers, then away from home with the password. Setting or changing the password keeps your screens signed in.
+- **Sync with a Homey dashboard:** link a web dashboard to one in the Homey app (**Sync** in its editor), and the two stay the same, both ways: on demand, when it's opened and every night at a time you set. You pick which side wins a conflict; Homey's own widgets stay on Homey, and both sides are backed up before each sync. It needs a personal API key with the **Homey** permission.
 - **A live preview** beside a widget's settings while you edit it.
 - **Copy a widget** to another dashboard, or the same one, with its settings, devices and tile names: the copy button on its bar in the editor.
 - **Kiosk browsers:** add `?kiosk=1` to a dashboard's address for a browser such as Fully Kiosk that fills the screen itself: the dashboard's bar is left out.
@@ -48,6 +49,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 
 ### Sensor Alarms
 - **Tiles per row:** 2 as before, or 3.
+
+### Updates
+- **New features on Homey's Timeline:** after an update with new features, one line on Homey's Timeline says what's new. Turn it off under **Configure → Updates**.
 
 ### Fixes
 - **Older Homey Pro (2016–2019):** Sparklines, the chart widgets and Heatmap list a device's values again, and the Electricity Overview no longer fails on every request where the Homey has no dynamic prices.

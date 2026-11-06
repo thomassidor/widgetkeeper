@@ -176,7 +176,7 @@
     "varTickCards": "Flows",
     "varForMoods": "Moods de la habitación de Control de luces",
     "varTickMoods": "Establecer Moods",
-    "varForStack": "Pila inteligente (no hay permiso solo para paneles)",
+    "varForStack": "Pila inteligente y sincronización de paneles web (no hay permiso solo para paneles)",
     "varTickStack": "Homey",
     "varNoKey": "Los demás widgets no necesitan clave.",
     "kpTitle": "Códigos del teclado de código",
