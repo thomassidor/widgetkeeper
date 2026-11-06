@@ -34,6 +34,11 @@ const MAX_COLUMNS = 6;
 export const MAX_WIDGETS = 60; // per dashboard
 const MAX_DEVICES = 100; // per widget
 const MAX_TEXT = 2000;
+/**
+ * A Devices picker only the web editor has: Cameras' left the manifest in 1.2.1, as Homey's editor won't save a widget
+ * with one and nothing picked, but a web dashboard has no such rule, and its saved picks must stay.
+ */
+const WEB_DEVICES: Record<string, any> = { cameras: { type: 'global', singular: false, filter: { class: 'camera|doorbell' } } };
 const MAX_FOREIGN_SETTINGS = 60; // per widget of another app
 const ID = /^[A-Za-z0-9_-]{1,40}$/;
 /** A dashboard's Keypad code: Any code, or a code's id (`KeypadService`'s 12 hex digits). */
@@ -325,6 +330,11 @@ export default class WebDashboardService {
     private tileNames?: TileNameService,
   ) {}
 
+  /** A widget's Devices setting on a web dashboard: the manifest's, or `WEB_DEVICES`. */
+  private deviceSetting(type: string, w: any): any {
+    return w?.devices ?? (Object.prototype.hasOwnProperty.call(WEB_DEVICES, type) ? WEB_DEVICES[type] : null);
+  }
+
   /** The manifest's widgets, by id. */
   private get manifestWidgets(): Record<string, any> {
     return (this.homey.manifest as any)?.widgets ?? {};
@@ -594,12 +604,13 @@ export default class WebDashboardService {
     return Object.entries(this.manifestWidgets).map(([type, w]) => {
       const settings = Array.isArray(w.settings) ? w.settings : [];
       const { sections, labels } = settingSections(settings, language);
+      const devices = this.deviceSetting(type, w);
       return {
         type,
         name: loc(w.name, language) || type,
         height: typeof w.height === 'number' ? w.height : null,
         transparent: w.transparent === true,
-        devices: w.devices ? { singular: w.devices.singular === true } : null,
+        devices: devices ? { singular: devices.singular === true } : null,
         settings: settings.map((s: any): WebSettingDef => ({
           id: s.id,
           type: s.type,
@@ -624,8 +635,9 @@ export default class WebDashboardService {
   async devices(type: string, query = '', foreign: ForeignDeviceFilter = {}): Promise<WebDevice[]> {
     const other = foreignWidget(type, this.ownAppId);
     const w = other ? null : this.manifestWidgets[type];
-    if (!other && !w?.devices) throw new Error(`No devices setting: ${type}`);
-    const filter = other ? { class: foreign.class || undefined, capabilities: foreign.capabilities || undefined } : w.devices.filter;
+    const setting = other ? null : this.deviceSetting(type, w);
+    if (!other && !setting) throw new Error(`No devices setting: ${type}`);
+    const filter = other ? { class: foreign.class || undefined, capabilities: foreign.capabilities || undefined } : setting.filter;
     const [devices, zones] = await devicesAndZones(this.homey);
     return devices
       .filter(d => passesDeviceFilter(d, filter))
@@ -832,8 +844,9 @@ export default class WebDashboardService {
       const value = Object.prototype.hasOwnProperty.call(given, s.id) ? settingValue(s, given[s.id]) : undefined;
       settings[s.id] = value === undefined ? (s.value ?? null) : value;
     }
-    const deviceIds = def.devices && Array.isArray(w.deviceIds)
-      ? deviceIdList(w.deviceIds, def.devices.singular ? 1 : MAX_DEVICES)
+    const devices = this.deviceSetting(w.type, def);
+    const deviceIds = devices && Array.isArray(w.deviceIds)
+      ? deviceIdList(w.deviceIds, devices.singular ? 1 : MAX_DEVICES)
       : [];
     return { id, type: w.type, title, settings, deviceIds };
   }

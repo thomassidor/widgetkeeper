@@ -492,6 +492,15 @@ describe('web dashboards: what the editor needs', () => {
     expect(flows.settings.filter(s => /^(flow|color)1$/.test(s.id)).map(s => s.label)).toEqual(['Flow', 'Farbe']);
   });
 
+  it("keeps Cameras' Devices picker and saved picks on the web, though its manifest has none (Homey's editor would demand a pick)", async () => {
+    const { web } = setup();
+    expect((app.widgets as any).cameras.devices).toBeUndefined();
+    expect(web.widgetTypes().find(t => t.type === 'cameras')!.devices).toEqual({ singular: false });
+    const saved = web.save({ name: 'Cams', columns: [[{ id: 'a', type: 'cameras', deviceIds: ['c1', 'c2'] }]] });
+    expect(saved.columns[0][0].deviceIds).toEqual(['c1', 'c2']);
+    await expect(web.devices('cameras')).resolves.toEqual([]);
+  });
+
   it("filters devices as the widget's devices setting does", () => {
     const light = { class: 'light', capabilities: ['onoff', 'dim'] };
     const plug = { class: 'socket', virtualClass: 'light', capabilities: ['onoff'] };

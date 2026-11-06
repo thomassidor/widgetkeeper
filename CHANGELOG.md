@@ -2,6 +2,14 @@
 
 All notable changes to Widgetkeeper. The version numbers match the Homey app version.
 
+## 1.2.1
+
+### Cameras
+- **A widget can be added with only Camera 1 to 6:** Homey wouldn't save one with no device picked, even with those filled in, and cameras that aren't on its device list (Synology's) left nothing to pick. The Devices list is gone from the Homey app's settings and Camera 1 to 6 now come first. Widgets already on your dashboards keep their cameras; to change those, add the widget again. Web dashboards keep their device list.
+
+### Charts
+- Chart · Lines, Stacked, Ranking and Timeline: give each value a name of your own. Chart · Basic, Lines and Stacked: the legend can be hidden.
+
 ## 1.2.0
 
 ### New: Device names

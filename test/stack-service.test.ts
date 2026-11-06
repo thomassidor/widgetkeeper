@@ -52,6 +52,15 @@ function setup(scopes = ['homey.dashboard.readonly']) {
 afterEach(() => { keyApis.clear(); vi.useRealTimers(); });
 
 describe('dashboardPages', () => {
+  it("adds a Cameras page's Camera 1 … 6 picks after its stored devices, a repeat and None left out", () => {
+    const settings = { camera1: { id: 'cam1' }, camera2: { id: 'none' }, camera4: { id: 'syn1' } };
+    const dashboard = { columns: [{ id: 'c', widgets: [
+      { id: 'old', title: null, type: 'app_webview', data: { appWidgetId: `homey:app:${APP}:cameras`, deviceIds: ['cam1', 'cam2'], settings } },
+      { id: 'new', title: null, type: 'app_webview', data: { appWidgetId: `homey:app:${APP}:cameras`, settings } },
+    ] }] };
+    expect(dashboardPages(dashboard, APP).map(p => p.deviceIds)).toEqual([['cam1', 'cam2', 'syn1'], ['cam1', 'syn1']]);
+  });
+
   it("keeps this app's widgets, column by column, without a stack in the stack", () => {
     expect(dashboardPages(KITCHEN, APP)).toEqual([
       { id: 'w-timers', type: 'timers', title: null, settings: { minutes1: 5 }, deviceIds: [] },

@@ -60,16 +60,24 @@ export function dashboardPages(dashboard: any, appId: string): StackPage[] {
       if (typeof appWidgetId !== 'string' || !appWidgetId.startsWith(prefix)) continue;
       const type = appWidgetId.slice(prefix.length);
       if (!isStackType(type) || typeof w.id !== 'string') continue;
+      const settings = w.data?.settings && typeof w.data.settings === 'object' ? w.data.settings : {};
+      const deviceIds: string[] = Array.isArray(w.data?.deviceIds) ? w.data.deviceIds.filter((id: unknown) => typeof id === 'string') : [];
       pages.push({
         id: w.id,
         type,
         title: typeof w.title === 'string' ? w.title : null,
-        settings: w.data?.settings && typeof w.data.settings === 'object' ? w.data.settings : {},
-        deviceIds: Array.isArray(w.data?.deviceIds) ? w.data.deviceIds.filter((id: unknown) => typeof id === 'string') : [],
+        settings,
+        // Cameras are picked in Camera 1 … 6, so the page's attention watches those as well.
+        deviceIds: type === 'cameras' ? [...new Set([...deviceIds, ...cameraSlots(settings)])] : deviceIds,
       });
     }
   }
   return pages;
+}
+
+/** A Cameras widget's Camera 1 … 6 picks, as its mount reads them. */
+function cameraSlots(settings: Record<string, any>): string[] {
+  return [1, 2, 3, 4, 5, 6].map(n => settings[`camera${n}`]?.id).filter(id => typeof id === 'string' && id && id !== 'none');
 }
 
 /**
