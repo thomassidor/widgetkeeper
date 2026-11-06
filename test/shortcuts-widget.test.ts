@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { readFileSync } from 'node:fs';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { loadMount, loadWidget } from './helpers/loadWidget.js';
+import { loadMount, loadWidget, runFile } from './helpers/loadWidget.js';
 import { touch as fireTouch } from './helpers/touch.js';
 
 let win: any;
@@ -26,6 +26,12 @@ function widget(s: any, extra: object = {}) {
 }
 
 describe('render', () => {
+  it('draws an icon from icons.js, which adds to the object the widget already holds', () => {
+    runFile('widgets/spacer/public/icons.js');
+    const { row } = widget(state(null, dash('a', 'Kitchen')), { tiles: [{ id: 'a', icon: 'fridge' }] });
+    expect(row(0).querySelector('.sc-icon path')!.getAttribute('d')).toBe(win.WidgetkeeperKit.icons.fridge.d);
+  });
+
   it("shows one pill per tile: its colour and icon, then the dashboard's name", () => {
     const { rows, row } = widget(state(null, dash('a', 'Lights'), dash('b', 'Sensors'), { id: 'c', missing: true }), {
       tiles: [{ id: 'a', color: 'purple', icon: 'bulb' }, { id: 'b', color: 'nope', icon: 'nope' }, { id: 'c' }],

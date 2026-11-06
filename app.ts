@@ -1,6 +1,7 @@
 import Homey from 'homey';
 import Diagnostics, { DEBUG_LOG_SETTING } from './lib/Diagnostics.js';
 import { getAppApi } from './lib/appApi.js';
+import { finishList } from './lib/autocomplete.js';
 import CameraService from './lib/CameraService.js';
 import CurtainService from './lib/CurtainService.js';
 import DaysSinceService, {
@@ -346,7 +347,7 @@ export default class WidgetkeeperApp extends Homey.App {
     run(FLOWTILES_REMOVE_FILL_CARD, (a, b, t) => this.flowTiles.removeFill(b, t));
     run(FLOWTILES_REMOVE_CARD, (a, b, t) => this.flowTiles.remove(b, t));
     this.homey.flow.getActionCard(FLOWTILES_SET_LOOK_CARD)
-      .registerArgumentAutocompleteListener('icon', async query => this.flows.listIcons(query, { none: true }));
+      .registerArgumentAutocompleteListener('icon', async query => finishList(this.homey, query, this.flows.listIcons(query, { none: true })));
     this.homey.flow.getActionCard(FLOWTILES_CLEAR_CARD)
       .registerArgumentAutocompleteListener('board', boards(false))
       .registerRunListener(async (args: Args) => { this.flowTiles.clear(name(args.board)); });

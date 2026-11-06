@@ -147,7 +147,7 @@ describe('shared files', () => {
     const refs = [...html.matchAll(/(?:src|href)="([^"]+)"/g)].map(m => m[1]).filter(r => r.endsWith(`.${ext}`));
     return refs.filter(r => !['widget.js', 'widget.css', 'mount.js'].includes(r))
       .map(r => (r.startsWith('../') ? r.slice(3) : `${id}/${r}`))
-      .filter(r => r !== KIT && r !== KIT.replace(/.js$/, '.css'));
+      .filter(r => r !== KIT && r !== KIT.replace(/.js$/, '.css') && r !== 'spacer/icons.js');
   };
 
   it.each(WIDGETS)('%s: index.html loads the kit before anything else', (id) => {
@@ -157,6 +157,23 @@ describe('shared files', () => {
     expect([...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)][0]?.[1]).toBe('../spacer/kit.css');
     expect(html).toContain('WidgetkeeperKit.undoTextZoom();');
   });
+  it.each(WIDGETS)('%s: index.html loads icons.js right after the kit if it can show an icon setting\'s icon', (id) => {
+    const html = readFileSync(`widgets/${id}/public/index.html`, 'utf8');
+    const scripts = [...html.matchAll(/<script src="([^"]+)"/g)].map(m => m[1]);
+    // The Smart Stack for its pages (Media, Days Since, Flow Tiles …), the rest for themselves.
+    const shows = ['flows', 'keypad', 'dayssince', 'media', 'shortcuts', 'textline', 'varpresets', 'flowtiles', 'stack'].includes(id);
+    if (shows) expect(scripts[1]).toBe('../spacer/icons.js');
+    else expect(scripts).not.toContain('../spacer/icons.js');
+  });
+
+  it('every widget that draws the kit\'s icons by a setting is in that list', () => {
+    const using = WIDGETS.filter((id) => {
+      const js = readFileSync(`widgets/${id}/public/widget.js`, 'utf8');
+      return /WidgetkeeperKit\.icons/.test(js) || /\bicons\b[^;\n]*=\s*window\.WidgetkeeperKit/.test(js);
+    });
+    expect(using.filter(id => !readFileSync(`widgets/${id}/public/index.html`, 'utf8').includes('../spacer/icons.js'))).toEqual(['roomhealth']);
+  });
+
   const stackDeps: Record<string, string[]> = new Function(`return ${readFileSync('widgets/stack/public/mount.js', 'utf8')
     .match(/const DEPS = (\{[\s\S]*?\});/)![1]}`)();
 

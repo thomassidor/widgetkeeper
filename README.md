@@ -372,3 +372,5 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 [MIT](LICENSE)
+
+Most of the icons in the icon settings are from [Lucide](https://lucide.dev) (ISC, some MIT; [licence](widgets/spacer/public/icons.LICENSE.txt)).

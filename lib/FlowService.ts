@@ -97,15 +97,22 @@ export default class FlowService {
 
   /**
    * The built-in icons, by their names in Homey's language and in its alphabetical order, each with a preview of
-   * the button (`iconImage()`). The widget draws them (`ICONS` in widget.js). With `none` (the media widget's
-   * optional icons), "None" comes first, so an icon can be removed again; the widgets skip the id `none`.
+   * the button (`iconImage()`). The widgets draw them (the kit's `icons`, with `icons.js`). With `none` (the optional
+   * icons), "None" comes first, so an icon can be removed again; the widgets skip the id `none`.
+   *
+   * A search goes through them all, by name or English id. With nothing typed it's the kit's icons and a row saying how
+   * many more there are: every row carries an image, so the whole list would be 550 KB, on every opening.
    */
   listIcons(query: string, { none = false } = {}): AutocompleteItem[] {
-    const items = FLOW_ICONS
+    const searching = query.trim() !== '';
+    const ids = searching ? FLOW_ICONS : FLOW_ICONS.filter(id => !FLOW_ICON_IMAGES[id].more);
+    const items: AutocompleteItem[] = ids
       .map(id => ({ id, name: this.homey.__(`flows.icons.${id}`) || id, image: iconImage(id) }))
       .filter(i => matches(query, i.name, i.id))
       .sort(byName(this.homey));
-    return none ? withNone(this.homey.__('flows.none') || 'None', query, items) : items;
+    const list = none ? withNone(this.homey.__('flows.none') || 'None', query, items) : items;
+    const more = FLOW_ICONS.length - ids.length;
+    return more ? [...list, hintRow(this.homey.__('autocomplete.more', { count: more }) || `${more} more: keep typing`)] : list;
   }
 
   // ---------------------------------------------------------------- state

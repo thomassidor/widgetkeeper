@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { fakeApi, fakeHomey, homeyApiMock, keyApis } from './helpers/fakeHomey.js';
 import FlowService, { FLOW_COLORS_SETTING, FLOW_ICONS, FLOWS_COLOR_EVENT, parseFlowId } from '../lib/FlowService.js';
 import { FLOW_ICON_IMAGES } from '../lib/flowIconImages.js';
-import { FLOW_ICON_PATHS } from './helpers/flowIcons.js';
+import { FLOW_ICON_PATHS, KIT_ICON_IDS } from './helpers/flowIcons.js';
 import { API_KEY_SETTING } from '../lib/PersonalApiKey.js';
 import Secrets from '../lib/secrets.js';
 
@@ -85,13 +86,33 @@ describe('listFlows', () => {
 
   it('lists the icons', () => {
     const { service } = setup();
-    // Alphabetical by name (the fake Homey has no strings, so the names are the ids).
-    expect(service.listIcons('').map(i => i.id)).toEqual([...FLOW_ICONS].sort());
-    expect(service.listIcons('moo').map(i => i.id)).toEqual(['moon']);
+    // Alphabetical by name (the fake Homey has no strings, so the names are the ids): the kit's, then how many more.
+    const opening = service.listIcons('');
+    expect(opening.slice(0, -1).map(i => i.id)).toEqual([...KIT_ICON_IDS].sort());
+    expect(opening.at(-1)).toMatchObject({ id: 'none', hint: true, name: `${FLOW_ICONS.length - KIT_ICON_IDS.length} more: keep typing` });
+    expect(service.listIcons('moo').map(i => i.id)).toEqual(['moon', 'sunmoon']);
     expect(service.listIcons('moo')[0].image).toMatch(/^data:image\/png;base64,/);
     // The media widget's icons are optional: None first.
     expect(service.listIcons('', { none: true })[0]).toEqual({ name: 'None', id: 'none' });
-    expect(service.listIcons('moo', { none: true }).map(i => i.id)).toEqual(['moon']);
+    expect(service.listIcons('moo', { none: true }).map(i => i.id)).toEqual(['moon', 'sunmoon']);
+  });
+
+  it('finds every icon by searching, the ones that only show in a search too', () => {
+    const { service } = setup();
+    expect(service.listIcons('fridge').map(i => i.id)).toEqual(['fridge']);
+    expect(service.listIcons('  ').map(i => i.id)).toEqual(service.listIcons('').map(i => i.id));
+    for (const id of FLOW_ICONS) expect(service.listIcons(id).map(i => i.id), id).toContain(id);
+  });
+
+  it('builds icons.js from the pinned Lucide and the chosen list (else run `npm run flow-icons`)', () => {
+    const chosen = JSON.parse(readFileSync('scripts/lucide-icons.json', 'utf8'));
+    expect(FLOW_ICONS.filter(id => !KIT_ICON_IDS.includes(id))).toEqual(Object.keys(chosen));
+    expect(FLOW_ICONS.filter(id => FLOW_ICON_IMAGES[id].more)).toEqual(Object.keys(chosen));
+    const { version } = JSON.parse(readFileSync('node_modules/lucide-static/package.json', 'utf8'));
+    expect(readFileSync('widgets/spacer/public/icons.js', 'utf8')).toContain(`Lucide ${version} `);
+    expect(readFileSync('widgets/spacer/public/icons.LICENSE.txt', 'utf8')).toBe(readFileSync('node_modules/lucide-static/LICENSE', 'utf8'));
+    // One path each, every piece starting at an absolute position, as joining them needs.
+    for (const id of Object.keys(chosen)) expect(FLOW_ICON_PATHS[id].d, id).toMatch(/^M/);
   });
 
   it('has a preview of every icon, rendered from its current path (else run `npm run flow-icons`)', () => {

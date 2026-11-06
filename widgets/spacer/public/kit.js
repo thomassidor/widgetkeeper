@@ -14,7 +14,8 @@
   /**
    * Flow Buttons' icons, also the icons of Days Since's tiles, Notes, Variable Presets and Media's buttons: drawn on a
    * 24 px grid with a 2 px round stroke (`fill: true` for a filled shape). The ids are the icon settings' (FLOW_ICONS
-   * in lib/FlowService.ts, named in `flows.icons.<id>`); `npm run flow-icons` renders their previews from here.
+   * in lib/FlowService.ts, named in `flows.icons.<id>`); `npm run flow-icons` renders their previews from here. These are
+   * what an icon setting lists first; `icons.js`, which only the pages that show them load, adds the rest to this object.
    */
   const ICONS = {
     play: { fill: true, d: 'M8 5.6v12.8a1 1 0 0 0 1.5.86l10.2-6.4a1 1 0 0 0 0-1.72L9.5 4.74A1 1 0 0 0 8 5.6z' },
