@@ -1,6 +1,6 @@
 # Widgetkeeper
 
-Extra dashboard widgets for Homey Pro, made to sit naturally next to Homey's own with the same look and feel.
+Extra dashboard widgets for Homey Pro, made to sit naturally next to Homey's own with the same look and feel. Use them on Homey's dashboards, or on [web dashboards](#web-dashboards) you build yourself and open in any browser: a wall tablet, an old iPad, a computer or a TV.
 
 <img src="docs/showcase/home.png" alt="Widgetkeeper widgets on a Homey dashboard on a tablet" width="100%">
 
