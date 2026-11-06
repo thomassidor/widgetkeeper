@@ -7,10 +7,26 @@ Paste everything below this comment into the forum editor.
 - The widgets are only their previews (the README's docs/previews/*-dark.png, shown at 120 × 105), each linking to its
   page on GitHub, in two groups: the Live version (the App Store's) and what's only in the Test version. When a version
   goes live, move its widgets up and update both version numbers.
-- The dashboards and web dashboards are docs/forum/*.jpg (`npm run forum-images`), 1380 wide, shown at 690.
+- The post opens with the seven example dashboards as a carousel. They and the web dashboards are docs/forum/*.jpg (`npm run forum-images`), 1380 wide, shown at 690.
 -->
 
-![Widgetkeeper widgets on a Homey dashboard on a tablet|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-home.jpg)
+[grid mode=carousel]
+
+![Home dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-home.jpg)
+
+![Energy dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-energy.jpg)
+
+![Security dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-security.jpg)
+
+![Climate dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-climate.jpg)
+
+![Evening dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-evening.jpg)
+
+![Garden dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-garden.jpg)
+
+![Kitchen dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-kitchen.jpg)
+
+[/grid]
 
 Hi all,
 
@@ -57,26 +73,6 @@ Build dashboards of your widgets on a page served by your Homey, and open them i
 ## :key: API key
 
 A few widgets need a Homey API key to change things Homey doesn't let apps change on their own: Flow Buttons, Variables, Variable Presets, the Smart Stack, Media's buttons, the Keypad's Flows and the Moods. Which permissions to tick: https://github.com/thomassidor/widgetkeeper#api-key
-
-## Dashboard examples
-
-[grid mode=carousel]
-
-![Home dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-home.jpg)
-
-![Energy dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-energy.jpg)
-
-![Security dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-security.jpg)
-
-![Climate dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-climate.jpg)
-
-![Evening dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-evening.jpg)
-
-![Garden dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-garden.jpg)
-
-![Kitchen dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-kitchen.jpg)
-
-[/grid]
 
 ## :speech_balloon: Feedback wanted
 
