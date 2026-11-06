@@ -309,33 +309,23 @@ Turning web dashboards off keeps them on your Homey.
 <img src="docs/showcase/kitchen.png" alt="A kitchen dashboard with Widgetkeeper widgets on a tablet" width="100%">
 
 ## Colour style
-Every widget with a coloured state has a **Colour style** setting: *Muted* is the calmer look, *Vivid* the stronger one, and a colour you pick in the widget follows it.
-
-- Where a colour tints a tile (a Quick Actions tile that's on, a Sensor Alarms alarm, a coloured note, Value Matrix's cells …), Vivid fills the tile with Homey's darker shade, with white text. The charts get a stronger area under their lines.
-- Where the colour is already a small solid part (a lit preset button, Insights Heatmap's cells, Media's play button, Activity Dots' dots), Muted uses the darker shade and Vivid the bright colour.
-- Days Since and Room Health are toned down in Muted and in full colour in Vivid. Weather Forecast's *Vivid* puts the card on a gradient for the current weather.
+Every widget with a coloured state has a **Colour style** setting: *Muted* is the calmer look, *Vivid* the stronger one, and a colour you pick in the widget follows it. Weather Forecast has a *Vivid* of its own, which puts the card on a gradient for the current weather.
 
 ## Device names
-If your device names say more than the device, such as *Ceiling lamp | Kitchen*, choose under **Apps → Widgetkeeper → Configure → Device names** which part every widget shows:
+If your device names say more than the device, such as *Ceiling lamp | Kitchen*, choose under **Apps → Widgetkeeper → Configure → Device names** which part every widget shows: the full name (the default), the part before or after a separator you type, the last word, or the name without its room (*Kitchen ceiling lamp* in the Kitchen shows as *Ceiling lamp*).
 
-- *Full name*: as in Homey (the default).
-- *Before the separator*: *Ceiling lamp | Kitchen* shows as *Ceiling lamp*. You type the separator, such as `|` or ` - ` (spaces count, so ` - ` leaves *Wi-Fi plug* whole). With the separator more than once, the part before the first one.
-- *After the separator*: *Kitchen | Ceiling lamp* shows as *Ceiling lamp*, the part after the last one.
-- *Last word*: *Kitchen ceiling lamp* shows as *lamp*.
-- *Without the room name*: a device in the Kitchen called *Kitchen ceiling lamp*, *Kitchen - ceiling lamp* or *Ceiling lamp (Kitchen)* shows as *Ceiling lamp*. Only the room's whole name at the start or end is left out, so *Kitchenette lamp* stays as it is.
-
-A name without the separator (or the room's name) shows in full. The page shows a few of your own names as they'll look, and open widgets change at once. The device lists in widget settings, Flow tokens and [names typed on tiles](#tile-names) stay as they are.
+The page shows a few of your own names as they'll look. Device lists in widget settings, Flow tokens and [names typed on tiles](#tile-names) stay as they are.
 
 ## Tile names
 <img src="docs/clips/rename.webp" alt="Rename tiles: the setting turned on, names typed on two Light Controls tiles, and the setting turned off again with the names kept" width="358">
 
-Give any tile a name of your own, such as *Sofa corner* for a room's lights, instead of the device's or room's name. Light Controls, Lights by Room (its rooms and lights), Curtains, Device Quick Actions, Sensor Alarms, Room Health, Value Matrix, Device Values, Sparklines, Locks and Doors, Cameras, Variables and (on web dashboards) Dashboard Shortcuts have it.
+Give a tile a name of your own, such as *Sofa corner*, instead of the device's or room's name, in any widget with a **Rename tiles** setting:
 
-1. Edit the dashboard, edit the widget, turn on **Rename tiles** (the first setting) and save the widget.
-2. Leave the dashboard's edit mode. Each tile now shows a text field: type its name, or leave it empty for the device's (or room's) own.
+1. Edit the widget, turn on **Rename tiles** and save.
+2. Leave the dashboard's edit mode and type the names on the tiles.
 3. Edit the widget again and turn **Rename tiles** off.
 
-The names belong to that widget: they stay with the right tiles when you rename or reorder devices, and every screen and Smart Stack showing the widget gets them.
+The names stay with the right tiles when you rename or reorder devices.
 
 ## API key
 Homey doesn't let apps change variables, start flows, read dashboards or start Moods on their own. For those, create a key in the Homey web app under **Settings → API Keys**, tick the permissions below for the widgets you use, and paste it under **Apps → Widgetkeeper → Configure**. The key stays on your Homey, and that page says what it may do once it's saved.
