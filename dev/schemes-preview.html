@@ -143,7 +143,7 @@
       ...battery, deviceId: 'sw1', name: 'Heater', capabilityId: 'onoff',
       capability: { ...battery.capability, title: 'Turned on', type: 'boolean', units: null, decimals: null }, value: true,
     }];
-    const curtains = SHOWCASE.evening.columns.flat().find(w => w.type === 'curtains');
+    const curtains = SHOWCASE.livingroom.columns.flat().find(w => w.type === 'curtains');
     const kitchenTimer = SHOWCASE.kitchen.columns.flat().find(w => w.type === 'timers');
     const board = (text, color) => ({ key: 'note', name: 'Note', text, color, updatedAt: SHOWCASE_NOW });
     const flowRows = [['red', 'Alarm on', 'bell'], ['orange', "Dinner's ready", 'bell'], ['yellow', 'Good morning', 'sun'],

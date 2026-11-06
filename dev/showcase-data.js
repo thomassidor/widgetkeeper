@@ -216,18 +216,8 @@
     }, 9)),
   ];
 
-  // ---- More of the house, for the Climate, Evening, Garden and Kitchen dashboards.
+  // ---- More of the house, for the Climate, Living room, Garden and Kitchen dashboards.
 
-  /** A thermostat with three temperature presets and no mode (a radiator valve, the floor heating). */
-  const thermo = (name, iconName, temps, current, onoff = true) => ({
-    type: 'thermostat',
-    presets: Object.fromEntries(temps.flatMap((v, i) => [[`b${i + 1}Power`, 'keep'], [`b${i + 1}Temp`, { capabilityId: 'target_temperature', value: v }]])),
-    state: {
-      name, icon: icon(iconName),
-      values: { onoff, target_temperature: current },
-      caps: { onoff: { title: 'Turned on', units: null, values: null }, target_temperature: { title: 'Target temperature', units: '°C', values: null } },
-    },
-  });
   /** Flow Buttons from `[id, name, colour, icon, enabled?]` rows. */
   const flowButtons = (columns, list) => ({
     type: 'flows',
@@ -328,8 +318,8 @@
     z6: zoneIcon('<rect x="5" y="3" width="14" height="18" rx="1"/><path d="M12 3v18M5 12h14"/>'),
     b1: zoneIcon('<path d="M3 19V6M3 15h18v4M21 15v-2a3 3 0 0 0-3-3h-7v5"/><circle cx="7" cy="12" r="1.8"/>'),
   };
-  /** The evening's lights by room, the living room open with its Moods. */
-  const eveningRooms = {
+  /** Every room's lights, the living room open with its Moods: the README's Lights by Room; the Living room dashboard has its own room. */
+  const allRooms = {
     type: 'lightrooms', opts: { open: ['z1'], palette: 'dusk' }, devices: eveningLights, zoneIcons: ZONE_ICONS,
     moods: [
       { id: 'm1', name: 'Movie night', zone: 'z1', colors: [{ hue: 0.08, saturation: 1 }, { hue: 0.76, saturation: 1 }] },
@@ -366,6 +356,20 @@
   ] };
   const gardenCameras = { type: 'cameras', cameras: [cam('garden', 'Terrace'), cam('shed', 'Shed'), cam('side', 'Side path'), cam('drive', 'Driveway')] };
   const gardenHeatmap = { type: 'heatmap', opts: { period: 'rolling', step: 2, color: 'yellow' }, data: heatLux() };
+
+  // Energy's heat pump and car charger, on its Sparklines and Chart · Stacked.
+  const heatPumpPower = sparkSlot('w1', 'measure_power', 'Heat pump', { units: 'W', decimals: 0 }, spark((t, r) => Math.round(520 + 260 * Math.sin(t / (41 * MIN)) + 40 * r()), 13));
+  const carChargerPower = sparkSlot('c2', 'measure_power', 'Car charger', { units: 'W', decimals: 0 }, spark(t => (houseLoad(t, null, true) - houseLoad(t, null, false) > 0 ? 3650 : 0), 15));
+
+  // The chart mocks are the README screenshots' readings; on a dashboard they match what's beside them.
+  /** A series with `f` applied to each reading. */
+  const mapSeries = (s, f) => ({ ...s, value: s.value == null ? null : f(s.value), points: s.points.map(([t, v]) => [t, f(v)]) });
+
+  // A chart widget's entry: its made-up `/state` (mock-*.js) is read when it's mounted, so the pages that use this file
+  // for other widgets don't need those scripts.
+  const chart = (type, opts, state) => ({ type, opts, get state() { return state(); } });
+
+  window.SHOWCASE_ROOMS = allRooms;
 
   window.SHOWCASE = {
     home: {
@@ -411,23 +415,16 @@
             charts: [mainMeter, indoorSparks[1]] },
           { type: 'sparklines', slots: [
             mainMeter,
-            sparkSlot('w1', 'measure_power', 'Heat pump', { units: 'W', decimals: 0 }, spark((t, r) => Math.round(520 + 260 * Math.sin(t / (41 * MIN)) + 40 * r()), 13)),
-            sparkSlot('c2', 'measure_power', 'Car charger', { units: 'W', decimals: 0 }, spark(t => (houseLoad(t, null, true) - houseLoad(t, null, false) > 0 ? 3650 : 0), 15)),
-            sparkSlot('h1', 'measure_temperature', 'Water heater', { units: '°C', decimals: 0 }, spark((t, r) => {
-              const h = hourOf(t) + new Date(t).getMinutes() / 60;
-              return Math.round(h >= 7.1 && h < 7.5 ? 62 - 50 * (h - 7.1) : h >= 7.5 && h < 13 ? 42 + 0.6 * (h - 7.5) : h >= 13 && h < 15 ? 45 + 8.5 * (h - 13) : 62 - 0.2 * ((h + 9) % 24) + r());
-            }, 17)),
+            heatPumpPower,
           ] },
-          { type: 'variables', opts: { columns: '2' }, vars: [
-            { id: 'e1', name: 'Charge at the cheapest hours', type: 'boolean', value: true },
-            { id: 'e2', name: 'Price cap', type: 'number', value: 2.5 },
-          ] },
+          // Who uses the power: the heat pump and the car charger beside it, the rest of the meter as Other.
+          chart('stacked', { total: true, count: 2, colors: ['orange', 'green'] }, () => [mainMeter, heatPumpPower, carChargerPower]),
         ],
         [
           // 18:40, the evening peak: high, cheaper from 19, the low at 03 tonight.
           { type: 'price', state: { prices: electricity().prices, fixedPrice: null, currency: 'DKK' } },
-          heatPump,
-          { type: 'weather', opts: { density: 'detailed' }, hours: weatherHours() },
+          // The year so far against last year, a month a bar.
+          chart('totals', { period: 'thisYear', compare: true }, () => mockTotals.totalsState('thisYear', NOW)),
           { type: 'quickactions', devices: [
             { id: 'e1', name: 'Car charger', icon: icon('car-charger'), quickAction: qa('onoff', false) },
             { id: 'e2', name: 'Dryer', icon: icon('dryer'), quickAction: qa('onoff', false) },
@@ -488,7 +485,8 @@
           ] },
         ],
         [
-          { type: 'lights', devices: outdoorLights },
+          // The heating, the hall's motion, the front door and the TV today.
+          chart('timeline', { colors: ['orange', 'yellow', 'red', 'blue'] }, () => mockTimeline.timelineState('1d!', NOW)),
           { type: 'quickactions', devices: [
             { id: 'g1', name: 'Garage door', icon: icon('garage-door'), quickAction: qa('onoff', true) },
             { id: 'g2', name: 'Doorbell', icon: icon('doorbell'), quickAction: { capabilityId: 'button', value: true, actionable: true, momentary: true, icon: null } },
@@ -504,7 +502,7 @@
             { id: 'd11', name: 'Driveway', icon: null, alarms: [sensor('alarm_motion', false, 'Motion alarm', 9), sensor('alarm_person', false, 'Person Detected', 9)] },
             motionDot('d12', 'Terrace', false, 75),
           ] },
-          { type: 'weather', hours: weatherHours() },
+          { type: 'weather', opts: { theme: 'vivid' }, hours: weatherHours() },
         ],
       ],
     },
@@ -515,8 +513,8 @@
       columns: [
         [
           heatPump,
-          thermo('Bedroom | Radiator', 'thermostat', [16, 18, 20], 18),
-          thermo('Bathroom | Floor heating', 'thermostat', [20, 23, 26], 23),
+          // The heat pump's power against the outdoor temperature over a week, a dot an hour.
+          chart('scatter', { span: '7d' }, () => mockScatter.scatterState('7d', NOW)),
           { type: 'values', opts: { columns: '3' }, slots: [
             value('r1', 'measure_temperature', 'Living room', { units: '°C', decimals: 1 }, 21.4),
             value('r2', 'measure_temperature', 'Bedroom', { units: '°C', decimals: 1 }, 18.2),
@@ -531,11 +529,11 @@
           valueMatrix,
         ],
         [
-          { type: 'weather', opts: { density: 'detailed', theme: 'vivid' }, hours: weatherHours() },
-          flowButtons('2', [
-            ['flow:c1', 'Air out', 'blue', 'fan'], ['flow:c2', 'Eco mode', 'green', 'drop'],
-            ['flow:c3', 'Warm bathroom', 'orange', 'flame'], ['advanced:c4', 'Frost guard', 'grey', 'snowflake'],
-          ]),
+          // Three rooms' temperatures over the last 24 hours (a fourth's legend row wouldn't fit the column).
+          chart('lines', { count: 3 }, () => {
+            const now = { living: 21.4, kitchen: 22.6, office: 19.4 }; // The Value Matrix's readings.
+            return mockLines.linesState('24h', NOW, 3).map(s => mapSeries(s, v => round(v + now[s.deviceId] - s.value, 1)));
+          }),
           modePresets('Heating', 'flame', ['Comfort', 'Eco', 'Away'], 'Comfort'),
           // A made-up rain radar (dev/webpage-radar.html): the rain due from 22 is still out in the south-west.
           { type: 'webpage', opts: { pageWidth: 480, pageHeight: 210 }, buttons: [
@@ -545,35 +543,42 @@
       ],
     },
 
-    evening: {
-      title: 'Evening',
+    livingroom: {
+      title: 'Living room',
       columns: [
         [
-          eveningRooms,
+          { ...allRooms, devices: allRooms.devices.filter(d => d.zone.id === 'z1') },
           // Dusk: the living room curtain on its way down, the terrace door's already closed.
           { type: 'curtains', devices: [
             { id: 'ec1', name: 'Living room', kind: 'curtain', caps: { windowcoverings_set: { value: 0.45, setable: true }, windowcoverings_state: { value: 'down', setable: true } } },
             { id: 'ec2', name: 'Terrace door', kind: 'curtain', caps: { windowcoverings_set: { value: 0, setable: true }, windowcoverings_state: { value: 'idle', setable: true } } },
+          ] },
+          heatPump,
+          // This room's readings over the day, ending on the values beside them.
+          { type: 'sparklines', slots: [
+            { ...mapSeries(indoorSparks[0], v => round(v + 21.4 - indoorSparks[0].value, 1)), deviceId: 'es3', name: 'Temperature' },
+            sparkSlot('es4', 'measure_humidity', 'Humidity', { units: '%', decimals: 0 }, spark((t, r) => (t > NOW - DAY / 120 ? 47 : Math.round(47 + 4 * dayCurve(t, 20) + r())), 23)),
           ] },
         ],
         [
           { type: 'quickactions', devices: [
             { id: 'eq1', name: 'TV', icon: icon('tv'), quickAction: qa('onoff', true) },
             { id: 'eq2', name: 'Speaker', icon: icon('speaker'), quickAction: qa('onoff', true) },
-            { id: 'eq3', name: 'Kettle', icon: icon('kettle'), quickAction: qa('onoff', false) },
-            { id: 'eq4', name: 'Front door', icon: icon('lock'), quickAction: qa('locked', true) },
-            { id: 'eq5', name: 'Back door', icon: icon('lock'), quickAction: qa('locked', true) },
-            { id: 'eq6', name: 'Dishwasher', icon: icon('socket'), quickAction: qa('onoff', false) },
+            { id: 'eq3', name: 'Fireplace', icon: icon('socket'), quickAction: qa('onoff', true) },
+            { id: 'eq4', name: 'Terrace door', icon: icon('lock'), quickAction: qa('locked', true) },
+            { id: 'eq5', name: 'Air purifier', icon: icon('socket'), quickAction: qa('onoff', false) },
+            { id: 'eq6', name: 'Games console', icon: icon('socket'), quickAction: qa('onoff', false) },
           ] },
-          heatPump,
-          { type: 'cameras', cameras: [cam('door', 'Hallway'), cam('drive', 'Driveway')] },
+          // Six rooms' temperatures now and today's range, warmest first.
+          chart('compare', { count: 6 }, () => mockCompare.compareState('1d!', NOW).map(s => (s.name === 'Living room' ? mapSeries(s, v => round(v + 21.4 - s.value, 1)) : s))),
+          // The Value Matrix's readings for this room, on the Climate dashboard.
           { type: 'values', opts: { columns: '3' }, slots: [
-            value('ew1', 'measure_power', 'House', { units: 'W', decimals: 0 }, 3536),
-            value('ew2', 'measure_humidity', 'Living room', { units: '%', decimals: 0 }, 47),
-            { ...value('ew3', 'measure_co2', "Emma's room", { units: 'ppm', decimals: 0 }, 783), color: 'green' },
+            value('ew1', 'measure_temperature', 'Temperature', { units: '°C', decimals: 1 }, 21.4),
+            value('ew2', 'measure_humidity', 'Humidity', { units: '%', decimals: 0 }, 47),
+            { ...value('ew3', 'measure_co2', 'CO₂', { units: 'ppm', decimals: 0 }, 690), color: 'green' },
           ] },
           flowButtons('2', [
-            ['advanced:v1', 'Movie time', 'purple', 'tv'], ['flow:v2', 'Dinner', 'orange', 'bulb'],
+            ['advanced:v1', 'Movie time', 'purple', 'tv'], ['flow:v2', 'Music on', 'orange', 'music'],
             ['flow:v3', 'Reading light', 'yellow', 'star'], ['flow:v4', 'Good night', 'blue', 'moon'],
           ]),
         ],
@@ -587,9 +592,9 @@
           { type: 'variables', opts: { columns: '1' }, vars: [
             { id: 'ev1', name: 'Guests staying over', type: 'boolean', value: true },
             { id: 'ev2', name: 'Kids in bed', type: 'boolean', value: false },
-            { id: 'ev3', name: 'Note on the hallway screen', type: 'string', value: 'Pizza at 19!' },
+            { id: 'ev3', name: 'Note on the TV', type: 'string', value: 'Pizza at 19!' },
           ] },
-          { type: 'sensoralarms', devices: smokeAndWater.slice(0, 2) },
+          { type: 'sensoralarms', opts: { includeStates: true }, devices: [{ ...smokeAndWater[0], id: 'es1', name: 'Living room' }, { id: 'es2', name: 'Terrace door', icon: icon('door'), alarms: [alarm('alarm_contact', false, 'Contact alarm', true)] }] },
         ],
       ],
     },
@@ -606,7 +611,14 @@
         ],
         [
           { type: 'weather', opts: { density: 'detailed', rows: 2, theme: 'card' }, hours: weatherHours() },
-          gardenHeatmap,
+          // The outdoor temperature's low to high each day of the last 4 weeks; the daylight is in the Smart Stack.
+          chart('dailyrange', {}, () => {
+            // Today is the Sparklines' outdoor sensor.
+            const midnight = new Date(NOW).setHours(0, 0, 0, 0);
+            const [s] = mockDailyRange.dailyRangeState('4w', NOW);
+            const today = indoorSparks[1].points.filter(p => p[0] >= midnight);
+            return [{ ...s, value: indoorSparks[1].value, points: [...s.points.filter(p => p[0] < midnight), ...today] }];
+          }),
         ],
         [
           { type: 'sparklines', slots: [
@@ -614,11 +626,8 @@
             sparkSlot('g2', 'measure_wind_strength', 'Wind', { units: 'm/s', decimals: 1 }, spark((t, r) => round(4.2 + 1.4 * dayCurve(t, 16) + 1.2 * r(), 1), 19)),
           ] },
           gardenPollen,
-          flowButtons('1', [
-            ['flow:gb1', 'Water the vegetable beds', 'blue', 'drop'],
-            ['flow:gb2', 'Mow the lawn', 'green', 'play'],
-            ['flow:gb3', 'Garden lights for an hour', 'yellow', 'bulb'],
-          ]),
+          // The gate sensor's battery today.
+          chart('gauge', {}, () => mockGauge.gaugeState('battery', '1d!', NOW).map(s => ({ ...s, name: 'Gate' }))),
           // The side path (a person, just now) has its overlay open. It covers the side path's row, so the side path is in the
           // second row (7 or 8 dots per row) and the first still shows, the open greenhouse in blue. The driveway went quiet
           // 9 minutes ago, as on Security.
@@ -646,7 +655,13 @@
         ],
         [
           { type: 'clock', weather: clockWeather() },
-          { type: 'weather', opts: { theme: 'vivid' }, hours: weatherHours() },
+          // The house's power today over its usual day.
+          chart('typicalday', {}, () => {
+            // Scaled so that now is the Electricity Overview's 3,536 W.
+            const [today, past] = mockTypicalDay.typicalDayState(7, NOW);
+            const scale = v => round(v * 3.536 / today.value, 2);
+            return [mapSeries(today, scale), mapSeries(past, scale)];
+          }),
           { type: 'quickactions', devices: [
             { id: 'kq1', name: 'Oven', icon: icon('oven'), quickAction: qa('onoff', true) },
             { id: 'kq2', name: 'Kettle', icon: icon('kettle'), quickAction: qa('onoff', false) },
@@ -654,12 +669,6 @@
             { id: 'kq4', name: 'Fridge', icon: icon('fridge'), quickAction: qa('onoff', true) },
             { id: 'kq5', name: 'Dishwasher', icon: icon('socket'), quickAction: qa('onoff', false) },
             { id: 'kq6', name: 'Radio', icon: icon('speaker'), quickAction: qa('onoff', true) },
-          ] },
-          { type: 'values', opts: { columns: '3' }, slots: [
-            // Blue from a Flow while they're cold enough.
-            { ...value('kv1', 'measure_temperature', 'Fridge', { units: '°C', decimals: 1 }, 3.8), color: 'blue' },
-            { ...value('kv2', 'measure_temperature', 'Freezer', { units: '°C', decimals: 0 }, -19), color: 'blue' },
-            value('kv3', 'measure_power', 'Oven', { units: 'W', decimals: 0 }, 2300),
           ] },
           { type: 'sensoralarms', devices: [smokeAndWater[0], smokeAndWater[3]] },
           { type: 'timers', presets: [{ minutes: 7, label: 'Eggs' }, { minutes: 12, label: 'Pizza' }, { minutes: 5, label: '' }, { minutes: 20, label: '' }], timers: [

@@ -41,6 +41,15 @@
   <link rel="stylesheet" href="../widgets/valuematrix/public/widget.css">
   <link rel="stylesheet" href="../widgets/varpresets/public/widget.css">
   <link rel="stylesheet" href="../widgets/charts/public/widget.css">
+  <link rel="stylesheet" href="../widgets/totals/public/widget.css">
+  <link rel="stylesheet" href="../widgets/scatter/public/widget.css">
+  <link rel="stylesheet" href="../widgets/compare/public/widget.css">
+  <link rel="stylesheet" href="../widgets/timeline/public/widget.css">
+  <link rel="stylesheet" href="../widgets/stacked/public/widget.css">
+  <link rel="stylesheet" href="../widgets/lines/public/widget.css">
+  <link rel="stylesheet" href="../widgets/gauge/public/widget.css">
+  <link rel="stylesheet" href="../widgets/dailyrange/public/widget.css">
+  <link rel="stylesheet" href="../widgets/typicalday/public/widget.css">
   <link rel="stylesheet" href="../widgets/dayssince/public/widget.css">
   <link rel="stylesheet" href="../widgets/keypad/public/widget.css">
   <link rel="stylesheet" href="../widgets/pollen/public/widget.css">
@@ -74,6 +83,15 @@
   <script src="../widgets/valuematrix/public/widget.js"></script>
   <script src="../widgets/varpresets/public/widget.js"></script>
   <script src="../widgets/charts/public/widget.js"></script>
+  <script src="../widgets/totals/public/widget.js"></script>
+  <script src="../widgets/scatter/public/widget.js"></script>
+  <script src="../widgets/compare/public/widget.js"></script>
+  <script src="../widgets/timeline/public/widget.js"></script>
+  <script src="../widgets/stacked/public/widget.js"></script>
+  <script src="../widgets/lines/public/widget.js"></script>
+  <script src="../widgets/gauge/public/widget.js"></script>
+  <script src="../widgets/dailyrange/public/widget.js"></script>
+  <script src="../widgets/typicalday/public/widget.js"></script>
   <script src="../widgets/dayssince/public/widget.js"></script>
   <script src="../widgets/keypad/public/widget.js"></script>
   <script src="../widgets/pollen/public/widget.js"></script>
@@ -83,6 +101,15 @@
   <script src="../temp/screenshot-icons.js" onerror="window.ICONS = {}"></script>
   <script src="mock-media.js"></script>
   <script src="mock-util.js"></script>
+  <script src="mock-totals.js"></script>
+  <script src="mock-scatter.js"></script>
+  <script src="mock-compare.js"></script>
+  <script src="mock-timeline.js"></script>
+  <script src="mock-stacked.js"></script>
+  <script src="mock-lines.js"></script>
+  <script src="mock-gauge.js"></script>
+  <script src="mock-dailyrange.js"></script>
+  <script src="mock-typicalday.js"></script>
   <script src="showcase-data.js"></script>
   <script src="showcase-mount.js"></script>
   <style>
@@ -168,7 +195,8 @@
   <script>
     // The widgets drawn on Homey's default widget background; the rest are transparent tiles.
     const FRAME = {
-      electricity: 'card', charts: 'card', dayssince: 'card', thermostat: 'card tw-frame', varpresets: 'card tw-frame',
+      electricity: 'card', charts: 'card', dayssince: 'card', totals: 'card', scatter: 'card', compare: 'card', timeline: 'card', stacked: 'card', lines: 'card', gauge: 'card', dailyrange: 'card', typicalday: 'card',
+      thermostat: 'card tw-frame', varpresets: 'card tw-frame',
       media: 'card mw-frame', weather: 'card wf-frame', heatmap: 'card hm-frame',
       keypad: 'card kp-frame', pollen: 'card pw-frame', webpage: 'wp-dash',
     };

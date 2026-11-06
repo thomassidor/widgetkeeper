@@ -30,6 +30,14 @@
   <link rel="stylesheet" href="../widgets/varpresets/public/widget.css">
   <link rel="stylesheet" href="../widgets/charts/public/widget.css">
   <link rel="stylesheet" href="../widgets/scatter/public/widget.css">
+  <link rel="stylesheet" href="../widgets/totals/public/widget.css">
+  <link rel="stylesheet" href="../widgets/compare/public/widget.css">
+  <link rel="stylesheet" href="../widgets/timeline/public/widget.css">
+  <link rel="stylesheet" href="../widgets/stacked/public/widget.css">
+  <link rel="stylesheet" href="../widgets/lines/public/widget.css">
+  <link rel="stylesheet" href="../widgets/gauge/public/widget.css">
+  <link rel="stylesheet" href="../widgets/dailyrange/public/widget.css">
+  <link rel="stylesheet" href="../widgets/typicalday/public/widget.css">
   <link rel="stylesheet" href="../widgets/dayssince/public/widget.css">
   <link rel="stylesheet" href="../widgets/shortcuts/public/widget.css">
   <link rel="stylesheet" href="../widgets/heatmap/public/widget.css">
@@ -65,6 +73,14 @@
   <script src="../widgets/varpresets/public/widget.js"></script>
   <script src="../widgets/charts/public/widget.js"></script>
   <script src="../widgets/scatter/public/widget.js"></script>
+  <script src="../widgets/totals/public/widget.js"></script>
+  <script src="../widgets/compare/public/widget.js"></script>
+  <script src="../widgets/timeline/public/widget.js"></script>
+  <script src="../widgets/stacked/public/widget.js"></script>
+  <script src="../widgets/lines/public/widget.js"></script>
+  <script src="../widgets/gauge/public/widget.js"></script>
+  <script src="../widgets/dailyrange/public/widget.js"></script>
+  <script src="../widgets/typicalday/public/widget.js"></script>
   <script src="../widgets/dayssince/public/widget.js"></script>
   <script src="../widgets/shortcuts/public/widget.js"></script>
   <script src="../widgets/heatmap/public/widget.js"></script>
@@ -90,6 +106,14 @@
   <script src="mock-media.js"></script>
   <script src="mock-util.js"></script>
   <script src="mock-scatter.js"></script>
+  <script src="mock-totals.js"></script>
+  <script src="mock-compare.js"></script>
+  <script src="mock-timeline.js"></script>
+  <script src="mock-stacked.js"></script>
+  <script src="mock-lines.js"></script>
+  <script src="mock-gauge.js"></script>
+  <script src="mock-dailyrange.js"></script>
+  <script src="mock-typicalday.js"></script>
   <script src="showcase-data.js"></script>
   <script src="showcase-mount.js"></script>
   <script src="mock-web-api.js"></script>
@@ -103,7 +127,7 @@
     // The showcase dashboards as web dashboards, each on a backdrop of its own; each widget keeps its showcase entry
     // (with the dashboard's colour style) for the mount. Home's first column has Dashboard Shortcuts, as a menu, in
     // place of the heat pump (Flow Buttons stays third, for the settings view).
-    const BACKGROUND = { home: 'plum', energy: 'forest', security: 'slate', climate: 'ocean', evening: 'berry', garden: 'forest', kitchen: 'sand' };
+    const BACKGROUND = { home: 'plum', energy: 'forest', security: 'slate', climate: 'ocean', livingroom: 'berry', garden: 'forest', kitchen: 'sand' };
     const MENU = [['home', 'purple', 'home'], ['energy', 'green', 'bolt'], ['security', 'red', 'shield'], ['climate', 'blue', 'thermometer']];
     const shortcuts = {
       type: 'shortcuts', current: 'home',
@@ -386,9 +410,10 @@
       };
       open();
     }
-    // The front page's previews load lazily, so a render caught some of them still loading: load them all at once.
+    // The front page's previews load lazily, so a render caught some of them still loading: load them all at once, and
+    // decode them with the page, as a screenshot on a busy box caught some loaded but not yet drawn.
     new MutationObserver(() => {
-      for (const img of document.querySelectorAll('img[loading="lazy"]')) img.loading = 'eager';
+      for (const img of document.querySelectorAll('img[loading="lazy"]')) { img.loading = 'eager'; img.decoding = 'sync'; }
     }).observe(document.getElementById('app'), { childList: true, subtree: true });
 
     // The page's size, for the render script, once the page and its fonts are there; the tab shows the page's title.

@@ -144,14 +144,14 @@
 
   // Dashboard Shortcuts (web dashboards only): six of the showcase's dashboards as a menu, on Home.
   const menu = [['home', 'purple', 'home'], ['energy', 'green', 'bolt'], ['security', 'red', 'shield'],
-    ['climate', 'blue', 'thermometer'], ['evening', 'orange', 'moon'], ['kitchen', 'yellow', 'utensils']];
+    ['climate', 'blue', 'thermometer'], ['livingroom', 'orange', 'sofa'], ['kitchen', 'yellow', 'utensils']];
   MOUNT.shortcuts(el('w-shortcuts'), {
     current: 'home', opts: { tiles: menu.map(([, color, icon]) => ({ color, icon })) },
     dashboards: menu.map(([id]) => ({ id, name: SHOWCASE[id].title })),
   });
 
-  // The Evening dashboard's lights by room, the living room open with its Moods; the Climate dashboard's rain radar.
-  MOUNT.lightrooms(el('w-lightrooms'), findWidget('lightrooms'));
+  // Every room's lights, the living room open with its Moods; the Climate dashboard's rain radar.
+  MOUNT.lightrooms(el('w-lightrooms'), window.SHOWCASE_ROOMS);
   MOUNT.webpage(el('w-webpage'), findWidget('webpage'));
 
   // Pollen and UV: the Garden dashboard's October has only the seasons' last grains, so the README has a June day of

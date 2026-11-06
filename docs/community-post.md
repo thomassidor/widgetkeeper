@@ -20,7 +20,7 @@ Paste everything below this comment into the forum editor.
 
 ![Climate dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-climate.jpg)
 
-![Evening dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-evening.jpg)
+![Living room dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-livingroom.jpg)
 
 ![Garden dashboard|690x457](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/showcase-garden.jpg)
 

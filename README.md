@@ -299,8 +299,8 @@ Turning web dashboards off keeps them on your Homey.
 **Climate**
 <img src="docs/showcase/climate.png" alt="A climate dashboard with Widgetkeeper widgets on a tablet" width="100%">
 
-**Evening**
-<img src="docs/showcase/evening.png" alt="An evening dashboard with Widgetkeeper widgets on a tablet" width="100%">
+**Living room**
+<img src="docs/showcase/livingroom.png" alt="A living room dashboard with Widgetkeeper widgets on a tablet" width="100%">
 
 **Garden** (light mode)
 <img src="docs/showcase/garden.png" alt="A garden dashboard with Widgetkeeper widgets on a tablet, in Homey's light mode" width="100%">
