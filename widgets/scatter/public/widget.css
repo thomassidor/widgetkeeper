@@ -19,5 +19,6 @@ html, body { margin: 0; }
 .xy .xy-trend { stroke: var(--ew-text); stroke-opacity: .75; stroke-width: 1.5; stroke-dasharray: 5 4; fill: none; }
 .xy .dot-ring.series { stroke: var(--ew-c); }
 .xy .dot-core.series { fill: var(--ew-c); }
-/* Vivid (kit.css, on the widget's root): stronger dots, each with a rim (older ones still fainter). */
-.wk-deep .xy .xy-dot { stroke: var(--ew-c); stroke-width: 1; stroke-opacity: .6; }
+/* Vivid (kit.css, on the widget's root): larger, stronger dots (widget.js), each with a rim in the card's colour so
+   overlapping ones stay apart (older ones still fainter). */
+.wk-deep .xy .xy-dot { stroke: var(--ew-card); stroke-width: 1; }

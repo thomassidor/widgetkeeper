@@ -177,12 +177,15 @@
       const xSc = kit.xValueScale(svg, { max: Math.max(...xs), min: Math.min(...xs), pw, top, base, format: (v, step) => C.axisLabel(nf, v, step) });
       kit.axis(svg, top, base, pw);
 
-      // The dots, oldest first so the newest lie on top; with `fade`, older ones fainter.
+      // The dots, oldest first so the newest lie on top; with `fade`, older ones fainter. Vivid: larger, stronger dots,
+      // each with a rim in the card's colour (widget.css), so a dense cloud stays apart.
+      const deep = root.classList.contains('wk-deep');
+      const [lo, hi, r] = deep ? [0.35, 1, 3.2] : [0.15, 0.85, 2.6];
       const placed = list.map((d, k) => ({ ...d, px: xSc.x(xs[k]), py: ySc.y(ys[k]) }));
       const g = C.el('svg:g', { class: 'xy-dots' }, svg);
       placed.forEach((d, k) => {
-        const opacity = fade ? 0.15 + 0.7 * k / Math.max(1, placed.length - 1) : 0.7;
-        C.el('svg:circle', { class: 'xy-dot', cx: f1(d.px), cy: f1(d.py), r: 2.6, 'fill-opacity': opacity.toFixed(2) }, g);
+        const opacity = fade ? lo + (hi - lo) * k / Math.max(1, placed.length - 1) : deep ? 0.95 : 0.7;
+        C.el('svg:circle', { class: 'xy-dot', cx: f1(d.px), cy: f1(d.py), r, 'fill-opacity': opacity.toFixed(2) }, g);
       });
 
       // The trend over them: the line through the dots as drawn (display units), cut to the plot.

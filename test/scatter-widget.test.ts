@@ -61,6 +61,17 @@ describe('the dots', () => {
     expect(new Set(widget({ span: '7d', fade: false }, both()).dots().map(x => x[2]))).toEqual(new Set([0.7]));
   });
 
+  it('draws Vivid dots larger and stronger than Muted, older ones still fainter', () => {
+    const radius = (r: ReturnType<typeof widget>) => Number(r.q('circle.xy-dot')!.getAttribute('r'));
+    const muted = widget({ span: '7d' }, both());
+    const vivid = widget({ span: '7d', colorStyle: 'deep' }, both());
+    expect(vivid.root.classList.contains('wk-deep')).toBe(true);
+    expect(radius(vivid)).toBeGreaterThan(radius(muted));
+    expect(vivid.dots()[0][2]).toBeCloseTo(0.35, 2);
+    expect(vivid.dots().at(-1)![2]).toBeCloseTo(1, 2);
+    expect(new Set(widget({ span: '7d', fade: false, colorStyle: 'deep' }, both()).dots().map(x => x[2]))).toEqual(new Set([0.95]));
+  });
+
   it('takes a dot length by the span: 5 min over a day, 6 hours on 6-hour averages (as the app read them), or as set', () => {
     expect(widget({ span: '24h' }, [series('out', temp, outdoor, 1), series('hp', power, pump, 1)]).dots().length).toBe(24 * 12);
     expect(widget({ span: '30d' }, [series('out', temp, outdoor, 30), series('hp', power, pump, 30)]).dots().length).toBe(30 * 4 + 1); // the first cut
