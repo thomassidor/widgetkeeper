@@ -34,7 +34,7 @@
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, colors?: string[], t?: (key: string) => string, locale?: string, language?: string,
    *   now?: () => number, count?: number, span?: string, style?: string, range?: string, smooth?: boolean,
-   *   legend?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
+   *   legend?: string, title?: string, names?: string[], showHeader?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createLinesWidget(root, opts = {}) {
     // Any time span (the kit's `timeSpan()`); missing or unknown: 24 hours.
@@ -43,6 +43,7 @@
     const fromZero = opts.range === 'zero';
     const smooth = opts.smooth === true;
     const legendBelow = opts.legend === 'below';
+    const legendHidden = opts.legend === 'hidden'; // a typed title still shows
     const title = typeof opts.title === 'string' ? opts.title.trim() : '';
     const count = Math.max(1, Math.min(MAX, Number(opts.count) || 1));
     // Each value's colour (its setting), else the kit's colours in order.
@@ -69,6 +70,8 @@
     // ------------------------------------------------------------------ derived data
 
     const ok = s => !!s && !('missing' in s);
+    /** A value with its typed name (`nameN`) in place of the device's, in the legend and header alike. */
+    const withName = (s, i) => (ok(s) && C.typedName(opts.names, i) ? { ...s, name: C.typedName(opts.names, i) } : s);
     const num = v => typeof v === 'number' && isFinite(v);
 
     /** The factor from a slot's units to `units` (its side's), or null when they can't be compared. */
@@ -182,7 +185,8 @@
       // Each side's units once: with one side on the title, else on the first line drawn on each side.
       const oneSide = p.sides.length < 2;
       if (title) kit.chip(chips, 'series', title, oneSide && p.sides.length ? p.sides[0].units || null : null);
-      for (const l of p.all) {
+      show(chips, !legendHidden || !!title);
+      for (const l of legendHidden ? [] : p.all) {
         const firstOfSide = !l.missing && !l.other && l === p.drawable.find(m => m.side === l.side);
         kit.chip(chips, `series${l.missing || l.other ? ' missing' : ''}`, l.missing ? t('unavailable') : l.s.name,
           l.other ? t('otherUnits') : firstOfSide && !(title && oneSide) ? p.sides[l.side].units || null : null);
@@ -263,7 +267,7 @@
       setState(list, lang) {
         if (lang) frame.language = lang;
         const previous = state.series;
-        state.series = (Array.isArray(list) ? list : []).slice(0, MAX).map((s, i) => C.keepLive(s, previous[i]));
+        state.series = (Array.isArray(list) ? list : []).slice(0, MAX).map((s, i) => withName(C.keepLive(s, previous[i]), i));
         frame.resetMessage();
         frame.render();
       },

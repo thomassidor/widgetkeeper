@@ -286,5 +286,20 @@
     "pl": "Dziewięć nowych widżetów wykresów, a Wykresy nazywają się teraz Wykres · Podstawowy, z dowolnym okresem do dwóch lat. Pokazuj tylko część nazwy każdego urządzenia. Pulpity webowe: kody logowania, synchronizacja z pulpitami Homey i podgląd na żywo. Sześć nowych kolorów. Kamery Synology. Poprawki dla starszych Homey Pro.",
     "ko": "새 차트 위젯 9개. 차트는 이제 차트 · 기본이며 최대 2년까지 어떤 기간이든 표시합니다. 각 기기 이름의 일부만 표시합니다. 웹 대시보드: 로그인 코드, Homey 대시보드와 동기화, 실시간 미리보기. 색상 6개 추가. Synology 카메라. 구형 Homey Pro 수정.",
     "ar": "تسع أدوات رسوم بيانية جديدة، وأصبح اسم المخططات الآن مخطط · أساسي، مع أي فترة حتى سنتين. اعرض جزءًا فقط من اسم كل جهاز. لوحات الويب: رموز تسجيل الدخول ومزامنة مع لوحات Homey ومعاينة مباشرة. ستة ألوان إضافية. كاميرات Synology. إصلاحات لأجهزة Homey Pro الأقدم."
+  },
+  "1.2.1": {
+    "en": "Chart · Lines, Stacked, Ranking and Timeline: give each value a name of your own. Chart · Basic, Lines and Stacked: the legend can be hidden.",
+    "nl": "Grafiek · Lijnen, Gestapeld, Ranglijst en Tijdlijn: geef elke waarde een eigen naam. Grafiek · Basis, Lijnen en Gestapeld: de legenda kan worden verborgen.",
+    "de": "Diagramm · Linien, Gestapelt, Rangliste und Zeitleiste: Gib jedem Wert einen eigenen Namen. Diagramm · Basis, Linien und Gestapelt: Die Legende lässt sich ausblenden.",
+    "fr": "Graphique · Courbes, Empilé, Classement et Chronologie : donnez à chaque valeur un nom de votre choix. Graphique · Standard, Courbes et Empilé : la légende peut être masquée.",
+    "it": "Grafico · Linee, In pila, Classifica e Cronologia: dai a ogni valore un nome a tua scelta. Grafico · Base, Linee e In pila: la legenda può essere nascosta.",
+    "sv": "Diagram · Linjer, Staplat, Topplista och Tidslinje: ge varje värde ett eget namn. Diagram · Bas, Linjer och Staplat: förklaringen kan döljas.",
+    "no": "Diagram · Linjer, Stablet, Rangering og Tidslinje: gi hver verdi et eget navn. Diagram · Basis, Linjer og Stablet: forklaringen kan skjules.",
+    "es": "Gráfico · Líneas, Apilado, Clasificación y Cronología: pon a cada valor un nombre propio. Gráfico · Básico, Líneas y Apilado: la leyenda se puede ocultar.",
+    "da": "Graf · Linjer, Stablet, Rangliste og Tidslinje: giv hver værdi sit eget navn. Graf · Basis, Linjer og Stablet: forklaringen kan skjules.",
+    "ru": "График · Линии, С накоплением, Рейтинг и Хронология: задайте каждому значению своё название. График · Базовый, Линии и С накоплением: легенду можно скрыть.",
+    "pl": "Wykres · Linie, Skumulowany, Ranking i Oś czasu: nadaj każdej wartości własną nazwę. Wykres · Podstawowy, Linie i Skumulowany: legendę można ukryć.",
+    "ko": "차트 · 선, 누적, 순위, 타임라인: 값마다 원하는 이름을 붙일 수 있습니다. 차트 · 기본, 선, 누적: 범례를 숨길 수 있습니다.",
+    "ar": "مخطط · خطوط ومكدّس والترتيب وخط زمني: أعطِ كل قيمة اسمًا خاصًا بها. مخطط · أساسي وخطوط ومكدّس: يمكن إخفاء وسيلة الإيضاح."
   }
 }

@@ -113,3 +113,26 @@ describe('taps and the request', () => {
     expect(none.root.textContent).toContain('Pick the values to stack in the widget settings.');
   });
 });
+
+describe('typed names and a hidden legend (1.3.0)', () => {
+  const chart = (name: string) => ({ deviceId: name, capabilityId: 'measure_power', name, capability: { title: 'Power', units: 'W', decimals: 0 }, value: 100, points: [] });
+  function make(opts: object) {
+    const root = document.createElement('div');
+    document.body.append(root);
+    const w = win.createStackedWidget(root, { count: 2, ...opts });
+    w.setState([chart('Oven'), chart('Heat pump')], 'en');
+    return root.querySelector<HTMLElement>('.ew-chips')!;
+  }
+  it('a typed name replaces the layer\'s device name', () => {
+    const chips = make({ names: ['Baking', ''] }).textContent;
+    expect(chips).toContain('Baking');
+    expect(chips).toContain('Heat pump');
+    expect(chips).not.toContain('Oven');
+  });
+  it('hidden leaves the chips out, but a typed title stays', () => {
+    expect(make({ legend: 'hidden' }).style.display).toBe('none');
+    const titled = make({ legend: 'hidden', title: 'Power' });
+    expect(titled.style.display).not.toBe('none');
+    expect(titled.textContent).not.toContain('Oven');
+  });
+});

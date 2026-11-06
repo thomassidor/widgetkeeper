@@ -36,7 +36,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, colors?: string[], t?: (key: string) => string, locale?: string, language?: string,
-   *   now?: () => number, total?: boolean, count?: number, span?: string, style?: string, legend?: string, title?: string,
+   *   now?: () => number, total?: boolean, count?: number, span?: string, style?: string, legend?: string, title?: string, names?: string[],
    *   showHeader?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createStackedWidget(root, opts = {}) {
@@ -44,6 +44,7 @@
     const span = isTimeSpan(opts.span) ? opts.span : '24h';
     const bars = opts.style === 'bars';
     const legendBelow = opts.legend === 'below';
+    const legendHidden = opts.legend === 'hidden'; // a typed title still shows
     const title = typeof opts.title === 'string' ? opts.title.trim() : '';
     const hasTotal = opts.total === true;
     const count = Math.max(1, Math.min(MAX, Number(opts.count) || 1)); // layers
@@ -213,8 +214,9 @@
       clear(chips);
       if (title) kit.chip(chips, 'series', title, p.units || null);
       // Other first, as it's drawn at the bottom, then the layers in their order; a layer in other units says so.
-      if (p.total) kit.chip(chips, 'series other', t('other'), null);
-      for (const l of p.layers) {
+      show(chips, !legendHidden || !!title);
+      if (p.total && !legendHidden) kit.chip(chips, 'series other', t('other'), null);
+      for (const l of legendHidden ? [] : p.layers) {
         kit.chip(chips, `series${l.missing || l.other ? ' missing' : ''}`, l.missing ? t('unavailable') : l.s.name, l.other ? t('otherUnits') : null);
         chips.lastChild.setAttribute('data-wk-color', l.color);
       }
@@ -346,7 +348,12 @@
         const all = Array.isArray(list) ? list : [];
         state.total = hasTotal ? C.keepLive(all[0], state.total) : null;
         const previous = state.layers;
-        state.layers = all.slice(hasTotal ? 1 : 0).slice(0, MAX).map((s, i) => C.keepLive(s, previous[i]));
+        state.layers = all.slice(hasTotal ? 1 : 0).slice(0, MAX).map((s, i) => {
+          const layer = C.keepLive(s, previous[i]);
+          // Its typed name (`nameN`) in place of the device's, in the legend and header alike.
+          const name = C.typedName(opts.names, i);
+          return name && layer && !('missing' in layer) ? { ...layer, name } : layer;
+        });
         frame.resetMessage();
         frame.render();
       },

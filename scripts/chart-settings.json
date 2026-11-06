@@ -231,6 +231,24 @@
             "ko": "차트 아래",
             "ar": "أسفل المخطط"
           }
+        },
+        {
+          "id": "hidden",
+          "title": {
+            "en": "Hidden",
+            "nl": "Verborgen",
+            "de": "Ausgeblendet",
+            "fr": "Masquée",
+            "it": "Nascosta",
+            "sv": "Dold",
+            "no": "Skjult",
+            "es": "Oculta",
+            "da": "Skjult",
+            "ru": "Скрыта",
+            "pl": "Ukryta",
+            "ko": "숨김",
+            "ar": "مخفية"
+          }
         }
       ]
     },
@@ -2667,6 +2685,41 @@
         "ko": "기간 동안의 최저~최고를 막대나 게이지 옆의 얇은 띠로 보여줍니다.",
         "ar": "شريط رفيع بجانب الشريط أو القرص من الأدنى إلى الأعلى خلال الفترة."
       }
+    },
+    "series.name": {
+      "id": "name{n}",
+      "type": "text",
+      "title": {
+        "en": "  – Name",
+        "nl": "  – Naam",
+        "de": "  – Name",
+        "fr": "  – Nom",
+        "it": "  – Nome",
+        "sv": "  – Namn",
+        "no": "  – Navn",
+        "es": "  – Nombre",
+        "da": "  – Navn",
+        "ru": "  – Название",
+        "pl": "  – Nazwa",
+        "ko": "  – 이름",
+        "ar": "  – الاسم"
+      },
+      "hint": {
+        "en": "Optional. Leave empty to keep the original name.",
+        "nl": "Optioneel. Laat leeg om de oorspronkelijke naam te houden.",
+        "de": "Optional. Leer lassen, um den ursprünglichen Namen zu behalten.",
+        "fr": "Facultatif. Laissez vide pour garder le nom d'origine.",
+        "it": "Facoltativo. Lascia vuoto per mantenere il nome originale.",
+        "sv": "Valfritt. Lämna tomt för att behålla det ursprungliga namnet.",
+        "no": "Valgfritt. La stå tomt for å beholde det opprinnelige navnet.",
+        "es": "Opcional. Déjalo vacío para mantener el nombre original.",
+        "da": "Valgfrit. Lad feltet stå tomt for at beholde det oprindelige navn.",
+        "ru": "Необязательно. Оставьте пустым, чтобы сохранить исходное название.",
+        "pl": "Opcjonalnie. Zostaw puste, aby zachować oryginalną nazwę.",
+        "ko": "선택 사항입니다. 비워 두면 원래 이름을 사용합니다.",
+        "ar": "اختياري. اتركه فارغًا للإبقاء على الاسم الأصلي."
+      },
+      "value": ""
     }
   },
   "hints": {
@@ -3227,13 +3280,21 @@
         "use": "compare.slot:1",
         "hint": "compare.slot1"
       },
+      "series.name:1",
       "compare.slot:2",
+      "series.name:2",
       "compare.slot:3",
+      "series.name:3",
       "compare.slot:4",
+      "series.name:4",
       "compare.slot:5",
+      "series.name:5",
       "compare.slot:6",
+      "series.name:6",
       "compare.slot:7",
+      "series.name:7",
       "compare.slot:8",
+      "series.name:8",
       {
         "use": "count",
         "top": true,
@@ -3278,6 +3339,7 @@
       },
       "timeline.threshold:1",
       "timeline.when:1",
+      "series.name:1",
       "compare.slot:2",
       {
         "use": "color:2",
@@ -3285,6 +3347,7 @@
       },
       "timeline.threshold:2",
       "timeline.when:2",
+      "series.name:2",
       "compare.slot:3",
       {
         "use": "color:3",
@@ -3292,6 +3355,7 @@
       },
       "timeline.threshold:3",
       "timeline.when:3",
+      "series.name:3",
       "compare.slot:4",
       {
         "use": "color:4",
@@ -3299,6 +3363,7 @@
       },
       "timeline.threshold:4",
       "timeline.when:4",
+      "series.name:4",
       "compare.slot:5",
       {
         "use": "color:5",
@@ -3306,6 +3371,7 @@
       },
       "timeline.threshold:5",
       "timeline.when:5",
+      "series.name:5",
       "compare.slot:6",
       {
         "use": "color:6",
@@ -3313,6 +3379,7 @@
       },
       "timeline.threshold:6",
       "timeline.when:6",
+      "series.name:6",
       "compare.slot:7",
       {
         "use": "color:7",
@@ -3320,6 +3387,7 @@
       },
       "timeline.threshold:7",
       "timeline.when:7",
+      "series.name:7",
       "compare.slot:8",
       {
         "use": "color:8",
@@ -3327,6 +3395,7 @@
       },
       "timeline.threshold:8",
       "timeline.when:8",
+      "series.name:8",
       {
         "use": "count",
         "top": true,
@@ -3366,31 +3435,37 @@
         "use": "color:1",
         "value": "blue"
       },
+      "series.name:1",
       "compare.slot:2",
       {
         "use": "color:2",
         "value": "red"
       },
+      "series.name:2",
       "compare.slot:3",
       {
         "use": "color:3",
         "value": "orange"
       },
+      "series.name:3",
       "compare.slot:4",
       {
         "use": "color:4",
         "value": "yellow"
       },
+      "series.name:4",
       "compare.slot:5",
       {
         "use": "color:5",
         "value": "green"
       },
+      "series.name:5",
       "compare.slot:6",
       {
         "use": "color:6",
         "value": "purple"
       },
+      "series.name:6",
       {
         "use": "count",
         "top": true,
@@ -3430,31 +3505,37 @@
         "use": "color:1",
         "value": "blue"
       },
+      "series.name:1",
       "compare.slot:2",
       {
         "use": "color:2",
         "value": "red"
       },
+      "series.name:2",
       "compare.slot:3",
       {
         "use": "color:3",
         "value": "orange"
       },
+      "series.name:3",
       "compare.slot:4",
       {
         "use": "color:4",
         "value": "yellow"
       },
+      "series.name:4",
       "compare.slot:5",
       {
         "use": "color:5",
         "value": "green"
       },
+      "series.name:5",
       "compare.slot:6",
       {
         "use": "color:6",
         "value": "purple"
       },
+      "series.name:6",
       {
         "use": "count",
         "top": true,

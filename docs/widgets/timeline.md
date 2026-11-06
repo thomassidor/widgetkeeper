@@ -8,7 +8,7 @@ When was it on, open or moving? A row for each of up to eight on/off values (the
 
 A row can also be a number, on above or below a threshold (the heater above 50 W, the bedroom below 18 °C), from Insights' history.
 
-**Settings:** values 1 to 8 each with its colour, and for a number its threshold and above or below, [time span](charts.md#time-spans), title, the values at the top, [colour style](../../README.md#colour-style).
+**Settings:** values 1 to 8 each with its colour, for a number its threshold and above or below, and an optional name, [time span](charts.md#time-spans), title, the values at the top, [colour style](../../README.md#colour-style).
 
 ## Looks
 

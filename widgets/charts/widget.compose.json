@@ -247,6 +247,24 @@
             "ko": "차트 아래",
             "ar": "أسفل المخطط"
           }
+        },
+        {
+          "id": "hidden",
+          "title": {
+            "en": "Hidden",
+            "nl": "Verborgen",
+            "de": "Ausgeblendet",
+            "fr": "Masquée",
+            "it": "Nascosta",
+            "sv": "Dold",
+            "no": "Skjult",
+            "es": "Oculta",
+            "da": "Skjult",
+            "ru": "Скрыта",
+            "pl": "Ukryta",
+            "ko": "숨김",
+            "ar": "مخفية"
+          }
         }
       ]
     },

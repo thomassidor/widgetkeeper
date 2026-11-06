@@ -206,3 +206,11 @@ describe('the request', () => {
     expect(subs).toEqual(['Below 20°C · Bedroom', 'Went above · Heater']);
   });
 });
+
+describe('typed names (1.3.0)', () => {
+  it('a typed name replaces the row\'s name, by its place; empty keeps it; a missing row stays Unavailable', () => {
+    const row = (name: string) => ({ deviceId: name, capabilityId: 'onoff', name, capability: { title: 'On', type: 'boolean' }, value: true, changes: [], since: null });
+    const { names } = widget({ names: ['Typed', '', 'Never'] }, [row('Heating'), row('TV'), { id: 'x', missing: true }]);
+    expect(names()).toEqual(['Typed', 'TV', 'Unavailable']);
+  });
+});

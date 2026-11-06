@@ -141,3 +141,46 @@ describe('taps and live values', () => {
     expect(none.root.textContent).toContain('Pick the values to show in the widget settings.');
   });
 });
+
+describe('typed names', () => {
+  it('a typed name replaces the device name in the legend and header; an empty one keeps it', () => {
+    const r = widget({ names: ['  Stue ', ''] }, [kitchen(), bedroom()]);
+    expect(r.chips()).toEqual(['Stue – °C', 'Bedroom']);
+    expect(r.header()).toEqual([`${n(21.5)}°C | Stue · Now`, '19°C | Bedroom · Now']);
+  });
+
+  it('keeps it on a refresh and over a finished span', () => {
+    const r = widget({ names: ['Stue'] }, [kitchen()]);
+    r.w.setState([kitchen()]);
+    expect(r.chips()).toEqual(['Stue – °C']);
+    const y = widget({ names: ['Stue'], span: 'yesterday' }, [kitchen(YESTERDAY)]);
+    expect(y.header()[0]).toContain('Stue · avg');
+  });
+
+  it("leaves a deleted device's chip saying Unavailable", () => {
+    const r = widget({ names: ['Stue', 'Sove'] }, [{ deviceId: 'x', capabilityId: 'measure_temperature', missing: true }, bedroom()]);
+    expect(r.chips()).toEqual(['Unavailable', 'Sove – °C']);
+  });
+
+  it('the mount gives each picked value its own name, past an empty slot', async () => {
+    const api = vi.fn(async () => ({ charts: [kitchen(), bedroom()], language: 'en' }));
+    const settings = { slot1: { id: 'k:measure_temperature' }, name1: 'Stue', name2: 'Not picked', slot3: { id: 'b:measure_temperature' }, name3: 'Sove' };
+    const Homey = { getSettings: () => settings, ready: vi.fn(), setHeight: vi.fn(), on: vi.fn(), api, __: (k: string) => k };
+    const root = document.createElement('div');
+    document.body.append(root);
+    win.mountLinesWidget(Homey, { root, frame: root });
+    await vi.advanceTimersByTimeAsync(0);
+    expect([...root.querySelectorAll('.ew-chip')].map(c => c.textContent)).toEqual(['Stue – °C', 'Sove']);
+  });
+});
+
+describe('a hidden legend', () => {
+  it('leaves the chips out, but a typed title stays', () => {
+    const hidden = widget({ legend: 'hidden' }, [kitchen(), bedroom()]);
+    expect(hidden.q('.ew-chips')!.style.display).toBe('none');
+    expect(hidden.q('svg')!.style.display).not.toBe('none');
+    const titled = widget({ legend: 'hidden', title: 'Rooms' }, [kitchen(), bedroom()]);
+    expect(titled.q('.ew-chips')!.style.display).not.toBe('none');
+    expect(titled.chips()).toEqual(['Rooms – °C']);
+  });
+});

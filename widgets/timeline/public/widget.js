@@ -62,7 +62,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, colors?: string[], t?: (key: string) => string, locale?: string, language?: string,
-   *   now?: () => number, span?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void,
+   *   now?: () => number, span?: string, title?: string, showHeader?: boolean, names?: string[], onHeight?: (h: number) => void,
    *   thresholds?: { at?: number, below?: boolean }[] }} opts
    */
   function createTimelineWidget(root, opts = {}) {
@@ -128,8 +128,9 @@
       for (const s of state.entries.filter(ok)) named.set(s.name, (named.get(s.name) || 0) + 1);
       return state.entries.map((s, i) => {
         if (!ok(s)) return { i, s, name: t('unavailable'), missing: true, kind: 'on', color: colorOf(i), known: null, bands: [], on: 0, count: 0 };
-        const name = devices.size === 1 && state.entries.filter(ok).length > 1 ? s.capability.title
-          : named.get(s.name) > 1 ? `${s.name} · ${s.capability.title}` : s.name;
+        // A typed name (`nameN`) first.
+        const name = C.typedName(opts.names, i) || (devices.size === 1 && state.entries.filter(ok).length > 1 ? s.capability.title
+          : named.get(s.name) > 1 ? `${s.name} · ${s.capability.title}` : s.name);
         const kind = s.number ? (thresholdOf(i).below ? 'below' : 'above') : kindOf(s.capabilityId);
         return { i, s, name, kind, color: colorOf(i), ...bandsOf(s, win.from, until) };
       });

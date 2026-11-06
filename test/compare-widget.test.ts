@@ -102,3 +102,11 @@ describe('the requests and messages', () => {
     expect(none.root.textContent).toContain('Pick the values to compare in the widget settings.');
   });
 });
+
+describe('typed names (1.3.0)', () => {
+  it('a typed name replaces the row\'s name, and stays with its value when sorted', () => {
+    const entry = (name: string, value: number) => ({ deviceId: name, capabilityId: 'measure_temperature', name, capability: { title: 'Temperature', units: '°C', decimals: 1 }, value, points: [] });
+    const { names } = widget({ names: ['Typed', ''] }, [entry('Low', 18), entry('High', 25)]);
+    expect(names()).toEqual(['High', 'Typed']);
+  });
+});

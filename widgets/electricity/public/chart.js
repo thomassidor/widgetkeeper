@@ -952,6 +952,12 @@
     };
   }
 
+  /** A value's typed name (`nameN`, `opts.names`, by its place among the picked values), or '' for the device's. */
+  function typedName(names, i) {
+    const name = Array.isArray(names) ? names[i] : null;
+    return typeof name === 'string' ? name.trim() : '';
+  }
+
   /** A currency code as the price charts write it: the value's units (`kr.`, `€`) and the chip's (`kr`). */
   function currencyUnits(code) {
     switch ((code || '').toUpperCase()) {
@@ -968,6 +974,6 @@
     MIN, HOUR, L, X_LABEL_GAP, X_LABEL_H, LABEL_PAD, LABEL_MIN_GAP,
     niceStep, ticks, el, clear, show, f1, smoothValues, linePath, stepPath, p985, p015,
     compactNumber, ago, stepDecimals, axisLabel, buckets, alignSeries, profile, trendLine, barUnit, useBuckets, meterTotal, calendarLabels, createKit, attachScrub, pointerX,
-    createFrame, wireChart, keepLive, pushLive, currencyUnits,
+    createFrame, wireChart, keepLive, pushLive, currencyUnits, typedName,
   };
 })();

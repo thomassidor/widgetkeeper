@@ -67,7 +67,8 @@
     const sharedScale = overlay && opts.sharedScale === true;
     // The legend (each chart's chip) above its plot, or under its time labels.
     const legendBelow = opts.legend === 'below';
-    const plotTop = legendBelow ? TOP_PAD : CHIP_H;
+    const legendHidden = opts.legend === 'hidden'; // no chips: the plot takes their room, and a note says what they would
+    const plotTop = legendBelow || legendHidden ? TOP_PAD : CHIP_H;
 
     const state = {
       entries: [], // per chart: Sparklines' slot ({deviceId, capabilityId, name, capability, value, points} | {missing})
@@ -237,11 +238,12 @@
 
       clear(u.chips);
       chip(u.chips, i);
+      show(u.chips, !legendHidden);
 
       const data = seriesData(i, win);
       show(u.svg, !missing && data.drawable);
       // A missing device's chip already says Unavailable, unless the chart has a title of its own.
-      show(u.note, missing ? !!c.title : !data.drawable);
+      show(u.note, missing ? !!c.title || legendHidden : !data.drawable);
       u.note.textContent = missing ? t('unavailable') : t('noHistory');
       geom[i] = null;
       if (missing || !data.drawable) { u.box.classList.add('empty'); return; }
@@ -279,13 +281,14 @@
       clear(u.chips);
       chip(u.chips, 0);
       chip(u.chips, 1);
+      show(u.chips, !legendHidden);
 
       const missing = [0, 1].map(i => !state.entries[i] || 'missing' in state.entries[i]);
       const data = [0, 1].map(i => seriesData(i, wins[i]));
       const any = data[0].drawable || data[1].drawable;
       show(u.svg, any);
       // Missing devices' chips already say Unavailable, unless a chart has a title of its own.
-      show(u.note, !any && missing.some((m, i) => !m || !!charts[i].title));
+      show(u.note, !any && (legendHidden || missing.some((m, i) => !m || !!charts[i].title)));
       u.note.textContent = missing.every(Boolean) ? t('unavailable') : t('noHistory');
       geom[0] = geom[1] = null;
       u.box.classList.toggle('empty', !any);

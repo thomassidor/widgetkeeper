@@ -764,3 +764,15 @@ describe('axis labels', () => {
     expect(labels).not.toContain('1,3k');
   });
 });
+
+describe('a hidden legend (1.3.0)', () => {
+  const entry = { deviceId: 'd', capabilityId: 'measure_power', name: 'Meter', capability: { title: 'Power', units: 'W', decimals: 0 }, value: 5, points: [] };
+  it('hides the chips, and a missing device still says so', () => {
+    const shown = widget([{ id: 'd:measure_power' }], [entry], { legend: 'hidden' }).root;
+    expect(shown.querySelector<HTMLElement>('.ew-chips')!.style.display).toBe('none');
+    const gone = widget([{ id: 'x:y' }], [{ id: 'x', missing: true }], { legend: 'hidden' }).root;
+    const note = gone.querySelector<HTMLElement>('.ew-fnote')!;
+    expect(note.style.display).not.toBe('none');
+    expect(note.textContent).toBe('Unavailable');
+  });
+});

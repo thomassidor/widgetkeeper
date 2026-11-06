@@ -11,6 +11,7 @@ window.mountTimelineWidget = function (Homey, { root, frame }) {
   const rows = [1, 2, 3, 4, 5, 6, 7, 8].map(n => ({
     id: slotId(settings[`slot${n}`]),
     color: settings[`color${n}`],
+    name: settings[`name${n}`],
     threshold: { at: Number(settings[`threshold${n}`]), below: settings[`when${n}`] === 'below' }, // missing: above 0
   }))
     .filter(r => r.id);
@@ -21,6 +22,7 @@ window.mountTimelineWidget = function (Homey, { root, frame }) {
       colorStyle: settings.colorStyle,
       colors: rows.map(r => r.color), // a missing one: the kit's colours in order
       thresholds: rows.map(r => r.threshold),
+      names: rows.map(r => r.name), // empty or missing: the device's
       t: key => Homey.__(key),
       span: spanSetting(settings, '', { count: 1, unit: 'calDays' }), // a number of a unit; missing: today
       title: settings.title,

@@ -7,7 +7,8 @@ window.mountCompareWidget = function (Homey, { root, frame }) {
   const { spanSetting, slotId } = window.WidgetkeeperKit;
   const settings = Homey.getSettings() || {};
   // Each value is an autocomplete item whose id is `<deviceId>:<capabilityId>`; empty ones are left out.
-  const slots = [1, 2, 3, 4, 5, 6, 7, 8].map(n => slotId(settings[`slot${n}`])).filter(Boolean);
+  const picked = [1, 2, 3, 4, 5, 6, 7, 8].map(n => ({ id: slotId(settings[`slot${n}`]), name: settings[`name${n}`] })).filter(p => p.id);
+  const slots = picked.map(p => p.id);
 
   let widget;
   return window.WidgetkeeperChart.wireChart(Homey, { frame }, {
@@ -16,6 +17,7 @@ window.mountCompareWidget = function (Homey, { root, frame }) {
       color: settings.color,
       t: key => Homey.__(key),
       count: slots.length,
+      names: picked.map(p => p.name), // empty or missing: the device's
       span: spanSetting(settings, '', { count: 1, unit: 'calDays' }), // a number of a unit; missing: today
       sort: settings.sort, // missing: highest first
       showRange: settings.showRange !== false, // missing: on

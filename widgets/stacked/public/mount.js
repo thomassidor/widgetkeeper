@@ -8,13 +8,14 @@ window.mountStackedWidget = function (Homey, { root, frame }) {
   const settings = Homey.getSettings() || {};
   // Each value is an autocomplete item whose id is `<deviceId>:<capabilityId>`; empty ones are left out, with their colours.
   const total = slotId(settings.total);
-  const layers = [1, 2, 3, 4, 5, 6].map(n => ({ id: slotId(settings[`slot${n}`]), color: settings[`color${n}`] })).filter(l => l.id);
+  const layers = [1, 2, 3, 4, 5, 6].map(n => ({ id: slotId(settings[`slot${n}`]), color: settings[`color${n}`], name: settings[`name${n}`] })).filter(l => l.id);
 
   let widget;
   return window.WidgetkeeperChart.wireChart(Homey, { frame }, {
     create: link => (widget = window.createStackedWidget(root, {
       colorStyle: settings.colorStyle,
       colors: layers.map(l => l.color), // a missing one: the kit's colours in order
+      names: layers.map(l => l.name), // empty or missing: the device's
       t: key => Homey.__(key),
       total: !!total,
       count: layers.length,

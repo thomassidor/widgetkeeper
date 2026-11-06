@@ -529,6 +529,9 @@ const BUILD = {
       w('charts', 'The 3 months before this one · bars', { chart1: power, count1: 3, span1: 'calMonths', leaveOut1: true, style1: 'bars', color1: 'purple' }),
       w('charts', 'On one chart · this week + last week, set as units', { charts: 'overlay', chart1: temp, count1: 1, span1: 'calWeeks', chart2: temp, count2: 1, span2: 'calWeeks', leaveOut2: true, style2: 'line', color2: 'green' }),
       ...other.map((item, i) => w('charts', `Other value ${i + 1} · ${['2d', '3d', '5d'][i]}`, { chart1: item, span1: ['2d', '3d', '5d'][i], color1: ['red', 'yellow', 'green'][i] })),
+      w('charts', 'Legend hidden', { chart1: temp, legend: 'hidden' }),
+      w('charts', 'On one chart · legend hidden', { charts: 'overlay', chart1: temp, chart2: power, legend: 'hidden' }),
+      w('charts', 'Legend hidden · a deleted device (says so)', { chart1: missing, legend: 'hidden' }),
       w('charts', 'Deleted device + empty', { charts: '2', chart1: missing }),
       w('charts', 'Nothing picked'),
     ] };
@@ -547,6 +550,7 @@ const BUILD = {
       w('compare', 'As picked · no range · own title', { ...slots(values.slice(0, 4)), sort: 'listed', showRange: false, title: 'Typed title' }),
       w('compare', 'This week · Vivid · purple', { ...slots(values), count: 1, span: 'calWeeks', colorStyle: 'deep', color: 'purple' }),
       w('compare', 'No header', { ...slots(values.slice(0, 3)), showHeader: false }),
+      w('compare', 'Typed names', { ...slots(values.slice(0, 3)), name1: 'Typed name', name2: 'Another' }),
       w('compare', 'With a deleted device', { ...slots([missing, ...values.slice(0, 3)]) }),
       w('compare', 'One value', slots(values.slice(0, 1))),
       w('compare', 'Nothing picked'),
@@ -614,6 +618,8 @@ const BUILD = {
       w('stacked', 'Last month · own title · no header', { ...slots(layers.slice(0, 3)), count: 1, span: 'calMonths', leaveOut: true, title: 'Typed title', showHeader: false }),
       w('stacked', 'A value in other units', { ...slots([...layers.slice(0, 2), ...(temp ? [temp] : [])]) }),
       w('stacked', 'With a deleted device', { ...withTotal, ...slots([missing, ...layers.slice(0, 2)]) }),
+      w('stacked', 'Typed names in the legend', { ...withTotal, ...slots(layers.slice(0, 3)), name1: 'Typed name', name2: 'Another' }),
+      w('stacked', 'Legend hidden', { ...withTotal, ...slots(layers.slice(0, 3)), legend: 'hidden' }),
       w('stacked', 'A total alone', withTotal),
       w('stacked', 'Nothing picked'),
     ] };
@@ -630,6 +636,9 @@ const BUILD = {
     const missing = { id: `${MISSING}:measure_temperature`, name: 'Deleted device · Temperature' };
     return { cols: 3, widgets: [
       wide(w('lines', 'Up to 6, 24 hours (defaults)', slots(values))),
+      w('lines', 'Typed names · legend hidden', { ...slots(values.slice(0, 3)), name1: 'Typed name', legend: 'hidden' }),
+      w('lines', 'Typed names · a title with the legend hidden', { ...slots(values.slice(0, 3)), name2: 'Typed name', legend: 'hidden', title: 'Typed title' }),
+      w('lines', 'Typed names in the legend', { ...slots(values.slice(0, 3)), name1: 'Typed name', name3: 'Another' }),
       w('lines', 'Areas · smooth · legend below', { ...slots(values.slice(0, 3)), style: 'area', smooth: true, legend: 'below' }),
       w('lines', 'From zero · own colours · own title', { ...slots(values.slice(0, 3)), range: 'zero', color1: 'green', color2: 'purple', color3: 'yellow', title: 'Typed title' }),
       w('lines', 'Last 7 days · Vivid', { ...slots(values.slice(0, 4)), count: 7, span: 'days', colorStyle: 'deep' }),
@@ -657,6 +666,7 @@ const BUILD = {
     const missing = { id: `${MISSING}:alarm_contact`, name: 'Deleted device · Contact' };
     return { cols: 3, widgets: [
       w('timeline', 'Up to 8, today (defaults)', slots(values)),
+      w('timeline', 'Typed names', { ...slots(values.slice(0, 3)), name1: 'Typed name', name2: 'Another' }),
       w('timeline', 'Own colours · own title', { ...slots(values.slice(0, 4)), color1: 'orange', color2: 'yellow', color3: 'red', color4: 'blue', title: 'Typed title' }),
       w('timeline', 'Last 7 days · Vivid', { ...slots(values.slice(0, 4)), count: 7, span: 'days', colorStyle: 'deep' }),
       w('timeline', 'Yesterday', { ...slots(values.slice(0, 3)), count: 1, span: 'calDays', leaveOut: true }),

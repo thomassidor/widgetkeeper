@@ -28,7 +28,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, t?: (key: string) => string, locale?: string, language?: string, now?: () => number,
-   *   count?: number, span?: string, sort?: string, showRange?: boolean, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
+   *   count?: number, span?: string, sort?: string, showRange?: boolean, title?: string, showHeader?: boolean, names?: string[], onHeight?: (h: number) => void }} opts
    */
   function createCompareWidget(root, opts = {}) {
     // Any time span for the ranges (the kit's `timeSpan()`); missing or unknown: today.
@@ -69,9 +69,9 @@
       for (const s of state.entries.filter(ok)) named.set(s.name, (named.get(s.name) || 0) + 1);
       const rows = state.entries.map((s, i) => {
         if (!ok(s)) return { i, name: t('unavailable'), missing: true };
-        // One device: its values by capability; the same name twice: both parts.
-        const name = devices.size === 1 && state.entries.length > 1 ? s.capability.title
-          : named.get(s.name) > 1 ? `${s.name} · ${s.capability.title}` : s.name;
+        // A typed name (`nameN`) first; one device: its values by capability; the same name twice: both parts.
+        const name = C.typedName(opts.names, i) || (devices.size === 1 && state.entries.length > 1 ? s.capability.title
+          : named.get(s.name) > 1 ? `${s.name} · ${s.capability.title}` : s.name);
         const vs = (s.points || []).filter(p => p[0] >= win.from && p[0] <= win.end && num(p[1])).map(p => p[1]);
         if (live && num(s.value)) vs.push(s.value);
         return { i, s, name, value: num(s.value) ? s.value : null, min: vs.length ? Math.min(...vs) : null, max: vs.length ? Math.max(...vs) : null };
