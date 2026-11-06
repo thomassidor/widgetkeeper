@@ -8,5 +8,14 @@ Live power use, the hourly price from yesterday to 12 hours ahead (with your tar
 
 **Settings:** power meter, live time span, prices, tariffs and taxes, usage history, smooth lines, lowest price in 12 h / 24 h, compact layout, [colour style](../../README.md#colour-style).
 
+## Looks
+
+<p>
+<img src="../variants/electricity-light.webp" alt="Electricity Overview: Light" width="300" align="top">
+<img src="../variants/electricity-vivid.webp" alt="Electricity Overview: Vivid" width="300" align="top">
+<img src="../variants/electricity-compact.webp" alt="Electricity Overview: Compact" width="300" align="top">
+<img src="../variants/electricity-separate.webp" alt="Electricity Overview: Light · Usage apart, in purple" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

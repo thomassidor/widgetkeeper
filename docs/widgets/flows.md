@@ -8,5 +8,14 @@ Flows and Advanced Flows as rows with a round button in your colour and icon. Ta
 
 **Settings:** up to eight flows, each with a colour, an icon and an optional name; 1 or 2 columns; [colour style](../../README.md#colour-style).
 
+## Looks
+
+<p>
+<img src="../variants/flows-light.webp" alt="Flow Buttons: Light" width="300" align="top">
+<img src="../variants/flows-vivid.webp" alt="Flow Buttons: Vivid" width="300" align="top">
+<img src="../variants/flows-one.webp" alt="Flow Buttons: One column" width="300" align="top">
+<img src="../variants/flows-light-vivid.webp" alt="Flow Buttons: Light · Vivid" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

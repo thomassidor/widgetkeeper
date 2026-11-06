@@ -10,5 +10,15 @@ The next 36 hours from [MET Norway](https://www.met.no/en) ([yr.no](https://www.
 
 Weather data from MET Norway, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Icons: [Yr's weather symbols](https://github.com/metno/weathericons) (MIT).
 
+## Looks
+
+<p>
+<img src="../variants/weather-light.webp" alt="Weather Forecast: Light" width="300" align="top">
+<img src="../variants/weather-vivid.webp" alt="Weather Forecast: Vivid" width="300" align="top">
+<img src="../variants/weather-card.webp" alt="Weather Forecast: Card" width="300" align="top">
+<img src="../variants/weather-detailed.webp" alt="Weather Forecast: Detailed" width="300" align="top">
+<img src="../variants/weather-light-rows.webp" alt="Weather Forecast: Light · Two rows" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

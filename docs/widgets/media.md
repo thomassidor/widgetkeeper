@@ -8,5 +8,14 @@ One speaker as a card: album art, the track, play controls, mute, and a volume t
 
 **Settings:** layout (compact or large), tap the album art to switch layout, colour, [colour style](../../README.md#colour-style), speaker, speaker switching, volume as a bar or buttons, volume step and maximum, progress, shuffle and repeat, eight buttons with an icon and a name.
 
+## Looks
+
+<p>
+<img src="../variants/media-light.webp" alt="Media: Light" width="300" align="top">
+<img src="../variants/media-vivid.webp" alt="Media: Vivid" width="300" align="top">
+<img src="../variants/media-large.webp" alt="Media: Large" width="300" align="top">
+<img src="../variants/media-line.webp" alt="Media: Light · Large, volume slider" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

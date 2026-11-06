@@ -160,7 +160,7 @@
   <section class="shot" id="dailyrange"><div class="card"><div id="w-dailyrange"></div></div></section>
   <section class="shot" id="typicalday"><div class="card"><div id="w-typicalday"></div></div></section>
   <section class="shot" id="clock"><div id="w-clock"></div></section>
-  <section class="shot" id="textline"><div id="w-textline"></div><div id="w-textline-note" style="margin-top:8px"></div></section>
+  <section class="shot" id="textline"><div id="w-textline"></div></section>
   <section class="shot" id="dayssince"><div class="card"><div id="w-dayssince"></div></div></section>
   <section class="shot" id="shortcuts"><div id="w-shortcuts"></div></section>
   <section class="shot" id="lightrooms"><div id="w-lightrooms"></div></section>
@@ -175,6 +175,7 @@
     // One shot alone; its height goes on <body> for the render script.
     const only = new URLSearchParams(location.search).get('s');
     if (only) for (const s of document.querySelectorAll('.shot')) s.hidden = s.id !== only;
+    for (const s of document.querySelectorAll('.shot')) SCREENSHOTS[s.id](s.querySelector('[id^="w-"]'));
     document.fonts.ready.then(() => {
       document.body.dataset.height = String(Math.ceil(document.body.getBoundingClientRect().height));
     });

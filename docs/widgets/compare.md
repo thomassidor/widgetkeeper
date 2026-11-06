@@ -8,5 +8,14 @@ One value from up to eight devices on one scale, sorted: each room's temperature
 
 **Settings:** values 1 to 8, [time span](charts.md#time-spans) for the ranges, order (highest first, lowest first or as picked), show the range, title, the values at the top, colour, [colour style](../../README.md#colour-style).
 
+## Looks
+
+<p>
+<img src="../variants/compare-light.webp" alt="Chart · Ranking: Light" width="300" align="top">
+<img src="../variants/compare-vivid.webp" alt="Chart · Ranking: Vivid" width="300" align="top">
+<img src="../variants/compare-no-range.webp" alt="Chart · Ranking: Without the range" width="300" align="top">
+<img src="../variants/compare-green.webp" alt="Chart · Ranking: Light · Green" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

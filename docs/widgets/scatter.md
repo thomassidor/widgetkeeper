@@ -8,5 +8,14 @@ One value against another, a dot an hour (a minute to a week, by the [time span]
 
 **Settings:** the value across (x) and the value up (y), [time span](charts.md#time-spans), one dot per (automatic, hour or day), trend line, fade older dots, title, the values at the top, colour, [colour style](../../README.md#colour-style).
 
+## Looks
+
+<p>
+<img src="../variants/scatter-light.webp" alt="Chart · Scatter (XY): Light" width="300" align="top">
+<img src="../variants/scatter-vivid.webp" alt="Chart · Scatter (XY): Vivid" width="300" align="top">
+<img src="../variants/scatter-no-trend.webp" alt="Chart · Scatter (XY): Without the trend line" width="300" align="top">
+<img src="../variants/scatter-no-fade.webp" alt="Chart · Scatter (XY): Light · Without the fade" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

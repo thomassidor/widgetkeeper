@@ -8,5 +8,14 @@ Half-height tiles that each show one live device value, optionally with a second
 
 **Settings:** up to six values, each with an optional second value; 3 or 2 per row; compact or pill tiles (like Sensor Alarms'); percentage fill and its limits; [colour style](../../README.md#colour-style); [rename tiles](../../README.md#tile-names).
 
+## Looks
+
+<p>
+<img src="../variants/values-light.webp" alt="Device Values: Light" width="300" align="top">
+<img src="../variants/values-vivid.webp" alt="Device Values: Vivid" width="300" align="top">
+<img src="../variants/values-pill.webp" alt="Device Values: Pill tiles" width="300" align="top">
+<img src="../variants/values-no-fill.webp" alt="Device Values: Light · Without the fills" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

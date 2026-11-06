@@ -8,5 +8,14 @@ Motion, contact, vibration and camera sensors as a grid of dots that light up wh
 
 **Settings:** sensors, title, idle and active colours, [colour style](../../README.md#colour-style), time format.
 
+## Looks
+
+<p>
+<img src="../variants/sensordots-light.webp" alt="Activity Dots: Light" width="300" align="top">
+<img src="../variants/sensordots-vivid.webp" alt="Activity Dots: Vivid" width="300" align="top">
+<img src="../variants/sensordots-closed.webp" alt="Activity Dots: Panel closed" width="300" align="top">
+<img src="../variants/sensordots-colours.webp" alt="Activity Dots: Light · Green idle, red active" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

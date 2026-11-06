@@ -18,5 +18,13 @@ The screen is **Everywhere** or a Popups widget's name. On a [web dashboard](../
 
 **Settings:** screen name, countdown (a bar under a message running down to its end; off by default, as the Homey app's browser window doesn't close by itself).
 
+## Looks
+
+<p>
+<img src="../variants/popups-light.webp" alt="Popups: Light" width="300" align="top">
+<img src="../variants/popups-message.webp" alt="Popups: A message" width="300" align="top">
+<img src="../variants/popups-light-message.webp" alt="Popups: Light · A message" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

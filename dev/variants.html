@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Widget variants</title>
+  <!--
+    The images of the widget pages' Looks (docs/widgets/<id>.md): the real widget code with the made-up home, on Homey's
+    dashboard colour, a caption above it. `?w=lights&v=vivid` shows one (the list is in variants.js); without it, links
+    to all. scripts/render-variants.mjs (`npm run variants [-- lights …]`) renders them to docs/variants/<id>-<key>.webp.
+  -->
+  <script>
+    // Set before the styles load: a widget's stylesheet reads it, and Homey's frame has it from the start.
+    // `&mode=light` is Homey's light mode (the render script adds it from variants.js).
+    const QUERY = new URLSearchParams(location.search);
+    document.documentElement.classList.add(QUERY.get('mode') === 'light' ? 'light-mode' : 'homey-dark-mode');
+  </script>
+  <script src="fixed-clock.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <script>
+    // Every widget's files, in the order they depend on: the kit first, and the shared chart and presets before their users.
+    const WIDGETS = ['electricity', 'thermostat', 'quickactions', 'sensoralarms', 'sensordots', 'roomhealth', 'valuematrix', 'weather', 'heatmap', 'cameras',
+      'values', 'variables', 'varpresets', 'keypad', 'flows', 'shortcuts', 'price', 'timers', 'locks', 'lights', 'lightrooms', 'curtains', 'media', 'sparklines',
+      'charts', 'totals', 'scatter', 'compare', 'timeline', 'stacked', 'lines', 'gauge', 'dailyrange', 'typicalday', 'clock', 'textline', 'dayssince', 'pollen', 'webpage', 'stack'];
+    const css = ['spacer/public/kit', 'electricity/public/chart', 'thermostat/public/presets', ...WIDGETS.map(w => `${w}/public/widget`)];
+    const js = ['spacer/public/kit', 'electricity/public/chart', 'thermostat/public/presets', ...WIDGETS.map(w => `${w}/public/widget`)];
+    for (const f of css) document.write(`<link rel="stylesheet" href="../widgets/${f}.css">`);
+    for (const f of js) document.write(`<script src="../widgets/${f}.js"><\/script>`);
+  </script>
+  <script src="../temp/screenshot-icons.js" onerror="window.ICONS = {}"></script>
+  <script src="mock-util.js"></script>
+  <script src="mock-media.js"></script>
+  <script src="mock-totals.js"></script>
+  <script src="mock-scatter.js"></script>
+  <script src="mock-compare.js"></script>
+  <script src="mock-timeline.js"></script>
+  <script src="mock-stacked.js"></script>
+  <script src="mock-lines.js"></script>
+  <script src="mock-gauge.js"></script>
+  <script src="mock-dailyrange.js"></script>
+  <script src="mock-typicalday.js"></script>
+  <script src="showcase-data.js"></script>
+  <script src="showcase-mount.js"></script>
+  <style>
+    html.light-mode { --homey-background-color: #FFFFFF; --homey-text-color: #1F2029; --homey-text-color-light: #6B6C75; }
+    /* Every render is byte-identical between runs: the Keypad's pulsing dot holds still, the timers' rows don't slide in. */
+    .kp-dot.next { animation: none; }
+    .tm-row { animation: none !important; }
+    html, body { background: transparent !important; }
+    body { width: 390px; margin: 0; font-family: Roboto, sans-serif; }
+    /* Homey's dashboard behind the widget, the mode on it, so a light widget shows on GitHub's light page and a dark one on its dark page. */
+    .panel { box-sizing: border-box; padding: 12px 16px 16px; border-radius: 20px; background: #111217; color: #999AA3; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1); }
+    .light-mode .panel { background: #F4F4FA; color: #6B6C75; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1); }
+    .cap { font: 500 14px/20px Roboto, sans-serif; margin: 0 0 8px; }
+    /* A non-transparent widget's frame (default widget background, with Homey's widget padding), as in screenshots.html. */
+    .card { background: #1F2029; border-radius: 20px; padding: 16px; box-sizing: border-box; }
+    .card.tw-frame, .card.wf-frame:not(.wf-card-frame), .card.hm-frame, .card.mw-frame { background: #181920; }
+    .light-mode .card:not(.wf-card-frame), .light-mode .card.tw-frame, .light-mode .card.hm-frame, .light-mode .card.mw-frame { background: #FFFFFF; }
+    .wp-dash { border-radius: 10px; overflow: hidden; }
+    .error { color: #D81C1D; font: 12px/16px monospace; white-space: pre-wrap; }
+    /* Popups: the Homey app's browser (Done, the address) on a drawn phone, the prompt page in it, as in screenshots.html. */
+    .pp-phone { padding: 8px; border-radius: 44px; background: #1B1C22; box-shadow: inset 0 0 0 2px #34353F; }
+    .pp-screen { border-radius: 36px; overflow: hidden; background: #111217; }
+    .pp-browser { display: flex; align-items: center; height: 64px; padding: 20px 16px 0; box-sizing: border-box; background: #1F2029; color: #999AA3; font-size: 14px; }
+    .pp-browser b { color: #339BFB; font-weight: 500; width: 56px; }
+    .pp-browser span { flex: 1; text-align: center; }
+    .pp-browser i { width: 56px; }
+    .pp-screen iframe { display: block; width: 342px; height: 456px; border: 0; }
+    .light-mode .pp-phone { background: #E4E4EC; box-shadow: inset 0 0 0 2px #CFCFD8; }
+    .light-mode .pp-screen { background: #F4F4FA; }
+    .light-mode .pp-browser { background: #FFFFFF; color: #6B6C75; }
+    .light-mode .pp-browser b { color: #0082FA; }
+  </style>
+</head>
+<body>
+  <script src="mock-dashboard.js"></script>
+  <script src="variants.js"></script>
+</body>
+</html>

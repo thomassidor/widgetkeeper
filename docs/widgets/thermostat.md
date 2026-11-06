@@ -10,5 +10,14 @@ Flow cards: *Run [button]*, the condition *[button] is active* and the trigger *
 
 **Settings:** the device, a title in place of its name, a value to show beside it (any device value, such as the room temperature), compact layout, [colour style](../../README.md#colour-style), and per button: power, mode, temperature and one extra option such as the fan speed.
 
+## Looks
+
+<p>
+<img src="../variants/thermostat-light.webp" alt="Thermostat Presets: Light" width="300" align="top">
+<img src="../variants/thermostat-vivid.webp" alt="Thermostat Presets: Vivid" width="300" align="top">
+<img src="../variants/thermostat-compact.webp" alt="Thermostat Presets: Compact" width="300" align="top">
+<img src="../variants/thermostat-light-compact.webp" alt="Thermostat Presets: Light · Compact" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

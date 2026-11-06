@@ -16,5 +16,14 @@ For totals per hour, day or month, see [Chart · Totals](totals.md); for more th
 
 **Time spans:** a number and a unit. Minutes to years count back from now (40 minutes, 24 hours, 18 months). Days from midnight, weeks from Monday, months from the 1st and years from 1 January are whole periods, the current one included (3 months from the 1st is this month and the two before); with *Leave out the current period*, the ones before it (yesterday, last week). Up to two years: Insights keeps no more. Charts set up before 1.2.0 keep their span.
 
+## Looks
+
+<p>
+<img src="../variants/charts-light.webp" alt="Chart · Basic: Light" width="300" align="top">
+<img src="../variants/charts-vivid.webp" alt="Chart · Basic: Vivid" width="300" align="top">
+<img src="../variants/charts-overlay.webp" alt="Chart · Basic: Two values on one chart" width="300" align="top">
+<img src="../variants/charts-line.webp" alt="Chart · Basic: Light · Lines, no header" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

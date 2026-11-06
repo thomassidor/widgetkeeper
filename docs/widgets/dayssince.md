@@ -10,5 +10,14 @@ Flow cards: *Reset [counter]*, *Set [counter] to [days] days ago*, the trigger *
 
 **Settings:** days only or days, weeks and months; all counters, or only those that are amber and red (or only red), so the ones far from due don't take up room; [colour style](../../README.md#colour-style); up to eight counters, each with a name, an icon and the days until amber and red.
 
+## Looks
+
+<p>
+<img src="../variants/dayssince-light.webp" alt="Days Since: Light" width="300" align="top">
+<img src="../variants/dayssince-vivid.webp" alt="Days Since: Vivid" width="300" align="top">
+<img src="../variants/dayssince-days.webp" alt="Days Since: Counted in days" width="300" align="top">
+<img src="../variants/dayssince-due.webp" alt="Days Since: Light · Only what is due" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

@@ -8,5 +8,14 @@ Is today unusual? Today's line over the usual day: each hour's average over the 
 
 **Settings:** the value, usual day from (the last 7 or 3 days), show the spread, smooth line, scale (fitted or from zero), title, the values at the top, colour, [colour style](../../README.md#colour-style).
 
+## Looks
+
+<p>
+<img src="../variants/typicalday-light.webp" alt="Chart · Daily Profile: Light" width="300" align="top">
+<img src="../variants/typicalday-vivid.webp" alt="Chart · Daily Profile: Vivid" width="300" align="top">
+<img src="../variants/typicalday-no-band.webp" alt="Chart · Daily Profile: Without the band" width="300" align="top">
+<img src="../variants/typicalday-smooth.webp" alt="Chart · Daily Profile: Light · Smooth" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

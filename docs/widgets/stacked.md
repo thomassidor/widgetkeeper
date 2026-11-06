@@ -8,5 +8,14 @@ Who uses the power? Up to six values of one kind stacked over time, the last 24 
 
 **Settings:** the total (optional), values 1 to 6 each with its colour, [time span](charts.md#time-spans), style (areas or bars), the legend, title, the values at the top, [colour style](../../README.md#colour-style).
 
+## Looks
+
+<p>
+<img src="../variants/stacked-light.webp" alt="Chart · Stacked: Light" width="300" align="top">
+<img src="../variants/stacked-vivid.webp" alt="Chart · Stacked: Vivid" width="300" align="top">
+<img src="../variants/stacked-bars.webp" alt="Chart · Stacked: Bars" width="300" align="top">
+<img src="../variants/stacked-legend.webp" alt="Chart · Stacked: Light · Legend below" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

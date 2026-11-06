@@ -8,5 +8,14 @@ The electricity price now, and the coming 12, 24 or 36 hours as small bars in on
 
 **Settings:** hours ahead, colour by level, [colour style](../../README.md#colour-style), tariffs and taxes.
 
+## Looks
+
+<p>
+<img src="../variants/price-light.webp" alt="Energy Price Strip: Light" width="300" align="top">
+<img src="../variants/price-vivid.webp" alt="Energy Price Strip: Vivid" width="300" align="top">
+<img src="../variants/price-24.webp" alt="Energy Price Strip: 24 hours" width="300" align="top">
+<img src="../variants/price-no-tint.webp" alt="Energy Price Strip: Light · Without the tint" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

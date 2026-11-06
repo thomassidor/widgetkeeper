@@ -8,5 +8,14 @@ Six lights in the space of three of Homey's light cards. Tap a tile to switch it
 
 **Settings:** lights, group by room, room brightness (average or brightest), widen the last tile, what the bar's far left does, colour palette, [colour style](../../README.md#colour-style), [rename tiles](../../README.md#tile-names).
 
+## Looks
+
+<p>
+<img src="../variants/lights-light.webp" alt="Light Controls: Light" width="300" align="top">
+<img src="../variants/lights-vivid.webp" alt="Light Controls: Vivid" width="300" align="top">
+<img src="../variants/lights-wide.webp" alt="Light Controls: Five lights, the last tile wide" width="300" align="top">
+<img src="../variants/lights-light-vivid.webp" alt="Light Controls: Light · Vivid" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

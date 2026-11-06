@@ -10,5 +10,14 @@ Type a column's OK range in the value's unit, such as `18–24`, `<1000` or `>10
 
 **Settings:** devices, [rename tiles](../../README.md#tile-names), [colour style](../../README.md#colour-style), rooms or devices as rows, show legend, and per column the value, its OK range and its header.
 
+## Looks
+
+<p>
+<img src="../variants/valuematrix-light.webp" alt="Value Matrix: Light" width="300" align="top">
+<img src="../variants/valuematrix-vivid.webp" alt="Value Matrix: Vivid" width="300" align="top">
+<img src="../variants/valuematrix-devices.webp" alt="Value Matrix: A row per device" width="300" align="top">
+<img src="../variants/valuematrix-no-legend.webp" alt="Value Matrix: Light · Without the legend" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

@@ -10,5 +10,13 @@ Your cameras as a grid of snapshots that refresh every few seconds (cameras with
 
 **Settings:** cameras, layout (a large camera at the top or bottom, or one per row), refresh interval, how long live view stays on, time format, [rename tiles](../../README.md#tile-names), and Camera 1 to 6 for cameras missing from the device list, such as Synology Surveillance Station's: they list every device with a snapshot or video.
 
+## Looks
+
+<p>
+<img src="../variants/cameras-light.webp" alt="Cameras: Light" width="300" align="top">
+<img src="../variants/cameras-top.webp" alt="Cameras: Three, the first large" width="300" align="top">
+<img src="../variants/cameras-single.webp" alt="Cameras: One camera at a time" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

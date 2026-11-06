@@ -10,5 +10,14 @@ How much a value went up per hour, day or month, like the Homey app's Energy tab
 
 **Settings:** the value (meters first), show the amount or the cost, [time span](charts.md#time-spans), compare with the period before, title, the totals at the top, colour, [colour style](../../README.md#colour-style).
 
+## Looks
+
+<p>
+<img src="../variants/totals-light.webp" alt="Chart · Totals: Light" width="300" align="top">
+<img src="../variants/totals-vivid.webp" alt="Chart · Totals: Vivid" width="300" align="top">
+<img src="../variants/totals-month.webp" alt="Chart · Totals: This month, a bar a day" width="300" align="top">
+<img src="../variants/totals-week.webp" alt="Chart · Totals: Light · This week" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

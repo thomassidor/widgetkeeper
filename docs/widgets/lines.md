@@ -8,5 +8,14 @@ Up to six values over time on one chart, a line each: every room's temperature, 
 
 **Settings:** values 1 to 6 each with its colour, [time span](charts.md#time-spans), style (lines, or lines with areas), scale (fitted or from zero), smooth lines, the legend, title, the values at the top, [colour style](../../README.md#colour-style).
 
+## Looks
+
+<p>
+<img src="../variants/lines-light.webp" alt="Chart · Lines: Light" width="300" align="top">
+<img src="../variants/lines-vivid.webp" alt="Chart · Lines: Vivid" width="300" align="top">
+<img src="../variants/lines-area.webp" alt="Chart · Lines: Areas" width="300" align="top">
+<img src="../variants/lines-smooth.webp" alt="Chart · Lines: Light · Smooth, legend below" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

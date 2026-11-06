@@ -8,5 +8,14 @@ For [web dashboards](../../README.md#web-dashboards) only: your other web dashbo
 
 **Settings:** up to eight dashboards, each with a colour and an icon; 1 or 2 columns; [colour style](../../README.md#colour-style); [rename tiles](../../README.md#tile-names).
 
+## Looks
+
+<p>
+<img src="../variants/shortcuts-light.webp" alt="Dashboard Shortcuts: Light" width="300" align="top">
+<img src="../variants/shortcuts-vivid.webp" alt="Dashboard Shortcuts: Vivid" width="300" align="top">
+<img src="../variants/shortcuts-one.webp" alt="Dashboard Shortcuts: One column" width="300" align="top">
+<img src="../variants/shortcuts-light-vivid.webp" alt="Dashboard Shortcuts: Light · Vivid" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

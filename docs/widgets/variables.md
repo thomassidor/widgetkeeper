@@ -8,5 +8,14 @@ Logic variables as compact rows with their full name: a switch for yes/no, − a
 
 **Settings:** up to ten variables, 1 or 2 columns, colour, [colour style](../../README.md#colour-style), read only, the − and + step, the lowest and highest number, [rename tiles](../../README.md#tile-names).
 
+## Looks
+
+<p>
+<img src="../variants/variables-light.webp" alt="Variables: Light" width="300" align="top">
+<img src="../variants/variables-vivid.webp" alt="Variables: Vivid" width="300" align="top">
+<img src="../variants/variables-two.webp" alt="Variables: Two columns" width="300" align="top">
+<img src="../variants/variables-read-only.webp" alt="Variables: Light · Read only" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

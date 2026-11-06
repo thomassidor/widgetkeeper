@@ -8,5 +8,13 @@ The time and the date in one tile, with the weather now and today's high and low
 
 **Settings:** show the weather, time format (automatic, 24-hour or 12-hour).
 
+## Looks
+
+<p>
+<img src="../variants/clock-light.webp" alt="Clock: Light" width="300" align="top">
+<img src="../variants/clock-time.webp" alt="Clock: Without the weather" width="300" align="top">
+<img src="../variants/clock-12h.webp" alt="Clock: Light · 12-hour clock" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

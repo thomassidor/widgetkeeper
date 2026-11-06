@@ -17,5 +17,14 @@ A level is the day's average in grains per m³, by Astma-Allergi Danmark's bands
 
 Pollen and UV data from [Open-Meteo](https://open-meteo.com), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), generated using Copernicus Atmosphere Monitoring Service information.
 
+## Looks
+
+<p>
+<img src="../variants/pollen-light.webp" alt="Pollen and UV: Light" width="300" align="top">
+<img src="../variants/pollen-vivid.webp" alt="Pollen and UV: Vivid" width="300" align="top">
+<img src="../variants/pollen-detailed.webp" alt="Pollen and UV: Detailed" width="300" align="top">
+<img src="../variants/pollen-light-detailed.webp" alt="Pollen and UV: Light · Detailed" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

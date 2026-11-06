@@ -18,6 +18,7 @@
     "app-images": "node scripts/render-app-images.mjs",
     "previews": "node scripts/render-previews.mjs",
     "screenshots": "node scripts/render-screenshots.mjs",
+    "variants": "node scripts/render-variants.mjs",
     "clips": "node scripts/render-clips.mjs",
     "showcase": "node scripts/render-showcase.mjs",
     "web-showcase": "node scripts/render-web-showcase.mjs",

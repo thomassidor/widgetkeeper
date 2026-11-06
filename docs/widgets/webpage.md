@@ -8,5 +8,12 @@ A web page you pick, drawn at the width and height you set and scaled to fill th
 
 **Settings:** address, page width and height, let the page be tapped, reload every (15 minutes keeps live data current on a screen that's always on), up to four buttons (a name and an address).
 
+## Looks
+
+<p>
+<img src="../variants/webpage-light.webp" alt="Web Page: Light" width="300" align="top">
+<img src="../variants/webpage-one-page.webp" alt="Web Page: A single page" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

@@ -14,5 +14,14 @@ One value now on a bar: a room's CO₂ or humidity, a battery, the house's power
 
 **Settings:** the value, layout (bar or dial), scale (automatic, or from and to), colour by level with where yellow and red start, [time span](charts.md#time-spans) for the range, show the range, title, colour, [colour style](../../README.md#colour-style).
 
+## Looks
+
+<p>
+<img src="../variants/gauge-light.webp" alt="Chart · Gauge: Light" width="300" align="top">
+<img src="../variants/gauge-vivid.webp" alt="Chart · Gauge: Vivid" width="300" align="top">
+<img src="../variants/gauge-dial.webp" alt="Chart · Gauge: Dial" width="300" align="top">
+<img src="../variants/gauge-light-dial.webp" alt="Chart · Gauge: Light · Dial, Vivid" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

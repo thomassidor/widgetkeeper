@@ -8,5 +8,14 @@ Half-height tiles that run a device's quick action with one tap (on/off, lock, p
 
 **Settings:** devices, 3 or 2 per row, compact or pill tiles (like Sensor Alarms', with the state under the name), active style, colour, [colour style](../../README.md#colour-style), single, double or long press (for every tile, or only locks and garage doors, so a stray tap can't unlock a door), [rename tiles](../../README.md#tile-names).
 
+## Looks
+
+<p>
+<img src="../variants/quickactions-light.webp" alt="Device Quick Actions: Light" width="300" align="top">
+<img src="../variants/quickactions-vivid.webp" alt="Device Quick Actions: Vivid" width="300" align="top">
+<img src="../variants/quickactions-pill.webp" alt="Device Quick Actions: Pill tiles" width="300" align="top">
+<img src="../variants/quickactions-purple.webp" alt="Device Quick Actions: Light · Vivid purple" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

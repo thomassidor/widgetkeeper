@@ -8,5 +8,14 @@ Widgetkeeper widgets from another dashboard, one at a time in the space of one. 
 
 **Settings:** dashboard, interval, smart rotate, pause after a swipe, dots.
 
+## Looks
+
+<p>
+<img src="../variants/stack-light.webp" alt="Smart Stack: Light" width="300" align="top">
+<img src="../variants/stack-vivid.webp" alt="Smart Stack: Vivid" width="300" align="top">
+<img src="../variants/stack-large-dots.webp" alt="Smart Stack: Large dots" width="300" align="top">
+<img src="../variants/stack-dots-above.webp" alt="Smart Stack: Light · Dots above" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

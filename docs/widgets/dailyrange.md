@@ -8,5 +8,14 @@ Each day's lowest to highest as a bar, its average as a tick: how cold the night
 
 **Settings:** the value, [time span](charts.md#time-spans), average tick, scale (fitted or from zero), title, the values at the top, colour, [colour style](../../README.md#colour-style).
 
+## Looks
+
+<p>
+<img src="../variants/dailyrange-light.webp" alt="Chart · Min/Max: Light" width="300" align="top">
+<img src="../variants/dailyrange-vivid.webp" alt="Chart · Min/Max: Vivid" width="300" align="top">
+<img src="../variants/dailyrange-no-average.webp" alt="Chart · Min/Max: Without the average" width="300" align="top">
+<img src="../variants/dailyrange-zero.webp" alt="Chart · Min/Max: Light · From zero" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

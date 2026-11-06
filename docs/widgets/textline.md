@@ -8,5 +8,14 @@ A short message on the dashboard: a tile with a line of text or more, or a tilte
 
 **Settings:** style (tile or Post-it), text from (the message typed in the settings, a Flow card or a text variable), message, note name, variable, alignment, text size, long text, icon, colour, [colour style](../../README.md#colour-style).
 
+## Looks
+
+<p>
+<img src="../variants/textline-light.webp" alt="Notes: Light" width="300" align="top">
+<img src="../variants/textline-vivid.webp" alt="Notes: Vivid" width="300" align="top">
+<img src="../variants/textline-large.webp" alt="Notes: Large, centred, wrapped" width="300" align="top">
+<img src="../variants/textline-light-vivid.webp" alt="Notes: Light · Vivid" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

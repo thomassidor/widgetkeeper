@@ -20,5 +20,14 @@ A heat pump's room temperature counts; outdoor and water temperatures don't. Lef
 
 **Settings:** sensors, [rename tiles](../../README.md#tile-names), [colour style](../../README.md#colour-style), icons or bars, green when fine, the comfortable range of each value (one range for every room).
 
+## Looks
+
+<p>
+<img src="../variants/roomhealth-light.webp" alt="Room Health: Light" width="300" align="top">
+<img src="../variants/roomhealth-vivid.webp" alt="Room Health: Vivid" width="300" align="top">
+<img src="../variants/roomhealth-bars.webp" alt="Room Health: Bars" width="300" align="top">
+<img src="../variants/roomhealth-green.webp" alt="Room Health: Light · Green when fine" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

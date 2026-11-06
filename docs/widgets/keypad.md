@@ -20,5 +20,14 @@ Starting a Flow needs an [API key](../../README.md#api-key) with **Start Flows**
 
 **Settings:** a title, the state (a device value or a variable), the code (one, or Any code), show the keypad (when a button needs it, or always), compact layout, [colour style](../../README.md#colour-style), background (plain or the state's colour), and per button: a Flow, the state's value it stands for, a label, an icon, a colour and whether it needs the code.
 
+## Looks
+
+<p>
+<img src="../variants/keypad-light.webp" alt="Keypad: Light" width="300" align="top">
+<img src="../variants/keypad-vivid.webp" alt="Keypad: Vivid" width="300" align="top">
+<img src="../variants/keypad-tap.webp" alt="Keypad: Keypad on a tap" width="300" align="top">
+<img src="../variants/keypad-compact.webp" alt="Keypad: Light · Compact" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

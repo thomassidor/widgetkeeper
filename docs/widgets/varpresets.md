@@ -8,5 +8,14 @@ One Logic variable with two to four buttons, each setting it to a value you pick
 
 **Settings:** the variable, a title instead of its name, an icon, compact layout, the button colour, [colour style](../../README.md#colour-style), and per button: the value (Yes or No, a number or a text, as the variable is; pick the variable first) and a label.
 
+## Looks
+
+<p>
+<img src="../variants/varpresets-light.webp" alt="Variable Presets: Light" width="300" align="top">
+<img src="../variants/varpresets-vivid.webp" alt="Variable Presets: Vivid" width="300" align="top">
+<img src="../variants/varpresets-compact.webp" alt="Variable Presets: Compact" width="300" align="top">
+<img src="../variants/varpresets-yellow.webp" alt="Variable Presets: Light · Yellow" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

@@ -10,5 +10,14 @@ A row can also be a number, on above or below a threshold (the heater above 50 W
 
 **Settings:** values 1 to 8 each with its colour, and for a number its threshold and above or below, [time span](charts.md#time-spans), title, the values at the top, [colour style](../../README.md#colour-style).
 
+## Looks
+
+<p>
+<img src="../variants/timeline-light.webp" alt="Chart · Timeline: Light" width="300" align="top">
+<img src="../variants/timeline-vivid.webp" alt="Chart · Timeline: Vivid" width="300" align="top">
+<img src="../variants/timeline-no-header.webp" alt="Chart · Timeline: Without the header" width="300" align="top">
+<img src="../variants/timeline-light-vivid.webp" alt="Chart · Timeline: Light · Vivid" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)

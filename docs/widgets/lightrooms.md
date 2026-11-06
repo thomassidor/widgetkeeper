@@ -8,5 +8,14 @@ For many lights in many rooms. The lights you pick are grouped by their Homey ro
 
 **Settings:** lights, show the room's Moods, colour palette, room brightness (average or brightest), what the bar's far left does, [colour style](../../README.md#colour-style), [rename tiles](../../README.md#tile-names) (the rooms and lights).
 
+## Looks
+
+<p>
+<img src="../variants/lightrooms-light.webp" alt="Lights by Room: Light" width="300" align="top">
+<img src="../variants/lightrooms-vivid.webp" alt="Lights by Room: Vivid" width="300" align="top">
+<img src="../variants/lightrooms-no-moods.webp" alt="Lights by Room: Without Moods" width="300" align="top">
+<img src="../variants/lightrooms-light-vivid.webp" alt="Lights by Room: Light · Vivid" width="300" align="top">
+</p>
+
 ---
 [← All widgets](../../README.md#widgets)
