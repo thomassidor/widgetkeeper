@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, FakeApiOptions, fakeDevice, fakeHomey, homeyApiMock, memoryStorage } from './helpers/fakeHomey.js';
-import ElectricityService, { LIVE_EVENT, priceInterval } from '../lib/ElectricityService.js';
+import ElectricityService, { hoursDays, LIVE_EVENT, priceInterval } from '../lib/ElectricityService.js';
 import { HOUR, MINUTE } from '../lib/series.js';
 
 vi.mock('homey-api', () => homeyApiMock);
@@ -570,6 +570,35 @@ describe('15-minute prices', () => {
 });
 
 describe('price history (Chart · Totals\' cost, 1.2.0)', () => {
+  it('finds the same local days as asking for every hour, over DST changes and with few asks', () => {
+    const format = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Copenhagen' });
+    const known = new Map<number, string>();
+    const local = (t: number) => {
+      if (!known.has(t)) known.set(t, format.format(t));
+      return known.get(t)!;
+    };
+    const everyHour = (start: number, end: number) => {
+      const days = new Set<string>();
+      for (let t = start; t < end; t += HOUR) days.add(local(t));
+      return days;
+    };
+    // Every start and length around the 23-hour day (29 March 2026) and the 25-hour one (25 October 2026).
+    for (const around of [Date.UTC(2026, 2, 29), Date.UTC(2026, 9, 25)]) {
+      for (let s = -30; s < 30; s++) {
+        for (let hours = 0; hours < 80; hours++) {
+          const start = around + s * HOUR;
+          expect(hoursDays(start, start + hours * HOUR, local)).toEqual(everyHour(start, start + hours * HOUR));
+          expect(hoursDays(start, start + hours * HOUR - 1, local)).toEqual(everyHour(start, start + hours * HOUR - 1));
+        }
+      }
+    }
+    const asked = vi.fn(local);
+    const start = Date.UTC(2024, 0, 1);
+    const end = start + 734 * 24 * HOUR;
+    expect(hoursDays(start, end, asked)).toEqual(everyHour(start, end));
+    expect(asked.mock.calls.length).toBeLessThan(1500);
+  });
+
   const day = (iso: string) => new Date(`${iso}T00:00:00`).getTime();
   function history(opts: FakeApiOptions = {}, storage = memoryStorage()) {
     const api = fakeApi({ devices: [], prices: ({ date }) => dayPrices(date), ...opts });

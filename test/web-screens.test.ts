@@ -60,6 +60,28 @@ describe('web dashboards: screens without a keyboard', () => {
     expect(normalizeCode('ABCD-EFG0')).toBeNull(); // no 0, 1, I, L, O or U
   });
 
+  it('forgets wrong codes after an hour without one, also past a lock', async () => {
+    const { screens, tick: move } = setup();
+    for (let i = 0; i < 4; i++) await screens.redeem('AAAA-AAAA');
+    move(3601e3);
+    await expect(screens.redeem('AAAA-AAAA')).resolves.toEqual({ ok: false, reason: 'wrong' });
+    expect(screens.describe().failures).toBe(1);
+    for (let i = 0; i < 4; i++) await screens.redeem('AAAA-AAAA');
+    expect(screens.describe().locked).toBe(true);
+    move(3601e3);
+    expect(screens.describe().locked).toBe(false);
+    await expect(screens.redeem('AAAA-AAAA')).resolves.toEqual({ ok: false, reason: 'wrong' });
+  });
+
+  it('refuses a session token of non-ASCII characters instead of throwing', async () => {
+    const { homey, screens, password } = setup();
+    await password.setPassword('correct horse');
+    const { code } = await api.postWebScreen({ homey, body: { name: 'Kitchen', key: KEY, current: 'correct horse' } }) as any;
+    const { session } = await api.postWebScreenCode({ homey, query: {}, body: { code } }) as any;
+    expect(screens.checkSession(session)).toBe(true);
+    expect(screens.checkSession('é'.repeat(session.length))).toBe(false);
+  });
+
   it('locks every code after five wrong ones in a row, a burst included, longer each time', async () => {
     const { screens, tick } = setup();
     const { code } = await screens.add('Kitchen', KEY) as any;

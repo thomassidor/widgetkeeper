@@ -65,7 +65,7 @@ ways, on demand or every night at a time set in the web dashboards' Settings; a 
   (the links stay, and opening a dashboard syncs it once they're back on).
 - Routes: `GET /web/sync` (`{schedule, links}`), `PUT /web/sync` (schedule), `POST /web/sync` (all now),
   `GET /web/sync/homey` (`{ok, dashboards: [{id, name, linked}]}` or `{ok: false, reason}`),
-  `PUT /web/dashboards/:id/sync` (link; with only `{prefer}` on a linked one, changes it),
+  `PUT /web/dashboards/:id/sync` (link; with only `{prefer}` on a linked one, changes it; anything but `web` or `homey` throws),
   `POST /web/dashboards/:id/sync?ifOlder=<s>` (the `LastSync`), `DELETE /web/dashboards/:id/sync`; deleting a web
   dashboard unlinks it. `/web/setup` has `sync` (each link's status). Realtime `websync:state {id, link}` when a sync
   starts and ends, and on a change of link.

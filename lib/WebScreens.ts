@@ -23,6 +23,8 @@ const SAVE_USED_MS = 3600e3;
 const FREE_TRIES = 5;
 const LOCK_MS = 30e3;
 const MAX_LOCK_MS = 15 * 60e3;
+/** An hour without a wrong code starts the count over, so typos months apart never add up to a lock. */
+const FORGET_MS = 3600e3;
 
 type Screen = {
   id: string, name: string, code: string, key: string, created: number, used: number,
@@ -43,7 +45,11 @@ export type AddResult =
   | { ok: false, reason: 'name' | 'keyInvalid' | 'full' } | Refused;
 
 const sha256 = (s: string) => createHash('sha256').update(s).digest('hex');
-const sameHash = (a: string, b: string) => a.length === b.length && timingSafeEqual(Buffer.from(a), Buffer.from(b));
+/** By bytes: `timingSafeEqual` throws on a different length, and a token from a request can have non-ASCII characters. */
+function sameHash(a: string, b: string) {
+  const [x, y] = [Buffer.from(a), Buffer.from(b)];
+  return x.length === y.length && timingSafeEqual(x, y);
+}
 
 /** A code as typed: upper case, without spaces or dashes; null when it can't be one. */
 export function normalizeCode(code: unknown): string | null {
@@ -73,6 +79,7 @@ function newCode() {
 export default class WebScreens {
 
   private failures = 0;
+  private lastFailure = 0;
   private lockedUntil = 0;
   /** The code checks, one at a time, so a burst of guesses can't all be checked before the lock is set. */
   private attempts: Promise<unknown> = Promise.resolve();
@@ -226,6 +233,8 @@ export default class WebScreens {
     const screens = this.screens;
     const screen = hash ? screens.find(s => sameHash(s.code, hash)) : undefined;
     if (!screen) {
+      if (now - this.lastFailure > FORGET_MS) this.failures = 0;
+      this.lastFailure = now;
       this.failures++;
       if (this.failures >= FREE_TRIES) {
         const wait = Math.min(LOCK_MS * 2 ** (this.failures - FREE_TRIES), MAX_LOCK_MS);

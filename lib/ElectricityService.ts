@@ -377,8 +377,7 @@ export default class ElectricityService {
     const end = Math.min(to, now);
     const start = floorTo(Math.max(from, end - HISTORY_MAX_DAYS * 24 * HOUR), HOUR);
     const today = this.localDate(now);
-    const days = new Set<string>();
-    for (let t = start; t < end; t += HOUR) days.add(this.localDate(t));
+    const days = hoursDays(start, end, t => this.localDate(t));
     const past = [...days].filter(d => d < today);
     const [kept, recent] = await Promise.all([
       tm.time('history', () => this.history.hours(past, HISTORY_WAIT)),
@@ -546,6 +545,18 @@ function round4(x: number): number {
  * A price day's interval in minutes: Homey's own `interval` (60 in DK2, verified), else the shortest gap between
  * its prices, or null with neither (a day with one price, or none).
  */
+/**
+ * The local days of the hours from `start` to `end` (ms; `start` an hour's), without asking for every hour: a two-year
+ * Chart · Totals is 17,500 of them on each request. 12 hours at a time, as a step of a day could jump a 23-hour DST day.
+ */
+export function hoursDays(start: number, end: number, localDate: (t: number) => string): Set<string> {
+  const days = new Set<string>();
+  if (end <= start) return days;
+  for (let t = start; t < end; t += 12 * HOUR) days.add(localDate(t));
+  days.add(localDate(start + Math.floor((end - 1 - start) / HOUR) * HOUR));
+  return days;
+}
+
 export function priceInterval(res: any, samples: Sample[]): number | null {
   if (typeof res?.interval === 'number' && res.interval > 0 && Number.isFinite(res.interval)) return res.interval;
   const step = priceStep(samples);

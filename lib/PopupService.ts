@@ -102,8 +102,9 @@ export function screenKey(name: unknown): string {
 }
 
 function sameToken(a: string, b: unknown): boolean {
-  if (typeof b !== 'string' || b.length !== a.length) return false;
-  return timingSafeEqual(Buffer.from(a), Buffer.from(b));
+  if (typeof b !== 'string') return false;
+  const [x, y] = [Buffer.from(a), Buffer.from(b)]; // by bytes: timingSafeEqual throws on a different length
+  return x.length === y.length && timingSafeEqual(x, y);
 }
 
 /**

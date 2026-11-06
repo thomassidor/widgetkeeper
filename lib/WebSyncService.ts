@@ -210,7 +210,8 @@ export default class WebSyncService {
   setPrefer(id: string, prefer: unknown): LinkStatus | null {
     const link = this.links[id];
     if (!link) throw new Error('Not synced');
-    link.prefer = prefer === 'web' ? 'web' : 'homey';
+    if (prefer !== 'web' && prefer !== 'homey') throw new Error('Pick the side that wins');
+    link.prefer = prefer;
     this.save();
     this.emit(id);
     return this.statusOf(id);

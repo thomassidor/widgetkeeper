@@ -203,6 +203,8 @@ describe('the prompt page (public, by token)', () => {
     expect(() => service.page(id, 'wrong')).toThrow('Not found');
     expect(() => service.page(id, undefined)).toThrow('Not found');
     expect(() => service.answerWithToken(id, true, 'wrong')).toThrow('Not found');
+    // Nor a token of the length in characters, not bytes, which must be refused, not throw.
+    expect(() => service.answerWithToken(id, true, 'é'.repeat(token.length))).toThrow('Not found');
     // Leaving the token out is no way past it.
     expect(() => service.answerWithToken(id, true, undefined)).toThrow('Not found');
     expect(() => service.answerWithToken('gone', true, undefined)).toThrow('Not found');

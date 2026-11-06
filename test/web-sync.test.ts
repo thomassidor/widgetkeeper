@@ -336,6 +336,15 @@ describe('a sync and what happens around it', () => {
     expect(titles(store.get('h1'))).toEqual(['A', 'B', 'New']);
   });
 
+  it('changes which side wins only to a side, not on a request without one', async () => {
+    const { sync } = await linked();
+    sync.setPrefer('web1', 'web');
+    expect(() => sync.setPrefer('web1', undefined)).toThrow('Pick the side');
+    expect(() => sync.setPrefer('web1', 'both')).toThrow('Pick the side');
+    expect(sync.status().web1.prefer).toBe('web');
+    expect(sync.setPrefer('web1', 'homey')).toMatchObject({ prefer: 'homey' });
+  });
+
   it('leaves both sides alone while web dashboards are turned off, and takes it up again', async () => {
     const { homey, web, sync, store, dash } = await linked();
     store.get('h1').columns[0].widgets[0].title = 'From Homey';
