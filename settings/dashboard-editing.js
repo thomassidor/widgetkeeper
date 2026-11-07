@@ -426,6 +426,9 @@
 
     function resizeHandle(node) {
       const handle = el('div', 'wd-resize');
+      const grip = el('span', 'wd-resize-grip');
+      grip.append(icon('width'));
+      handle.append(grip);
       handle.title = t('resize');
       handle.setAttribute('aria-hidden', 'true'); // the Width row in its settings is the keyboard's way
       handle.addEventListener('pointerdown', (e) => {
@@ -632,6 +635,6 @@
       });
     }
 
-    Object.assign(wd, { clearSaveProblem, hasSaveProblem: () => !!saveProblem, showSaveProblem, dismissUndo, endDrag, endResize, find, layoutWide, setSpan, setTools, sizes, widgetElement });
+    Object.assign(wd, { withUndo, clearSaveProblem, hasSaveProblem: () => !!saveProblem, showSaveProblem, dismissUndo, endDrag, endResize, find, layoutWide, setSpan, setTools, sizes, widgetElement });
   });
 })();

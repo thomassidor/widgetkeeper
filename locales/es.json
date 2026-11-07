@@ -1296,6 +1296,7 @@
     "undo": "Deshacer",
     "widgetRemoved": "Widget eliminado",
     "widgetMoved": "Widget movido",
+    "columnRemoved": "Columna eliminada",
     "dashboardDeleted": "Panel eliminado",
     "discard": "Descartar",
     "discardEdits": "Toca otra vez para descartar"

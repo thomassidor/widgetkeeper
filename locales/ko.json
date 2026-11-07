@@ -1296,6 +1296,7 @@
     "undo": "실행 취소",
     "widgetRemoved": "위젯 제거됨",
     "widgetMoved": "위젯 이동됨",
+    "columnRemoved": "열을 제거했습니다",
     "dashboardDeleted": "대시보드를 삭제했습니다",
     "discard": "버리기",
     "discardEdits": "버리려면 한 번 더 누르세요"

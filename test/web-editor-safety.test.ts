@@ -228,3 +228,92 @@ describe('persist()', () => {
     expect(pendingDelete.dashboard).toBe(saved);
   });
 });
+
+describe('the viewing bar\'s list of dashboards', () => {
+  const A = { id: 'a', name: 'Home' };
+  const B = { id: 'b', name: 'Kitchen', section: 's1' };
+  const C = { id: 'c', name: '', section: 'gone' };
+  function mount(dashboards: any[], sections: any[] = [], setup: Record<string, any> = {}) {
+    const wd = base({ dashboards, frontPage: { sections }, setup, root: el('div'), storageSet: vi.fn(), sizes: {}, about: undefined, preview: undefined });
+    wd.dialog = () => { const d = el('dialog'); const body = el('div'); (d as any).showModal = vi.fn(); return { d, body }; };
+    wd.request = vi.fn();
+    return runPart('settings/dashboard-views.js', wd);
+  }
+
+  it('is just the name without another dashboard', () => {
+    expect(mount([A]).dashboardJump(A)).toBeNull();
+  });
+
+  it('lists them under the front page\'s sections and marks this one', () => {
+    const node = mount([A, B, C], [{ id: 's1', name: 'Tablets' }]).dashboardJump(A);
+    const shown = [...node.querySelector('nav').children].map((x: any) => x.textContent);
+    expect(shown).toEqual(['yourDashboards', 'Home', 'untitled', 'Tablets', 'Kitchen']); // a section that's gone: with the others
+    expect(node.querySelector('[aria-current]').getAttribute('href')).toBe('#/d/a');
+    expect(node.querySelector('nav').hidden).toBe(true);
+  });
+
+  it('has no headings without sections', () => {
+    const node = mount([A, B]).dashboardJump(A);
+    expect(node.querySelectorAll('h2')).toHaveLength(0);
+  });
+
+  it('opens and closes, on Escape and on leaving the page for a widget', () => {
+    const node = mount([A, B]).dashboardJump(A);
+    document.body.append(node);
+    const nav = node.querySelector('nav');
+    const trigger = node.querySelector('button');
+    trigger.click();
+    expect(nav.hidden).toBe(false);
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(nav.hidden).toBe(true);
+    trigger.click();
+    window.dispatchEvent(new Event('blur'));
+    expect(nav.hidden).toBe(true);
+    node.remove();
+  });
+
+  it('goes straight on from a dashboard without a code, and asks for one that has it', () => {
+    const open = mount([A, B]).dashboardJump(A);
+    const go = (node: any) => {
+      const e = new MouseEvent('click', { cancelable: true });
+      node.querySelector('a[href="#/d/b"]').dispatchEvent(e);
+      return e.defaultPrevented;
+    };
+    expect(go(open)).toBe(false);
+    const coded = { ...A, code: { id: 'x', name: 'Anna' } };
+    const wd = mount([coded, B], [], { codes: [{ id: 'x', name: 'Anna', digits: 4 }] });
+    const locked = wd.dashboardJump(coded);
+    expect(go(locked)).toBe(true);
+  });
+});
+
+describe('fewer columns', () => {
+  const source = webPageSource();
+  const start = source.indexOf('function setColumns(n)');
+  const end = source.indexOf('/**', start);
+  function load(columns: any[][]) {
+    const wd: Record<string, any> = { current: { dashboard: { columns } }, withUndo: vi.fn((_m: string, change: () => void) => change()) };
+    const persist = vi.fn();
+    const setColumns = new Function('wd', 'persist', 'syncGrid', `${source.slice(start, end)}\nreturn setColumns;`)(wd, persist, vi.fn());
+    return { wd, persist, setColumns };
+  }
+
+  it('offers Undo when the last column has widgets, which move to the one before', () => {
+    const { wd, persist, setColumns } = load([[{ id: 'a' }], [{ id: 'b' }]]);
+    setColumns(1);
+    expect(wd.withUndo).toHaveBeenCalledWith('columnRemoved', expect.any(Function));
+    expect(wd.current.dashboard.columns).toEqual([[{ id: 'a' }, { id: 'b' }]]);
+    expect(persist).toHaveBeenCalledOnce();
+  });
+
+  it('offers none for an empty column or for more columns', () => {
+    for (const [columns, n] of [[[[{ id: 'a' }], []], 1], [[[{ id: 'a' }]], 2]] as [any[][], number][]) {
+      const { wd, persist, setColumns } = load(columns);
+      setColumns(n);
+      expect(wd.withUndo).not.toHaveBeenCalled();
+      expect(persist).toHaveBeenCalledOnce();
+      expect(wd.current.dashboard.columns).toHaveLength(n);
+    }
+  });
+});

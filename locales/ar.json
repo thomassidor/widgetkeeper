@@ -1296,6 +1296,7 @@
     "undo": "تراجع",
     "widgetRemoved": "تمت إزالة الأداة",
     "widgetMoved": "تم نقل الأداة",
+    "columnRemoved": "تمت إزالة العمود",
     "dashboardDeleted": "تم حذف اللوحة",
     "discard": "تجاهل",
     "discardEdits": "اضغط مرة أخرى للتجاهل"

@@ -408,9 +408,88 @@
       d.showModal();
     }
 
+    /**
+     * A popover under its button: opens and closes with the button; a tap elsewhere closes it, also in a widget (a frame
+     * takes the page's focus, not its pointer events), and Escape, back to the button.
+     */
+    function popover(wrap, trigger, pop, opened) {
+      pop.hidden = true;
+      trigger.setAttribute('aria-haspopup', 'true');
+      trigger.setAttribute('aria-expanded', 'false');
+      const outside = (e) => { if (!wrap.contains(/** @type {Node} */ (e.target))) close(); };
+      const escape = (e) => { if (e.key === 'Escape') { close(); trigger.focus(); } };
+      function open() {
+        pop.hidden = false;
+        pop.style.left = '';
+        const over = pop.getBoundingClientRect().right - (document.documentElement.clientWidth - 8);
+        if (over > 0) pop.style.left = `${-over}px`; // kept inside a narrow window
+        trigger.setAttribute('aria-expanded', 'true');
+        document.addEventListener('pointerdown', outside, true);
+        document.addEventListener('keydown', escape, true);
+        window.addEventListener('blur', close);
+        if (opened) opened();
+      }
+      function close() {
+        pop.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+        document.removeEventListener('pointerdown', outside, true);
+        document.removeEventListener('keydown', escape, true);
+        window.removeEventListener('blur', close);
+      }
+      return { open, close, toggle() { if (pop.hidden) open(); else close(); } };
+    }
+
+    /**
+     * The viewing bar's title with the way to the other dashboards: a list in the front page's order and sections. Only
+     * a name while there are no others. Leaving a dashboard with a code takes the code, as its back button does.
+     */
+    function dashboardJump(d) {
+      if (wd.dashboards.length < 2) return null;
+      const wrap = el('span', 'wd-jump');
+      const trigger = button('wd-jump-button', '', () => menu.toggle(), t('dashboards'));
+      const chevron = icon('down');
+      trigger.append(el('span', 'wd-bar-title', d.name || t('untitled')), chevron);
+      const pop = el('nav', 'wd-jump-list');
+      pop.setAttribute('aria-label', t('dashboards'));
+      const row = (other) => {
+        const link = el('a', `wd-jump-row${other.id === d.id ? ' on' : ''}`);
+        link.href = `#/d/${other.id}`;
+        link.append(el('span', 'wd-jump-name', other.name || t('untitled')));
+        if (other.id === d.id) {
+          link.setAttribute('aria-current', 'page');
+          link.append(icon('check'));
+        }
+        link.addEventListener('click', (e) => {
+          menu.close();
+          if (other.id === d.id) { e.preventDefault(); return; }
+          if (!lockOf(d)) return;
+          e.preventDefault();
+          askCode(d, () => { storageSet(STAY_STORAGE, null); location.hash = link.getAttribute('href'); });
+        });
+        return link;
+      };
+      const sections = (wd.frontPage && wd.frontPage.sections) || [];
+      const inSection = (x, id) => (sections.some(s => s.id === x.section) ? x.section : '') === id;
+      const loose = wd.dashboards.filter(x => inSection(x, ''));
+      if (sections.length && loose.length) pop.append(el('h2', 'wd-jump-head', t('yourDashboards')));
+      pop.append(...loose.map(row));
+      for (const section of sections) {
+        const inIt = wd.dashboards.filter(x => inSection(x, section.id));
+        if (!inIt.length) continue;
+        pop.append(el('h2', 'wd-jump-head', section.name || t('untitled')), ...inIt.map(row));
+      }
+      wrap.append(trigger, pop);
+      const menu = popover(wrap, trigger, pop, () => {
+        const on = /** @type {HTMLElement} */ (pop.querySelector('.on'));
+        if (on) { on.focus(); on.scrollIntoView({ block: 'nearest' }); }
+      });
+      return wrap;
+    }
+
     function viewBar() {
       const d = wd.current.dashboard;
-      const back = el('a', 'wd-btn quiet wd-back', '‹');
+      const back = el('a', 'wd-icon wd-back');
+      back.append(icon('left'));
       back.href = '#/';
       back.title = t('dashboards');
       back.setAttribute('aria-label', t('dashboards'));
@@ -420,7 +499,7 @@
         e.preventDefault();
         askCode(d, () => { storageSet(STAY_STORAGE, null); location.hash = '#/'; });
       });
-      const items = [back, el('span', 'wd-bar-title', d.name || t('untitled')), el('span', 'wd-spacer'), liveNote()];
+      const items = [back, dashboardJump(d) || el('span', 'wd-bar-title', d.name || t('untitled')), el('span', 'wd-spacer'), liveNote()];
       // Safari on an iPad only has the webkit-prefixed calls.
       const doc = /** @type {any} */ (document.documentElement);
       const page = /** @type {any} */ (document);
@@ -518,12 +597,13 @@
 
       // The backdrop: a button with the current one's swatch, opening the palette under it.
       const bgPick = el('span', 'wd-bgpick');
-      const bgButton = button('wd-btn wd-bgbutton', '', () => (pop.hidden ? openPalette() : closePalette()), t('background'));
-      bgButton.setAttribute('aria-haspopup', 'true');
-      bgButton.setAttribute('aria-expanded', 'false');
+      const bgButton = button('wd-btn wd-bgbutton', '', () => palette.toggle(), t('background'));
       const pop = el('div', 'wd-bgpop');
-      pop.hidden = true;
       bgPick.append(bgButton, pop);
+      const palette = popover(bgPick, bgButton, pop, () => {
+        const on = pop.querySelector('.on');
+        if (on) /** @type {HTMLElement} */ (on).focus();
+      });
       const backgrounds = Object.keys(BACKGROUNDS).map(id => ({ id, title: t(`bg${id[0].toUpperCase()}${id.slice(1)}`) }));
       function drawBackground() {
         bgButton.replaceChildren(wd.swatch(wd.backdrop(wd.current.dashboard.background), 'small'), el('span', 'wd-bar-label', t('background')));
@@ -534,28 +614,9 @@
           applyTheme(wd.current.dashboard.theme, id);
           persist();
           drawBackground();
-          closePalette();
+          palette.close();
           bgButton.focus();
         }, true, colours));
-      }
-      const outside = (e) => { if (!bgPick.contains(/** @type {Node} */ (e.target))) closePalette(); };
-      const escape = (e) => { if (e.key === 'Escape') { closePalette(); bgButton.focus(); } };
-      function openPalette() {
-        pop.hidden = false;
-        pop.style.left = '';
-        const over = pop.getBoundingClientRect().right - (document.documentElement.clientWidth - 8);
-        if (over > 0) pop.style.left = `${-over}px`; // kept inside a narrow window
-        bgButton.setAttribute('aria-expanded', 'true');
-        document.addEventListener('pointerdown', outside, true);
-        document.addEventListener('keydown', escape, true);
-        const on = pop.querySelector('.on');
-        if (on) /** @type {HTMLElement} */ (on).focus();
-      }
-      function closePalette() {
-        pop.hidden = true;
-        bgButton.setAttribute('aria-expanded', 'false');
-        document.removeEventListener('pointerdown', outside, true);
-        document.removeEventListener('keydown', escape, true);
       }
       drawBackground();
 
@@ -621,14 +682,18 @@
     function setColumns(n) {
       const d = wd.current.dashboard;
       if (n < 1 || n > 6) return;
-      while (d.columns.length < n) d.columns.push([]);
-      while (d.columns.length > n) {
-        const last = d.columns.pop();
-        d.columns[d.columns.length - 1].push(...last.filter(e => !e.cover)); // its widgets stay, in the column before
-      }
-      stepColumns(root);
-      persist();
-      syncGrid();
+      const change = () => {
+        while (d.columns.length < n) d.columns.push([]);
+        while (d.columns.length > n) {
+          const last = d.columns.pop();
+          d.columns[d.columns.length - 1].push(...last.filter(e => !e.cover)); // its widgets stay, in the column before
+        }
+        persist();
+        syncGrid();
+      };
+      // + doesn't part them again, nor give a wide widget back its width. An empty column has nothing to put back.
+      if (n < d.columns.length && d.columns[d.columns.length - 1].length) wd.withUndo('columnRemoved', change);
+      else change();
     }
 
     /**
@@ -640,6 +705,7 @@
       if (wd.drag) wd.endDrag(false); // its widget may be rebuilt
       if (wd.resizing) wd.endResize(false);
       tidyCovers();
+      stepColumns(root);
       const { dashboard, grid, widgets, covers, editing } = wd.current;
       const count = dashboard.columns.length;
       grid.style.setProperty('--cols', String(count));
@@ -724,7 +790,7 @@
       });
     }
 
-    Object.assign(wd, { about, applyTheme, askCode, bar, brand, clearRoot, editable, liveNote, lockOf, preview,
+    Object.assign(wd, { about, applyTheme, askCode, bar, brand, clearRoot, dashboardJump, editable, liveNote, lockOf, preview,
       renderDashboard, renderFailed, renderKey, renderMissing, renderOff, renderPassword, signOut, stored, syncGrid,
       widgetFolder });
   });

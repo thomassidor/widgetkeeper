@@ -1296,6 +1296,7 @@
     "undo": "Fortryd",
     "widgetRemoved": "Widget fjernet",
     "widgetMoved": "Widget flyttet",
+    "columnRemoved": "Kolonne fjernet",
     "dashboardDeleted": "Dashboard slettet",
     "discard": "Kassér",
     "discardEdits": "Tryk igen for at kassere"

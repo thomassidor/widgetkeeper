@@ -1296,6 +1296,7 @@
     "undo": "Annuler",
     "widgetRemoved": "Widget supprimé",
     "widgetMoved": "Widget déplacé",
+    "columnRemoved": "Colonne supprimée",
     "dashboardDeleted": "Tableau de bord supprimé",
     "discard": "Abandonner",
     "discardEdits": "Touchez encore pour abandonner"

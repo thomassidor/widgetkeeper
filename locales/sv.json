@@ -1296,6 +1296,7 @@
     "undo": "Ångra",
     "widgetRemoved": "Widget borttagen",
     "widgetMoved": "Widget flyttad",
+    "columnRemoved": "Kolumnen togs bort",
     "dashboardDeleted": "Instrumentpanelen togs bort",
     "discard": "Förkasta",
     "discardEdits": "Tryck igen för att förkasta"

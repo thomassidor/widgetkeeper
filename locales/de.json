@@ -1296,6 +1296,7 @@
     "undo": "Rückgängig",
     "widgetRemoved": "Widget entfernt",
     "widgetMoved": "Widget verschoben",
+    "columnRemoved": "Spalte entfernt",
     "dashboardDeleted": "Dashboard gelöscht",
     "discard": "Verwerfen",
     "discardEdits": "Zum Verwerfen erneut tippen"

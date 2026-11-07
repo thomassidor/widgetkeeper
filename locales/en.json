@@ -1296,6 +1296,7 @@
     "undo": "Undo",
     "widgetRemoved": "Widget removed",
     "widgetMoved": "Widget moved",
+    "columnRemoved": "Column removed",
     "dashboardDeleted": "Dashboard deleted",
     "discard": "Discard",
     "discardEdits": "Tap again to discard"

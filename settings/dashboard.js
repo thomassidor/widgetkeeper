@@ -192,6 +192,7 @@
     drag: 'Drag to move',
     remove: 'Remove',
     undo: 'Undo',
+    columnRemoved: 'Column removed',
     dashboardDeleted: 'Dashboard deleted',
     discard: 'Discard',
     discardEdits: 'Tap again to discard',

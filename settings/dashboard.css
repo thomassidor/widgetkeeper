@@ -40,17 +40,39 @@ body { margin: 0; color: var(--wd-text); font-size: var(--homey-font-size-defaul
 }
 /* Full screen: the dashboard's bar keeps only its full screen button and the live note, without its backdrop, and
    scrolls away. */
-.wd-full .wd-back, .wd-full .wd-bar-title, .wd-full .wd-bar-edit { display: none; }
+.wd-full .wd-back, .wd-full .wd-bar-title, .wd-full .wd-jump, .wd-full .wd-bar-edit { display: none; }
 .wd-full .wd-bar { position: static; background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
 /* Kiosk mode (`?kiosk=1`, a kiosk browser that fills the screen itself): a dashboard's bar keeps only the live note,
    without the full screen button, and is gone while the note is hidden (`wd-online`, set with it: older kiosk
    WebViews, before Chrome 105, have no `:has()`). The editor's bar is left as it is. */
-.wd-kiosk .wd-bar-view .wd-back, .wd-kiosk .wd-bar-view .wd-bar-title, .wd-kiosk .wd-bar-view .wd-bar-edit,
+.wd-kiosk .wd-bar-view .wd-back, .wd-kiosk .wd-bar-view .wd-bar-title, .wd-kiosk .wd-bar-view .wd-jump, .wd-kiosk .wd-bar-view .wd-bar-edit,
 .wd-kiosk .wd-bar-view .wd-full-toggle { display: none; }
 .wd-kiosk .wd-bar-view { position: static; background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
 .wd-kiosk.wd-online .wd-bar-view { display: none; }
 .wd-kiosk .wd-bar-view + .wd-grid { padding-top: 16px; }
 /* The dashboard's backdrop in the editor: a button with its swatch, opening the palette under it. */
+/* The viewing bar's title opens the list of dashboards. */
+.wd-jump { position: relative; display: inline-flex; min-width: 0; }
+.wd-jump-button {
+  -webkit-appearance: none; appearance: none; border: 0; margin: 0 0 0 -8px; padding: 0 6px 0 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; min-width: 0; height: 36px;
+  border-radius: 18px; background: transparent; color: var(--wd-text); font-family: inherit;
+}
+.wd-jump-button:hover, .wd-jump-button[aria-expanded="true"] { background: var(--wd-raised); }
+.wd-jump-button svg { flex: none; width: 18px; height: 18px; color: var(--wd-muted); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.wd-jump-list {
+  position: absolute; top: calc(100% + 6px); left: -8px; z-index: 6; box-sizing: border-box; width: min(320px, calc(100vw - 16px)); max-height: min(60vh, 440px); overflow-y: auto;
+  padding: 6px; border-radius: 14px; background: var(--wd-raised); box-shadow: 0 0 0 1px var(--wd-line), 0 12px 32px rgba(0, 0, 0, .3);
+}
+.wd-jump-list[hidden] { display: none; }
+.wd-jump-head { margin: 8px 10px 4px; font-size: 12px; line-height: 16px; font-weight: 500; color: var(--wd-muted); }
+.wd-jump-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding: 0 10px; box-sizing: border-box; border-radius: 10px;
+  color: var(--wd-text); text-decoration: none; font-size: 15px; line-height: 20px;
+}
+.wd-jump-row:hover { background: color-mix(in srgb, var(--wd-text) 8%, transparent); }
+.wd-jump-row.on { font-weight: 500; }
+.wd-jump-row svg { flex: none; width: 18px; height: 18px; color: var(--wd-accent); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.wd-jump-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .wd-bgpick { position: relative; display: inline-flex; }
 .wd-bgpop {
   position: absolute; top: calc(100% + 6px); left: 0; z-index: 6; padding: 8px 10px; border-radius: 14px;
@@ -408,16 +430,17 @@ textarea.wd-input { width: 100%; resize: vertical; }
   font-family: inherit; font-weight: 500; font-size: 14px; line-height: 20px;
 }
 .wd-add:hover { color: var(--wd-text); border-color: var(--wd-muted); }
-/* The resize handle: a short bar on the widget's right edge, under its tools. */
+/* The resize handle: a round grip on the widget's right edge, under its tools (a thin bar there read as a scrollbar). */
 .wd-resize {
-  position: absolute; top: 44px; bottom: 8px; right: -9px; width: 16px; z-index: 2;
+  position: absolute; top: 44px; bottom: 8px; right: -12px; width: 24px; z-index: 2;
   display: flex; align-items: center; justify-content: center; cursor: ew-resize; touch-action: none;
 }
-.wd-resize::after {
-  content: ''; width: 6px; height: min(48px, 60%); border-radius: 3px;
-  background: var(--wd-line); border: 1px solid var(--wd-raised); transition: background .15s;
+.wd-resize-grip {
+  display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 12px; box-sizing: border-box;
+  background: var(--wd-raised); border: 1px solid var(--wd-line); color: var(--wd-muted); transition: background .15s, color .15s;
 }
-.wd-widget:hover > .wd-resize::after, .wd-resize:hover::after, .resizing .wd-resize::after { background: var(--wd-accent); }
+.wd-resize-grip svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.wd-resize:hover .wd-resize-grip, .resizing .wd-resize .wd-resize-grip { background: var(--wd-accent); border-color: var(--wd-accent); color: #FFFFFF; }
 .wd-resize[hidden] { display: none; }
 .resizing, .resizing * { cursor: ew-resize !important; -webkit-user-select: none; user-select: none; }
 .resizing iframe { pointer-events: none; }
