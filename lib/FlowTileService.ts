@@ -1,6 +1,6 @@
 import type Homey from 'homey';
 import { byName, filterItems, matches, nameOrder, type AutocompleteItem } from './autocomplete.js';
-import { DebouncedSetting, isReservedKey } from './storedSetting.js';
+import { DebouncedSetting, isReservedKey, nameKey } from './storedSetting.js';
 import { parseTileColor, type TileColor } from './tileColors.js';
 
 export const FLOW_TILES_SETTING = 'flowTiles';
@@ -75,9 +75,7 @@ export type TapListener = { board?: FlowTileArg, tile?: FlowTileArg };
  * default board; a reserved name (`__proto__` …) has none, `''`. The widget's copy (`flowTileKey`) is checked equal.
  */
 export function flowTileKey(name: unknown, fallback = ''): string {
-  const n = typeof name === 'string' ? name.trim() : '';
-  const key = (n || fallback).toLowerCase().slice(0, MAX_NAME);
-  return isReservedKey(key) ? '' : key;
+  return nameKey(name, fallback);
 }
 
 const boardKey = (name: unknown) => flowTileKey(name, DEFAULT_BOARD);

@@ -77,8 +77,9 @@ export default class ThermostatPresetService {
     let native: PresetWidget[] = [];
     let keyProblem: KeyError | null = null;
     try {
+      const order = nameOrder(this.homey);
       native = this.nativeWidgets(await this.deps.stack.dashboards(true))
-        .sort((a, b) => nameOrder(this.homey)(a.dashboard, b.dashboard));
+        .sort((a, b) => order(a.dashboard, b.dashboard));
     } catch (err) {
       if (err instanceof KeyError) keyProblem = err;
       else this.log("Thermostat Presets cards: Homey's dashboards could not be read:", err);

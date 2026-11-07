@@ -75,7 +75,7 @@ describe('the kit: playCameraStream (a popup on a web dashboard)', () => {
     expect(offers(post)).toEqual(['h265', 'sub', 'main']);
     await vi.advanceTimersByTimeAsync(15e3);
     expect(onEnded).toHaveBeenCalledTimes(1);
-    expect(onEnded).toHaveBeenCalledWith(false, 'no video after 15 s');
+    expect(onEnded).toHaveBeenCalledWith(false, 'no video after 15 s', { away: true });
     expect(onPlaying).not.toHaveBeenCalled();
     expect(connections.every(c => c.closed)).toBe(true);
   });
@@ -94,7 +94,7 @@ describe('the kit: playCameraStream (a popup on a web dashboard)', () => {
     await vi.advanceTimersByTimeAsync(0);
     frozen.video.dispatchEvent(new Event('playing'));
     await vi.advanceTimersByTimeAsync(20e3);
-    expect(frozen.onEnded).toHaveBeenCalledWith(true, 'no new frame for 15 s');
+    expect(frozen.onEnded).toHaveBeenCalledWith(true, 'no new frame for 15 s', { away: false });
     expect(frozen.connections[0].closed).toBe(true);
 
     const lost = setup();
@@ -102,7 +102,7 @@ describe('the kit: playCameraStream (a popup on a web dashboard)', () => {
     lost.video.dispatchEvent(new Event('playing'));
     lost.connections[0].connectionState = 'failed';
     lost.connections[0].onconnectionstatechange();
-    expect(lost.onEnded).toHaveBeenCalledWith(true, 'connection failed');
+    expect(lost.onEnded).toHaveBeenCalledWith(true, 'connection failed', { away: false });
     expect(offers(lost.post)).toEqual(['sub']);
   });
 
@@ -127,8 +127,59 @@ describe('the kit: playCameraStream (a popup on a web dashboard)', () => {
     expect(post.mock.calls.filter((c: any[]) => c[0] === '/video/keepalive')).toEqual([]);
   });
 
+  it('says which stream played or made way, and a refused keep-alive once', async () => {
+    const connections = stubPeerConnection();
+    const video = document.createElement('video');
+    video.play = vi.fn(async () => {});
+    video.pause = vi.fn();
+    const post = vi.fn(async (path: string, body: any): Promise<any> => {
+      if (path === '/video/keepalive') throw new Error('gone');
+      if (body.videoId === 'h265') throw new Error('codecs not matched');
+      return { answer: 'v=0 answer', streamId: 's' };
+    });
+    const hooks = { onPlaying: vi.fn(), onEnded: vi.fn(), onStreamFailed: vi.fn(), onKeepAliveFailed: vi.fn() };
+    (window as any).WidgetkeeperKit.playCameraStream(video, ['h265', 'sub'], post, hooks);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(hooks.onStreamFailed).toHaveBeenCalledWith('h265', 'codecs not matched', 0);
+    video.dispatchEvent(new Event('playing'));
+    expect(hooks.onPlaying).toHaveBeenCalledWith('sub');
+    connections[1].frames = 1;
+    await vi.advanceTimersByTimeAsync(25e3);
+    expect(hooks.onKeepAliveFailed).toHaveBeenCalledTimes(1);
+  });
+
+  it('tells a stream that was answered but never connected, unless another one connected', async () => {
+    const unreached = setup(['sub']);
+    await vi.advanceTimersByTimeAsync(15e3);
+    expect(unreached.onEnded).toHaveBeenCalledWith(false, 'no video after 15 s', { away: true });
+  });
+
+  it('leaves the last frame in the video until onEnded has run, and stop() after it changes nothing', async () => {
+    const connections = stubPeerConnection();
+    const video = document.createElement('video');
+    video.play = vi.fn(async () => {});
+    video.pause = vi.fn();
+    const post = vi.fn(async () => ({ answer: 'v=0 answer', streamId: 's' }));
+    Object.defineProperty(video, 'srcObject', { writable: true, value: null }); // happy-dom takes only a real MediaStream
+    let during: unknown = 'not called';
+    const stream = (window as any).WidgetkeeperKit.playCameraStream(video, ['sub'], post, {
+      onPlaying: () => {},
+      onEnded: () => { during = video.srcObject; },
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    const media = {};
+    connections[0].ontrack({ streams: [media] });
+    video.dispatchEvent(new Event('playing'));
+    await vi.advanceTimersByTimeAsync(20e3);
+    expect(during).toBe(media);
+    expect(video.srcObject).toBeNull();
+    expect(video.pause).toHaveBeenCalledTimes(1);
+    stream.stop();
+    expect(video.pause).toHaveBeenCalledTimes(1);
+  });
+
   it('ends at once without streams', () => {
     const { onEnded } = setup([]);
-    expect(onEnded).toHaveBeenCalledWith(false, 'no streams');
+    expect(onEnded).toHaveBeenCalledWith(false, 'no streams', { away: false });
   });
 });

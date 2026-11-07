@@ -274,6 +274,15 @@ describe('web dashboards page: Undo in the editor (withUndo)', () => {
     expect(wd.syncGrid).toHaveBeenCalledTimes(1);
   });
 
+  it("puts them back on the app's copy, when the save's answer took the dashboard's place", () => {
+    const { wd, toast, persist, withUndo } = setup();
+    withUndo('widgetRemoved', () => wd.current.dashboard.columns[0].splice(0, 1));
+    wd.current.dashboard = { id: 'd', columns: [[{ id: 'b', corrected: true }], []] };
+    toast.mock.calls[0][1].run();
+    expect(wd.current.dashboard.columns).toEqual([[{ id: 'a' }, { id: 'b' }], []]);
+    expect(persist).toHaveBeenCalledTimes(1);
+  });
+
   it('offers nothing when nothing changed (a move at the edge)', () => {
     const { toast, withUndo } = setup();
     withUndo('widgetMoved', () => {});

@@ -69,8 +69,9 @@ describe('copied widget helpers', () => {
     expect(read('thermostat', 'presets.js')).not.toMatch(/let message(Text|Timer)\b/);
   });
 
-  it("Flow Tiles builds Device Values' tile as it does (its stylesheet is Device Values')", () => {
-    expectSame(['values', 'flowtiles'].map(id => source(id, 'parts')));
+  it("Flow Tiles builds Device Values' tile with its code (its stylesheet is Device Values')", () => {
+    expect(source('flowtiles', 'parts'), 'a copy of parts()').toBeNull();
+    expect(read('flowtiles', 'widget.js')).toContain('window.valueTileParts(parent, pill)');
   });
 
   it('nameKeys() is the same in every widget with repeatable slots', () => {
@@ -130,12 +131,12 @@ describe('haptic feedback', () => {
   // The rest only show, open a panel or move between pages (the Smart Stack's own).
   const ACTING = ['combined', 'curtains', 'dayssince', 'flows', 'flowtiles', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions',
     'shortcuts', 'stack', 'thermostat', 'timers', 'variables', 'varpresets'];
-  it('every widget whose taps act calls Homey.hapticFeedback(), in a try', () => {
+  it("every widget whose taps act uses the kit's wireHaptic(), and none calls Homey's haptic itself", () => {
     for (const id of WIDGETS) {
       if (!existsSync(`widgets/${id}/public/mount.js`)) continue;
       const mount = readFileSync(`widgets/${id}/public/mount.js`, 'utf8');
-      expect([id, mount.includes('Homey.hapticFeedback()')]).toEqual([id, ACTING.includes(id)]);
-      if (ACTING.includes(id)) expect(mount, id).toMatch(/try \{ if \(Homey\.hapticFeedback\) Homey\.hapticFeedback\(\); \}/);
+      expect([id, mount.includes('wireHaptic(Homey')]).toEqual([id, ACTING.includes(id)]);
+      expect(mount, id).not.toContain('Homey.hapticFeedback()');
     }
   });
 });

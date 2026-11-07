@@ -193,6 +193,7 @@
     /** Runs `change` on the open dashboard's widgets; if it changed them, a toast (`message`) offers to put them back. */
     function withUndo(message, change) {
       const { dashboard } = wd.current;
+      const { id } = dashboard;
       const before = JSON.stringify(dashboard.columns);
       change();
       if (JSON.stringify(dashboard.columns) === before) return;
@@ -202,8 +203,9 @@
         ms: UNDO_MS,
         run() {
           dismissUndo();
-          if (!wd.current || !wd.current.editing || wd.current.dashboard !== dashboard) return;
-          dashboard.columns = JSON.parse(before);
+          // By id: persist() puts the app's copy in the dashboard's place when the app corrected something.
+          if (!wd.current || !wd.current.editing || wd.current.dashboard.id !== id) return;
+          wd.current.dashboard.columns = JSON.parse(before);
           persist();
           wd.syncGrid();
         },

@@ -8,7 +8,7 @@ import { limitInsights, readFirstLog } from '../lib/insightsLog.js';
 import { lastUpdatedMs } from '../lib/appApi.js';
 import { KeyError } from '../lib/PersonalApiKey.js';
 import { sharedCache } from '../lib/sharedCache.js';
-import { DebouncedSetting, isReservedKey } from '../lib/storedSetting.js';
+import { DebouncedSetting, isReservedKey, nameKey } from '../lib/storedSetting.js';
 import Timings from '../lib/Timings.js';
 import { idList, keyResult, logged, logPerf } from '../lib/widgetApi.js';
 
@@ -329,6 +329,15 @@ describe('DebouncedSetting', () => {
   it('refuses the keys that reach Object.prototype', () => {
     expect(['__proto__', 'constructor', 'prototype'].map(isReservedKey)).toEqual([true, true, true]);
     expect(isReservedKey('kitchen')).toBe(false);
+  });
+
+  it('nameKey(): trimmed, lower-cased, at most 60 characters, a fallback for empty and none for a reserved name', () => {
+    expect(nameKey(' Kitchen ')).toBe('kitchen');
+    expect(nameKey('', 'Note')).toBe('note');
+    expect(nameKey(undefined, 'Note')).toBe('note');
+    expect(nameKey(undefined)).toBe('');
+    expect(nameKey(' Constructor ', 'Note')).toBe('');
+    expect(nameKey('x'.repeat(80))).toHaveLength(60);
   });
 });
 

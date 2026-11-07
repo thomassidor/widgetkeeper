@@ -4,6 +4,7 @@
  * `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountMediaWidget = function (Homey, { root, frame }) {
+  const haptic = window.WidgetkeeperKit.wireHaptic(Homey); // a tap that acts vibrates
   const REFRESH_MS = 5 * 60e3; // keeps the app's device subscription alive and resyncs state
 
   const { wireFrame, onDeviceNames } = window.WidgetkeeperKit;
@@ -76,9 +77,7 @@ window.mountMediaWidget = function (Homey, { root, frame }) {
     },
     onArt: () => Homey.api('GET', `/art?deviceId=${encodeURIComponent(deviceId)}`),
     onReport: (text) => { Homey.api('POST', '/report', { text }).catch(() => {}); },
-    onHaptic: () => {
-      try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not on every platform */ }
-    },
+    onHaptic: haptic,
     // The widget reports its own height; Homey needs the body's, which adds the widget padding.
     onHeight: link.setHeight,
   });

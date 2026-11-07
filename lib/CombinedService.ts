@@ -1,5 +1,5 @@
 import type Homey from 'homey';
-import { devicesAndZones, type AutocompleteItem } from './autocomplete.js';
+import { byName, devicesAndZones, type AutocompleteItem } from './autocomplete.js';
 import { describeCapability } from './capabilities.js';
 import Timings from './Timings.js';
 import ValueMatrixService, { matrixCaps } from './ValueMatrixService.js';
@@ -71,7 +71,7 @@ export default class CombinedService {
       }
     } else {
       counted.push(...devices.filter(has)
-        .sort((a, b) => String(a.name).localeCompare(String(b.name)))
+        .sort(byName(this.homey))
         .map(d => d.id as string));
     }
     // The value's units are those most counted devices report it in (the first's on a tie); the rest are left out.

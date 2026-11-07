@@ -4,7 +4,7 @@
  * tapped*) can be tapped. Plain browser JS (served as-is).
  */
 (function () {
-  const { el, COLORS, icons, TIGHT_UNITS, formatSince, applyColors, messageLine, onTap } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, COLORS, icons, TIGHT_UNITS, formatSince, applyColors, messageLine, onTap, shake } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -102,46 +102,21 @@
       render();
     }
 
-    /** A board from the realtime event: taken when it's this widget's (`key`). */
+    /** A board from the realtime event: taken when it's this widget's (`key`), and then true. */
     function pushBoard(entry, key) {
-      if (!entry || entry.key !== key || !Array.isArray(entry.tiles)) return;
+      if (!entry || entry.key !== key || !Array.isArray(entry.tiles)) return false;
       board = entry;
       message.reset({ lastingOnly: true });
       render();
+      return true;
     }
 
     function setMessage(text, transient) {
       message.set(text, transient);
     }
 
-    /**
-     * A tile's icon, value and name in `parent`: the icon and value over the name, or in pill tiles the icon beside the name
-     * over the value. The second value (hidden without one) ends the name's row, or in pill tiles the value's.
-     */
-    function parts(parent) {
-      const secondIn = (row) => {
-        const second = el('span', { class: 'vt-second' }, row);
-        return { second, secondIcon: el('span', { class: 'vt-second-icon' }, second), secondValue: el('span', { class: 'vt-second-value', dir: 'auto' }, second) };
-      };
-      if (pill) {
-        const icon = el('span', { class: 'vt-icon' }, parent);
-        const text = el('div', { class: 'vt-text' }, parent);
-        const name = el('span', { class: 'vt-name', dir: 'auto' }, text);
-        const row = el('div', { class: 'vt-row' }, text);
-        return { icon, value: el('span', { class: 'vt-value', dir: 'auto' }, row), name, ...secondIn(row) };
-      }
-      const top = el('div', { class: 'vt-top' }, parent);
-      const icon = el('span', { class: 'vt-icon' }, top);
-      const value = el('span', { class: 'vt-value', dir: 'auto' }, top);
-      const row = el('div', { class: 'vt-row' }, parent);
-      return { icon, value, name: el('span', { class: 'vt-name', dir: 'auto' }, row), ...secondIn(row) };
-    }
-
-    function shake(node) {
-      node.classList.remove('shake');
-      void node.offsetWidth; // restart the animation
-      node.classList.add('shake');
-    }
+    // Device Values' tile (../values/widget.js, loaded before this one).
+    const parts = parent => window.valueTileParts(parent, pill);
 
     function lightUp(node) {
       node.classList.remove('ft-flash');

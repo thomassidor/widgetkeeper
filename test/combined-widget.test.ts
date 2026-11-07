@@ -336,10 +336,10 @@ describe('the Combined Value mount', () => {
   it('asks for the value of the picked devices, or of every device with it', async () => {
     const picked = mount({ capability: { id: 'measure_temperature' } }, ['a', 'b']);
     await settle();
-    expect(picked.api.mock.calls[0][1]).toMatch(/^\/state\?capabilityId=measure_temperature&deviceIds=a,b&perf=/);
+    expect(picked.api.mock.calls[0][1]).toMatch(/^\/state\?deviceIds=a,b&capabilityId=measure_temperature&perf=/);
     const all = mount({ capability: { id: 'measure_temperature' } }, []);
     await settle();
-    expect(all.api.mock.calls[0][1]).toMatch(/^\/state\?capabilityId=measure_temperature&perf=/);
+    expect(all.api.mock.calls[0][1]).toMatch(/^\/state\?deviceIds=&capabilityId=measure_temperature&perf=/);
   });
 
   it('says to pick a value without one (or with None)', async () => {

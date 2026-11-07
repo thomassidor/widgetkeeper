@@ -11,15 +11,8 @@ window.mountLightRoomsWidget = function (Homey, { root, frame }) {
   let groupLights = new Set();
 
   const settings = Homey.getSettings() || {};
-  // A tap that changes something vibrates, as on the other widgets that act (the settings review, 2026-11-04). Homey's
-  // haptic throws unless a touch has just ended (a click, a key, a late send): nothing then.
-  // Once for a room's lights or presets' several values sent together.
-  let hapticAt = 0;
-  const haptic = () => {
-    if (Date.now() - hapticAt < 300) return;
-    hapticAt = Date.now();
-    try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not now */ }
-  };
+  // A tap that changes something vibrates, once for what's sent together.
+  const haptic = window.WidgetkeeperKit.wireHaptic(Homey, { together: true });
   // A widget placed before the setting existed shows its rooms' Moods.
   const showMoods = settings.showMoods !== false;
   const tileNames = wireTileNames(Homey, names => widget.setNames(names));

@@ -9,15 +9,11 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, timeFormatter, onTap, touchGuard, messageLine, openVideoStream, framesDecoded } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, timeFormatter, onTap, touchGuard, messageLine, openVideoStream, playCameraStream, STREAM_NEXT_MS, STREAM_LAST_MS } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const LIVE_MAX_MS = 5 * 60e3; // the default, and for a missing or unknown `liveFor`
   const LIVE_FOR = { 30: 30e3, 60: 60e3, 300: LIVE_MAX_MS, tap: null }; // `liveFor` → ms; null: until tapped
-  const LIVE_TIMEOUT_MS = 15e3; // from the tap to the first frame, and between frames after that
-  const NEXT_STREAM_MS = 10e3; // to the first frame of a stream with another one left to try
-  const FRAME_CHECK_MS = 5000; // how often a live stream's decoded frames are counted
-  const KEEPALIVE_MS = 10e3;
   const GRAB_MIN_MS = 60e3; // a video-only camera's frame grab: each one opens a stream through Homey
   const GRAB_RETRY_MS = 5 * 60e3; // after a failed grab
   const AUTO_LOST_MS = 5000; // Always live: a stream that played and was lost is tried again after this
@@ -273,7 +269,7 @@
       for (let i = 0; i < order.length; i++) {
         const last = i === order.length - 1;
         try {
-          const src = await grabStream(d, tile, order[i], last ? LIVE_TIMEOUT_MS : NEXT_STREAM_MS);
+          const src = await grabStream(d, tile, order[i], last ? STREAM_LAST_MS : STREAM_NEXT_MS);
           if (src != null) streamWorked(d.id, order[i]);
           return src;
         } catch (err) {
@@ -381,11 +377,7 @@
       if (!live) return;
       const l = live;
       live = null;
-      clearTimeout(l.timeout);
       clearTimeout(l.maxTimer);
-      clearInterval(l.keepAlive);
-      clearInterval(l.frameCheck);
-      try { l.pc.close(); } catch (err) { /* already closed */ }
       const tile = tiles.get(l.id);
       if (tile) {
         // A video-only camera keeps the last frame it showed live.
@@ -395,8 +387,9 @@
           try { src = captureFrame(tile.video); } catch (err) { /* no frame */ }
           if (src) { tile.grabAt = now(); tile.grabFailed = false; showImage(tile, src); }
         }
-        tile.video.pause();
-        tile.video.srcObject = null;
+      }
+      if (l.stream) l.stream.stop();
+      if (tile) {
         tile.tile.classList.remove('live', 'connecting');
         expand(tile, false);
         render();
@@ -461,9 +454,8 @@
     }
 
     /**
-     * Live view: the camera's streams one at a time (videoOrder) until one plays; a stream that gives no frame
-     * in NEXT_STREAM_MS (LIVE_TIMEOUT_MS for the last), or whose offer or connection fails, makes way for the
-     * next. Once one plays, losing it ends live view.
+     * Live view: the kit's `playCameraStream()` on the camera's streams (videoOrder), with what only this widget does:
+     * which stream to try first next time, the reports, and what the tile says when it ends.
      */
     function startLive(d) {
       const tile = tiles.get(d.id);
@@ -472,106 +464,41 @@
       clearTimeout(autoTimer);
       autoTimer = null;
       const order = videoOrder(d);
-      const l = {
-        id: d.id, pc: null, videoId: null, playing: false, timeout: null, maxTimer: null, keepAlive: null,
-        frameCheck: null, frames: 0, frameAt: 0, fail: null, keepAliveFailed: false,
-        unreached: 0, reached: false,
-      };
+      const l = { id: d.id, stream: null, playing: false, maxTimer: null };
       live = l;
-      l.fail = (why) => {
-        if (live !== l) return;
-        report(`live view of ${d.name} failed: ${why}`, true);
-        if (d.id === autoId) autoDelay = AUTO_LOST_MS;
-        stopLive();
-        note(d.id, t('liveFailed'));
-      };
-      // Homey answered an offer but the connection never came up: the phone can't reach Homey's video server
-      // (go2rtc, port 8555), which Homey's cloud doesn't relay. That's away from home without a VPN.
-      const giveUp = () => {
-        if (live !== l) return;
-        const away = l.unreached > 0 && !l.reached;
-        report(`live view of ${d.name}: none of its ${order.length} streams played`
-          + (away ? '; Homey answered, but its video server could not be reached (away from home?)' : ''), true);
-        if (d.id === autoId && (away || allH265(d))) autoGaveUp = true;
-        stopLive();
-        note(d.id, t(allH265(d) ? 'liveH265' : away ? 'liveAway' : 'liveFailed'));
-      };
       tile.tile.classList.add('connecting');
       expand(tile, true);
       if (liveMs != null && d.id !== autoId) l.maxTimer = setTimeout(() => { if (live === l) stopLive(); }, liveMs);
-
-      const attempt = (i) => {
-        if (live !== l) return;
-        if (i >= order.length) { giveUp(); return; }
-        if (l.pc) { try { l.pc.close(); } catch (err) { /* already closed */ } }
-        clearTimeout(l.timeout);
-        clearInterval(l.keepAlive);
-        tile.video.srcObject = null;
-        const videoId = order[i];
-        const pc = new RTCPeerConnection();
-        l.pc = pc;
-        l.videoId = videoId;
-        l.keepAliveFailed = false;
-        const current = () => live === l && l.pc === pc;
-        let answered = false;
-        let connected = false;
-        const next = (why) => {
-          if (!current() || l.playing) return;
-          if (answered && !connected) l.unreached++;
+      l.stream = playCameraStream(tile.video, order, (path, body) => api('POST', path, body), {
+        onPlaying(videoId) {
+          l.playing = true;
+          streamWorked(d.id, videoId);
+          tile.tile.classList.remove('connecting');
+          tile.tile.classList.add('live');
+        },
+        onStreamFailed(videoId, why, i) {
           streamFailed(d.id, videoId);
           report(`live view of ${d.name}: stream ${i + 1} of ${order.length} failed: ${why}`, true);
-          attempt(i + 1);
-        };
-        const wait = i === order.length - 1 ? LIVE_TIMEOUT_MS : NEXT_STREAM_MS;
-        l.timeout = setTimeout(() => next(`no video after ${wait / 1000} s`), wait);
-        pc.ontrack = (e) => {
-          if (!current()) return;
-          tile.video.srcObject = e.streams && e.streams[0] ? e.streams[0] : new MediaStream([e.track]);
-          const p = tile.video.play();
-          if (p && p.catch) p.catch(() => {});
-        };
-        pc.onconnectionstatechange = () => {
-          if (current() && pc.connectionState === 'connected') { connected = true; l.reached = true; }
-          if (!current() || pc.connectionState !== 'failed') return;
-          if (l.playing) l.fail('connection failed');
-          else next('connection failed');
-        };
-        openStream(pc, videoId, current).then((res) => {
-          if (!res || !current()) return;
-          answered = true;
-          if (!res.streamId) return;
-          l.keepAlive = setInterval(() => {
-            api('POST', '/video/keepalive', { videoId, streamId: res.streamId }).catch((err) => {
-              // A rejected keep-alive ends the stream on Homey's side; the frame check then ends live view.
-              if (l.keepAliveFailed) return;
-              l.keepAliveFailed = true;
-              report(`live view of ${d.name}: keep-alive failed: ${err && err.message ? err.message : err}`, true);
-            });
-          }, KEEPALIVE_MS);
-        }).catch(err => next(err && err.message ? err.message : String(err)));
-      };
-      attempt(0);
-    }
-
-    function onPlaying(id) {
-      const l = live;
-      if (!l || l.id !== id) return;
-      clearTimeout(l.timeout);
-      const tile = tiles.get(id);
-      if (tile) { tile.tile.classList.remove('connecting'); tile.tile.classList.add('live'); }
-      if (l.playing) return; // 'playing' again after a stall
-      l.playing = true;
-      streamWorked(id, l.videoId);
-      // A stream can stop sending frames while the connection stays up (the camera drops off); the video
-      // then just freezes. Live view ends after LIVE_TIMEOUT_MS without a new frame.
-      l.frameAt = now();
-      l.frameCheck = setInterval(async () => {
-        let n = null;
-        try { n = await framesDecoded(l.pc); } catch (err) { /* closed meanwhile */ }
-        if (live !== l || n == null) return;
-        if (n > l.frames) { l.frames = n; l.frameAt = now(); }
-        else if (now() - l.frameAt >= LIVE_TIMEOUT_MS) l.fail('no new frame for 15 s');
-      }, FRAME_CHECK_MS);
+        },
+        onKeepAliveFailed(err) {
+          report(`live view of ${d.name}: keep-alive failed: ${err && err.message ? err.message : err}`, true);
+        },
+        onEnded(played, why, { away }) {
+          if (live !== l) return;
+          if (played) {
+            report(`live view of ${d.name} failed: ${why}`, true);
+            if (d.id === autoId) autoDelay = AUTO_LOST_MS;
+            stopLive();
+            note(d.id, t('liveFailed'));
+            return;
+          }
+          report(`live view of ${d.name}: none of its ${order.length} streams played`
+            + (away ? '; Homey answered, but its video server could not be reached (away from home?)' : ''), true);
+          if (d.id === autoId && (away || allH265(d))) autoGaveUp = true;
+          stopLive();
+          note(d.id, t(allH265(d) ? 'liveH265' : away ? 'liveAway' : 'liveFailed'));
+        },
+      });
     }
 
     function press(id) {
@@ -592,7 +519,6 @@
       const img = /** @type {HTMLImageElement} */ (el('img', { class: 'cw-img', alt: '' }, node));
       const video = /** @type {HTMLVideoElement} */ (el('video', { class: 'cw-video', playsinline: '', muted: '', autoplay: '' }, node));
       video.muted = true;
-      video.addEventListener('playing', () => onPlaying(id));
       const icon = el('span', { class: 'cw-icon' }, node);
       const overlay = el('div', { class: 'cw-overlay' }, node);
       const name = el('span', { class: 'cw-name', dir: 'auto' }, overlay);

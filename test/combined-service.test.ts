@@ -25,6 +25,11 @@ beforeEach(() => { vi.useFakeTimers(); });
 afterEach(() => { vi.useRealTimers(); });
 
 describe('CombinedService', () => {
+  it('without devices picked counts them in the order of their names, numbers by their value', async () => {
+    const { service } = setup([sensor('s10', 'Spot 10', 1), sensor('s2', 'Spot 2', 2)]);
+    expect((await service.getState(T, [])).devices.map((d: any) => d.id)).toEqual(['s2', 's10']);
+  });
+
   it('without devices picked counts every device with the value, by name, and describes it from the first', async () => {
     const { service } = setup();
     expect(await service.getState(T, [])).toEqual({

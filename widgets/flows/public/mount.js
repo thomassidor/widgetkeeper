@@ -4,6 +4,7 @@
  * `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountFlowsWidget = function (Homey, { root, frame }) {
+  const haptic = window.WidgetkeeperKit.wireHaptic(Homey); // a tap that acts vibrates
   const REFRESH_MS = 5 * 60e3; // picks up renamed, turned-off and deleted flows
 
   const { wireFrame } = window.WidgetkeeperKit;
@@ -35,9 +36,7 @@ window.mountFlowsWidget = function (Homey, { root, frame }) {
       // No usable API key: the widget says what to do (see the app settings).
       if (res && res.ok === false) throw Object.assign(new Error(res.reason), { reason: res.reason });
     },
-    onHaptic: () => {
-      try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not on every platform */ }
-    },
+    onHaptic: haptic,
     onHeight: link.setHeight,
   });
 

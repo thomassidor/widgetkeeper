@@ -4,10 +4,8 @@
  * its page and a Homey of its own. `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountFlowTilesWidget = function (Homey, { root, frame }) {
-  // The events keep it current; this catches a missed one (a screen that slept).
-  const REFRESH_MS = 5 * 60e3;
-
-  const { wireFrame, wireTimeFormat } = window.WidgetkeeperKit;
+  const haptic = window.WidgetkeeperKit.wireHaptic(Homey); // a tap that acts vibrates
+  const { wireFrame, wireTimeFormat, wireRefresh } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
 
@@ -16,7 +14,8 @@ window.mountFlowTilesWidget = function (Homey, { root, frame }) {
   const board = settings.board && typeof settings.board === 'object' && typeof settings.board.id === 'string' ? settings.board.id : '';
   const key = window.flowTileKey(board, 'Tiles');
   let loaded = false;
-  let loadedAt = 0;
+  let loadSeq = 0; // only the latest load's answer counts
+  let loading = false;
 
   const widget = window.createFlowTilesWidget(root, {
     t: (k, tokens) => Homey.__(k, tokens),
@@ -28,7 +27,7 @@ window.mountFlowTilesWidget = function (Homey, { root, frame }) {
     showAge: settings.showAge === true,
     tapEffect: settings.tapEffect,
     onTap: async (tile) => {
-      try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* only right after a touch */ }
+      haptic();
       await Homey.api('POST', '/tap', { board, tile });
     },
     onHeight: link.setHeight,
@@ -39,20 +38,32 @@ window.mountFlowTilesWidget = function (Homey, { root, frame }) {
     return link.ready({ fonts: true });
   }
 
+  // The events keep it current; this catches a missed one (a screen that slept) and retries a failed read.
+  const refresh = wireRefresh(load);
   async function load() {
-    loadedAt = Date.now();
+    const seq = ++loadSeq;
+    loading = true;
     try {
-      widget.setState(await Homey.api('GET', `/state?board=${encodeURIComponent(board)}${link.perfParam()}`));
+      const state = await Homey.api('GET', `/state?board=${encodeURIComponent(board)}${link.perfParam()}`);
+      if (seq !== loadSeq) return; // a newer load is on its way
+      loading = false;
+      widget.setState(state);
       loaded = true;
     } catch (err) {
+      if (seq !== loadSeq) return;
+      loading = false;
       console.error(err);
+      refresh.failed();
       // A failed refresh keeps the tiles; only a failed first load replaces them with the error.
       widget.setMessage(widget.t('error'), loaded);
     }
     ready();
   }
 
-  Homey.on('flowtiles:state', (entry) => widget.pushBoard(entry, key));
+  Homey.on('flowtiles:state', (entry) => {
+    // A read under way may have left before this change, and its answer would undo it: read again.
+    if (widget.pushBoard(entry, key) && loading) load();
+  });
 
   // The time of a change (Show when it changed) moves on by itself: drawn again each minute.
   if (settings.showAge === true) {
@@ -60,10 +71,6 @@ window.mountFlowTilesWidget = function (Homey, { root, frame }) {
     // Its times follow the app's time format: drawn again when it changes.
     wireTimeFormat(Homey, () => widget.render());
   }
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && Date.now() - loadedAt >= REFRESH_MS) load();
-  });
-  setInterval(load, REFRESH_MS);
   load();
 };
 /** The classes index.html puts on its body; the Smart Stack puts them on the slide. */

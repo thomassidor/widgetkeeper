@@ -363,6 +363,89 @@ describe('wireDeviceState()', () => {
   });
 });
 
+describe('wireDeviceState() with devicesOptional', () => {
+  it('asks without devices, and only need() holds it back', async () => {
+    let value: string | null = null;
+    const Homey = { api: vi.fn(async () => ({})), on: vi.fn(), getDeviceIds: () => [] };
+    const link = { ready: vi.fn(async () => {}), perfParam: () => '' };
+    const widget = { t: (key: string) => key, setState: vi.fn(), setMessage: vi.fn(), pushChange: vi.fn() };
+    const state = kit.wireDeviceState(Homey, link, widget, { devicesOptional: true, need: () => (value ? null : 'selectValue'), query: () => `&v=${value}` });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(state.ids()).toEqual([]);
+    expect(widget.setMessage).toHaveBeenCalledWith('selectValue');
+    expect(Homey.api).not.toHaveBeenCalled();
+    value = 'x';
+    await vi.advanceTimersByTimeAsync(5 * 60e3);
+    expect(Homey.api).toHaveBeenCalledWith('GET', '/state?deviceIds=&v=x');
+  });
+});
+
+describe('wireHaptic()', () => {
+  it('survives Homey refusing it (no touch just before), and a Homey without it', () => {
+    const hapticFeedback = vi.fn(() => { throw new Error('no touch'); });
+    kit.wireHaptic({ hapticFeedback })();
+    expect(hapticFeedback).toHaveBeenCalledTimes(1);
+    expect(() => kit.wireHaptic({})()).not.toThrow();
+  });
+
+  it('vibrates for every call, or with `together` once for those 300 ms apart or less', () => {
+    const hapticFeedback = vi.fn();
+    const each = kit.wireHaptic({ hapticFeedback });
+    each(); each();
+    expect(hapticFeedback).toHaveBeenCalledTimes(2);
+    hapticFeedback.mockClear();
+    vi.advanceTimersByTime(1000);
+    const together = kit.wireHaptic({ hapticFeedback }, { together: true });
+    together(); together();
+    vi.advanceTimersByTime(299);
+    together();
+    expect(hapticFeedback).toHaveBeenCalledTimes(1);
+    vi.advanceTimersByTime(1);
+    together();
+    expect(hapticFeedback).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('pressGuard()', () => {
+  it('Double: the first tap asks for 3 s, the second goes through; another value asks again', () => {
+    const render = vi.fn();
+    const guard = kit.pressGuard({ render });
+    expect(guard.ask('a', true)).toBe(true);
+    expect(guard.asking('a')).toBe(true);
+    expect(guard.askedFrom('a')).toBe(true);
+    expect(guard.ask('a', true)).toBe(false);
+    expect(guard.asking('a')).toBe(false);
+    expect(guard.ask('a', true)).toBe(true);
+    expect(guard.ask('a', false)).toBe(true);
+    vi.advanceTimersByTime(3000);
+    expect(guard.asking('a')).toBe(false);
+    expect(render).toHaveBeenCalledTimes(4);
+    expect(guard.ask('b')).toBe(true);
+    guard.drop('b');
+    expect(guard.asking('b')).toBe(false);
+  });
+
+  it('Long: a short tap says Hold for 1.5 s, a hold takes that away and vibrates at its end', () => {
+    const render = vi.fn();
+    const onHaptic = vi.fn();
+    const guard = kit.pressGuard({ render, onHaptic });
+    guard.hint('a');
+    vi.advanceTimersByTime(1499);
+    expect(guard.hinting('a')).toBe(true);
+    vi.advanceTimersByTime(1);
+    expect(guard.hinting('a')).toBe(false);
+    const act = vi.fn();
+    const when = () => true;
+    const hold = guard.hold('a', when, act);
+    expect(hold).toMatchObject({ ms: guard.holdMs, when, act });
+    guard.hint('a');
+    hold.start();
+    expect(guard.hinting('a')).toBe(false);
+    hold.done();
+    expect(onHaptic).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe('wireRefresh()', () => {
   const { wireRefresh, markOffline } = (window as any).WidgetkeeperKit;
   let hidden = false;

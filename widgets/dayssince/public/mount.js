@@ -3,6 +3,7 @@
  * with the frame's own Homey and body. `frame` is the element whose height Homey gets (the body).
  */
 window.mountDaysSinceWidget = function (Homey, { root, frame }) {
+  const haptic = window.WidgetkeeperKit.wireHaptic(Homey); // a tap that acts vibrates
   const REFRESH_MS = 5 * 60e3; // resyncs in case a realtime event was missed
 
   const { wireFrame } = window.WidgetkeeperKit;
@@ -27,9 +28,7 @@ window.mountDaysSinceWidget = function (Homey, { root, frame }) {
     show: settings.show,
     onReset: name => Homey.api('POST', '/reset', { name }),
     onUndo: (name, at) => Homey.api('POST', '/undo', { name, at }),
-    onHaptic: () => {
-      try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not on every platform */ }
-    },
+    onHaptic: haptic,
     onHeight: link.setHeight,
   });
 

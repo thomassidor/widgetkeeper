@@ -1,6 +1,6 @@
 import type Homey from 'homey';
 import { matches, nameOrder, type AutocompleteItem } from './autocomplete.js';
-import { isReservedKey } from './storedSetting.js';
+import { nameKey } from './storedSetting.js';
 import { parseTileColor, type TileColor } from './tileColors.js';
 
 export const TEXTLINE_STATE_EVENT = 'textline:state';
@@ -26,9 +26,7 @@ export type TextLineEntry = TextLine & { key: string };
  * a reserved name (`__proto__` …) has none, `''`.
  */
 export function boardKey(name: unknown): string {
-  const n = typeof name === 'string' ? name.trim() : '';
-  const key = (n || DEFAULT_BOARD).toLowerCase().slice(0, MAX_NAME);
-  return isReservedKey(key) ? '' : key;
+  return nameKey(name, DEFAULT_BOARD);
 }
 
 /**

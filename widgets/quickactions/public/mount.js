@@ -4,6 +4,7 @@
  * `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountQuickActionsWidget = function (Homey, { root, frame }) {
+  const haptic = window.WidgetkeeperKit.wireHaptic(Homey); // a tap that acts vibrates
   const { wireFrame, wireTileNames, wireDeviceState } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
@@ -23,9 +24,7 @@ window.mountQuickActionsWidget = function (Homey, { root, frame }) {
     press: settings.press,
     pressFor: settings.pressFor,
     onTrigger: (deviceId, value) => Homey.api('POST', '/trigger', { deviceId, value }),
-    onHaptic: () => {
-      try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not on every platform */ }
-    },
+    onHaptic: haptic,
     wideLast: settings.wideLast === true,
     onHeight: link.setHeight,
   });

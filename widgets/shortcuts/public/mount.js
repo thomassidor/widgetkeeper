@@ -4,6 +4,7 @@
  * whose widget instances are `web-<dashboard>-<widget>`) can open another one: the page takes `popup('#/d/<id>')`.
  */
 window.mountShortcutsWidget = function (Homey, { root, frame }) {
+  const haptic = window.WidgetkeeperKit.wireHaptic(Homey); // a tap that acts vibrates
   const REFRESH_MS = 5 * 60e3; // picks up renamed and deleted dashboards
 
   const { wireFrame, wireTileNames } = window.WidgetkeeperKit;
@@ -38,9 +39,7 @@ window.mountShortcutsWidget = function (Homey, { root, frame }) {
     onOpen: (id) => {
       try { Homey.popup(`#/d/${encodeURIComponent(id)}`); } catch (e) { console.error(e); }
     },
-    onHaptic: () => {
-      try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not on every platform */ }
-    },
+    onHaptic: haptic,
     onHeight: link.setHeight,
   });
 

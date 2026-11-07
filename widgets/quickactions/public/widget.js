@@ -4,14 +4,11 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, applyColors, onTap, touchGuard, messageLine, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, applyColors, onTap, touchGuard, messageLine, markOffline, pressGuard } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const OPTIMISTIC_MS = 10e3; // how long a tapped tile shows its new state while waiting for the device
   const PRESS_MS = 600; // how long a momentary (button) action lights the tile
-  const CONFIRM_MS = 3e3; // how long a tile that asks for a second tap waits for it
-  const HOLD_MS = 600; // how long a long press holds the tile before it acts
-  const HINT_MS = 1500; // how long a tile that wants a long press says so after a short tap
   const SECURE = ['locked', 'garagedoor_closed']; // the quick actions `pressFor: locks` guards
 
   const DEFAULT_STRINGS = {
@@ -85,8 +82,7 @@
     let devices = []; // [{ id, name, icon, quickAction } | { id, missing }]
     const optimistic = new Map(); // deviceId → { value, until }
     const pressed = new Map(); // deviceId → until (momentary actions)
-    const confirming = new Map(); // deviceId → { from, timer }: waiting for the second tap
-    const hints = new Map(); // deviceId → timer: a short tap on a tile that wants a long press
+    const guard = pressGuard({ render: () => render(), onHaptic: opts.onHaptic }); // `press`, by device
     // What failed: a lasting message replaces the content, a transient one goes by itself.
     const message = messageLine(() => render(), { clear: () => { devices = []; } });
 
@@ -102,7 +98,7 @@
     const pill = opts.tileStyle === 'pill';
     root.classList.toggle('qa-pill', pill);
     applyColors(root, { style: opts.colorStyle, color: opts.color, fallback: 'blue' });
-    root.style.setProperty('--qa-hold', `${HOLD_MS}ms`); // the long press's fill
+    root.style.setProperty('--qa-hold', `${guard.holdMs}ms`); // the long press's fill
     const grid = el('div', { class: 'qa-grid' }, root);
     const messageEl = el('div', { class: 'qa-message', dir: 'auto' }, root);
     const touches = touchGuard(); // the tiles' taps
@@ -121,8 +117,7 @@
       d.quickAction.value = value;
       const o = optimistic.get(deviceId);
       if (o && o.value === value) optimistic.delete(deviceId);
-      const c = confirming.get(deviceId);
-      if (c && c.from !== value) clearConfirm(deviceId); // changed elsewhere: a second tap would no longer do what was asked
+      if (guard.asking(deviceId) && guard.askedFrom(deviceId) !== value) guard.drop(deviceId); // changed elsewhere: a second tap would no longer do what was asked
       render();
     }
 
@@ -157,34 +152,15 @@
         press(id);
         return;
       }
-      clearTimeout(hints.get(id));
-      hints.set(id, setTimeout(() => { hints.delete(id); render(); }, HINT_MS));
-      render();
-    }
-
-    function clearConfirm(id) {
-      const c = confirming.get(id);
-      if (c) clearTimeout(c.timer);
-      confirming.delete(id);
+      guard.hint(id);
     }
 
     async function press(id) {
       const d = devices.find(x => x.id === id);
       if (!d || !d.quickAction || !d.quickAction.actionable || !opts.onTrigger || names.renaming) return;
-      // The first tap asks for a second (*Tap again*, CONFIRM_MS), so a stray tap on the dashboard can't unlock a door.
+      // The first tap asks for a second (*Tap again*), so a stray tap on the dashboard can't unlock a door.
       // A change of state in between asks again: the second tap would otherwise do the opposite of what was asked.
-      if (asksConfirm(d.quickAction)) {
-        const c = confirming.get(id);
-        clearConfirm(id);
-        if (!c || c.from !== shownValue(d)) {
-          confirming.set(id, {
-            from: shownValue(d),
-            timer: setTimeout(() => { confirming.delete(id); render(); }, CONFIRM_MS),
-          });
-          render();
-          return;
-        }
-      }
+      if (asksConfirm(d.quickAction) && guard.ask(id, shownValue(d))) return;
       const value = d.quickAction.momentary ? true : !shownValue(d);
       if (d.quickAction.momentary) {
         pressed.set(id, Date.now() + PRESS_MS);
@@ -244,17 +220,10 @@
         // needs a touch listener) and the dashboard's own touch handling can't swallow the click; a drag is left
         // to the dashboard, so dragging over the tiles still scrolls it. A button clicks on Enter and Space itself.
         // A long press (`press: long`): the tile fills while held and acts once full; let go sooner, it's a tap.
-        // It vibrates as the finger lifts: Homey's haptic only works right after a touch ends.
         onTap(button, () => tap(id), {
           keys: false,
           guard: touches,
-          hold: {
-            ms: HOLD_MS,
-            when: () => holds(id),
-            start: () => { clearTimeout(hints.get(id)); hints.delete(id); render(); },
-            act: () => press(id),
-            done: () => { if (opts.onHaptic) opts.onHaptic(); },
-          },
+          hold: guard.hold(id, () => holds(id), () => press(id)),
         });
         tiles.set(id, tile);
       }
@@ -283,8 +252,8 @@
         const isPressed = !!until && Date.now() < until;
         if (!isPressed) pressed.delete(d.id);
         const value = qa ? shownValue(d) : null;
-        const confirm = !!qa && confirming.has(d.id) && !names.renaming;
-        const hint = !!qa && hints.has(d.id) && !names.renaming;
+        const confirm = !!qa && guard.asking(d.id) && !names.renaming;
+        const hint = !!qa && guard.hinting(d.id) && !names.renaming;
 
         tile.name.textContent = 'missing' in d ? t('unavailable')
           : hint ? t('hold') : confirm ? t('tapAgain') : names.name(d.id, d.name);

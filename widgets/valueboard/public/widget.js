@@ -6,7 +6,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, setMask, formatNumber, formatValue, valueGlyph, TIGHT_UNITS, applyColors, onTap, messageLine, tileNames, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, setMask, formatNumber, formatValue, valueGlyph, TIGHT_UNITS, applyColors, onTap, messageLine, tileNames, markOffline, knownValue, okLevel } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -42,14 +42,8 @@
     return 5;
   }
 
-  /** The upper limits that judge air quality, in these units only (Room Health's and Value Matrix's): `[warn above, alert from]`. */
-  const AIR = [
-    { re: /^measure_co2$/, units: /^(ppm)?$/i, limit: 1000 },
-    { re: /^measure_pm25$/, units: /^(μg\/m³|µg\/m³|ug\/m3)?$/i, limit: 15 },
-    { re: /^measure_pm10$/, units: /^(μg\/m³|µg\/m³|ug\/m3)?$/i, limit: 45 },
-    { re: /^measure_radon$/, units: /^bq\/m³$/i, limit: 100 },
-    { re: /^measure_(voc|tvoc)$/i, units: /^ppb$/i, limit: 1000 },
-  ];
+  /** The kit's `okLevel()` in this widget's words: air quality above its limit a warning, from 1.5 × it an alert. */
+  const AIR_LEVELS = { good: 'fine', out: 'warn', far: 'alert' };
 
   /**
    * How a value stands, for the few that have a sense of their own: `alert`, `warn` or `fine`; null for the rest
@@ -70,10 +64,10 @@
     }
     if (typeof value !== 'number' || !isFinite(value)) return null;
     if (base === 'measure_battery') return value < 10 ? 'alert' : value < 20 ? 'warn' : 'fine';
-    const units = String(v.units || '').trim();
-    const air = AIR.find(a => a.re.test(base) && a.units.test(units));
-    if (!air) return null;
-    return value >= air.limit * 1.5 ? 'alert' : value > air.limit ? 'warn' : 'fine';
+    // Air quality: the kit's known values with an upper limit only (Room Health's and Value Matrix's), in their units.
+    const known = knownValue({ capabilityId: base, units: v.units });
+    if (!known || known.range.min != null) return null;
+    return AIR_LEVELS[okLevel(value, known.range)];
   }
 
   /**

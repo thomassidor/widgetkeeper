@@ -7,6 +7,16 @@ export function isReservedKey(key: string): boolean {
   return RESERVED.has(key);
 }
 
+/**
+ * A stored name's key (Notes' notes, Flow Tiles' boards and tiles, the popups' screens): trimmed and lower-cased, so
+ * `Kitchen` and ` kitchen` are one, at most 60 characters. Empty is `fallback`; a reserved name has none, `''`.
+ */
+export function nameKey(name: unknown, fallback = ''): string {
+  const n = typeof name === 'string' ? name.trim() : '';
+  const key = (n || fallback).toLowerCase().slice(0, 60);
+  return isReservedKey(key) ? '' : key;
+}
+
 export type DebouncedSettingOptions = {
   homey: Homey.App['homey'],
   /** How long after the first change it's written, so a burst of changes is one write. */

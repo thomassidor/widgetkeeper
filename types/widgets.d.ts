@@ -60,6 +60,7 @@ interface Window {
   createCombinedWidget: (root: HTMLElement, opts?: object) => any;
   createFlowTilesWidget: (root: HTMLElement, opts?: object) => any;
   flowTileKey: (name: unknown, fallback?: string) => string;
+  valueTileParts: (parent: HTMLElement, pill: boolean) => any;
   combineValues: (read: { name: string, value: number }[]) => { sum: number, avg: number, min: number, max: number, lo: string, hi: string, n: number } | null;
   createLightsWidget: (root: HTMLElement, opts?: object) => any;
   createLightRoomsWidget: (root: HTMLElement, opts?: object) => any;
@@ -87,12 +88,14 @@ interface Window {
       model: (opts: { render: () => void, roomLevel?: string }) => any,
     },
     /** Values just sent, shown until the device confirms them (`ms`, 10 s by default). */
+    STREAM_NEXT_MS: number,
+    STREAM_LAST_MS: number,
     /** Homey's WebRTC offer for one camera stream, through the Cameras routes; null when `current()` says it was dropped. */
     openVideoStream: (pc: RTCPeerConnection, videoId: string, post: (path: string, body: any) => Promise<any>, current: () => boolean) => Promise<any>,
     /** The video frames decoded so far, from the connection's stats; null when the browser can't tell. */
     framesDecoded: (pc: RTCPeerConnection) => Promise<number | null>,
     /** Plays a camera's streams in turn into a video until one gives a frame (a popup on a web dashboard). */
-    playCameraStream: (video: HTMLVideoElement, videoIds: string[], post: (path: string, body: any) => Promise<any>, on: { onPlaying: () => void, onEnded: (played: boolean, why: string) => void }) => { stop: () => void },
+    playCameraStream: (video: HTMLVideoElement, videoIds: string[], post: (path: string, body: any) => Promise<any>, on: { onPlaying: (videoId: string) => void, onEnded: (played: boolean, why: string, info: { away: boolean }) => void, onStreamFailed?: (videoId: string, why: string, index: number) => void, onKeepAliveFailed?: (err: any) => void }) => { stop: () => void },
     optimistic: (render: () => void, ms?: number) => {
       shown: (d: any, capabilityId: string) => any,
       set: (deviceId: string, capabilityId: string, value: unknown) => void,
@@ -101,6 +104,19 @@ interface Window {
       drop: (deviceId: string, capabilityIds: string | string[]) => void,
     },
     shake: (node: Element | null | undefined) => void,
+    /** The mount's vibration for a tap that acts; `together`: once for what's sent at once. */
+    wireHaptic: (Homey: any, opts?: { together?: boolean }) => () => void,
+    /** "Activate with": Double's second tap and Long's hint and hold, by each tile's id. */
+    pressGuard: (opts: { render: () => void, onHaptic?: () => void }) => {
+      holdMs: number,
+      asking: (id: unknown) => boolean,
+      askedFrom: (id: unknown) => unknown,
+      drop: (id: unknown) => void,
+      ask: (id: unknown, from?: unknown) => boolean,
+      hinting: (id: unknown) => boolean,
+      hint: (id: unknown) => void,
+      hold: (id: unknown, when: () => boolean, act: () => unknown) => any,
+    },
     wireBar: (bar: HTMLElement, opts: { id: string, drags: Map<string, number>, guard: TouchGuard, render: () => void, commit: (id: string, x: number) => void }) => void,
     roomTiles: (devices: any[], opts: { byZone?: boolean, usable: (d: any) => boolean, extra: (d: any) => object }) => any[],
     TIGHT_UNITS: RegExp,
@@ -166,6 +182,8 @@ interface Window {
       more?: string[],
       /** The widget shows times: it follows the app's time format. */
       times?: boolean,
+      /** No devices is a pick too: `/state` is asked with none, and only `need()` holds it back. */
+      devicesOptional?: boolean,
     }) => { ids: () => string[], loaded: () => boolean },
     onDeviceNames: (Homey: any, load: () => void) => void,
     COLORS: string[],

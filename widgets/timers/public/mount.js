@@ -4,6 +4,7 @@
  * `frame` is the element whose height Homey gets (the body, or the slide).
  */
 window.mountTimersWidget = function (Homey, { root, frame }) {
+  const haptic = window.WidgetkeeperKit.wireHaptic(Homey); // a tap that acts vibrates
   const REFRESH_MS = 5 * 60e3; // resyncs in case a realtime event was missed
 
   const { wireFrame, wireTimeFormat } = window.WidgetkeeperKit;
@@ -22,9 +23,7 @@ window.mountTimersWidget = function (Homey, { root, frame }) {
     sound: settings.sound !== false,
     onStart: (minutes, label) => Homey.api('POST', '/start', { instance, minutes, label }),
     onAction: (id, action) => Homey.api('POST', '/action', { instance, id, action }),
-    onHaptic: () => {
-      try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not on every platform */ }
-    },
+    onHaptic: haptic,
     onHeight: link.setHeight,
   });
 

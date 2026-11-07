@@ -56,6 +56,16 @@ describe('valueBoardLevel', () => {
     expect(win.valueBoardLevel(v('measure_voc', 1200, { units: 'ppb' }))).toBe('warn');
   });
 
+  it("takes the units and limits Value Matrix does: the kit's", () => {
+    expect(win.valueBoardLevel(v('measure_radon', 150, { units: 'Bq/m3' }))).toBe('alert');
+    for (const units of ['µg/m3', 'μg/m3', 'ug/m³', 'ug/m3', 'µg/m³']) expect(win.valueBoardLevel(v('measure_pm25', 16, { units }))).toBe('warn');
+    expect(win.valueBoardLevel(v('measure_tvoc', 900, { units: 'ppb' }))).toBe('fine');
+    expect(win.valueBoardLevel(v('measure_co2.inside', 1200, { units: 'ppm' }))).toBe('warn');
+    expect(win.valueBoardLevel(v('measure_co2', 1200))).toBe('warn'); // no units: as optional in the kit
+    expect(win.valueBoardLevel(v('measure_radon', 150))).toBeNull(); // no units: not optional
+    expect(win.valueBoardLevel(v('measure_humidity', 90, { units: '%' }))).toBeNull(); // a two-sided range isn't judged here
+  });
+
   it("leaves the rest alone: a temperature may be a fridge's or the garden's", () => {
     expect(win.valueBoardLevel(v('measure_temperature', 4))).toBeNull();
     expect(win.valueBoardLevel(v('measure_power', 3000, { units: 'W' }))).toBeNull();

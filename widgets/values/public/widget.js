@@ -59,6 +59,31 @@
   }
 
   /**
+   * A tile's icon, value and name in `parent`: the icon and value over the name, or in pill tiles the icon beside the name
+   * over the value. The second value (hidden without one) ends the name's row, or in pill tiles the value's.
+   * Flow Tiles builds its tiles with this too, as its stylesheet is this widget's.
+   */
+  function valueTileParts(parent, pill) {
+    const secondIn = (row) => {
+      const second = el('span', { class: 'vt-second' }, row);
+      return { second, secondIcon: el('span', { class: 'vt-second-icon' }, second), secondValue: el('span', { class: 'vt-second-value', dir: 'auto' }, second) };
+    };
+    if (pill) {
+      const icon = el('span', { class: 'vt-icon' }, parent);
+      const text = el('div', { class: 'vt-text' }, parent);
+      const name = el('span', { class: 'vt-name', dir: 'auto' }, text);
+      const row = el('div', { class: 'vt-row' }, text);
+      return { icon, value: el('span', { class: 'vt-value', dir: 'auto' }, row), name, ...secondIn(row) };
+    }
+    const top = el('div', { class: 'vt-top' }, parent);
+    const icon = el('span', { class: 'vt-icon' }, top);
+    const value = el('span', { class: 'vt-value', dir: 'auto' }, top);
+    const row = el('div', { class: 'vt-row' }, parent);
+    return { icon, value, name: el('span', { class: 'vt-name', dir: 'auto' }, row), ...secondIn(row) };
+  }
+  window.valueTileParts = valueTileParts;
+
+  /**
    * @param {HTMLElement} root
    * @param {{ t?: (key: string, tokens?: object) => string, columns?: number|string, tileStyle?: string, colorStyle?: string,
    *   percentFill?: boolean, redBelow?: number|string, yellowBelow?: number|string,
@@ -143,28 +168,7 @@
       message.set(text, transient);
     }
 
-    /**
-     * A tile's icon, value and name in `parent`: the icon and value over the name, or in pill tiles the icon beside the name
-     * over the value. The second value (hidden without one) ends the name's row, or in pill tiles the value's.
-     */
-    function parts(parent) {
-      const secondIn = (row) => {
-        const second = el('span', { class: 'vt-second' }, row);
-        return { second, secondIcon: el('span', { class: 'vt-second-icon' }, second), secondValue: el('span', { class: 'vt-second-value', dir: 'auto' }, second) };
-      };
-      if (pill) {
-        const icon = el('span', { class: 'vt-icon' }, parent);
-        const text = el('div', { class: 'vt-text' }, parent);
-        const name = el('span', { class: 'vt-name', dir: 'auto' }, text);
-        const row = el('div', { class: 'vt-row' }, text);
-        return { icon, value: el('span', { class: 'vt-value', dir: 'auto' }, row), name, ...secondIn(row) };
-      }
-      const top = el('div', { class: 'vt-top' }, parent);
-      const icon = el('span', { class: 'vt-icon' }, top);
-      const value = el('span', { class: 'vt-value', dir: 'auto' }, top);
-      const row = el('div', { class: 'vt-row' }, parent);
-      return { icon, value, name: el('span', { class: 'vt-name', dir: 'auto' }, row), ...secondIn(row) };
-    }
+    const parts = parent => valueTileParts(parent, pill);
 
     // A slot can appear twice (the same value picked for two tiles), so tiles are keyed by position too.
     function tileFor(key) {

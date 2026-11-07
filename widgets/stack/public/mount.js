@@ -6,6 +6,7 @@
  * `frame` is the element whose height Homey gets.
  */
 window.mountStackWidget = function (Homey, { root, frame }) {
+  const haptic = window.WidgetkeeperKit.wireHaptic(Homey); // a tap that acts vibrates
   const REFRESH_MS = 5 * 60e3; // re-reads the pages (a widget added to the dashboard) and the smart-rotate state
   const OTHERS_AFTER_MS = 2000; // the pages not on screen are mounted once it has drawn, or this long after
   const ATTENTION_AFTER_MS = 3000; // the first smart-rotate read, after the pages' own requests
@@ -32,9 +33,7 @@ window.mountStackWidget = function (Homey, { root, frame }) {
     showDots: settings.showDots !== false,
     dotsPosition: settings.dotsPosition === 'above' ? 'above' : 'below',
     dotsSize: settings.dotsSize === 'large' ? 'large' : 'small',
-    onHaptic: () => {
-      try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not on every platform */ }
-    },
+    onHaptic: haptic,
     onVisible: (page, visible) => {
       // A page brought on screen before the others were mounted (a Flow request) is mounted now.
       const s = visible ? slides.find(x => x.page.id === page.id) : null;
@@ -85,9 +84,7 @@ window.mountStackWidget = function (Homey, { root, frame }) {
       setHeight: () => widget.measure(),
       ready: () => { widget.measure(); readyPages.add(page.id); checkFirstPage(); },
       // Homey's throws unless a touch just ended (a click, a key): a page's mount mustn't depend on wrapping it.
-      hapticFeedback: () => {
-        try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not on every platform */ }
-      },
+      hapticFeedback: haptic,
       popup: (url) => { if (Homey.popup) Homey.popup(url); },
     };
   }

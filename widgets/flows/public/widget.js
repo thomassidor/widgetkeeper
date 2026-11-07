@@ -4,15 +4,11 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, applyColors, KEY_PROBLEMS, onTap, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, applyColors, KEY_PROBLEMS, onTap, messageLine, pressGuard } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const MIN_RUNNING_MS = 400; // the spinner shows at least this long, so a fast start still registers
   const DONE_MS = 1500; // how long the check mark shows after a start
-  // `press` (Quick Actions' "Activate with", 1.3.0): the second tap's wait, the long press's hold, the short tap's hint.
-  const CONFIRM_MS = 3000;
-  const HOLD_MS = 600;
-  const HINT_MS = 1500;
 
   const DEFAULT_STRINGS = {
     selectSlots: 'Pick flows in the widget settings.',
@@ -88,15 +84,14 @@
     const flowColors = new Map(); // flow id → a colour set by the Flow card, which wins over the button's own
     const busy = new Map(); // button index → 'running' | 'done'
     const press = opts.press === 'double' || opts.press === 'long' ? opts.press : 'single';
-    const confirming = new Map(); // button index → timer: waiting for the second tap (`press: double`)
-    const hints = new Map(); // button index → timer: a short tap on a row that wants a long press
+    const guard = pressGuard({ render: () => render(), onHaptic: opts.onHaptic }); // `press`, by button index
     // What failed: a lasting message replaces the content, a transient one goes by itself.
     const message = messageLine(() => render(), { clear: () => { flows = []; } });
 
     root.classList.add('fb');
     applyColors(root, { style: opts.colorStyle });
     root.dataset.columns = String(opts.columns) === '2' ? '2' : '1';
-    root.style.setProperty('--fb-hold', `${HOLD_MS}ms`); // the long press's fill
+    root.style.setProperty('--fb-hold', `${guard.holdMs}ms`); // the long press's fill
     const grid = el('div', { class: 'fb-grid' }, root);
     const messageEl = el('div', { class: 'fb-message', dir: 'auto' }, root);
     /** @type {{row: HTMLElement, button: HTMLElement, name: HTMLElement, icon: string|null}[]} */
@@ -175,24 +170,12 @@
 
     /**
      * A tap: starts the flow, unless `press` guards it (Quick Actions' "Activate with", so a stray tap can't start a
-     * Flow): Double asks for a second tap within CONFIRM_MS (*Tap again*, the row red), Long only says *Hold*.
+     * Flow): Double asks for a second tap (*Tap again*, the row red), Long only says *Hold*.
      */
     function tap(index) {
       if (!startable(index) || press === 'single') { start(index); return; }
-      if (press === 'long') {
-        clearTimeout(hints.get(index));
-        hints.set(index, setTimeout(() => { hints.delete(index); render(); }, HINT_MS));
-        render();
-        return;
-      }
-      if (!confirming.has(index)) {
-        confirming.set(index, setTimeout(() => { confirming.delete(index); render(); }, CONFIRM_MS));
-        render();
-        return;
-      }
-      clearTimeout(confirming.get(index));
-      confirming.delete(index);
-      start(index);
+      if (press === 'long') guard.hint(index);
+      else if (!guard.ask(index)) start(index);
     }
 
     function rowAt(index) {
@@ -200,16 +183,9 @@
       const row = el('div', { class: 'fb-row', role: 'button', tabindex: '0' });
       const button = el('span', { class: 'fb-button' }, row);
       const r = { row, button, name: el('span', { class: 'fb-name', dir: 'auto' }, row), icon: null };
-      // A long press (`press: long`): the row fills while held and starts the flow once full; let go sooner, it's a
-      // tap. It vibrates as the finger lifts: Homey's haptic only works right after a touch ends.
+      // A long press (`press: long`): the row fills while held and starts the flow once full; let go sooner, it's a tap.
       onTap(row, () => tap(index), {
-        hold: {
-          ms: HOLD_MS,
-          when: () => press === 'long' && startable(index),
-          start: () => { clearTimeout(hints.get(index)); hints.delete(index); render(); },
-          act: () => start(index),
-          done: () => { if (opts.onHaptic) opts.onHaptic(); },
-        },
+        hold: guard.hold(index, () => press === 'long' && startable(index), () => start(index)),
       });
       rows[index] = r;
       return r;
@@ -239,9 +215,9 @@
         r.row.classList.toggle('unavailable', !f.missing && (!f.enabled || !f.triggerable));
         r.row.classList.toggle('running', state === 'running');
         r.row.classList.toggle('done', state === 'done');
-        const confirm = confirming.has(i);
+        const confirm = guard.asking(i);
         r.row.classList.toggle('confirm', confirm);
-        r.name.textContent = f.missing ? t('missing') : confirm ? t('tapAgain') : hints.has(i) ? t('hold') : f.name;
+        r.name.textContent = f.missing ? t('missing') : confirm ? t('tapAgain') : guard.hinting(i) ? t('hold') : f.name;
         r.row.title = f.missing ? '' : f.name;
         r.row.setAttribute('aria-label', f.missing ? t('missing') : f.name);
         r.row.setAttribute('aria-busy', String(state === 'running'));

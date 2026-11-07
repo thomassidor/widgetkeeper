@@ -10,6 +10,10 @@
   /** How long after a touch the browser's own click is ignored (it still sends one after a short swipe). */
   const CLICK_AFTER_TOUCH_MS = 800;
   const DEVICE_REFRESH_MS = 5 * 60e3; // keeps the app's device subscriptions alive and resyncs state
+  const PRESS_CONFIRM_MS = 3e3; // `pressGuard()`: how long a first tap waits for the second
+  const PRESS_HOLD_MS = 600; // how long a long press holds before it acts
+  const PRESS_HINT_MS = 1500; // how long a short tap says it wants a long press
+  const HAPTIC_TOGETHER_MS = 300; // calls this close are one tap's (`wireHaptic()`)
   /** How soon a failed read is tried again, each once; after these it's the usual refresh's turn. */
   const RETRY_MS = [5e3, 15e3, 30e3];
   /** A page hidden this long reads again when it's back: it may have missed realtime changes. */
@@ -671,6 +675,70 @@
   }
 
   /**
+   * The mount's vibration for a tap that acts: Homey's haptic throws unless a touch has just ended (a click, a key, a
+   * late send), and then there's nothing. `together`: once for what's sent at once (a room's lights, a preset's values).
+   * @param {any} Homey
+   * @param {{ together?: boolean }} [opts]
+   * @returns {() => void}
+   */
+  function wireHaptic(Homey, { together = false } = {}) {
+    let at = 0;
+    return () => {
+      if (together) {
+        if (Date.now() - at < HAPTIC_TOGETHER_MS) return;
+        at = Date.now();
+      }
+      try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not now */ }
+    };
+  }
+
+  /**
+   * "Activate with" (`press`: Quick Actions', Flow Buttons'), so a stray tap can't act, by each tile's or row's id.
+   * `ask(id, from)`: Double's tap, true when it only asks for a second one (for PRESS_CONFIRM_MS; a second tap that finds
+   * another `from` than the first asks again). `hint(id)`: Long's short tap, which only says *Hold* (for PRESS_HINT_MS).
+   * `hold(id, when, act)`: `onTap()`'s `hold`, with the vibration as the finger lifts, as Homey's only works right after
+   * a touch ends. `render` draws `asking()` and `hinting()`.
+   * @param {{ render: () => void, onHaptic?: () => void }} opts
+   */
+  function pressGuard({ render, onHaptic }) {
+    const confirming = new Map(); // id → { from, timer }
+    const hints = new Map(); // id → timer
+    const drop = (id) => {
+      const c = confirming.get(id);
+      if (c) clearTimeout(c.timer);
+      confirming.delete(id);
+    };
+    return {
+      holdMs: PRESS_HOLD_MS,
+      asking: id => confirming.has(id),
+      /** What the first tap saw, while one waits for the second. */
+      askedFrom: id => (confirming.has(id) ? confirming.get(id).from : undefined),
+      drop,
+      ask(id, from) {
+        const c = confirming.get(id);
+        drop(id);
+        if (c && c.from === from) return false;
+        confirming.set(id, { from, timer: setTimeout(() => { confirming.delete(id); render(); }, PRESS_CONFIRM_MS) });
+        render();
+        return true;
+      },
+      hinting: id => hints.has(id),
+      hint(id) {
+        clearTimeout(hints.get(id));
+        hints.set(id, setTimeout(() => { hints.delete(id); render(); }, PRESS_HINT_MS));
+        render();
+      },
+      hold: (id, when, act) => ({
+        ms: PRESS_HOLD_MS,
+        when,
+        start: () => { clearTimeout(hints.get(id)); hints.delete(id); render(); },
+        act,
+        done: () => { if (onHaptic) onHaptic(); },
+      }),
+    };
+  }
+
+  /**
    * Marks a device's tile as unavailable (Homey's `available: false`, or a device that's gone): its content dimmed, as
    * what it shows is only the last it reported, with a small `!` in the corner saying `label` to a screen reader. Without
    * `label` only dimmed, for what's too small for a mark. kit.css draws both.
@@ -899,18 +967,19 @@
    * adds to the request; `setState(state)` hands the answer to the widget (default `widget.setState(state)`), and
    * `onState(state)` runs after each good one. `more` are ids picked another way (the Cameras widget's Camera slots),
    * after the `devices` setting's, a repeat left out. `times`: the widget shows times, so it follows the app's time
-   * format (`wireTimeFormat()`). Ready is told after the first load, once the
+   * format (`wireTimeFormat()`). `devicesOptional`: no devices is a pick too (Combined Value: every device with the
+   * value), so `/state` is asked with none and only `need()` can hold it back. Ready is told after the first load, once the
    * text font is in (at most 1 s), so the names don't pop in after the icons.
    * @param {any} Homey
    * @param {{ ready: (opts?: object) => Promise<void>, perfParam: (sep?: string) => string }} link the mount's `wireFrame()`
    * @param {any} widget
    * @param {{ event?: string | null, tileNames?: { state: (path: string) => Promise<any> } | null, query?: () => string,
    *   need?: (ids: string[]) => string | null, watches?: (id: string) => boolean, setState?: ((state: any) => void) | null,
-   *   onState?: ((state: any) => void) | null, more?: string[], times?: boolean }} [opts]
+   *   onState?: ((state: any) => void) | null, more?: string[], times?: boolean, devicesOptional?: boolean }} [opts]
    */
   function wireDeviceState(Homey, link, widget, {
     event = null, tileNames = null, query = () => '', need = () => null, watches = () => false, setState = null, onState = null, more = [],
-    times = false,
+    times = false, devicesOptional = false,
   } = {}) {
     let deviceIds = [];
     let loaded = false;
@@ -919,7 +988,7 @@
     let loadSeq = 0; // only the latest load's answer counts: an older one that comes in last would undo it
     async function load() {
       const seq = ++loadSeq;
-      const missing = deviceIds.length ? need(deviceIds) : 'selectDevices';
+      const missing = deviceIds.length || devicesOptional ? need(deviceIds) : 'selectDevices';
       if (missing) {
         widget.setMessage(widget.t(missing));
         ready();
@@ -1472,18 +1541,28 @@
   }
 
   /**
-   * Plays a camera into `video` (a popup on a web dashboard): `videoIds` in turn until one gives a frame, then kept
-   * alive. `onPlaying()` at the first frame; `onEnded(played, why)` once, when none played or a playing one was lost;
-   * `stop()` calls neither. The Cameras widget's live view has its own loop, as it also tells away from home and H.265.
+   * Plays a camera into `video` (Cameras' live view, a popup on a web dashboard): `videoIds` in turn until one gives a
+   * frame in STREAM_NEXT_MS (STREAM_LAST_MS for the last) and doesn't refuse or fail, then kept alive. Once one plays,
+   * losing it ends it, as does STREAM_LAST_MS without a new frame (a camera that drops off leaves the connection up and
+   * the video frozen). `onPlaying(videoId)` at the first frame; `onStreamFailed(videoId, why, index)` as a stream makes way
+   * for the next; `onKeepAliveFailed(err)` once per stream (Homey then ends it, which the frame check notices);
+   * `onEnded(played, why, {away})` once, when none played or a playing one was lost, the last frame still in `video`.
+   * `away`: Homey answered an offer but no connection ever came up, so its video server (go2rtc, port 8555, which Homey's
+   * cloud doesn't relay) can't be reached: away from home without a VPN. `stop()` calls none of them.
    */
-  function playCameraStream(video, videoIds, post, { onPlaying, onEnded }) {
+  function playCameraStream(video, videoIds, post, { onPlaying, onEnded, onStreamFailed, onKeepAliveFailed }) {
     let pc = null;
     let stopped = false;
+    let released = false;
     let playing = false;
     let timeout = null;
     let keepAlive = null;
     let frameCheck = null;
     let attempt = -1;
+    let answered = false; // this stream's offer
+    let connected = false; // this stream's connection
+    let unreached = 0;
+    let reached = false;
     const clear = () => {
       clearTimeout(timeout);
       clearInterval(keepAlive);
@@ -1491,26 +1570,30 @@
       if (pc) { try { pc.close(); } catch (err) { /* already closed */ } }
       pc = null;
     };
-    const stop = () => {
-      if (stopped) return;
-      stopped = true;
-      clear();
+    const release = () => {
+      if (released) return;
+      released = true;
       video.removeEventListener('playing', started);
       video.pause();
       video.srcObject = null;
     };
+    const stop = () => {
+      if (!stopped) { stopped = true; clear(); }
+      release();
+    };
     const end = (why) => {
       if (stopped) return;
-      const played = playing;
-      stop();
-      onEnded(played, why);
+      stopped = true;
+      clear();
+      onEnded(playing, why, { away: unreached > 0 && !reached });
+      release();
     };
     const failed = (why) => { if (playing) end(why); else next(why); };
     function started() {
       if (stopped || playing || !pc) return;
       playing = true;
       clearTimeout(timeout);
-      onPlaying();
+      onPlaying(videoIds[attempt]);
       const conn = pc;
       let frames = 0;
       let frameAt = Date.now();
@@ -1524,10 +1607,16 @@
     }
     function next(why) {
       if (stopped) return;
+      if (attempt >= 0) {
+        if (answered && !connected) unreached += 1;
+        if (onStreamFailed) onStreamFailed(videoIds[attempt], why, attempt);
+      }
       clear();
       attempt += 1;
       if (attempt >= videoIds.length) { end(why || 'no streams'); return; }
       video.srcObject = null;
+      answered = false;
+      connected = false;
       const videoId = videoIds[attempt];
       const conn = new RTCPeerConnection();
       pc = conn;
@@ -1541,13 +1630,21 @@
         if (p && p.catch) p.catch(() => { /* muted, so only a page being closed refuses */ });
       };
       conn.onconnectionstatechange = () => {
-        if (current() && conn.connectionState === 'failed') failed('connection failed');
+        if (!current()) return;
+        if (conn.connectionState === 'connected') { connected = true; reached = true; }
+        if (conn.connectionState === 'failed') failed('connection failed');
       };
       openVideoStream(conn, videoId, post, current).then((res) => {
-        if (!res || !current() || !res.streamId) return;
+        if (!res || !current()) return;
+        answered = true;
+        if (!res.streamId) return;
+        let refused = false;
         keepAlive = setInterval(() => {
-          // A refused keep-alive ends the stream on Homey's side; the frame check then notices.
-          post('/video/keepalive', { videoId, streamId: res.streamId }).catch(() => {});
+          post('/video/keepalive', { videoId, streamId: res.streamId }).catch((err) => {
+            if (refused) return;
+            refused = true;
+            if (onKeepAliveFailed) onKeepAliveFailed(err);
+          });
         }, STREAM_KEEPALIVE_MS);
       }).catch((err) => { if (current()) failed(err && err.message ? err.message : String(err)); });
     }
@@ -1557,10 +1654,10 @@
   }
 
   window.WidgetkeeperKit = {
-    openVideoStream, framesDecoded, playCameraStream,
+    openVideoStream, framesDecoded, playCameraStream, STREAM_NEXT_MS, STREAM_LAST_MS,
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
     getTimeFormat, setTimeFormat, wireTimeFormat, uses12Hours, clockTime, hourLabel, smoothValues,
-    formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, wireRefresh, markOffline, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
+    formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, wireRefresh, wireHaptic, pressGuard, markOffline, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     onDeviceNames, colorStyle, applyColors, sound, optimistic, shake, wireBar, roomTiles, knownValue, okRange, okLevel,
   };
 })();

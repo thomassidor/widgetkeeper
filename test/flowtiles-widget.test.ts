@@ -182,4 +182,60 @@ describe('mount', () => {
     expect(root.querySelectorAll('.vt-grid > .vt-tile')).toHaveLength(1);
     expect(root.querySelector('.vt-message')!.textContent).toBe('Could not load the tiles.');
   });
+
+  it('tries a failed read again after 5 s', async () => {
+    vi.useFakeTimers();
+    let ok = false;
+    const api = vi.fn(async (_method: string, _path: string) => { if (!ok) throw new Error('busy'); return state([tile('a', { text: '1' })]); });
+    const Homey = fakeFrame({}, { api });
+    const { frame, root } = frameElements();
+    win.mountFlowTilesWidget(Homey, { root, frame });
+    await vi.advanceTimersByTimeAsync(10);
+    expect(root.querySelector('.vt-message')!.textContent).toBe('Could not load the tiles.');
+    ok = true;
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(root.querySelector('.vt-value')!.textContent).toBe('1');
+  });
+
+  it('reads again when the page is back after 30 s hidden', async () => {
+    vi.useFakeTimers();
+    const api = vi.fn(async (_method: string, _path: string) => state([tile('a', { text: '1' })]));
+    const Homey = fakeFrame({}, { api });
+    const { frame, root } = frameElements();
+    win.mountFlowTilesWidget(Homey, { root, frame });
+    await vi.advanceTimersByTimeAsync(10);
+    const hidden = vi.spyOn(document, 'hidden', 'get').mockReturnValue(true);
+    document.dispatchEvent(new Event('visibilitychange'));
+    await vi.advanceTimersByTimeAsync(30e3);
+    hidden.mockReturnValue(false);
+    document.dispatchEvent(new Event('visibilitychange'));
+    hidden.mockRestore();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(api).toHaveBeenCalledTimes(2);
+  });
+
+  it("doesn't let a read that left before a realtime change undo it", async () => {
+    vi.useFakeTimers();
+    const answers: ((value: any) => void)[] = [];
+    const api = vi.fn((_method: string, _path: string) => new Promise((resolve) => { answers.push(resolve); }));
+    const Homey = fakeFrame({}, { api });
+    const { frame, root } = frameElements();
+    win.mountFlowTilesWidget(Homey, { root, frame });
+    await vi.advanceTimersByTimeAsync(0);
+    Homey.emit('flowtiles:state', { key: 'tiles', name: 'Tiles', tiles: [tile('a', { text: 'new' })] });
+    expect(api).toHaveBeenCalledTimes(2);
+    answers[0](state([tile('a', { text: 'old' })]));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(root.querySelector('.vt-value')!.textContent).toBe('new');
+    answers[1](state([tile('a', { text: 'new' })]));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(root.querySelector('.vt-value')!.textContent).toBe('new');
+    expect(Homey.ready).toHaveBeenCalled();
+    // Nothing on its way: a change is only taken, with no read.
+    Homey.emit('flowtiles:state', { key: 'tiles', name: 'Tiles', tiles: [tile('a', { text: 'newer' })] });
+    expect(api).toHaveBeenCalledTimes(2);
+    // Another board's change is none of its business.
+    Homey.emit('flowtiles:state', { key: 'other', name: 'Other', tiles: [] });
+    expect(root.querySelector('.vt-value')!.textContent).toBe('newer');
+  });
 });

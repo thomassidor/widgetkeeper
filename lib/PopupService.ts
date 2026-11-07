@@ -3,7 +3,7 @@ import type Homey from 'homey';
 import { listDevicesWhere, matches, nameOrder, type AutocompleteItem } from './autocomplete.js';
 import { cameraImage, type CameraVideos, type Snapshot } from './CameraService.js';
 import type CameraService from './CameraService.js';
-import { DebouncedSetting, isReservedKey } from './storedSetting.js';
+import { DebouncedSetting, nameKey } from './storedSetting.js';
 import type WebDashboardService from './WebDashboardService.js';
 
 export const POPUP_SHOW_EVENT = 'popups:show';
@@ -100,9 +100,7 @@ export type PopupView = {
 
 /** A screen name's key: trimmed and lower-cased, as Notes' `boardKey()`; a reserved name has none, `''`. */
 export function screenKey(name: unknown): string {
-  const n = typeof name === 'string' ? name.trim() : '';
-  const key = (n || DEFAULT_SCREEN).toLowerCase().slice(0, MAX_NAME);
-  return isReservedKey(key) ? '' : key;
+  return nameKey(name, DEFAULT_SCREEN);
 }
 
 function sameToken(a: string, b: unknown): boolean {
@@ -247,7 +245,8 @@ export default class PopupService {
       }
     }
     const screen = t('popups.screenName', 'Popups widget');
-    for (const [, name] of [...names.entries()].filter(([, n]) => matches(q, n)).sort((a, b) => nameOrder(this.homey)(a[1], b[1]))) {
+    const order = nameOrder(this.homey);
+    for (const [, name] of [...names.entries()].filter(([, n]) => matches(q, n)).sort((a, b) => order(a[1], b[1]))) {
       items.push({ id: `name:${name}`, name, description: screen });
     }
     if (q && !names.has(screenKey(q))) items.push({ id: `name:${q}`, name: q, description: t('popups.screenNew', 'New screen name') });

@@ -4,6 +4,7 @@
  * element whose height Homey gets.
  */
 window.mountKeypadWidget = function (Homey, { root, frame }) {
+  const haptic = window.WidgetkeeperKit.wireHaptic(Homey); // a tap that acts vibrates
   // The events keep it current; this keeps the app's interest in the state alive and catches a missed one.
   const REFRESH_MS = 5 * 60e3;
 
@@ -33,9 +34,7 @@ window.mountKeypadWidget = function (Homey, { root, frame }) {
     buttons,
     onPress: body => Homey.api('POST', '/press', body),
     // Homey's SDK throws unless a touch ended in the last 0.5 s: a mouse click or a key on a web dashboard.
-    onHaptic: () => {
-      try { if (Homey.hapticFeedback) Homey.hapticFeedback(); } catch (e) { /* not on every platform */ }
-    },
+    onHaptic: haptic,
     // The widget's height changes with the pad; Homey needs the frame's, which adds the widget padding.
     onHeight: link.setHeight,
   });
