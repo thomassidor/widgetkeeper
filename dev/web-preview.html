@@ -76,7 +76,8 @@
         { id: 'new', name: 'Spare room', theme: 'auto', columns: [[], [], []] },
       ];
 
-      // `?popup=message|ask|one|picture|camera|elsewhere`: a Flow's popup on everywhere, open for 10 min (wk-084);
+      // `?popup=message|ask|one|picture|camera|elsewhere|full|live|window|fulltext`: a Flow's popup on everywhere, open for 10 min (wk-084);
+      // `live` and `window` play real WebRTC from a drawn canvas, full screen and at the usual size;
       // `camera` has the doorbell sound; `named`: one sent to the screen name Hallway, which only the Hallway dashboard's Popups widget has.
       const kind = new URLSearchParams(location.search).get('popup');
       const POPUPS = {
@@ -85,6 +86,10 @@
         one: { kind: 'ask', text: 'The washing machine is done', buttons: ['Got it'], picture: null },
         picture: { kind: 'message', text: 'Someone is at the front door', picture: { source: 'stored' } },
         camera: { kind: 'ask', text: 'Someone is at the front door. Unlock it?', buttons: ['Unlock', 'Not now'], picture: { source: 'camera' }, sound: 'doorbell' },
+        full: { kind: 'message', text: 'Someone is at the front door', picture: { source: 'camera' }, fullScreen: true },
+        live: { kind: 'ask', text: 'Someone is at the front door. Unlock it?', buttons: ['Unlock', 'Not now'], picture: { source: 'camera' }, fullScreen: true, live: true },
+        window: { kind: 'message', text: 'Someone is at the front door', picture: { source: 'camera' }, live: true },
+        fulltext: { kind: 'message', text: 'Dinner is ready', picture: null, fullScreen: true },
         elsewhere: { kind: 'ask', text: 'Turn off the lights downstairs?', buttons: ['Yes', 'No'], picture: null, elsewhere: true },
         named: { kind: 'message', text: 'The post has arrived', picture: null, target: 'name:hallway' },
       };

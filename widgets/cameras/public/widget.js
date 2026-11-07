@@ -9,7 +9,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, timeFormatter, onTap, touchGuard, messageLine } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, timeFormatter, onTap, touchGuard, messageLine, openVideoStream, framesDecoded } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const LIVE_MAX_MS = 5 * 60e3; // the default, and for a missing or unknown `liveFor`
@@ -18,9 +18,10 @@
   const NEXT_STREAM_MS = 10e3; // to the first frame of a stream with another one left to try
   const FRAME_CHECK_MS = 5000; // how often a live stream's decoded frames are counted
   const KEEPALIVE_MS = 10e3;
-  const ICE_WAIT_MS = 2000; // Homey's answer has every candidate, so the offer is sent once gathering is done
   const GRAB_MIN_MS = 60e3; // a video-only camera's frame grab: each one opens a stream through Homey
   const GRAB_RETRY_MS = 5 * 60e3; // after a failed grab
+  const AUTO_LOST_MS = 5000; // Always live: a stream that played and was lost is tried again after this
+  const AUTO_BACK_MS = 60e3; // and after a tap, or a read that didn't play, it comes back after this
   const SNAPSHOT_TIMEOUT_MS = 20e3; // a snapshot taking longer is skipped this round (they load one at a time)
   const GRAB_WIDTH = 640; // px; a grabbed frame is scaled down to this
 
@@ -93,7 +94,7 @@
    *   api?: (method: string, path: string, body?: object) => Promise<any>,
    *   report?: (text: string, warn?: boolean) => void, onHeight?: (h: number) => void,
    *   now?: () => number, renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
-   *   liveView?: boolean, liveFor?: string, layout?: string, timeFormat?: string }} opts
+   *   liveView?: boolean, liveFor?: string, autoLive?: string, layout?: string, timeFormat?: string }} opts
    */
   function createCamerasWidget(root, opts = {}) {
     const t = (key, tokens) => {
@@ -107,6 +108,8 @@
     const liveMs = liveLimit(opts.liveFor);
     // `liveView` off: snapshots only, a tap does nothing (a video-only camera still gets its grabbed frames).
     const liveView = opts.liveView !== false;
+    /** Always live: the camera that plays by itself, without the `liveFor` limit. */
+    const autoId = liveView && typeof opts.autoLive === 'string' && opts.autoLive ? opts.autoLive : null;
 
     let devices = []; // [{ id, name, icon, image: { id, url, lastUpdated } | null, video, videos, h265 } | { id, missing }]
     // What failed: a lasting message replaces the content, a transient one goes by itself.
@@ -124,6 +127,11 @@
     let live = null;
     /** Until tapped: the camera that was live when the page was hidden, to go live again when it shows. */
     let resumeId = null;
+    /** Always live: whether the page shows (resume() to pause()), what brings it back, and how soon after it ends. */
+    let autoShown = false;
+    let autoTimer = null;
+    let autoGaveUp = false;
+    let autoDelay = AUTO_BACK_MS;
     /** The frame grab under way (a video-only camera). */
     let grab = null;
     const grabReported = new Set();
@@ -156,6 +164,7 @@
       message.reset();
       if (live && !devices.some(d => d.id === live.id && d.video)) stopLive();
       render();
+      startAuto();
     }
 
     /** A message under the tiles. Persistent messages also clear the tiles. */
@@ -327,15 +336,8 @@
     }
 
     /** Sends the offer and sets Homey's answer; null when `current()` says the stream was dropped meanwhile. */
-    async function openStream(pc, videoId, current) {
-      pc.addTransceiver('video', { direction: 'recvonly' });
-      await pc.setLocalDescription(await pc.createOffer());
-      await waitForIce(pc);
-      if (!current()) return null;
-      const res = await api('POST', '/video/offer', { videoId, offer: pc.localDescription.sdp });
-      if (!current()) return null;
-      await pc.setRemoteDescription({ type: 'answer', sdp: res.answer });
-      return res;
+    function openStream(pc, videoId, current) {
+      return openVideoStream(pc, videoId, (path, body) => api('POST', path, body), current);
     }
 
     /** A snapshot that hasn't refreshed for two intervals shows the time it was taken. */
@@ -400,16 +402,27 @@
         render();
       }
       if (refreshAfter) refresh();
+      if (autoId && autoShown && !autoGaveUp) {
+        clearTimeout(autoTimer);
+        autoTimer = setTimeout(() => { autoTimer = null; startAuto(); }, autoDelay);
+      }
+      autoDelay = AUTO_BACK_MS;
     }
 
-    function waitForIce(pc) {
-      if (pc.iceGatheringState === 'complete') return Promise.resolve();
-      return new Promise((resolve) => {
-        const done = () => { pc.removeEventListener('icegatheringstatechange', check); resolve(undefined); };
-        const check = () => { if (pc.iceGatheringState === 'complete') done(); };
-        pc.addEventListener('icegatheringstatechange', check);
-        setTimeout(done, ICE_WAIT_MS);
-      });
+    /**
+     * Always live: its camera goes live, unless something else is live, it's waiting to come back, or it gave up. It
+     * gives up until the page next shows when another try can't help: away from home, or H.265 only.
+     */
+    function startAuto() {
+      if (!autoId || !autoShown || autoGaveUp || autoTimer || live || names.renaming) return;
+      const d = devices.find(x => x.id === autoId);
+      if (!d || 'missing' in d || !d.video) return;
+      const tile = tiles.get(d.id);
+      // The page just opened: its snapshot shows while the stream connects, as it would after a tap.
+      if (tile && d.image && !tile.loadedAt) {
+        loadSnapshot(d).then((src) => { if (tiles.get(d.id) === tile) showImage(tile, src); }).catch(() => { /* the stream may still play */ });
+      }
+      startLive(d);
     }
 
     /**
@@ -456,6 +469,8 @@
       const tile = tiles.get(d.id);
       if (!tile || typeof RTCPeerConnection !== 'function') { note(d.id, t('liveFailed')); return; }
       if (grab) grab.cancel(); // one stream at a time
+      clearTimeout(autoTimer);
+      autoTimer = null;
       const order = videoOrder(d);
       const l = {
         id: d.id, pc: null, videoId: null, playing: false, timeout: null, maxTimer: null, keepAlive: null,
@@ -466,6 +481,7 @@
       l.fail = (why) => {
         if (live !== l) return;
         report(`live view of ${d.name} failed: ${why}`, true);
+        if (d.id === autoId) autoDelay = AUTO_LOST_MS;
         stopLive();
         note(d.id, t('liveFailed'));
       };
@@ -476,12 +492,13 @@
         const away = l.unreached > 0 && !l.reached;
         report(`live view of ${d.name}: none of its ${order.length} streams played`
           + (away ? '; Homey answered, but its video server could not be reached (away from home?)' : ''), true);
+        if (d.id === autoId && (away || allH265(d))) autoGaveUp = true;
         stopLive();
         note(d.id, t(allH265(d) ? 'liveH265' : away ? 'liveAway' : 'liveFailed'));
       };
       tile.tile.classList.add('connecting');
       expand(tile, true);
-      if (liveMs != null) l.maxTimer = setTimeout(() => { if (live === l) stopLive(); }, liveMs);
+      if (liveMs != null && d.id !== autoId) l.maxTimer = setTimeout(() => { if (live === l) stopLive(); }, liveMs);
 
       const attempt = (i) => {
         if (live !== l) return;
@@ -534,19 +551,6 @@
         }).catch(err => next(err && err.message ? err.message : String(err)));
       };
       attempt(0);
-    }
-
-    /** The video frames decoded so far, from the connection's stats; null when the browser can't tell. */
-    async function framesDecoded(pc) {
-      if (typeof pc.getStats !== 'function') return null;
-      const stats = await pc.getStats();
-      let n = null;
-      stats.forEach((s) => {
-        if (s.type === 'inbound-rtp' && (s.kind || s.mediaType) === 'video' && typeof s.framesDecoded === 'number') {
-          n = (n || 0) + s.framesDecoded;
-        }
-      });
-      return n;
     }
 
     function onPlaying(id) {
@@ -662,16 +666,23 @@
     function pause() {
       if (grab) grab.cancel();
       if (live && liveMs == null) resumeId = live.id;
+      autoShown = false;
       stopLive(false);
+      clearTimeout(autoTimer);
+      autoTimer = null;
     }
 
     /** The page shows again: the camera that pause() ended until tapped goes live again. */
     function resume() {
       const id = resumeId;
       resumeId = null;
-      if (!liveView || !id || live || names.renaming) return;
-      const d = devices.find(x => x.id === id);
-      if (d && !('missing' in d) && d.video) startLive(d);
+      autoShown = true;
+      autoGaveUp = false;
+      if (liveView && id && !live && !names.renaming) {
+        const d = devices.find(x => x.id === id);
+        if (d && !('missing' in d) && d.video) startLive(d);
+      }
+      startAuto();
     }
 
     return { setState, setNames: names.set, setMessage, refresh, render, pause, resume, t, routeOf: (id) => (appRoute.has(id) ? 'app' : 'direct') };

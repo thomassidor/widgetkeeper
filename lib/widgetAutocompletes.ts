@@ -108,6 +108,7 @@ export function widgetAutocompletes(app: WidgetkeeperApp): Record<string, Record
 
   // Cameras: the cameras the `devices` list leaves out (any device with a camera image or a video).
   for (const n of CAMERA_SLOTS) add('cameras', `camera${n}`, query => app.cameras.listCameras(query));
+  add('cameras', 'autoLive', query => app.cameras.listCameras(query));
   for (const n of MEDIA_BUTTONS) {
     add('media', `button${n}`, (query, settings) => app.media.listButtons(settings?.device?.id, query));
     add('media', `button${n}Icon`, async query => app.flows.listIcons(query, { none: true }));

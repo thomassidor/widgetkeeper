@@ -16,34 +16,34 @@
     "ar": "طرح سؤال في نافذة منبثقة مع صورة"
   },
   "titleFormatted": {
-    "en": "Ask [[question]] with [[droptoken]] on [[screen]], buttons: [[button1]] and [[button2]], wait up to [[seconds]] seconds, sound: [[sound]]",
-    "nl": "Vraag [[question]] met [[droptoken]] op [[screen]], knoppen: [[button1]] en [[button2]], wacht maximaal [[seconds]] seconden, geluid: [[sound]]",
-    "de": "[[question]] mit [[droptoken]] auf [[screen]] fragen, Tasten: [[button1]] und [[button2]], höchstens [[seconds]] Sekunden warten, Ton: [[sound]]",
-    "fr": "Demander [[question]] avec [[droptoken]] sur [[screen]], boutons : [[button1]] et [[button2]], attendre au plus [[seconds]] secondes, son : [[sound]]",
-    "it": "Chiedi [[question]] con [[droptoken]] su [[screen]], pulsanti: [[button1]] e [[button2]], attendi al massimo [[seconds]] secondi, suono: [[sound]]",
-    "sv": "Fråga [[question]] med [[droptoken]] på [[screen]], knappar: [[button1]] och [[button2]], vänta högst [[seconds]] sekunder, ljud: [[sound]]",
-    "no": "Spør [[question]] med [[droptoken]] på [[screen]], knapper: [[button1]] og [[button2]], vent høyst [[seconds]] sekunder, lyd: [[sound]]",
-    "es": "Preguntar [[question]] con [[droptoken]] en [[screen]], botones: [[button1]] y [[button2]], esperar como máximo [[seconds]] segundos, sonido: [[sound]]",
-    "da": "Spørg [[question]] med [[droptoken]] på [[screen]], knapper: [[button1]] og [[button2]], vent højst [[seconds]] sekunder, lyd: [[sound]]",
-    "ru": "Спросить [[question]] с [[droptoken]] на [[screen]], кнопки: [[button1]] и [[button2]], ждать не дольше [[seconds]] с, звук: [[sound]]",
-    "pl": "Zapytaj [[question]] z [[droptoken]] na [[screen]], przyciski: [[button1]] i [[button2]], czekaj najwyżej [[seconds]] s, dźwięk: [[sound]]",
-    "ko": "[[screen]]에서 [[droptoken]]와(과) 함께 [[question]] 묻기, 버튼: [[button1]], [[button2]], 최대 [[seconds]]초 대기, 소리: [[sound]]",
-    "ar": "اسأل [[question]] مع [[droptoken]] على [[screen]]، الأزرار: [[button1]] و[[button2]]، وانتظر [[seconds]] ثانية على الأكثر، الصوت: [[sound]]"
+    "en": "Ask [[question]] with [[droptoken]] on [[screen]], buttons: [[button1]] and [[button2]], wait up to [[seconds]] seconds, sound: [[sound]], size: [[size]]",
+    "nl": "Vraag [[question]] met [[droptoken]] op [[screen]], knoppen: [[button1]] en [[button2]], wacht maximaal [[seconds]] seconden, geluid: [[sound]], grootte: [[size]]",
+    "de": "[[question]] mit [[droptoken]] auf [[screen]] fragen, Tasten: [[button1]] und [[button2]], höchstens [[seconds]] Sekunden warten, Ton: [[sound]], Größe: [[size]]",
+    "fr": "Demander [[question]] avec [[droptoken]] sur [[screen]], boutons : [[button1]] et [[button2]], attendre au plus [[seconds]] secondes, son : [[sound]], taille : [[size]]",
+    "it": "Chiedi [[question]] con [[droptoken]] su [[screen]], pulsanti: [[button1]] e [[button2]], attendi al massimo [[seconds]] secondi, suono: [[sound]], dimensione: [[size]]",
+    "sv": "Fråga [[question]] med [[droptoken]] på [[screen]], knappar: [[button1]] och [[button2]], vänta högst [[seconds]] sekunder, ljud: [[sound]], storlek: [[size]]",
+    "no": "Spør [[question]] med [[droptoken]] på [[screen]], knapper: [[button1]] og [[button2]], vent høyst [[seconds]] sekunder, lyd: [[sound]], størrelse: [[size]]",
+    "es": "Preguntar [[question]] con [[droptoken]] en [[screen]], botones: [[button1]] y [[button2]], esperar como máximo [[seconds]] segundos, sonido: [[sound]], tamaño: [[size]]",
+    "da": "Spørg [[question]] med [[droptoken]] på [[screen]], knapper: [[button1]] og [[button2]], vent højst [[seconds]] sekunder, lyd: [[sound]], størrelse: [[size]]",
+    "ru": "Спросить [[question]] с [[droptoken]] на [[screen]], кнопки: [[button1]] и [[button2]], ждать не дольше [[seconds]] с, звук: [[sound]], размер: [[size]]",
+    "pl": "Zapytaj [[question]] z [[droptoken]] na [[screen]], przyciski: [[button1]] i [[button2]], czekaj najwyżej [[seconds]] s, dźwięk: [[sound]], rozmiar: [[size]]",
+    "ko": "[[screen]]에서 [[droptoken]]와(과) 함께 [[question]] 묻기, 버튼: [[button1]], [[button2]], 최대 [[seconds]]초 대기, 소리: [[sound]], 크기: [[size]]",
+    "ar": "اسأل [[question]] مع [[droptoken]] على [[screen]]، الأزرار: [[button1]] و[[button2]]، وانتظر [[seconds]] ثانية على الأكثر، الصوت: [[sound]]، الحجم: [[size]]"
   },
   "hint": {
-    "en": "As Ask a question in a popup, with an image tag (or a text tag with a picture address) dropped on this card.",
-    "nl": "Zoals Een vraag stellen in een pop-up, met een afbeeldingstag (of een teksttag met een afbeeldingsadres) op deze kaart.",
-    "de": "Wie Eine Frage in einem Popup stellen, mit einem Bild-Tag (oder einem Text-Tag mit einer Bildadresse) auf dieser Karte.",
-    "fr": "Comme Poser une question dans une pop-up, avec un tag image (ou un tag texte avec l'adresse d'une image) déposé sur cette carte.",
-    "it": "Come Fai una domanda in un popup, con un tag immagine (o un tag di testo con l'indirizzo di un'immagine) su questa scheda.",
-    "sv": "Som Ställ en fråga i ett popup-fönster, med en bildtagg (eller en texttagg med en bildadress) på kortet.",
-    "no": "Som Still et spørsmål i et popup-vindu, med en bildetagg (eller en teksttagg med en bildeadresse) på kortet.",
-    "es": "Como Hacer una pregunta en una ventana emergente, con una etiqueta de imagen (o una etiqueta de texto con la dirección de una imagen) en esta tarjeta.",
-    "da": "Som Stil et spørgsmål i en popup, med et billedtag (eller et teksttag med en billedadresse) på kortet.",
-    "ru": "Как «Задать вопрос во всплывающем окне», но с тегом изображения (или текстовым тегом с адресом изображения) на этой карточке.",
-    "pl": "Jak Zadaj pytanie w oknie wyskakującym, z tagiem obrazu (albo tagiem tekstowym z adresem obrazu) na tej karcie.",
-    "ko": "팝업으로 질문하기와 같으며, 이 카드에 이미지 태그(또는 사진 주소가 담긴 텍스트 태그)를 놓습니다.",
-    "ar": "مثل طرح سؤال في نافذة منبثقة، مع وسم صورة (أو وسم نصي فيه عنوان صورة) على هذه البطاقة."
+    "en": "As Ask a question in a popup, with an image tag (or a text tag with a picture address) dropped on this card. On web dashboards, the popup can fill the screen.",
+    "nl": "Zoals Een vraag stellen in een pop-up, met een afbeeldingstag (of een teksttag met een afbeeldingsadres) op deze kaart. Op webdashboards kan de popup het hele scherm vullen.",
+    "de": "Wie Eine Frage in einem Popup stellen, mit einem Bild-Tag (oder einem Text-Tag mit einer Bildadresse) auf dieser Karte. Auf Web-Dashboards kann das Popup den Bildschirm füllen.",
+    "fr": "Comme Poser une question dans une pop-up, avec un tag image (ou un tag texte avec l'adresse d'une image) déposé sur cette carte. Sur les tableaux de bord web, le popup peut remplir l'écran.",
+    "it": "Come Fai una domanda in un popup, con un tag immagine (o un tag di testo con l'indirizzo di un'immagine) su questa scheda. Nelle dashboard web, il popup può riempire lo schermo.",
+    "sv": "Som Ställ en fråga i ett popup-fönster, med en bildtagg (eller en texttagg med en bildadress) på kortet. På webbinstrumentpaneler kan popupen fylla skärmen.",
+    "no": "Som Still et spørsmål i et popup-vindu, med en bildetagg (eller en teksttagg med en bildeadresse) på kortet. På nettdashbord kan popupen fylle skjermen.",
+    "es": "Como Hacer una pregunta en una ventana emergente, con una etiqueta de imagen (o una etiqueta de texto con la dirección de una imagen) en esta tarjeta. En los paneles web, la ventana puede llenar la pantalla.",
+    "da": "Som Stil et spørgsmål i en popup, med et billedtag (eller et teksttag med en billedadresse) på kortet. På webdashboards kan popuppen fylde skærmen.",
+    "ru": "Как «Задать вопрос во всплывающем окне», но с тегом изображения (или текстовым тегом с адресом изображения) на этой карточке. На веб-панелях всплывающее окно может занять весь экран.",
+    "pl": "Jak Zadaj pytanie w oknie wyskakującym, z tagiem obrazu (albo tagiem tekstowym z adresem obrazu) na tej karcie. Na pulpitach internetowych okno może wypełnić ekran.",
+    "ko": "팝업으로 질문하기와 같으며, 이 카드에 이미지 태그(또는 사진 주소가 담긴 텍스트 태그)를 놓습니다. 웹 대시보드에서는 팝업이 화면을 가득 채울 수 있습니다.",
+    "ar": "مثل طرح سؤال في نافذة منبثقة، مع وسم صورة (أو وسم نصي فيه عنوان صورة) على هذه البطاقة. على لوحات الويب، يمكن للنافذة أن تملأ الشاشة."
   },
   "droptoken": [
     "image",
@@ -390,6 +390,64 @@
             "pl": "alarm",
             "ko": "경고음",
             "ar": "تنبيه"
+          }
+        }
+      ]
+    },
+    {
+      "type": "dropdown",
+      "name": "size",
+      "required": false,
+      "title": {
+        "en": "Size",
+        "nl": "Grootte",
+        "de": "Größe",
+        "fr": "Taille",
+        "it": "Dimensione",
+        "sv": "Storlek",
+        "no": "Størrelse",
+        "es": "Tamaño",
+        "da": "Størrelse",
+        "ru": "Размер",
+        "pl": "Rozmiar",
+        "ko": "크기",
+        "ar": "الحجم"
+      },
+      "values": [
+        {
+          "id": "normal",
+          "title": {
+            "en": "normal",
+            "nl": "normaal",
+            "de": "normal",
+            "fr": "normale",
+            "it": "normale",
+            "sv": "normal",
+            "no": "normal",
+            "es": "normal",
+            "da": "normal",
+            "ru": "обычный",
+            "pl": "normalny",
+            "ko": "보통",
+            "ar": "عادي"
+          }
+        },
+        {
+          "id": "full",
+          "title": {
+            "en": "full screen",
+            "nl": "volledig scherm",
+            "de": "Vollbild",
+            "fr": "plein écran",
+            "it": "schermo intero",
+            "sv": "helskärm",
+            "no": "fullskjerm",
+            "es": "pantalla completa",
+            "da": "fuld skærm",
+            "ru": "на весь экран",
+            "pl": "pełny ekran",
+            "ko": "전체 화면",
+            "ar": "ملء الشاشة"
           }
         }
       ]

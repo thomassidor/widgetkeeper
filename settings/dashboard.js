@@ -262,6 +262,7 @@
     scaleHint: 'Lays it out at a phone\'s width and scales it to fill the column, so it wraps and sizes as on Homey\'s dashboard.',
     popupElsewhere: 'Answered on another screen: __button__',
     popupClose: 'Close',
+    popupLive: 'Live',
     popupPictureFailed: 'The picture could not be loaded',
     popupAnswerFailed: 'The answer didn\'t reach Homey',
     about: {

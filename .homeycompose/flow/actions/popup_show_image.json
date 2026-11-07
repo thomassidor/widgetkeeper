@@ -16,34 +16,34 @@
     "ar": "إظهار نافذة منبثقة مع صورة"
   },
   "titleFormatted": {
-    "en": "Show [[text]] with [[droptoken]] on [[screen]] for [[duration]] [[unit]], sound: [[sound]]",
-    "nl": "Toon [[text]] met [[droptoken]] op [[screen]] gedurende [[duration]] [[unit]], geluid: [[sound]]",
-    "de": "[[text]] mit [[droptoken]] auf [[screen]] für [[duration]] [[unit]] zeigen, Ton: [[sound]]",
-    "fr": "Afficher [[text]] avec [[droptoken]] sur [[screen]] pendant [[duration]] [[unit]], son : [[sound]]",
-    "it": "Mostra [[text]] con [[droptoken]] su [[screen]] per [[duration]] [[unit]], suono: [[sound]]",
-    "sv": "Visa [[text]] med [[droptoken]] på [[screen]] i [[duration]] [[unit]], ljud: [[sound]]",
-    "no": "Vis [[text]] med [[droptoken]] på [[screen]] i [[duration]] [[unit]], lyd: [[sound]]",
-    "es": "Mostrar [[text]] con [[droptoken]] en [[screen]] durante [[duration]] [[unit]], sonido: [[sound]]",
-    "da": "Vis [[text]] med [[droptoken]] på [[screen]] i [[duration]] [[unit]], lyd: [[sound]]",
-    "ru": "Показать [[text]] с [[droptoken]] на [[screen]] на [[duration]] [[unit]], звук: [[sound]]",
-    "pl": "Pokaż [[text]] z [[droptoken]] na [[screen]] przez [[duration]] [[unit]], dźwięk: [[sound]]",
-    "ko": "[[screen]]에 [[droptoken]]와(과) 함께 [[text]]을(를) [[duration]] [[unit]] 동안 표시, 소리: [[sound]]",
-    "ar": "إظهار [[text]] مع [[droptoken]] على [[screen]] لمدة [[duration]] [[unit]]، الصوت: [[sound]]"
+    "en": "Show [[text]] with [[droptoken]] on [[screen]] for [[duration]] [[unit]], sound: [[sound]], size: [[size]]",
+    "nl": "Toon [[text]] met [[droptoken]] op [[screen]] gedurende [[duration]] [[unit]], geluid: [[sound]], grootte: [[size]]",
+    "de": "[[text]] mit [[droptoken]] auf [[screen]] für [[duration]] [[unit]] zeigen, Ton: [[sound]], Größe: [[size]]",
+    "fr": "Afficher [[text]] avec [[droptoken]] sur [[screen]] pendant [[duration]] [[unit]], son : [[sound]], taille : [[size]]",
+    "it": "Mostra [[text]] con [[droptoken]] su [[screen]] per [[duration]] [[unit]], suono: [[sound]], dimensione: [[size]]",
+    "sv": "Visa [[text]] med [[droptoken]] på [[screen]] i [[duration]] [[unit]], ljud: [[sound]], storlek: [[size]]",
+    "no": "Vis [[text]] med [[droptoken]] på [[screen]] i [[duration]] [[unit]], lyd: [[sound]], størrelse: [[size]]",
+    "es": "Mostrar [[text]] con [[droptoken]] en [[screen]] durante [[duration]] [[unit]], sonido: [[sound]], tamaño: [[size]]",
+    "da": "Vis [[text]] med [[droptoken]] på [[screen]] i [[duration]] [[unit]], lyd: [[sound]], størrelse: [[size]]",
+    "ru": "Показать [[text]] с [[droptoken]] на [[screen]] на [[duration]] [[unit]], звук: [[sound]], размер: [[size]]",
+    "pl": "Pokaż [[text]] z [[droptoken]] na [[screen]] przez [[duration]] [[unit]], dźwięk: [[sound]], rozmiar: [[size]]",
+    "ko": "[[screen]]에 [[droptoken]]와(과) 함께 [[text]]을(를) [[duration]] [[unit]] 동안 표시, 소리: [[sound]], 크기: [[size]]",
+    "ar": "إظهار [[text]] مع [[droptoken]] على [[screen]] لمدة [[duration]] [[unit]]، الصوت: [[sound]]، الحجم: [[size]]"
   },
   "hint": {
-    "en": "Drop an image tag (a doorbell's or camera's snapshot) or a text tag with a picture address on this card. The picture is taken when the Flow runs.",
-    "nl": "Sleep een afbeeldingstag (de snapshot van een deurbel of camera) of een teksttag met een afbeeldingsadres op deze kaart. De afbeelding wordt genomen wanneer de Flow draait.",
-    "de": "Zieh ein Bild-Tag (den Schnappschuss einer Türklingel oder Kamera) oder ein Text-Tag mit einer Bildadresse auf diese Karte. Das Bild wird genommen, wenn der Flow läuft.",
-    "fr": "Déposez sur cette carte un tag image (l'instantané d'une sonnette ou d'une caméra) ou un tag texte avec l'adresse d'une image. L'image est prise quand le Flow s'exécute.",
-    "it": "Trascina su questa scheda un tag immagine (l'istantanea di un campanello o di una telecamera) o un tag di testo con l'indirizzo di un'immagine. L'immagine viene presa quando parte il Flow.",
-    "sv": "Dra en bildtagg (en ögonblicksbild från en dörrklocka eller kamera) eller en texttagg med en bildadress till kortet. Bilden tas när flödet körs.",
-    "no": "Dra en bildetagg (et øyeblikksbilde fra en dørklokke eller et kamera) eller en teksttagg med en bildeadresse til kortet. Bildet tas når Flowen kjører.",
-    "es": "Arrastra a esta tarjeta una etiqueta de imagen (la instantánea de un timbre o una cámara) o una etiqueta de texto con la dirección de una imagen. La imagen se toma cuando se ejecuta el Flow.",
-    "da": "Træk et billedtag (et øjebliksbillede fra en dørklokke eller et kamera) eller et teksttag med en billedadresse over på kortet. Billedet tages, når Flowet kører.",
-    "ru": "Перетащите на эту карточку тег изображения (снимок дверного звонка или камеры) или текстовый тег с адресом изображения. Изображение берётся в момент запуска Flow.",
-    "pl": "Przeciągnij na tę kartę tag obrazu (zdjęcie z dzwonka lub kamery) albo tag tekstowy z adresem obrazu. Obraz jest pobierany, gdy Flow się uruchamia.",
-    "ko": "이미지 태그(초인종이나 카메라의 스냅샷) 또는 사진 주소가 담긴 텍스트 태그를 이 카드에 놓으세요. 사진은 Flow가 실행될 때 가져옵니다.",
-    "ar": "اسحب إلى هذه البطاقة وسم صورة (لقطة من جرس الباب أو كاميرا) أو وسمًا نصيًا فيه عنوان صورة. تؤخذ الصورة عند تشغيل الـ Flow."
+    "en": "Drop an image tag (a doorbell's or camera's snapshot) or a text tag with a picture address on this card. The picture is taken when the Flow runs. On web dashboards, the popup can fill the screen.",
+    "nl": "Sleep een afbeeldingstag (de snapshot van een deurbel of camera) of een teksttag met een afbeeldingsadres op deze kaart. De afbeelding wordt genomen wanneer de Flow draait. Op webdashboards kan de popup het hele scherm vullen.",
+    "de": "Zieh ein Bild-Tag (den Schnappschuss einer Türklingel oder Kamera) oder ein Text-Tag mit einer Bildadresse auf diese Karte. Das Bild wird genommen, wenn der Flow läuft. Auf Web-Dashboards kann das Popup den Bildschirm füllen.",
+    "fr": "Déposez sur cette carte un tag image (l'instantané d'une sonnette ou d'une caméra) ou un tag texte avec l'adresse d'une image. L'image est prise quand le Flow s'exécute. Sur les tableaux de bord web, le popup peut remplir l'écran.",
+    "it": "Trascina su questa scheda un tag immagine (l'istantanea di un campanello o di una telecamera) o un tag di testo con l'indirizzo di un'immagine. L'immagine viene presa quando parte il Flow. Nelle dashboard web, il popup può riempire lo schermo.",
+    "sv": "Dra en bildtagg (en ögonblicksbild från en dörrklocka eller kamera) eller en texttagg med en bildadress till kortet. Bilden tas när flödet körs. På webbinstrumentpaneler kan popupen fylla skärmen.",
+    "no": "Dra en bildetagg (et øyeblikksbilde fra en dørklokke eller et kamera) eller en teksttagg med en bildeadresse til kortet. Bildet tas når Flowen kjører. På nettdashbord kan popupen fylle skjermen.",
+    "es": "Arrastra a esta tarjeta una etiqueta de imagen (la instantánea de un timbre o una cámara) o una etiqueta de texto con la dirección de una imagen. La imagen se toma cuando se ejecuta el Flow. En los paneles web, la ventana puede llenar la pantalla.",
+    "da": "Træk et billedtag (et øjebliksbillede fra en dørklokke eller et kamera) eller et teksttag med en billedadresse over på kortet. Billedet tages, når Flowet kører. På webdashboards kan popuppen fylde skærmen.",
+    "ru": "Перетащите на эту карточку тег изображения (снимок дверного звонка или камеры) или текстовый тег с адресом изображения. Изображение берётся в момент запуска Flow. На веб-панелях всплывающее окно может занять весь экран.",
+    "pl": "Przeciągnij na tę kartę tag obrazu (zdjęcie z dzwonka lub kamery) albo tag tekstowy z adresem obrazu. Obraz jest pobierany, gdy Flow się uruchamia. Na pulpitach internetowych okno może wypełnić ekran.",
+    "ko": "이미지 태그(초인종이나 카메라의 스냅샷) 또는 사진 주소가 담긴 텍스트 태그를 이 카드에 놓으세요. 사진은 Flow가 실행될 때 가져옵니다. 웹 대시보드에서는 팝업이 화면을 가득 채울 수 있습니다.",
+    "ar": "اسحب إلى هذه البطاقة وسم صورة (لقطة من جرس الباب أو كاميرا) أو وسمًا نصيًا فيه عنوان صورة. تؤخذ الصورة عند تشغيل الـ Flow. على لوحات الويب، يمكن للنافذة أن تملأ الشاشة."
   },
   "droptoken": [
     "image",
@@ -301,6 +301,64 @@
             "pl": "alarm",
             "ko": "경고음",
             "ar": "تنبيه"
+          }
+        }
+      ]
+    },
+    {
+      "type": "dropdown",
+      "name": "size",
+      "required": false,
+      "title": {
+        "en": "Size",
+        "nl": "Grootte",
+        "de": "Größe",
+        "fr": "Taille",
+        "it": "Dimensione",
+        "sv": "Storlek",
+        "no": "Størrelse",
+        "es": "Tamaño",
+        "da": "Størrelse",
+        "ru": "Размер",
+        "pl": "Rozmiar",
+        "ko": "크기",
+        "ar": "الحجم"
+      },
+      "values": [
+        {
+          "id": "normal",
+          "title": {
+            "en": "normal",
+            "nl": "normaal",
+            "de": "normal",
+            "fr": "normale",
+            "it": "normale",
+            "sv": "normal",
+            "no": "normal",
+            "es": "normal",
+            "da": "normal",
+            "ru": "обычный",
+            "pl": "normalny",
+            "ko": "보통",
+            "ar": "عادي"
+          }
+        },
+        {
+          "id": "full",
+          "title": {
+            "en": "full screen",
+            "nl": "volledig scherm",
+            "de": "Vollbild",
+            "fr": "plein écran",
+            "it": "schermo intero",
+            "sv": "helskärm",
+            "no": "fullskjerm",
+            "es": "pantalla completa",
+            "da": "fuld skærm",
+            "ru": "на весь экран",
+            "pl": "pełny ekran",
+            "ko": "전체 화면",
+            "ar": "ملء الشاشة"
           }
         }
       ]

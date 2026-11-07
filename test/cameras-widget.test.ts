@@ -130,6 +130,25 @@ describe('Camera slots', () => {
     }
   });
 
+  it('shows Always live\'s camera too, once, and passes it on', async () => {
+    vi.useFakeTimers();
+    try {
+      const root = document.createElement('div');
+      const api = vi.fn(async (_m: string, path: string): Promise<any> => (path.startsWith('/state')
+        ? { state: [], tileNames: {} } : new Promise(() => {})));
+      const Homey = {
+        api, on: vi.fn(), ready: vi.fn(), setHeight: vi.fn(), getWidgetInstanceId: () => 'w1', __: (key: string) => key,
+        getSettings: () => ({ autoLive: { id: 'syn9', name: 'Garden' }, camera1: { id: 'a' } }),
+        getDeviceIds: () => ['a'],
+      };
+      win.mountCamerasWidget(Homey, { root, frame: root });
+      await vi.advanceTimersByTimeAsync(100);
+      expect(api.mock.calls.find(([, path]) => path.startsWith('/state'))?.[1]).toMatch(/^\/state\?deviceIds=a,syn9&/);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('shows the slots alone when no device is picked', async () => {
     vi.useFakeTimers();
     try {
@@ -215,6 +234,159 @@ function stubCanvas() {
   vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({ drawImage() {} } as any);
   vi.spyOn(HTMLCanvasElement.prototype, 'toDataURL').mockReturnValue('data:image/jpeg;base64,FRAME');
 }
+
+describe('always live (autoLive)', () => {
+  const opts = { autoLive: 'b', liveFor: '30' };
+  beforeEach(() => { vi.useFakeTimers(); });
+  afterEach(() => { vi.useRealTimers(); });
+  const offers = (api: any) => api.mock.calls.filter((c: any[]) => c[1] === '/video/offer').length;
+
+  /** The page shows with cameras a and b, Always live on b, already playing. */
+  async function playingAuto(extra: object = {}) {
+    const pcs = stubPeerConnection();
+    const api = offerApi();
+    const w = widget([cam('a'), cam('b')], api, () => Date.now(), { ...opts, ...extra });
+    w.w.resume();
+    await vi.advanceTimersByTimeAsync(0);
+    playing(w.tile('b'));
+    return { ...w, pcs, api };
+  }
+
+  it('goes live when the page shows, not before, and keeps no time limit', async () => {
+    const pcs = stubPeerConnection();
+    const api = offerApi();
+    const { w, tile } = widget([cam('a'), cam('b')], api, () => Date.now(), opts);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(pcs).toEqual([]);
+    w.resume();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(tile('b').classList.contains('expanded')).toBe(true);
+    playing(tile('b'));
+    pcs[0].frames = 1;
+    await vi.advanceTimersByTimeAsync(4000);
+    pcs[0].frames = 2;
+    await vi.advanceTimersByTimeAsync(4000);
+    for (let i = 0; i < 12; i++) { pcs[0].frames += 1; await vi.advanceTimersByTimeAsync(5000); }
+    expect(tile('b').classList.contains('live')).toBe(true);
+  });
+
+  it('starts when a first read that was busy brings the camera', async () => {
+    const pcs = stubPeerConnection();
+    const { w, tile } = widget([cam('a'), { id: 'b', missing: true }], offerApi(), () => Date.now(), opts);
+    w.resume();
+    expect(pcs).toEqual([]);
+    w.setState([cam('a'), cam('b')]);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(tile('b').classList.contains('connecting')).toBe(true);
+  });
+
+  it('shows the grid after a tap and comes back after a minute', async () => {
+    const { tile, pcs } = await playingAuto();
+    tile('b').click();
+    expect(tile('b').classList.contains('expanded')).toBe(false);
+    expect(pcs[0].closed).toBe(true);
+    await vi.advanceTimersByTimeAsync(59e3);
+    expect(pcs).toHaveLength(1);
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(pcs).toHaveLength(2);
+    expect(tile('b').classList.contains('expanded')).toBe(true);
+  });
+
+  it('waits while another camera is tapped live, which keeps its limit, then comes back', async () => {
+    const { tile, pcs } = await playingAuto();
+    tile('b').click();
+    await vi.advanceTimersByTimeAsync(1000);
+    tile('a').click();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(tile('a').classList.contains('expanded')).toBe(true);
+    playing(tile('a'));
+    for (let i = 0; i < 6; i++) { pcs[1].frames += 1; await vi.advanceTimersByTimeAsync(5000); }
+    expect(tile('a').classList.contains('expanded')).toBe(false);
+    expect(pcs).toHaveLength(2);
+    await vi.advanceTimersByTimeAsync(60e3);
+    expect(pcs).toHaveLength(3);
+    expect(tile('b').classList.contains('expanded')).toBe(true);
+  });
+
+  it('reconnects 5 s after a playing stream is lost', async () => {
+    const { tile, pcs } = await playingAuto();
+    pcs[0].connectionState = 'failed';
+    pcs[0].onconnectionstatechange();
+    expect(tile('b').classList.contains('expanded')).toBe(false);
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(pcs).toHaveLength(2);
+    expect(tile('b').classList.contains('expanded')).toBe(true);
+  });
+
+  it('stays on snapshots away from home until the page next shows', async () => {
+    stubPeerConnection();
+    const api = offerApi();
+    const { w, tile } = widget([cam('a'), cam('b')], api, () => Date.now(), opts);
+    w.resume();
+    await vi.advanceTimersByTimeAsync(15e3); // answered, but never connected
+    expect(tile('b').classList.contains('expanded')).toBe(false);
+    const tries = offers(api);
+    await vi.advanceTimersByTimeAsync(300e3);
+    expect(offers(api)).toBe(tries);
+    w.pause();
+    w.resume();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(offers(api)).toBe(tries + 1);
+  });
+
+  it('is not put off by another camera that can\'t play', async () => {
+    const { tile, pcs } = await playingAuto();
+    tile('b').click();
+    await vi.advanceTimersByTimeAsync(1000);
+    tile('a').click(); // answered, but never connected: this camera's away-from-home message
+    await vi.advanceTimersByTimeAsync(15e3);
+    expect(tile('a').classList.contains('expanded')).toBe(false);
+    await vi.advanceTimersByTimeAsync(60e3);
+    expect(pcs).toHaveLength(3);
+    expect(tile('b').classList.contains('expanded')).toBe(true);
+  });
+
+  it('tries again after a minute when no stream played for another reason', async () => {
+    const pcs = stubPeerConnection();
+    const api = vi.fn(async (_m: string, path: string): Promise<any> => {
+      if (path === '/video/offer') throw new Error('busy');
+      return {};
+    });
+    const { w } = widget([cam('a'), cam('b')], api, () => Date.now(), opts);
+    w.resume();
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(pcs).toHaveLength(1);
+    await vi.advanceTimersByTimeAsync(60e3);
+    expect(pcs).toHaveLength(2);
+  });
+
+  it('stops while the page is hidden and comes back at once', async () => {
+    const { w, tile, pcs } = await playingAuto();
+    w.pause();
+    expect(pcs[0].closed).toBe(true);
+    await vi.advanceTimersByTimeAsync(300e3);
+    expect(pcs).toHaveLength(1);
+    w.resume();
+    expect(pcs).toHaveLength(2);
+    expect(tile('b').classList.contains('expanded')).toBe(true);
+  });
+
+  it('does nothing with live view off, for a camera without video, or while renaming', async () => {
+    const pcs = stubPeerConnection();
+    widget([cam('b')], offerApi(), () => Date.now(), { ...opts, liveView: false }).w.resume();
+    widget([cam('b', { video: null })], offerApi(), () => Date.now(), opts).w.resume();
+    widget([cam('b')], offerApi(), () => Date.now(), { ...opts, renameTiles: true }).w.resume();
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(pcs).toEqual([]);
+  });
+
+  it('leaves a widget without it as it was', async () => {
+    const pcs = stubPeerConnection();
+    widget([cam('b')], offerApi(), () => Date.now(), {}).w.resume();
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(pcs).toEqual([]);
+  });
+});
 
 /** The tile's video starts playing at 1280 × 720. */
 function playing(tile: HTMLElement) {

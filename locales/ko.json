@@ -1207,6 +1207,7 @@
     "scaleHint": "휴대폰 너비로 배치한 뒤 열에 맞게 확대해, Homey 대시보드에서처럼 줄바꿈되고 같은 높이가 됩니다.",
     "popupElsewhere": "다른 화면에서 응답: __button__",
     "popupClose": "닫기",
+    "popupLive": "라이브",
     "popupPictureFailed": "사진을 불러올 수 없습니다",
     "popupAnswerFailed": "답변이 Homey에 전달되지 않았습니다",
     "about": {

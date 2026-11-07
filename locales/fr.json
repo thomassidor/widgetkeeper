@@ -1207,6 +1207,7 @@
     "scaleHint": "L'affiche à la largeur d'un téléphone, mis à l'échelle de la colonne, avec la même mise en page et la même hauteur que sur le tableau de bord de Homey.",
     "popupElsewhere": "Répondu sur un autre écran : __button__",
     "popupClose": "Fermer",
+    "popupLive": "Direct",
     "popupPictureFailed": "L'image n'a pas pu être chargée",
     "popupAnswerFailed": "La réponse n'est pas parvenue à Homey",
     "about": {

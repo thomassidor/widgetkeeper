@@ -27,6 +27,9 @@ export type CameraDevice =
 
 export type Snapshot = { type: string, data: string };
 
+/** A camera's streams, best first (`cameraVideos()`), and those whose title says H.265. */
+export type CameraVideos = { videos: string[], h265: string[] };
+
 /**
  * The snapshot to show: the device's first `camera` image, else its first image (`device.images`
  * entries are `{type, id, title, imageObj: {id, url, lastUpdated}}`).
@@ -171,6 +174,14 @@ export default class CameraService {
     const drop = () => { if (this.images.get(key)?.promise === promise) this.images.delete(key); };
     promise.then(() => this.homey.setTimeout(drop, IMAGE_REUSE), drop);
     return promise;
+  }
+
+  /** A camera's streams, read fresh: a popup's camera may be one no widget has asked for. */
+  async getVideos(deviceId: string): Promise<CameraVideos> {
+    this.requestedNow(deviceId);
+    const api = await getAppApi(this.homey);
+    const device: any = await readFresh(api.devices, deviceId);
+    return { videos: cameraVideos(device), h265: h265Videos(device) };
   }
 
   /** Starts live view: Homey answers the widget's WebRTC offer (all candidates included, no trickle). */

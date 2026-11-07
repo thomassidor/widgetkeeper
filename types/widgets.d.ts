@@ -87,6 +87,12 @@ interface Window {
       model: (opts: { render: () => void, roomLevel?: string }) => any,
     },
     /** Values just sent, shown until the device confirms them (`ms`, 10 s by default). */
+    /** Homey's WebRTC offer for one camera stream, through the Cameras routes; null when `current()` says it was dropped. */
+    openVideoStream: (pc: RTCPeerConnection, videoId: string, post: (path: string, body: any) => Promise<any>, current: () => boolean) => Promise<any>,
+    /** The video frames decoded so far, from the connection's stats; null when the browser can't tell. */
+    framesDecoded: (pc: RTCPeerConnection) => Promise<number | null>,
+    /** Plays a camera's streams in turn into a video until one gives a frame (a popup on a web dashboard). */
+    playCameraStream: (video: HTMLVideoElement, videoIds: string[], post: (path: string, body: any) => Promise<any>, on: { onPlaying: () => void, onEnded: (played: boolean, why: string) => void }) => { stop: () => void },
     optimistic: (render: () => void, ms?: number) => {
       shown: (d: any, capabilityId: string) => any,
       set: (deviceId: string, capabilityId: string, value: unknown) => void,

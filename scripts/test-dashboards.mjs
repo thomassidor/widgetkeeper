@@ -401,6 +401,7 @@ const BUILD = {
       w('cameras', 'With a deleted camera', {}, [cams[0], MISSING].filter(Boolean)),
       w('cameras', 'Live until tapped', { liveFor: 'tap' }, cams.slice(0, 2)),
       w('cameras', 'Live 30 s', { liveFor: '30' }, cams.slice(0, 1)),
+      ...(repeat ? [w('cameras', 'Always live (the first camera)', { autoLive: repeat }, cams.slice(0, 2))] : []),
       w('cameras', 'Live view off (a tap does nothing)', { liveView: false }, cams.slice(0, 2)),
       w('cameras', 'Every 60 s (a late snapshot shows its time)', { refresh: '60' }, cams.slice(0, 2)),
       renaming('cameras', 'Rename tiles', {}, cams.slice(0, 2), cams[0] ? { [cams[0]]: 'Typed name' } : {}),

@@ -1207,6 +1207,7 @@
     "scaleHint": "Układa go na szerokość telefonu i skaluje do kolumny, by łamał się i miał wysokość jak na pulpicie Homey.",
     "popupElsewhere": "Odpowiedziano na innym ekranie: __button__",
     "popupClose": "Zamknij",
+    "popupLive": "Na żywo",
     "popupPictureFailed": "Nie udało się wczytać obrazu",
     "popupAnswerFailed": "Odpowiedź nie dotarła do Homey",
     "about": {

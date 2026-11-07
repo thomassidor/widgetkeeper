@@ -1207,6 +1207,7 @@
     "scaleHint": "Stellt es in der Breite eines Telefons dar und skaliert es auf die Spalte, damit es wie auf Homeys Dashboard umbricht und so hoch wird.",
     "popupElsewhere": "Auf einem anderen Bildschirm beantwortet: __button__",
     "popupClose": "Schließen",
+    "popupLive": "Live",
     "popupPictureFailed": "Das Bild konnte nicht geladen werden",
     "popupAnswerFailed": "Die Antwort kam nicht bei Homey an",
     "about": {

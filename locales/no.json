@@ -1207,6 +1207,7 @@
     "scaleHint": "Legger den ut i bredden til en telefon og skalerer den til kolonnen, så den brytes og blir like høy som på Homeys dashbord.",
     "popupElsewhere": "Besvart på en annen skjerm: __button__",
     "popupClose": "Lukk",
+    "popupLive": "Direkte",
     "popupPictureFailed": "Bildet kunne ikke lastes",
     "popupAnswerFailed": "Svaret nådde ikke Homey",
     "about": {

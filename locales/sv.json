@@ -1207,6 +1207,7 @@
     "scaleHint": "Lägger ut den i en telefons bredd och skalar den till kolumnen, så att den radbryts och blir lika hög som på Homeys instrumentpanel.",
     "popupElsewhere": "Besvarad på en annan skärm: __button__",
     "popupClose": "Stäng",
+    "popupLive": "Live",
     "popupPictureFailed": "Bilden kunde inte laddas",
     "popupAnswerFailed": "Svaret nådde inte Homey",
     "about": {

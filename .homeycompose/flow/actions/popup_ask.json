@@ -16,34 +16,34 @@
     "ar": "طرح سؤال في نافذة منبثقة"
   },
   "titleFormatted": {
-    "en": "Ask [[question]] on [[screen]], buttons: [[button1]] and [[button2]], picture: [[picture]], wait up to [[seconds]] seconds, sound: [[sound]]",
-    "nl": "Vraag [[question]] op [[screen]], knoppen: [[button1]] en [[button2]], afbeelding: [[picture]], wacht maximaal [[seconds]] seconden, geluid: [[sound]]",
-    "de": "[[question]] auf [[screen]] fragen, Tasten: [[button1]] und [[button2]], Bild: [[picture]], höchstens [[seconds]] Sekunden warten, Ton: [[sound]]",
-    "fr": "Demander [[question]] sur [[screen]], boutons : [[button1]] et [[button2]], image : [[picture]], attendre au plus [[seconds]] secondes, son : [[sound]]",
-    "it": "Chiedi [[question]] su [[screen]], pulsanti: [[button1]] e [[button2]], immagine: [[picture]], attendi al massimo [[seconds]] secondi, suono: [[sound]]",
-    "sv": "Fråga [[question]] på [[screen]], knappar: [[button1]] och [[button2]], bild: [[picture]], vänta högst [[seconds]] sekunder, ljud: [[sound]]",
-    "no": "Spør [[question]] på [[screen]], knapper: [[button1]] og [[button2]], bilde: [[picture]], vent høyst [[seconds]] sekunder, lyd: [[sound]]",
-    "es": "Preguntar [[question]] en [[screen]], botones: [[button1]] y [[button2]], imagen: [[picture]], esperar como máximo [[seconds]] segundos, sonido: [[sound]]",
-    "da": "Spørg [[question]] på [[screen]], knapper: [[button1]] og [[button2]], billede: [[picture]], vent højst [[seconds]] sekunder, lyd: [[sound]]",
-    "ru": "Спросить [[question]] на [[screen]], кнопки: [[button1]] и [[button2]], изображение: [[picture]], ждать не дольше [[seconds]] с, звук: [[sound]]",
-    "pl": "Zapytaj [[question]] na [[screen]], przyciski: [[button1]] i [[button2]], obraz: [[picture]], czekaj najwyżej [[seconds]] s, dźwięk: [[sound]]",
-    "ko": "[[screen]]에서 [[question]] 묻기, 버튼: [[button1]], [[button2]], 사진: [[picture]], 최대 [[seconds]]초 대기, 소리: [[sound]]",
-    "ar": "اسأل [[question]] على [[screen]]، الأزرار: [[button1]] و[[button2]]، الصورة: [[picture]]، وانتظر [[seconds]] ثانية على الأكثر، الصوت: [[sound]]"
+    "en": "Ask [[question]] on [[screen]], buttons: [[button1]] and [[button2]], picture: [[picture]], wait up to [[seconds]] seconds, sound: [[sound]], size: [[size]], camera: [[cameraView]]",
+    "nl": "Vraag [[question]] op [[screen]], knoppen: [[button1]] en [[button2]], afbeelding: [[picture]], wacht maximaal [[seconds]] seconden, geluid: [[sound]], grootte: [[size]], camera: [[cameraView]]",
+    "de": "[[question]] auf [[screen]] fragen, Tasten: [[button1]] und [[button2]], Bild: [[picture]], höchstens [[seconds]] Sekunden warten, Ton: [[sound]], Größe: [[size]], Kamera: [[cameraView]]",
+    "fr": "Demander [[question]] sur [[screen]], boutons : [[button1]] et [[button2]], image : [[picture]], attendre au plus [[seconds]] secondes, son : [[sound]], taille : [[size]], caméra : [[cameraView]]",
+    "it": "Chiedi [[question]] su [[screen]], pulsanti: [[button1]] e [[button2]], immagine: [[picture]], attendi al massimo [[seconds]] secondi, suono: [[sound]], dimensione: [[size]], telecamera: [[cameraView]]",
+    "sv": "Fråga [[question]] på [[screen]], knappar: [[button1]] och [[button2]], bild: [[picture]], vänta högst [[seconds]] sekunder, ljud: [[sound]], storlek: [[size]], kamera: [[cameraView]]",
+    "no": "Spør [[question]] på [[screen]], knapper: [[button1]] og [[button2]], bilde: [[picture]], vent høyst [[seconds]] sekunder, lyd: [[sound]], størrelse: [[size]], kamera: [[cameraView]]",
+    "es": "Preguntar [[question]] en [[screen]], botones: [[button1]] y [[button2]], imagen: [[picture]], esperar como máximo [[seconds]] segundos, sonido: [[sound]], tamaño: [[size]], cámara: [[cameraView]]",
+    "da": "Spørg [[question]] på [[screen]], knapper: [[button1]] og [[button2]], billede: [[picture]], vent højst [[seconds]] sekunder, lyd: [[sound]], størrelse: [[size]], kamera: [[cameraView]]",
+    "ru": "Спросить [[question]] на [[screen]], кнопки: [[button1]] и [[button2]], изображение: [[picture]], ждать не дольше [[seconds]] с, звук: [[sound]], размер: [[size]], камера: [[cameraView]]",
+    "pl": "Zapytaj [[question]] na [[screen]], przyciski: [[button1]] i [[button2]], obraz: [[picture]], czekaj najwyżej [[seconds]] s, dźwięk: [[sound]], rozmiar: [[size]], kamera: [[cameraView]]",
+    "ko": "[[screen]]에서 [[question]] 묻기, 버튼: [[button1]], [[button2]], 사진: [[picture]], 최대 [[seconds]]초 대기, 소리: [[sound]], 크기: [[size]], 카메라: [[cameraView]]",
+    "ar": "اسأل [[question]] على [[screen]]، الأزرار: [[button1]] و[[button2]]، الصورة: [[picture]]، وانتظر [[seconds]] ثانية على الأكثر، الصوت: [[sound]]، الحجم: [[size]]، الكاميرا: [[cameraView]]"
   },
   "hint": {
-    "en": "Shows the question with your buttons: Yes and No when both are empty, one button when only one is filled in. The first answer from any screen closes it everywhere. Answer is yes for the first button and no for the second, Button is its text, and Answered is no when nobody answered in time. Use it in an Advanced Flow to act on the tags.",
-    "nl": "Toont de vraag met jouw knoppen: Ja en Nee als beide leeg zijn, één knop als er maar één is ingevuld. Het eerste antwoord van een scherm sluit hem overal. Antwoord is ja voor de eerste knop en nee voor de tweede, Knop is de tekst ervan, en Beantwoord is nee als niemand op tijd antwoordde. Gebruik hem in een Advanced Flow om op de tags te reageren.",
-    "de": "Zeigt die Frage mit deinen Tasten: Ja und Nein, wenn beide leer sind, eine Taste, wenn nur eine ausgefüllt ist. Die erste Antwort eines Bildschirms schließt sie überall. Antwort ist Ja bei der ersten Taste und Nein bei der zweiten, Taste ist ihr Text, und Beantwortet ist Nein, wenn niemand rechtzeitig antwortete. In einem Advanced Flow kannst du auf die Tags reagieren.",
-    "fr": "Affiche la question avec vos boutons : Oui et Non si les deux sont vides, un seul bouton si un seul est rempli. La première réponse d'un écran la ferme partout. Réponse vaut oui pour le premier bouton et non pour le second, Bouton est son texte, et Répondu vaut non si personne n'a répondu à temps. Utilisez-la dans un Advanced Flow pour agir selon les tags.",
-    "it": "Mostra la domanda con i tuoi pulsanti: Sì e No se entrambi sono vuoti, un solo pulsante se ne compili uno. La prima risposta da uno schermo lo chiude ovunque. Risposta è sì per il primo pulsante e no per il secondo, Pulsante è il suo testo, e Risposto è no se nessuno ha risposto in tempo. Usalo in un Advanced Flow per agire sui tag.",
-    "sv": "Visar frågan med dina knappar: Ja och Nej om båda är tomma, en knapp om bara en är ifylld. Det första svaret från en skärm stänger den överallt. Svar är ja för den första knappen och nej för den andra, Knapp är dess text, och Besvarad är nej om ingen svarade i tid. Använd den i ett Advanced Flow för att agera på taggarna.",
-    "no": "Viser spørsmålet med knappene dine: Ja og Nei hvis begge er tomme, én knapp hvis bare én er fylt ut. Det første svaret fra en skjerm lukker det overalt. Svar er ja for den første knappen og nei for den andre, Knapp er teksten på den, og Besvart er nei hvis ingen svarte i tide. Bruk det i en Advanced Flow for å handle på taggene.",
-    "es": "Muestra la pregunta con tus botones: Sí y No si ambos están vacíos, un solo botón si solo rellenas uno. La primera respuesta de una pantalla la cierra en todas. Respuesta es sí para el primer botón y no para el segundo, Botón es su texto, y Respondida es no si nadie respondió a tiempo. Úsala en un Advanced Flow para actuar según las etiquetas.",
-    "da": "Viser spørgsmålet med dine knapper: Ja og Nej, hvis begge er tomme, én knap, hvis kun én er udfyldt. Det første svar fra en skærm lukker det overalt. Svar er ja for den første knap og nej for den anden, Knap er dens tekst, og Besvaret er nej, hvis ingen svarede i tide. Brug det i et Advanced Flow til at handle på tags.",
-    "ru": "Показывает вопрос с вашими кнопками: Да и Нет, если обе пусты, одна кнопка, если заполнена только одна. Первый ответ с любого экрана закрывает его везде. «Ответ» — да для первой кнопки и нет для второй, «Кнопка» — её текст, «Отвечено» — нет, если никто не ответил вовремя. Используйте в Advanced Flow, чтобы действовать по тегам.",
-    "pl": "Pokazuje pytanie z twoimi przyciskami: Tak i Nie, gdy oba są puste, jeden przycisk, gdy wypełnisz tylko jeden. Pierwsza odpowiedź z dowolnego ekranu zamyka je wszędzie. Odpowiedź to tak dla pierwszego przycisku i nie dla drugiego, Przycisk to jego tekst, a Odpowiedziano to nie, gdy nikt nie odpowiedział na czas. Użyj w Advanced Flow, aby działać według tagów.",
-    "ko": "질문을 지정한 버튼과 함께 표시합니다. 둘 다 비우면 예와 아니요, 하나만 채우면 버튼 하나입니다. 어느 화면에서든 첫 답변이 모든 곳에서 닫습니다. 답변은 첫 번째 버튼이면 예, 두 번째면 아니요이고, 버튼은 그 텍스트이며, 아무도 제때 답하지 않으면 응답됨은 아니요입니다. 태그로 동작하려면 Advanced Flow에서 사용하세요.",
-    "ar": "تعرض السؤال مع أزرارك: نعم ولا إذا تُرك الاثنان فارغين، وزر واحد إذا مُلئ واحد فقط. أول إجابة من أي شاشة تغلقه في كل مكان. الإجابة نعم للزر الأول ولا للثاني، والزر هو نصه، وتمت الإجابة تكون لا إذا لم يجب أحد في الوقت. استخدمها في Advanced Flow للتصرف حسب الوسوم."
+    "en": "Shows the question with your buttons: Yes and No when both are empty, one button when only one is filled in. The first answer from any screen closes it everywhere. Answer is yes for the first button and no for the second, Button is its text, and Answered is no when nobody answered in time. Use it in an Advanced Flow to act on the tags. On web dashboards, the popup can fill the screen, and a camera can play live video instead of images.",
+    "nl": "Toont de vraag met jouw knoppen: Ja en Nee als beide leeg zijn, één knop als er maar één is ingevuld. Het eerste antwoord van een scherm sluit hem overal. Antwoord is ja voor de eerste knop en nee voor de tweede, Knop is de tekst ervan, en Beantwoord is nee als niemand op tijd antwoordde. Gebruik hem in een Advanced Flow om op de tags te reageren. Op webdashboards kan de popup het hele scherm vullen, en kan een camera live video tonen in plaats van afbeeldingen.",
+    "de": "Zeigt die Frage mit deinen Tasten: Ja und Nein, wenn beide leer sind, eine Taste, wenn nur eine ausgefüllt ist. Die erste Antwort eines Bildschirms schließt sie überall. Antwort ist Ja bei der ersten Taste und Nein bei der zweiten, Taste ist ihr Text, und Beantwortet ist Nein, wenn niemand rechtzeitig antwortete. In einem Advanced Flow kannst du auf die Tags reagieren. Auf Web-Dashboards kann das Popup den Bildschirm füllen, und eine Kamera kann Live-Video statt Bildern zeigen.",
+    "fr": "Affiche la question avec vos boutons : Oui et Non si les deux sont vides, un seul bouton si un seul est rempli. La première réponse d'un écran la ferme partout. Réponse vaut oui pour le premier bouton et non pour le second, Bouton est son texte, et Répondu vaut non si personne n'a répondu à temps. Utilisez-la dans un Advanced Flow pour agir selon les tags. Sur les tableaux de bord web, le popup peut remplir l'écran, et une caméra peut afficher la vidéo en direct au lieu d'images.",
+    "it": "Mostra la domanda con i tuoi pulsanti: Sì e No se entrambi sono vuoti, un solo pulsante se ne compili uno. La prima risposta da uno schermo lo chiude ovunque. Risposta è sì per il primo pulsante e no per il secondo, Pulsante è il suo testo, e Risposto è no se nessuno ha risposto in tempo. Usalo in un Advanced Flow per agire sui tag. Nelle dashboard web, il popup può riempire lo schermo e una telecamera può mostrare il video in diretta invece delle immagini.",
+    "sv": "Visar frågan med dina knappar: Ja och Nej om båda är tomma, en knapp om bara en är ifylld. Det första svaret från en skärm stänger den överallt. Svar är ja för den första knappen och nej för den andra, Knapp är dess text, och Besvarad är nej om ingen svarade i tid. Använd den i ett Advanced Flow för att agera på taggarna. På webbinstrumentpaneler kan popupen fylla skärmen, och en kamera kan visa livevideo i stället för bilder.",
+    "no": "Viser spørsmålet med knappene dine: Ja og Nei hvis begge er tomme, én knapp hvis bare én er fylt ut. Det første svaret fra en skjerm lukker det overalt. Svar er ja for den første knappen og nei for den andre, Knapp er teksten på den, og Besvart er nei hvis ingen svarte i tide. Bruk det i en Advanced Flow for å handle på taggene. På nettdashbord kan popupen fylle skjermen, og et kamera kan vise direktevideo i stedet for bilder.",
+    "es": "Muestra la pregunta con tus botones: Sí y No si ambos están vacíos, un solo botón si solo rellenas uno. La primera respuesta de una pantalla la cierra en todas. Respuesta es sí para el primer botón y no para el segundo, Botón es su texto, y Respondida es no si nadie respondió a tiempo. Úsala en un Advanced Flow para actuar según las etiquetas. En los paneles web, la ventana puede llenar la pantalla y una cámara puede mostrar vídeo en directo en lugar de imágenes.",
+    "da": "Viser spørgsmålet med dine knapper: Ja og Nej, hvis begge er tomme, én knap, hvis kun én er udfyldt. Det første svar fra en skærm lukker det overalt. Svar er ja for den første knap og nej for den anden, Knap er dens tekst, og Besvaret er nej, hvis ingen svarede i tide. Brug det i et Advanced Flow til at handle på tags. På webdashboards kan popuppen fylde skærmen, og et kamera kan vise live-video i stedet for billeder.",
+    "ru": "Показывает вопрос с вашими кнопками: Да и Нет, если обе пусты, одна кнопка, если заполнена только одна. Первый ответ с любого экрана закрывает его везде. «Ответ» — да для первой кнопки и нет для второй, «Кнопка» — её текст, «Отвечено» — нет, если никто не ответил вовремя. Используйте в Advanced Flow, чтобы действовать по тегам. На веб-панелях всплывающее окно может занять весь экран, а камера может показывать видео вживую вместо изображений.",
+    "pl": "Pokazuje pytanie z twoimi przyciskami: Tak i Nie, gdy oba są puste, jeden przycisk, gdy wypełnisz tylko jeden. Pierwsza odpowiedź z dowolnego ekranu zamyka je wszędzie. Odpowiedź to tak dla pierwszego przycisku i nie dla drugiego, Przycisk to jego tekst, a Odpowiedziano to nie, gdy nikt nie odpowiedział na czas. Użyj w Advanced Flow, aby działać według tagów. Na pulpitach internetowych okno może wypełnić ekran, a kamera może pokazywać wideo na żywo zamiast obrazów.",
+    "ko": "질문을 지정한 버튼과 함께 표시합니다. 둘 다 비우면 예와 아니요, 하나만 채우면 버튼 하나입니다. 어느 화면에서든 첫 답변이 모든 곳에서 닫습니다. 답변은 첫 번째 버튼이면 예, 두 번째면 아니요이고, 버튼은 그 텍스트이며, 아무도 제때 답하지 않으면 응답됨은 아니요입니다. 태그로 동작하려면 Advanced Flow에서 사용하세요. 웹 대시보드에서는 팝업이 화면을 가득 채울 수 있고, 카메라는 이미지 대신 실시간 영상을 보여 줄 수 있습니다.",
+    "ar": "تعرض السؤال مع أزرارك: نعم ولا إذا تُرك الاثنان فارغين، وزر واحد إذا مُلئ واحد فقط. أول إجابة من أي شاشة تغلقه في كل مكان. الإجابة نعم للزر الأول ولا للثاني، والزر هو نصه، وتمت الإجابة تكون لا إذا لم يجب أحد في الوقت. استخدمها في Advanced Flow للتصرف حسب الوسوم. على لوحات الويب، يمكن للنافذة أن تملأ الشاشة، ويمكن للكاميرا عرض فيديو مباشر بدلًا من الصور."
   },
   "tokens": [
     {
@@ -420,6 +420,122 @@
             "pl": "alarm",
             "ko": "경고음",
             "ar": "تنبيه"
+          }
+        }
+      ]
+    },
+    {
+      "type": "dropdown",
+      "name": "size",
+      "required": false,
+      "title": {
+        "en": "Size",
+        "nl": "Grootte",
+        "de": "Größe",
+        "fr": "Taille",
+        "it": "Dimensione",
+        "sv": "Storlek",
+        "no": "Størrelse",
+        "es": "Tamaño",
+        "da": "Størrelse",
+        "ru": "Размер",
+        "pl": "Rozmiar",
+        "ko": "크기",
+        "ar": "الحجم"
+      },
+      "values": [
+        {
+          "id": "normal",
+          "title": {
+            "en": "normal",
+            "nl": "normaal",
+            "de": "normal",
+            "fr": "normale",
+            "it": "normale",
+            "sv": "normal",
+            "no": "normal",
+            "es": "normal",
+            "da": "normal",
+            "ru": "обычный",
+            "pl": "normalny",
+            "ko": "보통",
+            "ar": "عادي"
+          }
+        },
+        {
+          "id": "full",
+          "title": {
+            "en": "full screen",
+            "nl": "volledig scherm",
+            "de": "Vollbild",
+            "fr": "plein écran",
+            "it": "schermo intero",
+            "sv": "helskärm",
+            "no": "fullskjerm",
+            "es": "pantalla completa",
+            "da": "fuld skærm",
+            "ru": "на весь экран",
+            "pl": "pełny ekran",
+            "ko": "전체 화면",
+            "ar": "ملء الشاشة"
+          }
+        }
+      ]
+    },
+    {
+      "type": "dropdown",
+      "name": "cameraView",
+      "required": false,
+      "title": {
+        "en": "Camera shows",
+        "nl": "Camera toont",
+        "de": "Kamera zeigt",
+        "fr": "La caméra affiche",
+        "it": "La telecamera mostra",
+        "sv": "Kameran visar",
+        "no": "Kameraet viser",
+        "es": "La cámara muestra",
+        "da": "Kameraet viser",
+        "ru": "Камера показывает",
+        "pl": "Kamera pokazuje",
+        "ko": "카메라 표시",
+        "ar": "تعرض الكاميرا"
+      },
+      "values": [
+        {
+          "id": "image",
+          "title": {
+            "en": "images",
+            "nl": "afbeeldingen",
+            "de": "Bilder",
+            "fr": "images",
+            "it": "immagini",
+            "sv": "bilder",
+            "no": "bilder",
+            "es": "imágenes",
+            "da": "billeder",
+            "ru": "изображения",
+            "pl": "obrazy",
+            "ko": "이미지",
+            "ar": "صور"
+          }
+        },
+        {
+          "id": "live",
+          "title": {
+            "en": "live video",
+            "nl": "live video",
+            "de": "Live-Video",
+            "fr": "vidéo en direct",
+            "it": "video in diretta",
+            "sv": "livevideo",
+            "no": "direktevideo",
+            "es": "vídeo en directo",
+            "da": "live-video",
+            "ru": "видео вживую",
+            "pl": "wideo na żywo",
+            "ko": "실시간 영상",
+            "ar": "فيديو مباشر"
           }
         }
       ]

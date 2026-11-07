@@ -259,6 +259,38 @@ describe('pictures', () => {
     expect(cameras.getSnapshot).toHaveBeenCalledTimes(2);
   });
 
+  it("gives a web dashboard the streams of a camera popup asked to play live, and nothing for images, another picture or a closed popup", async () => {
+    const { service, events, cameras } = setup();
+    (cameras as any).getVideos = vi.fn(async () => ({ videos: ['sub', 'main'], h265: ['main'] }));
+    await service.show({ target: 'all', text: 'Door', seconds: 5, picture: { camera: 'cam1' }, live: true });
+    await service.show({ target: 'all', text: 'Plain', seconds: 5, live: true });
+    await service.show({ target: 'all', text: 'Images', seconds: 5, picture: { camera: 'cam1' } });
+    const [door, plain, images] = events(POPUP_SHOW_EVENT);
+    expect([door.live, plain.live, images.live]).toEqual([true, false, false]);
+    await expect(service.videosFromSession(images.id)).rejects.toThrow('Not found');
+    await expect(service.videosFromSession(door.id)).resolves.toEqual({ videos: ['sub', 'main'], h265: ['main'] });
+    expect((cameras as any).getVideos).toHaveBeenCalledWith('cam1');
+    await expect(service.videosFromSession(plain.id)).rejects.toThrow('Not found');
+    await expect(service.videosFromSession('nope')).rejects.toThrow('Not found');
+    await vi.advanceTimersByTimeAsync(5e3);
+    await expect(service.videosFromSession(door.id)).rejects.toThrow('Not found');
+  });
+
+  it('reads the camera dropdown: only live plays a stream, and a saved card shows images', () => {
+    expect(PopupService.liveArg('live')).toBe(true);
+    expect(PopupService.liveArg('image')).toBe(false);
+    expect(PopupService.liveArg(undefined)).toBe(false);
+  });
+
+  it('sends the size to the screens, the usual one unless the Flow says full screen', async () => {
+    const { service, events } = setup();
+    await service.show({ target: 'all', text: 'A', seconds: 5, fullScreen: PopupService.fullScreenArg('full') });
+    await service.show({ target: 'all', text: 'B', seconds: 5, fullScreen: PopupService.fullScreenArg('normal') });
+    await service.show({ target: 'all', text: 'C', seconds: 5, fullScreen: PopupService.fullScreenArg(undefined) });
+    expect(events(POPUP_SHOW_EVENT).map((e: any) => e.fullScreen)).toEqual([true, false, false]);
+    expect(service.describe().open.map(o => o.fullScreen)).toEqual([true, false, false]);
+  });
+
   it('fetches a picture address once, and only an image', async () => {
     const { service, events } = setup();
     const fetch = vi.fn(async (url: URL) => (String(url).endsWith('.png')
@@ -323,6 +355,6 @@ describe('describe', () => {
     service.forScreen('Hall');
     const report = JSON.stringify(service.describe());
     expect(report).not.toContain('Secret');
-    expect(service.describe()).toEqual({ open: [{ kind: 'message', target: 'name', picture: null, sound: null, secondsLeft: 30 }], recentlyClosed: [], screens: ['Hall'], pictureSize: 0 });
+    expect(service.describe()).toEqual({ open: [{ kind: 'message', target: 'name', picture: null, sound: null, fullScreen: false, live: false, secondsLeft: 30 }], recentlyClosed: [], screens: ['Hall'], pictureSize: 0 });
   });
 });

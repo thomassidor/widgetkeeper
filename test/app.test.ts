@@ -68,7 +68,15 @@ describe('the app: Flow cards', () => {
   const RUNS: [card: string, service: string, method: string, args: Record<string, unknown>, call: unknown[]][] = [
     ['popup_show', 'popups', 'show', { screen: { id: 'all' }, text: 'Hi', duration: 2, unit: 'minutes', picture: { id: 'none' }, sound: 'chime' },
       [expect.objectContaining({ target: 'all', text: 'Hi', seconds: 120, sound: 'chime' })]],
-    ['popup_show', 'popups', 'show', { screen: { id: 'all' }, text: 'Hi', duration: 45, unit: 'seconds' }, [expect.objectContaining({ seconds: 45 })]],
+    // A card saved before it had a size is the usual size.
+    ['popup_show', 'popups', 'show', { screen: { id: 'all' }, text: 'Hi', duration: 45, unit: 'seconds' }, [expect.objectContaining({ seconds: 45, fullScreen: false, live: false })]],
+    ['popup_show', 'popups', 'show', { screen: { id: 'all' }, text: 'Hi', duration: 45, unit: 'seconds', cameraView: 'live' }, [expect.objectContaining({ live: true })]],
+    ['popup_ask', 'popups', 'ask', { screen: { id: 'all' }, question: 'Open?', seconds: 30, cameraView: 'live' }, [expect.objectContaining({ live: true })]],
+    ['popup_ask', 'popups', 'ask', { screen: { id: 'all' }, question: 'Open?', seconds: 30, cameraView: 'image' }, [expect.objectContaining({ live: false })]],
+    ['popup_show', 'popups', 'show', { screen: { id: 'all' }, text: 'Hi', duration: 45, unit: 'seconds', size: 'full' }, [expect.objectContaining({ fullScreen: true })]],
+    ['popup_show_image', 'popups', 'show', { screen: { id: 'all' }, text: 'Hi', duration: 1, unit: 'minutes', droptoken: null, size: 'full' }, [expect.objectContaining({ fullScreen: true })]],
+    ['popup_ask', 'popups', 'ask', { screen: { id: 'all' }, question: 'Open?', seconds: 30, size: 'full' }, [expect.objectContaining({ fullScreen: true })]],
+    ['popup_ask_image', 'popups', 'ask', { screen: { id: 'all' }, question: 'Open?', seconds: 20, droptoken: null, size: 'normal' }, [expect.objectContaining({ fullScreen: false })]],
     ['popup_show_image', 'popups', 'show', { screen: { id: 'name:hall' }, text: 'Hi', duration: 1, unit: 'minutes', droptoken: null },
       [expect.objectContaining({ target: 'name:hall', seconds: 60 })]],
     ['popup_ask', 'popups', 'ask', { screen: { id: 'all' }, question: 'Open?', button1: 'Open', button2: 'Ignore', seconds: 30, picture: { id: 'none' } },

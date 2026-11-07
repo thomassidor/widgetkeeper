@@ -1,7 +1,7 @@
 import { randomBytes, timingSafeEqual } from 'node:crypto';
 import type Homey from 'homey';
 import { listDevicesWhere, matches, nameOrder, type AutocompleteItem } from './autocomplete.js';
-import { cameraImage, type Snapshot } from './CameraService.js';
+import { cameraImage, type CameraVideos, type Snapshot } from './CameraService.js';
 import type CameraService from './CameraService.js';
 import { DebouncedSetting, isReservedKey } from './storedSetting.js';
 import type WebDashboardService from './WebDashboardService.js';
@@ -63,6 +63,10 @@ type Popup = {
   buttons: string[] | null,
   picture: Picture | null,
   sound: PopupSound | null,
+  /** Fills a web dashboard's page (the prompt page on phones has one size). */
+  fullScreen: boolean,
+  /** A camera picture plays live on a web dashboard, if the Flow asked (otherwise, and on phones, images). */
+  live: boolean,
   createdAt: number,
   until: number,
   timer: NodeJS.Timeout,
@@ -77,7 +81,7 @@ type Closed = {
  * What a Flow card gives: the screen, the text, the picture, the sound (`soundArg()`) and a question's button texts
  * (none given: Yes and No).
  */
-type PopupInput = { target: unknown, text: unknown, picture?: PictureInput, sound?: unknown, buttons?: unknown[] };
+type PopupInput = { target: unknown, text: unknown, picture?: PictureInput, sound?: unknown, buttons?: unknown[], fullScreen?: unknown, live?: unknown };
 
 /** The Ask card's tags: `answer` is yes for the first button, `button` its text (`''` when nobody answered). */
 export type AskResult = { answer: boolean, answered: boolean, button: string };
@@ -91,7 +95,7 @@ export type AnswerResult =
  */
 export type PopupView = {
   id: string, target: string, kind: PopupKind, text: string, buttons: string[] | null,
-  picture: { source: 'camera' | 'stored' } | null, sound: PopupSound | null, createdAt: number, until: number,
+  picture: { source: 'camera' | 'stored' } | null, sound: PopupSound | null, fullScreen: boolean, live: boolean, createdAt: number, until: number,
 };
 
 /** A screen name's key: trimmed and lower-cased, as Notes' `boardKey()`; a reserved name has none, `''`. */
@@ -275,6 +279,16 @@ export default class PopupService {
     return (POPUP_SOUNDS as readonly unknown[]).includes(value) ? value as PopupSound : null;
   }
 
+  /** The size dropdown's choice: only `full` is full screen (a card saved before it had one is the usual size). */
+  static fullScreenArg(value: unknown): boolean {
+    return value === 'full';
+  }
+
+  /** The camera dropdown's choice: only `live` plays a stream (a card saved before it had one shows images). */
+  static liveArg(value: unknown): boolean {
+    return value === 'live';
+  }
+
   /** A card's droptoken: an image tag as it is, a text tag as an address. */
   static droptokenArg(token: unknown): PictureInput {
     if (token && typeof (token as any).getStream === 'function') return { image: token as { getStream: () => Promise<any> } };
@@ -291,6 +305,8 @@ export default class PopupService {
         target: p.target === 'all' ? 'all' : p.target.split(':')[0],
         picture: p.picture ? p.picture.source : null,
         sound: p.sound,
+        fullScreen: p.fullScreen,
+        live: p.live,
         secondsLeft: Math.round((p.until - now) / 1000),
       })),
       recentlyClosed: [...this.closed.values()].map(c => c.reason),
@@ -298,6 +314,16 @@ export default class PopupService {
       /** The open popups' stored pictures, in base64 characters (at most `MAX_PICTURES_TOTAL`). */
       pictureSize: this.storedPictureSize(),
     };
+  }
+
+  /**
+   * The live streams of an open popup's camera, for a signed-in web dashboard only: the prompt page's token gets none,
+   * as the video routes aren't public.
+   */
+  async videosFromSession(id: string): Promise<CameraVideos> {
+    const p = this.open.get(id);
+    if (!p || !p.live || p.picture?.source !== 'camera') throw new Error('Not found');
+    return this.deps.cameras.getVideos(p.picture.deviceId);
   }
 
   /** The open popups' stored pictures (image tags, addresses) together, in base64 characters. */
@@ -372,6 +398,8 @@ export default class PopupService {
       buttons: kind === 'ask' ? this.buttons(input.buttons) : null,
       picture,
       sound: PopupService.soundArg(input.sound),
+      fullScreen: input.fullScreen === true,
+      live: input.live === true && picture?.source === 'camera',
       createdAt: now,
       until: now + seconds * 1000,
       timer: this.homey.setTimeout(() => this.finish(id, null, 'expired'), seconds * 1000),
@@ -401,7 +429,7 @@ export default class PopupService {
   private view(p: Popup): PopupView {
     return {
       id: p.id, target: p.target, kind: p.kind, text: p.text, buttons: p.buttons,
-      picture: p.picture ? { source: p.picture.source } : null, sound: p.sound, createdAt: p.createdAt, until: p.until,
+      picture: p.picture ? { source: p.picture.source } : null, sound: p.sound, fullScreen: p.fullScreen, live: p.live, createdAt: p.createdAt, until: p.until,
     };
   }
 

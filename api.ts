@@ -496,6 +496,13 @@ export default {
     return app.popups.imageFromSession(params.id);
   },
 
+  /** The web dashboards page: an open popup's camera streams, `{videos, h265}`, to play it live. */
+  async getWebPopupVideos({ homey, query, params }: { homey: Homey, query?: Record<string, string>, params: Record<string, string> }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    return app.popups.videosFromSession(params.id);
+  },
+
   /** The web dashboards page: the answer to a question (`{answer: true|false}`); the first one from any screen wins. */
   async postWebPopupAnswer({ homey, query, params, body }: {
     homey: Homey, query?: Record<string, string>, params: Record<string, string>, body: { answer?: unknown },

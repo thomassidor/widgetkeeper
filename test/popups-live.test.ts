@@ -1,0 +1,134 @@
+// @vitest-environment happy-dom
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { runFile } from './helpers/loadWidget.js';
+
+/** A fake RTCPeerConnection, as the Cameras widget's tests have; `connections` lists them in order. */
+function stubPeerConnection() {
+  const connections: any[] = [];
+  vi.stubGlobal('RTCPeerConnection', class {
+    iceGatheringState = 'complete';
+    localDescription = { sdp: 'v=0 offer' };
+    connectionState = 'new';
+    remote: any = null;
+    closed = false;
+    frames = 0;
+    ontrack: any = null;
+    onconnectionstatechange: any = null;
+    constructor() { connections.push(this); }
+    addTransceiver() {}
+    addEventListener() {}
+    removeEventListener() {}
+    async createOffer() { return { type: 'offer', sdp: 'v=0 offer' }; }
+    async setLocalDescription() {}
+    async setRemoteDescription(d: any) { this.remote = d; }
+    async getStats() { return new Map([['in', { type: 'inbound-rtp', kind: 'video', framesDecoded: this.frames }]]); }
+    close() { this.closed = true; }
+  });
+  return connections;
+}
+
+function setup(ids = ['sub', 'main'], refused: string[] = []) {
+  const connections = stubPeerConnection();
+  const video = document.createElement('video');
+  video.play = vi.fn(async () => {});
+  video.pause = vi.fn();
+  const post = vi.fn(async (path: string, body: any): Promise<any> => {
+    if (path === '/video/offer' && refused.includes(body.videoId)) throw new Error('codecs not matched');
+    return path === '/video/offer' ? { answer: 'v=0 answer', streamId: `s-${body.videoId}` } : { ok: true };
+  });
+  const onPlaying = vi.fn();
+  const onEnded = vi.fn();
+  const stream = (window as any).WidgetkeeperKit.playCameraStream(video, ids, post, { onPlaying, onEnded });
+  return { connections, video, post, onPlaying, onEnded, stream };
+}
+
+const offers = (post: any) => post.mock.calls.filter((c: any[]) => c[0] === '/video/offer').map((c: any[]) => c[1].videoId);
+
+beforeEach(() => {
+  vi.useFakeTimers();
+  runFile('widgets/spacer/public/kit.js');
+});
+afterEach(() => {
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
+  delete (window as any).WidgetkeeperKit;
+});
+
+describe('the kit: playCameraStream (a popup on a web dashboard)', () => {
+  it('offers the first stream, says when it plays, and keeps it alive', async () => {
+    const { video, post, onPlaying, onEnded } = setup();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(offers(post)).toEqual(['sub']);
+    video.dispatchEvent(new Event('playing'));
+    expect(onPlaying).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(10e3);
+    expect(post).toHaveBeenCalledWith('/video/keepalive', { videoId: 'sub', streamId: 's-sub' });
+    expect(onEnded).not.toHaveBeenCalled();
+  });
+
+  it('moves on from a refused stream and from one without a frame, then gives up', async () => {
+    const { connections, post, onEnded, onPlaying } = setup(['h265', 'sub', 'main'], ['h265']);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(offers(post)).toEqual(['h265', 'sub']);
+    expect(connections[0].closed).toBe(true);
+    await vi.advanceTimersByTimeAsync(10e3);
+    expect(offers(post)).toEqual(['h265', 'sub', 'main']);
+    await vi.advanceTimersByTimeAsync(15e3);
+    expect(onEnded).toHaveBeenCalledTimes(1);
+    expect(onEnded).toHaveBeenCalledWith(false, 'no video after 15 s');
+    expect(onPlaying).not.toHaveBeenCalled();
+    expect(connections.every(c => c.closed)).toBe(true);
+  });
+
+  it('moves on from a connection that fails before a frame', async () => {
+    const { connections, post } = setup();
+    await vi.advanceTimersByTimeAsync(0);
+    connections[0].connectionState = 'failed';
+    connections[0].onconnectionstatechange();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(offers(post)).toEqual(['sub', 'main']);
+  });
+
+  it('ends, as played, when a playing stream freezes or its connection fails', async () => {
+    const frozen = setup();
+    await vi.advanceTimersByTimeAsync(0);
+    frozen.video.dispatchEvent(new Event('playing'));
+    await vi.advanceTimersByTimeAsync(20e3);
+    expect(frozen.onEnded).toHaveBeenCalledWith(true, 'no new frame for 15 s');
+    expect(frozen.connections[0].closed).toBe(true);
+
+    const lost = setup();
+    await vi.advanceTimersByTimeAsync(0);
+    lost.video.dispatchEvent(new Event('playing'));
+    lost.connections[0].connectionState = 'failed';
+    lost.connections[0].onconnectionstatechange();
+    expect(lost.onEnded).toHaveBeenCalledWith(true, 'connection failed');
+    expect(offers(lost.post)).toEqual(['sub']);
+  });
+
+  it('goes on while frames come', async () => {
+    const { connections, video, onEnded } = setup();
+    await vi.advanceTimersByTimeAsync(0);
+    video.dispatchEvent(new Event('playing'));
+    for (let i = 0; i < 12; i++) {
+      connections[0].frames += 50;
+      await vi.advanceTimersByTimeAsync(5000);
+    }
+    expect(onEnded).not.toHaveBeenCalled();
+  });
+
+  it('stop() ends it without a word, even with an offer on its way', async () => {
+    const { connections, post, onEnded, stream, video } = setup();
+    stream.stop();
+    await vi.advanceTimersByTimeAsync(30e3);
+    expect(connections[0].closed).toBe(true);
+    expect(video.srcObject).toBeNull();
+    expect(onEnded).not.toHaveBeenCalled();
+    expect(post.mock.calls.filter((c: any[]) => c[0] === '/video/keepalive')).toEqual([]);
+  });
+
+  it('ends at once without streams', () => {
+    const { onEnded } = setup([]);
+    expect(onEnded).toHaveBeenCalledWith(false, 'no streams');
+  });
+});

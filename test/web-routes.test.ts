@@ -42,7 +42,7 @@ describe('web routes: who may call them', () => {
     for (const name of [...OPEN, ...GUARDED]) expect([name, typeof (api as any)[name]]).toEqual([name, 'function']);
     expect(GUARDED).toEqual(expect.arrayContaining([
       'getWebDevices', 'getWebValues', 'postWebAutocomplete', 'putWebDashboard', 'putWebFront', 'deleteWebDashboard',
-      'postWebDashboardCopy', 'getWebBackup', 'putWebBackup', 'postWebCall', 'getWebPopups', 'getWebPopupImage', 'postWebPopupAnswer',
+      'postWebDashboardCopy', 'getWebBackup', 'putWebBackup', 'postWebCall', 'getWebPopups', 'getWebPopupImage', 'getWebPopupVideos', 'postWebPopupAnswer',
     ]));
   });
 

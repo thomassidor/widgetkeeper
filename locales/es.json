@@ -1207,6 +1207,7 @@
     "scaleHint": "Lo compone al ancho de un teléfono y lo escala a la columna, para que se ajuste y tenga la misma altura que en el panel de Homey.",
     "popupElsewhere": "Respondida en otra pantalla: __button__",
     "popupClose": "Cerrar",
+    "popupLive": "En vivo",
     "popupPictureFailed": "No se pudo cargar la imagen",
     "popupAnswerFailed": "La respuesta no llegó a Homey",
     "about": {

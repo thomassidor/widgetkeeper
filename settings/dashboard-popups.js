@@ -9,9 +9,13 @@
 
   window.WidgetkeeperWeb.part('popups', (wd) => {
     const { APP_ID, button, el, listeners, request, t } = wd;
+    const { playCameraStream } = window.WidgetkeeperKit;
 
     /** A popup's camera picture is read again this often while it shows. */
     const CAMERA_REFRESH_MS = 3000;
+
+    /** A popup's live video that played and was lost is tried again after this. */
+    const LIVE_RETRY_MS = 5000;
 
     /** How long "Answered on another screen" shows before the popup closes. */
     const ELSEWHERE_MS = 2000;
@@ -109,12 +113,70 @@
       }
     }
 
+    /**
+     * The live video of a camera popup whose Flow asked for it, over its snapshots, which go on until it plays and take over when it can't: a camera
+     * without streams, one only H.265 or out of reach (Homey's video server isn't on its cloud: away from home), or a
+     * browser without WebRTC. Stopped while the page is hidden; a stream that played and was lost is tried again.
+     * Answers the function that ends it.
+     */
+    function playLive(p, frame, isClosed) {
+      if (typeof RTCPeerConnection !== 'function') return () => {};
+      const video = /** @type {HTMLVideoElement} */ (el('video', 'wd-popup-video'));
+      video.muted = true;
+      video.playsInline = true;
+      video.setAttribute('aria-hidden', 'true');
+      frame.append(video, el('span', 'wd-popup-live', t('popupLive')));
+      const post = (path, body) => request('POST', '/web/call', { type: 'cameras', method: 'POST', path, query: {}, body, key: wd.key });
+      let stream = null;
+      let retry = null;
+      let starting = false;
+      let gaveUp = false;
+      const start = async () => {
+        if (stream || starting || gaveUp || isClosed() || document.hidden) return;
+        starting = true;
+        let videos = [];
+        try {
+          const res = await request('GET', `/web/popups/${encodeURIComponent(p.id)}/videos`);
+          videos = res && Array.isArray(res.videos) ? res.videos : [];
+        } catch (err) { /* the snapshots go on */ }
+        starting = false;
+        if (isClosed() || document.hidden) return;
+        if (!videos.length) { gaveUp = true; return; }
+        stream = playCameraStream(video, videos, post, {
+          onPlaying() { frame.classList.remove('loading', 'failed'); frame.classList.add('live'); },
+          onEnded(played, why) {
+            stream = null;
+            frame.classList.remove('live');
+            post('/report', { text: `popup's live view ${played ? 'lost' : 'failed'}: ${why}`, warn: true }).catch(() => {});
+            if (played) retry = setTimeout(start, LIVE_RETRY_MS);
+            else gaveUp = true;
+          },
+        });
+      };
+      const stopStream = () => {
+        clearTimeout(retry);
+        if (stream) stream.stop();
+        stream = null;
+        frame.classList.remove('live');
+      };
+      const visibility = () => { if (document.hidden) stopStream(); else start(); };
+      document.addEventListener('visibilitychange', visibility);
+      start();
+      return () => {
+        document.removeEventListener('visibilitychange', visibility);
+        stopStream();
+      };
+    }
+
     function showPopup(p) {
       const d = el('dialog', 'wd-dialog wd-popup');
       d.classList.toggle('ask', p.kind === 'ask');
+      d.classList.toggle('full', p.fullScreen === true);
+      d.classList.toggle('no-picture', !p.picture);
       const box = el('div', 'wd-popup-box');
       d.append(box);
       const timers = [];
+      const closing = [];
       let closed = false;
       // `sending`: this screen's answer is on its way; `held`: how the popup closed meanwhile.
       const shown = { id: p.id, d, answeredHere: false, sending: false, held: null, close: null };
@@ -127,7 +189,7 @@
         box.append(frame);
         const load = async () => {
           if (closed) return;
-          if (!document.hidden) {
+          if (!document.hidden && !frame.classList.contains('live')) {
             try {
               const res = await request('GET', `/web/popups/${encodeURIComponent(p.id)}/image`);
               if (closed) return;
@@ -145,6 +207,7 @@
           if (p.picture.source === 'camera') timers.push(setTimeout(load, CAMERA_REFRESH_MS));
         };
         load();
+        if (p.live === true) closing.push(playLive(p, frame, () => closed));
       }
       if (p.text) {
         const text = el('p', 'wd-popup-text', p.text);
@@ -211,6 +274,7 @@
         if (closed) return;
         closed = true;
         for (const timer of timers) clearTimeout(timer);
+        for (const end of closing) end();
         const done = () => {
           if (shownPopup === shown) shownPopup = null;
           d.close();

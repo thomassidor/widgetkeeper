@@ -474,6 +474,18 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-popup-picture img { display: block; width: 100%; max-height: 60vh; object-fit: contain; }
 .wd-popup-picture.loading, .wd-popup-picture.failed { aspect-ratio: 16 / 9; align-items: center; }
 .wd-popup-picture.loading img, .wd-popup-picture.failed img { display: none; }
+/* A camera's live video lies over its snapshot, unseen until it plays. */
+.wd-popup-picture { position: relative; }
+.wd-popup-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; pointer-events: none; }
+.wd-popup-live {
+  display: none; position: absolute; top: 12px; left: 12px; padding: 2px 8px; border-radius: 6px;
+  background: #D81C1D; color: #fff; font-size: 12px; line-height: 16px; font-weight: 700;
+}
+.wd-popup-picture.live { background: #000; }
+.wd-popup-picture.live .wd-popup-video { opacity: 1; }
+.wd-popup-picture.live .wd-popup-live { display: block; }
+.wd-popup-picture.live img { visibility: hidden; }
+.wd-popup-picture.live .wd-muted { display: none; }
 .wd-popup-text {
   margin: 0; font-size: var(--homey-font-size-xlarge, 24px); line-height: var(--homey-line-height-xlarge, 32px); font-weight: 700;
   text-align: center; white-space: pre-line; overflow-wrap: anywhere;
@@ -488,6 +500,15 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-popup-status:empty { display: none; }
 .wd-popup-bar { height: 4px; border-radius: 2px; background: var(--wd-raised); overflow: hidden; }
 .wd-popup-bar span { display: block; height: 100%; background: var(--wd-accent); transform-origin: left center; }
+.wd-dialog.wd-popup.full { width: 100vw; height: 100vh; height: 100dvh; max-width: none; max-height: none; margin: 0; border-radius: 0; outline: none; }
+.wd-popup.full .wd-popup-box { box-sizing: border-box; height: 100%; }
+.wd-popup.full.no-picture .wd-popup-box { justify-content: center; }
+.wd-popup.full:not(.no-picture) .wd-popup-box { padding: 0 0 16px; }
+.wd-popup.full:not(.no-picture) .wd-popup-text, .wd-popup.full:not(.no-picture) .wd-popup-actions, .wd-popup.full:not(.no-picture) .wd-popup-status { margin-inline: 24px; }
+.wd-popup.full:not(.no-picture) .wd-popup-bar { margin-inline: 24px; flex: none; }
+.wd-popup.full .wd-popup-picture { flex: 1 1 0; min-height: 0; border-radius: 0; background: #000; }
+.wd-popup.full .wd-popup-picture img { height: 100%; max-height: none; }
+.wd-popup.full .wd-popup-picture.loading, .wd-popup.full .wd-popup-picture.failed { aspect-ratio: auto; }
 .wd-dialog.wide { width: min(920px, calc(100vw - 32px)); }
 .wd-dialog.wide .wd-types { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 @media (max-width: 860px) { .wd-dialog.wide .wd-types { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } }

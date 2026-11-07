@@ -1207,6 +1207,7 @@
     "scaleHint": "Lo impagina alla larghezza di un telefono e lo ridimensiona alla colonna, così va a capo ed è alto come sulla dashboard di Homey.",
     "popupElsewhere": "Risposto su un altro schermo: __button__",
     "popupClose": "Chiudi",
+    "popupLive": "Live",
     "popupPictureFailed": "Impossibile caricare l'immagine",
     "popupAnswerFailed": "La risposta non è arrivata a Homey",
     "about": {

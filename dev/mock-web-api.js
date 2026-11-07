@@ -60,6 +60,30 @@ function mockSettingSections(settings, lang) {
 /** Made-up Keypad codes for a dashboard's code (the app keeps only fingerprints; the preview knows the digits). */
 const MOCK_CODES = [{ id: '0a1b2c3d4e5f', name: 'Anna', digits: '1234' }, { id: 'f5e4d3c2b1a0', name: 'Kids', digits: '2580' }];
 
+/** Answers a WebRTC offer from a second connection in the page, sending a drawn canvas: never a real camera image. */
+async function mockVideoAnswer(offer) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1280;
+  canvas.height = 720;
+  const g = canvas.getContext('2d');
+  setInterval(() => {
+    const x = (Date.now() / 8) % 1280;
+    g.fillStyle = '#26303a'; g.fillRect(0, 0, 1280, 720);
+    g.fillStyle = '#3c4a57'; g.fillRect(440, 160, 400, 560);
+    g.fillStyle = '#e8b04b'; g.beginPath(); g.arc(x, 110, 44, 0, Math.PI * 2); g.fill();
+  }, 100);
+  const pc = new RTCPeerConnection();
+  for (const track of canvas.captureStream(10).getTracks()) pc.addTrack(track);
+  await pc.setRemoteDescription({ type: 'offer', sdp: offer });
+  await pc.setLocalDescription(await pc.createAnswer());
+  await new Promise((resolve) => {
+    if (pc.iceGatheringState === 'complete') { resolve(undefined); return; }
+    pc.addEventListener('icegatheringstatechange', () => { if (pc.iceGatheringState === 'complete') resolve(undefined); });
+    setTimeout(resolve, 2000);
+  });
+  return { answer: pc.localDescription.sdp, streamId: 'mock' };
+}
+
 function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones = {}, devices = [], readings = {}, popups = [], codes = MOCK_CODES, sync = {} } = {}) {
   try { localStorage.setItem('widgetkeeper.web.key', 'preview'); } catch (e) { /* private mode */ }
   const loc = (text) => (text && typeof text === 'object' ? text[lang] || text.en : text) || '';
@@ -152,6 +176,11 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
         + `<circle cx="450" cy="110" r="16" fill="${lamp ? '#FFE9A8' : '#E8C66A'}"/></svg>`;
       return { type: 'image/svg+xml', data: btoa(svg) };
     }
+    // A popup's camera, live: real WebRTC in the page, its "camera" a drawn canvas (`?popup=live`); `?popup=full` has no streams.
+    const popupVideos = p.match(/^\/web\/popups\/([^/]+)\/videos$/);
+    if (popupVideos) return { videos: popups.find(x => x.id === popupVideos[1])?.live ? ['mock-stream'] : [], h265: [] };
+    if (p === '/web/call' && body.type === 'cameras' && body.path === '/video/offer') return mockVideoAnswer(body.body.offer);
+    if (p === '/web/call' && body.type === 'cameras') return { ok: true };
     const popupAnswer = p.match(/^\/web\/popups\/([^/]+)\/answer$/);
     if (popupAnswer) {
       const popup = popups.find(x => x.id === popupAnswer[1]);

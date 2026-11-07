@@ -245,6 +245,10 @@
       "method": "GET",
       "path": "/web/popups/:id/image"
     },
+    "getWebPopupVideos": {
+      "method": "GET",
+      "path": "/web/popups/:id/videos"
+    },
     "postWebPopupAnswer": {
       "method": "POST",
       "path": "/web/popups/:id/answer"

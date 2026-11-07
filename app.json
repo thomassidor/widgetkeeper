@@ -246,6 +246,10 @@
       "method": "GET",
       "path": "/web/popups/:id/image"
     },
+    "getWebPopupVideos": {
+      "method": "GET",
+      "path": "/web/popups/:id/videos"
+    },
     "postWebPopupAnswer": {
       "method": "POST",
       "path": "/web/popups/:id/answer"
@@ -1318,6 +1322,40 @@
               }
             }
           ]
+        },
+        {
+          "id": "autoLive",
+          "type": "autocomplete",
+          "title": {
+            "en": "Always live",
+            "nl": "Altijd live",
+            "de": "Immer live",
+            "fr": "Toujours en direct",
+            "it": "Sempre in diretta",
+            "sv": "Alltid live",
+            "no": "Alltid direkte",
+            "es": "Siempre en directo",
+            "da": "Altid live",
+            "ru": "Всегда вживую",
+            "pl": "Zawsze na żywo",
+            "ko": "항상 실시간",
+            "ar": "مباشر دائمًا"
+          },
+          "hint": {
+            "en": "This camera plays live by itself, fills the widget and stays on. Tap it to see the other cameras: it comes back after a minute. It keeps a video stream open while the dashboard shows.",
+            "nl": "Deze camera speelt vanzelf live, vult de widget en blijft aan. Tik erop om de andere camera's te zien: na een minuut komt hij terug. Er blijft een videostream open zolang het dashboard zichtbaar is.",
+            "de": "Diese Kamera läuft von selbst live, füllt das Widget und bleibt an. Tippe darauf, um die anderen Kameras zu sehen: Nach einer Minute kommt sie zurück. Solange das Dashboard zu sehen ist, bleibt ein Videostream offen.",
+            "fr": "Cette caméra passe en direct d'elle-même, remplit le widget et reste active. Touchez-la pour voir les autres caméras : elle revient après une minute. Un flux vidéo reste ouvert tant que le tableau de bord est affiché.",
+            "it": "Questa telecamera va in diretta da sola, riempie il widget e resta attiva. Toccala per vedere le altre telecamere: torna dopo un minuto. Un flusso video resta aperto finché la dashboard è visibile.",
+            "sv": "Den här kameran spelas live av sig själv, fyller widgeten och förblir på. Tryck på den för att se de andra kamerorna: den kommer tillbaka efter en minut. En videoström hålls öppen så länge instrumentpanelen visas.",
+            "no": "Dette kameraet spilles direkte av seg selv, fyller widgeten og forblir på. Trykk på det for å se de andre kameraene: det kommer tilbake etter ett minutt. En videostrøm holdes åpen så lenge dashbordet vises.",
+            "es": "Esta cámara se reproduce en directo por sí sola, llena el widget y sigue activa. Tócala para ver las demás cámaras: vuelve al cabo de un minuto. Mantiene abierta una transmisión de vídeo mientras se ve el panel.",
+            "da": "Dette kamera afspilles live af sig selv, fylder widgetten og bliver ved. Tryk på det for at se de andre kameraer: det kommer tilbage efter et minut. En videostream holdes åben, så længe dashboardet vises.",
+            "ru": "Эта камера сама показывается вживую, занимает весь виджет и не отключается. Коснитесь её, чтобы увидеть другие камеры: через минуту она вернётся. Пока панель на экране, видеопоток остаётся открытым.",
+            "pl": "Ta kamera sama działa na żywo, wypełnia widżet i pozostaje włączona. Dotknij jej, aby zobaczyć inne kamery: wróci po minucie. Strumień wideo pozostaje otwarty, dopóki pulpit jest widoczny.",
+            "ko": "이 카메라는 자동으로 실시간 재생되어 위젯을 가득 채우고 계속 켜져 있습니다. 탭하면 다른 카메라를 볼 수 있으며, 1분 후 다시 돌아옵니다. 대시보드가 표시되는 동안 비디오 스트림이 열려 있습니다.",
+            "ar": "تعمل هذه الكاميرا مباشرةً من تلقاء نفسها وتملأ الأداة وتبقى قيد التشغيل. اضغط عليها لرؤية الكاميرات الأخرى: وستعود بعد دقيقة. يبقى بث الفيديو مفتوحًا ما دامت لوحة التحكم معروضة."
+          }
         },
         {
           "id": "camera1",
@@ -44516,34 +44554,34 @@
           "ar": "طرح سؤال في نافذة منبثقة"
         },
         "titleFormatted": {
-          "en": "Ask [[question]] on [[screen]], buttons: [[button1]] and [[button2]], picture: [[picture]], wait up to [[seconds]] seconds, sound: [[sound]]",
-          "nl": "Vraag [[question]] op [[screen]], knoppen: [[button1]] en [[button2]], afbeelding: [[picture]], wacht maximaal [[seconds]] seconden, geluid: [[sound]]",
-          "de": "[[question]] auf [[screen]] fragen, Tasten: [[button1]] und [[button2]], Bild: [[picture]], höchstens [[seconds]] Sekunden warten, Ton: [[sound]]",
-          "fr": "Demander [[question]] sur [[screen]], boutons : [[button1]] et [[button2]], image : [[picture]], attendre au plus [[seconds]] secondes, son : [[sound]]",
-          "it": "Chiedi [[question]] su [[screen]], pulsanti: [[button1]] e [[button2]], immagine: [[picture]], attendi al massimo [[seconds]] secondi, suono: [[sound]]",
-          "sv": "Fråga [[question]] på [[screen]], knappar: [[button1]] och [[button2]], bild: [[picture]], vänta högst [[seconds]] sekunder, ljud: [[sound]]",
-          "no": "Spør [[question]] på [[screen]], knapper: [[button1]] og [[button2]], bilde: [[picture]], vent høyst [[seconds]] sekunder, lyd: [[sound]]",
-          "es": "Preguntar [[question]] en [[screen]], botones: [[button1]] y [[button2]], imagen: [[picture]], esperar como máximo [[seconds]] segundos, sonido: [[sound]]",
-          "da": "Spørg [[question]] på [[screen]], knapper: [[button1]] og [[button2]], billede: [[picture]], vent højst [[seconds]] sekunder, lyd: [[sound]]",
-          "ru": "Спросить [[question]] на [[screen]], кнопки: [[button1]] и [[button2]], изображение: [[picture]], ждать не дольше [[seconds]] с, звук: [[sound]]",
-          "pl": "Zapytaj [[question]] na [[screen]], przyciski: [[button1]] i [[button2]], obraz: [[picture]], czekaj najwyżej [[seconds]] s, dźwięk: [[sound]]",
-          "ko": "[[screen]]에서 [[question]] 묻기, 버튼: [[button1]], [[button2]], 사진: [[picture]], 최대 [[seconds]]초 대기, 소리: [[sound]]",
-          "ar": "اسأل [[question]] على [[screen]]، الأزرار: [[button1]] و[[button2]]، الصورة: [[picture]]، وانتظر [[seconds]] ثانية على الأكثر، الصوت: [[sound]]"
+          "en": "Ask [[question]] on [[screen]], buttons: [[button1]] and [[button2]], picture: [[picture]], wait up to [[seconds]] seconds, sound: [[sound]], size: [[size]], camera: [[cameraView]]",
+          "nl": "Vraag [[question]] op [[screen]], knoppen: [[button1]] en [[button2]], afbeelding: [[picture]], wacht maximaal [[seconds]] seconden, geluid: [[sound]], grootte: [[size]], camera: [[cameraView]]",
+          "de": "[[question]] auf [[screen]] fragen, Tasten: [[button1]] und [[button2]], Bild: [[picture]], höchstens [[seconds]] Sekunden warten, Ton: [[sound]], Größe: [[size]], Kamera: [[cameraView]]",
+          "fr": "Demander [[question]] sur [[screen]], boutons : [[button1]] et [[button2]], image : [[picture]], attendre au plus [[seconds]] secondes, son : [[sound]], taille : [[size]], caméra : [[cameraView]]",
+          "it": "Chiedi [[question]] su [[screen]], pulsanti: [[button1]] e [[button2]], immagine: [[picture]], attendi al massimo [[seconds]] secondi, suono: [[sound]], dimensione: [[size]], telecamera: [[cameraView]]",
+          "sv": "Fråga [[question]] på [[screen]], knappar: [[button1]] och [[button2]], bild: [[picture]], vänta högst [[seconds]] sekunder, ljud: [[sound]], storlek: [[size]], kamera: [[cameraView]]",
+          "no": "Spør [[question]] på [[screen]], knapper: [[button1]] og [[button2]], bilde: [[picture]], vent høyst [[seconds]] sekunder, lyd: [[sound]], størrelse: [[size]], kamera: [[cameraView]]",
+          "es": "Preguntar [[question]] en [[screen]], botones: [[button1]] y [[button2]], imagen: [[picture]], esperar como máximo [[seconds]] segundos, sonido: [[sound]], tamaño: [[size]], cámara: [[cameraView]]",
+          "da": "Spørg [[question]] på [[screen]], knapper: [[button1]] og [[button2]], billede: [[picture]], vent højst [[seconds]] sekunder, lyd: [[sound]], størrelse: [[size]], kamera: [[cameraView]]",
+          "ru": "Спросить [[question]] на [[screen]], кнопки: [[button1]] и [[button2]], изображение: [[picture]], ждать не дольше [[seconds]] с, звук: [[sound]], размер: [[size]], камера: [[cameraView]]",
+          "pl": "Zapytaj [[question]] na [[screen]], przyciski: [[button1]] i [[button2]], obraz: [[picture]], czekaj najwyżej [[seconds]] s, dźwięk: [[sound]], rozmiar: [[size]], kamera: [[cameraView]]",
+          "ko": "[[screen]]에서 [[question]] 묻기, 버튼: [[button1]], [[button2]], 사진: [[picture]], 최대 [[seconds]]초 대기, 소리: [[sound]], 크기: [[size]], 카메라: [[cameraView]]",
+          "ar": "اسأل [[question]] على [[screen]]، الأزرار: [[button1]] و[[button2]]، الصورة: [[picture]]، وانتظر [[seconds]] ثانية على الأكثر، الصوت: [[sound]]، الحجم: [[size]]، الكاميرا: [[cameraView]]"
         },
         "hint": {
-          "en": "Shows the question with your buttons: Yes and No when both are empty, one button when only one is filled in. The first answer from any screen closes it everywhere. Answer is yes for the first button and no for the second, Button is its text, and Answered is no when nobody answered in time. Use it in an Advanced Flow to act on the tags.",
-          "nl": "Toont de vraag met jouw knoppen: Ja en Nee als beide leeg zijn, één knop als er maar één is ingevuld. Het eerste antwoord van een scherm sluit hem overal. Antwoord is ja voor de eerste knop en nee voor de tweede, Knop is de tekst ervan, en Beantwoord is nee als niemand op tijd antwoordde. Gebruik hem in een Advanced Flow om op de tags te reageren.",
-          "de": "Zeigt die Frage mit deinen Tasten: Ja und Nein, wenn beide leer sind, eine Taste, wenn nur eine ausgefüllt ist. Die erste Antwort eines Bildschirms schließt sie überall. Antwort ist Ja bei der ersten Taste und Nein bei der zweiten, Taste ist ihr Text, und Beantwortet ist Nein, wenn niemand rechtzeitig antwortete. In einem Advanced Flow kannst du auf die Tags reagieren.",
-          "fr": "Affiche la question avec vos boutons : Oui et Non si les deux sont vides, un seul bouton si un seul est rempli. La première réponse d'un écran la ferme partout. Réponse vaut oui pour le premier bouton et non pour le second, Bouton est son texte, et Répondu vaut non si personne n'a répondu à temps. Utilisez-la dans un Advanced Flow pour agir selon les tags.",
-          "it": "Mostra la domanda con i tuoi pulsanti: Sì e No se entrambi sono vuoti, un solo pulsante se ne compili uno. La prima risposta da uno schermo lo chiude ovunque. Risposta è sì per il primo pulsante e no per il secondo, Pulsante è il suo testo, e Risposto è no se nessuno ha risposto in tempo. Usalo in un Advanced Flow per agire sui tag.",
-          "sv": "Visar frågan med dina knappar: Ja och Nej om båda är tomma, en knapp om bara en är ifylld. Det första svaret från en skärm stänger den överallt. Svar är ja för den första knappen och nej för den andra, Knapp är dess text, och Besvarad är nej om ingen svarade i tid. Använd den i ett Advanced Flow för att agera på taggarna.",
-          "no": "Viser spørsmålet med knappene dine: Ja og Nei hvis begge er tomme, én knapp hvis bare én er fylt ut. Det første svaret fra en skjerm lukker det overalt. Svar er ja for den første knappen og nei for den andre, Knapp er teksten på den, og Besvart er nei hvis ingen svarte i tide. Bruk det i en Advanced Flow for å handle på taggene.",
-          "es": "Muestra la pregunta con tus botones: Sí y No si ambos están vacíos, un solo botón si solo rellenas uno. La primera respuesta de una pantalla la cierra en todas. Respuesta es sí para el primer botón y no para el segundo, Botón es su texto, y Respondida es no si nadie respondió a tiempo. Úsala en un Advanced Flow para actuar según las etiquetas.",
-          "da": "Viser spørgsmålet med dine knapper: Ja og Nej, hvis begge er tomme, én knap, hvis kun én er udfyldt. Det første svar fra en skærm lukker det overalt. Svar er ja for den første knap og nej for den anden, Knap er dens tekst, og Besvaret er nej, hvis ingen svarede i tide. Brug det i et Advanced Flow til at handle på tags.",
-          "ru": "Показывает вопрос с вашими кнопками: Да и Нет, если обе пусты, одна кнопка, если заполнена только одна. Первый ответ с любого экрана закрывает его везде. «Ответ» — да для первой кнопки и нет для второй, «Кнопка» — её текст, «Отвечено» — нет, если никто не ответил вовремя. Используйте в Advanced Flow, чтобы действовать по тегам.",
-          "pl": "Pokazuje pytanie z twoimi przyciskami: Tak i Nie, gdy oba są puste, jeden przycisk, gdy wypełnisz tylko jeden. Pierwsza odpowiedź z dowolnego ekranu zamyka je wszędzie. Odpowiedź to tak dla pierwszego przycisku i nie dla drugiego, Przycisk to jego tekst, a Odpowiedziano to nie, gdy nikt nie odpowiedział na czas. Użyj w Advanced Flow, aby działać według tagów.",
-          "ko": "질문을 지정한 버튼과 함께 표시합니다. 둘 다 비우면 예와 아니요, 하나만 채우면 버튼 하나입니다. 어느 화면에서든 첫 답변이 모든 곳에서 닫습니다. 답변은 첫 번째 버튼이면 예, 두 번째면 아니요이고, 버튼은 그 텍스트이며, 아무도 제때 답하지 않으면 응답됨은 아니요입니다. 태그로 동작하려면 Advanced Flow에서 사용하세요.",
-          "ar": "تعرض السؤال مع أزرارك: نعم ولا إذا تُرك الاثنان فارغين، وزر واحد إذا مُلئ واحد فقط. أول إجابة من أي شاشة تغلقه في كل مكان. الإجابة نعم للزر الأول ولا للثاني، والزر هو نصه، وتمت الإجابة تكون لا إذا لم يجب أحد في الوقت. استخدمها في Advanced Flow للتصرف حسب الوسوم."
+          "en": "Shows the question with your buttons: Yes and No when both are empty, one button when only one is filled in. The first answer from any screen closes it everywhere. Answer is yes for the first button and no for the second, Button is its text, and Answered is no when nobody answered in time. Use it in an Advanced Flow to act on the tags. On web dashboards, the popup can fill the screen, and a camera can play live video instead of images.",
+          "nl": "Toont de vraag met jouw knoppen: Ja en Nee als beide leeg zijn, één knop als er maar één is ingevuld. Het eerste antwoord van een scherm sluit hem overal. Antwoord is ja voor de eerste knop en nee voor de tweede, Knop is de tekst ervan, en Beantwoord is nee als niemand op tijd antwoordde. Gebruik hem in een Advanced Flow om op de tags te reageren. Op webdashboards kan de popup het hele scherm vullen, en kan een camera live video tonen in plaats van afbeeldingen.",
+          "de": "Zeigt die Frage mit deinen Tasten: Ja und Nein, wenn beide leer sind, eine Taste, wenn nur eine ausgefüllt ist. Die erste Antwort eines Bildschirms schließt sie überall. Antwort ist Ja bei der ersten Taste und Nein bei der zweiten, Taste ist ihr Text, und Beantwortet ist Nein, wenn niemand rechtzeitig antwortete. In einem Advanced Flow kannst du auf die Tags reagieren. Auf Web-Dashboards kann das Popup den Bildschirm füllen, und eine Kamera kann Live-Video statt Bildern zeigen.",
+          "fr": "Affiche la question avec vos boutons : Oui et Non si les deux sont vides, un seul bouton si un seul est rempli. La première réponse d'un écran la ferme partout. Réponse vaut oui pour le premier bouton et non pour le second, Bouton est son texte, et Répondu vaut non si personne n'a répondu à temps. Utilisez-la dans un Advanced Flow pour agir selon les tags. Sur les tableaux de bord web, le popup peut remplir l'écran, et une caméra peut afficher la vidéo en direct au lieu d'images.",
+          "it": "Mostra la domanda con i tuoi pulsanti: Sì e No se entrambi sono vuoti, un solo pulsante se ne compili uno. La prima risposta da uno schermo lo chiude ovunque. Risposta è sì per il primo pulsante e no per il secondo, Pulsante è il suo testo, e Risposto è no se nessuno ha risposto in tempo. Usalo in un Advanced Flow per agire sui tag. Nelle dashboard web, il popup può riempire lo schermo e una telecamera può mostrare il video in diretta invece delle immagini.",
+          "sv": "Visar frågan med dina knappar: Ja och Nej om båda är tomma, en knapp om bara en är ifylld. Det första svaret från en skärm stänger den överallt. Svar är ja för den första knappen och nej för den andra, Knapp är dess text, och Besvarad är nej om ingen svarade i tid. Använd den i ett Advanced Flow för att agera på taggarna. På webbinstrumentpaneler kan popupen fylla skärmen, och en kamera kan visa livevideo i stället för bilder.",
+          "no": "Viser spørsmålet med knappene dine: Ja og Nei hvis begge er tomme, én knapp hvis bare én er fylt ut. Det første svaret fra en skjerm lukker det overalt. Svar er ja for den første knappen og nei for den andre, Knapp er teksten på den, og Besvart er nei hvis ingen svarte i tide. Bruk det i en Advanced Flow for å handle på taggene. På nettdashbord kan popupen fylle skjermen, og et kamera kan vise direktevideo i stedet for bilder.",
+          "es": "Muestra la pregunta con tus botones: Sí y No si ambos están vacíos, un solo botón si solo rellenas uno. La primera respuesta de una pantalla la cierra en todas. Respuesta es sí para el primer botón y no para el segundo, Botón es su texto, y Respondida es no si nadie respondió a tiempo. Úsala en un Advanced Flow para actuar según las etiquetas. En los paneles web, la ventana puede llenar la pantalla y una cámara puede mostrar vídeo en directo en lugar de imágenes.",
+          "da": "Viser spørgsmålet med dine knapper: Ja og Nej, hvis begge er tomme, én knap, hvis kun én er udfyldt. Det første svar fra en skærm lukker det overalt. Svar er ja for den første knap og nej for den anden, Knap er dens tekst, og Besvaret er nej, hvis ingen svarede i tide. Brug det i et Advanced Flow til at handle på tags. På webdashboards kan popuppen fylde skærmen, og et kamera kan vise live-video i stedet for billeder.",
+          "ru": "Показывает вопрос с вашими кнопками: Да и Нет, если обе пусты, одна кнопка, если заполнена только одна. Первый ответ с любого экрана закрывает его везде. «Ответ» — да для первой кнопки и нет для второй, «Кнопка» — её текст, «Отвечено» — нет, если никто не ответил вовремя. Используйте в Advanced Flow, чтобы действовать по тегам. На веб-панелях всплывающее окно может занять весь экран, а камера может показывать видео вживую вместо изображений.",
+          "pl": "Pokazuje pytanie z twoimi przyciskami: Tak i Nie, gdy oba są puste, jeden przycisk, gdy wypełnisz tylko jeden. Pierwsza odpowiedź z dowolnego ekranu zamyka je wszędzie. Odpowiedź to tak dla pierwszego przycisku i nie dla drugiego, Przycisk to jego tekst, a Odpowiedziano to nie, gdy nikt nie odpowiedział na czas. Użyj w Advanced Flow, aby działać według tagów. Na pulpitach internetowych okno może wypełnić ekran, a kamera może pokazywać wideo na żywo zamiast obrazów.",
+          "ko": "질문을 지정한 버튼과 함께 표시합니다. 둘 다 비우면 예와 아니요, 하나만 채우면 버튼 하나입니다. 어느 화면에서든 첫 답변이 모든 곳에서 닫습니다. 답변은 첫 번째 버튼이면 예, 두 번째면 아니요이고, 버튼은 그 텍스트이며, 아무도 제때 답하지 않으면 응답됨은 아니요입니다. 태그로 동작하려면 Advanced Flow에서 사용하세요. 웹 대시보드에서는 팝업이 화면을 가득 채울 수 있고, 카메라는 이미지 대신 실시간 영상을 보여 줄 수 있습니다.",
+          "ar": "تعرض السؤال مع أزرارك: نعم ولا إذا تُرك الاثنان فارغين، وزر واحد إذا مُلئ واحد فقط. أول إجابة من أي شاشة تغلقه في كل مكان. الإجابة نعم للزر الأول ولا للثاني، والزر هو نصه، وتمت الإجابة تكون لا إذا لم يجب أحد في الوقت. استخدمها في Advanced Flow للتصرف حسب الوسوم. على لوحات الويب، يمكن للنافذة أن تملأ الشاشة، ويمكن للكاميرا عرض فيديو مباشر بدلًا من الصور."
         },
         "tokens": [
           {
@@ -44923,6 +44961,122 @@
                 }
               }
             ]
+          },
+          {
+            "type": "dropdown",
+            "name": "size",
+            "required": false,
+            "title": {
+              "en": "Size",
+              "nl": "Grootte",
+              "de": "Größe",
+              "fr": "Taille",
+              "it": "Dimensione",
+              "sv": "Storlek",
+              "no": "Størrelse",
+              "es": "Tamaño",
+              "da": "Størrelse",
+              "ru": "Размер",
+              "pl": "Rozmiar",
+              "ko": "크기",
+              "ar": "الحجم"
+            },
+            "values": [
+              {
+                "id": "normal",
+                "title": {
+                  "en": "normal",
+                  "nl": "normaal",
+                  "de": "normal",
+                  "fr": "normale",
+                  "it": "normale",
+                  "sv": "normal",
+                  "no": "normal",
+                  "es": "normal",
+                  "da": "normal",
+                  "ru": "обычный",
+                  "pl": "normalny",
+                  "ko": "보통",
+                  "ar": "عادي"
+                }
+              },
+              {
+                "id": "full",
+                "title": {
+                  "en": "full screen",
+                  "nl": "volledig scherm",
+                  "de": "Vollbild",
+                  "fr": "plein écran",
+                  "it": "schermo intero",
+                  "sv": "helskärm",
+                  "no": "fullskjerm",
+                  "es": "pantalla completa",
+                  "da": "fuld skærm",
+                  "ru": "на весь экран",
+                  "pl": "pełny ekran",
+                  "ko": "전체 화면",
+                  "ar": "ملء الشاشة"
+                }
+              }
+            ]
+          },
+          {
+            "type": "dropdown",
+            "name": "cameraView",
+            "required": false,
+            "title": {
+              "en": "Camera shows",
+              "nl": "Camera toont",
+              "de": "Kamera zeigt",
+              "fr": "La caméra affiche",
+              "it": "La telecamera mostra",
+              "sv": "Kameran visar",
+              "no": "Kameraet viser",
+              "es": "La cámara muestra",
+              "da": "Kameraet viser",
+              "ru": "Камера показывает",
+              "pl": "Kamera pokazuje",
+              "ko": "카메라 표시",
+              "ar": "تعرض الكاميرا"
+            },
+            "values": [
+              {
+                "id": "image",
+                "title": {
+                  "en": "images",
+                  "nl": "afbeeldingen",
+                  "de": "Bilder",
+                  "fr": "images",
+                  "it": "immagini",
+                  "sv": "bilder",
+                  "no": "bilder",
+                  "es": "imágenes",
+                  "da": "billeder",
+                  "ru": "изображения",
+                  "pl": "obrazy",
+                  "ko": "이미지",
+                  "ar": "صور"
+                }
+              },
+              {
+                "id": "live",
+                "title": {
+                  "en": "live video",
+                  "nl": "live video",
+                  "de": "Live-Video",
+                  "fr": "vidéo en direct",
+                  "it": "video in diretta",
+                  "sv": "livevideo",
+                  "no": "direktevideo",
+                  "es": "vídeo en directo",
+                  "da": "live-video",
+                  "ru": "видео вживую",
+                  "pl": "wideo na żywo",
+                  "ko": "실시간 영상",
+                  "ar": "فيديو مباشر"
+                }
+              }
+            ]
           }
         ]
       },
@@ -44944,34 +45098,34 @@
           "ar": "طرح سؤال في نافذة منبثقة مع صورة"
         },
         "titleFormatted": {
-          "en": "Ask [[question]] with [[droptoken]] on [[screen]], buttons: [[button1]] and [[button2]], wait up to [[seconds]] seconds, sound: [[sound]]",
-          "nl": "Vraag [[question]] met [[droptoken]] op [[screen]], knoppen: [[button1]] en [[button2]], wacht maximaal [[seconds]] seconden, geluid: [[sound]]",
-          "de": "[[question]] mit [[droptoken]] auf [[screen]] fragen, Tasten: [[button1]] und [[button2]], höchstens [[seconds]] Sekunden warten, Ton: [[sound]]",
-          "fr": "Demander [[question]] avec [[droptoken]] sur [[screen]], boutons : [[button1]] et [[button2]], attendre au plus [[seconds]] secondes, son : [[sound]]",
-          "it": "Chiedi [[question]] con [[droptoken]] su [[screen]], pulsanti: [[button1]] e [[button2]], attendi al massimo [[seconds]] secondi, suono: [[sound]]",
-          "sv": "Fråga [[question]] med [[droptoken]] på [[screen]], knappar: [[button1]] och [[button2]], vänta högst [[seconds]] sekunder, ljud: [[sound]]",
-          "no": "Spør [[question]] med [[droptoken]] på [[screen]], knapper: [[button1]] og [[button2]], vent høyst [[seconds]] sekunder, lyd: [[sound]]",
-          "es": "Preguntar [[question]] con [[droptoken]] en [[screen]], botones: [[button1]] y [[button2]], esperar como máximo [[seconds]] segundos, sonido: [[sound]]",
-          "da": "Spørg [[question]] med [[droptoken]] på [[screen]], knapper: [[button1]] og [[button2]], vent højst [[seconds]] sekunder, lyd: [[sound]]",
-          "ru": "Спросить [[question]] с [[droptoken]] на [[screen]], кнопки: [[button1]] и [[button2]], ждать не дольше [[seconds]] с, звук: [[sound]]",
-          "pl": "Zapytaj [[question]] z [[droptoken]] na [[screen]], przyciski: [[button1]] i [[button2]], czekaj najwyżej [[seconds]] s, dźwięk: [[sound]]",
-          "ko": "[[screen]]에서 [[droptoken]]와(과) 함께 [[question]] 묻기, 버튼: [[button1]], [[button2]], 최대 [[seconds]]초 대기, 소리: [[sound]]",
-          "ar": "اسأل [[question]] مع [[droptoken]] على [[screen]]، الأزرار: [[button1]] و[[button2]]، وانتظر [[seconds]] ثانية على الأكثر، الصوت: [[sound]]"
+          "en": "Ask [[question]] with [[droptoken]] on [[screen]], buttons: [[button1]] and [[button2]], wait up to [[seconds]] seconds, sound: [[sound]], size: [[size]]",
+          "nl": "Vraag [[question]] met [[droptoken]] op [[screen]], knoppen: [[button1]] en [[button2]], wacht maximaal [[seconds]] seconden, geluid: [[sound]], grootte: [[size]]",
+          "de": "[[question]] mit [[droptoken]] auf [[screen]] fragen, Tasten: [[button1]] und [[button2]], höchstens [[seconds]] Sekunden warten, Ton: [[sound]], Größe: [[size]]",
+          "fr": "Demander [[question]] avec [[droptoken]] sur [[screen]], boutons : [[button1]] et [[button2]], attendre au plus [[seconds]] secondes, son : [[sound]], taille : [[size]]",
+          "it": "Chiedi [[question]] con [[droptoken]] su [[screen]], pulsanti: [[button1]] e [[button2]], attendi al massimo [[seconds]] secondi, suono: [[sound]], dimensione: [[size]]",
+          "sv": "Fråga [[question]] med [[droptoken]] på [[screen]], knappar: [[button1]] och [[button2]], vänta högst [[seconds]] sekunder, ljud: [[sound]], storlek: [[size]]",
+          "no": "Spør [[question]] med [[droptoken]] på [[screen]], knapper: [[button1]] og [[button2]], vent høyst [[seconds]] sekunder, lyd: [[sound]], størrelse: [[size]]",
+          "es": "Preguntar [[question]] con [[droptoken]] en [[screen]], botones: [[button1]] y [[button2]], esperar como máximo [[seconds]] segundos, sonido: [[sound]], tamaño: [[size]]",
+          "da": "Spørg [[question]] med [[droptoken]] på [[screen]], knapper: [[button1]] og [[button2]], vent højst [[seconds]] sekunder, lyd: [[sound]], størrelse: [[size]]",
+          "ru": "Спросить [[question]] с [[droptoken]] на [[screen]], кнопки: [[button1]] и [[button2]], ждать не дольше [[seconds]] с, звук: [[sound]], размер: [[size]]",
+          "pl": "Zapytaj [[question]] z [[droptoken]] na [[screen]], przyciski: [[button1]] i [[button2]], czekaj najwyżej [[seconds]] s, dźwięk: [[sound]], rozmiar: [[size]]",
+          "ko": "[[screen]]에서 [[droptoken]]와(과) 함께 [[question]] 묻기, 버튼: [[button1]], [[button2]], 최대 [[seconds]]초 대기, 소리: [[sound]], 크기: [[size]]",
+          "ar": "اسأل [[question]] مع [[droptoken]] على [[screen]]، الأزرار: [[button1]] و[[button2]]، وانتظر [[seconds]] ثانية على الأكثر، الصوت: [[sound]]، الحجم: [[size]]"
         },
         "hint": {
-          "en": "As Ask a question in a popup, with an image tag (or a text tag with a picture address) dropped on this card.",
-          "nl": "Zoals Een vraag stellen in een pop-up, met een afbeeldingstag (of een teksttag met een afbeeldingsadres) op deze kaart.",
-          "de": "Wie Eine Frage in einem Popup stellen, mit einem Bild-Tag (oder einem Text-Tag mit einer Bildadresse) auf dieser Karte.",
-          "fr": "Comme Poser une question dans une pop-up, avec un tag image (ou un tag texte avec l'adresse d'une image) déposé sur cette carte.",
-          "it": "Come Fai una domanda in un popup, con un tag immagine (o un tag di testo con l'indirizzo di un'immagine) su questa scheda.",
-          "sv": "Som Ställ en fråga i ett popup-fönster, med en bildtagg (eller en texttagg med en bildadress) på kortet.",
-          "no": "Som Still et spørsmål i et popup-vindu, med en bildetagg (eller en teksttagg med en bildeadresse) på kortet.",
-          "es": "Como Hacer una pregunta en una ventana emergente, con una etiqueta de imagen (o una etiqueta de texto con la dirección de una imagen) en esta tarjeta.",
-          "da": "Som Stil et spørgsmål i en popup, med et billedtag (eller et teksttag med en billedadresse) på kortet.",
-          "ru": "Как «Задать вопрос во всплывающем окне», но с тегом изображения (или текстовым тегом с адресом изображения) на этой карточке.",
-          "pl": "Jak Zadaj pytanie w oknie wyskakującym, z tagiem obrazu (albo tagiem tekstowym z adresem obrazu) na tej karcie.",
-          "ko": "팝업으로 질문하기와 같으며, 이 카드에 이미지 태그(또는 사진 주소가 담긴 텍스트 태그)를 놓습니다.",
-          "ar": "مثل طرح سؤال في نافذة منبثقة، مع وسم صورة (أو وسم نصي فيه عنوان صورة) على هذه البطاقة."
+          "en": "As Ask a question in a popup, with an image tag (or a text tag with a picture address) dropped on this card. On web dashboards, the popup can fill the screen.",
+          "nl": "Zoals Een vraag stellen in een pop-up, met een afbeeldingstag (of een teksttag met een afbeeldingsadres) op deze kaart. Op webdashboards kan de popup het hele scherm vullen.",
+          "de": "Wie Eine Frage in einem Popup stellen, mit einem Bild-Tag (oder einem Text-Tag mit einer Bildadresse) auf dieser Karte. Auf Web-Dashboards kann das Popup den Bildschirm füllen.",
+          "fr": "Comme Poser une question dans une pop-up, avec un tag image (ou un tag texte avec l'adresse d'une image) déposé sur cette carte. Sur les tableaux de bord web, le popup peut remplir l'écran.",
+          "it": "Come Fai una domanda in un popup, con un tag immagine (o un tag di testo con l'indirizzo di un'immagine) su questa scheda. Nelle dashboard web, il popup può riempire lo schermo.",
+          "sv": "Som Ställ en fråga i ett popup-fönster, med en bildtagg (eller en texttagg med en bildadress) på kortet. På webbinstrumentpaneler kan popupen fylla skärmen.",
+          "no": "Som Still et spørsmål i et popup-vindu, med en bildetagg (eller en teksttagg med en bildeadresse) på kortet. På nettdashbord kan popupen fylle skjermen.",
+          "es": "Como Hacer una pregunta en una ventana emergente, con una etiqueta de imagen (o una etiqueta de texto con la dirección de una imagen) en esta tarjeta. En los paneles web, la ventana puede llenar la pantalla.",
+          "da": "Som Stil et spørgsmål i en popup, med et billedtag (eller et teksttag med en billedadresse) på kortet. På webdashboards kan popuppen fylde skærmen.",
+          "ru": "Как «Задать вопрос во всплывающем окне», но с тегом изображения (или текстовым тегом с адресом изображения) на этой карточке. На веб-панелях всплывающее окно может занять весь экран.",
+          "pl": "Jak Zadaj pytanie w oknie wyskakującym, z tagiem obrazu (albo tagiem tekstowym z adresem obrazu) na tej karcie. Na pulpitach internetowych okno może wypełnić ekran.",
+          "ko": "팝업으로 질문하기와 같으며, 이 카드에 이미지 태그(또는 사진 주소가 담긴 텍스트 태그)를 놓습니다. 웹 대시보드에서는 팝업이 화면을 가득 채울 수 있습니다.",
+          "ar": "مثل طرح سؤال في نافذة منبثقة، مع وسم صورة (أو وسم نصي فيه عنوان صورة) على هذه البطاقة. على لوحات الويب، يمكن للنافذة أن تملأ الشاشة."
         },
         "droptoken": [
           "image",
@@ -45318,6 +45472,64 @@
                   "pl": "alarm",
                   "ko": "경고음",
                   "ar": "تنبيه"
+                }
+              }
+            ]
+          },
+          {
+            "type": "dropdown",
+            "name": "size",
+            "required": false,
+            "title": {
+              "en": "Size",
+              "nl": "Grootte",
+              "de": "Größe",
+              "fr": "Taille",
+              "it": "Dimensione",
+              "sv": "Storlek",
+              "no": "Størrelse",
+              "es": "Tamaño",
+              "da": "Størrelse",
+              "ru": "Размер",
+              "pl": "Rozmiar",
+              "ko": "크기",
+              "ar": "الحجم"
+            },
+            "values": [
+              {
+                "id": "normal",
+                "title": {
+                  "en": "normal",
+                  "nl": "normaal",
+                  "de": "normal",
+                  "fr": "normale",
+                  "it": "normale",
+                  "sv": "normal",
+                  "no": "normal",
+                  "es": "normal",
+                  "da": "normal",
+                  "ru": "обычный",
+                  "pl": "normalny",
+                  "ko": "보통",
+                  "ar": "عادي"
+                }
+              },
+              {
+                "id": "full",
+                "title": {
+                  "en": "full screen",
+                  "nl": "volledig scherm",
+                  "de": "Vollbild",
+                  "fr": "plein écran",
+                  "it": "schermo intero",
+                  "sv": "helskärm",
+                  "no": "fullskjerm",
+                  "es": "pantalla completa",
+                  "da": "fuld skærm",
+                  "ru": "на весь экран",
+                  "pl": "pełny ekran",
+                  "ko": "전체 화면",
+                  "ar": "ملء الشاشة"
                 }
               }
             ]
@@ -45426,34 +45638,34 @@
           "ar": "إظهار نافذة منبثقة"
         },
         "titleFormatted": {
-          "en": "Show [[text]] on [[screen]] for [[duration]] [[unit]], picture: [[picture]], sound: [[sound]]",
-          "nl": "Toon [[text]] op [[screen]] gedurende [[duration]] [[unit]], afbeelding: [[picture]], geluid: [[sound]]",
-          "de": "[[text]] auf [[screen]] für [[duration]] [[unit]] zeigen, Bild: [[picture]], Ton: [[sound]]",
-          "fr": "Afficher [[text]] sur [[screen]] pendant [[duration]] [[unit]], image : [[picture]], son : [[sound]]",
-          "it": "Mostra [[text]] su [[screen]] per [[duration]] [[unit]], immagine: [[picture]], suono: [[sound]]",
-          "sv": "Visa [[text]] på [[screen]] i [[duration]] [[unit]], bild: [[picture]], ljud: [[sound]]",
-          "no": "Vis [[text]] på [[screen]] i [[duration]] [[unit]], bilde: [[picture]], lyd: [[sound]]",
-          "es": "Mostrar [[text]] en [[screen]] durante [[duration]] [[unit]], imagen: [[picture]], sonido: [[sound]]",
-          "da": "Vis [[text]] på [[screen]] i [[duration]] [[unit]], billede: [[picture]], lyd: [[sound]]",
-          "ru": "Показать [[text]] на [[screen]] на [[duration]] [[unit]], изображение: [[picture]], звук: [[sound]]",
-          "pl": "Pokaż [[text]] na [[screen]] przez [[duration]] [[unit]], obraz: [[picture]], dźwięk: [[sound]]",
-          "ko": "[[screen]]에 [[text]]을(를) [[duration]] [[unit]] 동안 표시, 사진: [[picture]], 소리: [[sound]]",
-          "ar": "إظهار [[text]] على [[screen]] لمدة [[duration]] [[unit]]، الصورة: [[picture]]، الصوت: [[sound]]"
+          "en": "Show [[text]] on [[screen]] for [[duration]] [[unit]], picture: [[picture]], sound: [[sound]], size: [[size]], camera: [[cameraView]]",
+          "nl": "Toon [[text]] op [[screen]] gedurende [[duration]] [[unit]], afbeelding: [[picture]], geluid: [[sound]], grootte: [[size]], camera: [[cameraView]]",
+          "de": "[[text]] auf [[screen]] für [[duration]] [[unit]] zeigen, Bild: [[picture]], Ton: [[sound]], Größe: [[size]], Kamera: [[cameraView]]",
+          "fr": "Afficher [[text]] sur [[screen]] pendant [[duration]] [[unit]], image : [[picture]], son : [[sound]], taille : [[size]], caméra : [[cameraView]]",
+          "it": "Mostra [[text]] su [[screen]] per [[duration]] [[unit]], immagine: [[picture]], suono: [[sound]], dimensione: [[size]], telecamera: [[cameraView]]",
+          "sv": "Visa [[text]] på [[screen]] i [[duration]] [[unit]], bild: [[picture]], ljud: [[sound]], storlek: [[size]], kamera: [[cameraView]]",
+          "no": "Vis [[text]] på [[screen]] i [[duration]] [[unit]], bilde: [[picture]], lyd: [[sound]], størrelse: [[size]], kamera: [[cameraView]]",
+          "es": "Mostrar [[text]] en [[screen]] durante [[duration]] [[unit]], imagen: [[picture]], sonido: [[sound]], tamaño: [[size]], cámara: [[cameraView]]",
+          "da": "Vis [[text]] på [[screen]] i [[duration]] [[unit]], billede: [[picture]], lyd: [[sound]], størrelse: [[size]], kamera: [[cameraView]]",
+          "ru": "Показать [[text]] на [[screen]] на [[duration]] [[unit]], изображение: [[picture]], звук: [[sound]], размер: [[size]], камера: [[cameraView]]",
+          "pl": "Pokaż [[text]] na [[screen]] przez [[duration]] [[unit]], obraz: [[picture]], dźwięk: [[sound]], rozmiar: [[size]], kamera: [[cameraView]]",
+          "ko": "[[screen]]에 [[text]]을(를) [[duration]] [[unit]] 동안 표시, 사진: [[picture]], 소리: [[sound]], 크기: [[size]], 카메라: [[cameraView]]",
+          "ar": "إظهار [[text]] على [[screen]] لمدة [[duration]] [[unit]]، الصورة: [[picture]]، الصوت: [[sound]]، الحجم: [[size]]، الكاميرا: [[cameraView]]"
         },
         "hint": {
-          "en": "In front of everything on the web dashboards and on the phones and tablets with a Popups widget of that screen name. A tap closes it on that screen.",
-          "nl": "Voor alles op de webdashboards en op de telefoons en tablets met een Pop-ups-widget met die schermnaam. Een tik sluit hem op dat scherm.",
-          "de": "Vor allem anderen auf den Web-Dashboards und auf den Handys und Tablets mit einem Popups-Widget mit diesem Bildschirmnamen. Ein Tippen schließt es auf diesem Bildschirm.",
-          "fr": "Au premier plan sur les tableaux de bord web et sur les téléphones et tablettes avec un widget Pop-ups de ce nom d'écran. Un appui la ferme sur cet écran.",
-          "it": "In primo piano sulle dashboard web e su telefoni e tablet con un widget Popup con quel nome di schermo. Un tocco lo chiude su quello schermo.",
-          "sv": "Framför allt annat på webbinstrumentpanelerna och på telefoner och surfplattor med en Popup-fönster-widget med det skärmnamnet. Ett tryck stänger det på den skärmen.",
-          "no": "Foran alt annet på nettdashbordene og på telefoner og nettbrett med en Popup-vinduer-widget med det skjermnavnet. Et trykk lukker det på den skjermen.",
-          "es": "Delante de todo en los paneles web y en los teléfonos y tabletas con un widget Ventanas emergentes con ese nombre de pantalla. Un toque la cierra en esa pantalla.",
-          "da": "Foran alt andet på webdashboards og på telefoner og tablets med en Popups-widget med det skærmnavn. Et tryk lukker den på den skærm.",
-          "ru": "Поверх всего на веб-панелях и на телефонах и планшетах с виджетом «Всплывающие окна» с этим именем экрана. Касание закрывает его на этом экране.",
-          "pl": "Na wierzchu na pulpitach webowych oraz na telefonach i tabletach z widżetem Okna wyskakujące o tej nazwie ekranu. Dotknięcie zamyka je na tym ekranie.",
-          "ko": "웹 대시보드와 그 화면 이름의 팝업 위젯이 있는 휴대폰과 태블릿에서 모든 것 위에 표시됩니다. 탭하면 그 화면에서 닫힙니다.",
-          "ar": "فوق كل شيء على لوحات الويب وعلى الهواتف والأجهزة اللوحية التي فيها أداة النوافذ المنبثقة باسم الشاشة هذا. النقر يغلقها على تلك الشاشة."
+          "en": "In front of everything on the web dashboards and on the phones and tablets with a Popups widget of that screen name. A tap closes it on that screen. On web dashboards, the popup can fill the screen, and a camera can play live video instead of images.",
+          "nl": "Voor alles op de webdashboards en op de telefoons en tablets met een Pop-ups-widget met die schermnaam. Een tik sluit hem op dat scherm. Op webdashboards kan de popup het hele scherm vullen, en kan een camera live video tonen in plaats van afbeeldingen.",
+          "de": "Vor allem anderen auf den Web-Dashboards und auf den Handys und Tablets mit einem Popups-Widget mit diesem Bildschirmnamen. Ein Tippen schließt es auf diesem Bildschirm. Auf Web-Dashboards kann das Popup den Bildschirm füllen, und eine Kamera kann Live-Video statt Bildern zeigen.",
+          "fr": "Au premier plan sur les tableaux de bord web et sur les téléphones et tablettes avec un widget Pop-ups de ce nom d'écran. Un appui la ferme sur cet écran. Sur les tableaux de bord web, le popup peut remplir l'écran, et une caméra peut afficher la vidéo en direct au lieu d'images.",
+          "it": "In primo piano sulle dashboard web e su telefoni e tablet con un widget Popup con quel nome di schermo. Un tocco lo chiude su quello schermo. Nelle dashboard web, il popup può riempire lo schermo e una telecamera può mostrare il video in diretta invece delle immagini.",
+          "sv": "Framför allt annat på webbinstrumentpanelerna och på telefoner och surfplattor med en Popup-fönster-widget med det skärmnamnet. Ett tryck stänger det på den skärmen. På webbinstrumentpaneler kan popupen fylla skärmen, och en kamera kan visa livevideo i stället för bilder.",
+          "no": "Foran alt annet på nettdashbordene og på telefoner og nettbrett med en Popup-vinduer-widget med det skjermnavnet. Et trykk lukker det på den skjermen. På nettdashbord kan popupen fylle skjermen, og et kamera kan vise direktevideo i stedet for bilder.",
+          "es": "Delante de todo en los paneles web y en los teléfonos y tabletas con un widget Ventanas emergentes con ese nombre de pantalla. Un toque la cierra en esa pantalla. En los paneles web, la ventana puede llenar la pantalla y una cámara puede mostrar vídeo en directo en lugar de imágenes.",
+          "da": "Foran alt andet på webdashboards og på telefoner og tablets med en Popups-widget med det skærmnavn. Et tryk lukker den på den skærm. På webdashboards kan popuppen fylde skærmen, og et kamera kan vise live-video i stedet for billeder.",
+          "ru": "Поверх всего на веб-панелях и на телефонах и планшетах с виджетом «Всплывающие окна» с этим именем экрана. Касание закрывает его на этом экране. На веб-панелях всплывающее окно может занять весь экран, а камера может показывать видео вживую вместо изображений.",
+          "pl": "Na wierzchu na pulpitach webowych oraz na telefonach i tabletach z widżetem Okna wyskakujące o tej nazwie ekranu. Dotknięcie zamyka je na tym ekranie. Na pulpitach internetowych okno może wypełnić ekran, a kamera może pokazywać wideo na żywo zamiast obrazów.",
+          "ko": "웹 대시보드와 그 화면 이름의 팝업 위젯이 있는 휴대폰과 태블릿에서 모든 것 위에 표시됩니다. 탭하면 그 화면에서 닫힙니다. 웹 대시보드에서는 팝업이 화면을 가득 채울 수 있고, 카메라는 이미지 대신 실시간 영상을 보여 줄 수 있습니다.",
+          "ar": "فوق كل شيء على لوحات الويب وعلى الهواتف والأجهزة اللوحية التي فيها أداة النوافذ المنبثقة باسم الشاشة هذا. النقر يغلقها على تلك الشاشة. على لوحات الويب، يمكن للنافذة أن تملأ الشاشة، ويمكن للكاميرا عرض فيديو مباشر بدلًا من الصور."
         },
         "args": [
           {
@@ -45744,6 +45956,122 @@
                 }
               }
             ]
+          },
+          {
+            "type": "dropdown",
+            "name": "size",
+            "required": false,
+            "title": {
+              "en": "Size",
+              "nl": "Grootte",
+              "de": "Größe",
+              "fr": "Taille",
+              "it": "Dimensione",
+              "sv": "Storlek",
+              "no": "Størrelse",
+              "es": "Tamaño",
+              "da": "Størrelse",
+              "ru": "Размер",
+              "pl": "Rozmiar",
+              "ko": "크기",
+              "ar": "الحجم"
+            },
+            "values": [
+              {
+                "id": "normal",
+                "title": {
+                  "en": "normal",
+                  "nl": "normaal",
+                  "de": "normal",
+                  "fr": "normale",
+                  "it": "normale",
+                  "sv": "normal",
+                  "no": "normal",
+                  "es": "normal",
+                  "da": "normal",
+                  "ru": "обычный",
+                  "pl": "normalny",
+                  "ko": "보통",
+                  "ar": "عادي"
+                }
+              },
+              {
+                "id": "full",
+                "title": {
+                  "en": "full screen",
+                  "nl": "volledig scherm",
+                  "de": "Vollbild",
+                  "fr": "plein écran",
+                  "it": "schermo intero",
+                  "sv": "helskärm",
+                  "no": "fullskjerm",
+                  "es": "pantalla completa",
+                  "da": "fuld skærm",
+                  "ru": "на весь экран",
+                  "pl": "pełny ekran",
+                  "ko": "전체 화면",
+                  "ar": "ملء الشاشة"
+                }
+              }
+            ]
+          },
+          {
+            "type": "dropdown",
+            "name": "cameraView",
+            "required": false,
+            "title": {
+              "en": "Camera shows",
+              "nl": "Camera toont",
+              "de": "Kamera zeigt",
+              "fr": "La caméra affiche",
+              "it": "La telecamera mostra",
+              "sv": "Kameran visar",
+              "no": "Kameraet viser",
+              "es": "La cámara muestra",
+              "da": "Kameraet viser",
+              "ru": "Камера показывает",
+              "pl": "Kamera pokazuje",
+              "ko": "카메라 표시",
+              "ar": "تعرض الكاميرا"
+            },
+            "values": [
+              {
+                "id": "image",
+                "title": {
+                  "en": "images",
+                  "nl": "afbeeldingen",
+                  "de": "Bilder",
+                  "fr": "images",
+                  "it": "immagini",
+                  "sv": "bilder",
+                  "no": "bilder",
+                  "es": "imágenes",
+                  "da": "billeder",
+                  "ru": "изображения",
+                  "pl": "obrazy",
+                  "ko": "이미지",
+                  "ar": "صور"
+                }
+              },
+              {
+                "id": "live",
+                "title": {
+                  "en": "live video",
+                  "nl": "live video",
+                  "de": "Live-Video",
+                  "fr": "vidéo en direct",
+                  "it": "video in diretta",
+                  "sv": "livevideo",
+                  "no": "direktevideo",
+                  "es": "vídeo en directo",
+                  "da": "live-video",
+                  "ru": "видео вживую",
+                  "pl": "wideo na żywo",
+                  "ko": "실시간 영상",
+                  "ar": "فيديو مباشر"
+                }
+              }
+            ]
           }
         ]
       },
@@ -45765,34 +46093,34 @@
           "ar": "إظهار نافذة منبثقة مع صورة"
         },
         "titleFormatted": {
-          "en": "Show [[text]] with [[droptoken]] on [[screen]] for [[duration]] [[unit]], sound: [[sound]]",
-          "nl": "Toon [[text]] met [[droptoken]] op [[screen]] gedurende [[duration]] [[unit]], geluid: [[sound]]",
-          "de": "[[text]] mit [[droptoken]] auf [[screen]] für [[duration]] [[unit]] zeigen, Ton: [[sound]]",
-          "fr": "Afficher [[text]] avec [[droptoken]] sur [[screen]] pendant [[duration]] [[unit]], son : [[sound]]",
-          "it": "Mostra [[text]] con [[droptoken]] su [[screen]] per [[duration]] [[unit]], suono: [[sound]]",
-          "sv": "Visa [[text]] med [[droptoken]] på [[screen]] i [[duration]] [[unit]], ljud: [[sound]]",
-          "no": "Vis [[text]] med [[droptoken]] på [[screen]] i [[duration]] [[unit]], lyd: [[sound]]",
-          "es": "Mostrar [[text]] con [[droptoken]] en [[screen]] durante [[duration]] [[unit]], sonido: [[sound]]",
-          "da": "Vis [[text]] med [[droptoken]] på [[screen]] i [[duration]] [[unit]], lyd: [[sound]]",
-          "ru": "Показать [[text]] с [[droptoken]] на [[screen]] на [[duration]] [[unit]], звук: [[sound]]",
-          "pl": "Pokaż [[text]] z [[droptoken]] na [[screen]] przez [[duration]] [[unit]], dźwięk: [[sound]]",
-          "ko": "[[screen]]에 [[droptoken]]와(과) 함께 [[text]]을(를) [[duration]] [[unit]] 동안 표시, 소리: [[sound]]",
-          "ar": "إظهار [[text]] مع [[droptoken]] على [[screen]] لمدة [[duration]] [[unit]]، الصوت: [[sound]]"
+          "en": "Show [[text]] with [[droptoken]] on [[screen]] for [[duration]] [[unit]], sound: [[sound]], size: [[size]]",
+          "nl": "Toon [[text]] met [[droptoken]] op [[screen]] gedurende [[duration]] [[unit]], geluid: [[sound]], grootte: [[size]]",
+          "de": "[[text]] mit [[droptoken]] auf [[screen]] für [[duration]] [[unit]] zeigen, Ton: [[sound]], Größe: [[size]]",
+          "fr": "Afficher [[text]] avec [[droptoken]] sur [[screen]] pendant [[duration]] [[unit]], son : [[sound]], taille : [[size]]",
+          "it": "Mostra [[text]] con [[droptoken]] su [[screen]] per [[duration]] [[unit]], suono: [[sound]], dimensione: [[size]]",
+          "sv": "Visa [[text]] med [[droptoken]] på [[screen]] i [[duration]] [[unit]], ljud: [[sound]], storlek: [[size]]",
+          "no": "Vis [[text]] med [[droptoken]] på [[screen]] i [[duration]] [[unit]], lyd: [[sound]], størrelse: [[size]]",
+          "es": "Mostrar [[text]] con [[droptoken]] en [[screen]] durante [[duration]] [[unit]], sonido: [[sound]], tamaño: [[size]]",
+          "da": "Vis [[text]] med [[droptoken]] på [[screen]] i [[duration]] [[unit]], lyd: [[sound]], størrelse: [[size]]",
+          "ru": "Показать [[text]] с [[droptoken]] на [[screen]] на [[duration]] [[unit]], звук: [[sound]], размер: [[size]]",
+          "pl": "Pokaż [[text]] z [[droptoken]] na [[screen]] przez [[duration]] [[unit]], dźwięk: [[sound]], rozmiar: [[size]]",
+          "ko": "[[screen]]에 [[droptoken]]와(과) 함께 [[text]]을(를) [[duration]] [[unit]] 동안 표시, 소리: [[sound]], 크기: [[size]]",
+          "ar": "إظهار [[text]] مع [[droptoken]] على [[screen]] لمدة [[duration]] [[unit]]، الصوت: [[sound]]، الحجم: [[size]]"
         },
         "hint": {
-          "en": "Drop an image tag (a doorbell's or camera's snapshot) or a text tag with a picture address on this card. The picture is taken when the Flow runs.",
-          "nl": "Sleep een afbeeldingstag (de snapshot van een deurbel of camera) of een teksttag met een afbeeldingsadres op deze kaart. De afbeelding wordt genomen wanneer de Flow draait.",
-          "de": "Zieh ein Bild-Tag (den Schnappschuss einer Türklingel oder Kamera) oder ein Text-Tag mit einer Bildadresse auf diese Karte. Das Bild wird genommen, wenn der Flow läuft.",
-          "fr": "Déposez sur cette carte un tag image (l'instantané d'une sonnette ou d'une caméra) ou un tag texte avec l'adresse d'une image. L'image est prise quand le Flow s'exécute.",
-          "it": "Trascina su questa scheda un tag immagine (l'istantanea di un campanello o di una telecamera) o un tag di testo con l'indirizzo di un'immagine. L'immagine viene presa quando parte il Flow.",
-          "sv": "Dra en bildtagg (en ögonblicksbild från en dörrklocka eller kamera) eller en texttagg med en bildadress till kortet. Bilden tas när flödet körs.",
-          "no": "Dra en bildetagg (et øyeblikksbilde fra en dørklokke eller et kamera) eller en teksttagg med en bildeadresse til kortet. Bildet tas når Flowen kjører.",
-          "es": "Arrastra a esta tarjeta una etiqueta de imagen (la instantánea de un timbre o una cámara) o una etiqueta de texto con la dirección de una imagen. La imagen se toma cuando se ejecuta el Flow.",
-          "da": "Træk et billedtag (et øjebliksbillede fra en dørklokke eller et kamera) eller et teksttag med en billedadresse over på kortet. Billedet tages, når Flowet kører.",
-          "ru": "Перетащите на эту карточку тег изображения (снимок дверного звонка или камеры) или текстовый тег с адресом изображения. Изображение берётся в момент запуска Flow.",
-          "pl": "Przeciągnij na tę kartę tag obrazu (zdjęcie z dzwonka lub kamery) albo tag tekstowy z adresem obrazu. Obraz jest pobierany, gdy Flow się uruchamia.",
-          "ko": "이미지 태그(초인종이나 카메라의 스냅샷) 또는 사진 주소가 담긴 텍스트 태그를 이 카드에 놓으세요. 사진은 Flow가 실행될 때 가져옵니다.",
-          "ar": "اسحب إلى هذه البطاقة وسم صورة (لقطة من جرس الباب أو كاميرا) أو وسمًا نصيًا فيه عنوان صورة. تؤخذ الصورة عند تشغيل الـ Flow."
+          "en": "Drop an image tag (a doorbell's or camera's snapshot) or a text tag with a picture address on this card. The picture is taken when the Flow runs. On web dashboards, the popup can fill the screen.",
+          "nl": "Sleep een afbeeldingstag (de snapshot van een deurbel of camera) of een teksttag met een afbeeldingsadres op deze kaart. De afbeelding wordt genomen wanneer de Flow draait. Op webdashboards kan de popup het hele scherm vullen.",
+          "de": "Zieh ein Bild-Tag (den Schnappschuss einer Türklingel oder Kamera) oder ein Text-Tag mit einer Bildadresse auf diese Karte. Das Bild wird genommen, wenn der Flow läuft. Auf Web-Dashboards kann das Popup den Bildschirm füllen.",
+          "fr": "Déposez sur cette carte un tag image (l'instantané d'une sonnette ou d'une caméra) ou un tag texte avec l'adresse d'une image. L'image est prise quand le Flow s'exécute. Sur les tableaux de bord web, le popup peut remplir l'écran.",
+          "it": "Trascina su questa scheda un tag immagine (l'istantanea di un campanello o di una telecamera) o un tag di testo con l'indirizzo di un'immagine. L'immagine viene presa quando parte il Flow. Nelle dashboard web, il popup può riempire lo schermo.",
+          "sv": "Dra en bildtagg (en ögonblicksbild från en dörrklocka eller kamera) eller en texttagg med en bildadress till kortet. Bilden tas när flödet körs. På webbinstrumentpaneler kan popupen fylla skärmen.",
+          "no": "Dra en bildetagg (et øyeblikksbilde fra en dørklokke eller et kamera) eller en teksttagg med en bildeadresse til kortet. Bildet tas når Flowen kjører. På nettdashbord kan popupen fylle skjermen.",
+          "es": "Arrastra a esta tarjeta una etiqueta de imagen (la instantánea de un timbre o una cámara) o una etiqueta de texto con la dirección de una imagen. La imagen se toma cuando se ejecuta el Flow. En los paneles web, la ventana puede llenar la pantalla.",
+          "da": "Træk et billedtag (et øjebliksbillede fra en dørklokke eller et kamera) eller et teksttag med en billedadresse over på kortet. Billedet tages, når Flowet kører. På webdashboards kan popuppen fylde skærmen.",
+          "ru": "Перетащите на эту карточку тег изображения (снимок дверного звонка или камеры) или текстовый тег с адресом изображения. Изображение берётся в момент запуска Flow. На веб-панелях всплывающее окно может занять весь экран.",
+          "pl": "Przeciągnij na tę kartę tag obrazu (zdjęcie z dzwonka lub kamery) albo tag tekstowy z adresem obrazu. Obraz jest pobierany, gdy Flow się uruchamia. Na pulpitach internetowych okno może wypełnić ekran.",
+          "ko": "이미지 태그(초인종이나 카메라의 스냅샷) 또는 사진 주소가 담긴 텍스트 태그를 이 카드에 놓으세요. 사진은 Flow가 실행될 때 가져옵니다. 웹 대시보드에서는 팝업이 화면을 가득 채울 수 있습니다.",
+          "ar": "اسحب إلى هذه البطاقة وسم صورة (لقطة من جرس الباب أو كاميرا) أو وسمًا نصيًا فيه عنوان صورة. تؤخذ الصورة عند تشغيل الـ Flow. على لوحات الويب، يمكن للنافذة أن تملأ الشاشة."
         },
         "droptoken": [
           "image",
@@ -46050,6 +46378,64 @@
                   "pl": "alarm",
                   "ko": "경고음",
                   "ar": "تنبيه"
+                }
+              }
+            ]
+          },
+          {
+            "type": "dropdown",
+            "name": "size",
+            "required": false,
+            "title": {
+              "en": "Size",
+              "nl": "Grootte",
+              "de": "Größe",
+              "fr": "Taille",
+              "it": "Dimensione",
+              "sv": "Storlek",
+              "no": "Størrelse",
+              "es": "Tamaño",
+              "da": "Størrelse",
+              "ru": "Размер",
+              "pl": "Rozmiar",
+              "ko": "크기",
+              "ar": "الحجم"
+            },
+            "values": [
+              {
+                "id": "normal",
+                "title": {
+                  "en": "normal",
+                  "nl": "normaal",
+                  "de": "normal",
+                  "fr": "normale",
+                  "it": "normale",
+                  "sv": "normal",
+                  "no": "normal",
+                  "es": "normal",
+                  "da": "normal",
+                  "ru": "обычный",
+                  "pl": "normalny",
+                  "ko": "보통",
+                  "ar": "عادي"
+                }
+              },
+              {
+                "id": "full",
+                "title": {
+                  "en": "full screen",
+                  "nl": "volledig scherm",
+                  "de": "Vollbild",
+                  "fr": "plein écran",
+                  "it": "schermo intero",
+                  "sv": "helskärm",
+                  "no": "fullskjerm",
+                  "es": "pantalla completa",
+                  "da": "fuld skærm",
+                  "ru": "на весь экран",
+                  "pl": "pełny ekran",
+                  "ko": "전체 화면",
+                  "ar": "ملء الشاشة"
                 }
               }
             ]

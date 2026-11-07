@@ -1207,6 +1207,7 @@
     "scaleHint": "يعرضها بعرض الهاتف ويكبّرها لتملأ العمود، فتلتف وتأخذ الارتفاع نفسه كما في لوحة Homey.",
     "popupElsewhere": "تمت الإجابة على شاشة أخرى: __button__",
     "popupClose": "إغلاق",
+    "popupLive": "مباشر",
     "popupPictureFailed": "تعذر تحميل الصورة",
     "popupAnswerFailed": "لم تصل الإجابة إلى Homey",
     "about": {

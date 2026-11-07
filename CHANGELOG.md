@@ -20,6 +20,13 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **As tiles** (a tile per group, its values in a grid of 2, 3 or 4 per row) or **compact** (a line of values per group; tap a value for its name).
 - **What needs a look stands out by itself:** a low battery, an open contact, an alarm or high CO₂. Fine values can go green, and rooms and devices can be renamed.
 
+### Popups: full screen and live cameras on web dashboards
+- **Live video in a popup:** the Show and Ask cards can show a camera's live video on a web dashboard instead of images, with images until it starts and if it can't play.
+- **Full screen:** these cards also have a new Size, so a Flow can fill the page with a camera, such as when the doorbell rings. Your Flows keep working as they are, with images at the usual size.
+
+### Cameras: always live
+- **Pick a camera to be always live:** it plays by itself when the dashboard opens and fills the widget, and it reconnects if the stream drops. Tap it to see the other cameras: it comes back after a minute. Where live video can't play, such as away from home without a VPN, it stays on snapshots.
+
 ### More icons
 - **155 more icons, 201 in all,** in every icon setting and on the Flow Tiles card. The list opens with the 46 you know; type to find the others by name, in your language.
 

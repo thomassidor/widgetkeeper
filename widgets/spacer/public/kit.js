@@ -1427,7 +1427,137 @@
     },
   };
 
+  const ICE_WAIT_MS = 2000; // Homey's answer has every candidate, so the offer is sent once gathering is done
+  const STREAM_KEEPALIVE_MS = 10e3;
+  const STREAM_NEXT_MS = 10e3; // to the first frame of a stream with another one left to try
+  const STREAM_LAST_MS = 15e3; // to the first frame of the last stream, and between frames after that
+  const STREAM_CHECK_MS = 5000; // how often a playing stream's decoded frames are counted
+
+  function waitForIce(pc) {
+    if (pc.iceGatheringState === 'complete') return Promise.resolve();
+    return new Promise((resolve) => {
+      const done = () => { pc.removeEventListener('icegatheringstatechange', check); resolve(undefined); };
+      const check = () => { if (pc.iceGatheringState === 'complete') done(); };
+      pc.addEventListener('icegatheringstatechange', check);
+      setTimeout(done, ICE_WAIT_MS);
+    });
+  }
+
+  /**
+   * Homey's WebRTC offer for one camera stream: sends it through `post('/video/offer', body)` (the Cameras routes) and
+   * sets the answer. `{answer, streamId}`, or null when `current()` says the stream was dropped meanwhile.
+   */
+  async function openVideoStream(pc, videoId, post, current) {
+    pc.addTransceiver('video', { direction: 'recvonly' });
+    await pc.setLocalDescription(await pc.createOffer());
+    await waitForIce(pc);
+    if (!current()) return null;
+    const res = await post('/video/offer', { videoId, offer: pc.localDescription.sdp });
+    if (!current()) return null;
+    await pc.setRemoteDescription({ type: 'answer', sdp: res.answer });
+    return res;
+  }
+
+  /** The video frames decoded so far, from the connection's stats; null when the browser can't tell. */
+  async function framesDecoded(pc) {
+    if (typeof pc.getStats !== 'function') return null;
+    const stats = await pc.getStats();
+    let n = null;
+    stats.forEach((s) => {
+      if (s.type === 'inbound-rtp' && (s.kind || s.mediaType) === 'video' && typeof s.framesDecoded === 'number') {
+        n = (n || 0) + s.framesDecoded;
+      }
+    });
+    return n;
+  }
+
+  /**
+   * Plays a camera into `video` (a popup on a web dashboard): `videoIds` in turn until one gives a frame, then kept
+   * alive. `onPlaying()` at the first frame; `onEnded(played, why)` once, when none played or a playing one was lost;
+   * `stop()` calls neither. The Cameras widget's live view has its own loop, as it also tells away from home and H.265.
+   */
+  function playCameraStream(video, videoIds, post, { onPlaying, onEnded }) {
+    let pc = null;
+    let stopped = false;
+    let playing = false;
+    let timeout = null;
+    let keepAlive = null;
+    let frameCheck = null;
+    let attempt = -1;
+    const clear = () => {
+      clearTimeout(timeout);
+      clearInterval(keepAlive);
+      clearInterval(frameCheck);
+      if (pc) { try { pc.close(); } catch (err) { /* already closed */ } }
+      pc = null;
+    };
+    const stop = () => {
+      if (stopped) return;
+      stopped = true;
+      clear();
+      video.removeEventListener('playing', started);
+      video.pause();
+      video.srcObject = null;
+    };
+    const end = (why) => {
+      if (stopped) return;
+      const played = playing;
+      stop();
+      onEnded(played, why);
+    };
+    const failed = (why) => { if (playing) end(why); else next(why); };
+    function started() {
+      if (stopped || playing || !pc) return;
+      playing = true;
+      clearTimeout(timeout);
+      onPlaying();
+      const conn = pc;
+      let frames = 0;
+      let frameAt = Date.now();
+      frameCheck = setInterval(async () => {
+        let n = null;
+        try { n = await framesDecoded(conn); } catch (err) { /* closed meanwhile */ }
+        if (stopped || conn !== pc || n == null) return;
+        if (n > frames) { frames = n; frameAt = Date.now(); }
+        else if (Date.now() - frameAt >= STREAM_LAST_MS) end(`no new frame for ${STREAM_LAST_MS / 1000} s`);
+      }, STREAM_CHECK_MS);
+    }
+    function next(why) {
+      if (stopped) return;
+      clear();
+      attempt += 1;
+      if (attempt >= videoIds.length) { end(why || 'no streams'); return; }
+      video.srcObject = null;
+      const videoId = videoIds[attempt];
+      const conn = new RTCPeerConnection();
+      pc = conn;
+      const current = () => !stopped && pc === conn;
+      const wait = attempt === videoIds.length - 1 ? STREAM_LAST_MS : STREAM_NEXT_MS;
+      timeout = setTimeout(() => { if (current()) failed(`no video after ${wait / 1000} s`); }, wait);
+      conn.ontrack = (e) => {
+        if (!current()) return;
+        video.srcObject = e.streams && e.streams[0] ? e.streams[0] : new MediaStream([e.track]);
+        const p = video.play();
+        if (p && p.catch) p.catch(() => { /* muted, so only a page being closed refuses */ });
+      };
+      conn.onconnectionstatechange = () => {
+        if (current() && conn.connectionState === 'failed') failed('connection failed');
+      };
+      openVideoStream(conn, videoId, post, current).then((res) => {
+        if (!res || !current() || !res.streamId) return;
+        keepAlive = setInterval(() => {
+          // A refused keep-alive ends the stream on Homey's side; the frame check then notices.
+          post('/video/keepalive', { videoId, streamId: res.streamId }).catch(() => {});
+        }, STREAM_KEEPALIVE_MS);
+      }).catch((err) => { if (current()) failed(err && err.message ? err.message : String(err)); });
+    }
+    video.addEventListener('playing', started);
+    next(null);
+    return { stop };
+  }
+
   window.WidgetkeeperKit = {
+    openVideoStream, framesDecoded, playCameraStream,
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
     getTimeFormat, setTimeFormat, wireTimeFormat, uses12Hours, clockTime, hourLabel, smoothValues,
     formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, wireRefresh, markOffline, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
