@@ -28,7 +28,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, t?: (key: string) => string, locale?: string, language?: string, now?: () => number,
-   *   count?: number, span?: string, sort?: string, showRange?: boolean, title?: string, showHeader?: boolean, names?: string[], onHeight?: (h: number) => void }} opts
+   *   count?: number, span?: string, sort?: string, showRange?: boolean, legend?: string, title?: string, showHeader?: boolean, names?: string[], onHeight?: (h: number) => void }} opts
    */
   function createCompareWidget(root, opts = {}) {
     // Any time span for the ranges (the kit's `timeSpan()`); missing or unknown: today.
@@ -44,8 +44,9 @@
     };
     let drawn = null; // the latest render's rows and their y, for the header and the pointer
 
+    const legend = C.legendPlace(opts.legend, CHIP_H);
     const frame = C.createFrame(root, {
-      opts, cls: 'cp', prefix: 'compare', strings: DEFAULT_STRINGS, showHeader: opts.showHeader,
+      opts, cls: 'cp', prefix: 'compare', strings: DEFAULT_STRINGS, legendBelow: legend.below, showHeader: opts.showHeader,
       colors: { style: opts.colorStyle, color: opts.color, fallback: 'blue' },
       redrawMs: 60e3,
       has: () => state.entries.length > 0,
@@ -136,6 +137,7 @@
       const { label, units } = chipText();
       kit.chip(chips, 'series', label, units || null);
       if (showRange) kit.chip(chips, 'series range', t('range'), null);
+      show(chips, !legend.hidden);
 
       const drawable = known.length > 0;
       show(svg, drawable);
@@ -146,7 +148,7 @@
 
       const labelW = Math.round(Math.min(130, w * 0.36));
       const left = labelW + 10, pw = Math.max(40, w - left - VALUE_W - 8);
-      const top = CHIP_H, base = top + rows.length * ROW + 2;
+      const top = legend.top, base = top + rows.length * ROW + 2;
       const H = base + X_LABEL_GAP + X_LABEL_H;
       kit.prepareSvg(svg, w, H);
       const vals = known.flatMap(r => [r.value, ...(showRange ? [r.min, r.max] : [])].filter(num).map(v => scaled(r.s.capability, v)));

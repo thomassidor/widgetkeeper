@@ -6,7 +6,7 @@
 
 One value from up to eight devices on one scale, sorted: each room's temperature now as a dot and its range today (or over another [time span](charts.md#time-spans)) as a bar.
 
-**Settings:** values 1 to 8 each with an optional name, [time span](charts.md#time-spans) for the ranges, order (highest first, lowest first or as picked), show the range, title, the values at the top, colour, [colour style](../../README.md#colour-style).
+**Settings:** values 1 to 8 each with an optional name, [time span](charts.md#time-spans) for the ranges, order (highest first, lowest first or as picked), show the range, the legend (above, below or hidden), title, the values at the top, colour, [colour style](../../README.md#colour-style).
 
 ## Looks
 
@@ -17,6 +17,7 @@ One value from up to eight devices on one scale, sorted: each room's temperature
 <img src="../variants/compare-no-range.webp" alt="Chart · Ranking: Without the range" width="300" align="top">
 <img src="../variants/compare-no-header.webp" alt="Chart · Ranking: Without the header" width="300" align="top">
 <img src="../variants/compare-week.webp" alt="Chart · Ranking: Light · The range over 7 days, three rooms" width="300" align="top">
+<img src="../variants/compare-below.webp" alt="Chart · Ranking: Legend below" width="300" align="top">
 </p>
 
 ---

@@ -110,3 +110,30 @@ describe('typed names (1.3.0)', () => {
     expect(names()).toEqual(['High', 'Typed']);
   });
 });
+
+describe('the Legend setting (1.3.0)', () => {
+  it('is above by default, or under the drawing, whose top moves up', () => {
+    const above = widget({}, rooms());
+    expect([...above.q('.cp-chart')!.children].map(e => e.tagName.toLowerCase())[0]).toBe('div');
+    const below = widget({ legend: 'below' }, rooms());
+    expect(below.q('.ew-frame')!.classList.contains('legend-below')).toBe(true);
+    const order = [...below.q('.cp-chart')!.children];
+    expect(order.findIndex(e => e.classList.contains('ew-chips'))).toBeGreaterThan(order.findIndex(e => e.tagName.toLowerCase() === 'svg'));
+    expect(Number(below.q('svg')!.getAttribute('height'))).toBeLessThan(Number(above.q('svg')!.getAttribute('height')));
+  });
+
+  it('hidden shows no chips, and a missing value says why in the note', () => {
+    const hidden = widget({ legend: 'hidden' }, rooms());
+    for (const c of hidden.all('.ew-chips')) expect(c.style.display).toBe('none');
+    expect(hidden.q('svg')!.style.display).not.toBe('none');
+    const gone = widget({ legend: 'hidden' }, [{ deviceId: 'k', capabilityId: 'c', missing: true }]);
+    expect(gone.q('.cp-note')!.style.display).not.toBe('none');
+    expect(gone.q('.cp-note')!.textContent).toBe('Unavailable');
+  });
+
+  it('picks the tapped row wherever the rows start', () => {
+    const r = widget({ legend: 'below' }, rooms());
+    r.q('svg')!.dispatchEvent(new PointerEvent('pointerdown', { clientX: 200, clientY: 10 + 26 * 1.5, pointerType: 'mouse' }));
+    expect(r.header()[0]).toContain('Kitchen');
+  });
+});

@@ -176,3 +176,30 @@ describe('the chart module', () => {
     expect(C.trendLine([[0, 1], [1, 2]])).toBeNull();
   });
 });
+
+describe('the Legend setting (1.3.0)', () => {
+  it('is above by default, or under the drawing, whose top moves up', () => {
+    const above = widget({}, both());
+    expect([...above.q('.xy-chart')!.children].map(e => e.tagName.toLowerCase())[0]).toBe('div');
+    const below = widget({ legend: 'below' }, both());
+    expect(below.q('.ew-frame')!.classList.contains('legend-below')).toBe(true);
+    const order = [...below.q('.xy-chart')!.children];
+    expect(order.findIndex(e => e.classList.contains('ew-chips'))).toBeGreaterThan(order.findIndex(e => e.tagName.toLowerCase() === 'svg'));
+    expect(Number(below.q('svg')!.getAttribute('height'))).toBeLessThan(Number(above.q('svg')!.getAttribute('height')));
+  });
+
+  it('hidden shows no chips, and a missing value says why in the note', () => {
+    const hidden = widget({ legend: 'hidden' }, both());
+    for (const c of hidden.all('.ew-chips')) expect(c.style.display).toBe('none');
+    expect(hidden.q('svg')!.style.display).not.toBe('none');
+    const gone = widget({ legend: 'hidden' }, [{ deviceId: 'out', capabilityId: 'c', missing: true }, series('hp', power, pump)]);
+    expect(gone.q('.xy-note')!.style.display).not.toBe('none');
+    expect(gone.q('.xy-note')!.textContent).toBe('Unavailable');
+  });
+
+  it('below, the two values share one row', () => {
+    const r = widget({ legend: 'below' }, both());
+    expect(r.all('.ew-chips')).toHaveLength(1);
+    expect(r.all('.ew-chip')).toHaveLength(2);
+  });
+});

@@ -176,3 +176,24 @@ describe('the mount', () => {
     expect(root.querySelector('text.gg-num')!.getAttribute('class')).toBe('gg-num yellow'); // 900 over the 800 typed
   });
 });
+
+describe('the Legend setting (1.3.0)', () => {
+  it('is above by default, or under the drawing, whose top moves up', () => {
+    const above = widget({}, [entry(co2Cap, 420, 980, 760)]);
+    expect([...above.q('.gg-chart')!.children].map(e => e.tagName.toLowerCase())[0]).toBe('div');
+    const below = widget({ legend: 'below' }, [entry(co2Cap, 420, 980, 760)]);
+    expect(below.q('.ew-frame')!.classList.contains('legend-below')).toBe(true);
+    const order = [...below.q('.gg-chart')!.children];
+    expect(order.findIndex(e => e.classList.contains('ew-chips'))).toBeGreaterThan(order.findIndex(e => e.tagName.toLowerCase() === 'svg'));
+    expect(Number(below.q('svg')!.getAttribute('height'))).toBeLessThan(Number(above.q('svg')!.getAttribute('height')));
+  });
+
+  it('hidden shows no chips, and a missing value says why in the note', () => {
+    const hidden = widget({ legend: 'hidden' }, [entry(co2Cap, 420, 980, 760)]);
+    for (const c of hidden.all('.ew-chips')) expect(c.style.display).toBe('none');
+    expect(hidden.q('svg')!.style.display).not.toBe('none');
+    const gone = widget({ legend: 'hidden' }, [{ deviceId: 'd', capabilityId: 'c', missing: true }]);
+    expect(gone.q('.gg-note')!.style.display).not.toBe('none');
+    expect(gone.q('.gg-note')!.textContent).toBe('Unavailable');
+  });
+});

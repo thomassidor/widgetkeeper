@@ -19,6 +19,7 @@ window.mountScatterWidget = function (Homey, { root, frame }) {
       dots: settings.dots,
       trend: settings.trend !== false, // missing: on
       fade: settings.fade !== false, // missing: on
+      legend: settings.legend, // missing: above
       title: settings.title,
       showHeader: settings.showHeader !== false, // missing: on
       onHeight: link.setHeight,

@@ -13,6 +13,9 @@ html, body { margin: 0; }
 
 /* The x value's chip: under its labels at the right, a neutral dot (its value is the dots' place, not their colour). */
 .xy .ew-chips.xy-x { position: static; justify-content: flex-end; margin-top: 8px; }
+/* The Legend setting's Below the chart: both chips in one row, wrapping rather than cutting off their units. */
+.xy.legend-below .ew-chips { flex-wrap: wrap; }
+.xy.legend-below .ew-chip.series.x { margin-left: auto; }
 .xy .ew-chip.series.x i { background: var(--ew-muted); }
 
 .xy .xy-dot { fill: var(--ew-c); }

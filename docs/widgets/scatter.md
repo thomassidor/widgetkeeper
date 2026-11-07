@@ -6,7 +6,7 @@
 
 One value against another, a dot an hour (a minute to a week, by the [time span](charts.md#time-spans)), newest strongest, with a trend line whose slope shows at the top: how much more the heat pump draws for each degree colder.
 
-**Settings:** the value across (x) and the value up (y), [time span](charts.md#time-spans), one dot per (automatic, hour or day), trend line, fade older dots, title, the values at the top, colour, [colour style](../../README.md#colour-style).
+**Settings:** the value across (x) and the value up (y), [time span](charts.md#time-spans), one dot per (automatic, hour or day), trend line, fade older dots, the legend (above, below or hidden), title, the values at the top, colour, [colour style](../../README.md#colour-style).
 
 ## Looks
 
@@ -17,6 +17,7 @@ One value against another, a dot an hour (a minute to a week, by the [time span]
 <img src="../variants/scatter-no-fade.webp" alt="Chart · Scatter (XY): Light · Without the fade" width="300" align="top">
 <img src="../variants/scatter-days.webp" alt="Chart · Scatter (XY): A dot a day, not an hour" width="300" align="top">
 <img src="../variants/scatter-no-header.webp" alt="Chart · Scatter (XY): Light · Without the header" width="300" align="top">
+<img src="../variants/scatter-below.webp" alt="Chart · Scatter (XY): Legend below" width="300" align="top">
 </p>
 
 ---

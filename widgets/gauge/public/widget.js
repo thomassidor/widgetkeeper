@@ -58,7 +58,7 @@
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, t?: (key: string) => string, locale?: string, language?: string, now?: () => number,
    *   span?: string, scale?: string, scaleMin?: number, scaleMax?: number, zones?: string, yellowAt?: number, redAt?: number,
-   *   showRange?: boolean, title?: string, layout?: string, onHeight?: (h: number) => void }} opts
+   *   showRange?: boolean, legend?: string, title?: string, layout?: string, onHeight?: (h: number) => void }} opts
    */
   function createGaugeWidget(root, opts = {}) {
     // Any time span for the range (the kit's `timeSpan()`); missing or unknown: today.
@@ -78,8 +78,9 @@
       entry: null, // Sparklines' slot state ({deviceId, capabilityId, name, capability, value, points} | {missing})
     };
 
+    const legend = C.legendPlace(opts.legend, CHIP_H);
     const frame = C.createFrame(root, {
-      opts, cls: 'gg', prefix: 'gauge', strings: DEFAULT_STRINGS, showHeader: false,
+      opts, cls: 'gg', prefix: 'gauge', strings: DEFAULT_STRINGS, legendBelow: legend.below, showHeader: false,
       colors: { style: opts.colorStyle, color: opts.color, fallback: 'blue' },
       redrawMs: 60e3,
       has: () => state.entry != null,
@@ -132,6 +133,7 @@
       const level = r && r.value != null ? zoneOf(r.value, levels) : null; // with zones, the chip's dot is the value's level
       kit.chip(chips, `series${level ? ` ${level}` : ''}`, title || (s ? `${s.name} · ${s.capability.title}` : t('unavailable')), units || null);
       if (showRange && r && r.min != null) kit.chip(chips, 'series range', t('range'), null);
+      show(chips, !legend.hidden);
 
       const drawable = !!r && (r.value != null || r.min != null);
       show(svg, drawable);
@@ -194,7 +196,7 @@
      */
     function dialShape(w) {
       const radius = Math.max(40, Math.min(MAX_R, w / 2 - STROKE));
-      const cx = w / 2, cy = CHIP_H + PAD + STROKE / 2 + radius;
+      const cx = w / 2, cy = legend.top + PAD + STROKE / 2 + radius;
       const endY = cy + radius * Math.cos((180 - SWEEP) * Math.PI / 180);
       const deg = f => -SWEEP + 2 * SWEEP * f;
       const [lx] = polar(cx, cy, radius, -SWEEP), [rx] = polar(cx, cy, radius, SWEEP);
@@ -214,8 +216,8 @@
      */
     function barShape(w) {
       const x0 = STROKE / 2 + 2, x1 = w - STROKE / 2 - 2;
-      const numY = CHIP_H + NUM_H / 2;
-      const y = CHIP_H + NUM_H + 8 + STROKE / 2;
+      const numY = legend.top + NUM_H / 2;
+      const y = legend.top + NUM_H + 8 + STROKE / 2;
       const x = f => x0 + (x1 - x0) * f;
       const endY = y + STROKE / 2 + 3 + RANGE_W + 3 + 14;
       return {

@@ -33,7 +33,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, t?: (key: string) => string, locale?: string, language?: string, now?: () => number,
-   *   span?: string, dots?: string, trend?: boolean, fade?: boolean, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
+   *   span?: string, dots?: string, trend?: boolean, fade?: boolean, legend?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createScatterWidget(root, opts = {}) {
     // Any time span (the kit's `timeSpan()`); missing or unknown: the last 7 days.
@@ -50,8 +50,9 @@
     };
     let drawn = null; // the latest render's dots with their place, and the trend
 
+    const legend = C.legendPlace(opts.legend, CHIP_H);
     const frame = C.createFrame(root, {
-      opts, cls: 'xy', prefix: 'scatter', strings: DEFAULT_STRINGS, showHeader: opts.showHeader,
+      opts, cls: 'xy', prefix: 'scatter', strings: DEFAULT_STRINGS, legendBelow: legend.below, showHeader: opts.showHeader,
       colors: { style: opts.colorStyle, color: opts.color, fallback: 'blue' },
       redrawMs: 60e3,
       has: () => state.x != null,
@@ -61,8 +62,9 @@
     const { t, nf, hhmm, date, now, kit } = frame;
     const { box, chips, svg, note } = frame.boxes[0];
     // The x value's chip goes under its labels, at the right.
-    const xChips = C.el('div', { class: 'ew-chips xy-x' });
-    box.insertBefore(xChips, note);
+    // The x value's chip under its labels at the right; with the legend below, it shares that row.
+    const xChips = legend.below ? chips : C.el('div', { class: 'ew-chips xy-x' });
+    if (!legend.below) box.insertBefore(xChips, note);
 
     // ------------------------------------------------------------------ derived data
 
@@ -152,20 +154,22 @@
     function renderChart() {
       const w = frame.width;
       const pw = Math.max(40, w - L - R_GAP);
-      const top = CHIP_H, base = top + PLOT_H;
+      const top = legend.top, base = top + PLOT_H;
       const H = base + X_LABEL_GAP + X_LABEL_H;
       const x = state.x, y = state.y;
 
       clear(chips);
-      kit.chip(chips, 'series', title || titleOf(y), units(y) || null);
       clear(xChips);
+      kit.chip(chips, 'series', title || titleOf(y), units(y) || null);
       kit.chip(xChips, 'series x', titleOf(x), units(x) || null);
+      show(chips, !legend.hidden);
+      show(xChips, !legend.hidden);
 
       const { win, live, list } = dotsAt(now());
       const drawable = ok(x) && ok(y) && list.length >= 2;
       show(svg, drawable);
       // A missing value's chip already says Unavailable, unless the chart's own title stands in the value up's.
-      const why = ok(x) && ok(y) ? t('noHistory') : !ok(y) && title ? t('unavailable') : null;
+      const why = ok(x) && ok(y) ? t('noHistory') : (!ok(y) && title) || legend.hidden ? t('unavailable') : null;
       show(note, !drawable && why != null);
       note.textContent = why || '';
       box.classList.toggle('empty', !drawable);

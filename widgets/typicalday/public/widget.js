@@ -28,7 +28,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, t?: (key: string, tokens?: object) => string, locale?: string, language?: string,
-   *   now?: () => number, usual?: string | number, band?: boolean, smooth?: boolean, range?: string, title?: string, showHeader?: boolean,
+   *   now?: () => number, usual?: string | number, band?: boolean, smooth?: boolean, range?: string, legend?: string, title?: string, showHeader?: boolean,
    *   onHeight?: (h: number) => void }} opts
    */
   function createTypicalDayWidget(root, opts = {}) {
@@ -45,8 +45,9 @@
     };
     let drawn = null; // the latest render's window, hours and today's points, for the header and the pointer
 
+    const legend = C.legendPlace(opts.legend, CHIP_H);
     const frame = C.createFrame(root, {
-      opts, cls: 'td', prefix: 'typicalday', strings: DEFAULT_STRINGS, showHeader: opts.showHeader,
+      opts, cls: 'td', prefix: 'typicalday', strings: DEFAULT_STRINGS, legendBelow: legend.below, showHeader: opts.showHeader,
       colors: { style: opts.colorStyle, color: opts.color, fallback: 'blue' },
       redrawMs: 60e3,
       has: () => state.today != null,
@@ -114,19 +115,20 @@
     function renderChart() {
       const w = frame.width;
       const pw = Math.max(40, w - L - 4);
-      const top = CHIP_H, base = top + PLOT_H;
+      const top = legend.top, base = top + PLOT_H;
       const H = base + X_LABEL_GAP + X_LABEL_H;
       const s = state.today;
 
       clear(chips);
       kit.chip(chips, 'series', titleText(), ok(s) && s.capability.units ? s.capability.units : null);
       kit.chip(chips, 'series usual', `${t('usual')} · ${days} d`, null);
+      show(chips, !legend.hidden);
 
       const d = dayAt(now());
       const known = d.hours.filter(h => h.n);
       const drawable = ok(s) && (known.length > 0 || d.today.length >= 2);
       show(svg, drawable);
-      show(note, !drawable && (ok(s) || !!title));
+      show(note, !drawable && (ok(s) || !!title || legend.hidden));
       note.textContent = ok(s) ? t('noHistory') : t('unavailable');
       box.classList.toggle('empty', !drawable);
       if (!drawable) return;

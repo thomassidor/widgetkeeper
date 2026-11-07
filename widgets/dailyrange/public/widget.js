@@ -26,7 +26,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, t?: (key: string) => string, locale?: string, language?: string, now?: () => number,
-   *   span?: string, average?: boolean, range?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
+   *   span?: string, average?: boolean, range?: string, legend?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createDailyRangeWidget(root, opts = {}) {
     // Any time span (the kit's `timeSpan()`); missing or unknown: the last 4 weeks, a bar a day.
@@ -41,8 +41,9 @@
     };
     let drawn = null; // the latest render's bars and their x, for the header and the pointer
 
+    const legend = C.legendPlace(opts.legend, CHIP_H);
     const frame = C.createFrame(root, {
-      opts, cls: 'dr', prefix: 'dailyrange', strings: DEFAULT_STRINGS, showHeader: opts.showHeader,
+      opts, cls: 'dr', prefix: 'dailyrange', strings: DEFAULT_STRINGS, legendBelow: legend.below, showHeader: opts.showHeader,
       colors: { style: opts.colorStyle, color: opts.color, fallback: 'blue' },
       redrawMs: 60e3,
       has: () => state.entry != null,
@@ -125,19 +126,20 @@
     function renderChart() {
       const w = frame.width;
       const pw = Math.max(40, w - L - 4);
-      const top = CHIP_H, base = top + PLOT_H;
+      const top = legend.top, base = top + PLOT_H;
       const H = base + X_LABEL_GAP + X_LABEL_H;
       const s = state.entry;
 
       clear(chips);
       kit.chip(chips, 'series', titleText(), ok(s) && s.capability.units ? s.capability.units : null);
+      show(chips, !legend.hidden);
 
       const { win, unit, bars } = barsAt(now());
       const full = bars.filter(b => b.max != null && b.min != null);
       const drawable = ok(s) && full.length > 0;
       show(svg, drawable);
       // A missing device's chip already says Unavailable, unless the chart has a title of its own.
-      show(note, ok(s) ? !drawable : !!title);
+      show(note, ok(s) ? !drawable : !!title || legend.hidden);
       note.textContent = ok(s) ? t('noHistory') : t('unavailable');
       box.classList.toggle('empty', !drawable);
       if (!drawable) return;

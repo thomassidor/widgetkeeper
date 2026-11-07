@@ -25,6 +25,7 @@ window.mountGaugeWidget = function (Homey, { root, frame }) {
       yellowAt: number(settings.yellowAt),
       redAt: number(settings.redAt),
       showRange: settings.showRange !== false, // missing: on
+      legend: settings.legend, // missing: above
       title: settings.title,
       onHeight: link.setHeight,
     })),

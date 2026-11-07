@@ -86,6 +86,8 @@
 .ew-frame .ew-chip.series { max-width: 100%; min-width: 0; }
 .ew-frame .ew-chip.series > span { overflow: hidden; text-overflow: ellipsis; }
 .ew-frame .ew-chip.series i { background: var(--ew-c); flex-shrink: 0; }
+/* The Legend setting's Below the chart: the chips under the time labels. */
+.ew-frame.legend-below .ew-chips { position: static; margin-top: 8px; }
 /* A chart without anything to draw keeps its chips, with the reason under them. */
 .ew-frame .ew-chart.empty { min-height: 0; }
 .ew-frame .ew-chart.empty .ew-chips { position: static; }

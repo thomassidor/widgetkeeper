@@ -693,8 +693,19 @@
     }
   }
 
+  const LEGEND_TOP_PAD = 10;
+
   /** The pointer's x in the <svg>'s own coordinates. */
   const pointerX = (e, svg) => e.clientX - svg.getBoundingClientRect().left;
+
+  /**
+   * The Legend setting of a chart whose chips sit over the top of its svg: `above` (also a missing setting), `below` (the
+   * chips under the labels) or `hidden`; `top` is where the drawing starts, with room for its top scale label without them.
+   */
+  const legendPlace = (legend, chipH) => {
+    const below = legend === 'below', hidden = legend === 'hidden';
+    return { below, hidden, top: below || hidden ? LEGEND_TOP_PAD : chipH };
+  };
 
   /**
    * The frame a chart widget draws in (Charts, Chart · Totals and the other `Chart · …` widgets; the Electricity Overview
@@ -971,6 +982,6 @@
     MIN, HOUR, L, X_LABEL_GAP, X_LABEL_H, LABEL_PAD, LABEL_MIN_GAP,
     niceStep, ticks, el, clear, show, f1, smoothValues: window.WidgetkeeperKit.smoothValues, linePath, stepPath, p985, p015,
     compactNumber, ago, stepDecimals, axisLabel, buckets, alignSeries, profile, trendLine, barUnit, useBuckets, meterTotal, calendarLabels, createKit, attachScrub, pointerX,
-    createFrame, wireChart, keepLive, pushLive, currencyUnits, typedName,
+    createFrame, legendPlace, wireChart, keepLive, pushLive, currencyUnits, typedName,
   };
 })();

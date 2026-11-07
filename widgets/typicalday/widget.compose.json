@@ -222,6 +222,97 @@
       ]
     },
     {
+      "id": "legend",
+      "type": "dropdown",
+      "title": {
+        "en": "Legend",
+        "nl": "Legenda",
+        "de": "Legende",
+        "fr": "Légende",
+        "it": "Legenda",
+        "sv": "Teckenförklaring",
+        "no": "Tegnforklaring",
+        "es": "Leyenda",
+        "da": "Forklaring",
+        "ru": "Легенда",
+        "pl": "Legenda",
+        "ko": "범례",
+        "ar": "وسيلة الإيضاح"
+      },
+      "hint": {
+        "en": "Each value's name and units.",
+        "nl": "De naam en eenheid van elke waarde.",
+        "de": "Name und Einheit jedes Werts.",
+        "fr": "Le nom et l'unité de chaque valeur.",
+        "it": "Il nome e l'unità di ogni valore.",
+        "sv": "Varje värdes namn och enhet.",
+        "no": "Navnet og enheten til hver verdi.",
+        "es": "El nombre y la unidad de cada valor.",
+        "da": "Hver værdis navn og enhed.",
+        "ru": "Название и единицы каждого значения.",
+        "pl": "Nazwa i jednostka każdej wartości.",
+        "ko": "각 값의 이름과 단위입니다.",
+        "ar": "اسم كل قيمة ووحدتها."
+      },
+      "value": "above",
+      "values": [
+        {
+          "id": "above",
+          "title": {
+            "en": "Above the chart",
+            "nl": "Boven de grafiek",
+            "de": "Über dem Diagramm",
+            "fr": "Au-dessus du graphique",
+            "it": "Sopra il grafico",
+            "sv": "Ovanför diagrammet",
+            "no": "Over diagrammet",
+            "es": "Encima del gráfico",
+            "da": "Over grafen",
+            "ru": "Над графиком",
+            "pl": "Nad wykresem",
+            "ko": "차트 위",
+            "ar": "فوق المخطط"
+          }
+        },
+        {
+          "id": "below",
+          "title": {
+            "en": "Below the chart",
+            "nl": "Onder de grafiek",
+            "de": "Unter dem Diagramm",
+            "fr": "Sous le graphique",
+            "it": "Sotto il grafico",
+            "sv": "Under diagrammet",
+            "no": "Under diagrammet",
+            "es": "Debajo del gráfico",
+            "da": "Under grafen",
+            "ru": "Под графиком",
+            "pl": "Pod wykresem",
+            "ko": "차트 아래",
+            "ar": "أسفل المخطط"
+          }
+        },
+        {
+          "id": "hidden",
+          "title": {
+            "en": "Hidden",
+            "nl": "Verborgen",
+            "de": "Ausgeblendet",
+            "fr": "Masquée",
+            "it": "Nascosta",
+            "sv": "Dold",
+            "no": "Skjult",
+            "es": "Oculta",
+            "da": "Skjult",
+            "ru": "Скрыта",
+            "pl": "Ukryta",
+            "ko": "숨김",
+            "ar": "مخفية"
+          }
+        }
+      ]
+    },
+    {
       "id": "title",
       "type": "text",
       "title": {

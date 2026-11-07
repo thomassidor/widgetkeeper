@@ -102,3 +102,24 @@ describe('the requests and messages', () => {
     expect(decodeURIComponent((api.mock.calls[0] as any)[1])).toMatch(/^\/state\?charts=h:measure_power~1d!~\d+~\d+~day,h:measure_power~7d~\d+~\d+~(&|$)/);
   });
 });
+
+describe('the Legend setting (1.3.0)', () => {
+  it('is above by default, or under the drawing, whose top moves up', () => {
+    const above = widget({}, [today(), past()]);
+    expect([...above.q('.td-chart')!.children].map(e => e.tagName.toLowerCase())[0]).toBe('div');
+    const below = widget({ legend: 'below' }, [today(), past()]);
+    expect(below.q('.ew-frame')!.classList.contains('legend-below')).toBe(true);
+    const order = [...below.q('.td-chart')!.children];
+    expect(order.findIndex(e => e.classList.contains('ew-chips'))).toBeGreaterThan(order.findIndex(e => e.tagName.toLowerCase() === 'svg'));
+    expect(Number(below.q('svg')!.getAttribute('height'))).toBeLessThan(Number(above.q('svg')!.getAttribute('height')));
+  });
+
+  it('hidden shows no chips, and a missing value says why in the note', () => {
+    const hidden = widget({ legend: 'hidden' }, [today(), past()]);
+    for (const c of hidden.all('.ew-chips')) expect(c.style.display).toBe('none');
+    expect(hidden.q('svg')!.style.display).not.toBe('none');
+    const gone = widget({ legend: 'hidden' }, [{ deviceId: 'h', capabilityId: 'c', missing: true }, null]);
+    expect(gone.q('.td-note')!.style.display).not.toBe('none');
+    expect(gone.q('.td-note')!.textContent).toBe('Unavailable');
+  });
+});

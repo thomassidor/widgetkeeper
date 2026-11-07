@@ -12,7 +12,7 @@ One value now on a bar: a room's CO₂ or humidity, a battery, the house's power
 
 <img src="../screenshots/gaugedial.png" alt="The same gauge as a dial: the office's CO₂ at 950 ppm in the middle of a 240° arc in green, yellow and red stretches, today's range as a thin band inside the arc" width="358">
 
-**Settings:** the value, layout (bar or dial), scale (automatic, or from and to), colour by level with where yellow and red start, [time span](charts.md#time-spans) for the range, show the range, title, colour, [colour style](../../README.md#colour-style).
+**Settings:** the value, layout (bar or dial), scale (automatic, or from and to), colour by level with where yellow and red start, [time span](charts.md#time-spans) for the range, show the range, the legend (above, below or hidden), title, colour, [colour style](../../README.md#colour-style).
 
 ## Looks
 
@@ -25,6 +25,7 @@ One value now on a bar: a room's CO₂ or humidity, a battery, the house's power
 <img src="../variants/gauge-battery.webp" alt="Chart · Gauge: Battery: lower is worse" width="300" align="top">
 <img src="../variants/gauge-custom.webp" alt="Chart · Gauge: Light · Your own scale, 400 to 1,200" width="300" align="top">
 <img src="../variants/gauge-no-range.webp" alt="Chart · Gauge: Humidity in teal, without the range" width="300" align="top">
+<img src="../variants/gauge-below.webp" alt="Chart · Gauge: Light · Legend below" width="300" align="top">
 </p>
 
 ---

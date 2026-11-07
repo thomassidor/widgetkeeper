@@ -50,7 +50,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, t?: (key: string) => string, locale?: string, language?: string, now?: () => number,
-   *   period?: string, compare?: boolean, show?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
+   *   period?: string, compare?: boolean, show?: string, legend?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createTotalsWidget(root, opts = {}) {
     // Any time span (the kit's `timeSpan()`: `1w!` is this week, `30d` the last 30 days); missing or unknown: this week.
@@ -71,8 +71,9 @@
 
     // Redrawn every minute, so the live bar keeps up and the period rolls over at its end. A lasting message (no value
     // picked, a failed first load) drops the chart and shows in its place; a passing one (a failed refresh) under it.
+    const legend = C.legendPlace(opts.legend, CHIP_H);
     const frame = C.createFrame(root, {
-      opts, cls: 'tt', prefix: 'totals', strings: DEFAULT_STRINGS, showHeader: opts.showHeader,
+      opts, cls: 'tt', prefix: 'totals', strings: DEFAULT_STRINGS, legendBelow: legend.below, showHeader: opts.showHeader,
       colors: { style: opts.colorStyle, color: opts.color, fallback: 'blue' },
       redrawMs: 60e3,
       has: () => state.current != null,
@@ -245,7 +246,7 @@
     function renderChart() {
       const w = frame.width;
       const pw = Math.max(40, w - L - 4);
-      const top = CHIP_H, base = top + PLOT_H;
+      const top = legend.top, base = top + PLOT_H;
       const H = base + X_LABEL_GAP + X_LABEL_H;
       const s = state.current;
       const units = unitsOf(true);
@@ -253,6 +254,7 @@
       clear(chips);
       kit.chip(chips, 'series', titleText(), units);
       if (compare) kit.chip(chips, 'series prev', windowName(1), null);
+      show(chips, !legend.hidden);
 
       const { win, slots } = slotsAt(now());
       const values = [];
@@ -265,7 +267,7 @@
       // A missing device's chip already says Unavailable, unless the chart has a title of its own. With `cost`, why
       // there's none, or under the bars that some hours had no price (or are still being read).
       const why = costNote(drawable, slots);
-      show(note, ok(s) ? !drawable || !!why : !!title);
+      show(note, ok(s) ? !drawable || !!why : !!title || legend.hidden);
       note.textContent = !ok(s) ? t('unavailable') : why || t('noHistory');
       box.classList.toggle('empty', !drawable);
       if (!drawable) return;

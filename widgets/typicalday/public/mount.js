@@ -18,6 +18,7 @@ window.mountTypicalDayWidget = function (Homey, { root, frame }) {
       band: settings.band !== false, // missing: on
       smooth: settings.smooth === true,
       range: settings.range,
+      legend: settings.legend, // missing: above
       title: settings.title,
       showHeader: settings.showHeader !== false, // missing: on
       onHeight: link.setHeight,

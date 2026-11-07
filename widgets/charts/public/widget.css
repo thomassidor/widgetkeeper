@@ -43,5 +43,3 @@ html, body { margin: 0; }
 .ch .dot-ring.export { stroke: var(--ew-export); }
 .ch .dot-core.export { fill: var(--ew-export); }
 
-/* The Legend setting's Below the chart: each chart's chips under its time labels. */
-.ch.legend-below .ew-chips { position: static; margin-top: 8px; }

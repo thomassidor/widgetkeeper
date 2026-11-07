@@ -21,6 +21,7 @@ window.mountCompareWidget = function (Homey, { root, frame }) {
       span: spanSetting(settings, '', { count: 1, unit: 'calDays' }), // a number of a unit; missing: today
       sort: settings.sort, // missing: highest first
       showRange: settings.showRange !== false, // missing: on
+      legend: settings.legend, // missing: above
       title: settings.title,
       showHeader: settings.showHeader !== false, // missing: on
       onHeight: link.setHeight,

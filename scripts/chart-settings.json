@@ -3188,6 +3188,10 @@
       },
       "totals.compare",
       {
+        "use": "legend",
+        "hint": "legend.values"
+      },
+      {
         "use": "title",
         "top": true
       },
@@ -3222,6 +3226,10 @@
       "scatter.trend",
       "scatter.fade",
       {
+        "use": "legend",
+        "hint": "legend.values"
+      },
+      {
         "use": "title",
         "top": true
       },
@@ -3249,6 +3257,10 @@
       {
         "use": "range",
         "top": true
+      },
+      {
+        "use": "legend",
+        "hint": "legend.values"
       },
       {
         "use": "title",
@@ -3287,6 +3299,10 @@
       {
         "use": "range",
         "top": true
+      },
+      {
+        "use": "legend",
+        "hint": "legend.values"
       },
       {
         "use": "title",
@@ -3341,6 +3357,10 @@
       },
       "compare.sort",
       "compare.range",
+      {
+        "use": "legend",
+        "hint": "legend.values"
+      },
       {
         "use": "title",
         "top": true
@@ -3682,6 +3702,10 @@
         "value": "calDays"
       },
       "gauge.range",
+      {
+        "use": "legend",
+        "hint": "legend.values"
+      },
       {
         "use": "title",
         "top": true

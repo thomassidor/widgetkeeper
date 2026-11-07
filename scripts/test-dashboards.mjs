@@ -667,6 +667,8 @@ const BUILD = {
       w('compare', 'This week · Vivid · purple', { ...slots(values), count: 1, span: 'calWeeks', colorStyle: 'deep', color: 'purple' }),
       w('compare', 'No header', { ...slots(values.slice(0, 3)), showHeader: false }),
       w('compare', 'Typed names', { ...slots(values.slice(0, 3)), name1: 'Typed name', name2: 'Another' }),
+      w('compare', 'Legend below', { ...slots(values.slice(0, 3)), legend: 'below' }),
+      w('compare', 'Legend hidden', { ...slots(values.slice(0, 3)), legend: 'hidden' }),
       w('compare', 'With a deleted device', { ...slots([missing, ...values.slice(0, 3)]) }),
       w('compare', 'One value', slots(values.slice(0, 1))),
       w('compare', 'Nothing picked'),
@@ -711,6 +713,8 @@ const BUILD = {
       w('gauge', `Scale ${from}–${to} as set · 24 hours · own title`, { slot: temp, scale: 'custom', scaleMin: from, scaleMax: to, count: 24, span: 'hours', title: 'Typed title' }),
       w('gauge', 'This week · Vivid · purple', { slot: temp, count: 1, span: 'calWeeks', colorStyle: 'deep', color: 'purple' }),
       w('gauge', 'Vivid with levels', { slot: high, ...up, colorStyle: 'deep' }),
+      w('gauge', 'Legend below', { slot: temp, legend: 'below' }),
+      w('gauge', 'Legend hidden', { slot: temp, legend: 'hidden' }),
       w('gauge', 'Deleted device', { slot: missing }),
       w('gauge', 'Nothing picked'),
     ].filter(Boolean) };
@@ -814,6 +818,8 @@ const BUILD = {
       w('dailyrange', 'This year, a bar a month · from zero', { slot: value, count: 1, span: 'calYears', range: 'zero', color: 'orange' }),
       w('dailyrange', 'Own title · no header', { slot: value, title: 'Typed title', showHeader: false }),
       other && other !== value && w('dailyrange', 'Another value', { slot: other, color: 'green' }),
+      w('dailyrange', 'Legend below', { slot: value, legend: 'below' }),
+      w('dailyrange', 'Legend hidden', { slot: value, legend: 'hidden' }),
       w('dailyrange', 'Deleted device', { slot: missing }),
       w('dailyrange', 'Nothing picked'),
     ].filter(Boolean) };
@@ -832,6 +838,8 @@ const BUILD = {
       w('typicalday', 'No spread · from zero · Vivid', { slot: value, band: false, range: 'zero', colorStyle: 'deep' }),
       w('typicalday', 'Own title · no header · purple', { slot: value, title: 'Typed title', showHeader: false, color: 'purple' }),
       temp && temp !== value && w('typicalday', 'A temperature', { slot: temp, color: 'orange' }),
+      w('typicalday', 'Legend below', { slot: value, legend: 'below' }),
+      w('typicalday', 'Legend hidden', { slot: value, legend: 'hidden' }),
       w('typicalday', 'Deleted device', { slot: missing }),
       w('typicalday', 'Nothing picked'),
     ].filter(Boolean) };
@@ -852,6 +860,8 @@ const BUILD = {
       w('scatter', 'Last week · own title · no header', { xValue: x, yValue: y, count: 1, span: 'calWeeks', leaveOut: true, title: 'Typed title', showHeader: false }),
       w('scatter', '6 hours · a dot an hour', { xValue: x, yValue: y, count: 6, span: 'hours', dots: 'hour', color: 'green' }),
       temp2 && w('scatter', 'Two temperatures · 3 days', { xValue: temp, yValue: temp2, count: 3, span: 'days', color: 'orange' }),
+      w('scatter', 'Legend below', { xValue: x, yValue: y, legend: 'below' }),
+      w('scatter', 'Legend hidden', { xValue: x, yValue: y, legend: 'hidden' }),
       w('scatter', 'Deleted device across', { xValue: missing, yValue: y }),
       w('scatter', 'Nothing picked'),
     ].filter(Boolean) };
@@ -883,6 +893,8 @@ const BUILD = {
       w('totals', 'Cost · this month against last month', { slot: meter, show: 'cost', ...PERIODS.thisMonth, compare: true }),
       w('totals', 'Cost · this year', { slot: meter, show: 'cost', ...PERIODS.thisYear }),
       w('totals', 'Cost · another value (needs kWh)', { slot: meter2 || meter, show: 'cost', ...PERIODS.thisWeek }),
+      w('totals', 'Legend below', { slot: meter, legend: 'below' }),
+      w('totals', 'Legend hidden', { slot: meter, legend: 'hidden' }),
       w('totals', 'Deleted device', { slot: missing, compare: true }),
       w('totals', 'Nothing picked'),
     ] };
