@@ -18,6 +18,7 @@ window.mountDailyRangeWidget = function (Homey, { root, frame }) {
       span: spanSetting(settings, '', { count: 4, unit: 'weeks' }), // a number of a unit; missing: the last 4 weeks
       average: settings.average !== false, // missing: on
       range: settings.range,
+      plotHeight: settings.plotHeight, // missing: normal
       legend: settings.legend, // missing: above
       title: settings.title,
       showHeader: settings.showHeader !== false, // missing: on

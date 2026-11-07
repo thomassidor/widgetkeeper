@@ -161,6 +161,82 @@
       },
       "value": true
     },
+    "plotHeight": {
+      "id": "plotHeight",
+      "type": "dropdown",
+      "title": {
+        "en": "Chart height",
+        "nl": "Grafiekhoogte",
+        "de": "Diagrammhöhe",
+        "fr": "Hauteur du graphique",
+        "it": "Altezza del grafico",
+        "sv": "Diagramhöjd",
+        "no": "Diagramhøyde",
+        "es": "Altura del gráfico",
+        "da": "Grafhøjde",
+        "ru": "Высота графика",
+        "pl": "Wysokość wykresu",
+        "ko": "차트 높이",
+        "ar": "ارتفاع المخطط"
+      },
+      "value": "normal",
+      "values": [
+        {
+          "id": "small",
+          "title": {
+            "en": "Small",
+            "nl": "Laag",
+            "de": "Niedrig",
+            "fr": "Basse",
+            "it": "Bassa",
+            "sv": "Låg",
+            "no": "Lav",
+            "es": "Baja",
+            "da": "Lav",
+            "ru": "Низкая",
+            "pl": "Niska",
+            "ko": "낮게",
+            "ar": "منخفض"
+          }
+        },
+        {
+          "id": "normal",
+          "title": {
+            "en": "Normal",
+            "nl": "Normaal",
+            "de": "Normal",
+            "fr": "Normale",
+            "it": "Normale",
+            "sv": "Normal",
+            "no": "Normal",
+            "es": "Normal",
+            "da": "Normal",
+            "ru": "Обычная",
+            "pl": "Normalna",
+            "ko": "보통",
+            "ar": "عادي"
+          }
+        },
+        {
+          "id": "tall",
+          "title": {
+            "en": "Tall",
+            "nl": "Hoog",
+            "de": "Hoch",
+            "fr": "Haute",
+            "it": "Alta",
+            "sv": "Hög",
+            "no": "Høy",
+            "es": "Alta",
+            "da": "Høj",
+            "ru": "Высокая",
+            "pl": "Wysoka",
+            "ko": "높게",
+            "ar": "مرتفع"
+          }
+        }
+      ]
+    },
     "legend": {
       "id": "legend",
       "type": "dropdown",
@@ -3134,6 +3210,7 @@
       "charts",
       "sharedScale",
       "showHeader.values",
+      "plotHeight",
       "legend",
       "colorStyle",
       "chart:1",
@@ -3187,6 +3264,7 @@
         "top": true
       },
       "totals.compare",
+      "plotHeight",
       {
         "use": "legend",
         "hint": "legend.values"
@@ -3225,6 +3303,7 @@
       "scatter.dots",
       "scatter.trend",
       "scatter.fade",
+      "plotHeight",
       {
         "use": "legend",
         "hint": "legend.values"
@@ -3258,6 +3337,7 @@
         "use": "range",
         "top": true
       },
+      "plotHeight",
       {
         "use": "legend",
         "hint": "legend.values"
@@ -3300,6 +3380,7 @@
         "use": "range",
         "top": true
       },
+      "plotHeight",
       {
         "use": "legend",
         "hint": "legend.values"
@@ -3536,6 +3617,7 @@
         "top": true,
         "hint": "smooth.areas"
       },
+      "plotHeight",
       {
         "use": "legend",
         "hint": "legend.values"
@@ -3614,6 +3696,7 @@
         "use": "smooth",
         "top": true
       },
+      "plotHeight",
       {
         "use": "legend",
         "hint": "legend.values"

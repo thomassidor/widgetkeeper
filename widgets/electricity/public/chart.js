@@ -695,6 +695,9 @@
 
   const LEGEND_TOP_PAD = 10;
 
+  /** The Chart height setting: a plot's height from its usual one; `normal` and anything else (a missing setting) keep it. */
+  const plotHeight = (setting, normal) => Math.round(normal * ({ small: 0.7, tall: 1.6 }[setting] || 1));
+
   /** The pointer's x in the <svg>'s own coordinates. */
   const pointerX = (e, svg) => e.clientX - svg.getBoundingClientRect().left;
 
@@ -982,6 +985,6 @@
     MIN, HOUR, L, X_LABEL_GAP, X_LABEL_H, LABEL_PAD, LABEL_MIN_GAP,
     niceStep, ticks, el, clear, show, f1, smoothValues: window.WidgetkeeperKit.smoothValues, linePath, stepPath, p985, p015,
     compactNumber, ago, stepDecimals, axisLabel, buckets, alignSeries, profile, trendLine, barUnit, useBuckets, meterTotal, calendarLabels, createKit, attachScrub, pointerX,
-    createFrame, legendPlace, wireChart, keepLive, pushLive, currencyUnits, typedName,
+    createFrame, legendPlace, plotHeight, wireChart, keepLive, pushLive, currencyUnits, typedName,
   };
 })();

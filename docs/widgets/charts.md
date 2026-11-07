@@ -6,7 +6,7 @@
 
 How did it go? A value over any [time span](#time-spans), as a line, an area or bars, drawn like Electricity Overview's charts. Two values can share one chart, to compare a value with the period before it (today over yesterday) or with a second value on its own scale (the power use against the outdoor temperature), or stack as two charts in one widget.
 
-**Settings:** one value, two stacked or two on one chart (sharing chart 1's span, unless both are whole periods of one unit, such as today and yesterday), one scale for both; per chart the value, [time span](#time-spans), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (a finished period's average); the legend (above, below or hidden); [colour style](../../README.md#colour-style).
+**Settings:** one value, two stacked or two on one chart (sharing chart 1's span, unless both are whole periods of one unit, such as today and yesterday), one scale for both; per chart the value, [time span](#time-spans), style (line with area, line or bars), colour, scale (fitted or from zero), below zero in yellow, smooth line and title; the values at the top (a finished period's average); chart height (small, normal or tall); the legend (above, below or hidden); [colour style](../../README.md#colour-style).
 
 For totals per hour, day or month, see [Chart · Totals](totals.md); for more than two values, [Chart · Lines](lines.md).
 
@@ -25,6 +25,7 @@ For totals per hour, day or month, see [Chart · Totals](totals.md); for more th
 <img src="../variants/charts-overlay.webp" alt="Chart · Basic: Two values on one chart" width="300" align="top">
 <img src="../variants/charts-shared.webp" alt="Chart · Basic: Light · One scale for both, legend below" width="300" align="top">
 <img src="../variants/charts-spans.webp" alt="Chart · Basic: Two time spans: 7 days and 6 hours" width="300" align="top">
+<img src="../variants/charts-tall.webp" alt="Chart · Basic: One chart, tall" width="300" align="top">
 <img src="../variants/charts-negative.webp" alt="Chart · Basic: Light · Below zero in yellow" width="300" align="top">
 <img src="../variants/charts-line.webp" alt="Chart · Basic: Light · Lines, no header" width="300" align="top">
 </p>

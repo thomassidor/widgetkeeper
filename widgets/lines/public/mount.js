@@ -21,6 +21,7 @@ window.mountLinesWidget = function (Homey, { root, frame }) {
       style: settings.style, // missing: lines
       range: settings.range, // missing: fit
       smooth: settings.smooth === true,
+      plotHeight: settings.plotHeight, // missing: normal
       legend: settings.legend, // missing: above
       title: settings.title,
       showHeader: settings.showHeader !== false, // missing: on

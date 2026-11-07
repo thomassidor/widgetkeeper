@@ -776,3 +776,21 @@ describe('a hidden legend (1.3.0)', () => {
     expect(note.textContent).toBe('Unavailable');
   });
 });
+
+describe('the Chart height setting (1.3.0)', () => {
+  it('makes the plot lower or taller; normal and a missing setting keep it', () => {
+    const height = (plotHeight?: string) => Number((widget([{}], [entry(series(24 * HOUR, x => 20 + x))], { plotHeight })).q('svg')!.getAttribute('height'));
+    expect(height('normal')).toBe(height());
+    expect(height('small')).toBeLessThan(height());
+    expect(height('tall')).toBeGreaterThan(height());
+  });
+});
+
+describe('the Chart height setting with two charts', () => {
+  it('applies to both, and to two on one chart', () => {
+    const two = [entry(series(24 * HOUR, x => 20 + x)), entry(series(24 * HOUR, x => 30 + x), { deviceId: 'd2' })];
+    const heights = (opts: Record<string, unknown>) => widget([{}, { color: 'green' }], two, opts).all('svg').map(s => Number(s.getAttribute('height')));
+    expect(heights({ plotHeight: 'tall' })[1]).toBeGreaterThan(heights({})[1]);
+    expect(heights({ overlay: true, plotHeight: 'tall' })[0]).toBeGreaterThan(heights({ overlay: true })[0]);
+  });
+});

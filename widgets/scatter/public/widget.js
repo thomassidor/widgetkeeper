@@ -33,7 +33,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, t?: (key: string) => string, locale?: string, language?: string, now?: () => number,
-   *   span?: string, dots?: string, trend?: boolean, fade?: boolean, legend?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
+   *   span?: string, dots?: string, trend?: boolean, fade?: boolean, plotHeight?: string, legend?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createScatterWidget(root, opts = {}) {
     // Any time span (the kit's `timeSpan()`); missing or unknown: the last 7 days.
@@ -51,6 +51,7 @@
     let drawn = null; // the latest render's dots with their place, and the trend
 
     const legend = C.legendPlace(opts.legend, CHIP_H);
+    const plotH = C.plotHeight(opts.plotHeight, PLOT_H);
     const frame = C.createFrame(root, {
       opts, cls: 'xy', prefix: 'scatter', strings: DEFAULT_STRINGS, legendBelow: legend.below, showHeader: opts.showHeader,
       colors: { style: opts.colorStyle, color: opts.color, fallback: 'blue' },
@@ -154,7 +155,7 @@
     function renderChart() {
       const w = frame.width;
       const pw = Math.max(40, w - L - R_GAP);
-      const top = legend.top, base = top + PLOT_H;
+      const top = legend.top, base = top + plotH;
       const H = base + X_LABEL_GAP + X_LABEL_H;
       const x = state.x, y = state.y;
 
@@ -177,7 +178,7 @@
 
       kit.prepareSvg(svg, w, H);
       const xs = list.map(d => scaled(x.capability, d.x)), ys = list.map(d => scaled(y.capability, d.y));
-      const ySc = kit.valueScale(svg, { max: Math.max(...ys), min: Math.min(...ys), h: PLOT_H, top, pw, format: (v, step) => C.axisLabel(nf, v, step), fit: true });
+      const ySc = kit.valueScale(svg, { max: Math.max(...ys), min: Math.min(...ys), h: plotH, top, pw, format: (v, step) => C.axisLabel(nf, v, step), fit: true });
       const xSc = kit.xValueScale(svg, { max: Math.max(...xs), min: Math.min(...xs), pw, top, base, format: (v, step) => C.axisLabel(nf, v, step) });
       kit.axis(svg, top, base, pw);
 

@@ -30,6 +30,7 @@ window.mountChartsWidget = function (Homey, { root, frame }) {
       overlay: overlay && charts.length === 2,
       sharedScale: settings.sharedScale === true, // missing: off, each its own scale
       showHeader: settings.showHeader !== false, // missing: on
+      plotHeight: settings.plotHeight, // missing: normal
       legend: settings.legend, // missing: above
       onHeight: link.setHeight,
     })),

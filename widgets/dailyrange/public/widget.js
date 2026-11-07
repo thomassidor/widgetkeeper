@@ -26,7 +26,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, t?: (key: string) => string, locale?: string, language?: string, now?: () => number,
-   *   span?: string, average?: boolean, range?: string, legend?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
+   *   span?: string, average?: boolean, range?: string, plotHeight?: string, legend?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createDailyRangeWidget(root, opts = {}) {
     // Any time span (the kit's `timeSpan()`); missing or unknown: the last 4 weeks, a bar a day.
@@ -42,6 +42,7 @@
     let drawn = null; // the latest render's bars and their x, for the header and the pointer
 
     const legend = C.legendPlace(opts.legend, CHIP_H);
+    const plotH = C.plotHeight(opts.plotHeight, PLOT_H);
     const frame = C.createFrame(root, {
       opts, cls: 'dr', prefix: 'dailyrange', strings: DEFAULT_STRINGS, legendBelow: legend.below, showHeader: opts.showHeader,
       colors: { style: opts.colorStyle, color: opts.color, fallback: 'blue' },
@@ -126,7 +127,7 @@
     function renderChart() {
       const w = frame.width;
       const pw = Math.max(40, w - L - 4);
-      const top = legend.top, base = top + PLOT_H;
+      const top = legend.top, base = top + plotH;
       const H = base + X_LABEL_GAP + X_LABEL_H;
       const s = state.entry;
 
@@ -149,7 +150,7 @@
       const x = ms => L + pw * (ms - win.from) / (win.to - win.from);
       const scale = kit.valueScale(svg, {
         max: Math.max(...full.map(b => disp(b.max))), min: Math.min(...full.map(b => disp(b.min))),
-        h: PLOT_H, top, pw, format: (v, step) => C.axisLabel(nf, v, step), fit,
+        h: plotH, top, pw, format: (v, step) => C.axisLabel(nf, v, step), fit,
       });
       const y = v => Math.min(base + 2, Math.max(top - 2, scale.y(v)));
       kit.timeLabels(svg, win, { pw, top, base, nf, date, now: t('now') });

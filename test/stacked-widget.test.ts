@@ -157,3 +157,12 @@ describe('smooth (areas, 1.3.0)', () => {
     expect(paths({ style: 'bars', smooth: true }).lines).toEqual(paths({ style: 'bars' }).lines);
   });
 });
+
+describe('the Chart height setting (1.3.0)', () => {
+  it('makes the plot lower or taller; normal and a missing setting keep it', () => {
+    const height = (plotHeight?: string) => Number((widget({ total: true, plotHeight }, [meter(), heatPump(), oven()])).q('svg')!.getAttribute('height'));
+    expect(height('normal')).toBe(height());
+    expect(height('small')).toBeLessThan(height());
+    expect(height('tall')).toBeGreaterThan(height());
+  });
+});

@@ -8,7 +8,7 @@ How much a value went up per hour, day or month, like the Homey app's Energy tab
 
 **Cost:** with *Show* set to *Cost (electricity)*, a meter's kWh become what they cost: each hour's use at that hour's electricity price in Homey Energy, with your tariffs and taxes (or your fixed price). Past days' prices are read once and kept, so a year's first load can take a little while. Hours Homey has no price for are left out, and the chart says so.
 
-**Settings:** the value (meters first), show the amount or the cost, [time span](charts.md#time-spans), compare with the period before, the legend (above, below or hidden), title, the totals at the top, colour, [colour style](../../README.md#colour-style).
+**Settings:** the value (meters first), show the amount or the cost, [time span](charts.md#time-spans), compare with the period before, chart height (small, normal or tall), the legend (above, below or hidden), title, the totals at the top, colour, [colour style](../../README.md#colour-style).
 
 ## Looks
 
@@ -21,6 +21,7 @@ How much a value went up per hour, day or month, like the Homey app's Energy tab
 <img src="../variants/totals-today.webp" alt="Chart · Totals: Light · Today, a bar an hour" width="300" align="top">
 <img src="../variants/totals-no-header.webp" alt="Chart · Totals: Without the header" width="300" align="top">
 <img src="../variants/totals-below.webp" alt="Chart · Totals: Light · Legend below" width="300" align="top">
+<img src="../variants/totals-small.webp" alt="Chart · Totals: Small" width="300" align="top">
 </p>
 
 ---

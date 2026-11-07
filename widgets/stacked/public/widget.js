@@ -36,13 +36,14 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, colors?: string[], t?: (key: string) => string, locale?: string, language?: string,
-   *   now?: () => number, total?: boolean, count?: number, span?: string, style?: string, legend?: string, title?: string, names?: string[], smooth?: boolean,
+   *   now?: () => number, total?: boolean, count?: number, span?: string, style?: string, plotHeight?: string, legend?: string, title?: string, names?: string[], smooth?: boolean,
    *   showHeader?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createStackedWidget(root, opts = {}) {
     // Any time span (the kit's `timeSpan()`); missing or unknown: 24 hours.
     const span = isTimeSpan(opts.span) ? opts.span : '24h';
     const bars = opts.style === 'bars';
+    const plotH = C.plotHeight(opts.plotHeight, PLOT_H);
     const legendBelow = opts.legend === 'below';
     const legendHidden = opts.legend === 'hidden'; // a typed title still shows
     const smooth = opts.smooth === true && opts.style !== 'bars';
@@ -246,11 +247,11 @@
       const { win } = d;
       const rows = d.rows.slice(d.rows.indexOf(d.known[0]));
       const pw = Math.max(40, w - L - 4);
-      const top = plotTop, base = top + PLOT_H;
+      const top = plotTop, base = top + plotH;
       kit.prepareSvg(svg, w, base + X_LABEL_GAP + X_LABEL_H);
       const max = Math.max(...d.known.map(r => Math.max(r.pos, r.total || 0)), 0);
       const min = Math.min(...d.known.map(r => Math.min(r.neg, r.total || 0)), 0);
-      const scale = kit.valueScale(svg, { max, min, h: PLOT_H, top, pw, format: (v, step) => C.axisLabel(nf, v, step) });
+      const scale = kit.valueScale(svg, { max, min, h: plotH, top, pw, format: (v, step) => C.axisLabel(nf, v, step) });
       kit.timeLabels(svg, win, { pw, top, base, nf, date: frame.date, now: t('now') });
       kit.axis(svg, top, base, pw);
       const x = ms => L + pw * (ms - win.from) / (win.to - win.from);

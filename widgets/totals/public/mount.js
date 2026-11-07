@@ -21,6 +21,7 @@ window.mountTotalsWidget = function (Homey, { root, frame }) {
       period,
       compare,
       show,
+      plotHeight: settings.plotHeight, // missing: normal
       legend: settings.legend, // missing: above
       title: settings.title,
       showHeader: settings.showHeader !== false, // missing: on

@@ -123,3 +123,12 @@ describe('the Legend setting (1.3.0)', () => {
     expect(gone.q('.td-note')!.textContent).toBe('Unavailable');
   });
 });
+
+describe('the Chart height setting (1.3.0)', () => {
+  it('makes the plot lower or taller; normal and a missing setting keep it', () => {
+    const height = (plotHeight?: string) => Number((widget({ plotHeight }, [today(), past()])).q('svg')!.getAttribute('height'));
+    expect(height('normal')).toBe(height());
+    expect(height('small')).toBeLessThan(height());
+    expect(height('tall')).toBeGreaterThan(height());
+  });
+});

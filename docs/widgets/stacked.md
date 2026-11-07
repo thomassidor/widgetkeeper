@@ -6,7 +6,7 @@
 
 Who uses the power? Up to six values of one kind stacked over time, the last 24 hours by default: the heat pump, the oven, the EV charger. With a total, such as the house's meter, the rest shows as Other. Values below zero, such as solar, stack downwards.
 
-**Settings:** the total (optional), values 1 to 6 each with its colour and an optional name, [time span](charts.md#time-spans), style (areas or bars), smooth lines (areas), the legend (above, below or hidden), title, the values at the top, [colour style](../../README.md#colour-style).
+**Settings:** the total (optional), values 1 to 6 each with its colour and an optional name, [time span](charts.md#time-spans), style (areas or bars), smooth lines (areas), chart height (small, normal or tall), the legend (above, below or hidden), title, the values at the top, [colour style](../../README.md#colour-style).
 
 ## Looks
 
@@ -15,6 +15,7 @@ Who uses the power? Up to six values of one kind stacked over time, the last 24 
 <img src="../variants/stacked-vivid.webp" alt="Chart · Stacked: Vivid" width="300" align="top">
 <img src="../variants/stacked-bars.webp" alt="Chart · Stacked: Bars" width="300" align="top">
 <img src="../variants/stacked-legend.webp" alt="Chart · Stacked: Light · Legend below" width="300" align="top">
+<img src="../variants/stacked-tall.webp" alt="Chart · Stacked: Tall" width="300" align="top">
 <img src="../variants/stacked-no-total.webp" alt="Chart · Stacked: Without a total, no "other"" width="300" align="top">
 <img src="../variants/stacked-smooth.webp" alt="Chart · Stacked: Smooth" width="300" align="top">
 <img src="../variants/stacked-no-header.webp" alt="Chart · Stacked: Light · Without the header or legend" width="300" align="top">

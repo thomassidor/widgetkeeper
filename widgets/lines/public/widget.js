@@ -34,7 +34,7 @@
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, colors?: string[], t?: (key: string) => string, locale?: string, language?: string,
    *   now?: () => number, count?: number, span?: string, style?: string, range?: string, smooth?: boolean,
-   *   legend?: string, title?: string, names?: string[], showHeader?: boolean, onHeight?: (h: number) => void }} opts
+   *   plotHeight?: string, legend?: string, title?: string, names?: string[], showHeader?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createLinesWidget(root, opts = {}) {
     // Any time span (the kit's `timeSpan()`); missing or unknown: 24 hours.
@@ -42,6 +42,7 @@
     const areas = opts.style === 'area';
     const fromZero = opts.range === 'zero';
     const smooth = opts.smooth === true;
+    const plotH = C.plotHeight(opts.plotHeight, PLOT_H);
     const legendBelow = opts.legend === 'below';
     const legendHidden = opts.legend === 'hidden'; // a typed title still shows
     const title = typeof opts.title === 'string' ? opts.title.trim() : '';
@@ -205,7 +206,7 @@
       // A second scale on the right only when a line drawn is on it.
       const two = d.known.some(l => l.side === 1) && d.known.some(l => l.side === 0);
       const pw = Math.max(40, w - L - (two ? R : 4));
-      const top = TOP_PAD, base = top + PLOT_H;
+      const top = TOP_PAD, base = top + plotH;
       kit.prepareSvg(svg, w, base + X_LABEL_GAP + X_LABEL_H);
       const range = (side) => {
         const values = d.known.filter(l => two ? l.side === side : true).flatMap(l => l.pts.map(q => q[1]));
@@ -213,8 +214,8 @@
         return { max: fromZero ? Math.max(max, 0) : max, min: fromZero ? Math.min(min, 0) : min, format: (v, step) => C.axisLabel(nf, v, step) };
       };
       const scales = two
-        ? kit.dualScale(svg, { a: range(0), b: range(1), h: PLOT_H, top, pw, fit: !fromZero })
-        : (() => { const one = kit.valueScale(svg, { ...range(0), h: PLOT_H, top, pw, fit: !fromZero }); return { a: one, b: one }; })();
+        ? kit.dualScale(svg, { a: range(0), b: range(1), h: plotH, top, pw, fit: !fromZero })
+        : (() => { const one = kit.valueScale(svg, { ...range(0), h: plotH, top, pw, fit: !fromZero }); return { a: one, b: one }; })();
       kit.timeLabels(svg, win, { pw, top, base, nf, date: frame.date, now: t('now') });
       kit.axis(svg, top, base, pw);
       const x = ms => L + pw * (ms - win.from) / (win.to - win.from);

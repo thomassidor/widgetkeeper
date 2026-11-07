@@ -28,7 +28,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, t?: (key: string, tokens?: object) => string, locale?: string, language?: string,
-   *   now?: () => number, usual?: string | number, band?: boolean, smooth?: boolean, range?: string, legend?: string, title?: string, showHeader?: boolean,
+   *   now?: () => number, usual?: string | number, band?: boolean, smooth?: boolean, range?: string, plotHeight?: string, legend?: string, title?: string, showHeader?: boolean,
    *   onHeight?: (h: number) => void }} opts
    */
   function createTypicalDayWidget(root, opts = {}) {
@@ -46,6 +46,7 @@
     let drawn = null; // the latest render's window, hours and today's points, for the header and the pointer
 
     const legend = C.legendPlace(opts.legend, CHIP_H);
+    const plotH = C.plotHeight(opts.plotHeight, PLOT_H);
     const frame = C.createFrame(root, {
       opts, cls: 'td', prefix: 'typicalday', strings: DEFAULT_STRINGS, legendBelow: legend.below, showHeader: opts.showHeader,
       colors: { style: opts.colorStyle, color: opts.color, fallback: 'blue' },
@@ -115,7 +116,7 @@
     function renderChart() {
       const w = frame.width;
       const pw = Math.max(40, w - L - 4);
-      const top = legend.top, base = top + PLOT_H;
+      const top = legend.top, base = top + plotH;
       const H = base + X_LABEL_GAP + X_LABEL_H;
       const s = state.today;
 
@@ -137,7 +138,7 @@
       const values = [...d.today.map(p => disp(p[1])), ...known.flatMap(h => (band ? [disp(h.min), disp(h.max)] : [disp(h.avg)]))];
       kit.prepareSvg(svg, w, H);
       const x = ms => L + pw * (ms - d.win.from) / (d.win.to - d.win.from);
-      const scale = kit.valueScale(svg, { max: Math.max(...values), min: Math.min(...values), h: PLOT_H, top, pw, format: (v, step) => C.axisLabel(nf, v, step), fit });
+      const scale = kit.valueScale(svg, { max: Math.max(...values), min: Math.min(...values), h: plotH, top, pw, format: (v, step) => C.axisLabel(nf, v, step), fit });
       const y = v => Math.min(base + 2, Math.max(top - 2, scale.y(v)));
       kit.timeLabels(svg, d.win, { pw, top, base, nf, date: frame.date, now: t('now') });
       kit.axis(svg, top, base, pw);

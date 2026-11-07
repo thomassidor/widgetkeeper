@@ -433,6 +433,82 @@
       ]
     },
     {
+      "id": "plotHeight",
+      "type": "dropdown",
+      "title": {
+        "en": "Chart height",
+        "nl": "Grafiekhoogte",
+        "de": "Diagrammhöhe",
+        "fr": "Hauteur du graphique",
+        "it": "Altezza del grafico",
+        "sv": "Diagramhöjd",
+        "no": "Diagramhøyde",
+        "es": "Altura del gráfico",
+        "da": "Grafhøjde",
+        "ru": "Высота графика",
+        "pl": "Wysokość wykresu",
+        "ko": "차트 높이",
+        "ar": "ارتفاع المخطط"
+      },
+      "value": "normal",
+      "values": [
+        {
+          "id": "small",
+          "title": {
+            "en": "Small",
+            "nl": "Laag",
+            "de": "Niedrig",
+            "fr": "Basse",
+            "it": "Bassa",
+            "sv": "Låg",
+            "no": "Lav",
+            "es": "Baja",
+            "da": "Lav",
+            "ru": "Низкая",
+            "pl": "Niska",
+            "ko": "낮게",
+            "ar": "منخفض"
+          }
+        },
+        {
+          "id": "normal",
+          "title": {
+            "en": "Normal",
+            "nl": "Normaal",
+            "de": "Normal",
+            "fr": "Normale",
+            "it": "Normale",
+            "sv": "Normal",
+            "no": "Normal",
+            "es": "Normal",
+            "da": "Normal",
+            "ru": "Обычная",
+            "pl": "Normalna",
+            "ko": "보통",
+            "ar": "عادي"
+          }
+        },
+        {
+          "id": "tall",
+          "title": {
+            "en": "Tall",
+            "nl": "Hoog",
+            "de": "Hoch",
+            "fr": "Haute",
+            "it": "Alta",
+            "sv": "Hög",
+            "no": "Høy",
+            "es": "Alta",
+            "da": "Høj",
+            "ru": "Высокая",
+            "pl": "Wysoka",
+            "ko": "높게",
+            "ar": "مرتفع"
+          }
+        }
+      ]
+    },
+    {
       "id": "legend",
       "type": "dropdown",
       "title": {

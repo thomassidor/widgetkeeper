@@ -40,7 +40,7 @@
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, t?: (key: string, tokens?: object) => string, locale?: string, language?: string, now?: () => number,
    *   charts?: { span?: string, style?: string, color?: string, range?: string, negative?: boolean, smooth?: boolean, title?: string }[],
-   *   overlay?: boolean, sharedScale?: boolean, showHeader?: boolean, legend?: string, onHeight?: (h: number) => void }} opts
+   *   overlay?: boolean, sharedScale?: boolean, showHeader?: boolean, plotHeight?: string, legend?: string, onHeight?: (h: number) => void }} opts
    */
   function createChartsWidget(root, opts = {}) {
     /** The charts' settings, with fallbacks for anything missing or unknown. */
@@ -230,7 +230,7 @@
       const s = state.entries[i];
       const w = frame.width;
       const pw = Math.max(40, w - L - 4);
-      const plotH = PLOT_H[state.entries.length > 1 ? 2 : 1];
+      const plotH = C.plotHeight(opts.plotHeight, PLOT_H[state.entries.length > 1 ? 2 : 1]);
       const top = plotTop, base = top + plotH;
       const H = base + X_LABEL_GAP + X_LABEL_H;
       const win = windowOf(i, now());
@@ -270,7 +270,7 @@
       const u = ui[0];
       const w = frame.width;
       const pw = Math.max(40, w - L - (sharedScale ? 4 : R));
-      const plotH = PLOT_H[1];
+      const plotH = C.plotHeight(opts.plotHeight, PLOT_H[1]);
       const top = plotTop, base = top + plotH;
       const H = base + X_LABEL_GAP + X_LABEL_H;
       // The axis is chart 1's window. Series 2's is the same, or the other day, laid over it by time of day (each day

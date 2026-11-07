@@ -50,7 +50,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, t?: (key: string) => string, locale?: string, language?: string, now?: () => number,
-   *   period?: string, compare?: boolean, show?: string, legend?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
+   *   period?: string, compare?: boolean, show?: string, plotHeight?: string, legend?: string, title?: string, showHeader?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createTotalsWidget(root, opts = {}) {
     // Any time span (the kit's `timeSpan()`: `1w!` is this week, `30d` the last 30 days); missing or unknown: this week.
@@ -72,6 +72,7 @@
     // Redrawn every minute, so the live bar keeps up and the period rolls over at its end. A lasting message (no value
     // picked, a failed first load) drops the chart and shows in its place; a passing one (a failed refresh) under it.
     const legend = C.legendPlace(opts.legend, CHIP_H);
+    const plotH = C.plotHeight(opts.plotHeight, PLOT_H);
     const frame = C.createFrame(root, {
       opts, cls: 'tt', prefix: 'totals', strings: DEFAULT_STRINGS, legendBelow: legend.below, showHeader: opts.showHeader,
       colors: { style: opts.colorStyle, color: opts.color, fallback: 'blue' },
@@ -246,7 +247,7 @@
     function renderChart() {
       const w = frame.width;
       const pw = Math.max(40, w - L - 4);
-      const top = legend.top, base = top + PLOT_H;
+      const top = legend.top, base = top + plotH;
       const H = base + X_LABEL_GAP + X_LABEL_H;
       const s = state.current;
       const units = unitsOf(true);
@@ -274,7 +275,7 @@
 
       kit.prepareSvg(svg, w, H);
       const x = ms => L + pw * (ms - win.from) / (win.to - win.from);
-      const scale = kit.valueScale(svg, { max: Math.max(...values), min: 0, h: PLOT_H, top, pw, format: (v, step) => C.axisLabel(nf, v, step) });
+      const scale = kit.valueScale(svg, { max: Math.max(...values), min: 0, h: plotH, top, pw, format: (v, step) => C.axisLabel(nf, v, step) });
       xLabels(win, x, pw, top, base);
       kit.axis(svg, top, base, pw);
 

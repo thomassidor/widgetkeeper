@@ -6,7 +6,7 @@
 
 Is today unusual? Today's line over the usual day: each hour's average over the last 7 (or 3) days, dashed, with their lowest to highest as a band.
 
-**Settings:** the value, usual day from (the last 7 or 3 days), show the spread, smooth line, scale (fitted or from zero), the legend (above, below or hidden), title, the values at the top, colour, [colour style](../../README.md#colour-style).
+**Settings:** the value, usual day from (the last 7 or 3 days), show the spread, smooth line, scale (fitted or from zero), chart height (small, normal or tall), the legend (above, below or hidden), title, the values at the top, colour, [colour style](../../README.md#colour-style).
 
 ## Looks
 
@@ -18,6 +18,7 @@ Is today unusual? Today's line over the usual day: each hour's average over the 
 <img src="../variants/typicalday-usual3.webp" alt="Chart · Daily Profile: Usual from the last 3 days" width="300" align="top">
 <img src="../variants/typicalday-no-header.webp" alt="Chart · Daily Profile: Light · Without the header" width="300" align="top">
 <img src="../variants/typicalday-below.webp" alt="Chart · Daily Profile: Legend below" width="300" align="top">
+<img src="../variants/typicalday-tall.webp" alt="Chart · Daily Profile: Light · Tall" width="300" align="top">
 </p>
 
 ---
