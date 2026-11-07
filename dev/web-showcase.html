@@ -7,7 +7,7 @@
   <!--
     The web dashboards page (settings/dashboard.js) with the made-up home of showcase-data.js, in a drawn desktop
     browser window: the showcase dashboards as web dashboards, their widgets mounted in place of the iframes (the
-    `mountWidget` hook) with the real widget code. `?v=dashboard|front|editor|settings|preview|light|wide|popup|sync|nightly|copy|kiosk` picks the view (settings: the editor with Flow Buttons' settings dialog open; preview: Energy's editor with a Chart · Scatter (XY)'s settings and its live preview (1.2.0); light: the Kitchen, a light dashboard, in a light browser; wide: Energy's chart across two columns; popup: Security with a Flow's question over it; sync: Energy's editor with its Sync dialog, linked with the Homey dashboard Energy; nightly: the front page's Settings with the nightly sync, Energy and the Kitchen synced; copy: Energy's editor copying its Chart · Basic to Home; kiosk: Home with `?kiosk=1` on a drawn wall tablet), `&d=<id>` the
+    `mountWidget` hook) with the real widget code. `?v=dashboard|front|editor|settings|preview|light|wide|popup|sync|nightly|copy|kiosk|rotate|addwidget` picks the view (settings: the editor with Flow Buttons' settings dialog open; preview: Energy's editor with a Chart · Scatter (XY)'s settings and its live preview (1.2.0); light: the Kitchen, a light dashboard, in a light browser; wide: Energy's chart across two columns; popup: Security with a Flow's question over it; sync: Energy's editor with its Sync dialog, linked with the Homey dashboard Energy; nightly: the front page's Settings with the nightly sync, Energy and the Kitchen synced; copy: Energy's editor copying its Chart · Basic to Home; kiosk: Home with `?kiosk=1` on a drawn wall tablet), `&d=<id>` the
     dashboard (default home). Serve the repo root (the page and mock-web-api.js fetch /app.json and /locales/en.json)
     and open /dev/web-showcase.html; scripts/render-web-showcase.mjs (`npm run web-showcase [-- <view>…]`) renders
     them to docs/web/<view>.png on a transparent background. The clock is fixed (fixed-clock.js), so every render is
@@ -181,16 +181,23 @@
     const SYNC_BOARD = 'energy';
     const COPY_WIDGET = 'Chart · Basic';
     const COPY_TO = 'Home';
+    const ADD_SEARCH = 'chart';
+    const ADD_GROUP = 'Charts';
     if (VIEW === 'kiosk' && !params.has('kiosk')) history.replaceState(null, '', `${location.pathname}${location.search}&kiosk=1${location.hash}`);
     const BOARD = VIEW === 'light' ? LIGHT_BOARD : VIEW === 'wide' ? WIDE_BOARD : VIEW === 'popup' ? POPUP_BOARD
-      : VIEW === 'preview' ? PREVIEW_BOARD : VIEW === 'sync' || VIEW === 'copy' ? SYNC_BOARD : params.get('d') || 'home';
-    const HASH = VIEW === 'front' ? '#/' : VIEW === 'nightly' ? '#/edit' : ['editor', 'settings', 'preview', 'sync', 'copy'].includes(VIEW) ? `#/d/${BOARD}/edit` : `#/d/${BOARD}`;
+      : VIEW === 'preview' ? PREVIEW_BOARD : VIEW === 'sync' || VIEW === 'copy' || VIEW === 'addwidget' ? SYNC_BOARD : params.get('d') || 'home';
+    const HASH = VIEW === 'front' ? '#/' : VIEW === 'nightly' || VIEW === 'rotate' ? '#/edit' : ['editor', 'settings', 'preview', 'sync', 'copy', 'addwidget'].includes(VIEW) ? `#/d/${BOARD}/edit` : `#/d/${BOARD}`;
 
     // The settings, preview and popup views draw their dialog inside the window: shown non-modal over a backdrop of its
     // own, since a modal one sits over the whole render. The settings view: Home's Flow Buttons with four buttons, in its
     // settings and drawn alike behind the dialog (the showcase's has two).
     const SETTINGS_WIDGET = 'home-0-2';
-    if (['settings', 'preview', 'popup', 'sync', 'nightly', 'copy'].includes(VIEW)) {
+    // The rotate view (1.3.0's teaser): this browser's Rotate dashboards and Dim at set times, already on.
+    if (VIEW === 'rotate') {
+      localStorage.setItem('widgetkeeper.web.rotate', JSON.stringify({ ids: ['home', 'energy', 'security'], seconds: 45 }));
+      localStorage.setItem('widgetkeeper.web.dimSchedule', JSON.stringify({ from: '22:00', to: '07:00', level: 60 }));
+    }
+    if (['settings', 'preview', 'popup', 'sync', 'nightly', 'copy', 'rotate', 'addwidget'].includes(VIEW)) {
       HTMLDialogElement.prototype.showModal = function () {
         this.show();
         const viewport = document.querySelector('.viewport');
@@ -310,7 +317,11 @@
     /* The sync, nightly and copy views are cropped close to their dialog (the render script's -dialog.png): the page
        behind dimmed more, and the nightly view's Settings only its sync section. */
     .crop .shot-backdrop { background: rgba(0, 0, 0, .7); }
-    .crop .wd-page-settings .wd-page-section:not(:has(.wd-sync-time)) { display: none; }
+    .crop:not(.rotate) .wd-page-settings .wd-page-section:not(:has(.wd-sync-time)),
+    .rotate .wd-page-settings .wd-page-section { display: none; }
+    .rotate .wd-page-settings .wd-page-section:has(.wd-rotate-list) { display: block; }
+    .rotate .wd-page-section > .wd-h2, .rotate .wd-set-card > :not(.wd-switched) { display: none; }
+    .rotate .viewport { height: 1040px; }
     .crop .wd-page-settings .wd-page-section { border-top: 0; margin-top: 0; padding-top: 0; }
     .viewport > .wd-dialog { position: absolute; inset: 40px 0 auto; height: calc(100% - 80px); max-height: none; margin: 0 auto; z-index: 9999; box-shadow: 0 24px 64px rgba(0, 0, 0, .5); }
     /* The popup, sync and copy views: the dialog in the middle, as tall as it is, without the focus ring a script's focus() gives. */
@@ -364,24 +375,40 @@
     document.getElementById('hash').textContent = HASH === '#/' ? '' : HASH;
     if (VIEW === 'light') document.querySelector('.window').classList.add('light');
     if (VIEW === 'kiosk') document.querySelector('.window').classList.add('tablet');
-    const CROP = ['sync', 'nightly', 'copy'].includes(VIEW);
+    const CROP = ['sync', 'nightly', 'copy', 'rotate', 'addwidget'].includes(VIEW);
     if (CROP) document.body.classList.add('crop');
+    if (VIEW === 'rotate' || VIEW === 'addwidget') document.body.classList.add(VIEW);
     // The sync and copy views: once the editor is there, open the Sync dialog, or Copy to… for the chart with Home picked.
     // The nightly view: the front page's edit mode with its Settings open (the backup, the nightly sync, this browser).
-    if (VIEW === 'nightly') {
+    if (VIEW === 'nightly' || VIEW === 'rotate') {
       const open = () => {
         const settings = [...document.querySelectorAll('.wd-bar .wd-btn')].find(b => b.textContent === 'Settings');
         if (!settings) { setTimeout(open, 50); return; }
         settings.click();
         // The sync time on the 24-hour clock: a time field draws it in the browser's own language (US English here).
         const time = () => {
-          const input = document.querySelector('.wd-sync-time');
-          if (!input || !input.value) { setTimeout(time, 50); return; }
-          const value = input.value;
-          input.type = 'text';
-          input.value = value;
+          const inputs = [...document.querySelectorAll('.wd-sync-time, .wd-time')];
+          if (!inputs.length || inputs.some(input => !input.value)) { setTimeout(time, 50); return; }
+          for (const input of inputs) {
+            const value = input.value;
+            input.type = 'text';
+            input.value = value;
+          }
         };
         time();
+      };
+      open();
+    }
+    // The addwidget view: the editor's Add widget with a search typed and a group's chip picked, so the list fills.
+    if (VIEW === 'addwidget') {
+      const open = () => {
+        const add = document.querySelector('.wd-add');
+        if (!add) { setTimeout(open, 50); return; }
+        add.click();
+        const search = document.querySelector('.wd-dialog input[type=search]');
+        search.value = ADD_SEARCH;
+        search.dispatchEvent(new Event('input'));
+        [...document.querySelectorAll('.wd-dialog .wd-room')].find(x => x.firstChild.textContent === ADD_GROUP).click();
       };
       open();
     }
@@ -417,7 +444,7 @@
     // decode them with the page, as a screenshot on a busy box caught some loaded but not yet drawn.
     new MutationObserver(() => {
       for (const img of document.querySelectorAll('img[loading="lazy"]')) { img.loading = 'eager'; img.decoding = 'sync'; }
-    }).observe(document.getElementById('app'), { childList: true, subtree: true });
+    }).observe(document.body, { childList: true, subtree: true }); // the body: a dialog hangs outside #app
 
     // The page's size, for the render script, once the page and its fonts are there; the tab shows the page's title.
     document.fonts.ready.then(() => setTimeout(() => {
@@ -425,7 +452,7 @@
       const r = document.body.getBoundingClientRect();
       document.body.dataset.width = String(Math.ceil(r.width));
       document.body.dataset.height = String(Math.ceil(r.height));
-      // The dialog's box with 24 px around it, for the close crop (sync, nightly, copy).
+      // The dialog's box with 24 px around it, for the close crop (sync, nightly, copy, rotate, addwidget).
       const dialog = CROP && document.querySelector('.viewport > .wd-dialog');
       if (dialog) {
         const b = dialog.getBoundingClientRect();
