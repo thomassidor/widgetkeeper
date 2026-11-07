@@ -109,7 +109,7 @@ describe('layout', () => {
 });
 
 describe('Camera slots', () => {
-  it('adds the Camera 1 … 6 picks after the devices, a repeat or None left out', async () => {
+  it('shows the Camera 1 … 6 picks instead of the stored devices, in order, a repeat or None left out', async () => {
     vi.useFakeTimers();
     try {
       loadMount('cameras');
@@ -119,12 +119,33 @@ describe('Camera slots', () => {
         ? { state: [], tileNames: {} } : new Promise(() => {})));
       const Homey = {
         api, on: vi.fn(), ready: vi.fn(), setHeight: vi.fn(), getWidgetInstanceId: () => 'w1', __: (key: string) => key,
-        getSettings: () => ({ camera1: { id: 'syn1', name: 'Garden' }, camera2: { id: 'none', name: 'None' }, camera3: { id: 'a' }, camera6: { id: 'syn2' } }),
+        getSettings: () => ({ camera1: { id: 'syn1', name: 'Garden' }, camera2: { id: 'none', name: 'None' }, camera3: { id: 'a' }, camera4: { id: 'syn1' }, camera6: { id: 'syn2' } }),
         getDeviceIds: () => ['a', 'b'],
       };
       win.mountCamerasWidget(Homey, { root, frame: root });
       await vi.advanceTimersByTimeAsync(100);
-      expect(api.mock.calls.find(([, path]) => path.startsWith('/state'))?.[1]).toMatch(/^\/state\?deviceIds=a,b,syn1,syn2&/);
+      expect(api.mock.calls.find(([, path]) => path.startsWith('/state'))?.[1]).toMatch(/^\/state\?deviceIds=syn1,a,syn2&/);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('keeps the stored devices while every Camera slot is empty or None', async () => {
+    vi.useFakeTimers();
+    try {
+      loadMount('cameras');
+      const root = document.createElement('div');
+      document.body.append(root);
+      const api = vi.fn(async (_m: string, path: string): Promise<any> => (path.startsWith('/state')
+        ? { state: [], tileNames: {} } : new Promise(() => {})));
+      const Homey = {
+        api, on: vi.fn(), ready: vi.fn(), setHeight: vi.fn(), getWidgetInstanceId: () => 'w1', __: (key: string) => key,
+        getSettings: () => ({ camera1: { id: 'none', name: 'None' }, camera2: null }),
+        getDeviceIds: () => ['a', 'b'],
+      };
+      win.mountCamerasWidget(Homey, { root, frame: root });
+      await vi.advanceTimersByTimeAsync(100);
+      expect(api.mock.calls.find(([, path]) => path.startsWith('/state'))?.[1]).toMatch(/^\/state\?deviceIds=a,b&/);
     } finally {
       vi.useRealTimers();
     }

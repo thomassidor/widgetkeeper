@@ -10,7 +10,7 @@ Your cameras as a grid of snapshots that refresh every few seconds (cameras with
 
 **Settings:** Camera 1 to 6, which list every device with a snapshot or video (Synology Surveillance Station's too), layout (a large camera at the top or bottom, or one per row), refresh interval, how long live view stays on, time format and [rename tiles](../../README.md#tile-names).
 
-Cameras picked under Devices before version 1.2.1 stay and show first. To change those, add the widget again; on a web dashboard, the editor still has its device list.
+A widget set up before version 1.2.1 keeps the cameras picked under Devices until you fill in any of Camera 1 to 6: from then on it shows only those. So to change or remove one, fill in the cameras you want.
 
 ## Looks
 

@@ -45,9 +45,9 @@ window.mountCamerasWidget = function (Homey, { root, frame }) {
   });
 
   // The cameras (names, image and video ids) with their tile names, now and every 5 min; snapshots start with the first.
-  // Camera 1 … 6 pick the cameras (1.2.1: the manifest has no `devices`); ids a widget stored before that still come first.
-  const more = [1, 2, 3, 4, 5, 6].map(n => settings[`camera${n}`]?.id).filter(id => typeof id === 'string' && id && id !== 'none');
-  const cameras = wireDeviceState(Homey, link, widget, { tileNames, onState: startSnapshots, more });
+  // Camera 1 … 6 pick the cameras (1.2.1: the manifest has no `devices`). Any at all replace the ids a widget stored before that, which can't be edited any more.
+  const picks = [1, 2, 3, 4, 5, 6].map(n => settings[`camera${n}`]?.id).filter(id => typeof id === 'string' && id && id !== 'none');
+  const cameras = wireDeviceState(Homey, link, widget, { tileNames, onState: startSnapshots, picks });
 
   return {
     /** The Smart Stack: whether this page is the one on screen. */

@@ -136,7 +136,7 @@ interface Window {
       setState?: ((state: any) => void) | null,
       onState?: ((state: any) => void) | null,
       /** Ids picked another way (the Cameras widget's Camera slots), after the `devices` setting's. */
-      more?: string[],
+      picks?: string[],
     }) => { ids: () => string[], loaded: () => boolean },
     onDeviceNames: (Homey: any, load: () => void) => void,
     COLORS: string[],

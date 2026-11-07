@@ -377,7 +377,7 @@ const BUILD = {
       w('cameras', '12-hour times (a late snapshot shows its time) · 60 s', { refresh: '60', timeFormat: '12' }, cams.slice(0, 2)),
       w('cameras', '24-hour times · 60 s', { refresh: '60', timeFormat: '24' }, cams.slice(0, 2)),
       renaming('cameras', 'Rename tiles', {}, cams.slice(0, 2), cams[0] ? { [cams[0]]: 'Typed name' } : {}),
-      w('cameras', 'Camera slots after a device, it again in Camera 1 (shows once)', slots('camera', [repeat, ...others].filter(Boolean).slice(0, 6)), cams.slice(0, 1)),
+      w('cameras', 'Camera slots replace the device stored here', slots('camera', [repeat, ...others].filter(Boolean).slice(0, 6)), cams.slice(1, 2)),
       w('cameras', 'Camera slots only', slots('camera', slotCams)),
     ] };
   },

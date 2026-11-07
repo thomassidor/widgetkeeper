@@ -999,19 +999,19 @@
             "ar": "الكاميرا 1"
           },
           "hint": {
-            "en": "Lists every device with a snapshot or video, such as Synology Surveillance Station's. Cameras already picked under Devices stay and show first; to change those, add the widget again.",
-            "nl": "Toont elk apparaat met een momentopname of video, zoals die van Synology Surveillance Station. Camera's die al onder Apparaten zijn gekozen, blijven en komen eerst; voeg de widget opnieuw toe om die te wijzigen.",
-            "de": "Listet jedes Gerät mit Schnappschuss oder Video auf, etwa die von Synology Surveillance Station. Bereits unter Geräte gewählte Kameras bleiben und erscheinen zuerst; um sie zu ändern, füge das Widget neu hinzu.",
-            "fr": "Liste chaque appareil avec une capture ou une vidéo, comme ceux de Synology Surveillance Station. Les caméras déjà choisies sous Appareils restent et s'affichent en premier ; pour les changer, ajoutez à nouveau le widget.",
-            "it": "Elenca ogni dispositivo con un'istantanea o un video, come quelli di Synology Surveillance Station. Le telecamere già scelte in Dispositivi restano e appaiono per prime; per cambiarle, aggiungi di nuovo il widget.",
-            "sv": "Listar varje enhet med en ögonblicksbild eller video, till exempel Synology Surveillance Stations. Kameror som redan valts under Enheter blir kvar och visas först; lägg till widgeten på nytt för att ändra dem.",
-            "no": "Viser hver enhet med et stillbilde eller en video, for eksempel Synology Surveillance Stations. Kameraer som allerede er valgt under Enheter, blir stående og vises først; legg til widgeten på nytt for å endre dem.",
-            "es": "Muestra cada dispositivo con una instantánea o un vídeo, como los de Synology Surveillance Station. Las cámaras ya elegidas en Dispositivos se quedan y aparecen primero; para cambiarlas, añade el widget de nuevo.",
-            "da": "Viser hver enhed med et stillbillede eller en video, fx Synology Surveillance Stations. Kameraer, der allerede er valgt under Enheder, bliver og vises først; tilføj widgetten igen for at ændre dem.",
-            "ru": "Здесь перечислены все устройства со снимком или видео, например из Synology Surveillance Station. Камеры, уже выбранные в разделе «Устройства», остаются и показываются первыми; чтобы изменить их, добавьте виджет заново.",
-            "pl": "Pokazuje każde urządzenie z migawką lub wideo, np. z Synology Surveillance Station. Kamery już wybrane w sekcji Urządzenia zostają i są pokazywane jako pierwsze; aby je zmienić, dodaj widżet ponownie.",
-            "ko": "Synology Surveillance Station의 카메라처럼 스냅샷이나 영상이 있는 모든 기기를 보여 줍니다. 기기에서 이미 선택한 카메라는 그대로 유지되고 먼저 표시됩니다. 변경하려면 위젯을 다시 추가하세요.",
-            "ar": "تعرض كل جهاز به لقطة أو فيديو، مثل كاميرات Synology Surveillance Station. تبقى الكاميرات المختارة مسبقًا ضمن الأجهزة وتظهر أولًا؛ لتغييرها أضف الأداة من جديد."
+            "en": "Lists every device with a snapshot or video, such as Synology Surveillance Station's. A widget set up before 1.2.1 keeps its earlier cameras until you fill in any of these: then only these show.",
+            "nl": "Toont elk apparaat met een momentopname of video, zoals die van Synology Surveillance Station. Een widget van vóór 1.2.1 houdt zijn eerdere camera's tot je hier iets invult: dan verschijnen alleen deze.",
+            "de": "Listet jedes Gerät mit Schnappschuss oder Video auf, etwa die von Synology Surveillance Station. Ein Widget von vor 1.2.1 behält seine bisherigen Kameras, bis du hier eine wählst: Dann erscheinen nur diese.",
+            "fr": "Liste chaque appareil avec une capture ou une vidéo, comme ceux de Synology Surveillance Station. Un widget d'avant la 1.2.1 garde ses caméras jusqu'à ce que vous en choisissiez une ici : seules celles-ci s'affichent alors.",
+            "it": "Elenca ogni dispositivo con un'istantanea o un video, come quelli di Synology Surveillance Station. Un widget di prima della 1.2.1 mantiene le sue telecamere finché non ne scegli una qui: poi appaiono solo queste.",
+            "sv": "Listar varje enhet med en ögonblicksbild eller video, till exempel Synology Surveillance Stations. En widget från före 1.2.1 behåller sina kameror tills du väljer någon här: då visas bara dessa.",
+            "no": "Viser hver enhet med et stillbilde eller en video, for eksempel Synology Surveillance Stations. En widget fra før 1.2.1 beholder kameraene sine til du velger noe her: da vises bare disse.",
+            "es": "Muestra cada dispositivo con una instantánea o un vídeo, como los de Synology Surveillance Station. Un widget anterior a la 1.2.1 conserva sus cámaras hasta que elijas alguna aquí: entonces solo aparecen estas.",
+            "da": "Viser hver enhed med et stillbillede eller en video, fx Synology Surveillance Stations. En widget fra før 1.2.1 beholder sine kameraer, til du vælger noget her: så vises kun disse.",
+            "ru": "Здесь перечислены все устройства со снимком или видео, например из Synology Surveillance Station. Виджет, созданный до 1.2.1, сохраняет свои камеры, пока вы не выберете что-то здесь: тогда показываются только эти.",
+            "pl": "Pokazuje każde urządzenie z migawką lub wideo, np. z Synology Surveillance Station. Widżet sprzed wersji 1.2.1 zachowuje swoje kamery, dopóki nie wybierzesz czegoś tutaj: wtedy pokazywane są tylko te.",
+            "ko": "Synology Surveillance Station의 카메라처럼 스냅샷이나 영상이 있는 모든 기기를 보여 줍니다. 1.2.1 이전에 설정한 위젯은 여기에서 선택할 때까지 기존 카메라를 유지하며, 선택하면 여기에서 고른 카메라만 표시됩니다.",
+            "ar": "تعرض كل جهاز به لقطة أو فيديو، مثل كاميرات Synology Surveillance Station. تحتفظ الأداة المُعدّة قبل 1.2.1 بكاميراتها إلى أن تختار هنا: عندها تظهر هذه فقط."
           }
         },
         {

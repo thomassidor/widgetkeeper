@@ -67,8 +67,8 @@ export function dashboardPages(dashboard: any, appId: string): StackPage[] {
         type,
         title: typeof w.title === 'string' ? w.title : null,
         settings,
-        // Cameras are picked in Camera 1 … 6, so the page's attention watches those as well.
-        deviceIds: type === 'cameras' ? [...new Set([...deviceIds, ...cameraSlots(settings)])] : deviceIds,
+        // Camera 1 … 6 replace the stored devices, as in the widget's mount; the page's attention watches what it shows.
+        deviceIds: type === 'cameras' && cameraSlots(settings).length ? [...new Set(cameraSlots(settings))] : deviceIds,
       });
     }
   }
