@@ -585,23 +585,61 @@
       return box;
     }
 
+    const DELETE_UNDO_MS = 8e3;
+
     /**
-     * Deletes a dashboard after the saves already queued, and no save of it after (a name field's change can fire on the
-     * way); then `done()`.
+     * Deletes a dashboard: gone from this page at once, and `done()`, with an Undo; the app only deletes it when that
+     * runs out, so Undo needs nothing back (tile names, its place, its sync link). One at a time: a second delete, or
+     * leaving the page, sends this one now.
      */
     function deleteDashboard(id, done) {
-      deleted.add(id);
+      commitDelete();
+      const index = wd.dashboards.findIndex(x => x.id === id);
+      if (index < 0) { done(); return; }
+      const pending = { id, dashboard: wd.dashboards[index], index, timer: null, toast: null };
+      wd.pendingDelete = pending;
+      wd.dashboards = wd.dashboards.filter(x => x.id !== id);
+      pending.timer = setTimeout(commitDelete, DELETE_UNDO_MS);
+      done();
+      pending.toast = toast(t('dashboardDeleted'), {
+        label: t('undo'),
+        ms: DELETE_UNDO_MS,
+        run() {
+          clearTimeout(pending.timer);
+          pending.toast.remove();
+          wd.pendingDelete = null;
+          putBack(pending);
+        },
+      });
+    }
+
+    /** A dashboard whose delete was undone or failed, in its old place; the front page shows it again. */
+    function putBack({ id, dashboard, index }) {
+      if (!wd.dashboards.some(x => x.id === id)) wd.dashboards.splice(Math.min(index, wd.dashboards.length), 0, dashboard);
+      if (!wd.current) route();
+    }
+
+    /** The app deletes the waiting dashboard, after the saves already queued, and no save of it after that. */
+    function commitDelete(keepalive = false) {
+      const pending = wd.pendingDelete;
+      if (!pending) return;
+      wd.pendingDelete = null;
+      clearTimeout(pending.timer);
+      if (pending.toast) pending.toast.remove();
+      deleted.add(pending.id);
       wd.saving = wd.saving.then(async () => {
         try {
-          await request('DELETE', `/web/dashboards/${encodeURIComponent(id)}`);
-          wd.dashboards = wd.dashboards.filter(x => x.id !== id);
-          done();
+          await request('DELETE', `/web/dashboards/${encodeURIComponent(pending.id)}`, undefined, keepalive);
+          wd.dashboards = wd.dashboards.filter(x => x.id !== pending.id);
         } catch (err) {
-          deleted.delete(id);
+          deleted.delete(pending.id);
+          putBack(pending);
           failed(err);
         }
       });
     }
+
+    window.addEventListener('pagehide', () => commitDelete(true));
 
     /**
      * The front page's edit mode: copies a dashboard (after the saves already queued); the app puts the copy right after

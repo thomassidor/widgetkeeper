@@ -283,6 +283,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-backup-note { margin: 0; font-size: 14px; line-height: 20px; color: var(--wd-red); }
 .wd-backup-note:empty { display: none; }
 .wd-backup-foot .wd-btn.armed { color: #FFFFFF; background: var(--wd-red); } /* tap again to restore */
+.wd-actions .wd-btn.armed, .wd-actions .wd-btn.armed:hover { color: #FFFFFF; background: var(--wd-red); } /* tap again to discard a widget's changes */
 /* Copy to…: the dashboards as a radio list (a full one faded), then the column for another one with several. */
 .wd-dialog.wd-copy { width: min(480px, calc(100vw - 32px)); }
 .wd-backup-item.off { opacity: .45; cursor: default; }
@@ -782,6 +783,14 @@ textarea.wd-input { width: 100%; resize: vertical; }
   color: #5AA6FF; font: inherit; font-weight: 500; cursor: pointer;
 }
 .wd-toast-action:hover, .wd-toast-action:focus-visible { background: rgba(255, 255, 255, 0.12); }
+
+/* An icon's second tap: its words beside it, as a touch screen shows no tooltip. A tap on the words goes to what's under them. */
+.wd-tool.armed, .wd-bar-delete.armed, .wd-group-delete.armed { position: relative; }
+.armed[data-armed]::after {
+  content: attr(data-armed); position: absolute; right: calc(100% + 4px); top: 50%; z-index: 2; transform: translateY(-50%);
+  padding: 4px 10px; border-radius: 12px; background: var(--wd-red); color: #FFFFFF;
+  font-size: 12px; line-height: 16px; font-weight: 500; white-space: nowrap; pointer-events: none;
+}
 
 /* A dashboard's code (its editor and the way back to the dashboards): a phone's keypad in a dialog. */
 .wd-dialog.wd-code { width: min(340px, calc(100vw - 32px)); }

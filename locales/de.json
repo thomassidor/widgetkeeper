@@ -1295,7 +1295,10 @@
     "syncCount": "__count__ synchronisierte Dashboards",
     "undo": "Rückgängig",
     "widgetRemoved": "Widget entfernt",
-    "widgetMoved": "Widget verschoben"
+    "widgetMoved": "Widget verschoben",
+    "dashboardDeleted": "Dashboard gelöscht",
+    "discard": "Verwerfen",
+    "discardEdits": "Zum Verwerfen erneut tippen"
   },
   "autocomplete": {
     "pickThermostat": "Wähle zuerst ein Thermostat",

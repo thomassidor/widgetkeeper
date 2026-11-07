@@ -8,7 +8,7 @@
   'use strict';
 
   window.WidgetkeeperWeb.part('settings', (wd) => {
-    const { appWidget, button, clone, el, frames, icon, LAYOUT, newId, opts, persist, t, typeOf } = wd;
+    const { appWidget, button, clone, CONFIRM_MS, el, frames, icon, LAYOUT, newId, opts, persist, t, typeOf } = wd;
 
     /** Add widget's groups: every widget of ours is in one (a test checks), alphabetical by its name inside it. */
     const WIDGET_GROUPS = [
@@ -35,8 +35,8 @@
 
     // ---- Dialogs: choose a widget, a widget's settings -------------------------------------------------------
 
-    /** A dialog with a title (and for a widget's settings its preview and description) and ✕. */
-    function dialog(title, type) {
+    /** A dialog with a title (and for a widget's settings its preview and description) and ✕ (`leave`, if given, instead of closing). */
+    function dialog(title, type, leave) {
       const d = el('dialog', 'wd-dialog');
       const head = el('div', 'wd-dialog-head');
       if (type) {
@@ -48,7 +48,7 @@
       } else {
         head.append(el('h2', 'wd-h2', title));
       }
-      head.append(button('wd-tool', '✕', () => d.close(), t('cancel')));
+      head.append(button('wd-tool', '✕', () => (leave ? leave() : d.close()), t('cancel')));
       const body = el('div', 'wd-dialog-body');
       d.append(head, body);
       d.addEventListener('close', () => d.remove());
@@ -141,9 +141,8 @@
           for (const s of def.settings) settings[s.id] = clone(s.value);
           const w = { id: newId(), type: def.type, title: '', settings, deviceIds: [] };
           wd.current.dashboard.columns[column].push(w);
-          persist();
-          wd.syncGrid();
-          editWidget(w.id, { pickDevices: true });
+          wd.syncGrid(); // saved by the dialog's Save: Cancel takes it away again
+          editWidget(w.id, { pickDevices: true, isNew: true });
         });
         const text = el('span', 'wd-type-text');
         text.append(el('span', 'wd-type-name', def.name), el('span', 'wd-type-about', wd.about(def.type)));
@@ -155,9 +154,11 @@
     /**
      * A widget's settings, laid out in cards by the sections the app gives (`settingSections()`: the titles' groups):
      * the devices, the general settings with the title, each group (a numbered one folds, with a summary of its
-     * values in its header) and the slots. `pickDevices` (a widget just added) opens its device picker at once.
+     * values in its header) and the slots. `pickDevices` (a widget just added) opens its device picker at once. `isNew`:
+     * not saved yet, so leaving without Save takes it off the dashboard. With changes made, ✕, Cancel and Escape take a
+     * second go (no browser dialogs).
      */
-    function editWidget(id, { pickDevices = false } = {}) {
+    function editWidget(id, { pickDevices = false, isNew = false } = {}) {
       const at = wd.find(id);
       if (!at) return;
       const w = at.widget;
@@ -167,7 +168,7 @@
       // Another app's widget: size it as on Homey, run it unsandboxed.
       const trust = { settings: { scaled: w.scaled === true, trusted: w.trusted === true } };
       for (const s of def.settings) if (!(s.id in draft.settings)) draft.settings[s.id] = clone(s.value);
-      const { d, body } = dialog(def.name, def.type);
+      const { d, body } = dialog(def.name, def.type, leave);
       d.classList.add('wd-settings');
       const byId = new Map(def.settings.map(s => [s.id, s]));
       const updates = []; // what follows the draft: the groups' summaries, the rows a switch turns off
@@ -331,10 +332,39 @@
         d.classList.add('with-preview');
       }
       changed();
+      const edits = () => JSON.stringify([draft, width.span, trust.settings]);
+      const unedited = edits();
+      let saved = false;
+      let armedUntil = 0;
+      let disarm = null;
+      const cancel = button('wd-btn quiet', t('cancel'), leave);
+      /** ✕, Cancel and Escape: closes, or with changes made says so first and closes on the next go. */
+      function leave() {
+        if (edits() === unedited || Date.now() < armedUntil) { d.close(); return; }
+        armedUntil = Date.now() + CONFIRM_MS;
+        cancel.textContent = t('discardEdits');
+        cancel.classList.add('armed');
+        cancel.focus();
+        clearTimeout(disarm);
+        disarm = setTimeout(() => {
+          cancel.textContent = t('cancel');
+          cancel.classList.remove('armed');
+        }, CONFIRM_MS);
+      }
+      d.addEventListener('cancel', (e) => { e.preventDefault(); leave(); });
+      d.addEventListener('close', () => {
+        clearTimeout(disarm);
+        if (!isNew || saved || !wd.current) return;
+        const added = wd.find(id);
+        if (!added) return;
+        wd.current.dashboard.columns[added.c].splice(added.i, 1);
+        wd.syncGrid();
+      });
       const actions = el('div', 'wd-actions');
       actions.append(
-        button('wd-btn quiet', t('cancel'), () => d.close()),
+        cancel,
         button('wd-btn primary', t('save'), () => {
+          saved = true;
           const now = wd.find(id);
           if (now) {
             now.widget.title = draft.title.trim();

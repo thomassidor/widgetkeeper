@@ -1295,7 +1295,10 @@
     "syncCount": "__count__ dashboard sincronizzate",
     "undo": "Annulla",
     "widgetRemoved": "Widget rimosso",
-    "widgetMoved": "Widget spostato"
+    "widgetMoved": "Widget spostato",
+    "dashboardDeleted": "Dashboard eliminata",
+    "discard": "Scarta",
+    "discardEdits": "Tocca di nuovo per scartare"
   },
   "autocomplete": {
     "pickThermostat": "Scegli prima un termostato",

@@ -1295,7 +1295,10 @@
     "syncCount": "لوحات متزامنة: __count__",
     "undo": "تراجع",
     "widgetRemoved": "تمت إزالة الأداة",
-    "widgetMoved": "تم نقل الأداة"
+    "widgetMoved": "تم نقل الأداة",
+    "dashboardDeleted": "تم حذف اللوحة",
+    "discard": "تجاهل",
+    "discardEdits": "اضغط مرة أخرى للتجاهل"
   },
   "autocomplete": {
     "pickThermostat": "اختر منظم حرارة أولاً",

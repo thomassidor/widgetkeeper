@@ -1295,7 +1295,10 @@
     "syncCount": "__count__ gesynchroniseerde dashboards",
     "undo": "Ongedaan maken",
     "widgetRemoved": "Widget verwijderd",
-    "widgetMoved": "Widget verplaatst"
+    "widgetMoved": "Widget verplaatst",
+    "dashboardDeleted": "Dashboard verwijderd",
+    "discard": "Verwerpen",
+    "discardEdits": "Tik nogmaals om te verwerpen"
   },
   "autocomplete": {
     "pickThermostat": "Kies eerst een thermostaat",

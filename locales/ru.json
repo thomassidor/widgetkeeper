@@ -1295,7 +1295,10 @@
     "syncCount": "Синхронизируемых панелей: __count__",
     "undo": "Отменить",
     "widgetRemoved": "Виджет удалён",
-    "widgetMoved": "Виджет перемещён"
+    "widgetMoved": "Виджет перемещён",
+    "dashboardDeleted": "Панель удалена",
+    "discard": "Отменить изменения",
+    "discardEdits": "Нажмите ещё раз, чтобы отменить изменения"
   },
   "autocomplete": {
     "pickThermostat": "Сначала выберите термостат",

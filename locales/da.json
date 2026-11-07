@@ -1295,7 +1295,10 @@
     "syncCount": "__count__ synkroniserede dashboards",
     "undo": "Fortryd",
     "widgetRemoved": "Widget fjernet",
-    "widgetMoved": "Widget flyttet"
+    "widgetMoved": "Widget flyttet",
+    "dashboardDeleted": "Dashboard slettet",
+    "discard": "Kassér",
+    "discardEdits": "Tryk igen for at kassere"
   },
   "autocomplete": {
     "pickThermostat": "Vælg en termostat først",

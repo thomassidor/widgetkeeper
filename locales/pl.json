@@ -1295,7 +1295,10 @@
     "syncCount": "Synchronizowane pulpity: __count__",
     "undo": "Cofnij",
     "widgetRemoved": "Widget usunięty",
-    "widgetMoved": "Widget przeniesiony"
+    "widgetMoved": "Widget przeniesiony",
+    "dashboardDeleted": "Pulpit usunięty",
+    "discard": "Odrzuć",
+    "discardEdits": "Stuknij ponownie, aby odrzucić"
   },
   "autocomplete": {
     "pickThermostat": "Najpierw wybierz termostat",

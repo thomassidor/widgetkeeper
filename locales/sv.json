@@ -1295,7 +1295,10 @@
     "syncCount": "__count__ synkade instrumentpaneler",
     "undo": "Ångra",
     "widgetRemoved": "Widget borttagen",
-    "widgetMoved": "Widget flyttad"
+    "widgetMoved": "Widget flyttad",
+    "dashboardDeleted": "Instrumentpanelen togs bort",
+    "discard": "Förkasta",
+    "discardEdits": "Tryck igen för att förkasta"
   },
   "autocomplete": {
     "pickThermostat": "Välj en termostat först",

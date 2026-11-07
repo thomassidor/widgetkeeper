@@ -192,6 +192,9 @@
     drag: 'Drag to move',
     remove: 'Remove',
     undo: 'Undo',
+    dashboardDeleted: 'Dashboard deleted',
+    discard: 'Discard',
+    discardEdits: 'Tap again to discard',
     widgetRemoved: 'Widget removed',
     widgetMoved: 'Widget moved',
     widgetTitle: 'Title',
@@ -379,9 +382,11 @@
       armed = Date.now();
       b.classList.add('armed');
       say(confirmText);
+      if (iconOnly) b.dataset.armed = confirmText; // a touch screen shows no tooltip: dashboard.css draws it beside the icon
       setTimeout(() => {
         if (!b.isConnected) return;
         b.classList.remove('armed');
+        delete b.dataset.armed;
         say(iconOnly ? label : text);
       }, CONFIRM_MS);
     }, label);
@@ -697,12 +702,12 @@
 
     // ---- The app's API, with the key ------------------------------------------------------------------------
 
-    async function request(method, path, body) {
+    async function request(method, path, body, keepalive = false) {
       const params = [];
       if (wd.session) params.push(`session=${encodeURIComponent(wd.session)}`);
       if (AWAY) params.push('away=1');
       const url = params.length ? `${path}${path.includes('?') ? '&' : '?'}${params.join('&')}` : path;
-      return fetchJson(method, `/api/app/${APP_ID}${url}`, body, true);
+      return fetchJson(method, `/api/app/${APP_ID}${url}`, body, true, keepalive);
     }
 
     /**
@@ -713,11 +718,11 @@
       return fetchJson(method, `/api${path}`, body, false);
     }
 
-    async function fetchJson(method, url, body, ours) {
+    async function fetchJson(method, url, body, ours, keepalive = false) {
       const headers = { Authorization: `Bearer ${wd.key}` };
       if (body !== undefined) headers['Content-Type'] = 'application/json';
       const res = await fetch(url, {
-        method, headers, body: body === undefined ? undefined : JSON.stringify(body),
+        method, headers, body: body === undefined ? undefined : JSON.stringify(body), ...(keepalive ? { keepalive } : {}),
       });
       const text = await res.text();
       let data = null;
@@ -852,7 +857,10 @@
         if (deleted.has(snapshot.id)) return;
         try {
           const saved = await request('PUT', '/web/dashboards', snapshot);
+          if (wd.clearSaveProblem) wd.clearSaveProblem(); // each save is the whole dashboard, so this one covers a failed one
           if (deleted.has(saved.id)) return;
+          // Deleted, with its Undo still on offer: Undo brings this copy back.
+          if (wd.pendingDelete && wd.pendingDelete.id === saved.id) { wd.pendingDelete.dashboard = saved; return; }
           const i = wd.dashboards.findIndex(d => d.id === saved.id);
           if (i >= 0) wd.dashboards[i] = saved; else wd.dashboards.push(saved);
           if (wd.current && wd.current.dashboard.id === saved.id
@@ -862,7 +870,11 @@
             wd.syncGrid();
           }
         } catch (err) {
-          failed(err, t('saveFailed'));
+          // Still in its editor, the change is only on this screen: say so until it's saved or given up.
+          const lasting = err && !err.handled && !err.unauthorized && !/turned off/.test(String(err.message))
+            && wd.current && wd.current.editing && wd.current.dashboard.id === snapshot.id;
+          if (lasting && wd.showSaveProblem) wd.showSaveProblem(err);
+          else failed(err, t('saveFailed'));
         }
       });
       return wd.saving;
@@ -963,7 +975,7 @@
     }
 
     // ---- The parts (settings/dashboard-<part>.js), each run once with `wd` ------------------------------------------
-    Object.assign(wd, { APP_ID, applyDim, appWidget, AWAKE_STORAGE, BACKGROUNDS, bracketQuery, button, clone,
+    Object.assign(wd, { APP_ID, applyDim, appWidget, AWAKE_STORAGE, BACKGROUNDS, bracketQuery, button, clone, CONFIRM_MS,
       confirmButton, darkQuery, DEFAULT_STRINGS, deleted, DIM_CHANGED_STORAGE, dimChoices, dimFlowHolds, DIM_SCHEDULE_STORAGE, DIM_STORAGE, dimLevel, dimScheduleOf, dimWanted, DRAG_SLOP, EDGE_PX, el, failed,
       frames, HOMEY_WIDTH, homeyRequest, icon, isScreenCode, keepAwake, KEY_STORAGE, LAYOUT, listeners, loadAll, loadSetup, MAX_DIM,
       newId, opts, persist, request, root, route, SESSION_STORAGE, start, STAY_STORAGE, storageGet, storageSet,

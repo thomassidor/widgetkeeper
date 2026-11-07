@@ -1295,7 +1295,10 @@
     "syncCount": "__count__ paneles sincronizados",
     "undo": "Deshacer",
     "widgetRemoved": "Widget eliminado",
-    "widgetMoved": "Widget movido"
+    "widgetMoved": "Widget movido",
+    "dashboardDeleted": "Panel eliminado",
+    "discard": "Descartar",
+    "discardEdits": "Toca otra vez para descartar"
   },
   "autocomplete": {
     "pickThermostat": "Elige primero un termostato",

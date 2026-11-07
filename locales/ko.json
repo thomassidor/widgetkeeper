@@ -1295,7 +1295,10 @@
     "syncCount": "동기화된 대시보드 __count__개",
     "undo": "실행 취소",
     "widgetRemoved": "위젯 제거됨",
-    "widgetMoved": "위젯 이동됨"
+    "widgetMoved": "위젯 이동됨",
+    "dashboardDeleted": "대시보드를 삭제했습니다",
+    "discard": "버리기",
+    "discardEdits": "버리려면 한 번 더 누르세요"
   },
   "autocomplete": {
     "pickThermostat": "먼저 온도 조절기를 선택하세요",

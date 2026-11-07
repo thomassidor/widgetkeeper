@@ -1295,7 +1295,10 @@
     "syncCount": "__count__ tableaux de bord synchronisés",
     "undo": "Annuler",
     "widgetRemoved": "Widget supprimé",
-    "widgetMoved": "Widget déplacé"
+    "widgetMoved": "Widget déplacé",
+    "dashboardDeleted": "Tableau de bord supprimé",
+    "discard": "Abandonner",
+    "discardEdits": "Touchez encore pour abandonner"
   },
   "autocomplete": {
     "pickThermostat": "Choisissez d’abord un thermostat",

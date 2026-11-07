@@ -51,6 +51,7 @@
       if (wd.resizing) wd.endResize(false);
       wd.sizes.disconnect();
       if (wd.dismissUndo) wd.dismissUndo();
+      if (wd.clearSaveProblem) wd.clearSaveProblem();
       setTitle(null);
       root.classList.remove('editing');
       root.textContent = '';
@@ -590,6 +591,14 @@
 
       const done = el('a', 'wd-btn primary', t('done'));
       done.href = `#/d/${d.id}`;
+      // Once the queued saves are in, and only if they worked: a failed one stays here with its message.
+      done.addEventListener('click', (e) => {
+        e.preventDefault();
+        (wd.hasSaveProblem() ? persist() : wd.saving).then(() => {
+          if (wd.hasSaveProblem() || !wd.current || !wd.current.editing || wd.current.dashboard.id !== d.id) return;
+          location.hash = done.getAttribute('href');
+        });
+      });
       // The end of the bar stays together when a narrow window wraps it.
       const end = el('span', 'wd-bar-end');
       end.append(remove, done);

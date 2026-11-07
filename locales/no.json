@@ -1295,7 +1295,10 @@
     "syncCount": "__count__ synkroniserte dashbord",
     "undo": "Angre",
     "widgetRemoved": "Widget fjernet",
-    "widgetMoved": "Widget flyttet"
+    "widgetMoved": "Widget flyttet",
+    "dashboardDeleted": "Dashbordet ble slettet",
+    "discard": "Forkast",
+    "discardEdits": "Trykk igjen for å forkaste"
   },
   "autocomplete": {
     "pickThermostat": "Velg en termostat først",

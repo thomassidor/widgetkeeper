@@ -190,6 +190,32 @@
       undoNode = null;
     }
 
+    let saveProblem = null;
+
+    /** A save that failed: stays up until a save works or the change is given up (`clearRoot()` too), unlike a toast. */
+    function showSaveProblem(err) {
+      console.error(err);
+      dismissUndo();
+      clearSaveProblem();
+      const { id } = wd.current.dashboard;
+      saveProblem = el('div', 'wd-toast', t('saveFailed'));
+      saveProblem.setAttribute('role', 'alert');
+      saveProblem.append(
+        button('wd-toast-action', t('retry'), () => persist()),
+        button('wd-toast-action', t('discard'), () => {
+          clearSaveProblem();
+          const stored = wd.dashboards.find(x => x.id === id);
+          if (stored) wd.renderDashboard(stored, true);
+        }),
+      );
+      document.body.append(saveProblem);
+    }
+
+    function clearSaveProblem() {
+      if (saveProblem) saveProblem.remove();
+      saveProblem = null;
+    }
+
     /** Runs `change` on the open dashboard's widgets; if it changed them, a toast (`message`) offers to put them back. */
     function withUndo(message, change) {
       const { dashboard } = wd.current;
@@ -606,6 +632,6 @@
       });
     }
 
-    Object.assign(wd, { dismissUndo, endDrag, endResize, find, layoutWide, setSpan, setTools, sizes, widgetElement });
+    Object.assign(wd, { clearSaveProblem, hasSaveProblem: () => !!saveProblem, showSaveProblem, dismissUndo, endDrag, endResize, find, layoutWide, setSpan, setTools, sizes, widgetElement });
   });
 })();
