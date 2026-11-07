@@ -1,0 +1,10 @@
+{
+  "GHSA-6fx8-h7jm-663j": {
+    "package": "parseuri",
+    "reason": "ReDoS through socket.io-client v2 (homey-api and the bundled settings/socket.io.js). It only parses the Homey's own address (location.origin on the web dashboards page), never outside input. Homey's realtime speaks socket.io v2, so there's no upgrade, and no patched version."
+  },
+  "GHSA-gcqx-w48m-w2h4": {
+    "package": "deepmerge",
+    "reason": "Prototype poisoning, dev-only, inside the homey CLI, which merges our own manifests. Not in the app's build; no patched version."
+  }
+}

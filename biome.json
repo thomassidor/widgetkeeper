@@ -1,0 +1,86 @@
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"files": {
+		"includes": [
+			"**/*.js",
+			"**/*.mjs",
+			"**/*.ts",
+			"!dev",
+			"!docs",
+			"!temp",
+			"!coverage",
+			"!.homeybuild",
+			"!settings/socket.io.js",
+			"!settings/qrcode.js",
+			"!lib/flowIconImages.ts",
+			"!lib/valueGlyphImages.ts"
+		]
+	},
+	"formatter": { "enabled": false },
+	"assist": { "enabled": false },
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"preset": "none",
+			"suspicious": {
+				"noAsyncPromiseExecutor": "error",
+				"noCompareNegZero": "error",
+				"noDebugger": "error",
+				"noDoubleEquals": "error",
+				"noDuplicateCase": "error",
+				"noDuplicateClassMembers": "error",
+				"noDuplicateObjectKeys": "error",
+				"noDuplicateParameters": "error",
+				"noFallthroughSwitchClause": "error",
+				"noFunctionAssign": "error",
+				"noGlobalAssign": "error",
+				"noMisleadingCharacterClass": "error",
+				"noRedeclare": "error",
+				"noSelfCompare": "error",
+				"noSparseArray": "error",
+				"noThenProperty": "error",
+				"noUnsafeDeclarationMerging": "error",
+				"noUnsafeNegation": "error",
+				"useGetterReturn": "error"
+			},
+			"correctness": {
+				"noConstAssign": "error",
+				"noConstantCondition": "error",
+				"noInnerDeclarations": "error",
+				"noInvalidConstructorSuper": "error",
+				"noInvalidUseBeforeDeclaration": "error",
+				"noNonoctalDecimalEscape": "error",
+				"noPrecisionLoss": "error",
+				"noSelfAssign": "error",
+				"noSetterReturn": "error",
+				"noStringCaseMismatch": "error",
+				"noSwitchDeclarations": "error",
+				"noUndeclaredVariables": "error",
+				"noUnreachable": "error",
+				"noUnsafeFinally": "error",
+				"noUnsafeOptionalChaining": "error",
+				"noUnusedLabels": "error",
+				"noVoidTypeReturn": "error",
+				"useIsNan": "error",
+				"useValidTypeof": "error",
+				"useYield": "error"
+			}
+		}
+	},
+	"overrides": [
+		{
+			"includes": ["test/**"],
+			"linter": { "rules": { "suspicious": { "noFocusedTests": "error" } } }
+		},
+		{
+			"includes": [
+				"app.ts",
+				"api.ts",
+				"lib/**",
+				"scripts/**",
+				"widgets/*/api.ts"
+			],
+			"linter": { "rules": { "nursery": { "noFloatingPromises": "error" } } }
+		}
+	]
+}

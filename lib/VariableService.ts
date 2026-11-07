@@ -301,7 +301,7 @@ export default class VariableService {
     for (const [id, at] of this.requested) {
       if (now - at > IDLE_TIMEOUT) this.requested.delete(id);
     }
-    if (this.connecting && now - this.lastRequest > IDLE_TIMEOUT) this.disconnect();
+    if (this.connecting && now - this.lastRequest > IDLE_TIMEOUT) void this.disconnect();
   }
 
   private async disconnect() {

@@ -18,9 +18,12 @@ Use the project-local Homey CLI (`npx homey`, v4). An older globally installed `
 npx homey app validate --level debug   # compile + validate (also: npm run validate)
 npm test                               # unit tests (vitest; widget tests use happy-dom)
 npm run coverage                       # the same tests with a coverage report (coverage/)
+npm run lint                           # Biome: bug-finding rules, no formatting
+npm run audit                          # npm audit, failing on advisories not accepted in .github/audit-accepted.json
 npm run typecheck                      # tsc for the app and the tests + basic JS checking of the widget front ends
 npx homey app install                  # build and install on your Homey (also: npm run install-homey)
 npx homey app run                      # run with live logs (needs Docker); widget files hot-reload (also: npm start)
+npm run publish-app                    # upload a draft build, after npm run release-check (clean, pushed, CI green)
 npm run diagnostics                    # the app's diagnostics report and log from your Homey
 npm run test-dashboards                # a test web dashboard per widget on your Homey (--native: Homey dashboards)
 npm run port-dashboard -- "<name>"     # copy a Homey dashboard to a web dashboard (--dry-run: only say what it would do)

@@ -11,3 +11,5 @@ vitest.config.ts
 types
 tsconfig.widgets.json
 tsconfig.test.json
+SECURITY.md
+biome.json
