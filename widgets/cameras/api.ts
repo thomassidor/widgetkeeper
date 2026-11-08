@@ -26,7 +26,23 @@ export default {
   }) {
     const app = homey.app as WidgetkeeperApp;
     if (!query.deviceId) throw new Error('deviceId required');
-    return logged(app, `Camera snapshot for ${query.deviceId} failed:`, () => app.cameras.getSnapshot(query.deviceId));
+    // The long refresh: `saved` a video-only camera's kept frame, `maxAge` (seconds) a kept snapshot.
+    if (query.saved) return app.cameras.getKeptFrame(query.deviceId);
+    const maxAge = Number(query.maxAge) * 1000;
+    return logged(app, `Camera snapshot for ${query.deviceId} failed:`, () => (maxAge > 0
+      ? app.cameras.getKeptSnapshot(query.deviceId, maxAge)
+      : app.cameras.getSnapshot(query.deviceId)));
+  },
+
+  /** Keeps a frame the widget grabbed from a video-only camera, on the long refresh. */
+  async postSnapshot({ homey, body }: {
+    homey: Homey,
+    body: { deviceId?: string, type?: string, data?: string },
+  }) {
+    const app = homey.app as WidgetkeeperApp;
+    if (!body?.deviceId) throw new Error('deviceId required');
+    app.cameras.keepFrame(body.deviceId, body.type, body.data);
+    return { ok: true };
   },
 
   async postOffer({ homey, body }: {

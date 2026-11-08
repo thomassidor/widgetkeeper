@@ -168,6 +168,21 @@
         "ko": "스냅샷 새로 고침 간격",
         "ar": "تحديث اللقطات كل"
       },
+      "hint": {
+        "en": "From 5 min up, the app keeps each camera's last picture, so opening a dashboard doesn't wake a battery camera.",
+        "nl": "Vanaf 5 min bewaart de app de laatste foto van elke camera, zodat het openen van een dashboard een camera op batterij niet wekt.",
+        "de": "Ab 5 Min. speichert die App das letzte Bild jeder Kamera, sodass das Öffnen eines Dashboards eine Akkukamera nicht aufweckt.",
+        "fr": "À partir de 5 min, l'application garde la dernière image de chaque caméra : ouvrir un tableau de bord ne réveille pas une caméra sur batterie.",
+        "it": "Da 5 min in su, l'app conserva l'ultima immagine di ogni telecamera, così aprire una dashboard non sveglia una telecamera a batteria.",
+        "sv": "Från 5 min sparar appen varje kameras senaste bild, så att en batterikamera inte väcks när du öppnar en instrumentpanel.",
+        "no": "Fra 5 min lagrer appen det siste bildet fra hvert kamera, så et batterikamera ikke vekkes når du åpner et dashbord.",
+        "es": "A partir de 5 min, la app guarda la última imagen de cada cámara, así abrir un panel no despierta una cámara con batería.",
+        "da": "Fra 5 min gemmer appen hvert kameras seneste billede, så et batterikamera ikke vækkes, når du åbner et dashboard.",
+        "ru": "Начиная с 5 мин приложение хранит последний снимок каждой камеры, поэтому открытие панели не будит камеру на батарее.",
+        "pl": "Od 5 min aplikacja przechowuje ostatni obraz z każdej kamery, więc otwarcie pulpitu nie budzi kamery na baterii.",
+        "ko": "5분 이상이면 앱이 각 카메라의 마지막 사진을 보관하므로 대시보드를 열어도 배터리 카메라를 깨우지 않습니다.",
+        "ar": "من 5 د فأكثر، يحتفظ التطبيق بآخر صورة لكل كاميرا، فلا يؤدي فتح لوحة التحكم إلى إيقاظ كاميرا تعمل بالبطارية."
+      },
       "value": "10",
       "values": [
         {
@@ -240,6 +255,96 @@
             "pl": "1 min",
             "ko": "1분",
             "ar": "1 د"
+          }
+        },
+        {
+          "id": "300",
+          "title": {
+            "en": "5 min",
+            "nl": "5 min",
+            "de": "5 Min.",
+            "fr": "5 min",
+            "it": "5 min",
+            "sv": "5 min",
+            "no": "5 min",
+            "es": "5 min",
+            "da": "5 min",
+            "ru": "5 мин",
+            "pl": "5 min",
+            "ko": "5분",
+            "ar": "5 د"
+          }
+        },
+        {
+          "id": "900",
+          "title": {
+            "en": "15 min",
+            "nl": "15 min",
+            "de": "15 Min.",
+            "fr": "15 min",
+            "it": "15 min",
+            "sv": "15 min",
+            "no": "15 min",
+            "es": "15 min",
+            "da": "15 min",
+            "ru": "15 мин",
+            "pl": "15 min",
+            "ko": "15분",
+            "ar": "15 د"
+          }
+        },
+        {
+          "id": "3600",
+          "title": {
+            "en": "1 h",
+            "nl": "1 u",
+            "de": "1 Std.",
+            "fr": "1 h",
+            "it": "1 h",
+            "sv": "1 tim",
+            "no": "1 t",
+            "es": "1 h",
+            "da": "1 t",
+            "ru": "1 ч",
+            "pl": "1 godz.",
+            "ko": "1시간",
+            "ar": "1 س"
+          }
+        },
+        {
+          "id": "21600",
+          "title": {
+            "en": "6 h",
+            "nl": "6 u",
+            "de": "6 Std.",
+            "fr": "6 h",
+            "it": "6 h",
+            "sv": "6 tim",
+            "no": "6 t",
+            "es": "6 h",
+            "da": "6 t",
+            "ru": "6 ч",
+            "pl": "6 godz.",
+            "ko": "6시간",
+            "ar": "6 س"
+          }
+        },
+        {
+          "id": "43200",
+          "title": {
+            "en": "12 h",
+            "nl": "12 u",
+            "de": "12 Std.",
+            "fr": "12 h",
+            "it": "12 h",
+            "sv": "12 tim",
+            "no": "12 t",
+            "es": "12 h",
+            "da": "12 t",
+            "ru": "12 ч",
+            "pl": "12 godz.",
+            "ko": "12시간",
+            "ar": "12 س"
           }
         }
       ]
@@ -559,6 +664,10 @@
     },
     "getSnapshot": {
       "method": "GET",
+      "path": "/snapshot"
+    },
+    "postSnapshot": {
+      "method": "POST",
       "path": "/snapshot"
     },
     "postOffer": {

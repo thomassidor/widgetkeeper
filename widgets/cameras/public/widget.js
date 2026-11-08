@@ -5,7 +5,8 @@
  * server), trying the camera's next stream when one won't play (an H.265 one); tapping again, or the
  * `liveFor` setting's 30 s to 5 minutes, ends it ("Until tapped": only a tap, and it comes back when the
  * page shows again). A camera with video but no snapshot (Aqara's) gets a frame grabbed from a
- * short-lived stream instead, at most once a minute.
+ * short-lived stream instead, at most once a minute. From a 5-minute refresh up (battery cameras) the app keeps
+ * the last picture, so showing the page asks no camera until a picture is due.
  * Plain browser JS (served as-is).
  */
 (function () {
@@ -19,6 +20,8 @@
   const AUTO_LOST_MS = 5000; // Always live: a stream that played and was lost is tried again after this
   const AUTO_BACK_MS = 60e3; // and after a tap, or a read that didn't play, it comes back after this
   const SNAPSHOT_TIMEOUT_MS = 20e3; // a snapshot taking longer is skipped this round (they load one at a time)
+  const KEPT_FROM_MS = 5 * 60e3; // a `refresh` from this up: the app keeps each picture, and a camera is only asked when one is due
+  const KEPT_RETRY_MS = 5 * 60e3; // and a picture that didn't come isn't asked for again sooner
   const GRAB_WIDTH = 640; // px; a grabbed frame is scaled down to this
 
   const DEFAULT_STRINGS = {
@@ -101,6 +104,7 @@
     const now = opts.now || (() => Date.now());
     const refreshMs = opts.refreshMs || 10e3;
     const grabMs = Math.max(GRAB_MIN_MS, refreshMs);
+    const keptMs = refreshMs >= KEPT_FROM_MS ? refreshMs : 0;
     const liveMs = liveLimit(opts.liveFor);
     // `liveView` off: snapshots only, a tap does nothing (a video-only camera still gets its grabbed frames).
     const liveView = opts.liveView !== false;
@@ -151,7 +155,7 @@
     /**
      * @type {Map<string, {tile: HTMLElement, img: HTMLImageElement, video: HTMLVideoElement, icon: HTMLElement,
      *   name: HTMLElement, badge: HTMLElement, note: HTMLElement, loadedAt: number, noteTimer: any,
-     *   grabAt: number | null, grabFailed: boolean}>}
+     *   grabAt: number | null, grabFailed: boolean, askedAt: number | null, frameRead: boolean}>}
      */
     const tiles = new Map();
 
@@ -217,13 +221,20 @@
           const tile = tiles.get(d.id);
           if (!tile) continue;
           if (!d.image) {
-            if (d.video) await grabInto(d, tile);
+            if (d.video) {
+              if (keptMs) await showKeptFrame(d, tile);
+              await grabInto(d, tile);
+            }
             continue;
           }
+          if (keptMs && !keptDue(tile)) continue;
           try {
-            const src = await loadSnapshot(d);
-            if (tiles.get(d.id) !== tile) continue;
-            showImage(tile, src);
+            if (keptMs) await loadKept(d, tile);
+            else {
+              const src = await loadSnapshot(d);
+              if (tiles.get(d.id) !== tile) continue;
+              showImage(tile, src);
+            }
           } catch (err) {
             console.error(err);
           }
@@ -234,9 +245,45 @@
       }
     }
 
-    function showImage(tile, src) {
+    /** On a long refresh: whether to ask the app, as the picture shown is old enough and the last try isn't recent. */
+    function keptDue(tile) {
+      if (tile.loadedAt > 0 && now() - tile.loadedAt < keptMs) return false;
+      return tile.askedAt == null || now() - tile.askedAt >= KEPT_RETRY_MS;
+    }
+
+    /** A long refresh's picture: the app's kept one while it's young enough, else a new one it keeps. */
+    async function loadKept(d, tile) {
+      tile.askedAt = now();
+      const s = await withTimeout(api('GET', `/snapshot?deviceId=${encodeURIComponent(d.id)}&maxAge=${keptMs / 1000}`), SNAPSHOT_TIMEOUT_MS);
+      const src = await preload(`data:${s.type};base64,${s.data}`);
+      if (tiles.get(d.id) === tile) showImage(tile, src, s.at);
+    }
+
+    /** A video-only camera on a long refresh: first the frame kept from before, which also says when the next grab is due. */
+    async function showKeptFrame(d, tile) {
+      if (tile.frameRead) return;
+      tile.frameRead = true;
+      try {
+        const s = await withTimeout(api('GET', `/snapshot?deviceId=${encodeURIComponent(d.id)}&saved=1`), SNAPSHOT_TIMEOUT_MS);
+        if (!s || s.none || tiles.get(d.id) !== tile) return;
+        const src = await preload(`data:${s.type};base64,${s.data}`);
+        if (tiles.get(d.id) !== tile) return;
+        tile.grabAt = s.at;
+        showImage(tile, src, s.at);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    /** Gives the app a grabbed frame to keep, so the next page load opens no stream. */
+    function keepFrame(d, src) {
+      const data = src.slice(src.indexOf(',') + 1);
+      api('POST', '/snapshot', { deviceId: d.id, type: 'image/jpeg', data }).catch(err => console.error(err));
+    }
+
+    function showImage(tile, src, at = now()) {
       tile.img.src = src;
-      tile.loadedAt = now();
+      tile.loadedAt = at;
       tile.tile.classList.add('loaded');
     }
 
@@ -253,6 +300,7 @@
         if (src == null || tiles.get(d.id) !== tile) return; // cancelled, or the camera went
         tile.grabFailed = false;
         showImage(tile, src);
+        if (keptMs) keepFrame(d, src);
       } catch (err) {
         tile.grabFailed = true;
         if (!grabReported.has(d.id)) report(`frame grab of ${d.name} failed: ${err && err.message ? err.message : err}`, true);
@@ -530,7 +578,7 @@
       noteEl.style.display = 'none';
       tile = {
         tile: node, img, video, icon, name, badge, note: noteEl, loadedAt: 0, noteTimer: null,
-        grabAt: null, grabFailed: false,
+        grabAt: null, grabFailed: false, askedAt: null, frameRead: false,
       };
 
       // A tap (the kit's, as Quick Actions'): a drag is left to the dashboard, so it still scrolls.

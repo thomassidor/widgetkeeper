@@ -1182,7 +1182,7 @@ describe('web dashboards: popups (wk-084)', () => {
 describe("web dashboards: a device change needs the page's own key to control devices", () => {
   /** Routes that change something, but neither with the stored key nor on a device (app data, logs, a video stream). */
   const NEUTRAL = new Set([
-    'cameras POST /video/offer', 'cameras POST /video/keepalive', 'cameras POST /report', 'media POST /report',
+    'cameras POST /video/offer', 'cameras POST /video/keepalive', 'cameras POST /report', 'cameras POST /snapshot', 'media POST /report',
     'timers POST /start', 'timers POST /action', 'dayssince POST /reset', 'dayssince POST /undo',
     'flowtiles POST /tap',
   ]);

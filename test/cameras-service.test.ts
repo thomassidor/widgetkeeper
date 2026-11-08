@@ -1,7 +1,10 @@
+import { mkdtempSync, readdirSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
 import { DEVICE_NAMES_SETTING } from '../lib/deviceNames.js';
-import CameraService, { cameraImage, cameraVideos, h265Videos, hasCameraMedia } from '../lib/CameraService.js';
+import CameraService, { cameraImage, cameraVideos, h265Videos, hasCameraMedia, snapshotFiles } from '../lib/CameraService.js';
 
 vi.mock('homey-api', () => homeyApiMock);
 
@@ -177,5 +180,108 @@ describe('live view', () => {
     const { service, api } = setup();
     api.videos.videoOffer.mockResolvedValueOnce({} as any);
     await expect(service.offer('vid-ks', 'v=0')).rejects.toThrow('No answer from Homey');
+  });
+});
+
+describe('kept snapshots (the long refresh)', () => {
+  const HOUR = 3600e3;
+  function keeping() {
+    const stored = new Map<string, string>();
+    const prune = vi.fn();
+    const files = { read: (id: string) => stored.get(id) ?? null, write: (id: string, t: string) => { stored.set(id, t); }, prune };
+    const { homey } = setup();
+    return { stored, prune, service: new CameraService(homey, () => {}, () => {}, files) };
+  }
+
+  it('asks the camera once, then gives the kept picture until it is older than maxAge', async () => {
+    const fetch = stubFetch();
+    const { service, prune } = keeping();
+    await service.getState(['kitchen']);
+    const first = await service.getKeptSnapshot('kitchen', HOUR);
+    expect(first).toEqual({ type: 'image/jpeg', data: 'AQID', at: Date.now() });
+    expect(prune).toHaveBeenCalled();
+    vi.advanceTimersByTime(HOUR - 1000);
+    expect(await service.getKeptSnapshot('kitchen', HOUR)).toEqual(first);
+    expect(fetch).toHaveBeenCalledTimes(1);
+    vi.advanceTimersByTime(1000);
+    expect((await service.getKeptSnapshot('kitchen', HOUR)).at).toBe(Date.now());
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('survives a restart of the app', async () => {
+    const fetch = stubFetch();
+    const { service, stored, prune } = keeping();
+    await service.getState(['kitchen']);
+    const first = await service.getKeptSnapshot('kitchen', HOUR);
+    const files = { read: (id: string) => stored.get(id) ?? null, write: () => {}, prune };
+    expect(await new CameraService(setup().homey, () => {}, () => {}, files).getKeptSnapshot('kitchen', HOUR)).toEqual(first);
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('wakes a camera once for two screens at the same time', async () => {
+    const fetch = stubFetch();
+    const { service } = keeping();
+    await service.getState(['kitchen']);
+    await Promise.all([service.getKeptSnapshot('kitchen', HOUR), service.getKeptSnapshot('kitchen', HOUR)]);
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('gives the kept picture when the camera fails, and leaves the camera alone for 5 min', async () => {
+    const fetch = stubFetch();
+    const { service } = keeping();
+    await service.getState(['kitchen']);
+    const first = await service.getKeptSnapshot('kitchen', HOUR);
+    vi.advanceTimersByTime(HOUR + 3000);
+    fetch.mockRejectedValue(new Error('asleep'));
+    expect(await service.getKeptSnapshot('kitchen', HOUR)).toEqual(first);
+    expect(await service.getKeptSnapshot('kitchen', HOUR)).toEqual(first);
+    expect(fetch).toHaveBeenCalledTimes(2);
+    vi.advanceTimersByTime(5 * 60e3);
+    await service.getKeptSnapshot('kitchen', HOUR);
+    expect(fetch).toHaveBeenCalledTimes(3);
+  });
+
+  it('asks the camera when the file is broken', async () => {
+    const fetch = stubFetch();
+    const { service, stored } = keeping();
+    await service.getState(['kitchen']);
+    stored.set('kitchen', '{broken');
+    expect((await service.getKeptSnapshot('kitchen', HOUR)).data).toBe('AQID');
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps a grabbed frame only for a camera a state named, and only a JPEG of a sensible size', async () => {
+    const { service } = keeping();
+    expect(() => service.keepFrame('kitchen', 'image/jpeg', 'AQID')).toThrow('Invalid frame');
+    expect(service.getKeptFrame('kitchen')).toEqual({ none: true });
+    await service.getState(['kitchen']);
+    expect(() => service.keepFrame('kitchen', 'text/html', 'AQID')).toThrow('Invalid frame');
+    expect(() => service.keepFrame('kitchen', 'image/jpeg', 'A'.repeat(1024 * 1024 + 1))).toThrow('Invalid frame');
+    service.keepFrame('kitchen', 'image/jpeg', 'AQID');
+    expect(service.getKeptFrame('kitchen')).toEqual({ type: 'image/jpeg', data: 'AQID', at: Date.now() });
+  });
+});
+
+describe('snapshotFiles', () => {
+  it('names files by a hash, and prunes only its own old ones', () => {
+    vi.useRealTimers();
+    const dir = mkdtempSync(join(tmpdir(), 'wk-cameras-'));
+    try {
+      const files = snapshotFiles(dir);
+      files.write('../../evil', 'x');
+      expect(files.read('../../evil')).toBe('x');
+      const [name] = readdirSync(dir);
+      expect(name).toMatch(/^camera-snapshot-[0-9a-f]{32}\.json$/);
+      writeFileSync(join(dir, 'secrets.json'), '{}');
+      files.prune(60e3);
+      expect(readdirSync(dir)).toHaveLength(2);
+      const old = new Date(Date.now() - 120e3);
+      utimesSync(join(dir, name), old, old);
+      utimesSync(join(dir, 'secrets.json'), old, old);
+      files.prune(60e3);
+      expect(readdirSync(dir)).toEqual(['secrets.json']);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });

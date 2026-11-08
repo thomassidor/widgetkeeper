@@ -399,6 +399,7 @@ const BUILD = {
       w('cameras', 'Three · one per row', { layout: 'single' }, cams.slice(0, 3)),
       w('cameras', 'All · 60 s', { refresh: '60' }, cams),
       w('cameras', 'With a deleted camera', {}, [cams[0], MISSING].filter(Boolean)),
+      w('cameras', 'Every 6 h (the app keeps the picture)', { refresh: '21600' }, cams.slice(0, 2)),
       w('cameras', 'Live until tapped', { liveFor: 'tap' }, cams.slice(0, 2)),
       w('cameras', 'Live 30 s', { liveFor: '30' }, cams.slice(0, 1)),
       ...(repeat ? [w('cameras', 'Always live (the first camera)', { autoLive: repeat }, cams.slice(0, 2))] : []),

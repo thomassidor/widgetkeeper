@@ -36,7 +36,8 @@ window.mountCamerasWidget = function (Homey, { root, frame }) {
     if (snapshotTimer || document.hidden || !visible || !cameras.loaded()) return;
     widget.resume();
     widget.refresh();
-    snapshotTimer = setInterval(() => widget.refresh(), snapshotMs);
+    // A long refresh looks once a minute: refresh() itself asks only for the pictures that are due.
+    snapshotTimer = setInterval(() => widget.refresh(), Math.min(snapshotMs, 60e3));
   }
   function stopSnapshots() {
     if (snapshotTimer) clearInterval(snapshotTimer);

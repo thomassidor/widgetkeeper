@@ -8,6 +8,8 @@ Your cameras as a grid of snapshots that refresh every few seconds (cameras with
 
 **Away from home:** snapshots come through Homey's cloud like everything else, but live video connects straight to the Homey, which Homey's cloud doesn't carry. So live view works on your home network, or away from home through a VPN to it (WireGuard, Tailscale, your router's own VPN). Without one, a tap says *Live view needs your home network or a VPN.*
 
+**Battery cameras:** set **Refresh snapshots every** to anything from 5 minutes to 12 hours. The app then keeps each camera's last picture, so opening a dashboard shows that one and doesn't wake the camera. A new picture is only asked for when one is due and the dashboard is open. A tap still goes live.
+
 **Settings:** cameras, layout (a large camera at the top or bottom, or one per row), refresh interval, how long live view stays on, always live, [rename tiles](../../README.md#tile-names), and Camera 1 to 6 for cameras missing from the device list, such as Synology Surveillance Station's: they list every device with a snapshot or video.
 
 ## Looks

@@ -1,15 +1,26 @@
+import { createHash } from 'node:crypto';
+import { readdirSync, statSync, unlinkSync } from 'node:fs';
+import { join } from 'node:path';
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
 import { listDevicesWhere, withNone, type AutocompleteItem } from './autocomplete.js';
 import { isTransientError, readFresh } from './DeviceTracker.js';
 import { deviceImage, fetchDeviceIcon, fetchImageBase64, type DeviceImage } from './deviceIcon.js';
 import { deviceNamer } from './deviceNames.js';
+import { fileStorage } from './secrets.js';
 import Timings from './Timings.js';
 
 /** Several widgets (or a fast refresh) asking for the same snapshot within this share one fetch. */
 const IMAGE_REUSE = 2000;
 /** A camera no request has asked for in this long is forgotten (open widgets re-fetch every 5 min). */
 const IDLE_TIMEOUT = 10 * 60e3;
+/** After a camera didn't give a picture, it's left alone this long: every try wakes a battery camera. */
+const KEEP_RETRY = 5 * 60e3;
+/** A kept picture no widget has renewed in this long goes (a camera taken off every dashboard). */
+const KEEP_FOR = 30 * 24 * 3600e3;
+/** A frame the widget grabbed: at most 640 px wide, so far under this as base64. */
+const MAX_FRAME_LENGTH = 1024 * 1024;
+const FILE_PREFIX = 'camera-snapshot-';
 
 export type CameraImage = DeviceImage;
 
@@ -26,6 +37,27 @@ export type CameraDevice =
   | { id: string, missing: true };
 
 export type Snapshot = { type: string, data: string };
+/** A kept picture, with when it was taken. */
+export type KeptSnapshot = Snapshot & { at: number };
+
+/** Where the long refresh's pictures are kept, one per camera. */
+export type SnapshotFiles = { read(id: string): string | null, write(id: string, text: string): void, prune(olderThan: number): void };
+
+/** In the app's own `/userdata`, as they can be 2 MB: never in memory or an app setting. Named by a hash, as an id comes from a request. */
+export function snapshotFiles(dir = '/userdata'): SnapshotFiles {
+  const file = (id: string) => join(dir, `${FILE_PREFIX}${createHash('sha256').update(id).digest('hex').slice(0, 32)}.json`);
+  return {
+    read: id => fileStorage(file(id)).read(),
+    write: (id, text) => fileStorage(file(id)).write(text),
+    prune(olderThan) {
+      for (const name of readdirSync(dir)) {
+        if (!name.startsWith(FILE_PREFIX)) continue;
+        const path = join(dir, name);
+        if (Date.now() - statSync(path).mtimeMs > olderThan) unlinkSync(path);
+      }
+    },
+  };
+}
 
 /** A camera's streams, best first (`cameraVideos()`), and those whose title says H.265. */
 export type CameraVideos = { videos: string[], h265: string[] };
@@ -91,11 +123,15 @@ export default class CameraService {
   private imageUrls = new Map<string, string>();
   /** When each camera was last asked for, so `last` and `imageUrls` don't keep cameras no widget shows any more. */
   private requested = new Map<string, number>();
+  /** The long refresh: pictures being fetched, so two screens wake a camera once, and when one last failed. */
+  private keeping = new Map<string, Promise<KeptSnapshot>>();
+  private keepFailed = new Map<string, number>();
 
   constructor(
     private homey: Homey.App['homey'],
     private log: (...args: any[]) => void, // errors and warnings: always kept
     private debug: (...args: any[]) => void = () => {}, // routine detail: only with the `debugLog` setting on
+    private files: SnapshotFiles = snapshotFiles(),
   ) {}
 
   async stop() {
@@ -103,6 +139,7 @@ export default class CameraService {
     this.last.clear();
     this.imageUrls.clear();
     this.requested.clear();
+    this.keepFailed.clear();
   }
 
   /**
@@ -176,6 +213,50 @@ export default class CameraService {
     return promise;
   }
 
+  /**
+   * The long refresh (battery cameras): the kept picture while it's younger than `maxAge` ms, so opening a dashboard
+   * doesn't wake the camera; else a new one, kept. A camera that doesn't answer gives the kept picture, however old.
+   */
+  async getKeptSnapshot(deviceId: string, maxAge: number): Promise<KeptSnapshot> {
+    this.requestedNow(deviceId);
+    const kept = this.readKept(deviceId);
+    if (kept && Date.now() - kept.at < maxAge) return kept;
+    const running = this.keeping.get(deviceId);
+    if (running) return running;
+    const failedAt = this.keepFailed.get(deviceId);
+    if (failedAt != null && Date.now() - failedAt < KEEP_RETRY) {
+      if (kept) return kept;
+      throw new Error('Camera did not answer');
+    }
+    const fetched = this.getSnapshot(deviceId).then(
+      (snapshot) => {
+        this.keepFailed.delete(deviceId);
+        return this.keep(deviceId, snapshot);
+      },
+      (err) => {
+        this.keepFailed.set(deviceId, Date.now());
+        if (kept) return kept;
+        throw err;
+      },
+    ).finally(() => this.keeping.delete(deviceId));
+    this.keeping.set(deviceId, fetched);
+    return fetched;
+  }
+
+  /** A video-only camera's kept frame, however old (the widget grabs a new one when it's due), or `{none: true}`. */
+  getKeptFrame(deviceId: string): KeptSnapshot | { none: true } {
+    this.requestedNow(deviceId);
+    return this.readKept(deviceId) ?? { none: true };
+  }
+
+  /** Keeps a frame the widget grabbed from a video-only camera, one a `/state` has just named. */
+  keepFrame(deviceId: string, type: unknown, data: unknown) {
+    if (!this.last.has(deviceId) || type !== 'image/jpeg' || typeof data !== 'string' || !data || data.length > MAX_FRAME_LENGTH) {
+      throw new Error('Invalid frame');
+    }
+    this.keep(deviceId, { type, data });
+  }
+
   /** A camera's streams, read fresh: a popup's camera may be one no widget has asked for. */
   async getVideos(deviceId: string): Promise<CameraVideos> {
     this.requestedNow(deviceId);
@@ -209,6 +290,31 @@ export default class CameraService {
       this.last.delete(k);
       this.imageUrls.delete(k);
     }
+  }
+
+  /** The kept picture; none if it can't be read, which only means asking the camera. */
+  private readKept(deviceId: string): KeptSnapshot | null {
+    try {
+      const text = this.files.read(deviceId);
+      if (text == null) return null;
+      const kept = JSON.parse(text);
+      return typeof kept?.type === 'string' && typeof kept.data === 'string' && Number.isFinite(kept.at) ? kept : null;
+    } catch (err) {
+      this.log(`Camera ${deviceId}: kept snapshot unreadable:`, err);
+      return null;
+    }
+  }
+
+  /** Writes it and drops old ones; a failed write still gives the picture. */
+  private keep(deviceId: string, snapshot: Snapshot): KeptSnapshot {
+    const kept = { type: snapshot.type, data: snapshot.data, at: Date.now() };
+    try {
+      this.files.write(deviceId, JSON.stringify(kept));
+      this.files.prune(KEEP_FOR);
+    } catch (err) {
+      this.log(`Camera ${deviceId}: could not keep its snapshot:`, err);
+    }
+    return kept;
   }
 
   private async fetchImage(url: string): Promise<Snapshot> {
