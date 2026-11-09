@@ -23,7 +23,7 @@
   --mw-medium: var(--homey-font-weight-medium, 500);
   --mw-radius: 10px; /* Homey's native device tiles */
 }
-.homey-dark-mode .mw, .mw.homey-dark-mode { --mw-card: #181920; }
+.homey-dark-mode .mw, .mw.homey-dark-mode { --mw-card: var(--wk-surface, #181920); }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
@@ -31,7 +31,7 @@ html, body { margin: 0; }
 
 /* Dark mode: the frame looks like Homey's native device tiles (as the thermostat's .tw-frame). */
 .homey-dark-mode .mw-frame, .mw-frame.homey-dark-mode {
-  background-color: #181920;
+  background-color: var(--wk-surface, #181920);
   border-radius: 10px;
 }
 .homey-dark-mode .mw-frame::after, .mw-frame.homey-dark-mode::after {

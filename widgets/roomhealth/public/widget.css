@@ -29,7 +29,7 @@
 .rh.wk-deep { --rh-arc-mix: 100%; }
 /* Dark mode: Homey's native device tiles, as Device Quick Actions. */
 .homey-dark-mode .rh, .rh.homey-dark-mode {
-  --rh-tile: #181920; --rh-track: #2B2C36;
+  --rh-tile: var(--wk-surface, #181920); --rh-track: #2B2C36;
   --rh-yellow-text: #F5C518; --rh-red-text: #FF7B78;
 }
 

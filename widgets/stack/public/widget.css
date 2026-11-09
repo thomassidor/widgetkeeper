@@ -16,7 +16,7 @@
 }
 /* Large dots (the dotsSize setting): easier to see and to tap. */
 .sk.dots-large { --sk-dots-h: 32px; --sk-dot-w: 40px; --sk-dot: 10px; --sk-dot-on: 26px; }
-.homey-dark-mode .sk, .sk.homey-dark-mode { --sk-tile: #181920; }
+.homey-dark-mode .sk, .sk.homey-dark-mode { --sk-tile: var(--wk-surface, #181920); }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }

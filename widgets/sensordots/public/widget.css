@@ -32,7 +32,7 @@
   --sd-cell: 44px; /* each dot's touch target */
 }
 /* Dark mode: Homey's native device tiles, as Device Quick Actions. */
-.homey-dark-mode .sd, .sd.homey-dark-mode { --sd-tile: #181920; --sd-raised: #2E3039; }
+.homey-dark-mode .sd, .sd.homey-dark-mode { --sd-tile: var(--wk-surface, #181920); --sd-raised: #2E3039; }
 /* Vivid (kit.css): the bright colours at full strength (grey stays grey). */
 .sd.wk-deep {
   --sd-c-blue: var(--wk-blue-bright); --sd-c-red: var(--wk-red-bright); --sd-c-orange: var(--wk-orange-bright);

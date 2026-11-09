@@ -398,7 +398,7 @@
     function livePreview(w, def, draft, dialog, updates) {
       const aside = el('aside', 'wd-preview');
       aside.append(el('h3', 'wd-set-caption', t('preview')));
-      const wrap = el('div', `wd-frame${def.transparent ? '' : ' card'}`);
+      const wrap = el('div', `wd-frame${def.transparent ? '' : ' card'} wd-blends`);
       aside.append(wrap);
       const shown = () => ({ ...w, settings: clone(draft.settings), deviceIds: draft.deviceIds.slice() });
       let draw;
@@ -412,6 +412,7 @@
         wrap.append(iframe);
         const frame = { widget: shown(), iframe, subs: new Map(), gen: 0, app: null, sandboxed: false, scaled: false };
         frames.add(frame);
+        wd.stampSurface(frame);
         let n = 0;
         draw = () => {
           frame.widget = shown();

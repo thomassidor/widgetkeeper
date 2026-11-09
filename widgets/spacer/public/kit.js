@@ -1653,7 +1653,28 @@
     return { stop };
   }
 
+  /**
+   * A web dashboard's Widget background (`settings/dashboard-frames.js` puts it on this widget's iframe): its colour as
+   * Homey's background token, which the frame and every light tile take, and `--wk-surface`, which dark tiles' fixed
+   * fills take. On Homey's own dashboards there's no such iframe, so this does nothing. Run at load, before the first
+   * paint, and by the page when the slider moves.
+   */
+  function applySurface() {
+    let data = null;
+    try { data = window.frameElement && /** @type {HTMLElement} */ (window.frameElement).dataset; } catch (e) { /* another origin's frame */ }
+    if (!data) return;
+    const html = document.documentElement;
+    const set = (name, value) => { if (value) html.style.setProperty(name, value); else html.style.removeProperty(name); };
+    const surface = data.wkSurface || '';
+    set('--homey-background-color', surface);
+    set('--wk-surface', surface);
+    set('--wk-surface-line', data.wkSurfaceLine || '');
+    html.toggleAttribute('data-wk-surface', !!surface);
+  }
+  if (typeof document !== 'undefined') applySurface(); // the service tests load the kit without a page
+
   window.WidgetkeeperKit = {
+    applySurface,
     openVideoStream, framesDecoded, playCameraStream, STREAM_NEXT_MS, STREAM_LAST_MS,
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
     getTimeFormat, setTimeFormat, wireTimeFormat, uses12Hours, clockTime, hourLabel, smoothValues,

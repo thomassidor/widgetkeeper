@@ -20,7 +20,7 @@
   --tm-radius: 10px; /* Homey's native device tiles, measured from a phone screenshot */
 }
 /* Dark mode: each row looks like a native device tile, darker than the default widget background. */
-.homey-dark-mode .tm, .tm.homey-dark-mode { --tm-tile: #181920; --tm-neutral: #2E3039; }
+.homey-dark-mode .tm, .tm.homey-dark-mode { --tm-tile: var(--wk-surface, #181920); --tm-neutral: #2E3039; }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }

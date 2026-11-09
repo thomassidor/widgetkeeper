@@ -35,7 +35,7 @@ html, body { margin: 0; }
 
 /* Dark mode: the frame looks like Homey's native device tiles (see the thermostat widget's .tw-frame). */
 .homey-dark-mode .wf-frame, .wf-frame.homey-dark-mode {
-  background-color: #181920;
+  background-color: var(--wk-surface, #181920);
   border-radius: 10px;
 }
 .homey-dark-mode .wf-frame::after, .wf-frame.homey-dark-mode::after {

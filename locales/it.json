@@ -1080,6 +1080,7 @@
     "bgSand": "Sabbia",
     "bgCustom": "Colore personalizzato",
     "bgHardToRead": "Il testo potrebbe essere poco leggibile su questo colore.",
+    "widgetBackground": "Sfondo dei widget",
     "arrangeHint": "Trascina le dashboard per cambiarne l'ordine o la sezione.",
     "addSection": "Aggiungi sezione",
     "newSection": "Nuova sezione",

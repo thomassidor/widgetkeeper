@@ -47,6 +47,28 @@ describe('web dashboards page: crossframe messages (hexEncode/hexDecode)', () =>
   });
 });
 
+describe('web dashboards page: Widget background (surfaceColours)', () => {
+  const surfaceColours = new Function(`${fn('surfaceColours')}\nreturn surfaceColours;`)();
+
+  it('is nothing at 100 or without one', () => {
+    expect(surfaceColours('#f3eee4', 100, false)).toBeNull();
+    expect(surfaceColours('#f3eee4', undefined, false)).toBeNull();
+  });
+
+  it("mixes this mode's tile into the backdrop", () => {
+    expect(surfaceColours('#f3eee4', 0, false).colour).toBe('#f3eee4');
+    expect(surfaceColours('#000000', 50, false).colour).toBe('#808080');
+    expect(surfaceColours('#ffffff', 95, true).colour).toBe('#24252b');
+  });
+
+  it('fades a line in below half, against the fill', () => {
+    expect(surfaceColours('#f3eee4', 50, false).line).toBe('');
+    expect(surfaceColours('#f3eee4', 25, false).line).toBe('rgb(0 0 0 / 0.11)');
+    expect(surfaceColours('#f3eee4', 0, false).line).toBe('rgb(0 0 0 / 0.22)');
+    expect(surfaceColours('#1f1a13', 0, true).line).toBe('rgb(255 255 255 / 0.22)');
+  });
+});
+
 describe('web dashboards page: a custom background (hardToRead)', () => {
   const hardToRead = new Function(`${fn('hardToRead')}\nreturn hardToRead;`)();
 

@@ -18,7 +18,7 @@
   --wp-radius-small: var(--homey-border-radius-small, 3px);
 }
 /* Dark mode: the frame looks like a native device tile, darker than the default widget background. */
-.homey-dark-mode .wp, .wp.homey-dark-mode { --wp-card: #181920; }
+.homey-dark-mode .wp, .wp.homey-dark-mode { --wp-card: var(--wk-surface, #181920); }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }

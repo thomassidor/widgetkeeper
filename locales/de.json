@@ -1080,6 +1080,7 @@
     "bgSand": "Sand",
     "bgCustom": "Eigene Farbe",
     "bgHardToRead": "Text ist auf dieser Farbe eventuell schlecht lesbar.",
+    "widgetBackground": "Widget-Hintergrund",
     "arrangeHint": "Ziehe die Dashboards, um ihre Reihenfolge oder ihren Abschnitt zu ändern.",
     "addSection": "Abschnitt hinzufügen",
     "newSection": "Neuer Abschnitt",

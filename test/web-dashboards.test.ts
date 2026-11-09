@@ -63,6 +63,16 @@ describe('web dashboards: storage', () => {
     expect(web.list()).toEqual([saved]);
   });
 
+  it('keeps a Widget background in steps of 5, and stores none at 100', () => {
+    const { web } = setup();
+    expect(web.save({ name: 'A', surface: 40, columns: [[]] }).surface).toBe(40);
+    expect(web.save({ name: 'B', surface: 0, columns: [[]] }).surface).toBe(0);
+    expect(web.save({ name: 'C', surface: 42, columns: [[]] }).surface).toBe(40);
+    for (const surface of [100, 140, -5, '40', null, Number.NaN]) {
+      expect(web.save({ name: 'D', surface, columns: [[]] })).not.toHaveProperty('surface');
+    }
+  });
+
   it('keeps a known background and drops an unknown one', () => {
     const { web } = setup();
     expect(web.save({ name: 'A', background: 'ocean', columns: [[]] }).background).toBe('ocean');

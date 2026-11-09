@@ -1080,6 +1080,7 @@
     "bgSand": "Sand",
     "bgCustom": "Egen färg",
     "bgHardToRead": "Text kan bli svårläst på den här färgen.",
+    "widgetBackground": "Widgetbakgrund",
     "arrangeHint": "Dra instrumentpanelerna för att ändra ordningen eller avsnittet.",
     "addSection": "Lägg till avsnitt",
     "newSection": "Nytt avsnitt",

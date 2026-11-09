@@ -17,7 +17,7 @@
   --sl-chart-height: 36px;
 }
 /* Dark mode: each tile looks like a native device tile, darker than the default widget background. */
-.homey-dark-mode .sl, .sl.homey-dark-mode { --sl-tile: #181920; }
+.homey-dark-mode .sl, .sl.homey-dark-mode { --sl-tile: var(--wk-surface, #181920); }
 /* The colour setting: the line, its area and the dot in the palette's bright colour (blue is the same blue). */
 .sl[data-wk-color] { --sl-accent: var(--wk-c-bright); }
 

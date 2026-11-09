@@ -15,7 +15,7 @@
   --sa-radius: 10px; /* Homey's native sensor tiles, measured from a phone screenshot */
 }
 /* Dark mode: the tile colour of Homey's native temperature tiles (measured from a phone screenshot). */
-.homey-dark-mode .sa, .sa.homey-dark-mode { --sa-tile: #2B2C36; --sa-red-text: #FF7B78; }
+.homey-dark-mode .sa, .sa.homey-dark-mode { --sa-tile: var(--wk-surface, #2B2C36); --sa-red-text: #FF7B78; }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }

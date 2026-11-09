@@ -18,7 +18,7 @@
 }
 /* Dark mode: each tile looks like a native device tile, darker than the default widget background. */
 .homey-dark-mode .qa, .qa.homey-dark-mode {
-  --qa-tile: #181920; --qa-accent-icon: color-mix(in oklab, var(--qa-accent) 72%, #FFFFFF); --qa-lighter: #2E3039;
+  --qa-tile: var(--wk-surface, #181920); --qa-accent-icon: color-mix(in oklab, var(--qa-accent) 72%, #FFFFFF); --qa-lighter: #2E3039;
   --qa-red-text: var(--wk-red);
 }
 /* Blue keeps the lighter blue measured from the native tiles. */
@@ -83,7 +83,7 @@ html, body { background: transparent !important; }
 /* Pill (`tileStyle: pill`): Sensor Alarms' tile, as Device Values' pill: 52 px, the 24 px muted icon beside
    the name (14 bold) over the state (14 muted), both on 18 px lines; #2B2C36 in dark mode, no rim. They follow
    Tiles per row, as Device Values' do (at 3 a phone-width widget leaves the name a letter or two). */
-.homey-dark-mode .qa.qa-pill, .qa.qa-pill.homey-dark-mode { --qa-tile: #2B2C36; }
+.homey-dark-mode .qa.qa-pill, .qa.qa-pill.homey-dark-mode { --qa-tile: var(--wk-surface, #2B2C36); }
 .qa.qa-pill .qa-tile::after { display: none; }
 .qa-pill .qa-tile { flex-direction: row; align-items: center; gap: 13px; height: 52px; padding: 7px 12px 5px 10px; }
 .qa-pill .qa-icon { width: 24px; height: 24px; color: var(--qa-muted); }

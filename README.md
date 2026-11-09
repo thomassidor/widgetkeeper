@@ -256,7 +256,7 @@ Your Widgetkeeper widgets in any browser: a wall tablet, an old iPad, a computer
 - One to six columns, Normal, Narrow, Wide or Fit to window. Drag widgets to move them, copy one to this or another dashboard, or drag its right edge to span several columns.
 - **Add widget** has a search and groups (Lights and control, Charts, Energy …).
 - The settings are the same as on a Homey dashboard, in cards, with devices picked by room.
-- Light, dark or automatic, with a background per dashboard: a calm tint or a colour of your own.
+- Light, dark or automatic, with a background per dashboard: a calm tint or a colour of your own. A **Widget background** slider under it blends the widgets into that background, from their usual look to none at all, with a thin outline keeping them apart at the low end (this app's widgets only).
 - An optional icon per dashboard, from the tile before its name: one of the app's icons or a picture of your own. It shows in the side pane, on the front page and on the browser tab.
 - Add a [Popups](docs/widgets/popups.md) widget for messages from Flows, and [Dashboard Shortcuts](docs/widgets/shortcuts.md) for big buttons to your other dashboards on a wall tablet, beside the [side pane](#moving-between-dashboards).
 - For a kiosk browser such as Fully Kiosk, add `?kiosk=1` to the address to hide the dashboard's bar. Add `&nav=1` too to keep the side pane there.

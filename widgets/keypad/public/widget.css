@@ -28,7 +28,7 @@ html, body { margin: 0; }
 
 /* Dark mode: the frame looks like Homey's native device tiles (see the thermostat widget's .tw-frame). */
 .homey-dark-mode .kp-frame, .kp-frame.homey-dark-mode {
-  background-color: #181920;
+  background-color: var(--wk-surface, #181920);
   border-radius: 10px;
 }
 .homey-dark-mode .kp-frame::after, .kp-frame.homey-dark-mode::after {
@@ -45,7 +45,7 @@ html, body { margin: 0; }
  * has no `data-wk-color`: the grey buttons would inherit its `--wk-c-*`.
  */
 .kp-tint-frame { --kp-base: var(--homey-background-color, #1F2029); --kp-mix: 15%; }
-.homey-dark-mode .kp-tint-frame, .kp-tint-frame.homey-dark-mode { --kp-base: #181920; }
+.homey-dark-mode .kp-tint-frame, .kp-tint-frame.homey-dark-mode { --kp-base: var(--wk-surface, #181920); }
 .kp-tint-frame.wk-deep { --kp-mix: 30%; }
 .kp-tint-frame[data-kp-tint="blue"] { --kp-tint: var(--wk-blue-bright); }
 .kp-tint-frame[data-kp-tint="red"] { --kp-tint: var(--wk-red-bright); }

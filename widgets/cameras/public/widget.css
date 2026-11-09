@@ -12,7 +12,7 @@
   --cw-radius: 10px; /* Homey's native tiles, as in Sensor Alarms */
 }
 /* Dark mode: the tile colour of Homey's native tiles, as in Sensor Alarms. */
-.homey-dark-mode .cw, .cw.homey-dark-mode { --cw-tile: #2B2C36; }
+.homey-dark-mode .cw, .cw.homey-dark-mode { --cw-tile: var(--wk-surface, #2B2C36); }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }

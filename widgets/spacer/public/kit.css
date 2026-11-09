@@ -17,6 +17,16 @@
  * solid fill (Vivid). Widgets whose colours are small and solid already (a lit button, dots, heatmap cells, a play button)
  * use the sets directly the other way round: the shade in Muted, bright in Vivid.
  */
+/*
+ * A web dashboard's Widget background (kit.js `applySurface()`), turned low: a thin line, stronger the lower it goes, so
+ * tiles and buttons keep their edges on the backdrop. Every widget's tile is listed (a test checks). A focused one
+ * keeps the widget's own focus ring.
+ */
+html[data-wk-surface] :is(.ck-tile, .ct-tile, .cv-tile, .cv-list, .cw-tile, .fb-row, .lc-tile, .lc-panel, .lk-tile, .lr-room, .pb-tile,
+  .qa-tile, .rh-tile, .sa-tile, .sa-panel, .sc-row, .sd-tile, .sk-card, .sl-tile, .tl-tile, .tm-row, .tm-preset, .vb-tile, .vm-tile, .vr-row, .vt-tile):not(:focus-visible) {
+  outline: 1px solid var(--wk-surface-line, transparent); outline-offset: -1px;
+}
+
 .wk {
   --wk-blue-bright: var(--homey-color-blue, #2F8DF6);
   --wk-red-bright: var(--homey-color-red, #F25F5C);

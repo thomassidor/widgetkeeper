@@ -21,7 +21,7 @@
   --cv-share-mix: 85%;
 }
 /* Dark mode: a native device tile, darker than the default widget background. */
-.homey-dark-mode .cv, .cv.homey-dark-mode { --cv-tile: #181920; }
+.homey-dark-mode .cv, .cv.homey-dark-mode { --cv-tile: var(--wk-surface, #181920); }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
@@ -120,7 +120,7 @@ html, body { background: transparent !important; }
  * the value and the line in 14 muted (18px lines), flat in the native temperature tiles' dark colour; the dots or the
  * share on the right, 96px wide.
  */
-.homey-dark-mode .cv.cv-pill, .cv.cv-pill.homey-dark-mode { --cv-tile: #2B2C36; }
+.homey-dark-mode .cv.cv-pill, .cv.cv-pill.homey-dark-mode { --cv-tile: var(--wk-surface, #2B2C36); }
 .cv-pill .cv-tile { height: 52px; padding: 7px 12px 5px 10px; display: flex; align-items: center; }
 .cv.cv-pill .cv-tile::after { display: none; }
 .cv-pill .cv-head { flex: 1; gap: 13px; min-height: 0; }

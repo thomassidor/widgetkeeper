@@ -29,7 +29,7 @@
   --fb-red-text: #D93B37; /* Quick Actions' Tap again on a red-tinted light row */
 }
 /* Dark mode: each row looks like a native device tile, darker than the default widget background. */
-.homey-dark-mode .fb, .fb.homey-dark-mode { --fb-tile: #181920; --fb-neutral: #2E3039; --fb-red-text: var(--wk-red); }
+.homey-dark-mode .fb, .fb.homey-dark-mode { --fb-tile: var(--wk-surface, #181920); --fb-neutral: #2E3039; --fb-red-text: var(--wk-red); }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }

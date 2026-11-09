@@ -106,6 +106,7 @@
     bgSand: 'Sand',
     bgCustom: 'Custom colour',
     bgHardToRead: 'Text may be hard to read on this colour.',
+    widgetBackground: 'Widget background',
     arrangeHint: 'Drag the dashboards to change their order or section.',
     addSection: 'Add section',
     newSection: 'New section',
@@ -484,6 +485,23 @@
     }, 0);
     const [a, b] = [luminance(colour), luminance(dark ? '#E4E4E7' : '#1F2029')];
     return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) < 4.5;
+  }
+
+  /**
+   * A dashboard's Widget background (`surface`, 0–95; none is the widgets as they are): their fill, the tile's colour in
+   * this mode blended into the backdrop, solid, as charts cut their dots out with it. Below `OUTLINE_FROM` a line fades
+   * in, dark or light against the fill, so tiles keep their edges. `{colour, line}`, or null at 100.
+   */
+  function surfaceColours(backdrop, surface, dark) {
+    if (!(surface >= 0 && surface < 100)) return null;
+    const OUTLINE_FROM = 50;
+    const channels = (hex) => [1, 3, 5].map(at => parseInt(hex.slice(at, at + 2), 16));
+    const tile = channels(dark ? '#181920' : '#FFFFFF');
+    const mixed = channels(backdrop).map((c, i) => Math.round(tile[i] * (surface / 100) + c * (1 - surface / 100)));
+    const colour = `#${mixed.map(c => c.toString(16).padStart(2, '0')).join('')}`;
+    const ink = 0.299 * mixed[0] + 0.587 * mixed[1] + 0.114 * mixed[2] > 128 ? 0 : 255;
+    const strength = Math.max(0, 1 - surface / OUTLINE_FROM);
+    return { colour, line: strength ? `rgb(${ink} ${ink} ${ink} / ${Math.round(strength * 22) / 100})` : '' };
   }
 
   /** A widget's width on Homey's dashboard on a phone, which other apps' widgets are designed at (wk-089). */
@@ -1025,7 +1043,7 @@
     }
 
     // ---- The parts (settings/dashboard-<part>.js), each run once with `wd` ------------------------------------------
-    Object.assign(wd, { APP_ID, leaveEditor, applyDim, appWidget, AWAKE_STORAGE, BACKGROUNDS, CUSTOM_BACKGROUND, hardToRead, bracketQuery, button, clone, CONFIRM_MS,
+    Object.assign(wd, { APP_ID, leaveEditor, applyDim, appWidget, AWAKE_STORAGE, BACKGROUNDS, CUSTOM_BACKGROUND, hardToRead, surfaceColours, bracketQuery, button, clone, CONFIRM_MS,
       confirmButton, darkQuery, DEFAULT_STRINGS, deleted, DIM_CHANGED_STORAGE, dimChoices, dimFlowHolds, DIM_SCHEDULE_STORAGE, DIM_STORAGE, dimLevel, dimScheduleOf, dimWanted, DRAG_SLOP, EDGE_PX, el, failed,
       frames, HOMEY_WIDTH, homeyRequest, icon, isScreenCode, keepAwake, KEY_STORAGE, LAYOUT, listeners, loadAll, loadSetup, MAX_DIM,
       newId, opts, persist, request, root, route, SESSION_STORAGE, start, STAY_STORAGE, storageGet, storageSet,

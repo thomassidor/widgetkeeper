@@ -103,7 +103,7 @@ function iconOf(value: unknown): string | null {
  * take, as the page asks it (one that was removed, or Any code while there's none, no longer does).
  */
 export type WebDashboard = {
-  id: string, name: string, theme: WebTheme, background: WebBackground, columns: WebWidget[][], section?: string, icon?: string,
+  id: string, name: string, theme: WebTheme, background: WebBackground, surface?: number, columns: WebWidget[][], section?: string, icon?: string,
   columnWidth?: Exclude<WebColumnWidth, 'normal'>, code?: { id: string, name: string },
 };
 
@@ -793,6 +793,8 @@ export default class WebDashboardService {
     const colour = typeof d.background === 'string' ? d.background.toLowerCase() : '';
     const background: WebBackground = CUSTOM_BACKGROUND.test(colour) ? colour as `#${string}`
       : (WEB_BACKGROUNDS as readonly unknown[]).includes(d.background) ? d.background : 'default';
+    // How much of a widget's own fill shows over the backdrop, in steps of 5; 100 (as before there was one) isn't stored.
+    const surface = typeof d.surface === 'number' && d.surface >= 0 ? Math.min(Math.round(d.surface / 5) * 5, 100) : 100;
     const width: WebColumnWidth = (WEB_COLUMN_WIDTHS as readonly unknown[]).includes(d.columnWidth) ? d.columnWidth : 'normal';
     const columnsIn: unknown[] = Array.isArray(d.columns) ? d.columns.slice(0, MAX_COLUMNS) : [];
     const ids = new Set<string>();
@@ -828,7 +830,7 @@ export default class WebDashboardService {
       ? { id: d.code.id, name: typeof d.code.name === 'string' ? d.code.name.slice(0, 40) : '' } : null;
     const icon = iconOf(d.icon);
     return {
-      id, name, theme, background, columns,
+      id, name, theme, background, ...(surface < 100 ? { surface } : {}), columns,
       ...(section ? { section } : {}), ...(width !== 'normal' ? { columnWidth: width } : {}), ...(code ? { code } : {}),
       ...(icon ? { icon } : {}),
     };

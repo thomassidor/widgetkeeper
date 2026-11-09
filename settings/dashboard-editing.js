@@ -104,7 +104,7 @@
       if (app && opts.mountWidget) return node; // the dev renders draw only ours
       // Another app's widget may be laid out at a phone's width and scaled to the column, as on Homey (`fitFrame()`).
       const scaled = !!app && w.scaled === true;
-      const wrap = el('div', `wd-frame${def.transparent ? '' : ' card'}${scaled ? ' scaled' : ''}`);
+      const wrap = el('div', `wd-frame${def.transparent ? '' : ' card'}${scaled ? ' scaled' : ''}${app ? '' : ' wd-blends'}`);
       if (opts.mountWidget) {
         node.append(wrap);
         opts.mountWidget(clone(w), wrap);
@@ -128,7 +128,9 @@
       iframe.src = `${wd.widgetFolder(w.type)}/index.html?widgetInstanceId=${encodeURIComponent(instance)}`;
       wrap.append(iframe);
       node.append(wrap);
-      frames.add({ widget: clone(w), iframe, subs: new Map(), gen: 0, app, sandboxed, scaled });
+      const frame = { widget: clone(w), iframe, subs: new Map(), gen: 0, app, sandboxed, scaled };
+      frames.add(frame);
+      wd.stampSurface(frame);
       if (scaled) wd.scaler.observe(wrap);
       return node;
     }

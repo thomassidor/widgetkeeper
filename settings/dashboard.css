@@ -117,6 +117,7 @@ a.wd-nav-row:hover, button.wd-nav-row:hover { background: color-mix(in srgb, var
 .wd-bgcustom-field:focus-visible + .wd-swatch-dot { outline: 2px solid var(--wd-accent); outline-offset: 3px; }
 .wd-bgcaption { padding: 6px 6px 2px; font-size: 14px; line-height: 20px; color: var(--wd-muted); font-variant-numeric: tabular-nums; }
 .wd-bgcustom-hint { width: 0; min-width: calc(100% - 12px); padding: 0 6px 2px; font-size: 12px; line-height: 16px; color: var(--wd-muted); } /* as wide as the swatches, not wider */
+.wd-bgsurface { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; width: 0; min-width: calc(100% - 12px); padding: 8px 6px 4px; font-size: 14px; line-height: 20px; }
 .wd-bar-title { font-weight: 700; font-size: var(--homey-font-size-default, 17px); line-height: 24px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .wd-spacer { flex: 1 1 auto; }
 /* The front page's bar stays one row: on a phone the title is smaller, without the logo, and gives way before the buttons. */
@@ -449,8 +450,10 @@ textarea.wd-input { width: 100%; resize: vertical; }
 }
 .wd-title { margin: 0 0 8px; padding: 0 4px; font-size: 17px; line-height: 24px; font-weight: 700; }
 .wd-frame { position: relative; }
-.wd-frame.card { border-radius: var(--wd-radius); overflow: hidden; background: var(--homey-background-color, #FFFFFF); }
-.homey-dark-mode .wd-frame.card { background: #181920; }
+.wd-frame.card { border-radius: var(--wd-radius); overflow: hidden; background: var(--wd-surface, var(--homey-background-color, #FFFFFF)); }
+.homey-dark-mode .wd-frame.card { background: var(--wd-surface, #181920); }
+/* A card's line at a low Widget background, over its iframe (tiles draw their own: kit.css). */
+.wd-frame.wd-blends.card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1px var(--wd-surface-line, transparent); }
 .wd-frame iframe { display: block; width: 100%; border: 0; background: transparent; }
 /* Another app's widget sized as on Homey: laid out at a phone's width and scaled to the column (`fitFrame()`). */
 .wd-frame.scaled { overflow: hidden; }

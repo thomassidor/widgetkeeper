@@ -76,6 +76,21 @@
     }
 
     /**
+     * This dashboard's Widget background on a frame of ours (other apps' draw their own), where the kit reads it. A
+     * running widget is told, so the slider moves without a reload.
+     */
+    function stampSurface(frame) {
+      if (frame.app) return;
+      const data = frame.iframe.dataset;
+      if (wd.surface) data.wkSurface = wd.surface.colour; else delete data.wkSurface;
+      if (wd.surface && wd.surface.line) data.wkSurfaceLine = wd.surface.line; else delete data.wkSurfaceLine;
+      try {
+        const kit = frame.iframe.contentWindow && /** @type {any} */ (frame.iframe.contentWindow).WidgetkeeperKit;
+        if (kit && kit.applySurface) kit.applySurface();
+      } catch (e) { /* still loading: the kit reads it itself */ }
+    }
+
+    /**
      * A widget's height (`ready`/`setHeight`, where Homey's docs allow a number, a string or null): pixels, or a share of
      * the width (`'50%'`, as a manifest's `height`). Anything else leaves it: `Number(null)` used to make it 0 px.
      */
@@ -278,7 +293,7 @@
       wd.syncGrid();
     }
 
-    Object.assign(wd, { backdrop, dropListeners, isDark, ownTheme, reloadFrames, scaler, showsDark, sweepFrames,
+    Object.assign(wd, { backdrop, stampSurface, dropListeners, isDark, ownTheme, reloadFrames, scaler, showsDark, sweepFrames,
       themeIsDark });
   });
 })();

@@ -20,7 +20,7 @@
   --lr-radius: 10px; /* Homey's native device tiles, measured from a phone screenshot */
 }
 /* Dark mode: each card looks like a native device tile, darker than the default widget background. */
-.homey-dark-mode .lr, .lr.homey-dark-mode { --lr-tile: #181920; --lr-tint: 26%; --lr-fill-with: #FFFFFF; --lr-fill-share: 85%; }
+.homey-dark-mode .lr, .lr.homey-dark-mode { --lr-tile: var(--wk-surface, #181920); --lr-tint: 26%; --lr-fill-with: #FFFFFF; --lr-fill-share: 85%; }
 /* Vivid (kit.css): the lit room's colours stronger at the top of its card. */
 .lr.wk-deep { --lr-tint: 40%; }
 .homey-dark-mode .lr.wk-deep, .lr.wk-deep.homey-dark-mode { --lr-tint: 48%; }

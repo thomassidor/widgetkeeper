@@ -1080,6 +1080,7 @@
     "bgSand": "Arena",
     "bgCustom": "Color personalizado",
     "bgHardToRead": "El texto puede leerse mal sobre este color.",
+    "widgetBackground": "Fondo de los widgets",
     "arrangeHint": "Arrastra los paneles para cambiar su orden o sección.",
     "addSection": "Añadir sección",
     "newSection": "Nueva sección",

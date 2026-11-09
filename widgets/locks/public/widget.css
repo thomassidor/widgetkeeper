@@ -21,7 +21,7 @@
 }
 /* Dark mode: Homey's native device tiles, as Device Quick Actions; the red and green of the dark theme. */
 .homey-dark-mode .lk, .lk.homey-dark-mode {
-  --lk-tile: #181920; --lk-neutral: #2E3039; --lk-red-text: var(--lk-red); --lk-green: var(--homey-color-green, #71D51B); --lk-green-text: var(--lk-green);
+  --lk-tile: var(--wk-surface, #181920); --lk-neutral: #2E3039; --lk-red-text: var(--lk-red); --lk-green: var(--homey-color-green, #71D51B); --lk-green-text: var(--lk-green);
 }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */

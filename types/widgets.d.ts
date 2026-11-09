@@ -190,6 +190,7 @@ interface Window {
     colorStyle: (value: unknown) => 'soft' | 'deep',
     applyColors: (root: HTMLElement, opts?: { style?: unknown, color?: unknown, fallback?: string | null }) => 'soft' | 'deep',
     /** Timers' beep and the popups' sounds, through one AudioContext per page. */
+    applySurface: () => void,
     sound: { names: string[], unlock: () => void, play: (name: unknown) => boolean },
   };
   createVarPresetsWidget: (root: HTMLElement, opts?: object) => any;

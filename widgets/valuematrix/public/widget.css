@@ -19,7 +19,7 @@
   --vm-mix: 22%;
 }
 /* Dark mode: Homey's native device tiles, as Device Quick Actions. */
-.homey-dark-mode .vm, .vm.homey-dark-mode { --vm-tile: #181920; --vm-track: #2B2C36; }
+.homey-dark-mode .vm, .vm.homey-dark-mode { --vm-tile: var(--wk-surface, #181920); --vm-track: #2B2C36; }
 
 /* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }

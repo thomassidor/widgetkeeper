@@ -9,7 +9,7 @@
   'use strict';
 
   window.WidgetkeeperWeb.part('views', (wd) => {
-    const { appWidget, BACKGROUNDS, button, clone, confirmButton, CUSTOM_BACKGROUND, hardToRead, darkQuery, DEFAULT_STRINGS, el, failed, HOMEY_WIDTH,
+    const { appWidget, BACKGROUNDS, frames, button, clone, confirmButton, CUSTOM_BACKGROUND, hardToRead, surfaceColours, darkQuery, DEFAULT_STRINGS, el, failed, HOMEY_WIDTH,
       icon, isScreenCode, KEY_STORAGE, LAYOUT, loadAll, persist, request, root, route, SESSION_STORAGE, start,
       storageSet, t, THEME_STORAGE, unlocked, useCode } = wd;
 
@@ -76,8 +76,8 @@
       wd.sweepFrames();
     }
 
-    /** The page's mode (this browser's own choice, else the theme) and the dashboard's backdrop (none: the page's). */
-    function applyTheme(theme, background) {
+    /** The page's mode (this browser's own choice, else the theme), the dashboard's backdrop (none: the page's) and its Widget background. */
+    function applyTheme(theme, background, surface) {
       const html = document.documentElement;
       const own = wd.ownTheme();
       const dark = own ? own === 'dark' : wd.themeIsDark(theme);
@@ -87,6 +87,11 @@
       // A colour of the user's own may be a bright one in dark mode: the editor's forms keep the page's own shade.
       if (CUSTOM_BACKGROUND.test(background)) html.style.setProperty('--wd-panel', BACKGROUNDS.default[dark ? 1 : 0]);
       else html.style.removeProperty('--wd-panel');
+      wd.surface = surfaceColours(wd.backdrop(background, dark), surface, dark);
+      const setVar = (name, value) => { if (value) html.style.setProperty(name, value); else html.style.removeProperty(name); };
+      setVar('--wd-surface', wd.surface && wd.surface.colour);
+      setVar('--wd-surface-line', wd.surface && wd.surface.line);
+      for (const frame of frames) wd.stampSurface(frame);
     }
 
     // Full screen: the dashboard's bar keeps only the exit button and the live note (dashboard.css).
@@ -104,7 +109,8 @@
         if (wd.ownTheme() || (wd.current && wd.current.dashboard.theme !== 'auto')) return;
         // The front page: its cards of Automatic dashboards change mode too.
         if (root.querySelector(':scope > .wd-home')) { route(); return; }
-        applyTheme(wd.current ? wd.current.dashboard.theme : 'auto');
+        if (wd.current) applyTheme(wd.current.dashboard.theme, wd.current.dashboard.background, wd.current.dashboard.surface);
+        else applyTheme('auto');
         wd.reloadFrames(); // a frame's dark mode is set when it starts
       });
     }
@@ -298,7 +304,7 @@
     function renderDashboard(dashboard, editing) {
       clearRoot();
       setTitle(dashboard);
-      applyTheme(dashboard.theme, dashboard.background);
+      applyTheme(dashboard.theme, dashboard.background, dashboard.surface);
       wd.current = { dashboard: editable(dashboard), editing, widgets: new Map(), covers: new Map(), grid: el('main', 'wd-grid') };
       root.classList.toggle('editing', editing);
       root.append(editing ? editBar() : viewBar(), wd.current.grid);
@@ -557,7 +563,7 @@
         drawThemeIcon();
         wd.current.dashboard.theme = theme.value;
         storageSet(THEME_STORAGE, null); // this browser's own dark or light would hide the choice
-        applyTheme(theme.value, wd.current.dashboard.background);
+        applyTheme(theme.value, wd.current.dashboard.background, wd.current.dashboard.surface);
         persist();
         syncGrid();
         drawBackground();
@@ -603,7 +609,24 @@
       swatches.append(presets, customSwatch);
       const caption = el('div', 'wd-bgcaption');
       const customHint = el('div', 'wd-bgcustom-hint', t('bgHardToRead'));
-      pop.append(swatches, caption, customHint);
+      // How much of the widgets' own fill shows: 100 is as they are, 0 melts them into the backdrop.
+      const surfaceSlider = /** @type {HTMLInputElement} */ (el('input', 'wd-dim-slider'));
+      surfaceSlider.type = 'range';
+      surfaceSlider.min = '0';
+      surfaceSlider.max = '100';
+      surfaceSlider.step = '5';
+      surfaceSlider.value = String(d.surface ?? 100);
+      const surfaceAmount = el('span', 'wd-dim-value', `${surfaceSlider.value} %`);
+      const surfaceRow = el('label', 'wd-bgsurface');
+      surfaceRow.append(el('span', '', t('widgetBackground')), surfaceAmount, surfaceSlider);
+      surfaceSlider.addEventListener('input', () => {
+        const level = Number(surfaceSlider.value);
+        surfaceAmount.textContent = `${level} %`;
+        if (level < 100) wd.current.dashboard.surface = level; else delete wd.current.dashboard.surface;
+        applyTheme(wd.current.dashboard.theme, wd.current.dashboard.background, wd.current.dashboard.surface);
+      });
+      surfaceSlider.addEventListener('change', () => persist());
+      pop.append(swatches, caption, customHint, surfaceRow);
       const palette = popover(bgPick, bgButton, pop, () => {
         /** @type {HTMLElement} */ (pop.querySelector('button.wd-swatch.on') || customField).focus();
       }, customField);
@@ -617,11 +640,10 @@
         const colours = Object.fromEntries(backgrounds.map(b => [b.id, `linear-gradient(135deg, ${BACKGROUNDS[b.id][0]} 50%, ${BACKGROUNDS[b.id][1]} 50%)`]));
         presets.replaceChildren(wd.choiceGroup(null, backgrounds, current, (id) => {
           wd.current.dashboard.background = id;
-          applyTheme(wd.current.dashboard.theme, id);
+          applyTheme(wd.current.dashboard.theme, id, wd.current.dashboard.surface);
           persist();
           drawBackground();
-          palette.close();
-          bgButton.focus();
+          /** @type {HTMLElement} */ (pop.querySelector('button.wd-swatch.on'))?.focus(); // open still: the slider's under them
         }, true, colours));
         if (customField.value !== shown) customField.value = shown; // not while it's being picked: it's the same then
         customSwatch.classList.toggle('on', custom);
@@ -632,7 +654,7 @@
       }
       const pickCustom = () => {
         wd.current.dashboard.background = customField.value.toLowerCase();
-        applyTheme(wd.current.dashboard.theme, wd.current.dashboard.background);
+        applyTheme(wd.current.dashboard.theme, wd.current.dashboard.background, wd.current.dashboard.surface);
         drawBackground();
       };
       customField.addEventListener('input', pickCustom);

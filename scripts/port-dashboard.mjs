@@ -77,7 +77,7 @@ async function main() {
     const saved = await api('GET', WEB_SETTING);
     const current = Array.isArray(saved) ? saved : [];
     const before = current.find(d => d.id === dashboard.id);
-    if (before) Object.assign(dashboard, { theme: before.theme ?? 'auto', background: before.background ?? 'default', ...(before.columnWidth ? { columnWidth: before.columnWidth } : {}), ...(before.icon ? { icon: before.icon } : {}) });
+    if (before) Object.assign(dashboard, { theme: before.theme ?? 'auto', background: before.background ?? 'default', ...(before.surface != null ? { surface: before.surface } : {}), ...(before.columnWidth ? { columnWidth: before.columnWidth } : {}), ...(before.icon ? { icon: before.icon } : {}) });
     const ported = dashboard.columns.flat();
     console.log(`${dashboard.name}: ${ported.length} widgets in ${dashboard.columns.length} columns (${ported.map(x => x.type).join(', ')})`);
     for (const s of skipped) console.log(`  left out: ${s.title} (${s.type}): ${s.reason}`);

@@ -1080,6 +1080,7 @@
     "bgSand": "Sand",
     "bgCustom": "Egen farge",
     "bgHardToRead": "Tekst kan bli vanskelig å lese på denne fargen.",
+    "widgetBackground": "Widgetbakgrunn",
     "arrangeHint": "Dra dashbordene for å endre rekkefølgen eller seksjonen.",
     "addSection": "Legg til seksjon",
     "newSection": "Ny seksjon",

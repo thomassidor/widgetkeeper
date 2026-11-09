@@ -1080,6 +1080,7 @@
     "bgSand": "Sable",
     "bgCustom": "Couleur personnalisée",
     "bgHardToRead": "Le texte risque d'être peu lisible sur cette couleur.",
+    "widgetBackground": "Fond des widgets",
     "arrangeHint": "Faites glisser les tableaux de bord pour changer leur ordre ou leur section.",
     "addSection": "Ajouter une section",
     "newSection": "Nouvelle section",
