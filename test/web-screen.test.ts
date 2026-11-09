@@ -199,6 +199,20 @@ describe('The page\'s screen part, running', () => {
     vi.useRealTimers();
   });
 
+  it('goes round in the side pane\'s order, and waits while its list is being customized', () => {
+    vi.useFakeTimers();
+    location.hash = '#/d/a';
+    const { wd } = mount({ 'widgetkeeper.web.rotate': '{"ids":["a","b"],"seconds":10}' });
+    wd.navInOrder = () => [{ id: 'b' }, { id: 'a' }];
+    wd.nav = { customizing: true };
+    vi.advanceTimersByTime(30000);
+    expect(location.hash).toBe('#/d/a');
+    wd.nav.customizing = false;
+    vi.advanceTimersByTime(11000);
+    expect(location.hash).toBe('#/d/b');
+    vi.useRealTimers();
+  });
+
   it('goes round the list on its time, and waits for a dialog, a touch and the editor', () => {
     vi.useFakeTimers();
     location.hash = '#/d/a';

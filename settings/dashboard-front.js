@@ -52,7 +52,8 @@
         settings.append(icon('sliders'), el('span', 'wd-bar-label', t('pageSettings')));
         const done = el('a', 'wd-btn primary', t('done'));
         done.href = '#/';
-        root.append(wd.bar(wd.brand(), el('span', 'wd-spacer'), settings, done), page);
+        root.append(frontBar(wd.brand(), el('span', 'wd-spacer'), settings, done), page);
+        wd.showNav({ inactive: true });
         return;
       }
       if (wd.types.size && wd.frontPage.widgets) page.append(widgetCarousel());
@@ -62,8 +63,15 @@
       edit.title = t('edit');
       edit.setAttribute('aria-label', t('edit'));
       edit.append(icon('pen'));
-      root.append(wd.bar(wd.navButton(), wd.brand(), el('span', 'wd-spacer'), wd.liveNote(), edit), page);
+      root.append(frontBar(wd.navButton(), wd.brand(), el('span', 'wd-spacer'), wd.liveNote(), edit), page);
       wd.showNav();
+    }
+
+    /** The front page's bar: one row on a phone too, the long title giving way (dashboard.css). */
+    function frontBar(...children) {
+      const node = wd.bar(...children);
+      node.classList.add('wd-bar-front');
+      return node;
     }
 
     /** The New dashboard card: makes an empty dashboard in `section` (`''`: none) and opens its editor. */
@@ -249,7 +257,8 @@
       }, false);
       mode.setAttribute('aria-label', t('darkLight'));
       const card = el('div', 'wd-set-card');
-      card.append(setRow(t('darkLight'), t('darkLightText'), mode), awake, dim, scheduled, rotation, setRow(t('signedIn'), t('forgetKeyText'), forget));
+      const kiosk = el('p', 'wd-hint wd-kiosk-help', t('kioskHelp'));
+      card.append(setRow(t('darkLight'), t('darkLightText'), mode), awake, dim, scheduled, rotation, setRow(t('signedIn'), t('forgetKeyText'), forget), kiosk);
       browser.append(el('h3', 'wd-h2', t('thisBrowser')), card);
       body.append(backupSection(), wd.syncSettingsSection(), browser);
       d.showModal();
@@ -346,7 +355,7 @@
         save(true);
       });
       const list = el('div', 'wd-backup-list wd-rotate-list');
-      for (const dash of wd.dashboards) {
+      for (const dash of wd.navInOrder()) {
         const label = el('label', 'wd-backup-item');
         const input = el('input');
         input.type = 'checkbox';
@@ -358,6 +367,7 @@
         const name = el('span', 'wd-backup-item-name', dash.name || t('untitled'));
         name.dir = 'auto';
         label.append(input, name);
+        if ((wd.nav.prefs.hidden).includes(dash.id)) label.append(el('span', 'wd-backup-tag', t('navHiddenHere')));
         list.append(label);
       }
       sub.append(setRow(t('rotateEvery'), t('rotateEveryText'), seconds, seconds.id), list, note);
@@ -618,6 +628,7 @@
     function putBack({ id, dashboard, index }) {
       if (!wd.dashboards.some(x => x.id === id)) wd.dashboards.splice(Math.min(index, wd.dashboards.length), 0, dashboard);
       if (!wd.current) route();
+      else if (wd.redrawNav) wd.redrawNav();
     }
 
     /** The app deletes the waiting dashboard, after the saves already queued, and no save of it after that. */
@@ -654,6 +665,7 @@
         try {
           const res = await request('POST', `/web/dashboards/${encodeURIComponent(id)}/copy`, {});
           if (res && Array.isArray(res.dashboards)) wd.dashboards = res.dashboards;
+          if (res && res.dashboard && wd.navCopied) wd.navCopied(id, res.dashboard.id);
           if (location.hash !== '#/edit' || !res || !res.dashboard) return;
           renderList(true);
           const card = /** @type {HTMLElement} */ (root.querySelector(`.wd-dash[data-id="${res.dashboard.id}"]`));
@@ -689,6 +701,7 @@
           ...wd.dashboards.filter(d => !(d.id in placement)),
         ];
         saveFront({ order: now.map(x => x.id), placement });
+        if (wd.redrawNav) wd.redrawNav();
       };
       let move = null; // {card, pointerId, x0, y0, active, before: the arrangement when it started}
       const finish = (keep) => {

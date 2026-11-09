@@ -1175,6 +1175,8 @@
     "navReset": "Przywróć ze strony głównej",
     "navShowHide": "Pokaż lub ukryj: __name__",
     "navMove": "Przenieś: __name__",
+    "navHiddenHere": "Ukryty w panelu bocznym",
+    "kioskHelp": "Dla przeglądarki w trybie kiosku: dodaj do adresu ?kiosk=1, aby ukryć pasek, oraz &nav=1, aby zachować panel boczny.",
     "widgetsTitle": "Widżety",
     "widgetsText": "Wszystko, co możesz umieścić na pulpicie.",
     "previous": "Poprzedni",

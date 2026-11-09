@@ -1175,6 +1175,8 @@
     "navReset": "Tilbakestill til forsiden",
     "navShowHide": "Vis eller skjul __name__",
     "navMove": "Flytt __name__",
+    "navHiddenHere": "Skjult i sidepanelet",
+    "kioskHelp": "For en kioskleser: legg til ?kiosk=1 i adressen for å skjule linjen, og også &nav=1 for å beholde sidepanelet.",
     "widgetsTitle": "Widgeter",
     "widgetsText": "Alt du kan legge på et dashbord.",
     "previous": "Forrige",

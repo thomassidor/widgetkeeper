@@ -1175,6 +1175,8 @@
     "navReset": "Ripristina dalla pagina iniziale",
     "navShowHide": "Mostra o nascondi __name__",
     "navMove": "Sposta __name__",
+    "navHiddenHere": "Nascosta nel pannello laterale",
+    "kioskHelp": "Per un browser kiosk: aggiungi ?kiosk=1 all’indirizzo per nascondere la barra e anche &nav=1 per mantenere il pannello laterale.",
     "widgetsTitle": "Widget",
     "widgetsText": "Tutto ciò che puoi mettere in una dashboard.",
     "previous": "Precedente",

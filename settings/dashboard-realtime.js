@@ -152,7 +152,7 @@
     /** Not now: someone is editing or has a dialog open, or a reload would drop the browser out of full screen for good. */
     function busyToReload() {
       const page = /** @type {any} */ (document);
-      return !!(wd.current && wd.current.editing) || !!document.querySelector('dialog[open]')
+      return !!(wd.current && wd.current.editing) || !!document.querySelector('dialog[open]') || !!(wd.nav && wd.nav.customizing)
         || !!(page.fullscreenElement || page.webkitFullscreenElement);
     }
 

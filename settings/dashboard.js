@@ -234,6 +234,8 @@
     navReset: 'Reset to the front page',
     navShowHide: 'Show or hide __name__',
     navMove: 'Move __name__',
+    navHiddenHere: 'Hidden in the side pane',
+    kioskHelp: 'For a kiosk browser: add ?kiosk=1 to the address to hide the bar, and &nav=1 as well to keep the side pane.',
     widgetsTitle: 'Widgets',
     widgetsText: 'Everything you can put on a dashboard.',
     previous: 'Previous',

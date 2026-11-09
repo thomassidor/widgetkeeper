@@ -2,6 +2,7 @@
  * The web dashboards page: the side pane, the list of dashboards at the left of a dashboard and of the front page. It's
  * closed, floats over the widgets or is kept open beside them (`wd-nav-pinned` on html: the page's left margin). It sits
  * next to `root`, not in it: a redraw leaves it alone and no widget's frame ever has to move, which would reload it.
+ * In the editors a kept-open pane stays but can't be used, so a dashboard is laid out at the width it will be seen at.
  * What a browser shows in it is that browser's own (`widgetkeeper.web.nav`): the app stores nothing.
  */
 (function () {
@@ -37,7 +38,7 @@
       list.splice(to, 0, item);
     }
 
-    const nav = { prefs: readPrefs(storageGet(NAV_STORAGE)), shown: false, open: false, customizing: false, drag: null, pane: null, scrim: null, head: null, list: null, foot: null };
+    const nav = { prefs: readPrefs(storageGet(NAV_STORAGE)), shown: false, inactive: false, open: false, customizing: false, drag: null, pane: null, scrim: null, head: null, list: null, foot: null };
     wd.nav = nav;
 
     const sectionsNow = () => (wd.frontPage && wd.frontPage.sections) || [];
@@ -71,11 +72,14 @@
       const ids = dashboardIds();
       const sections = sectionIds();
       const p = nav.prefs;
-      p.hidden = p.hidden.filter(id => ids.includes(id));
+      // A dashboard whose delete can still be undone isn't gone yet.
+      const undoable = wd.pendingDelete && wd.pendingDelete.id;
+      const stays = (id) => ids.includes(id) || id === undoable;
+      p.hidden = p.hidden.filter(stays);
       p.folded = p.folded.filter(id => sections.includes(id));
-      p.order = p.order.filter(id => ids.includes(id));
+      p.order = p.order.filter(stays);
       p.sectionOrder = p.sectionOrder.filter(id => sections.includes(id));
-      if (ordered(ids, p.order).join('\n') === ids.join('\n')) p.order = [];
+      if (!p.order.includes(undoable) && ordered(ids, p.order).join('\n') === ids.join('\n')) p.order = [];
       if (ordered(sections, p.sectionOrder).join('\n') === sections.join('\n')) p.sectionOrder = [];
       storageSet(NAV_STORAGE, JSON.stringify(p));
     }
@@ -88,7 +92,7 @@
     }
     const allowed = () => nav.shown && !blocked();
     const isPinned = () => allowed() && nav.prefs.pinned && canPin();
-    const isFloating = () => allowed() && !isPinned() && nav.open;
+    const isFloating = () => allowed() && !nav.inactive && !isPinned() && nav.open;
 
     /** Puts the pane in the state the choices, the window and the view ask for. */
     function apply() {
@@ -96,10 +100,11 @@
         const pinned = isPinned();
         const floating = isFloating();
         document.documentElement.classList.toggle('wd-nav-pinned', pinned);
-        nav.pane.hidden = !allowed();
+        nav.pane.hidden = !allowed() || (nav.inactive && !pinned);
         nav.pane.classList.toggle('open', pinned || floating);
-        nav.pane.inert = !(pinned || floating);
-        nav.scrim.hidden = !allowed();
+        nav.pane.classList.toggle('inactive', nav.inactive);
+        nav.pane.inert = nav.inactive || !(pinned || floating);
+        nav.scrim.hidden = !allowed() || nav.inactive;
         nav.scrim.classList.toggle('open', floating);
         const pin = nav.head.querySelector('.wd-nav-pin');
         if (pin) pin.hidden = !canPin();
@@ -161,22 +166,15 @@
       else start();
     }
 
-    /** A picture of the dashboard's columns, so a row needs no icon of the user's own. */
-    function glyph(d) {
-      const node = el('span', 'wd-nav-glyph');
-      const columns = Math.min(6, (d.columns && d.columns.length) || 1);
-      for (let i = 0; i < columns; i++) node.append(el('i'));
-      return node;
-    }
-
     function plainRow(d) {
-      const name = d.name || t('untitled');
+      const here = wd.current && wd.current.dashboard.id === d.id;
+      const name = (here ? wd.current.dashboard.name : d.name) || t('untitled'); // the editor's copy has a new name at once
       const hash = `#/d/${d.id}`;
       const link = el('a', 'wd-nav-row');
       link.href = hash;
-      link.append(glyph(d), el('span', 'wd-nav-name', name));
+      link.append(el('span', 'wd-nav-name', name));
       if (wd.lockOf(d)) { const lock = el('span', 'wd-nav-lock'); lock.append(icon('lock')); link.append(lock); }
-      if (wd.current && wd.current.dashboard.id === d.id) link.setAttribute('aria-current', 'page');
+      if (here) link.setAttribute('aria-current', 'page');
       link.addEventListener('click', (e) => leave(e, hash));
       return link;
     }
@@ -222,7 +220,6 @@
           const next = group.all[group.all.indexOf(d) + by];
           if (next) reorder(nav.prefs.order, d.id, next.id);
         }),
-        glyph(d),
         el('span', 'wd-nav-name', name),
         eyeButton(`eye:${d.id}`, name, !off, () => {
           nav.prefs.hidden = off ? nav.prefs.hidden.filter(id => id !== d.id) : [...nav.prefs.hidden, d.id];
@@ -282,8 +279,6 @@
         nav.head.replaceChildren(el('strong', 'wd-nav-title', t('navShowHere')), done);
         return;
       }
-      const mark = el('span', 'wd-logo');
-      mark.innerHTML = wd.LOGO;
       const pinned = isPinned();
       const label = t(pinned ? 'navStopKeeping' : 'navKeepOpen');
       const pin = button(`wd-icon wd-nav-pin${pinned ? ' on' : ''}`, '', togglePin, label);
@@ -292,7 +287,7 @@
       pin.append(icon('pin'));
       const close = button('wd-icon wd-nav-close', '', closePane, t('navClose'));
       close.append(icon('close'));
-      nav.head.replaceChildren(mark, el('strong', 'wd-nav-title', t('dashboards')), pin, close);
+      nav.head.replaceChildren(el('strong', 'wd-nav-title', t('dashboards')), pin, close);
     }
 
     function drawFoot() {
@@ -404,21 +399,42 @@
       return b;
     }
 
-    /** A viewing bar is up: called once its view is drawn. */
-    function showNav() {
+    /** A view is up: called once it's drawn. `inactive`: an editor's, where only a kept-open pane shows, and can't be used. */
+    function showNav({ inactive = false } = {}) {
       ensureShell();
       nav.shown = true;
+      nav.inactive = inactive;
       draw();
       apply();
     }
 
-    /** Every view starts here (`clearRoot()`), and only a dashboard or the front page shows the pane again. */
+    /** Every view starts here (`clearRoot()`), and only a dashboard, the front page and their editors show the pane again. */
     function hideNav() {
       if (nav.drag) nav.drag.finish(false);
       nav.shown = false;
+      nav.inactive = false;
       nav.open = false;
       nav.customizing = false;
       apply();
+    }
+
+    /** The list again after a change elsewhere: a dashboard back from Undo, renamed, or moved on the front page. */
+    function redrawNav() {
+      if (nav.shown) draw();
+    }
+
+    /** Every dashboard, hidden ones too, in this browser's order: Rotate goes round them in it. */
+    const navInOrder = () => navGroups(true).flatMap(g => g.all);
+
+    /** A duplicate: right after its original in an order of this browser's own, and hidden if that is. */
+    function navCopied(from, to) {
+      const p = nav.prefs;
+      if (p.order.length) {
+        p.order = ordered(dashboardIds(), p.order).filter(id => id !== to);
+        p.order.splice(p.order.indexOf(from) + 1, 0, to);
+      }
+      if (isHidden(from) && !isHidden(to)) p.hidden.push(to);
+      save();
     }
 
     document.addEventListener('keydown', (e) => {
@@ -429,6 +445,6 @@
     window.addEventListener('resize', apply);
     for (const type of ['fullscreenchange', 'webkitfullscreenchange']) document.addEventListener(type, apply);
 
-    Object.assign(wd, { hideNav, navButton, navGroups, ordered, readPrefs, reorder, showNav, PIN_MIN_WIDTH });
+    Object.assign(wd, { hideNav, navButton, navCopied, navGroups, navInOrder, ordered, readPrefs, redrawNav, reorder, showNav, PIN_MIN_WIDTH });
   });
 })();

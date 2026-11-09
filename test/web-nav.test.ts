@@ -36,7 +36,7 @@ function mount(opts: { stored?: unknown; dashboards?: any[]; sections?: any[]; c
   document.body.append(root);
   const wd: Record<string, any> = {
     el, button, root, t: (s: string, tokens?: Record<string, unknown>) => (tokens ? `${s} ${Object.values(tokens).join()}` : s),
-    icon: (name: string) => el('i', `icon-${name}`), LOGO: '<svg></svg>', STAY_STORAGE: 'stay',
+    icon: (name: string) => el('i', `icon-${name}`), STAY_STORAGE: 'stay',
     storageGet: (k: string) => localStorage.getItem(k),
     storageSet: (k: string, v: string | null) => (v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v)),
     dashboards: opts.dashboards ?? ALL, frontPage: { sections: opts.sections ?? SECTIONS },
@@ -219,6 +219,89 @@ describe('closed, floating and kept open', () => {
     document.dispatchEvent(new Event('fullscreenchange'));
     expect(opted.pane.hidden).toBe(true);
     expect(html.classList.contains('wd-nav-pinned')).toBe(false);
+  });
+});
+
+describe('in the editors', () => {
+  it('stays, kept open and out of use, so the page is laid out at its real width', () => {
+    const { wd, pane, scrim } = mount({ stored: { pinned: true } });
+    wd.hideNav();
+    wd.showNav({ inactive: true });
+    expect(html.classList.contains('wd-nav-pinned')).toBe(true);
+    expect(pane.hidden).toBe(false);
+    expect(pane.classList.contains('inactive')).toBe(true);
+    expect((pane as any).inert).toBe(true);
+    expect(scrim.hidden).toBe(true);
+    wd.hideNav();
+    wd.showNav();
+    expect(pane.classList.contains('inactive')).toBe(false);
+    expect((pane as any).inert).toBe(false);
+  });
+
+  it('is gone when it isn\'t kept open, and a floating one closes', () => {
+    const { wd, pane, toggle } = mount();
+    toggle.click();
+    wd.hideNav();
+    wd.showNav({ inactive: true });
+    expect(pane.hidden).toBe(true);
+    wd.hideNav();
+    wd.showNav();
+    expect(pane.classList.contains('open')).toBe(false);
+  });
+
+  it('shows a new name as it\'s typed', () => {
+    const { wd, names } = mount({ stored: { pinned: true }, current: { dashboard: { ...HOME, name: 'Renamed' } } });
+    wd.redrawNav();
+    expect(names()[0]).toBe('Renamed');
+  });
+});
+
+describe('with the rest of the page', () => {
+  it('gives Rotate this browser\'s order, hidden ones included', () => {
+    const { wd } = mount({ stored: { hidden: ['energy'], order: ['bath', 'energy', 'home'], sectionOrder: ['s2', 's1'] } });
+    expect(wd.navInOrder().map((d: any) => d.id)).toEqual(['energy', 'home', 'garden', 'bath', 'kitchen']);
+  });
+
+  it('puts a duplicate after its original in an own order, hidden like it', () => {
+    const copy = { id: 'copy', name: 'Bath (copy)', section: 's1', columns: [[]] };
+    const { wd, stored } = mount({ stored: { hidden: ['bath'], order: ['bath', 'kitchen', 'home', 'energy', 'garden'] } });
+    wd.dashboards = [...ALL, copy];
+    wd.navCopied('bath', 'copy');
+    expect(stored().order.slice(0, 2)).toEqual(['bath', 'copy']);
+    expect(stored().hidden).toEqual(['bath', 'copy']);
+  });
+
+  it('leaves no order of its own for a duplicate while it follows the front page', () => {
+    const copy = { id: 'copy', name: 'Home (copy)', columns: [[]] };
+    const { wd, stored } = mount();
+    wd.dashboards = [HOME, copy, ENERGY];
+    wd.navCopied('home', 'copy');
+    expect(stored().order).toEqual([]);
+    expect(stored().hidden).toEqual([]);
+  });
+
+  it('keeps what it knows of a dashboard whose delete can still be undone', () => {
+    const { wd, pane, customize, stored } = mount({ stored: { hidden: ['energy'], order: ['energy', 'home'] } });
+    customize();
+    wd.dashboards = ALL.filter(d => d.id !== 'energy');
+    wd.pendingDelete = { id: 'energy' };
+    (pane.querySelector('[data-nav-key="eye:home"]') as HTMLElement).click();
+    expect(stored().hidden).toContain('energy');
+    expect(stored().order).toContain('energy');
+    wd.pendingDelete = null;
+    (pane.querySelector('[data-nav-key="eye:home"]') as HTMLElement).click();
+    expect(stored().hidden).toEqual([]);
+  });
+
+  it('draws a dashboard back from Undo', () => {
+    const { wd, names } = mount({ dashboards: [HOME] });
+    wd.dashboards = [HOME, ENERGY];
+    wd.redrawNav();
+    expect(names()).toEqual(['Home', 'Energy']);
+  });
+
+  it('has no logo of its own beside the front page\'s', () => {
+    expect(mount().pane.querySelector('.wd-logo')).toBeNull();
   });
 });
 

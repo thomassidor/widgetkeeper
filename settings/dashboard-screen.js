@@ -127,7 +127,7 @@
     function holdRotation() {
       return document.hidden || !wd.key || !wd.setup || wd.setup.disabled || wd.setup.passwordRequired
         || /\/edit$/.test(location.hash) || !!(wd.current && wd.current.editing) || !!wd.drag
-        || !!document.querySelector('dialog[open]');
+        || !!document.querySelector('dialog[open]') || !!(wd.nav && wd.nav.customizing);
     }
 
     function rotateTick() {
@@ -138,7 +138,7 @@
         return;
       }
       const config = rotateConfigOf(storageGet(ROTATE_STORAGE));
-      const list = rotationList(config, wd.dashboards || []);
+      const list = rotationList(config, (wd.navInOrder ? wd.navInOrder() : wd.dashboards) || []);
       if (!list.length || now < rotationDue(shownAt, touchedAt, config.seconds)) return;
       shownAt = now;
       location.hash = `#/d/${nextInRotation(list, location.hash)}`;

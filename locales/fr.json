@@ -1175,6 +1175,8 @@
     "navReset": "Revenir à la page d’accueil",
     "navShowHide": "Afficher ou masquer __name__",
     "navMove": "Déplacer __name__",
+    "navHiddenHere": "Masqué dans le panneau latéral",
+    "kioskHelp": "Pour un navigateur kiosque : ajoutez ?kiosk=1 à l’adresse pour masquer la barre, et aussi &nav=1 pour garder le panneau latéral.",
     "widgetsTitle": "Widgets",
     "widgetsText": "Tout ce que vous pouvez mettre sur un tableau de bord.",
     "previous": "Précédent",

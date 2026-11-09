@@ -1175,6 +1175,8 @@
     "navReset": "Auf die Startseite zurücksetzen",
     "navShowHide": "__name__ ein- oder ausblenden",
     "navMove": "__name__ verschieben",
+    "navHiddenHere": "In der Seitenleiste ausgeblendet",
+    "kioskHelp": "Für einen Kiosk-Browser: Füge der Adresse ?kiosk=1 hinzu, um die Leiste auszublenden, und zusätzlich &nav=1, um die Seitenleiste zu behalten.",
     "widgetsTitle": "Widgets",
     "widgetsText": "Alles, was du auf ein Dashboard setzen kannst.",
     "previous": "Zurück",

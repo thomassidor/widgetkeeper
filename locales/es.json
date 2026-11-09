@@ -1175,6 +1175,8 @@
     "navReset": "Restablecer según la página principal",
     "navShowHide": "Mostrar u ocultar __name__",
     "navMove": "Mover __name__",
+    "navHiddenHere": "Oculto en el panel lateral",
+    "kioskHelp": "Para un navegador en modo quiosco: añade ?kiosk=1 a la dirección para ocultar la barra, y también &nav=1 para mantener el panel lateral.",
     "widgetsTitle": "Widgets",
     "widgetsText": "Todo lo que puedes poner en un panel.",
     "previous": "Anterior",

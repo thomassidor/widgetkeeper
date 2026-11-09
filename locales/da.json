@@ -1175,6 +1175,8 @@
     "navReset": "Nulstil til forsiden",
     "navShowHide": "Vis eller skjul __name__",
     "navMove": "Flyt __name__",
+    "navHiddenHere": "Skjult i sidepanelet",
+    "kioskHelp": "Til en kioskbrowser: Tilføj ?kiosk=1 til adressen for at skjule bjælken, og også &nav=1 for at beholde sidepanelet.",
     "widgetsTitle": "Widgets",
     "widgetsText": "Alt, du kan sætte på et dashboard.",
     "previous": "Forrige",

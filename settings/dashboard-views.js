@@ -285,7 +285,7 @@
       wd.current = { dashboard: editable(dashboard), editing, widgets: new Map(), covers: new Map(), grid: el('main', 'wd-grid') };
       root.classList.toggle('editing', editing);
       root.append(editing ? editBar() : viewBar(), wd.current.grid);
-      if (!editing) wd.showNav(); // before the grid is laid out, so it's laid out once, at its width
+      wd.showNav({ inactive: editing }); // before the grid is laid out, so it's laid out once, at its width
       wd.sizes.observe(wd.current.grid);
       syncGrid();
       if (!editing) wd.onSyncOpen(dashboard.id);
@@ -491,7 +491,7 @@
       name.placeholder = t('untitled');
       name.setAttribute('aria-label', t('name'));
       // current.dashboard, not d, when it changes: a save the app corrected swaps it for the app's copy.
-      name.addEventListener('change', () => { const dash = wd.current.dashboard; dash.name = name.value.trim(); setTitle(dash); persist(); });
+      name.addEventListener('change', () => { const dash = wd.current.dashboard; dash.name = name.value.trim(); setTitle(dash); wd.redrawNav(); persist(); });
 
       // The columns: one pill with its icon, − the count +.
       const cols = el('span', 'wd-stepper');
@@ -772,7 +772,7 @@
       });
     }
 
-    Object.assign(wd, { about, applyTheme, askCode, bar, brand, clearRoot, editable, LOGO, liveNote, lockOf, preview,
+    Object.assign(wd, { about, applyTheme, askCode, bar, brand, clearRoot, editable, liveNote, lockOf, preview,
       renderDashboard, renderFailed, renderKey, renderMissing, renderOff, renderPassword, signOut, stored, syncGrid,
       widgetFolder });
   });
