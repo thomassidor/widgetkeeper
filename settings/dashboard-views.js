@@ -608,17 +608,23 @@
       const bgButton = button('wd-btn wd-bgbutton', '', () => palette.toggle(), t('background'));
       const pop = el('div', 'wd-bgpop');
       bgPick.append(bgButton, pop);
-      // The tints, then the user's own colour (the browser's colour picker, shown live and saved when it's done).
-      const presets = el('div');
+      // The tints, then the user's own colour as one more swatch: the browser's colour picker, over the dot, shown live
+      // and saved when it's done. Kept out of drawBackground()'s redraw: moving the field would close the picker.
+      const presets = el('div', 'wd-bgpresets');
       const customField = /** @type {HTMLInputElement} */ (el('input', 'wd-bgcustom-field'));
       customField.type = 'color';
-      const customHex = el('span', 'wd-bgcustom-hex');
-      const customRow = el('label', 'wd-bgcustom');
-      customRow.append(customField, el('span', null, t('bgCustom')), customHex);
+      customField.setAttribute('aria-label', t('bgCustom'));
+      const customDot = wd.swatch('');
+      const customSwatch = el('label', 'wd-swatch wd-bgcustom');
+      customSwatch.title = t('bgCustom');
+      customSwatch.append(customField, customDot);
+      const swatches = el('div', 'wd-bgrow');
+      swatches.append(presets, customSwatch);
+      const caption = el('div', 'wd-bgcaption');
       const customHint = el('div', 'wd-bgcustom-hint', t('bgHardToRead'));
-      pop.append(presets, customRow, customHint);
+      pop.append(swatches, caption, customHint);
       const palette = popover(bgPick, bgButton, pop, () => {
-        /** @type {HTMLElement} */ (pop.querySelector('.wd-swatch.on') || customField).focus();
+        /** @type {HTMLElement} */ (pop.querySelector('button.wd-swatch.on') || customField).focus();
       }, customField);
       const backgrounds = Object.keys(BACKGROUNDS).map(id => ({ id, title: t(`bg${id[0].toUpperCase()}${id.slice(1)}`) }));
       function drawBackground() {
@@ -637,8 +643,10 @@
           bgButton.focus();
         }, true, colours));
         if (customField.value !== shown) customField.value = shown; // not while it's being picked: it's the same then
-        customRow.classList.toggle('on', custom);
-        customHex.textContent = custom ? current.toUpperCase() : '';
+        customSwatch.classList.toggle('on', custom);
+        customDot.classList.remove('plain');
+        customDot.style.background = custom ? current : 'conic-gradient(#F44, #FD0, #4C4, #0CF, #36F, #E3E, #F44)'; // any colour
+        caption.textContent = custom ? `${t('bgCustom')} · ${current.toUpperCase()}` : backgrounds.find(b => b.id === current)?.title || '';
         customHint.hidden = !custom || !hardToRead(current, wd.isDark());
       }
       const pickCustom = () => {

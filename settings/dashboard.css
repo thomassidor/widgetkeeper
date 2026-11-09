@@ -79,18 +79,16 @@ body { margin: 0; color: var(--wd-text); font-size: var(--homey-font-size-defaul
   position: absolute; top: calc(100% + 6px); left: 0; z-index: 6; padding: 8px 10px; border-radius: 14px;
   background: var(--wd-tile); box-shadow: 0 0 0 1px var(--wd-line), 0 10px 28px rgba(0, 0, 0, .25);
 }
-.wd-bgpop .wd-swatches { flex-wrap: nowrap; }
 .wd-bgpick .wd-swatch-dot { box-shadow: inset 0 0 0 1px var(--wd-line); } /* the dark tints on a dark tile */
-@media (max-width: 520px) { .wd-bgpop .wd-swatches { flex-wrap: wrap; width: 192px; } }
-.wd-bgcustom { display: flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 4px; padding: 0 4px; font-size: 14px; line-height: 20px; color: var(--wd-text); cursor: pointer; }
-.wd-bgcustom-field { -webkit-appearance: none; appearance: none; flex: none; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 13px; background: transparent; cursor: pointer; }
-.wd-bgcustom-field::-webkit-color-swatch-wrapper { padding: 0; }
-.wd-bgcustom-field::-webkit-color-swatch { border: 1px solid var(--wd-line); border-radius: 13px; }
-.wd-bgcustom-field::-moz-color-swatch { border: 1px solid var(--wd-line); border-radius: 13px; }
-.wd-bgcustom.on .wd-bgcustom-field { box-shadow: 0 0 0 2px var(--wd-tile), 0 0 0 4px var(--wd-text); }
-.wd-bgcustom-field:focus-visible { outline: 2px solid var(--wd-accent); outline-offset: 3px; }
-.wd-bgcustom-hex { margin-left: auto; color: var(--wd-muted); font-variant-numeric: tabular-nums; }
-.wd-bgcustom-hint { width: 0; min-width: 100%; padding-bottom: 4px; font-size: 12px; line-height: 16px; color: var(--wd-muted); } /* as wide as the swatches, not wider */
+@media (max-width: 520px) { .wd-bgrow { flex-wrap: wrap; width: 190px; } }
+.wd-bgrow { display: flex; gap: 4px; }
+.wd-bgpresets, .wd-bgpop .wd-swatches { display: contents; } /* the tints and the custom swatch: one row */
+.wd-bgpop .wd-swatch-name { display: none; }
+.wd-bgcustom { position: relative; }
+.wd-bgcustom-field { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; border: 0; opacity: 0; cursor: pointer; } /* over the dot: a tap opens the picker */
+.wd-bgcustom-field:focus-visible + .wd-swatch-dot { outline: 2px solid var(--wd-accent); outline-offset: 3px; }
+.wd-bgcaption { padding: 6px 6px 2px; font-size: 14px; line-height: 20px; color: var(--wd-muted); font-variant-numeric: tabular-nums; }
+.wd-bgcustom-hint { width: 0; min-width: calc(100% - 12px); padding: 0 6px 2px; font-size: 12px; line-height: 16px; color: var(--wd-muted); } /* as wide as the swatches, not wider */
 .wd-bar-title { font-weight: 700; font-size: var(--homey-font-size-default, 17px); line-height: 24px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .wd-spacer { flex: 1 1 auto; }
 /* The front page's title: the app icon (the logomark in white on the brand colour, #2A1958, as Homey shows the app)
