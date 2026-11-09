@@ -5,6 +5,7 @@ import { listAppLogs, logSlot } from './appLogs.js';
 import { byName, devicesAndZones, filterItems, hintRow, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { describeCapability } from './capabilities.js';
 import { driverIconPath, libraryIconUrl } from './deviceIcon.js';
+import { FLOW_ICON_IMAGES } from './flowIconImages.js';
 import { deviceApp } from './MediaService.js';
 import { slotCaps, VALUE_SETTINGS } from './SparklineService.js';
 import { isReservedKey } from './storedSetting.js';
@@ -81,7 +82,20 @@ export type WebSection = { id: string, name: string };
  * The front page's choices: whether it shows the widgets' carousel under the dashboards, and its sections, in order
  * (the dashboards in none come first, under Your dashboards).
  */
-export type WebFront = { widgets: boolean, sections: WebSection[] };
+/** The web dashboards' own name and icon, in place of Widgetkeeper's: only what's been set. */
+export type WebBrand = { name?: string, icon?: string };
+export type WebFront = { widgets: boolean, sections: WebSection[], brand?: WebBrand };
+
+/** An uploaded icon as the page makes it (never an SVG, which could hold a script), and its longest length. */
+const ICON_PICTURE = /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/;
+export const MAX_ICON_PICTURE = 16000;
+
+/** An icon as kept (a dashboard's or the web dashboards' own): one of the icon settings' ids or an uploaded picture, else null. */
+function iconOf(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  if (Object.prototype.hasOwnProperty.call(FLOW_ICON_IMAGES, value)) return value;
+  return value.length <= MAX_ICON_PICTURE && ICON_PICTURE.test(value) ? value : null;
+}
 
 /**
  * A web dashboard: columns of widgets, top to bottom; `section`: the front page's section it's under; `columnWidth`: its
@@ -89,7 +103,7 @@ export type WebFront = { widgets: boolean, sections: WebSection[] };
  * take, as the page asks it (one that was removed, or Any code while there's none, no longer does).
  */
 export type WebDashboard = {
-  id: string, name: string, theme: WebTheme, background: WebBackground, columns: WebWidget[][], section?: string,
+  id: string, name: string, theme: WebTheme, background: WebBackground, columns: WebWidget[][], section?: string, icon?: string,
   columnWidth?: Exclude<WebColumnWidth, 'normal'>, code?: { id: string, name: string },
 };
 
@@ -411,7 +425,8 @@ export default class WebDashboardService {
   /**
    * The front page's edit mode: `sections` (all of them, in order; a dashboard in one left out goes to none), `placement`
    * (`{dashboardId: sectionId | null}`, only the dashboards it names), `order` (dashboard ids, first to last: those it
-   * doesn't name keep their order after them) and `widgets` (the carousel), each only when given. Answers the
+   * doesn't name keep their order after them), `widgets` (the carousel) and `brand` (`{name, icon}`, all of it: what's
+   * left out goes back to Widgetkeeper's), each only when given. Answers the
    * dashboards and the choices as kept.
    */
   saveFront(input: unknown): { dashboards: WebDashboard[], front: WebFront } {
@@ -419,7 +434,12 @@ export default class WebDashboardService {
     const front = this.front();
     if (Array.isArray(body.sections)) front.sections = sectionsOf(body.sections);
     if (typeof body.widgets === 'boolean') front.widgets = body.widgets;
-    if (Array.isArray(body.sections) || typeof body.widgets === 'boolean') this.homey.settings.set(WEB_FRONT_SETTING, front);
+    if (body.brand !== undefined) {
+      const brand = brandOf(body.brand);
+      if (brand) front.brand = brand;
+      else delete front.brand;
+    }
+    if (Array.isArray(body.sections) || typeof body.widgets === 'boolean' || body.brand !== undefined) this.homey.settings.set(WEB_FRONT_SETTING, front);
     const placement = body.placement && typeof body.placement === 'object' && !Array.isArray(body.placement)
       ? body.placement as Record<string, unknown> : null;
     if (placement || Array.isArray(body.sections)) {
@@ -568,7 +588,9 @@ export default class WebDashboardService {
     this.homey.settings.set(WEB_DASHBOARDS_SETTING, all);
     const fileFront = frontOf(b.front);
     if (b.complete === true) {
-      this.homey.settings.set(WEB_FRONT_SETTING, fileFront);
+      // A backup from before the name and icon existed says nothing about them, so they stay.
+      const brand = fileFront.brand ?? this.front().brand;
+      this.homey.settings.set(WEB_FRONT_SETTING, brand ? { ...fileFront, brand } : fileFront);
     } else {
       const front = this.front();
       const wanted = fileFront.sections.filter(x => restored.some(d => d.section === x.id) && !front.sections.some(y => y.id === x.id));
@@ -804,9 +826,11 @@ export default class WebDashboardService {
     const section = typeof d.section === 'string' && ID.test(d.section) ? d.section : null;
     const code = d.code && typeof d.code.id === 'string' && CODE_ID.test(d.code.id)
       ? { id: d.code.id, name: typeof d.code.name === 'string' ? d.code.name.slice(0, 40) : '' } : null;
+    const icon = iconOf(d.icon);
     return {
       id, name, theme, background, columns,
       ...(section ? { section } : {}), ...(width !== 'normal' ? { columnWidth: width } : {}), ...(code ? { code } : {}),
+      ...(icon ? { icon } : {}),
     };
   }
 
@@ -916,7 +940,16 @@ function deviceIdList(list: unknown[], max: number): string[] {
 /** The front page's choices as kept (`WebFront`), from what's stored or a backup's. */
 function frontOf(saved: unknown): WebFront {
   const f = (saved && typeof saved === 'object' ? saved : {}) as Record<string, unknown>;
-  return { widgets: f.widgets !== false, sections: sectionsOf(Array.isArray(f.sections) ? f.sections : []) };
+  const brand = brandOf(f.brand);
+  return { widgets: f.widgets !== false, sections: sectionsOf(Array.isArray(f.sections) ? f.sections : []), ...(brand ? { brand } : {}) };
+}
+
+/** The name and icon as kept, null when neither is set. */
+function brandOf(input: unknown): WebBrand | null {
+  const b = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>;
+  const name = typeof b.name === 'string' ? b.name.trim().slice(0, 60) : '';
+  const icon = iconOf(b.icon);
+  return name || icon ? { ...(name ? { name } : {}), ...(icon ? { icon } : {}) } : null;
 }
 
 /** Sections as kept: an id (unique) and a name each, at most `MAX_SECTIONS`. */

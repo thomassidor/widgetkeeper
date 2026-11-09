@@ -584,6 +584,6 @@
       return group;
     }
 
-    Object.assign(wd, { choiceGroup, chooseWidget, dialog, editWidget, swatch });
+    Object.assign(wd, { choiceGroup, chooseWidget, dialog, editWidget, matchesWords, swatch });
   });
 })();

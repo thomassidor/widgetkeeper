@@ -1314,7 +1314,17 @@
     "columnRemoved": "Kolumnen togs bort",
     "dashboardDeleted": "Instrumentpanelen togs bort",
     "discard": "Förkasta",
-    "discardEdits": "Tryck igen för att förkasta"
+    "discardEdits": "Tryck igen för att förkasta",
+    "brandTitle": "Rubrik",
+    "brandNameText": "Högst upp på startsidan och i webbläsarens titel, i alla webbläsare.",
+    "brandIcon": "Ikon",
+    "brandIconText": "Bredvid namnet. En av appens ikoner eller en egen bild.",
+    "iconDashboard": "Instrumentpanelens ikon",
+    "iconChoose": "Välj en ikon",
+    "iconNone": "Ingen ikon",
+    "iconDefault": "Standard",
+    "iconUpload": "Egen bild",
+    "iconBad": "Bilden kunde inte läsas."
   },
   "autocomplete": {
     "pickThermostat": "Välj en termostat först",

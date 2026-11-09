@@ -177,13 +177,22 @@
       else start();
     }
 
+    /** A row's icon; once any dashboard has one, the others keep its place, so the names line up. */
+    function rowIcon(d) {
+      const current = wd.current && wd.current.dashboard.id === d.id ? wd.current.dashboard : d;
+      const mark = wd.iconNode(current.icon);
+      if (mark) return [mark];
+      const any = wd.dashboards.some(x => x.icon) || (wd.current && wd.current.dashboard.icon);
+      return any ? [el('span', 'wd-chosen-icon')] : [];
+    }
+
     function plainRow(d) {
       const here = wd.current && wd.current.dashboard.id === d.id;
       const name = (here ? wd.current.dashboard.name : d.name) || t('untitled'); // the editor's copy has a new name at once
       const hash = `#/d/${d.id}`;
       const link = el('a', 'wd-nav-row');
       link.href = hash;
-      link.append(el('span', 'wd-nav-name', name));
+      link.append(...rowIcon(d), el('span', 'wd-nav-name', name));
       if (wd.lockOf(d)) { const lock = el('span', 'wd-nav-lock'); lock.append(icon('lock')); link.append(lock); }
       if (here) link.setAttribute('aria-current', 'page');
       link.addEventListener('click', (e) => leave(e, hash));
@@ -231,6 +240,7 @@
           const next = group.all[group.all.indexOf(d) + by];
           if (next) reorder(nav.prefs.order, d.id, next.id);
         }),
+        ...rowIcon(d),
         el('span', 'wd-nav-name', name),
         eyeButton(`eye:${d.id}`, name, !off, () => {
           nav.prefs.hidden = off ? nav.prefs.hidden.filter(id => id !== d.id) : [...nav.prefs.hidden, d.id];

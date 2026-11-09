@@ -123,7 +123,7 @@ a.wd-nav-row:hover, button.wd-nav-row:hover { background: color-mix(in srgb, var
 /* The front page's bar stays one row: on a phone the title is smaller, without the logo, and gives way before the buttons. */
 .wd-bar-front { flex-wrap: nowrap; }
 .wd-bar-front .wd-live { flex: none; white-space: nowrap; }
-@media (max-width: 520px) { .wd-bar-front .wd-logo { display: none; } .wd-bar-front .wd-brand { font-size: var(--homey-font-size-default, 17px); line-height: 24px; } }
+@media (max-width: 520px) { .wd-bar-front .wd-logo:not(.own) { display: none; } .wd-bar-front .wd-brand { font-size: var(--homey-font-size-default, 17px); line-height: 24px; } }
 /* The front page's title: the app icon (the logomark in white on the brand colour, #2A1958, as Homey shows the app)
    and the name. */
 .wd-brand { display: flex; align-items: center; gap: 12px; min-width: 0; margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; }
@@ -133,6 +133,29 @@ a.wd-nav-row:hover, button.wd-nav-row:hover { background: color-mix(in srgb, var
   background: #2A1958; color: #FFFFFF; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .08);
 }
 .wd-logo svg { width: 100%; height: 100%; }
+/* The user's own icon: a glyph on the same tile, a picture on its own. */
+.wd-logo.own { align-items: center; justify-content: center; }
+.wd-logo.own .wd-chosen-icon { width: 22px; height: 22px; margin: 0; }
+.wd-logo.picture { background: none; box-shadow: none; }
+.wd-logo.picture .wd-chosen-icon { width: 100%; height: 100%; }
+/* An icon chosen for a dashboard or the web dashboards, inline before a name, or a flex item in the side pane's rows. */
+.wd-chosen-icon { display: inline-block; flex: none; width: 20px; height: 20px; margin-right: 8px; vertical-align: -4px; }
+.wd-nav-row .wd-chosen-icon { margin-right: 0; }
+.wd-chosen-icon img { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: 4px; }
+.wd-chosen-icon svg, .wd-iconpick-item svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.wd-chosen-icon svg .filled, .wd-iconpick-item svg .filled { fill: currentColor; stroke: none; }
+.wd-dashicon-pick { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; }
+.wd-dashicon-pick svg { width: 20px; height: 20px; }
+.wd-dashicon-pick .wd-chosen-icon { margin: 0; }
+.wd-brand-field { width: 220px; max-width: 100%; }
+.wd-iconpick-dialog .wd-input[type="search"] { width: 100%; box-sizing: border-box; }
+.wd-iconpick { display: grid; grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); gap: 4px; margin-top: 8px; }
+.wd-iconpick-item {
+  -webkit-appearance: none; appearance: none; border: 0; margin: 0; padding: 12px; background: transparent; cursor: pointer;
+  aspect-ratio: 1; border-radius: 10px; color: var(--wd-text);
+}
+.wd-iconpick-item:hover { background: color-mix(in srgb, var(--wd-text) 8%, transparent); }
+.wd-iconpick-item[aria-current], .wd-iconpick-dialog .wd-btn[aria-current] { color: var(--wd-accent); background: color-mix(in srgb, var(--wd-accent) 16%, transparent); }
 .wd-live { font-size: 12px; line-height: 16px; color: var(--wd-muted); }
 .wd-live::before { content: ''; display: inline-block; width: 8px; height: 8px; margin-right: 6px; border-radius: 4px; background: var(--wd-red); vertical-align: 0; }
 
@@ -407,8 +430,8 @@ textarea.wd-input { width: 100%; resize: vertical; }
 @media (max-width: 720px) {
   .wd-grid { grid-template-columns: minmax(0, 1fr); }
   /* The name and the bar's end on one row, the columns, theme and backdrop under them. */
-  .wd-bar .wd-name, .wd-bar-end { order: -1; }
-  .wd-bar .wd-name { flex: 1 1 calc(100% - 180px); }
+  .wd-dashicon-pick, .wd-bar .wd-name, .wd-bar-end { order: -1; }
+  .wd-bar .wd-name { flex: 1 1 calc(100% - 228px); }
   .wd-bar-rule { display: none; }
 }
 .wd-col { display: flex; flex-direction: column; gap: var(--wd-gap); min-width: 0; }

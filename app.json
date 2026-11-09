@@ -97,6 +97,10 @@
       "method": "GET",
       "path": "/web/version"
     },
+    "getWebIcons": {
+      "method": "GET",
+      "path": "/web/icons"
+    },
     "getWebDevices": {
       "method": "GET",
       "path": "/web/devices"

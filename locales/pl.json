@@ -1314,7 +1314,17 @@
     "columnRemoved": "Kolumna usunięta",
     "dashboardDeleted": "Pulpit usunięty",
     "discard": "Odrzuć",
-    "discardEdits": "Stuknij ponownie, aby odrzucić"
+    "discardEdits": "Stuknij ponownie, aby odrzucić",
+    "brandTitle": "Nagłówek",
+    "brandNameText": "Na górze strony głównej i w tytule przeglądarki, w każdej przeglądarce.",
+    "brandIcon": "Ikona",
+    "brandIconText": "Obok nazwy. Jedna z ikon aplikacji lub własny obraz.",
+    "iconDashboard": "Ikona pulpitu",
+    "iconChoose": "Wybierz ikonę",
+    "iconNone": "Bez ikony",
+    "iconDefault": "Domyślna",
+    "iconUpload": "Własny obraz",
+    "iconBad": "Nie udało się odczytać obrazu."
   },
   "autocomplete": {
     "pickThermostat": "Najpierw wybierz termostat",

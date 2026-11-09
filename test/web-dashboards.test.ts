@@ -5,7 +5,7 @@ import { logSlot } from '../lib/appLogs.js';
 import PersonalApiKey from '../lib/PersonalApiKey.js';
 import TileNameService, { TILE_NAMES_EVENT, TILE_NAMES_SETTING, tileNameRoutes } from '../lib/TileNameService.js';
 import { timeFormatRoutes } from '../lib/timeFormat.js';
-import WebDashboardService, { MAX_DASHBOARDS, MAX_WIDGETS, passesDeviceFilter, settingSections, WEB_BACKUP_FORMAT, WEB_DASHBOARDS_SETTING, WEB_ENABLED_SETTING, WEB_FRONT_SETTING, WEB_REMOTE_SETTING } from '../lib/WebDashboardService.js';
+import WebDashboardService, { MAX_DASHBOARDS, MAX_ICON_PICTURE, MAX_WIDGETS, passesDeviceFilter, settingSections, WEB_BACKUP_FORMAT, WEB_DASHBOARDS_SETTING, WEB_ENABLED_SETTING, WEB_FRONT_SETTING, WEB_REMOTE_SETTING } from '../lib/WebDashboardService.js';
 import { widgetAutocompletes } from '../lib/widgetAutocompletes.js';
 import { DEVICE_WRITES, pageKeyUse, routeKeyUse } from '../lib/widgetRoutes.js';
 import WebPassword from '../lib/WebPassword.js';
@@ -743,6 +743,43 @@ describe('web dashboards: the front page', () => {
     // At most 20.
     web.saveFront({ sections: Array.from({ length: 25 }, (_, i) => ({ id: `s${i}`, name: `S${i}` })) });
     expect(web.front().sections).toHaveLength(20);
+  });
+
+  it('keeps a dashboard\'s icon: an icon setting\'s id or a small picture, never anything else', () => {
+    const { web } = setup();
+    const icon = (value: unknown) => web.save({ name: 'A', columns: [[]], icon: value }).icon;
+    expect(icon('home')).toBe('home');
+    expect(icon('data:image/webp;base64,AAAA')).toBe('data:image/webp;base64,AAAA');
+    for (const bad of ['constructor', 'nope', 'data:image/svg+xml;base64,AAAA', 'data:text/html;base64,AAAA', 'javascript:alert(1)', 'data:image/png;base64,AA"', 7, null]) {
+      expect(web.save({ name: 'A', columns: [[]], icon: bad })).not.toHaveProperty('icon');
+    }
+    expect(web.save({ name: 'A', columns: [[]], icon: `data:image/png;base64,${'A'.repeat(MAX_ICON_PICTURE)}` })).not.toHaveProperty('icon');
+    const saved = web.save({ name: 'A', columns: [[]], icon: 'home' });
+    expect(web.duplicate(saved.id).dashboard.icon).toBe('home');
+  });
+
+  it('keeps the web dashboards\' own name and icon, and takes what\'s left out back to Widgetkeeper\'s', () => {
+    const { web } = setup();
+    expect(web.front()).not.toHaveProperty('brand');
+    expect(web.saveFront({ brand: { name: `  ${'x'.repeat(70)}`, icon: 'home' } }).front.brand).toEqual({ name: 'x'.repeat(60), icon: 'home' });
+    // Another save of the front page leaves it alone; a name alone drops the icon; nothing valid drops it all.
+    expect(web.saveFront({ widgets: false }).front.brand).toEqual({ name: 'x'.repeat(60), icon: 'home' });
+    expect(web.saveFront({ brand: { name: 'Solbakken', icon: 'javascript:alert(1)' } }).front.brand).toEqual({ name: 'Solbakken' });
+    expect(web.saveFront({ brand: {} }).front).not.toHaveProperty('brand');
+  });
+
+  it('a whole restore takes the file\'s name and icon, and keeps these for a file without any', () => {
+    const { web } = setup();
+    web.save({ name: 'A', columns: [[]] });
+    web.saveFront({ brand: { name: 'Solbakken' } });
+    const older = JSON.parse(JSON.stringify(web.backup()));
+    delete older.front.brand;
+    web.restore({ ...older, complete: true });
+    expect(web.front().brand).toEqual({ name: 'Solbakken' });
+    web.restore({ ...older, front: { ...older.front, brand: { name: 'Other' } }, complete: true });
+    expect(web.front().brand).toEqual({ name: 'Other' });
+    web.restore({ ...older, front: { ...older.front, brand: { name: 'Not taken' } } }); // only some dashboards
+    expect(web.front().brand).toEqual({ name: 'Other' });
   });
 
   it('copies a dashboard into its section, and a restore brings the sections its dashboards are in', () => {

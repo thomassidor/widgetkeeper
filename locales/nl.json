@@ -1314,7 +1314,17 @@
     "columnRemoved": "Kolom verwijderd",
     "dashboardDeleted": "Dashboard verwijderd",
     "discard": "Verwerpen",
-    "discardEdits": "Tik nogmaals om te verwerpen"
+    "discardEdits": "Tik nogmaals om te verwerpen",
+    "brandTitle": "Koptekst",
+    "brandNameText": "Boven aan de startpagina en in de titel van de browser, in elke browser.",
+    "brandIcon": "Pictogram",
+    "brandIconText": "Naast de naam. Een van de pictogrammen van de app of een eigen afbeelding.",
+    "iconDashboard": "Pictogram van het dashboard",
+    "iconChoose": "Kies een pictogram",
+    "iconNone": "Geen pictogram",
+    "iconDefault": "Standaard",
+    "iconUpload": "Eigen afbeelding",
+    "iconBad": "Die afbeelding kon niet worden gelezen."
   },
   "autocomplete": {
     "pickThermostat": "Kies eerst een thermostaat",

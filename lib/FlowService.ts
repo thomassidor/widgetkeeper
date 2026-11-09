@@ -115,6 +115,12 @@ export default class FlowService {
     return more ? [...list, hintRow(this.homey.__('autocomplete.more', { count: more }) || `${more} more: keep typing`)] : list;
   }
 
+  /** Every icon's id and name in Homey's language, without images, the kit's first (the web dashboards' icon picker). */
+  iconNames(): { id: string, name: string }[] {
+    const named = (ids: string[]) => ids.map(id => ({ id, name: this.homey.__(`flows.icons.${id}`) || id })).sort(byName(this.homey));
+    return [...named(FLOW_ICONS.filter(id => !FLOW_ICON_IMAGES[id].more)), ...named(FLOW_ICONS.filter(id => FLOW_ICON_IMAGES[id].more))];
+  }
+
   // ---------------------------------------------------------------- state
 
   /** One entry per slot id, in the order asked for; a deleted flow is `missing`. */

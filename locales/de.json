@@ -1314,7 +1314,17 @@
     "columnRemoved": "Spalte entfernt",
     "dashboardDeleted": "Dashboard gelöscht",
     "discard": "Verwerfen",
-    "discardEdits": "Zum Verwerfen erneut tippen"
+    "discardEdits": "Zum Verwerfen erneut tippen",
+    "brandTitle": "Kopfzeile",
+    "brandNameText": "Oben auf der Startseite und im Browsertitel, in jedem Browser.",
+    "brandIcon": "Symbol",
+    "brandIconText": "Neben dem Namen. Eines der Symbole der App oder ein eigenes Bild.",
+    "iconDashboard": "Symbol des Dashboards",
+    "iconChoose": "Symbol wählen",
+    "iconNone": "Kein Symbol",
+    "iconDefault": "Standard",
+    "iconUpload": "Eigenes Bild",
+    "iconBad": "Das Bild konnte nicht gelesen werden."
   },
   "autocomplete": {
     "pickThermostat": "Wähle zuerst ein Thermostat",

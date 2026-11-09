@@ -257,6 +257,7 @@ Your Widgetkeeper widgets in any browser: a wall tablet, an old iPad, a computer
 - **Add widget** has a search and groups (Lights and control, Charts, Energy …).
 - The settings are the same as on a Homey dashboard, in cards, with devices picked by room.
 - Light, dark or automatic, with a background per dashboard: a calm tint or a colour of your own.
+- An optional icon per dashboard, from the tile before its name: one of the app's icons or a picture of your own. It shows in the side pane, on the front page and on the browser tab.
 - Add a [Popups](docs/widgets/popups.md) widget for messages from Flows, and [Dashboard Shortcuts](docs/widgets/shortcuts.md) for big buttons to your other dashboards on a wall tablet, beside the [side pane](#moving-between-dashboards).
 - For a kiosk browser such as Fully Kiosk, add `?kiosk=1` to the address to hide the dashboard's bar. Add `&nav=1` too to keep the side pane there.
 
@@ -269,7 +270,7 @@ The button at the left of the bar opens a side pane with your dashboards, under 
 
 <img src="docs/web/front.png" alt="The web dashboards front page in a browser window: seven dashboards as cards, and the widgets you can add" width="100%">
 
-The front page lists the dashboards; the pen reorders, duplicates and deletes them. **Settings** at the bottom of the [side pane](#moving-between-dashboards) has **Keep screen on**, **Dim**, **Dim at set times**, **Rotate dashboards** and **Sign out** for this browser, and the [backup](#backup).
+The front page lists the dashboards; the pen reorders, duplicates and deletes them. **Settings** at the bottom of the [side pane](#moving-between-dashboards) has **Header**, your own name and icon in place of Widgetkeeper's, on every browser (the sign-in screens keep Widgetkeeper's), then **Keep screen on**, **Dim**, **Dim at set times**, **Rotate dashboards** and **Sign out** for this browser, and the [backup](#backup).
 
 - **Dim at set times:** a second level between two times, by the device's clock. The Flow card *Dim the web dashboards* sets a level too, on every browser or on those showing a dashboard with a [Popups](docs/widgets/popups.md) widget of that screen name. It lasts until another Flow, a moved slider, or the set times next start or end.
 - **Rotate dashboards:** tick two or more dashboards and how many seconds each shows (at least 10). A touch pauses it for a minute, and it waits while a dialog, a popup or the editor is open.

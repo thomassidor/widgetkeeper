@@ -26,7 +26,7 @@
    * mountWebDashboards() runs them. A part registers itself with `WidgetkeeperWeb.part(name, fn)`; `fn(wd)` is
    * the code that was once in mountWebDashboards() itself, sharing the page's state and functions through `wd`.
    */
-  const PARTS = ['realtime', 'frames', 'views', 'front', 'editing', 'settings', 'pickers', 'popups', 'sync', 'screen', 'nav'];
+  const PARTS = ['realtime', 'frames', 'views', 'front', 'editing', 'settings', 'pickers', 'popups', 'sync', 'screen', 'icons', 'nav'];
   window.WidgetkeeperWeb = {
     /** @type {Map<string, (wd: any) => void>} */
     parts: new Map(),
@@ -84,6 +84,16 @@
     codeLocked: 'Too many tries. Try again in __s__ s.',
     darkLight: 'Dark or light',
     darkLightText: "Automatic follows each dashboard's theme.",
+    brandTitle: 'Header',
+    brandNameText: "At the top of the front page and in the browser's title, in every browser.",
+    brandIcon: 'Icon',
+    brandIconText: "Beside the name. One of the app's icons or a picture of your own.",
+    iconDashboard: "Dashboard's icon",
+    iconChoose: 'Choose an icon',
+    iconNone: 'No icon',
+    iconDefault: 'Default',
+    iconUpload: 'Your own picture',
+    iconBad: "That picture couldn't be read.",
     background: 'Background',
     bgDefault: 'Default',
     bgBlack: 'Black/White',
@@ -413,6 +423,7 @@
   /** The bar's icons: 24 px paths, stroked in the text colour. */
   const ICONS = {
     pen: 'M4 20h4L18.5 9.5a2.1 2.1 0 0 0-4-4L4 16v4zM13.5 6.5l4 4',
+    image: 'M5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4zM9 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM20 15l-3.1-3.1a1.5 1.5 0 0 0-2.1 0L6 20',
     lock: 'M6.5 11h11a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19.5v-7A1.5 1.5 0 0 1 6.5 11zM8 11V7a4 4 0 0 1 8 0v4',
     backspace: 'M9 6h10.5A1.5 1.5 0 0 1 21 7.5v9a1.5 1.5 0 0 1-1.5 1.5H9l-6-6 6-6zM12 9.5l5 5M17 9.5l-5 5',
     fullScreen: 'M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5',

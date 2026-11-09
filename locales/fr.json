@@ -1314,7 +1314,17 @@
     "columnRemoved": "Colonne supprimée",
     "dashboardDeleted": "Tableau de bord supprimé",
     "discard": "Abandonner",
-    "discardEdits": "Touchez encore pour abandonner"
+    "discardEdits": "Touchez encore pour abandonner",
+    "brandTitle": "En-tête",
+    "brandNameText": "En haut de la page d'accueil et dans le titre du navigateur, sur tous les navigateurs.",
+    "brandIcon": "Icône",
+    "brandIconText": "À côté du nom. Une icône de l'application ou une image à vous.",
+    "iconDashboard": "Icône du tableau de bord",
+    "iconChoose": "Choisir une icône",
+    "iconNone": "Aucune icône",
+    "iconDefault": "Par défaut",
+    "iconUpload": "Votre image",
+    "iconBad": "Impossible de lire cette image."
   },
   "autocomplete": {
     "pickThermostat": "Choisissez d’abord un thermostat",

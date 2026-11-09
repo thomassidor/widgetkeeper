@@ -1314,7 +1314,17 @@
     "columnRemoved": "열을 제거했습니다",
     "dashboardDeleted": "대시보드를 삭제했습니다",
     "discard": "버리기",
-    "discardEdits": "버리려면 한 번 더 누르세요"
+    "discardEdits": "버리려면 한 번 더 누르세요",
+    "brandTitle": "머리글",
+    "brandNameText": "모든 브라우저에서 첫 페이지 상단과 브라우저 제목에 표시됩니다.",
+    "brandIcon": "아이콘",
+    "brandIconText": "이름 옆에 표시됩니다. 앱의 아이콘 또는 직접 올린 사진입니다.",
+    "iconDashboard": "대시보드 아이콘",
+    "iconChoose": "아이콘 선택",
+    "iconNone": "아이콘 없음",
+    "iconDefault": "기본값",
+    "iconUpload": "내 사진",
+    "iconBad": "사진을 읽을 수 없습니다."
   },
   "autocomplete": {
     "pickThermostat": "먼저 온도 조절기를 선택하세요",

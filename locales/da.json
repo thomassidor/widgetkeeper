@@ -1314,7 +1314,17 @@
     "columnRemoved": "Kolonne fjernet",
     "dashboardDeleted": "Dashboard slettet",
     "discard": "Kassér",
-    "discardEdits": "Tryk igen for at kassere"
+    "discardEdits": "Tryk igen for at kassere",
+    "brandTitle": "Overskrift",
+    "brandNameText": "Øverst på forsiden og i browserens titel, i alle browsere.",
+    "brandIcon": "Ikon",
+    "brandIconText": "Ved siden af navnet. Et af appens ikoner eller dit eget billede.",
+    "iconDashboard": "Dashboardets ikon",
+    "iconChoose": "Vælg et ikon",
+    "iconNone": "Intet ikon",
+    "iconDefault": "Standard",
+    "iconUpload": "Dit eget billede",
+    "iconBad": "Billedet kunne ikke læses."
   },
   "autocomplete": {
     "pickThermostat": "Vælg en termostat først",

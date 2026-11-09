@@ -1314,7 +1314,17 @@
     "columnRemoved": "تمت إزالة العمود",
     "dashboardDeleted": "تم حذف اللوحة",
     "discard": "تجاهل",
-    "discardEdits": "اضغط مرة أخرى للتجاهل"
+    "discardEdits": "اضغط مرة أخرى للتجاهل",
+    "brandTitle": "الترويسة",
+    "brandNameText": "أعلى الصفحة الرئيسية وفي عنوان المتصفح، في كل المتصفحات.",
+    "brandIcon": "أيقونة",
+    "brandIconText": "بجانب الاسم. إحدى أيقونات التطبيق أو صورة خاصة بك.",
+    "iconDashboard": "أيقونة لوحة المعلومات",
+    "iconChoose": "اختر أيقونة",
+    "iconNone": "بدون أيقونة",
+    "iconDefault": "افتراضي",
+    "iconUpload": "صورتك الخاصة",
+    "iconBad": "تعذرت قراءة الصورة."
   },
   "autocomplete": {
     "pickThermostat": "اختر منظم حرارة أولاً",

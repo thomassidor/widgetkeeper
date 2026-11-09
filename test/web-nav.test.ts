@@ -37,6 +37,7 @@ function mount(opts: { stored?: unknown; dashboards?: any[]; sections?: any[]; c
   const wd: Record<string, any> = {
     el, button, root, t: (s: string, tokens?: Record<string, unknown>) => (tokens ? `${s} ${Object.values(tokens).join()}` : s),
     icon: (name: string) => el('i', `icon-${name}`), STAY_STORAGE: 'stay',
+    iconNode: (value?: string) => (value ? el('i', `chosen-${value}`) : null),
     storageGet: (k: string) => localStorage.getItem(k),
     storageSet: (k: string, v: string | null) => (v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v)),
     dashboards: opts.dashboards ?? ALL, frontPage: { sections: opts.sections ?? SECTIONS },
@@ -427,6 +428,19 @@ describe('Customize', () => {
     expect(pane.classList.contains('customizing')).toBe(true);
     toggle.click();
     expect(pane.classList.contains('customizing')).toBe(false);
+  });
+});
+
+describe('a dashboard\'s icon in the pane', () => {
+  it('shows before the name, and the others keep its place only once one has an icon', () => {
+    const rows = (dashboards: any[]) => {
+      const { pane } = mount({ dashboards, current: null }); // on the front page: a dashboard being shown is read from `current`
+      const out = [...pane.querySelectorAll('a.wd-nav-row[href^="#/d/"]')].map(r => r.firstElementChild!.className);
+      document.body.innerHTML = '';
+      return out;
+    };
+    expect(rows([{ ...HOME, icon: 'home' }, ENERGY])).toEqual(['chosen-home', 'wd-chosen-icon']);
+    expect(rows([HOME, ENERGY])).toEqual(['wd-nav-name', 'wd-nav-name']);
   });
 });
 

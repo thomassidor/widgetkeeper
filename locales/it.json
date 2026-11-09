@@ -1314,7 +1314,17 @@
     "columnRemoved": "Colonna rimossa",
     "dashboardDeleted": "Dashboard eliminata",
     "discard": "Scarta",
-    "discardEdits": "Tocca di nuovo per scartare"
+    "discardEdits": "Tocca di nuovo per scartare",
+    "brandTitle": "Intestazione",
+    "brandNameText": "In cima alla pagina iniziale e nel titolo del browser, in ogni browser.",
+    "brandIcon": "Icona",
+    "brandIconText": "Accanto al nome. Una delle icone dell'app o un'immagine tua.",
+    "iconDashboard": "Icona della dashboard",
+    "iconChoose": "Scegli un'icona",
+    "iconNone": "Nessuna icona",
+    "iconDefault": "Predefinita",
+    "iconUpload": "La tua immagine",
+    "iconBad": "Impossibile leggere l'immagine."
   },
   "autocomplete": {
     "pickThermostat": "Scegli prima un termostato",

@@ -261,7 +261,7 @@
       const kiosk = el('p', 'wd-hint wd-kiosk-help', t('kioskHelp'));
       card.append(setRow(t('darkLight'), t('darkLightText'), mode), awake, dim, scheduled, rotation, setRow(t('signedIn'), t('forgetKeyText'), forget), kiosk);
       browser.append(el('h3', 'wd-h2', t('thisBrowser')), card);
-      body.append(backupSection(), wd.syncSettingsSection(), browser);
+      body.append(wd.brandSection(setRow), backupSection(), wd.syncSettingsSection(), browser);
       d.showModal();
     }
 
@@ -814,7 +814,10 @@
       const countLine = el('span', 'wd-muted wd-dash-count', t('widgetCount', { count }));
       const synced = wd.syncIcon(d.id, 'wd-sync wd-dash-sync'); // synced with a Homey dashboard
       if (synced) { countLine.prepend(synced); countLine.classList.add('synced'); }
-      info.append(el('span', 'wd-dash-name', d.name || t('untitled')), countLine);
+      const cardName = el('span', 'wd-dash-name', d.name || t('untitled'));
+      const cardIcon = wd.iconNode(d.icon);
+      if (cardIcon) cardName.prepend(cardIcon);
+      info.append(cardName, countLine);
       link.append(info);
       if (editing) {
         card.tabIndex = 0;
@@ -925,6 +928,6 @@
       return section;
     }
 
-    Object.assign(wd, { deleteDashboard, pageSettings, renderList });
+    Object.assign(wd, { deleteDashboard, pageSettings, renderList, saveFront });
   });
 })();

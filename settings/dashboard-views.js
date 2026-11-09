@@ -27,23 +27,39 @@
 
     // ---- Views ---------------------------------------------------------------------------------------------
 
-    /** The browser title: `Widgetkeeper - <dashboard name>` on a dashboard, else `Widgetkeeper Web Dashboards`. */
+    const ownBrand = () => (wd.frontPage && wd.frontPage.brand) || {};
+
+    /** The browser title and icon: `<name> - <dashboard name>` and the dashboard's own icon on a dashboard, else the name. */
     function setTitle(dashboard) {
-      document.title = dashboard ? `Widgetkeeper - ${dashboard.name || t('untitled')}` : brandName();
+      document.title = dashboard ? `${ownBrand().name || 'Widgetkeeper'} - ${dashboard.name || t('untitled')}` : brandName();
+      wd.setFavicon((dashboard && dashboard.icon) || ownBrand().icon);
     }
 
-    /** `Widgetkeeper Web Dashboards`: the app's name, then the page's (`web.title`, in Homey's language). */
+    /** The name the user gave, else `Widgetkeeper Web Dashboards`: the app's name, then the page's (`web.title`, in Homey's language). */
     function brandName() {
-      return `Widgetkeeper ${t('title')}`;
+      return ownBrand().name || `Widgetkeeper ${t('title')}`;
     }
 
-    /** The front page's title: the app icon (the logomark, white on the brand colour) and the name. */
+    /** The front page's title: the user's icon, else the app icon (the logomark, white on the brand colour), and the name. */
     function brand() {
       const node = el('h1', 'wd-brand');
       const mark = el('span', 'wd-logo');
-      mark.innerHTML = LOGO;
+      const own = wd.iconNode(ownBrand().icon);
+      if (own) {
+        mark.classList.add('own');
+        mark.classList.toggle('picture', wd.isIconPicture(ownBrand().icon));
+        mark.append(own);
+      } else {
+        mark.innerHTML = LOGO;
+      }
       node.append(mark, el('span', 'wd-brand-name', brandName()));
       return node;
+    }
+
+    /** The name or icon was changed: the title on the page, if it's showing, and the browser's. */
+    function brandChanged() {
+      for (const node of root.querySelectorAll('.wd-brand')) node.replaceWith(brand());
+      setTitle(wd.current && wd.current.dashboard);
     }
 
     function clearRoot() {
@@ -451,7 +467,10 @@
 
     function viewBar() {
       const d = wd.current.dashboard;
-      const items = [wd.navButton(), el('span', 'wd-bar-title', d.name || t('untitled')), el('span', 'wd-spacer'), liveNote()];
+      const title = el('span', 'wd-bar-title', d.name || t('untitled'));
+      const mark = wd.iconNode(d.icon);
+      if (mark) title.prepend(mark);
+      const items = [wd.navButton(), title, el('span', 'wd-spacer'), liveNote()];
       // Safari on an iPad only has the webkit-prefixed calls.
       const doc = /** @type {any} */ (document.documentElement);
       const page = /** @type {any} */ (document);
@@ -492,6 +511,23 @@
       name.setAttribute('aria-label', t('name'));
       // current.dashboard, not d, when it changes: a save the app corrected swaps it for the app's copy.
       name.addEventListener('change', () => { const dash = wd.current.dashboard; dash.name = name.value.trim(); setTitle(dash); wd.redrawNav(); persist(); });
+
+      // The dashboard's optional icon: a tile before the name, opening the picker.
+      const iconPick = button('wd-btn wd-dashicon-pick', '', () => wd.pickIcon({
+        value: wd.current.dashboard.icon,
+        noneLabel: t('iconNone'),
+        picked(value) {
+          const dash = wd.current.dashboard;
+          if (value) dash.icon = value;
+          else delete dash.icon;
+          drawIconPick();
+          setTitle(dash);
+          wd.redrawNav();
+          persist();
+        },
+      }), t('iconDashboard'));
+      const drawIconPick = () => iconPick.replaceChildren(wd.iconNode(wd.current.dashboard.icon) || icon('image'));
+      drawIconPick();
 
       // The columns: one pill with its icon, − the count +.
       const cols = el('span', 'wd-stepper');
@@ -645,7 +681,7 @@
       // The end of the bar stays together when a narrow window wraps it.
       const end = el('span', 'wd-bar-end');
       end.append(remove, done);
-      const b = bar(name, el('span', 'wd-bar-rule'), cols, widthPick, themePick, bgPick, codePick, wd.syncPill(d), end);
+      const b = bar(iconPick, name, el('span', 'wd-bar-rule'), cols, widthPick, themePick, bgPick, codePick, wd.syncPill(d), end);
       stepColumns(b);
       return b;
     }
@@ -772,7 +808,7 @@
       });
     }
 
-    Object.assign(wd, { about, applyTheme, askCode, bar, brand, clearRoot, editable, liveNote, lockOf, preview,
+    Object.assign(wd, { about, applyTheme, askCode, bar, brand, brandChanged, brandName, clearRoot, editable, liveNote, lockOf, preview,
       renderDashboard, renderFailed, renderKey, renderMissing, renderOff, renderPassword, signOut, stored, syncGrid,
       widgetFolder });
   });

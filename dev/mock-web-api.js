@@ -221,6 +221,10 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
       // As the app: sections (all of them), the dashboards' placement, then the order.
       if (Array.isArray(body.sections)) front = { ...front, sections: body.sections };
       if (typeof body.widgets === 'boolean') front = { ...front, widgets: body.widgets };
+      if (body.brand !== undefined) {
+        const { brand: _, ...rest } = front;
+        front = body.brand && (body.brand.name || body.brand.icon) ? { ...rest, brand: body.brand } : rest;
+      }
       const known = new Set(front.sections.map(x => x.id));
       dashboards = dashboards.map((d) => {
         const section = body.placement && d.id in body.placement ? body.placement[d.id] : d.section;
@@ -303,6 +307,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
       return { removed: true };
     }
     if (p === '/web/autocomplete') return [];
+    if (p === '/web/icons') return Object.keys(window.WidgetkeeperKit.icons).map(id => ({ id, name: id }));
     throw new Error(`Not in the preview: ${method} ${p}`);
   }
   // Homey's own API, for other apps' widgets: a made-up app's two, its (empty) strings and autocompletes.

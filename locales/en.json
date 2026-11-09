@@ -1314,7 +1314,17 @@
     "columnRemoved": "Column removed",
     "dashboardDeleted": "Dashboard deleted",
     "discard": "Discard",
-    "discardEdits": "Tap again to discard"
+    "discardEdits": "Tap again to discard",
+    "brandTitle": "Header",
+    "brandNameText": "At the top of the front page and in the browser's title, in every browser.",
+    "brandIcon": "Icon",
+    "brandIconText": "Beside the name. One of the app's icons or a picture of your own.",
+    "iconDashboard": "Dashboard's icon",
+    "iconChoose": "Choose an icon",
+    "iconNone": "No icon",
+    "iconDefault": "Default",
+    "iconUpload": "Your own picture",
+    "iconBad": "That picture couldn't be read."
   },
   "autocomplete": {
     "pickThermostat": "Pick a thermostat first",

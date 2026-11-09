@@ -128,6 +128,12 @@ export default {
     return { version: homey.manifest.version };
   },
 
+  /** The icon picker's list: `[{id, name}]`, the page draws the icons itself. */
+  async getWebIcons({ homey, query }: { homey: Homey, query?: Record<string, string> }) {
+    assertWebSession(homey.app as WidgetkeeperApp, query);
+    return (homey.app as WidgetkeeperApp).flows.iconNames();
+  },
+
   /**
    * The web dashboards page (`settings/dashboard.html`, opened in a browser with a personal API key): what it needs
    * to start: the widget types and their settings, the app's strings and the dashboards, all in Homey's language.
