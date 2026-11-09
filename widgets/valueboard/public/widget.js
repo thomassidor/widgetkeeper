@@ -144,7 +144,13 @@
       const v = d && Array.isArray(d.values) ? d.values.find(x => x.capabilityId === capabilityId) : null;
       if (!v) return;
       v.value = value;
-      if (!typed.renaming) render(); // renaming shows no values
+      if (typed.renaming) return; // renaming shows no values
+      // Only its own cell: a board may have a hundred values, and a redraw would take a tap or the focus with it.
+      const key = `${deviceId}:${capabilityId}`;
+      const node = [...body.querySelectorAll('[data-key]')].find(n => n.getAttribute('data-key') === key);
+      if (!node) { render(); return; }
+      (compact ? fillItem : fillCell)(node, { ...v, deviceId: d.id, deviceName: d.name, key, offline: !!d.offline });
+      reportHeight();
     }
 
     /** A message under the groups. Persistent messages also clear them. */
@@ -188,6 +194,31 @@
     function tone(node, v) {
       const k = toneOf(v);
       if (k) node.dataset.tone = k;
+      else delete node.dataset.tone;
+    }
+
+    /** A Tiles cell's value, its label for a screen reader and its tone. */
+    function fillCell(cell, v) {
+      const value = text(v);
+      cell.setAttribute('aria-label', `${nameOf(v)}: ${value}`);
+      tone(cell, v);
+      const line = cell.querySelector('.vb-value');
+      line.textContent = '';
+      icon(line, v);
+      // A unit other than ° and % small after the number, so the number keeps its room.
+      const apart = typeof v.value === 'number' && isFinite(v.value) && v.units && !TIGHT_UNITS.test(v.units);
+      const num = el('span', { class: 'vb-num', text: apart ? formatNumber(v, v.value) : value }, line);
+      if (apart) el('span', { class: 'vb-unit', text: v.units }, num);
+    }
+
+    /** A Compact value, its label for a screen reader and its tone. */
+    function fillItem(item, v) {
+      const value = text(v);
+      item.setAttribute('aria-label', `${nameOf(v)}: ${value}`);
+      tone(item, v);
+      item.textContent = '';
+      icon(item, v);
+      el('span', { class: 'vb-num', text: value }, item);
     }
 
     /** A tap in Compact: the value's name in its group's heading, for REVEAL_MS; a second tap on it puts the group's back. */
@@ -210,16 +241,10 @@
       const whole = allOffline(group);
       const grid = el('div', { class: 'vb-grid' }, node);
       for (const v of group.values) {
-        const value = text(v);
-        const cell = el('div', { class: 'vb-cell', 'data-key': v.key, role: 'img', 'aria-label': `${nameOf(v)}: ${value}` }, grid);
-        tone(cell, v);
+        const cell = el('div', { class: 'vb-cell', 'data-key': v.key, role: 'img' }, grid);
         markOffline(cell, v.offline, whole ? undefined : t('unavailable'));
-        const line = el('div', { class: 'vb-value' }, cell);
-        icon(line, v);
-        // A unit other than ° and % small after the number, so the number keeps its room.
-        const apart = typeof v.value === 'number' && isFinite(v.value) && v.units && !TIGHT_UNITS.test(v.units);
-        const num = el('span', { class: 'vb-num', text: apart ? formatNumber(v, v.value) : value }, line);
-        if (apart) el('span', { class: 'vb-unit', text: v.units }, num);
+        el('div', { class: 'vb-value' }, cell);
+        fillCell(cell, v);
         el('div', { class: 'vb-label', dir: 'auto', text: byDevice ? v.title : deviceName(v) }, cell);
       }
     }
@@ -233,13 +258,10 @@
       if (group.missing) { node.classList.add('missing'); return; }
       const line = el('div', { class: 'vb-line' }, node);
       for (const v of group.values) {
-        const value = text(v);
-        const item = el('span', { class: 'vb-item', 'data-key': v.key, role: 'button', tabindex: '0', 'aria-label': `${nameOf(v)}: ${value}` }, line);
-        tone(item, v);
+        const item = el('span', { class: 'vb-item', 'data-key': v.key, role: 'button', tabindex: '0' }, line);
         markOffline(item, v.offline);
         item.classList.toggle('named', !!named && named.key === v.key);
-        icon(item, v);
-        el('span', { class: 'vb-num', text: value }, item);
+        fillItem(item, v);
         onTap(item, () => show(group.key, v.key));
       }
     }

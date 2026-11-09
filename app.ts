@@ -2,7 +2,8 @@ import Homey from 'homey';
 import Diagnostics, { DEBUG_LOG_SETTING } from './lib/Diagnostics.js';
 import { getAppApi } from './lib/appApi.js';
 import { finishList } from './lib/autocomplete.js';
-import CameraService from './lib/CameraService.js';
+import { logged } from './lib/widgetApi.js';
+import CameraService, { CAMERAS_REFRESH_CARD } from './lib/CameraService.js';
 import CurtainService from './lib/CurtainService.js';
 import DaysSinceService, {
   DAYS_SINCE_IS_OVERDUE_CARD, DAYS_SINCE_OVERDUE_CARD, DAYS_SINCE_RESET_CARD, DAYS_SINCE_SET_CARD, type CounterArg, type OverdueCounter,
@@ -162,6 +163,7 @@ export default class WidgetkeeperApp extends Homey.App {
     this.media.start();
     this.stack = new StackService(this.homey, log, debug, this.apiKey);
     this.registerStackFlows();
+    this.registerCameraFlows();
     this.textLines = new TextLineService(this.homey, debug);
     this.registerTextLineFlows();
     this.flowTiles = new FlowTileService(this.homey, log, debug,
@@ -300,6 +302,17 @@ export default class WidgetkeeperApp extends Homey.App {
     const tapped = this.homey.flow.getTriggerCard(THERMOSTAT_TAPPED_CARD);
     tapped.registerArgumentAutocompleteListener('preset', list(true));
     tapped.registerRunListener(async (args: Args, state: { id?: string }) => this.thermostatPresets.matches(args.preset, state?.id));
+  }
+
+  /** The Flow card that renews a camera's picture (the Cameras widget's Only by Flow). */
+  private registerCameraFlows() {
+    const card = this.homey.flow.getActionCard(CAMERAS_REFRESH_CARD);
+    card.registerArgumentAutocompleteListener('camera', async query => this.cameras.listFlowCameras(query));
+    card.registerRunListener(async (args: { camera?: { id?: string } }) => {
+      const id = args.camera?.id;
+      if (!id || id === 'none') throw new Error('No camera picked');
+      await logged(this, `Camera ${id} refresh failed:`, () => this.cameras.refreshPicture(id));
+    });
   }
 
   /** The Flow cards that bring a widget forward on every Smart Stack, and that end it. */

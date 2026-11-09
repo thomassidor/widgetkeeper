@@ -215,9 +215,15 @@
    * realtime `timeformat:state`; `changed()` (the mount's redraw or reload) when it differs from the one drawn with.
    */
   function wireTimeFormat(Homey, changed) {
+    // This mount's own: a Smart Stack's pages share the kit, so the page's format has changed for all but the first to hear.
+    let drawn = timeFormatNow;
     const apply = (res) => {
       // An answer without one (an older app's) changes nothing.
-      if (res && isTimeFormat(res.timeFormat) && setTimeFormat(res.timeFormat) && changed) changed();
+      if (!res || !isTimeFormat(res.timeFormat)) return;
+      setTimeFormat(res.timeFormat);
+      if (res.timeFormat === drawn) return;
+      drawn = res.timeFormat;
+      if (changed) changed();
     };
     try { Homey.on('timeformat:state', apply); } catch { /* the stored one stays */ }
     // After the widget's own first request (asked for in this tick or its promises), which carries the load marks.

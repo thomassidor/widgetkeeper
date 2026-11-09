@@ -98,13 +98,15 @@ export default class CombinedService {
     });
     for (const id of gone) out.push({ id, missing: true });
     if (gone.length) this.log(`Combined value: ${gone.length} picked device(s) not found`);
+    // Per value and devices picked, as two widgets may count the same value of different devices.
+    const requestKey = deviceIds.length ? `${capabilityId} (${[...new Set(deviceIds)].sort().join()})` : capabilityId;
     // Once while it stays so, not every refresh.
-    const before = this.requests.get(capabilityId);
+    const before = this.requests.get(requestKey);
     if (otherUnits.length && JSON.stringify(otherUnits) !== JSON.stringify(before?.otherUnits ?? [])) {
       this.log(`Combined value ${capabilityId}: ${otherUnits.length} device(s) left out for other units than ${units || 'none'}: ${otherUnits.map(o => o.units || 'none').join(', ')}`);
     }
-    this.requests.delete(capabilityId);
-    this.requests.set(capabilityId, {
+    this.requests.delete(requestKey);
+    this.requests.set(requestKey, {
       at: new Date().toISOString(), picked: deviceIds.length, counted: counted.length, notFound: gone.length, units: capability ? capability.units : null, otherUnits,
     });
     while (this.requests.size > DESCRIBED) this.requests.delete(this.requests.keys().next().value!);

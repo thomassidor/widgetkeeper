@@ -10,6 +10,10 @@ Your cameras as a grid of snapshots that refresh every few seconds (cameras with
 
 **Battery cameras:** set **Refresh snapshots every** to anything from 5 minutes to 12 hours. The app then keeps each camera's last picture, so opening a dashboard shows that one and doesn't wake the camera. A new picture is only asked for when one is due and the dashboard is open. A tap still goes live.
 
+To decide yourself when a camera wakes, for example at sunrise and sunset, set it to **Only by Flow** and use the Flow card **Refresh a camera's picture**. It works with no dashboard open, and the tile shows when its picture is from. The card also works on the 5 minute to 12 hour intervals: a Flow's picture counts as the new one, so the interval starts over. A camera with only a video stream can only get a new still from a dashboard, so it's taken on one that's open, or else on the next one opened.
+
+**Flow cards:** *Refresh a camera's picture*.
+
 **Settings:** cameras, layout (a large camera at the top or bottom, or one per row), refresh interval, how long live view stays on, always live, [rename tiles](../../README.md#tile-names), and Camera 1 to 6 for cameras missing from the device list, such as Synology Surveillance Station's: they list every device with a snapshot or video.
 
 ## Looks

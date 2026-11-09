@@ -91,6 +91,7 @@ describe('the app: Flow cards', () => {
     ['textline_set', 'textLines', 'set', { board: { id: 'b1' }, text: 'Hello' }, ['b1', 'Hello']],
     ['textline_set_color', 'textLines', 'set', { board: { name: 'Kitchen' }, text: 'Hi', color: 'red' }, ['Kitchen', 'Hi', 'red']],
     ['textline_clear', 'textLines', 'clear', { board: { id: 'b1' } }, ['b1']],
+    ['cameras_refresh', 'cameras', 'refreshPicture', { camera: { id: 'c1' } }, ['c1']],
     ['stack_show', 'stack', 'show', { widget: 'timers', minutes: 5 }, ['timers', 5]],
     ['stack_resume', 'stack', 'resume', {}, []],
     ['values_set_color', 'values', 'setColor', { slot: { id: 'd1:measure_temperature' }, color: 'red' }, ['d1:measure_temperature', 'red']],
@@ -123,6 +124,11 @@ describe('the app: Flow cards', () => {
     await flow.cards.get(`actions:${id}`)!.run!(args);
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy.mock.calls[0]).toEqual(call);
+  });
+
+  it('refuses a Cameras refresh without a camera', async () => {
+    const { flow } = await bootApp();
+    await expect(flow.cards.get('actions:cameras_refresh')!.run!({ camera: { id: 'none' } })).rejects.toThrow('No camera picked');
   });
 
   it('every action card is in the table above', () => {

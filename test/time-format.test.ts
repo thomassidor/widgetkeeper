@@ -103,6 +103,16 @@ describe('the kit', () => {
       expect([kit.getTimeFormat(), changed.mock.calls.length]).toEqual(['24', 2]);
     });
 
+    it('redraws every mount on a page that shares the kit (a Smart Stack)', async () => {
+      const handlers: ((d: any) => void)[] = [];
+      const Homey = { api: vi.fn(async () => ({ timeFormat: '24' })), on: (_: string, fn: any) => { handlers.push(fn); } };
+      const [first, second] = [vi.fn(), vi.fn()];
+      kit.wireTimeFormat(Homey, first);
+      kit.wireTimeFormat(Homey, second);
+      for (const fn of handlers) fn({ timeFormat: '12' });
+      expect([first.mock.calls.length, second.mock.calls.length]).toEqual([1, 1]);
+    });
+
     it('keeps the format it has when the app answers without one or fails', async () => {
       const changed = vi.fn();
       kit.wireTimeFormat({ api: vi.fn(async () => ({ charts: [] })), on: () => {} }, changed);

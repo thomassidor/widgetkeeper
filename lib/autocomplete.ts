@@ -88,8 +88,8 @@ export function finishList<T extends { name: string, description?: string, id?: 
   const words = queryWords(query);
   const ranked = !words.length ? items : items
     .map((item) => {
-      const text = folded(`${item.name} ${item.description ?? ''}`);
-      return { item, rank: pinned(item) ? 0 : startsWords(words, text) ? 1 : 2 };
+      // By the name only: a description may be a live reading, which isn't searched.
+      return { item, rank: pinned(item) ? 0 : startsWords(words, folded(item.name)) ? 1 : 2 };
     })
     .sort((a, b) => a.rank - b.rank)
     .map(r => r.item);

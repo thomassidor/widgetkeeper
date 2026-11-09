@@ -11,7 +11,8 @@ window.mountCamerasWidget = function (Homey, { root, frame }) {
   const settings = Homey.getSettings() || {};
   /** An autocomplete setting's device id, or null for none. */
   const pickedId = (item) => (typeof item?.id === 'string' && item.id && item.id !== 'none' ? item.id : null);
-  const snapshotMs = (Number(settings.refresh) || 10) * 1000;
+  // Only by Flow: no picture is ever due by time.
+  const snapshotMs = settings.refresh === 'flow' ? Infinity : (Number(settings.refresh) || 10) * 1000;
   let snapshotTimer = null;
   let visible = true; // false while the Smart Stack shows another page
 
@@ -52,6 +53,11 @@ window.mountCamerasWidget = function (Homey, { root, frame }) {
   // Always live's camera is shown too, if it isn't among them.
   const more = [...[1, 2, 3, 4, 5, 6].map(n => pickedId(settings[`camera${n}`])), pickedId(settings.autoLive)].filter(Boolean);
   const cameras = wireDeviceState(Homey, link, widget, { tileNames, onState: startSnapshots, more, times: true });
+
+  // A Flow renewed a picture. While the page is hidden the tile only stays due, for when it shows.
+  Homey.on('cameras:picture', (data) => {
+    if (widget.renewed(data && data.deviceId, data && data.grab) && snapshotTimer) widget.refresh();
+  });
 
   return {
     /** The Smart Stack: whether this page is the one on screen. */

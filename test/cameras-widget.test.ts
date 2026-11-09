@@ -938,6 +938,58 @@ describe('long refresh (battery cameras)', () => {
     expect(asks(api)).toBe(2);
   });
 
+  it('Only by Flow: asks once, then only after a Flow, and always shows the time', async () => {
+    let at = 1e9 - 1000;
+    const api = keptApi(() => at);
+    const { w, tile } = widget([cam('a')], api, () => 2e9, { refreshMs: Infinity });
+    await w.refresh();
+    expect(api.mock.calls[0].slice(0, 2)).toEqual(['GET', '/snapshot?deviceId=a&maxAge=Infinity']);
+    expect(tile('a').querySelector('.cw-badge')!.textContent).not.toBe('');
+    await w.refresh();
+    expect(asks(api)).toBe(1);
+    at += 5000;
+    expect(w.renewed('a')).toBe(true);
+    await w.refresh();
+    expect(asks(api)).toBe(2);
+    expect(api.mock.calls[1][1]).toBe(`/snapshot?deviceId=a&maxAge=Infinity&have=${at - 5000}`);
+    await w.refresh();
+    expect(asks(api)).toBe(2);
+  });
+
+  it('a Flow during live view or a busy load is not lost: the tile stays due', async () => {
+    const api = keptApi(() => 1e9);
+    const { w } = widget([cam('a')], api, () => 2e9, { refreshMs: Infinity });
+    await w.refresh();
+    w.renewed('a');
+    api.mockRejectedValueOnce(new Error('busy'));
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    await w.refresh();
+    expect(asks(api)).toBe(2);
+    await w.refresh();
+    expect(asks(api)).toBe(3);
+  });
+
+  it('asks the app again when the page shows, and keeps the picture when it is the same', async () => {
+    const api = vi.fn(async (_m: string, path: string): Promise<any> => (
+      path.includes('have=') ? { same: true } : { type: 'image/jpeg', data: 'KEPT', at: 1e9 }));
+    const { w, tile } = widget([cam('a')], api, () => 2e9, { refreshMs: Infinity });
+    await w.refresh();
+    const shown = loaded.length;
+    w.pause();
+    w.resume();
+    await w.refresh();
+    expect(asks(api)).toBe(2);
+    expect(loaded.length).toBe(shown);
+    expect(tile('a').querySelector('img')!.getAttribute('src')).toBe('data:image/jpeg;base64,KEPT');
+    await w.refresh();
+    expect(asks(api)).toBe(2);
+  });
+
+  it('a short refresh ignores the event', async () => {
+    const { w } = widget([cam('a')], vi.fn(), () => 1000, { refreshMs: 10e3 });
+    expect(w.renewed('a')).toBe(false);
+  });
+
   it('waits 5 min before asking again when no new picture came', async () => {
     let clock = 1e9;
     const api = vi.fn(async (): Promise<any> => { throw new Error('asleep'); });
@@ -971,6 +1023,33 @@ describe('long refresh (battery cameras)', () => {
     expect(pcs).toHaveLength(0);
     await w.refresh();
     expect(asks(api)).toBe(1);
+  });
+
+  it('Only by Flow, video-only: a kept frame opens no stream, a Flow\'s event does', async () => {
+    const pcs = stubPeerConnection();
+    stubCanvas();
+    const api = vi.fn(async (_m: string, path: string): Promise<any> => (path === '/video/offer'
+      ? { answer: 'v=0', streamId: 's' } : { type: 'image/jpeg', data: 'OLD', at: 1e9 }));
+    const { w, tile } = widget([cam('a', { image: null })], api, () => 2e9, { refreshMs: Infinity });
+    await w.refresh();
+    await w.refresh();
+    expect(pcs).toHaveLength(0);
+    expect(w.renewed('a', true)).toBe(true);
+    const done = w.refresh();
+    await vi.waitFor(() => expect(pcs[0]?.remote).toBeTruthy());
+    playing(tile('a'));
+    await done;
+    expect(api).toHaveBeenCalledWith('POST', '/snapshot', { deviceId: 'a', type: 'image/jpeg', data: 'FRAME' });
+  });
+
+  it('grabs when a Flow asked for a frame while no screen was open', async () => {
+    const pcs = stubPeerConnection();
+    const api = vi.fn(async (_m: string, path: string): Promise<any> => (path === '/video/offer'
+      ? { answer: 'v=0', streamId: 's' } : { type: 'image/jpeg', data: 'OLD', at: 1e9, wanted: true }));
+    const { w } = widget([cam('a', { image: null })], api, () => 2e9, { refreshMs: Infinity });
+    w.refresh();
+    await vi.waitFor(() => expect(pcs).toHaveLength(1));
+    w.pause();
   });
 
   it('gives the app a grabbed frame to keep', async () => {

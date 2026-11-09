@@ -1,5 +1,5 @@
 import type Homey from 'homey';
-import { byName, filterItems, matches, nameOrder, type AutocompleteItem } from './autocomplete.js';
+import { byName, matches, nameOrder, type AutocompleteItem } from './autocomplete.js';
 import { DebouncedSetting, isReservedKey, nameKey } from './storedSetting.js';
 import { parseTileColor, type TileColor } from './tileColors.js';
 
@@ -95,6 +95,8 @@ export default class FlowTileService {
   private sendTimer: NodeJS.Timeout | null = null;
   /** The tiles some Flow listens to (`<board>\n<tile>`, either `*` for any). */
   private listened = new Set<string>();
+  /** When a Flow last wrote a tile or board, even the same value: what's still being written isn't the oldest. */
+  private written = new WeakMap<FlowBoard | FlowTile, number>();
 
   constructor(
     private homey: Homey.App['homey'],
@@ -116,9 +118,17 @@ export default class FlowTileService {
     for (const [key, b] of Object.entries(v)) {
       if (isReservedKey(key) || !b || typeof b !== 'object' || !b.tiles || typeof b.tiles !== 'object') continue;
       const tiles: Record<string, FlowTile> = {};
-      for (const [k, t] of Object.entries<any>(b.tiles)) {
+      const entries = Object.entries<any>(b.tiles);
+      let last = Math.max(0, ...entries.map(([, t]) => (Number.isFinite(t?.order) ? t.order : 0)));
+      for (const [k, t] of entries) {
         if (isReservedKey(k) || !t || typeof t !== 'object' || typeof t.name !== 'string') continue;
-        tiles[k] = t as FlowTile;
+        tiles[k] = {
+          ...t as FlowTile,
+          text: typeof t.text === 'string' ? t.text : '',
+          number: Number.isFinite(t.number) ? t.number : null,
+          decimals: ['auto', '0', '1', '2'].includes(t.decimals) ? t.decimals : 'auto',
+          order: Number.isFinite(t.order) ? t.order : ++last,
+        };
       }
       boards[key] = { name: typeof b.name === 'string' ? b.name : key, tiles, updatedAt: Number(b.updatedAt) || 0 };
     }
@@ -173,7 +183,7 @@ export default class FlowTileService {
       if (!create) return null;
       b = this.boards[bkey] = { name: cleanName(board, DEFAULT_BOARD), tiles: {}, updatedAt: Date.now() };
       // The boards changed longest ago go first when there are too many.
-      const keys = Object.keys(this.boards).sort((x, y) => this.boards[x].updatedAt - this.boards[y].updatedAt);
+      const keys = Object.keys(this.boards).sort((x, y) => this.writtenAt(this.boards[x]) - this.writtenAt(this.boards[y]));
       for (const k of keys.slice(0, Math.max(0, keys.length - MAX_BOARDS))) {
         delete this.boards[k];
         this.unsent.add(k);
@@ -188,10 +198,14 @@ export default class FlowTileService {
         name: cleanName(tile, tkey), kind: 'text', text: '', number: null, units: null, decimals: 'auto',
         second: '', icon: null, color: null, fill: null, order: last + 1, updatedAt: Date.now(),
       };
-      const keys = Object.keys(b.tiles).sort((x, y) => b.tiles[x].updatedAt - b.tiles[y].updatedAt);
+      const keys = Object.keys(b.tiles).sort((x, y) => this.writtenAt(b.tiles[x]) - this.writtenAt(b.tiles[y]));
       for (const k of keys.slice(0, Math.max(0, keys.length - MAX_TILES))) delete b.tiles[k];
     }
     return { bkey, b, tkey, t, made };
+  }
+
+  private writtenAt(x: FlowBoard | FlowTile): number {
+    return Math.max(this.written.get(x) ?? 0, x.updatedAt);
   }
 
   /** Applies `change` to the tile (made if needed) and, if anything changed, saves and sends the board. */
@@ -200,6 +214,8 @@ export default class FlowTileService {
     const before = JSON.stringify(t);
     // The name as this Flow spells it (`car` → `Car`).
     Object.assign(t, change, { name: cleanName(tile, t.name) });
+    this.written.set(t, Date.now());
+    this.written.set(b, Date.now());
     if (JSON.stringify(t) === before && !made) return; // as it was: nothing to save or send
     t.updatedAt = b.updatedAt = Date.now();
     this.changed(bkey);
@@ -208,7 +224,12 @@ export default class FlowTileService {
 
   private changed(bkey: string) {
     this.saved.schedule();
-    this.unsent.add(bkey);
+    this.queueSend([bkey]);
+  }
+
+  /** These boards go to the widgets within `SEND_MS`, with whatever else changes by then. */
+  private queueSend(keys: string[]) {
+    for (const key of keys) this.unsent.add(key);
     if (this.sendTimer) return;
     this.sendTimer = this.homey.setTimeout(() => {
       this.sendTimer = null;
@@ -296,8 +317,7 @@ export default class FlowTileService {
     if (same) return;
     this.listened = next;
     // Only the widgets need to know; nothing to save.
-    for (const key of Object.keys(this.boards)) this.unsent.add(key);
-    if (!this.sendTimer) this.sendTimer = this.homey.setTimeout(() => { this.sendTimer = null; this.sendNow(); }, SEND_MS);
+    this.queueSend(Object.keys(this.boards));
   }
 
   isTappable(bkey: string, tkey: string): boolean {
@@ -332,12 +352,13 @@ export default class FlowTileService {
     const names = new Map<string, string>([[boardKey(DEFAULT_BOARD), DEFAULT_BOARD]]);
     for (const [key, b] of Object.entries(this.boards)) names.set(key, b.name);
     const order = nameOrder(this.homey);
-    const items: (AutocompleteItem & { any?: boolean })[] = filterItems(q, [...names.entries()]
+    const items: (AutocompleteItem & { any?: boolean })[] = [...names.entries()]
+      .filter(([, name]) => matches(q, name))
       .sort((a, b) => order(a[1], b[1]))
       .map(([key, name]) => {
         const n = Object.keys(this.boards[key]?.tiles ?? {}).length;
         return { name, id: name, description: this.homey.__('flowtiles.tileCount', { count: n }) || `Tiles: ${n}` };
-      }));
+      });
     if (create && q && boardKey(q) && !names.has(boardKey(q))) {
       items.push({ name: q, id: q, description: this.homey.__('flowtiles.newBoard') || 'New board' });
     }

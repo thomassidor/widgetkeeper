@@ -1,6 +1,6 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
-import { byName, filterItems, hintRow, matches, withNone, type AutocompleteItem } from './autocomplete.js';
+import { byName, hintRow, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { FLOW_ICON_IMAGES } from './flowIconImages.js';
 import PersonalApiKey from './PersonalApiKey.js';
 import { sharedCache } from './sharedCache.js';
@@ -81,12 +81,12 @@ export default class FlowService {
     const standard = this.homey.__('flows.standard') || 'Flow';
     const startable = [...flows.values()].filter(f => f.triggerable);
     if (!startable.length) return [hintRow(this.homey.__('autocomplete.noFlows') || 'No Flows that can be started by hand')];
-    const items = filterItems(query, startable
+    const folderOf = (f: { folder: string | null }) => (f.folder ? folders.get(f.folder) : undefined);
+    // By name and folder: the type's label says `Flow` on every row, so searching it would find them all.
+    const items = startable
+      .filter(f => matches(query, f.name, folderOf(f)))
       .sort(byName(this.homey))
-      .map(f => {
-        const folder = f.folder ? folders.get(f.folder) : undefined;
-        return { name: f.name, description: [f.advanced ? advanced : standard, folder].filter(Boolean).join(' · '), id: f.id };
-      }));
+      .map(f => ({ name: f.name, description: [f.advanced ? advanced : standard, folderOf(f)].filter(Boolean).join(' · '), id: f.id }));
     return withNone(this.homey.__('flows.none') || 'None', query, items);
   }
 

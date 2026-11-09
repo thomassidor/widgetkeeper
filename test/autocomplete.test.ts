@@ -69,7 +69,7 @@ describe('finishList', () => {
 
   it('puts rows whose words start with the query first, keeping the order otherwise', () => {
     const rows = [{ name: 'Clamp', id: '1' }, { name: 'Lamp 1', id: '2' }, { name: 'Clamp 2', id: '3' }, { name: 'Desk', description: 'Lamps', id: '4' }];
-    expect(finishList(homey, 'lamp', rows).map(r => r.id)).toEqual(['2', '4', '1', '3']);
+    expect(finishList(homey, 'lamp', rows).map(r => r.id)).toEqual(['2', '1', '3', '4']); // by the name: a description may be a live reading
   });
 
   it('keeps None and the thermostat\'s Don\'t change on top, and a preset (no id) among the rest', () => {
@@ -214,7 +214,7 @@ describe('value glyph images', () => {
 });
 
 describe('lists that search their descriptions', () => {
-  it('Flows: by folder and type', async () => {
+  it('Flows: by folder', async () => {
     const api = fakeApi({ devices: [] });
     const service = new FlowService(fakeHomey(api), () => {});
     (service as any).read = async () => ({
@@ -225,7 +225,7 @@ describe('lists that search their descriptions', () => {
       folders: new Map([['f', 'Bedroom']]),
     });
     expect((await service.listFlows('bedroom')).map(i => i.id)).toEqual(['flow:a']);
-    expect((await service.listFlows('advanced')).map(i => i.id)).toEqual(['flow:b']);
+    expect((await service.listFlows('flow')).map(i => i.id)).toEqual([]); // the type's label on every row isn't searched
     expect((await service.listFlows('')).map(i => i.name)).toEqual(['None', 'Spot 2', 'Spot 10']);
     (service as any).read = async () => ({ flows: new Map([['flow:c', { id: 'flow:c', name: 'Off', triggerable: false }]]), folders: new Map() });
     expect(await service.listFlows('')).toEqual([{ name: 'No Flows that can be started by hand', id: 'none', hint: true }]);

@@ -1,6 +1,7 @@
 import type { App } from 'homey';
 import { timeFormatRoutes } from '../../lib/timeFormat.js';
 import type WidgetkeeperApp from '../../app.js';
+import type { KeptSnapshot, SamePicture, Snapshot } from '../../lib/CameraService.js';
 import { idList, logged, logPerf } from '../../lib/widgetApi.js';
 import { tileNameRoutes, withTileNames } from '../../lib/TileNameService.js';
 
@@ -26,11 +27,13 @@ export default {
   }) {
     const app = homey.app as WidgetkeeperApp;
     if (!query.deviceId) throw new Error('deviceId required');
-    // The long refresh: `saved` a video-only camera's kept frame, `maxAge` (seconds) a kept snapshot.
-    if (query.saved) return app.cameras.getKeptFrame(query.deviceId);
+    // The long refresh: `saved` a video-only camera's kept frame, `maxAge` (seconds; Infinity for Only by Flow) a kept
+    // snapshot, `have` the time of the picture the widget shows, which isn't sent again.
+    const have = query.have ? Number(query.have) : undefined;
+    if (query.saved) return app.cameras.getKeptFrame(query.deviceId, have);
     const maxAge = Number(query.maxAge) * 1000;
-    return logged(app, `Camera snapshot for ${query.deviceId} failed:`, () => (maxAge > 0
-      ? app.cameras.getKeptSnapshot(query.deviceId, maxAge)
+    return logged<Snapshot | KeptSnapshot | SamePicture>(app, `Camera snapshot for ${query.deviceId} failed:`, () => (maxAge > 0
+      ? app.cameras.getKeptSnapshot(query.deviceId, maxAge, have)
       : app.cameras.getSnapshot(query.deviceId)));
   },
 

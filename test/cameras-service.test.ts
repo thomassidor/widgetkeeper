@@ -185,12 +185,12 @@ describe('live view', () => {
 
 describe('kept snapshots (the long refresh)', () => {
   const HOUR = 3600e3;
-  function keeping() {
+  function keeping(devices?: any[]) {
     const stored = new Map<string, string>();
     const prune = vi.fn();
     const files = { read: (id: string) => stored.get(id) ?? null, write: (id: string, t: string) => { stored.set(id, t); }, prune };
-    const { homey } = setup();
-    return { stored, prune, service: new CameraService(homey, () => {}, () => {}, files) };
+    const { homey } = setup(devices);
+    return { stored, prune, homey, service: new CameraService(homey, () => {}, () => {}, files) };
   }
 
   it('asks the camera once, then gives the kept picture until it is older than maxAge', async () => {
@@ -204,7 +204,7 @@ describe('kept snapshots (the long refresh)', () => {
     expect(await service.getKeptSnapshot('kitchen', HOUR)).toEqual(first);
     expect(fetch).toHaveBeenCalledTimes(1);
     vi.advanceTimersByTime(1000);
-    expect((await service.getKeptSnapshot('kitchen', HOUR)).at).toBe(Date.now());
+    expect(((await service.getKeptSnapshot('kitchen', HOUR)) as any).at).toBe(Date.now());
     expect(fetch).toHaveBeenCalledTimes(2);
   });
 
@@ -216,6 +216,72 @@ describe('kept snapshots (the long refresh)', () => {
     const files = { read: (id: string) => stored.get(id) ?? null, write: () => {}, prune };
     expect(await new CameraService(setup().homey, () => {}, () => {}, files).getKeptSnapshot('kitchen', HOUR)).toEqual(first);
     expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not send the picture the widget already shows', async () => {
+    const fetch = stubFetch();
+    const { service } = keeping();
+    await service.getState(['kitchen']);
+    const first: any = await service.getKeptSnapshot('kitchen', HOUR);
+    expect(await service.getKeptSnapshot('kitchen', HOUR, first.at)).toEqual({ same: true });
+    expect(await service.getKeptSnapshot('kitchen', HOUR, first.at - 1)).toEqual(first);
+    expect(await service.getKeptSnapshot('kitchen', Infinity, first.at)).toEqual({ same: true });
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('a Flow takes a new picture however young the last one, and tells the widgets', async () => {
+    const fetch = stubFetch();
+    const { service, homey } = keeping();
+    await service.refreshPicture('kitchen');
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(homey.api.realtime).toHaveBeenLastCalledWith('cameras:picture', { deviceId: 'kitchen' });
+    vi.advanceTimersByTime(5000);
+    await service.refreshPicture('kitchen');
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(((await service.getKeptSnapshot('kitchen', Infinity)) as any).at).toBe(Date.now());
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('a Flow is told when the camera fails, past the retry pause, and the old picture stays', async () => {
+    const fetch = stubFetch();
+    const { service, homey, stored } = keeping();
+    await service.refreshPicture('kitchen');
+    const kept = stored.get('kitchen');
+    fetch.mockRejectedValue(new Error('asleep'));
+    vi.advanceTimersByTime(5000);
+    await expect(service.refreshPicture('kitchen')).rejects.toThrow();
+    vi.advanceTimersByTime(5000);
+    await expect(service.refreshPicture('kitchen')).rejects.toThrow();
+    expect(fetch).toHaveBeenCalledTimes(3);
+    expect(homey.api.realtime).toHaveBeenCalledTimes(1);
+    expect(stored.get('kitchen')).toBe(kept);
+  });
+
+  it('a Flow marks a video-only camera\'s frame as wanted, until a new one is kept', async () => {
+    const { service, homey } = keeping([camera('terrace', 'C4 Terrace', { images: [], videos: [video('main', 'vid-t')] })]);
+    await service.getState(['terrace']);
+    service.keepFrame('terrace', 'image/jpeg', 'AQID');
+    const at = Date.now();
+    expect(service.getKeptFrame('terrace', at)).toEqual({ same: true });
+    await service.refreshPicture('terrace');
+    expect(homey.api.realtime).toHaveBeenLastCalledWith('cameras:picture', { deviceId: 'terrace', grab: true });
+    expect(service.getKeptFrame('terrace', at)).toEqual({ type: 'image/jpeg', data: 'AQID', at, wanted: true });
+    vi.advanceTimersByTime(1000);
+    service.keepFrame('terrace', 'image/jpeg', 'BBBB');
+    expect(service.getKeptFrame('terrace')).toEqual({ type: 'image/jpeg', data: 'BBBB', at: at + 1000 });
+  });
+
+  it('a Flow fails for a device with neither a picture nor a video', async () => {
+    const { service, homey } = keeping();
+    await expect(service.refreshPicture('terrace')).rejects.toThrow('No camera image');
+    expect(homey.api.realtime).not.toHaveBeenCalled();
+  });
+
+  it('the Flow card lists cameras without None', async () => {
+    const { service } = keeping();
+    const items = await service.listFlowCameras('');
+    expect(items.length).toBeGreaterThan(0);
+    expect(items.some(i => i.id === 'none')).toBe(false);
   });
 
   it('wakes a camera once for two screens at the same time', async () => {
@@ -246,7 +312,7 @@ describe('kept snapshots (the long refresh)', () => {
     const { service, stored } = keeping();
     await service.getState(['kitchen']);
     stored.set('kitchen', '{broken');
-    expect((await service.getKeptSnapshot('kitchen', HOUR)).data).toBe('AQID');
+    expect(((await service.getKeptSnapshot('kitchen', HOUR)) as any).data).toBe('AQID');
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 

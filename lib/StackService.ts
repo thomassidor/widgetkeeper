@@ -1,5 +1,5 @@
 import type Homey from 'homey';
-import { filterItems, nameOrder, type AutocompleteItem } from './autocomplete.js';
+import { matches, nameOrder, type AutocompleteItem } from './autocomplete.js';
 import PersonalApiKey, { KeyError } from './PersonalApiKey.js';
 import { sharedCache } from './sharedCache.js';
 import Timings from './Timings.js';
@@ -117,12 +117,13 @@ export default class StackService {
     }
     const appId = this.homey.manifest.id;
     const order = nameOrder(this.homey);
-    return filterItems(query, [...dashboards]
+    return [...dashboards]
+      .filter(d => matches(query, d.name))
       .sort((a, b) => order(String(a.name), String(b.name)))
       .map((d) => {
         const count = dashboardPages(d, appId).length;
         return { id: d.id, name: d.name, description: this.homey.__('stack.pageCount', { count }) || `${count} Widgetkeeper widgets` };
-      }));
+      });
   }
 
   // ---------------------------------------------------------------- state

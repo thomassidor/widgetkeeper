@@ -22,6 +22,10 @@ const KEEP_FOR = 30 * 24 * 3600e3;
 const MAX_FRAME_LENGTH = 1024 * 1024;
 const FILE_PREFIX = 'camera-snapshot-';
 
+/** The Flow card that renews a camera's picture, and what tells the open widgets. */
+export const CAMERAS_REFRESH_CARD = 'cameras_refresh';
+export const CAMERAS_PICTURE_EVENT = 'cameras:picture';
+
 export type CameraImage = DeviceImage;
 
 export type CameraDevice =
@@ -37,8 +41,10 @@ export type CameraDevice =
   | { id: string, missing: true };
 
 export type Snapshot = { type: string, data: string };
-/** A kept picture, with when it was taken. */
-export type KeptSnapshot = Snapshot & { at: number };
+/** A kept picture, with when it was taken; `wanted`: a video-only camera's frame a Flow asked to renew. */
+export type KeptSnapshot = Snapshot & { at: number, wanted?: boolean };
+/** The answer when the widget already shows the kept picture (its `have`): a picture can be 2 MB. */
+export type SamePicture = { same: true };
 
 /** Where the long refresh's pictures are kept, one per camera. */
 export type SnapshotFiles = { read(id: string): string | null, write(id: string, text: string): void, prune(olderThan: number): void };
@@ -147,10 +153,15 @@ export default class CameraService {
    * `devices` setting's filter can only ask for classes.
    */
   async listCameras(query: string): Promise<AutocompleteItem[]> {
-    const items = await listDevicesWhere(this.homey, query, d => d?.class === 'camera' || d?.class === 'doorbell' || hasCameraMedia(d), {
+    const items = await this.listFlowCameras(query);
+    return items[0]?.id === 'none' ? items : withNone(this.homey.__('values.none') || 'None', query, items);
+  }
+
+  /** The same cameras without `None`, for the Flow card. */
+  async listFlowCameras(query: string): Promise<AutocompleteItem[]> {
+    return listDevicesWhere(this.homey, query, d => d?.class === 'camera' || d?.class === 'doorbell' || hasCameraMedia(d), {
       empty: this.homey.__('autocomplete.noCameras') || 'No cameras found',
     });
-    return items[0]?.id === 'none' ? items : withNone(this.homey.__('values.none') || 'None', query, items);
   }
 
   /** One entry per device, in the order asked for. A deleted device doesn't fail the others. */
@@ -217,17 +228,26 @@ export default class CameraService {
    * The long refresh (battery cameras): the kept picture while it's younger than `maxAge` ms, so opening a dashboard
    * doesn't wake the camera; else a new one, kept. A camera that doesn't answer gives the kept picture, however old.
    */
-  async getKeptSnapshot(deviceId: string, maxAge: number): Promise<KeptSnapshot> {
+  async getKeptSnapshot(deviceId: string, maxAge: number, have?: number): Promise<KeptSnapshot | SamePicture> {
     this.requestedNow(deviceId);
     const kept = this.readKept(deviceId);
-    if (kept && Date.now() - kept.at < maxAge) return kept;
+    if (kept && Date.now() - kept.at < maxAge) return kept.at === have ? { same: true } : kept;
     const running = this.keeping.get(deviceId);
-    if (running) return running;
-    const failedAt = this.keepFailed.get(deviceId);
-    if (failedAt != null && Date.now() - failedAt < KEEP_RETRY) {
-      if (kept) return kept;
-      throw new Error('Camera did not answer');
+    if (!running) {
+      const failedAt = this.keepFailed.get(deviceId);
+      if (failedAt != null && Date.now() - failedAt < KEEP_RETRY) {
+        if (kept) return kept;
+        throw new Error('Camera did not answer');
+      }
     }
+    return (running ?? this.fetchAndKeep(deviceId)).catch((err) => {
+      if (kept) return kept;
+      throw err;
+    });
+  }
+
+  /** Asks the camera and keeps its picture, once however many ask; rejects when it doesn't answer. */
+  private fetchAndKeep(deviceId: string): Promise<KeptSnapshot> {
     const fetched = this.getSnapshot(deviceId).then(
       (snapshot) => {
         this.keepFailed.delete(deviceId);
@@ -235,7 +255,6 @@ export default class CameraService {
       },
       (err) => {
         this.keepFailed.set(deviceId, Date.now());
-        if (kept) return kept;
         throw err;
       },
     ).finally(() => this.keeping.delete(deviceId));
@@ -243,10 +262,44 @@ export default class CameraService {
     return fetched;
   }
 
-  /** A video-only camera's kept frame, however old (the widget grabs a new one when it's due), or `{none: true}`. */
-  getKeptFrame(deviceId: string): KeptSnapshot | { none: true } {
+  /**
+   * The Flow card: one new picture, kept, whatever the age of the last one and with no dashboard open, so a failure
+   * throws to the Flow (the old picture stays). The app can't read a frame from a stream, so a video-only camera's is
+   * asked of the open widgets, and marked on the kept frame for the next widget to open.
+   */
+  async refreshPicture(deviceId: string) {
     this.requestedNow(deviceId);
-    return this.readKept(deviceId) ?? { none: true };
+    const api = await getAppApi(this.homey);
+    const device: any = await readFresh(api.devices, deviceId);
+    const image = cameraImage(device);
+    if (image) {
+      this.imageUrls.set(deviceId, image.url);
+      await (this.keeping.get(deviceId) ?? this.fetchAndKeep(deviceId));
+      this.homey.api.realtime(CAMERAS_PICTURE_EVENT, { deviceId });
+      return;
+    }
+    if (!cameraVideos(device).length) throw new Error('No camera image');
+    this.wantFrame(deviceId);
+    this.homey.api.realtime(CAMERAS_PICTURE_EVENT, { deviceId, grab: true });
+  }
+
+  /** A video-only camera's kept frame, however old (the widget grabs a new one when it's due), or `{none: true}`. */
+  getKeptFrame(deviceId: string, have?: number): KeptSnapshot | SamePicture | { none: true } {
+    this.requestedNow(deviceId);
+    const kept = this.readKept(deviceId);
+    if (kept && kept.at === have && !kept.wanted) return { same: true };
+    return kept ?? { none: true };
+  }
+
+  /** Marks the kept frame as due for a new grab, which clears it. Without a kept frame the next widget grabs anyway. */
+  private wantFrame(deviceId: string) {
+    const kept = this.readKept(deviceId);
+    if (!kept || kept.wanted) return;
+    try {
+      this.files.write(deviceId, JSON.stringify({ ...kept, wanted: true }));
+    } catch (err) {
+      this.log(`Camera ${deviceId}: could not mark its frame:`, err);
+    }
   }
 
   /** Keeps a frame the widget grabbed from a video-only camera, one a `/state` has just named. */

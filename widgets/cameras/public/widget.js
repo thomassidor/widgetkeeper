@@ -6,7 +6,8 @@
  * `liveFor` setting's 30 s to 5 minutes, ends it ("Until tapped": only a tap, and it comes back when the
  * page shows again). A camera with video but no snapshot (Aqara's) gets a frame grabbed from a
  * short-lived stream instead, at most once a minute. From a 5-minute refresh up (battery cameras) the app keeps
- * the last picture, so showing the page asks no camera until a picture is due.
+ * the last picture, so showing the page asks no camera until a picture is due; with Only by Flow (`refreshMs`
+ * Infinity) only the Flow card takes a new one.
  * Plain browser JS (served as-is).
  */
 (function () {
@@ -155,7 +156,7 @@
     /**
      * @type {Map<string, {tile: HTMLElement, img: HTMLImageElement, video: HTMLVideoElement, icon: HTMLElement,
      *   name: HTMLElement, badge: HTMLElement, note: HTMLElement, loadedAt: number, noteTimer: any,
-     *   grabAt: number | null, grabFailed: boolean, askedAt: number | null, frameRead: boolean}>}
+     *   grabAt: number | null, grabFailed: boolean, askedAt: number | null, frameRead: boolean, due: boolean}>}
      */
     const tiles = new Map();
 
@@ -247,14 +248,32 @@
 
     /** On a long refresh: whether to ask the app, as the picture shown is old enough and the last try isn't recent. */
     function keptDue(tile) {
+      if (tile.due) return true;
       if (tile.loadedAt > 0 && now() - tile.loadedAt < keptMs) return false;
       return tile.askedAt == null || now() - tile.askedAt >= KEPT_RETRY_MS;
+    }
+
+    /** The time of the picture a tile shows, so the app doesn't send that one again. */
+    const haveParam = (tile) => (tile.loadedAt > 0 ? `&have=${tile.loadedAt}` : '');
+
+    /**
+     * On a long refresh, a Flow renewed this camera's picture (a video-only camera's is `grab`bed here): the tile is
+     * due, also if refresh() can't load it now. False when there's nothing to load.
+     */
+    function renewed(id, grab) {
+      const tile = keptMs ? tiles.get(id) : null;
+      if (!tile) return false;
+      if (grab) { tile.grabAt = null; tile.grabFailed = false; }
+      else tile.due = true;
+      return true;
     }
 
     /** A long refresh's picture: the app's kept one while it's young enough, else a new one it keeps. */
     async function loadKept(d, tile) {
       tile.askedAt = now();
-      const s = await withTimeout(api('GET', `/snapshot?deviceId=${encodeURIComponent(d.id)}&maxAge=${keptMs / 1000}`), SNAPSHOT_TIMEOUT_MS);
+      const s = await withTimeout(api('GET', `/snapshot?deviceId=${encodeURIComponent(d.id)}&maxAge=${keptMs / 1000}${haveParam(tile)}`), SNAPSHOT_TIMEOUT_MS);
+      tile.due = false;
+      if (s.same) return;
       const src = await preload(`data:${s.type};base64,${s.data}`);
       if (tiles.get(d.id) === tile) showImage(tile, src, s.at);
     }
@@ -264,11 +283,11 @@
       if (tile.frameRead) return;
       tile.frameRead = true;
       try {
-        const s = await withTimeout(api('GET', `/snapshot?deviceId=${encodeURIComponent(d.id)}&saved=1`), SNAPSHOT_TIMEOUT_MS);
-        if (!s || s.none || tiles.get(d.id) !== tile) return;
+        const s = await withTimeout(api('GET', `/snapshot?deviceId=${encodeURIComponent(d.id)}&saved=1${haveParam(tile)}`), SNAPSHOT_TIMEOUT_MS);
+        if (!s || s.none || s.same || tiles.get(d.id) !== tile) return;
         const src = await preload(`data:${s.type};base64,${s.data}`);
         if (tiles.get(d.id) !== tile) return;
-        tile.grabAt = s.at;
+        tile.grabAt = s.wanted ? null : s.at; // `wanted`: a Flow asked for a new frame while no screen was open
         showImage(tile, src, s.at);
       } catch (err) {
         console.error(err);
@@ -390,7 +409,8 @@
       if (!tile) return;
       const d = devices.find(x => x.id === id);
       const every = d && !('missing' in d) && !d.image ? grabMs : refreshMs;
-      const stale = tile.loadedAt > 0 && now() - tile.loadedAt > 2 * every + 5000;
+      // Only by Flow has no interval to be late for, so its picture always says when it's from.
+      const stale = tile.loadedAt > 0 && (every === Infinity || now() - tile.loadedAt > 2 * every + 5000);
       tile.badge.textContent = stale
         ? timeFormatter(undefined, opts.timeFormat, '2-digit').format(new Date(tile.loadedAt)) : '';
       tile.badge.style.display = stale ? '' : 'none';
@@ -578,7 +598,7 @@
       noteEl.style.display = 'none';
       tile = {
         tile: node, img, video, icon, name, badge, note: noteEl, loadedAt: 0, noteTimer: null,
-        grabAt: null, grabFailed: false, askedAt: null, frameRead: false,
+        grabAt: null, grabFailed: false, askedAt: null, frameRead: false, due: false,
       };
 
       // A tap (the kit's, as Quick Actions'): a drag is left to the dashboard, so it still scrolls.
@@ -652,6 +672,13 @@
       resumeId = null;
       autoShown = true;
       autoGaveUp = false;
+      // A Flow may have renewed a picture while the page was hidden: the app's answer says, without asking the camera.
+      if (keptMs) {
+        for (const tile of tiles.values()) {
+          tile.due = tile.loadedAt > 0;
+          tile.frameRead = false;
+        }
+      }
       if (liveView && id && !live && !names.renaming) {
         const d = devices.find(x => x.id === id);
         if (d && !('missing' in d) && d.video) startLive(d);
@@ -659,7 +686,7 @@
       startAuto();
     }
 
-    return { setState, setNames: names.set, setMessage, refresh, render, pause, resume, t, routeOf: (id) => (appRoute.has(id) ? 'app' : 'direct') };
+    return { setState, setNames: names.set, setMessage, refresh, renewed, render, pause, resume, t, routeOf: (id) => (appRoute.has(id) ? 'app' : 'direct') };
   }
 
   window.createCamerasWidget = createCamerasWidget;

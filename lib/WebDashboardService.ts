@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import type Homey from 'homey';
 import { repeatKeys, type default as TileNameService } from './TileNameService.js';
 import { listAppLogs, logSlot } from './appLogs.js';
-import { byName, devicesAndZones, filterItems, hintRow, matches, withNone, type AutocompleteItem } from './autocomplete.js';
+import { byName, devicesAndZones, hintRow, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { describeCapability } from './capabilities.js';
 import { driverIconPath, libraryIconUrl } from './deviceIcon.js';
 import { FLOW_ICON_IMAGES } from './flowIconImages.js';
@@ -747,12 +747,13 @@ export default class WebDashboardService {
 
   /** Every web dashboard matching the query, by name, with its widget count (also the Popups cards' screens). */
   dashboardList(query: string): AutocompleteItem[] {
-    return filterItems(query, this.list()
+    return this.list()
       .map((d) => {
         const name = d.name || this.homey.__('web.untitled') || 'Dashboard';
         const count = d.columns.reduce((n, c) => n + c.length, 0);
         return { id: d.id, name, description: this.homey.__('web.widgetCount', { count }) || `${count} widgets` };
-      }))
+      })
+      .filter(i => matches(query, i.name))
       .sort(byName(this.homey));
   }
 
