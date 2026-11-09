@@ -54,7 +54,7 @@ function mount(opts: { stored?: unknown; dashboards?: any[]; sections?: any[]; c
   const toggle = root.querySelector('.wd-nav-toggle') as HTMLElement;
   const names = () => [...pane.querySelectorAll('.wd-nav-list .wd-nav-name')].map(x => x.textContent);
   const stored = () => JSON.parse(localStorage.getItem(KEY) ?? 'null');
-  const customize = () => (pane.querySelector('.wd-nav-foot button') as HTMLElement).click();
+  const customize = () => (pane.querySelector('.wd-nav-custom') as HTMLElement).click();
   return { wd, root, pane, scrim, toggle, names, stored, customize };
 }
 
@@ -115,6 +115,25 @@ describe('the pane\'s list', () => {
     (pane.querySelector('.wd-nav-fold') as HTMLElement).click();
     expect(names()).toEqual(['Home', 'Energy', 'Rooms', 'Outside', 'Garden']);
     expect(stored().folded).toEqual(['s1']);
+  });
+
+  it('opens the folded section holding the current dashboard, without forgetting it\'s folded', () => {
+    const { pane, toggle, names, stored } = mount({ current: { dashboard: KITCHEN }, stored: { folded: ['s1'] } });
+    toggle.click();
+    expect(names()).toContain('Kitchen');
+    expect(pane.querySelector('.wd-nav-list [aria-current]')?.textContent).toBe('Kitchen');
+    expect(stored() === null || stored().folded.includes('s1')).toBe(true);
+    (pane.querySelector('.wd-nav-fold') as HTMLElement).click();
+    expect(names()).not.toContain('Kitchen');
+    expect(stored().folded).toEqual(['s1']);
+  });
+
+  it('lists a hidden dashboard while it\'s the one showing', () => {
+    const { pane, names } = mount({ stored: { hidden: ['home'] } });
+    expect(names()).toContain('Home');
+    expect(pane.querySelector('.wd-nav-list [aria-current]')?.textContent).toBe('Home');
+    document.body.textContent = '';
+    expect(mount({ current: { dashboard: ENERGY }, stored: { hidden: ['home'] } }).names()).not.toContain('Home');
   });
 
   it('marks All dashboards on the front page', () => {
@@ -205,7 +224,24 @@ describe('closed, floating and kept open', () => {
     expect((pane.querySelector('.wd-nav-pin') as HTMLElement).hidden).toBe(false);
   });
 
-  it('is gone in full screen and in kiosk mode, unless the address asks for it', () => {
+  it('only floats in full screen, and is kept open again after it', () => {
+    const { pane, toggle, stored } = mount({ stored: { pinned: true } });
+    html.classList.add('wd-full');
+    document.dispatchEvent(new Event('fullscreenchange'));
+    expect(pane.hidden).toBe(false);
+    expect(pane.classList.contains('open')).toBe(false);
+    expect(html.classList.contains('wd-nav-pinned')).toBe(false);
+    expect((pane.querySelector('.wd-nav-pin') as HTMLElement).hidden).toBe(true);
+    toggle.click();
+    expect(pane.classList.contains('open')).toBe(true);
+    toggle.click();
+    expect(stored().pinned).toBe(true);
+    html.classList.remove('wd-full');
+    document.dispatchEvent(new Event('fullscreenchange'));
+    expect(html.classList.contains('wd-nav-pinned')).toBe(true);
+  });
+
+  it('is gone in kiosk mode, unless the address asks for it', () => {
     html.classList.add('wd-kiosk');
     const kiosk = mount({ stored: { pinned: true } });
     expect(kiosk.pane.hidden).toBe(true);
@@ -215,11 +251,6 @@ describe('closed, floating and kept open', () => {
     const opted = mount({ stored: { pinned: true } });
     expect(opted.pane.hidden).toBe(false);
     expect(html.classList.contains('wd-nav-pinned')).toBe(true);
-    html.classList.remove('wd-kiosk', 'wd-kiosk-nav');
-    html.classList.add('wd-full');
-    document.dispatchEvent(new Event('fullscreenchange'));
-    expect(opted.pane.hidden).toBe(true);
-    expect(html.classList.contains('wd-nav-pinned')).toBe(false);
   });
 });
 
@@ -344,7 +375,27 @@ describe('with the rest of the page', () => {
   });
 });
 
+describe('a dashboard with a code', () => {
+  it('says the browser is held there, and that the code is for leaving', () => {
+    const { wd, pane } = mount({ lock: 'home' });
+    expect(pane.querySelector('.wd-nav-list .wd-nav-note')?.textContent).toBe('navHeld');
+    (pane.querySelector('.wd-nav-list a[href="#/d/energy"]') as HTMLElement).click();
+    expect(wd.askCode.mock.calls[0][2]).toBe('enterCodeLeave');
+  });
+
+  it('says nothing on one without', () => {
+    expect(mount({ lock: 'energy' }).pane.querySelector('.wd-nav-list .wd-nav-note')).toBeNull();
+  });
+});
+
 describe('Customize', () => {
+  it('is in the pane\'s header, with how many are hidden', () => {
+    const { pane } = mount({ stored: { hidden: ['energy', 'garden'] } });
+    const custom = pane.querySelector('.wd-nav-head .wd-nav-custom') as HTMLElement;
+    expect(custom.querySelector('.wd-nav-badge')?.textContent).toBe('2');
+    expect([...pane.querySelectorAll('.wd-nav-foot > *')].length).toBe(2);
+  });
+
   it('lists hidden ones too, and an eye hides or shows one in this browser', () => {
     const { pane, names, stored, customize } = mount({ stored: { hidden: ['energy'] } });
     expect(names()).not.toContain('Energy');

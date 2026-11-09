@@ -250,6 +250,7 @@
 
     function liveNote() {
       const note = el('span', 'wd-live', t('noLive'));
+      note.title = t('noLive'); // on a phone's dashboard only its dot shows
       note.hidden = wd.live;
       return note;
     }
@@ -341,7 +342,7 @@
      * Asks a dashboard's code on a phone's keypad in a dialog, which the app checks, then `then()`. It sends on the last
      * digit, or with OK while the length isn't known; wrong ones count as at a Keypad.
      */
-    function askCode(dash, then) {
+    function askCode(dash, then, prompt = 'enterCode') {
       const lock = lockOf(dash);
       if (!lock) { then(); return; }
       for (const open of document.querySelectorAll('dialog.wd-code')) /** @type {HTMLDialogElement} */ (open).close(); // one at a time
@@ -352,7 +353,7 @@
       const note = el('p', 'wd-code-note');
       note.setAttribute('role', 'status');
       const keys = el('div', 'wd-code-keys');
-      body.append(el('p', 'wd-code-prompt', t('enterCode')), dots, note, keys);
+      body.append(el('p', 'wd-code-prompt', t(prompt)), dots, note, keys);
       let typed = '';
       let busy = false;
       let lockedUntil = 0;
@@ -675,7 +676,7 @@
         e.preventDefault();
         (wd.hasSaveProblem() ? persist() : wd.saving).then(() => {
           if (wd.hasSaveProblem() || !wd.current || !wd.current.editing || wd.current.dashboard.id !== d.id) return;
-          location.hash = done.getAttribute('href');
+          wd.leaveEditor(done.getAttribute('href'));
         });
       });
       // The end of the bar stays together when a narrow window wraps it.

@@ -77,6 +77,7 @@
     codeNone: 'No code',
     codeAny: 'Any code',
     enterCode: 'Enter the code',
+    enterCodeLeave: 'Enter the code to leave this dashboard',
     codeOk: 'OK',
     codeDelete: 'Delete',
     wrongCode: 'Wrong code',
@@ -237,7 +238,8 @@
     navStopKeeping: 'Stop keeping open',
     navClose: 'Close',
     navAll: 'All dashboards',
-    navCustomize: 'Customize',
+    navCustomize: 'Customize this list',
+    navHeld: 'This browser stays on this dashboard. Switching to another takes its code.',
     navShowHere: 'Show in this browser',
     navHiddenCount: '__count__ hidden',
     navNote: 'Drag the grips to change the order here. Hidden dashboards stay on the front page, and new ones show up here by themselves.',
@@ -1023,7 +1025,7 @@
     }
 
     // ---- The parts (settings/dashboard-<part>.js), each run once with `wd` ------------------------------------------
-    Object.assign(wd, { APP_ID, applyDim, appWidget, AWAKE_STORAGE, BACKGROUNDS, CUSTOM_BACKGROUND, hardToRead, bracketQuery, button, clone, CONFIRM_MS,
+    Object.assign(wd, { APP_ID, leaveEditor, applyDim, appWidget, AWAKE_STORAGE, BACKGROUNDS, CUSTOM_BACKGROUND, hardToRead, bracketQuery, button, clone, CONFIRM_MS,
       confirmButton, darkQuery, DEFAULT_STRINGS, deleted, DIM_CHANGED_STORAGE, dimChoices, dimFlowHolds, DIM_SCHEDULE_STORAGE, DIM_STORAGE, dimLevel, dimScheduleOf, dimWanted, DRAG_SLOP, EDGE_PX, el, failed,
       frames, HOMEY_WIDTH, homeyRequest, icon, isScreenCode, keepAwake, KEY_STORAGE, LAYOUT, listeners, loadAll, loadSetup, MAX_DIM,
       newId, opts, persist, request, root, route, SESSION_STORAGE, start, STAY_STORAGE, storageGet, storageSet,
@@ -1052,7 +1054,7 @@
         const to = ['#/', '#/edit'].includes(location.hash) ? location.hash : null;
         history.replaceState(null, '', `#/d/${stay.id}`);
         wd.renderDashboard(stay, false);
-        if (to) wd.askCode(stay, () => { storageSet(STAY_STORAGE, null); location.hash = to; });
+        if (to) wd.askCode(stay, () => { storageSet(STAY_STORAGE, null); location.hash = to; }, 'enterCodeLeave');
         return;
       }
       if (location.hash === '#/edit') { wd.renderList(true); return; }
@@ -1071,6 +1073,12 @@
         if (wd.lockOf(dashboard)) storageSet(STAY_STORAGE, dashboard.id);
       }
       wd.renderDashboard(dashboard, !!m[2]);
+    }
+
+    /** Out of an editor to the view it was opened from: a step back, or Back would open the editor again; else in its place. */
+    function leaveEditor(hash) {
+      if (wd.cameFrom === hash) history.back();
+      else location.replace(hash);
     }
 
     async function start() {
@@ -1095,7 +1103,8 @@
       }
     }
 
-    window.addEventListener('hashchange', async () => {
+    window.addEventListener('hashchange', async (e) => {
+      wd.cameFrom = new URL(e.oldURL).hash || '#/';
       if (/kiosk=/.test(location.hash)) { start(); return; } // kiosk mode turned on or off in an open page
       // A screen's code opened in a page already open: used as at a load.
       if (/code=/.test(location.hash)) { start(); return; }

@@ -52,6 +52,7 @@
         settings.append(icon('sliders'), el('span', 'wd-bar-label', t('pageSettings')));
         const done = el('a', 'wd-btn primary', t('done'));
         done.href = '#/';
+        done.addEventListener('click', (e) => { e.preventDefault(); wd.leaveEditor('#/'); });
         // Settings is in the side pane; where there's none (kiosk mode), here.
         root.append(frontBar(wd.brand(), el('span', 'wd-spacer'), ...(wd.navBlocked() ? [settings] : []), done), page);
         wd.showNav({ inactive: true });

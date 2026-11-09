@@ -38,13 +38,14 @@
       list.splice(to, 0, item);
     }
 
-    const nav = { prefs: readPrefs(storageGet(NAV_STORAGE)), shown: false, inactive: false, open: false, customizing: false, drag: null, pane: null, scrim: null, head: null, list: null, foot: null };
+    const nav = { prefs: readPrefs(storageGet(NAV_STORAGE)), shown: false, inactive: false, open: false, customizing: false, reveal: null, drag: null, pane: null, scrim: null, head: null, list: null, foot: null };
     wd.nav = nav;
 
     const sectionsNow = () => (wd.frontPage && wd.frontPage.sections) || [];
     const dashboardIds = () => wd.dashboards.map(d => d.id);
     const sectionIds = () => sectionsNow().map(s => s.id);
     const isHidden = (id) => nav.prefs.hidden.includes(id);
+    const isCurrent = (id) => !!wd.current && wd.current.dashboard.id === id;
 
     /**
      * What the pane lists, in this browser's order: the dashboards in no section first (no heading), then each section,
@@ -59,10 +60,10 @@
       const groups = [];
       for (const id of ['', ...ordered(known, nav.prefs.sectionOrder)]) {
         const all = inOrder.filter(d => sectionOf(d) === id);
-        const rows = customizing ? all : all.filter(d => !isHidden(d.id));
+        const rows = customizing ? all : all.filter(d => !isHidden(d.id) || isCurrent(d.id)); // a hidden one while it's showing
         if (!rows.length) continue;
         const section = sections.find(s => s.id === id);
-        groups.push({ id, name: section ? section.name || t('untitled') : '', all, rows, folded: !customizing && !!id && nav.prefs.folded.includes(id) });
+        groups.push({ id, name: section ? section.name || t('untitled') : '', all, rows, folded: !customizing && !!id && nav.prefs.folded.includes(id) && id !== nav.reveal });
       }
       return groups;
     }
@@ -84,11 +85,12 @@
       storageSet(NAV_STORAGE, JSON.stringify(p));
     }
 
-    const canPin = () => window.innerWidth >= PIN_MIN_WIDTH;
-    /** Full screen and kiosk mode have no pane, unless a kiosk's address asks for it (`?kiosk=1&nav=1`). */
+    /** Full screen is for the widgets, so the pane only floats there; the preference comes back with it. */
+    const canPin = () => window.innerWidth >= PIN_MIN_WIDTH && !document.documentElement.classList.contains('wd-full');
+    /** Kiosk mode has no pane, unless its address asks for it (`?kiosk=1&nav=1`). */
     function blocked() {
       const c = document.documentElement.classList;
-      return c.contains('wd-full') || (c.contains('wd-kiosk') && !c.contains('wd-kiosk-nav'));
+      return c.contains('wd-kiosk') && !c.contains('wd-kiosk-nav');
     }
     const allowed = () => nav.shown && !blocked();
     const isPinned = () => allowed() && nav.prefs.pinned && canPin();
@@ -118,6 +120,23 @@
       if (node) node.focus({ preventScroll: true });
     }
 
+    /** The section holding the current dashboard stays open for now, whatever is folded: it's where the highlight is. */
+    function revealCurrent() {
+      const here = wd.current && wd.dashboards.find(d => d.id === wd.current.dashboard.id);
+      const section = here && sectionIds().includes(here.section) ? here.section : null;
+      nav.reveal = section && nav.prefs.folded.includes(section) ? section : null;
+    }
+
+    /** Scrolls only the list, as far as the current row needs. */
+    function scrollToCurrent() {
+      const row = nav.list.querySelector('[aria-current]');
+      if (!row) return;
+      const box = nav.list.getBoundingClientRect();
+      const at = row.getBoundingClientRect();
+      if (at.top < box.top) nav.list.scrollTop -= box.top - at.top + 8;
+      else if (at.bottom > box.bottom) nav.list.scrollTop += at.bottom - box.bottom + 8;
+    }
+
     function closePane() {
       if (nav.drag) nav.drag.finish(false);
       if (isPinned()) { nav.prefs.pinned = false; save(); }
@@ -131,7 +150,10 @@
     function togglePane() {
       if (isPinned() || isFloating()) { closePane(); return; }
       nav.open = true;
+      revealCurrent();
+      drawList();
       apply();
+      scrollToCurrent();
       const here = /** @type {HTMLElement} */ (nav.pane.querySelector('[aria-current]') || nav.pane.querySelector('a, button'));
       if (here) here.focus({ preventScroll: true });
     }
@@ -155,7 +177,7 @@
       }
       if (!here || !wd.lockOf(here)) return;
       e.preventDefault();
-      wd.askCode(here, () => { storageSet(STAY_STORAGE, null); location.hash = hash; });
+      wd.askCode(here, () => { storageSet(STAY_STORAGE, null); location.hash = hash; }, 'enterCodeLeave');
     }
 
     /** Settings, over any view; on a dashboard with a code that takes the code, as the way there through the front page did. */
@@ -272,7 +294,8 @@
     function plainHead(group) {
       const key = `fold:${group.id}`;
       const head = button('wd-nav-section wd-nav-fold', '', () => {
-        nav.prefs.folded = group.folded ? nav.prefs.folded.filter(id => id !== group.id) : [...nav.prefs.folded, group.id];
+        nav.prefs.folded = group.folded ? nav.prefs.folded.filter(id => id !== group.id) : [...new Set([...nav.prefs.folded, group.id])];
+        if (nav.reveal === group.id) nav.reveal = null; // folded by hand: it stays folded
         save();
         drawList();
         focusKey(key);
@@ -286,6 +309,8 @@
 
     function drawList() {
       const nodes = [];
+      const here = wd.current && wd.current.dashboard;
+      if (!nav.customizing && here && wd.lockOf(here)) nodes.push(el('p', 'wd-nav-note', t('navHeld')));
       for (const group of navGroups(nav.customizing)) {
         if (group.id) nodes.push(nav.customizing ? customHead(group) : plainHead(group));
         if (group.folded) continue;
@@ -308,7 +333,11 @@
       pin.append(icon('pin'));
       const close = button('wd-icon wd-nav-close', '', closePane, t('navClose'));
       close.append(icon('close'));
-      nav.head.replaceChildren(el('strong', 'wd-nav-title', t('dashboards')), pin, close);
+      const count = nav.prefs.hidden.filter(id => dashboardIds().includes(id)).length;
+      const custom = button('wd-icon wd-nav-custom', '', customize, count ? `${t('navCustomize')} · ${t('navHiddenCount', { count })}` : t('navCustomize'));
+      custom.append(icon('eye'));
+      if (count) custom.append(el('span', 'wd-nav-badge', String(count)));
+      nav.head.replaceChildren(el('strong', 'wd-nav-title', t('dashboards')), custom, pin, close);
     }
 
     function drawFoot() {
@@ -331,13 +360,9 @@
       all.append(icon('squares'), el('span', 'wd-nav-name', t('navAll')));
       if (!wd.current) all.setAttribute('aria-current', 'page');
       all.addEventListener('click', (e) => leave(e, '#/'));
-      const edit = button('wd-nav-row', '', customize);
-      edit.append(icon('eye'), el('span', 'wd-nav-name', t('navCustomize')));
-      const count = nav.prefs.hidden.filter(id => dashboardIds().includes(id)).length;
-      if (count) edit.append(el('span', 'wd-nav-count', t('navHiddenCount', { count })));
       const settings = button('wd-nav-row wd-nav-settings', '', openSettings);
       settings.append(icon('sliders'), el('span', 'wd-nav-name', t('pageSettings')));
-      nav.foot.replaceChildren(all, edit, settings);
+      nav.foot.replaceChildren(all, settings);
     }
 
     function draw() {
@@ -427,8 +452,10 @@
       ensureShell();
       nav.shown = true;
       nav.inactive = inactive;
+      revealCurrent();
       draw();
       apply();
+      if (isPinned()) scrollToCurrent();
     }
 
     /** Every view starts here (`clearRoot()`), and only a dashboard, the front page and their editors show the pane again. */
@@ -466,7 +493,7 @@
       if (isFloating() && !document.querySelector('dialog[open]')) closePane();
     });
     window.addEventListener('resize', apply);
-    for (const type of ['fullscreenchange', 'webkitfullscreenchange']) document.addEventListener(type, apply);
+    for (const type of ['fullscreenchange', 'webkitfullscreenchange']) document.addEventListener(type, () => { draw(); apply(); });
 
     Object.assign(wd, { hideNav, navBlocked: blocked, navButton, navCopied, navGroups, navInOrder, ordered, readPrefs, redrawNav, reorder, showNav, PIN_MIN_WIDTH });
   });
