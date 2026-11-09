@@ -186,6 +186,12 @@ describe('web dashboards page: kiosk mode (takeKiosk)', () => {
     expect(off.takeKiosk()).toBe(false);
     expect(off.location.hash).toBe('#/d/kitchen');
   });
+
+  it('takes the side pane\'s nav=1 along, or the route would not match', () => {
+    const page = kioskPage(`${PAGE}#/d/kitchen?kiosk=1&nav=1`);
+    expect(page.takeKiosk()).toBe(true);
+    expect([page.location.search, page.location.hash]).toEqual(['?kiosk=1&nav=1', '#/d/kitchen']);
+  });
 });
 
 describe("web dashboards page: a screen's code (takeCode, useCode)", () => {

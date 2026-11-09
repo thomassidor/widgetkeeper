@@ -41,39 +41,71 @@ body { margin: 0; color: var(--wd-text); font-size: var(--homey-font-size-defaul
 }
 /* Full screen: the dashboard's bar keeps only its full screen button and the live note, without its backdrop, and
    scrolls away. */
-.wd-full .wd-back, .wd-full .wd-bar-title, .wd-full .wd-jump, .wd-full .wd-bar-edit { display: none; }
+.wd-full .wd-nav-toggle, .wd-full .wd-bar-title, .wd-full .wd-bar-edit { display: none; }
 .wd-full .wd-bar { position: static; background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
 /* Kiosk mode (`?kiosk=1`, a kiosk browser that fills the screen itself): a dashboard's bar keeps only the live note,
    without the full screen button, and is gone while the note is hidden (`wd-online`, set with it: older kiosk
    WebViews, before Chrome 105, have no `:has()`). The editor's bar is left as it is. */
-.wd-kiosk .wd-bar-view .wd-back, .wd-kiosk .wd-bar-view .wd-bar-title, .wd-kiosk .wd-bar-view .wd-jump, .wd-kiosk .wd-bar-view .wd-bar-edit,
+.wd-kiosk:not(.wd-kiosk-nav) .wd-nav-toggle, .wd-kiosk .wd-bar-view .wd-bar-title, .wd-kiosk .wd-bar-view .wd-bar-edit,
 .wd-kiosk .wd-bar-view .wd-full-toggle { display: none; }
 .wd-kiosk .wd-bar-view { position: static; background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
-.wd-kiosk.wd-online .wd-bar-view { display: none; }
+.wd-kiosk.wd-online:not(.wd-kiosk-nav) .wd-bar-view { display: none; }
 .wd-kiosk .wd-bar-view + .wd-grid { padding-top: 16px; }
 /* The dashboard's backdrop in the editor: a button with its swatch, opening the palette under it. */
-/* The viewing bar's title opens the list of dashboards. */
-.wd-jump { position: relative; display: inline-flex; min-width: 0; }
-.wd-jump-button {
-  -webkit-appearance: none; appearance: none; border: 0; margin: 0 0 0 -8px; padding: 0 6px 0 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; min-width: 0; height: 36px;
-  border-radius: 18px; background: transparent; color: var(--wd-text); font-family: inherit;
+/* The side pane (settings/dashboard-nav.js): beside the page, not in it. Kept open, the page gets a margin of its width,
+   from 1000 px; below that it's only ever over the widgets. The layer under it is what takes a tap outside it, as a tap
+   in a widget never reaches the page. */
+.wd-nav {
+  position: fixed; top: 0; bottom: 0; left: 0; z-index: 21; box-sizing: border-box; width: 260px; display: flex; flex-direction: column;
+  padding-left: env(safe-area-inset-left, 0px); color: var(--wd-text); background: var(--wd-tile); border-right: 1px solid var(--wd-line);
+  transform: translateX(-102%); transition: transform .2s ease;
 }
-.wd-jump-button:hover, .wd-jump-button[aria-expanded="true"] { background: var(--wd-raised); }
-.wd-jump-button svg { flex: none; width: 18px; height: 18px; color: var(--wd-muted); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.wd-jump-list {
-  position: absolute; top: calc(100% + 6px); left: -8px; z-index: 6; box-sizing: border-box; width: min(320px, calc(100vw - 16px)); max-height: min(60vh, 440px); overflow-y: auto;
-  padding: 6px; border-radius: 14px; background: var(--wd-raised); box-shadow: 0 0 0 1px var(--wd-line), 0 12px 32px rgba(0, 0, 0, .3);
+.wd-nav.open { transform: none; }
+.wd-nav-scrim { position: fixed; inset: 0; z-index: 20; background: rgba(0, 0, 0, .45); opacity: 0; visibility: hidden; transition: opacity .18s, visibility .18s; }
+.wd-nav-scrim.open { opacity: 1; visibility: visible; }
+.wd-nav-pinned .wd { margin-left: 260px; }
+.wd-nav svg { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.wd-nav-head { flex: none; display: flex; align-items: center; gap: 2px; min-height: 56px; box-sizing: border-box; padding: 8px 8px 8px 16px; }
+.wd-nav-head .wd-logo { flex: none; width: 24px; height: 24px; margin-right: 10px; border-radius: 6px; }
+.wd-nav-title { flex: 1 1 auto; min-width: 0; font-size: 17px; line-height: 24px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wd-nav-pin.on, .wd-nav-pin.on:hover { color: var(--wd-accent); background: color-mix(in srgb, var(--wd-accent) 16%, transparent); }
+.wd-nav-pin.on svg { fill: currentColor; }
+.wd-nav-done { flex: none; }
+.wd-nav-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 8px 8px; }
+.wd-nav-row {
+  -webkit-appearance: none; appearance: none; border: 0; margin: 0; background: transparent; font-family: inherit; cursor: pointer;
+  display: flex; align-items: center; gap: 12px; box-sizing: border-box; width: 100%; min-height: 44px; padding: 0 10px; border-radius: 10px;
+  font-size: 15px; line-height: 20px; text-align: left; text-decoration: none; color: var(--wd-text);
 }
-.wd-jump-list[hidden] { display: none; }
-.wd-jump-head { margin: 8px 10px 4px; font-size: 12px; line-height: 16px; font-weight: 500; color: var(--wd-muted); }
-.wd-jump-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding: 0 10px; box-sizing: border-box; border-radius: 10px;
-  color: var(--wd-text); text-decoration: none; font-size: 15px; line-height: 20px;
+a.wd-nav-row:hover, button.wd-nav-row:hover { background: color-mix(in srgb, var(--wd-text) 8%, transparent); }
+.wd-nav-row[aria-current="page"], .wd-nav-row[aria-current="page"]:hover { font-weight: 500; color: var(--wd-accent); background: color-mix(in srgb, var(--wd-accent) 16%, transparent); }
+.wd-nav-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wd-nav-glyph { flex: none; display: flex; gap: 2px; box-sizing: border-box; width: 20px; height: 20px; padding: 2px; }
+.wd-nav-glyph i { flex: 1 1 0; border-radius: 1.5px; background: currentColor; opacity: .55; }
+.wd-nav-row[aria-current="page"] .wd-nav-glyph i { opacity: 1; }
+.wd-nav-lock { flex: none; display: flex; color: var(--wd-muted); }
+.wd-nav-lock svg { width: 15px; height: 15px; }
+.wd-nav-section {
+  -webkit-appearance: none; appearance: none; border: 0; margin: 8px 0 0; background: transparent; font-family: inherit;
+  display: flex; align-items: center; gap: 4px; box-sizing: border-box; width: 100%; min-height: 36px; padding: 0 10px; border-radius: 10px;
+  font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; text-align: left; color: var(--wd-muted);
 }
-.wd-jump-row:hover { background: color-mix(in srgb, var(--wd-text) 8%, transparent); }
-.wd-jump-row.on { font-weight: 500; }
-.wd-jump-row svg { flex: none; width: 18px; height: 18px; color: var(--wd-accent); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.wd-jump-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.wd-nav-fold { cursor: pointer; }
+.wd-nav-fold svg { width: 16px; height: 16px; transition: transform .15s; }
+.wd-nav-fold.folded svg { transform: rotate(-90deg); }
+.wd-nav-foot { flex: none; display: flex; flex-direction: column; gap: 2px; padding: 8px; border-top: 1px solid var(--wd-line); }
+.wd-nav-count { flex: none; font-size: 13px; color: var(--wd-muted); }
+.wd-nav-note { margin: 2px 10px 6px; font-size: 13px; line-height: 18px; color: var(--wd-muted); }
+.wd-nav-reset { color: var(--wd-accent); }
+.wd-nav-grip { flex: none; display: grid; place-items: center; width: 24px; height: 40px; margin-left: -6px; color: var(--wd-muted); cursor: grab; touch-action: none; }
+.wd-nav-grip:focus-visible, .wd-nav-eye:focus-visible { outline: 2px solid var(--wd-accent); outline-offset: -2px; border-radius: 8px; }
+.wd-nav-eye { -webkit-appearance: none; appearance: none; border: 0; padding: 0; background: transparent; cursor: pointer; flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin-right: -8px; color: var(--wd-muted); }
+.wd-nav-eye.on { color: var(--wd-accent); }
+.wd-nav-row.off .wd-nav-name, .wd-nav-row.off .wd-nav-glyph { opacity: .42; }
+.wd-nav-row.off .wd-nav-name { text-decoration: line-through; }
+.wd-nav-row.lifted, .wd-nav-section.lifted { background: var(--wd-raised); }
+@media (max-width: 999.98px) { .wd-nav { width: min(300px, 82vw); } .wd-nav.open { box-shadow: 0 0 40px rgba(0, 0, 0, .35); } }
+@media (prefers-reduced-motion: reduce) { .wd-nav, .wd-nav-scrim, .wd-nav-fold svg { transition: none; } }
 .wd-bgpick { position: relative; display: inline-flex; }
 .wd-bgpop {
   position: absolute; top: calc(100% + 6px); left: 0; z-index: 6; padding: 8px 10px; border-radius: 14px;

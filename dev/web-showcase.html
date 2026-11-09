@@ -193,6 +193,7 @@
     // settings and drawn alike behind the dialog (the showcase's has two).
     const SETTINGS_WIDGET = 'home-0-2';
     // The rotate view (1.3.0's teaser): this browser's Rotate dashboards and Dim at set times, already on.
+    if (VIEW === 'nav') localStorage.setItem('widgetkeeper.web.nav', JSON.stringify({ pinned: true }));
     if (VIEW === 'rotate') {
       localStorage.setItem('widgetkeeper.web.rotate', JSON.stringify({ ids: ['home', 'energy', 'security'], seconds: 45 }));
       localStorage.setItem('widgetkeeper.web.dimSchedule', JSON.stringify({ from: '22:00', to: '07:00', level: 60 }));
@@ -264,6 +265,7 @@
   <script src="../settings/dashboard-popups.js"></script>
   <script src="../settings/dashboard-sync.js"></script>
   <script src="../settings/dashboard-screen.js"></script>
+  <script src="../settings/dashboard-nav.js"></script>
   <style>
     /* Transparent around the window: the render script screenshots with a transparent default background. */
     html { background: transparent !important; }
@@ -306,6 +308,7 @@
     /* The page: 1440 × 860, anything taller cut off, like a page you'd scroll. */
     .viewport { position: relative; height: 860px; overflow: hidden; background: var(--wd-bg); }
     .viewport > .wd { min-height: 860px; }
+    .viewport > .wd-nav, .viewport > .wd-nav-scrim { position: absolute; }
     /* No socket in the render: no "No live updates". */
     .wd-live { display: none !important; }
     /* A non-transparent widget's frame: Homey's widget padding, as the widget's own body has in an iframe. */

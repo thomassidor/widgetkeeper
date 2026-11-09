@@ -62,7 +62,8 @@
       edit.title = t('edit');
       edit.setAttribute('aria-label', t('edit'));
       edit.append(icon('pen'));
-      root.append(wd.bar(wd.brand(), el('span', 'wd-spacer'), wd.liveNote(), edit), page);
+      root.append(wd.bar(wd.navButton(), wd.brand(), el('span', 'wd-spacer'), wd.liveNote(), edit), page);
+      wd.showNav();
     }
 
     /** The New dashboard card: makes an empty dashboard in `section` (`''`: none) and opens its editor. */

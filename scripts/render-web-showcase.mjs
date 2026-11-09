@@ -1,6 +1,6 @@
 // Renders the web dashboards showcase (docs/web/<view>.png) from dev/web-showcase.html with headless Edge: the web
 // dashboards page with the made-up home's widgets, in a drawn browser window, at 2x on a transparent background.
-// Usage: `npm run web-showcase [-- dashboard front editor settings preview light wide popup sync nightly copy kiosk rotate addwidget]` (default: all fourteen).
+// Usage: `npm run web-showcase [-- dashboard front editor settings preview light wide popup sync nightly copy kiosk rotate addwidget nav]` (default: all fifteen).
 // The page fetches /app.json and /locales/en.json, which a file:// page can't, so the repo root is served over HTTP
 // on 127.0.0.1 while it renders (headless.mjs's withServer()).
 import { mkdirSync } from 'node:fs';
@@ -9,7 +9,7 @@ import { resolve } from 'node:path';
 import { downloadIcons, edge, withServer } from './headless.mjs';
 import { progress } from './progress.mjs';
 
-const VIEWS = ['dashboard', 'front', 'editor', 'settings', 'preview', 'light', 'wide', 'popup', 'sync', 'nightly', 'copy', 'kiosk', 'rotate', 'addwidget'];
+const VIEWS = ['dashboard', 'front', 'editor', 'settings', 'preview', 'light', 'wide', 'popup', 'sync', 'nightly', 'copy', 'kiosk', 'rotate', 'addwidget', 'nav'];
 const SCALE = 2;
 const only = process.argv.slice(2);
 const bad = only.filter(v => !VIEWS.includes(v));

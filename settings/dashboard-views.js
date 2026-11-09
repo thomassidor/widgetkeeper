@@ -10,7 +10,7 @@
 
   window.WidgetkeeperWeb.part('views', (wd) => {
     const { appWidget, BACKGROUNDS, button, clone, confirmButton, CUSTOM_BACKGROUND, hardToRead, darkQuery, DEFAULT_STRINGS, el, failed, HOMEY_WIDTH,
-      icon, isScreenCode, KEY_STORAGE, LAYOUT, loadAll, persist, request, root, route, SESSION_STORAGE, start, STAY_STORAGE,
+      icon, isScreenCode, KEY_STORAGE, LAYOUT, loadAll, persist, request, root, route, SESSION_STORAGE, start,
       storageSet, t, THEME_STORAGE, unlocked, useCode } = wd;
 
     /** The app's logomark (assets/icon.svg): three rounded squares and a sparkle, stroked and filled in currentColor. */
@@ -49,6 +49,7 @@
     function clearRoot() {
       if (wd.drag) wd.endDrag(false);
       if (wd.resizing) wd.endResize(false);
+      if (wd.hideNav) wd.hideNav();
       wd.sizes.disconnect();
       if (wd.dismissUndo) wd.dismissUndo();
       if (wd.clearSaveProblem) wd.clearSaveProblem();
@@ -284,6 +285,7 @@
       wd.current = { dashboard: editable(dashboard), editing, widgets: new Map(), covers: new Map(), grid: el('main', 'wd-grid') };
       root.classList.toggle('editing', editing);
       root.append(editing ? editBar() : viewBar(), wd.current.grid);
+      if (!editing) wd.showNav(); // before the grid is laid out, so it's laid out once, at its width
       wd.sizes.observe(wd.current.grid);
       syncGrid();
       if (!editing) wd.onSyncOpen(dashboard.id);
@@ -447,67 +449,9 @@
       return { open, close, toggle() { if (pop.hidden) open(); else close(); } };
     }
 
-    /**
-     * The viewing bar's title with the way to the other dashboards: a list in the front page's order and sections. Only
-     * a name while there are no others. Leaving a dashboard with a code takes the code, as its back button does.
-     */
-    function dashboardJump(d) {
-      if (wd.dashboards.length < 2) return null;
-      const wrap = el('span', 'wd-jump');
-      const trigger = button('wd-jump-button', '', () => menu.toggle(), t('dashboards'));
-      const chevron = icon('down');
-      trigger.append(el('span', 'wd-bar-title', d.name || t('untitled')), chevron);
-      const pop = el('nav', 'wd-jump-list');
-      pop.setAttribute('aria-label', t('dashboards'));
-      const row = (other) => {
-        const link = el('a', `wd-jump-row${other.id === d.id ? ' on' : ''}`);
-        link.href = `#/d/${other.id}`;
-        link.append(el('span', 'wd-jump-name', other.name || t('untitled')));
-        if (other.id === d.id) {
-          link.setAttribute('aria-current', 'page');
-          link.append(icon('check'));
-        }
-        link.addEventListener('click', (e) => {
-          menu.close();
-          if (other.id === d.id) { e.preventDefault(); return; }
-          if (!lockOf(d)) return;
-          e.preventDefault();
-          askCode(d, () => { storageSet(STAY_STORAGE, null); location.hash = link.getAttribute('href'); });
-        });
-        return link;
-      };
-      const sections = (wd.frontPage && wd.frontPage.sections) || [];
-      const inSection = (x, id) => (sections.some(s => s.id === x.section) ? x.section : '') === id;
-      const loose = wd.dashboards.filter(x => inSection(x, ''));
-      if (sections.length && loose.length) pop.append(el('h2', 'wd-jump-head', t('yourDashboards')));
-      pop.append(...loose.map(row));
-      for (const section of sections) {
-        const inIt = wd.dashboards.filter(x => inSection(x, section.id));
-        if (!inIt.length) continue;
-        pop.append(el('h2', 'wd-jump-head', section.name || t('untitled')), ...inIt.map(row));
-      }
-      wrap.append(trigger, pop);
-      const menu = popover(wrap, trigger, pop, () => {
-        const on = /** @type {HTMLElement} */ (pop.querySelector('.on'));
-        if (on) { on.focus(); on.scrollIntoView({ block: 'nearest' }); }
-      });
-      return wrap;
-    }
-
     function viewBar() {
       const d = wd.current.dashboard;
-      const back = el('a', 'wd-icon wd-back');
-      back.append(icon('left'));
-      back.href = '#/';
-      back.title = t('dashboards');
-      back.setAttribute('aria-label', t('dashboards'));
-      // With a code, going back to the dashboards and editing take it first (`route()` holds to it for a typed address).
-      back.addEventListener('click', (e) => {
-        if (!lockOf(d)) return;
-        e.preventDefault();
-        askCode(d, () => { storageSet(STAY_STORAGE, null); location.hash = '#/'; });
-      });
-      const items = [back, dashboardJump(d) || el('span', 'wd-bar-title', d.name || t('untitled')), el('span', 'wd-spacer'), liveNote()];
+      const items = [wd.navButton(), el('span', 'wd-bar-title', d.name || t('untitled')), el('span', 'wd-spacer'), liveNote()];
       // Safari on an iPad only has the webkit-prefixed calls.
       const doc = /** @type {any} */ (document.documentElement);
       const page = /** @type {any} */ (document);
@@ -828,7 +772,7 @@
       });
     }
 
-    Object.assign(wd, { about, applyTheme, askCode, bar, brand, clearRoot, dashboardJump, editable, liveNote, lockOf, preview,
+    Object.assign(wd, { about, applyTheme, askCode, bar, brand, clearRoot, editable, LOGO, liveNote, lockOf, preview,
       renderDashboard, renderFailed, renderKey, renderMissing, renderOff, renderPassword, signOut, stored, syncGrid,
       widgetFolder });
   });

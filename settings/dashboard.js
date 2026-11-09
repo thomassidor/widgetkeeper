@@ -26,7 +26,7 @@
    * mountWebDashboards() runs them. A part registers itself with `WidgetkeeperWeb.part(name, fn)`; `fn(wd)` is
    * the code that was once in mountWebDashboards() itself, sharing the page's state and functions through `wd`.
    */
-  const PARTS = ['realtime', 'frames', 'views', 'front', 'editing', 'settings', 'pickers', 'popups', 'sync', 'screen'];
+  const PARTS = ['realtime', 'frames', 'views', 'front', 'editing', 'settings', 'pickers', 'popups', 'sync', 'screen', 'nav'];
   window.WidgetkeeperWeb = {
     /** @type {Map<string, (wd: any) => void>} */
     parts: new Map(),
@@ -223,6 +223,17 @@
     passwordLocked: 'Too many tries. Try again in __seconds__ s.',
     sessionEnded: 'You were signed out. The password may have changed.',
     yourDashboards: 'Your dashboards',
+    navKeepOpen: 'Keep open',
+    navStopKeeping: 'Stop keeping open',
+    navClose: 'Close',
+    navAll: 'All dashboards',
+    navCustomize: 'Customize',
+    navShowHere: 'Show in this browser',
+    navHiddenCount: '__count__ hidden',
+    navNote: 'Drag the grips to change the order here. Hidden dashboards stay on the front page, and new ones show up here by themselves.',
+    navReset: 'Reset to the front page',
+    navShowHide: 'Show or hide __name__',
+    navMove: 'Move __name__',
     widgetsTitle: 'Widgets',
     widgetsText: 'Everything you can put on a dashboard.',
     previous: 'Previous',
@@ -410,6 +421,11 @@
     check: 'M5 12.5l4.5 4.5L19 7.5',
     grip: 'M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01',
     close: 'M6 6l12 12M18 6L6 18',
+    panel: 'M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM9 4v16',
+    pin: 'M12 17v5M9 3h6l-1 7 3 3.5V17H7v-3.5L10 10z',
+    eye: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
+    eyeOff: 'M3 3l18 18M10.6 5.1A9 9 0 0 1 12 5c6 0 10 7 10 7a17 17 0 0 1-3.2 3.9M6.5 6.6A17 17 0 0 0 2 12s4 7 10 7a9 9 0 0 0 4.5-1.2',
+    squares: 'M5.5 4h4A1.5 1.5 0 0 1 11 5.5v4A1.5 1.5 0 0 1 9.5 11h-4A1.5 1.5 0 0 1 4 9.5v-4A1.5 1.5 0 0 1 5.5 4zM14.5 4h4A1.5 1.5 0 0 1 20 5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4A1.5 1.5 0 0 1 13 9.5v-4A1.5 1.5 0 0 1 14.5 4zM5.5 13h4a1.5 1.5 0 0 1 1.5 1.5v4A1.5 1.5 0 0 1 9.5 20h-4A1.5 1.5 0 0 1 4 18.5v-4A1.5 1.5 0 0 1 5.5 13zM14.5 13h4a1.5 1.5 0 0 1 1.5 1.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a1.5 1.5 0 0 1-1.5-1.5v-4a1.5 1.5 0 0 1 1.5-1.5z',
     down: 'M6 9l6 6 6-6',
     up: 'M6 15l6-6 6 6',
     columns: 'M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM9.5 4v16M14.5 4v16',
@@ -954,10 +970,13 @@
     function takeKiosk() {
       const m = location.hash.match(/^#(\/[^?]*)?\??(.*)$/);
       const query = new URLSearchParams(m ? m[2] : '');
-      if (m && query.has('kiosk')) {
+      if (m && (query.has('kiosk') || query.has('nav'))) {
         const search = new URLSearchParams(location.search);
-        search.set('kiosk', query.get('kiosk') || '');
-        query.delete('kiosk');
+        for (const name of ['kiosk', 'nav']) {
+          if (!query.has(name)) continue;
+          search.set(name, query.get(name) || '');
+          query.delete(name);
+        }
         const rest = query.toString();
         const path = m[1] || '';
         history.replaceState(null, '', `${location.pathname}?${search}#${path}${rest ? `${path ? '?' : ''}${rest}` : ''}`);
@@ -1043,6 +1062,7 @@
 
     async function start() {
       document.documentElement.classList.toggle('wd-kiosk', takeKiosk());
+      document.documentElement.classList.toggle('wd-kiosk-nav', /^(1|true|yes|on)$/i.test(new URLSearchParams(location.search).get('nav') || ''));
       const code = takeCode();
       if (code) {
         const problem = await useCode(code);
