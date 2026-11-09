@@ -108,7 +108,7 @@
         nav.pane.inert = nav.inactive || !(pinned || floating);
         nav.scrim.hidden = !allowed() || nav.inactive;
         nav.scrim.classList.toggle('open', floating);
-        const pin = nav.head.querySelector('.wd-nav-pin');
+        const pin = nav.foot.querySelector('.wd-nav-pin');
         if (pin) pin.hidden = !canPin();
       }
       for (const b of root.querySelectorAll('.wd-nav-toggle')) b.setAttribute('aria-expanded', String(isPinned() || isFloating()));
@@ -325,19 +325,9 @@
         nav.head.replaceChildren(el('strong', 'wd-nav-title', t('navShowHere')), done);
         return;
       }
-      const pinned = isPinned();
-      const label = t(pinned ? 'navStopKeeping' : 'navKeepOpen');
-      const pin = button(`wd-icon wd-nav-pin${pinned ? ' on' : ''}`, '', togglePin, label);
-      pin.setAttribute('aria-pressed', String(pinned));
-      pin.hidden = !canPin();
-      pin.append(icon('pin'));
       const close = button('wd-icon wd-nav-close', '', closePane, t('navClose'));
       close.append(icon('close'));
-      const count = nav.prefs.hidden.filter(id => dashboardIds().includes(id)).length;
-      const custom = button('wd-icon wd-nav-custom', '', customize, count ? `${t('navCustomize')} · ${t('navHiddenCount', { count })}` : t('navCustomize'));
-      custom.append(icon('eye'));
-      if (count) custom.append(el('span', 'wd-nav-badge', String(count)));
-      nav.head.replaceChildren(el('strong', 'wd-nav-title', t('dashboards')), custom, pin, close);
+      nav.head.replaceChildren(el('strong', 'wd-nav-title', t('dashboards')), close);
     }
 
     function drawFoot() {
@@ -360,9 +350,18 @@
       all.append(icon('squares'), el('span', 'wd-nav-name', t('navAll')));
       if (!wd.current) all.setAttribute('aria-current', 'page');
       all.addEventListener('click', (e) => leave(e, '#/'));
+      const custom = button('wd-nav-row wd-nav-custom', '', customize);
+      custom.append(icon('eye'), el('span', 'wd-nav-name', t('navCustomize')));
+      const count = nav.prefs.hidden.filter(id => dashboardIds().includes(id)).length;
+      if (count) custom.append(el('span', 'wd-nav-count', t('navHiddenCount', { count })));
+      const pinned = isPinned();
+      const pin = button(`wd-nav-row wd-nav-pin${pinned ? ' on' : ''}`, '', togglePin);
+      pin.setAttribute('aria-pressed', String(pinned));
+      pin.hidden = !canPin();
+      pin.append(icon('pin'), el('span', 'wd-nav-name', t(pinned ? 'navStopKeeping' : 'navKeepOpen')));
       const settings = button('wd-nav-row wd-nav-settings', '', openSettings);
       settings.append(icon('sliders'), el('span', 'wd-nav-name', t('pageSettings')));
-      nav.foot.replaceChildren(all, settings);
+      nav.foot.replaceChildren(all, custom, pin, settings);
     }
 
     function draw() {

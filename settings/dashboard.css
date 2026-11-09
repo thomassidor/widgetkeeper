@@ -67,10 +67,8 @@ body { margin: 0; color: var(--wd-text); font-size: var(--homey-font-size-defaul
 .wd-nav-pinned .wd { margin-left: 260px; }
 .wd-nav svg { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .wd-nav-head { flex: none; display: flex; align-items: center; gap: 2px; min-height: 56px; box-sizing: border-box; padding: 8px 8px 8px 16px; }
-.wd-nav-head .wd-icon { margin: 0 -2px; } /* three of them beside the title, whose longest (sv) needs the room; each keeps its 36 px */
-.wd-nav-title { flex: 1 1 auto; min-width: 0; font-size: 16px; line-height: 24px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.wd-nav-pin.on, .wd-nav-pin.on:hover { color: var(--wd-accent); background: color-mix(in srgb, var(--wd-accent) 16%, transparent); }
-.wd-nav-pin.on svg { fill: currentColor; }
+.wd-nav-title { flex: 1 1 auto; min-width: 0; font-size: 17px; line-height: 24px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wd-nav-pin.on svg { fill: currentColor; color: var(--wd-accent); } /* its row isn't tinted: that's the current dashboard's mark */
 .wd-nav-done { flex: none; }
 .wd-nav-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 8px 8px; }
 .wd-nav-row {
@@ -92,8 +90,7 @@ a.wd-nav-row:hover, button.wd-nav-row:hover { background: color-mix(in srgb, var
 .wd-nav-fold svg { width: 16px; height: 16px; transition: transform .15s; }
 .wd-nav-fold.folded svg { transform: rotate(-90deg); }
 .wd-nav-foot { flex: none; display: flex; flex-direction: column; gap: 2px; padding: 8px; border-top: 1px solid var(--wd-line); }
-.wd-nav-custom { position: relative; }
-.wd-nav-badge { position: absolute; top: 2px; right: 2px; box-sizing: border-box; min-width: 14px; height: 14px; padding: 0 3px; border-radius: 7px; font-size: 10px; line-height: 14px; font-weight: 500; text-align: center; color: var(--wd-tile); background: var(--wd-text); }
+.wd-nav-count { flex: none; font-size: 13px; color: var(--wd-muted); }
 .wd-nav-note { margin: 2px 10px 6px; font-size: 13px; line-height: 18px; color: var(--wd-muted); }
 .wd-nav-reset { color: var(--wd-accent); }
 .wd-kiosk-help { margin: 0; padding: 12px 16px; border-top: 1px solid var(--wd-line); overflow-wrap: anywhere; }

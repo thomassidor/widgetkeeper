@@ -264,9 +264,9 @@ Your Widgetkeeper widgets in any browser: a wall tablet, an old iPad, a computer
 ### Moving between dashboards
 <img src="docs/web/nav.png" alt="A web dashboard in a browser window with the side pane kept open on its left, listing the dashboards" width="100%">
 
-The button at the left of the bar opens a side pane with your dashboards, under the front page's sections. It floats over the widgets until you pick one or tap outside it. On a window at least 1000 px wide, the pin keeps it open beside them, and it stays open as you change dashboards.
+The button at the left of the bar opens a side pane with your dashboards, under the front page's sections. It floats over the widgets until you pick one or tap outside it. On a window at least 1000 px wide, **Keep open** at the bottom of the pane keeps it beside them, and it stays open as you change dashboards.
 
-**Customize this list**, the eye at the top of the pane, chooses what this browser lists: hide a dashboard or a whole section, and drag them into the order you want. Each browser has its own list, so a hallway tablet can show just three dashboards. Hidden dashboards stay on the front page, and new ones appear in the pane by themselves.
+**Customize this list** at the bottom of the pane chooses what this browser lists: hide a dashboard or a whole section, and drag them into the order you want. Each browser has its own list, so a hallway tablet can show just three dashboards. Hidden dashboards stay on the front page, and new ones appear in the pane by themselves.
 
 <img src="docs/web/front.png" alt="The web dashboards front page in a browser window: seven dashboards as cards, and the widgets you can add" width="100%">
 

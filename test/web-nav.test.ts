@@ -389,11 +389,13 @@ describe('a dashboard with a code', () => {
 });
 
 describe('Customize', () => {
-  it('is in the pane\'s header, with how many are hidden', () => {
+  it('is a labelled row at the foot with how many are hidden, and only Close is an icon in the head', () => {
     const { pane } = mount({ stored: { hidden: ['energy', 'garden'] } });
-    const custom = pane.querySelector('.wd-nav-head .wd-nav-custom') as HTMLElement;
-    expect(custom.querySelector('.wd-nav-badge')?.textContent).toBe('2');
-    expect([...pane.querySelectorAll('.wd-nav-foot > *')].length).toBe(2);
+    const custom = pane.querySelector('.wd-nav-foot .wd-nav-custom') as HTMLElement;
+    expect(custom.querySelector('.wd-nav-name')?.textContent).toBe('navCustomize');
+    expect(custom.querySelector('.wd-nav-count')?.textContent).toContain('2');
+    expect(pane.querySelector('.wd-nav-foot .wd-nav-pin .wd-nav-name')?.textContent).toBe('navKeepOpen');
+    expect([...pane.querySelectorAll('.wd-nav-head button')].map(b => b.className)).toEqual(['wd-icon wd-nav-close']);
   });
 
   it('lists hidden ones too, and an eye hides or shows one in this browser', () => {
