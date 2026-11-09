@@ -9,7 +9,9 @@
     widgets (Combined Value, Value Board, Flow Tiles with its Flow cards drawn), the app's Time format (its card drawn, the
     Energy Price Strip in 24 and 12 hours), the icons (the real list, kit.js and icons.js, on Flow Buttons), the pickers (the
     list drawn, with the kit's glyphs), Widen the last tile, Rotate and dim (docs/web/rotate-dialog.png, the dim Flow card
-    drawn), Add widget's search (docs/web/addwidget-dialog.png) with Undo's message, and at the bottom an unavailable device
+    drawn), Add widget's search (docs/web/addwidget-dialog.png) with Undo's message, the side pane (docs/web/nav.png), the
+    header's name and the dashboards' icons (brand.png), a background colour and Widget background (background.png), the
+    charts' height and legend (three of their Looks, docs/variants/), Editing loses no work, and at the bottom an unavailable device
     beside the rest. Chart names and the hidden legend are 1.2.1's, so not here. All real widgets on made-up data.
     scripts/render-whats-next.mjs (`npm run whats-next`) renders it to docs/whats-next-1.3.0.png at 2x; the clock is fixed
     (fixed-clock.js).
@@ -145,6 +147,18 @@
     .undo { flex: none; display: flex; align-items: center; gap: 20px; margin-top: 34px; padding: 10px 16px; border-radius: 20px; background: #2B2C36; font-size: 14px; line-height: 20px; color: #FFFFFF; white-space: nowrap; }
     .undo b { font-weight: 500; color: #B9A6FF; }
 
+    /* The web dashboards' big images under their text, lined up at the bottom of a row; beside the last one, two panels. */
+    .feat.shot { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
+    .shot > .tag { align-self: flex-start; }
+    .shot img { display: block; width: 100%; height: auto; margin-top: auto; }
+    .shot ul.more { margin: 0 0 18px; }
+    .panels { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+    .panels > .feat { flex: 1 1 auto; }
+    .looks { display: flex; gap: 12px; align-items: flex-start; }
+    .looks img { display: block; flex: 1 1 0; min-width: 0; height: auto; }
+    .panels ul.more { margin-top: 0; }
+    .panels .looks + ul.more { margin-top: 14px; }
+
     /* The strip at the bottom: an unavailable device beside the rest, in three columns. */
     .also { display: flex; gap: 40px; padding: 26px 36px 28px; margin-top: 24px; }
     .also .dropped { flex: none; width: 358px; }
@@ -160,10 +174,10 @@
     <div>
       <div class="eyebrow">Widgetkeeper 1.3.0 <span>Coming soon</span></div>
       <h1>What's next in 1.3.0</h1>
-      <p>Three new widgets, one time format for the whole app, 155 more icons, pickers that find what you type, web dashboards that rotate and dim, and settings made alike across the widgets.</p>
+      <p>Three new widgets, one time format for the whole app, 155 more icons, pickers that find what you type, web dashboards with a side pane, your own look, rotating and dimming, and settings made alike across the widgets.</p>
     </div>
     <div class="chips">
-      <span>Combined Value</span><span>Value Board</span><span>Flow Tiles</span><span>Time format</span><span>201 icons</span><span>Better pickers</span><span>Widen the last tile</span><span>Rotate and dim</span><span>Undo</span><span>Double or long press</span>
+      <span>Combined Value</span><span>Value Board</span><span>Flow Tiles</span><span>Time format</span><span>201 icons</span><span>Better pickers</span><span>Widen the last tile</span><span>Side pane</span><span>Your own look</span><span>Rotate and dim</span><span>Undo</span><span>Chart height</span><span>Always live cameras</span><span>Double or long press</span>
     </div>
   </header>
 
@@ -318,6 +332,66 @@
     </section>
   </div>
 
+  <div class="columns">
+    <section class="feat shot">
+      <span class="tag">Web dashboards</span>
+      <h2>A side pane with your dashboards</h2>
+      <p>Go from any dashboard to any other, also in full screen. It floats over the widgets, or stays open beside them on a wide screen.</p>
+      <ul class="more">
+        <li><b>Customize this list:</b> hide dashboards and sections, and drag them into this browser's own order.</li>
+        <li><b>All dashboards and Settings</b> are at its foot, whichever dashboard you're on.</li>
+      </ul>
+      <img src="../docs/web/nav.png" alt="" width="1520" height="1035">
+    </section>
+
+    <section class="feat shot">
+      <span class="tag">Web dashboards</span>
+      <h2>Your own name and icons</h2>
+      <p>Your home's name and icon in the header and the browser's title, the same in every browser, and an icon for each dashboard if you like.</p>
+      <ul class="more">
+        <li><b>One of the 201 icons,</b> or a picture of your own.</li>
+        <li><b>A dashboard's icon</b> shows in the side pane, on the front page and by its title.</li>
+      </ul>
+      <img src="../docs/web/brand.png" alt="" width="1520" height="1035">
+    </section>
+  </div>
+
+  <div class="columns">
+    <section class="feat shot">
+      <span class="tag">Web dashboards' editor</span>
+      <h2>Any background, and widgets that blend in</h2>
+      <p>A colour of your own beside the preset tints, and a Widget background slider, so a white chart doesn't stand out on a tinted backdrop.</p>
+      <ul class="more">
+        <li><b>Per dashboard,</b> and nothing changes until you move it.</li>
+        <li><b>Turned low,</b> a thin line keeps the tiles' edges.</li>
+      </ul>
+      <img src="../docs/web/background.png" alt="" width="1520" height="1035">
+    </section>
+
+    <div class="panels">
+      <section class="feat">
+        <span class="tag">Chart widgets</span>
+        <h2>Chart height and legend</h2>
+        <p>Small, normal or tall on seven chart widgets, for a chart two columns wide. And six more can put the legend above or below, or hide it.</p>
+        <div class="looks">
+          <img src="../docs/variants/totals-small.webp" alt="" width="780" height="596">
+          <img src="../docs/variants/lines-tall.webp" alt="" width="780" height="852">
+          <img src="../docs/variants/dailyrange-below.webp" alt="" width="780" height="670">
+        </div>
+      </section>
+
+      <section class="feat">
+        <span class="tag">Web dashboards' editor</span>
+        <h2>Editing loses no work</h2>
+        <ul class="more">
+          <li><b>A failed save stays up</b> with Try again and Discard, and Done waits for the saves.</li>
+          <li><b>Undo</b> after deleting a dashboard or removing a column with widgets in it.</li>
+          <li><b>Changed settings</b> take a second tap to throw away, and a new widget that's cancelled is gone.</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
   <section class="feat also">
     <div class="dropped">
       <span class="tag">Device widgets</span>
@@ -328,6 +402,9 @@
     <div>
       <span class="tag">And also</span>
       <ul class="more">
+        <li><b>Cameras, Always live:</b> pick one to play by itself and fill the widget when the dashboard opens.</li>
+        <li><b>Cameras refresh up to every 12 hours,</b> and opening a dashboard doesn't wake a battery camera.</li>
+        <li><b>Popups on web dashboards:</b> a camera's live video, and a size that fills the page.</li>
         <li><b>An unavailable device's old reading doesn't count</b> in Combined Value, Room Health and Value Matrix. A deleted one keeps its name in Device Values and Sparklines.</li>
         <li><b>Quicker to recover:</b> widgets try again after 5, 15 and 30 seconds, and read again when you come back to a dashboard.</li>
         <li><b>Web dashboards update themselves</b> after an app update, unless someone is editing or a dialog is open.</li>
