@@ -9,7 +9,7 @@
   'use strict';
 
   window.WidgetkeeperWeb.part('frames', (wd) => {
-    const { APP_ID, BACKGROUNDS, clone, darkQuery, failed, frames, HOMEY_WIDTH, homeyRequest, keepAwake, listeners,
+    const { APP_ID, BACKGROUNDS, clone, CUSTOM_BACKGROUND, darkQuery, failed, frames, HOMEY_WIDTH, homeyRequest, keepAwake, listeners,
       request, storageGet, stringsOf, THEME_STORAGE, typeOf } = wd;
 
     const PREFIX = 'CF2_MESSAGE';
@@ -70,6 +70,7 @@
 
     /** A backdrop's colour in the page's mode, or in `dark`'s. */
     function backdrop(background, dark = isDark()) {
+      if (CUSTOM_BACKGROUND.test(background)) return background;
       const pair = BACKGROUNDS[background] || BACKGROUNDS.default;
       return pair[dark ? 1 : 0];
     }

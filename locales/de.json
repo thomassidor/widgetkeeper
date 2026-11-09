@@ -1077,6 +1077,8 @@
     "bgPlum": "Pflaume",
     "bgBerry": "Beere",
     "bgSand": "Sand",
+    "bgCustom": "Eigene Farbe",
+    "bgHardToRead": "Text ist auf dieser Farbe eventuell schlecht lesbar.",
     "arrangeHint": "Ziehe die Dashboards, um ihre Reihenfolge oder ihren Abschnitt zu ändern.",
     "addSection": "Abschnitt hinzufügen",
     "newSection": "Neuer Abschnitt",

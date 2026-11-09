@@ -47,6 +47,17 @@ describe('web dashboards page: crossframe messages (hexEncode/hexDecode)', () =>
   });
 });
 
+describe('web dashboards page: a custom background (hardToRead)', () => {
+  const hardToRead = new Function(`${fn('hardToRead')}\nreturn hardToRead;`)();
+
+  it("warns when the mode's text is under 4.5:1 on the colour", () => {
+    expect(hardToRead('#ffee00', true)).toBe(true); // bright yellow under dark mode's light text
+    expect(hardToRead('#ffee00', false)).toBe(false);
+    expect(hardToRead('#102030', true)).toBe(false);
+    expect(hardToRead('#102030', false)).toBe(true); // dark blue under light mode's dark text
+  });
+});
+
 describe("web dashboards page: another app's widget API (appApi)", () => {
   const garden = { appId: 'com.example.garden', widgetId: 'plants' };
   const BASE = '/app/com.example.garden/widget/plants/api';

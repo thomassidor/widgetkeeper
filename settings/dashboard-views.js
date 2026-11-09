@@ -9,7 +9,7 @@
   'use strict';
 
   window.WidgetkeeperWeb.part('views', (wd) => {
-    const { appWidget, BACKGROUNDS, button, clone, confirmButton, darkQuery, DEFAULT_STRINGS, el, failed, HOMEY_WIDTH,
+    const { appWidget, BACKGROUNDS, button, clone, confirmButton, CUSTOM_BACKGROUND, hardToRead, darkQuery, DEFAULT_STRINGS, el, failed, HOMEY_WIDTH,
       icon, isScreenCode, KEY_STORAGE, LAYOUT, loadAll, persist, request, root, route, SESSION_STORAGE, start, STAY_STORAGE,
       storageSet, t, THEME_STORAGE, unlocked, useCode } = wd;
 
@@ -65,9 +65,11 @@
       const own = wd.ownTheme();
       const dark = own ? own === 'dark' : wd.themeIsDark(theme);
       html.classList.toggle('homey-dark-mode', dark);
-      const pair = background && background !== 'default' && BACKGROUNDS[background];
-      if (pair) html.style.setProperty('--wd-bg', pair[dark ? 1 : 0]);
+      if (background && background !== 'default') html.style.setProperty('--wd-bg', wd.backdrop(background, dark));
       else html.style.removeProperty('--wd-bg');
+      // A colour of the user's own may be a bright one in dark mode: the editor's forms keep the page's own shade.
+      if (CUSTOM_BACKGROUND.test(background)) html.style.setProperty('--wd-panel', BACKGROUNDS.default[dark ? 1 : 0]);
+      else html.style.removeProperty('--wd-panel');
     }
 
     // Full screen: the dashboard's bar keeps only the exit button and the live note (dashboard.css).
@@ -412,12 +414,18 @@
      * A popover under its button: opens and closes with the button; a tap elsewhere closes it, also in a widget (a frame
      * takes the page's focus, not its pointer events), and Escape, back to the button.
      */
-    function popover(wrap, trigger, pop, opened) {
+    function popover(wrap, trigger, pop, opened, picker) {
       pop.hidden = true;
       trigger.setAttribute('aria-haspopup', 'true');
       trigger.setAttribute('aria-expanded', 'false');
       const outside = (e) => { if (!wrap.contains(/** @type {Node} */ (e.target))) close(); };
       const escape = (e) => { if (e.key === 'Escape') { close(); trigger.focus(); } };
+      // `picker`: a field whose system dialog takes the window's focus and shouldn't close this. A tap in a widget moves
+      // the page's focus to its frame, a moment after the blur in some browsers.
+      const blurred = () => {
+        if (!picker) close();
+        else setTimeout(() => { if (document.activeElement !== picker) close(); });
+      };
       function open() {
         pop.hidden = false;
         pop.style.left = '';
@@ -426,7 +434,7 @@
         trigger.setAttribute('aria-expanded', 'true');
         document.addEventListener('pointerdown', outside, true);
         document.addEventListener('keydown', escape, true);
-        window.addEventListener('blur', close);
+        window.addEventListener('blur', blurred);
         if (opened) opened();
       }
       function close() {
@@ -434,7 +442,7 @@
         trigger.setAttribute('aria-expanded', 'false');
         document.removeEventListener('pointerdown', outside, true);
         document.removeEventListener('keydown', escape, true);
-        window.removeEventListener('blur', close);
+        window.removeEventListener('blur', blurred);
       }
       return { open, close, toggle() { if (pop.hidden) open(); else close(); } };
     }
@@ -600,16 +608,27 @@
       const bgButton = button('wd-btn wd-bgbutton', '', () => palette.toggle(), t('background'));
       const pop = el('div', 'wd-bgpop');
       bgPick.append(bgButton, pop);
+      // The tints, then the user's own colour (the browser's colour picker, shown live and saved when it's done).
+      const presets = el('div');
+      const customField = /** @type {HTMLInputElement} */ (el('input', 'wd-bgcustom-field'));
+      customField.type = 'color';
+      const customHex = el('span', 'wd-bgcustom-hex');
+      const customRow = el('label', 'wd-bgcustom');
+      customRow.append(customField, el('span', null, t('bgCustom')), customHex);
+      const customHint = el('div', 'wd-bgcustom-hint', t('bgHardToRead'));
+      pop.append(presets, customRow, customHint);
       const palette = popover(bgPick, bgButton, pop, () => {
-        const on = pop.querySelector('.on');
-        if (on) /** @type {HTMLElement} */ (on).focus();
-      });
+        /** @type {HTMLElement} */ (pop.querySelector('.wd-swatch.on') || customField).focus();
+      }, customField);
       const backgrounds = Object.keys(BACKGROUNDS).map(id => ({ id, title: t(`bg${id[0].toUpperCase()}${id.slice(1)}`) }));
       function drawBackground() {
-        bgButton.replaceChildren(wd.swatch(wd.backdrop(wd.current.dashboard.background), 'small'), el('span', 'wd-bar-label', t('background')));
+        const current = wd.current.dashboard.background || 'default';
+        const custom = CUSTOM_BACKGROUND.test(current);
+        const shown = wd.backdrop(current);
+        bgButton.replaceChildren(wd.swatch(shown, 'small'), el('span', 'wd-bar-label', t('background')));
         // Each swatch shows both its shades (the dark tints alone look alike): the theme picks one.
         const colours = Object.fromEntries(backgrounds.map(b => [b.id, `linear-gradient(135deg, ${BACKGROUNDS[b.id][0]} 50%, ${BACKGROUNDS[b.id][1]} 50%)`]));
-        pop.replaceChildren(wd.choiceGroup(null, backgrounds, wd.current.dashboard.background || 'default', (id) => {
+        presets.replaceChildren(wd.choiceGroup(null, backgrounds, current, (id) => {
           wd.current.dashboard.background = id;
           applyTheme(wd.current.dashboard.theme, id);
           persist();
@@ -617,7 +636,18 @@
           palette.close();
           bgButton.focus();
         }, true, colours));
+        if (customField.value !== shown) customField.value = shown; // not while it's being picked: it's the same then
+        customRow.classList.toggle('on', custom);
+        customHex.textContent = custom ? current.toUpperCase() : '';
+        customHint.hidden = !custom || !hardToRead(current, wd.isDark());
       }
+      const pickCustom = () => {
+        wd.current.dashboard.background = customField.value.toLowerCase();
+        applyTheme(wd.current.dashboard.theme, wd.current.dashboard.background);
+        drawBackground();
+      };
+      customField.addEventListener('input', pickCustom);
+      customField.addEventListener('change', () => { pickCustom(); persist(); });
       drawBackground();
 
       // The code editing and going back to the dashboards take: none, Any code or one of the Keypad codes (only once

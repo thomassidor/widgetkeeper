@@ -1077,6 +1077,8 @@
     "bgPlum": "Pruim",
     "bgBerry": "Bes",
     "bgSand": "Zand",
+    "bgCustom": "Eigen kleur",
+    "bgHardToRead": "Tekst is op deze kleur misschien slecht leesbaar.",
     "arrangeHint": "Sleep de dashboards om hun volgorde of sectie te wijzigen.",
     "addSection": "Sectie toevoegen",
     "newSection": "Nieuwe sectie",

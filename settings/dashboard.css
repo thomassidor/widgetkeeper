@@ -5,6 +5,7 @@
  */
 :root {
   --wd-bg: #F4F4FA; /* Homey's mono-025 */
+  --wd-panel: var(--wd-bg); /* the settings forms: the page's own shade on a dashboard with a colour of the user's own */
   --wd-tile: var(--homey-background-color, #FFFFFF);
   --wd-raised: var(--homey-color-mono-050, #EAEAF1);
   --wd-text: var(--homey-text-color, #1F2029);
@@ -81,6 +82,15 @@ body { margin: 0; color: var(--wd-text); font-size: var(--homey-font-size-defaul
 .wd-bgpop .wd-swatches { flex-wrap: nowrap; }
 .wd-bgpick .wd-swatch-dot { box-shadow: inset 0 0 0 1px var(--wd-line); } /* the dark tints on a dark tile */
 @media (max-width: 520px) { .wd-bgpop .wd-swatches { flex-wrap: wrap; width: 192px; } }
+.wd-bgcustom { display: flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 4px; padding: 0 4px; font-size: 14px; line-height: 20px; color: var(--wd-text); cursor: pointer; }
+.wd-bgcustom-field { -webkit-appearance: none; appearance: none; flex: none; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 13px; background: transparent; cursor: pointer; }
+.wd-bgcustom-field::-webkit-color-swatch-wrapper { padding: 0; }
+.wd-bgcustom-field::-webkit-color-swatch { border: 1px solid var(--wd-line); border-radius: 13px; }
+.wd-bgcustom-field::-moz-color-swatch { border: 1px solid var(--wd-line); border-radius: 13px; }
+.wd-bgcustom.on .wd-bgcustom-field { box-shadow: 0 0 0 2px var(--wd-tile), 0 0 0 4px var(--wd-text); }
+.wd-bgcustom-field:focus-visible { outline: 2px solid var(--wd-accent); outline-offset: 3px; }
+.wd-bgcustom-hex { margin-left: auto; color: var(--wd-muted); font-variant-numeric: tabular-nums; }
+.wd-bgcustom-hint { width: 0; min-width: 100%; padding-bottom: 4px; font-size: 12px; line-height: 16px; color: var(--wd-muted); } /* as wide as the swatches, not wider */
 .wd-bar-title { font-weight: 700; font-size: var(--homey-font-size-default, 17px); line-height: 24px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .wd-spacer { flex: 1 1 auto; }
 /* The front page's title: the app icon (the logomark in white on the brand colour, #2A1958, as Homey shows the app)
@@ -487,7 +497,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 }
 /* The previews are 1024 px squares with the drawing in the middle: shown 5:4 (the middle 80 %) on the dashboard's
    backdrop. */
-.wd-type-preview { display: block; width: 100%; aspect-ratio: 5 / 4; object-fit: cover; background: var(--wd-bg); }
+.wd-type-preview { display: block; width: 100%; aspect-ratio: 5 / 4; object-fit: cover; background: var(--wd-panel); }
 /* A Flow's popup (wk-084): the picture, the text large enough to read across a room, then the question's buttons or a
    bar running down to the end. Sizes: Homey's 24 bold, 20 medium on the buttons, 14 for the status. */
 .wd-dialog.wd-popup { width: min(640px, calc(100vw - 32px)); }
@@ -657,8 +667,8 @@ textarea.wd-input { width: 100%; resize: vertical; }
 /* A widget's settings: a header with its preview, and cards on the dashboard's backdrop (the devices, the general
    settings, each group, the slots). A row has its label and hint on the left and a short control on the right, or a
    wide one under them. Sizes: the dialog's title 20, a card's 17, a label 14, a hint 12. */
-.wd-dialog.wd-settings { width: min(720px, calc(100vw - 32px)); background: var(--wd-bg); }
-.wd-settings .wd-dialog-head { align-items: flex-start; padding: 16px 12px 12px 20px; background: var(--wd-bg); border-bottom: 1px solid var(--wd-line); }
+.wd-dialog.wd-settings { width: min(720px, calc(100vw - 32px)); background: var(--wd-panel); }
+.wd-settings .wd-dialog-head { align-items: flex-start; padding: 16px 12px 12px 20px; background: var(--wd-panel); border-bottom: 1px solid var(--wd-line); }
 .wd-settings .wd-dialog-body { gap: 12px; padding: 16px 20px 20px; }
 /* The live preview: beside the cards, staying in view while they scroll; above them on a narrow screen. */
 .wd-dialog.wd-settings.with-preview { width: min(1100px, calc(100vw - 32px)); }
@@ -670,7 +680,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
   .wd-settings.with-preview .wd-dialog-body { grid-template-columns: minmax(0, 1fr); }
   .wd-preview { position: static; order: -1; }
 }
-.wd-settings .wd-actions { background: var(--wd-bg); }
+.wd-settings .wd-actions { background: var(--wd-panel); }
 .wd-dialog-who { display: flex; align-items: center; gap: 14px; min-width: 0; }
 .wd-dialog-titles { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 /* The previews are 1024 px squares with the drawing in the middle: the middle 80 %, 5:4. */
@@ -703,7 +713,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-set-label { font-size: 14px; line-height: 20px; font-weight: 500; }
 .wd-set-row.inline > .wd-input { width: 240px; }
 .wd-set-row.inline > select.wd-input { width: auto; max-width: 280px; }
-.wd-settings .wd-input { background: var(--wd-bg); }
+.wd-settings .wd-input { background: var(--wd-panel); }
 .wd-num { display: inline-flex; align-items: center; gap: 8px; }
 .wd-num .wd-input { width: 96px; text-align: right; }
 .wd-unit { min-width: 44px; font-size: 14px; line-height: 20px; color: var(--wd-muted); white-space: nowrap; }
@@ -777,7 +787,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 
 /* A search setting's choice reads as a field with a chevron. */
 .wd-settings .wd-choice {
-  min-height: 40px; padding: 0 36px 0 12px; position: relative; border: 1px solid var(--wd-line); background: var(--wd-bg);
+  min-height: 40px; padding: 0 36px 0 12px; position: relative; border: 1px solid var(--wd-line); background: var(--wd-panel);
   font-size: 15px; font-weight: 400; display: block; text-align: left; line-height: 38px;
 }
 .wd-settings .wd-choice::after {

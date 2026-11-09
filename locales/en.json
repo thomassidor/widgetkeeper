@@ -1077,6 +1077,8 @@
     "bgPlum": "Plum",
     "bgBerry": "Berry",
     "bgSand": "Sand",
+    "bgCustom": "Custom colour",
+    "bgHardToRead": "Text may be hard to read on this colour.",
     "arrangeHint": "Drag the dashboards to change their order or section.",
     "addSection": "Add section",
     "newSection": "New section",

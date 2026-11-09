@@ -1077,6 +1077,8 @@
     "bgPlum": "Śliwka",
     "bgBerry": "Jagoda",
     "bgSand": "Piasek",
+    "bgCustom": "Własny kolor",
+    "bgHardToRead": "Tekst może być słabo czytelny na tym kolorze.",
     "arrangeHint": "Przeciągnij pulpity, aby zmienić ich kolejność lub sekcję.",
     "addSection": "Dodaj sekcję",
     "newSection": "Nowa sekcja",

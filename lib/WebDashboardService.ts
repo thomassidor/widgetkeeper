@@ -48,7 +48,9 @@ export type WebTheme = 'auto' | 'dark' | 'light';
 
 /** A dashboard's backdrop: a tint with a light and a dark shade (the page's CSS), following its theme. */
 export const WEB_BACKGROUNDS = ['default', 'black', 'slate', 'ocean', 'forest', 'plum', 'berry', 'sand'] as const;
-export type WebBackground = typeof WEB_BACKGROUNDS[number];
+/** A backdrop of the user's own: one `#rrggbb` (stored in lower case), the same in both modes. */
+const CUSTOM_BACKGROUND = /^#[0-9a-f]{6}$/;
+export type WebBackground = typeof WEB_BACKGROUNDS[number] | `#${string}`;
 
 /**
  * How wide a dashboard's columns are (the page's `COLUMN_WIDTHS`): `narrow` is a phone's widget width, as on Homey's
@@ -766,7 +768,9 @@ export default class WebDashboardService {
     if (!id) throw new Error('A dashboard needs an id');
     const name = typeof d.name === 'string' ? d.name.trim().slice(0, 60) : '';
     const theme: WebTheme = d.theme === 'dark' || d.theme === 'light' ? d.theme : 'auto';
-    const background: WebBackground = (WEB_BACKGROUNDS as readonly unknown[]).includes(d.background) ? d.background : 'default';
+    const colour = typeof d.background === 'string' ? d.background.toLowerCase() : '';
+    const background: WebBackground = CUSTOM_BACKGROUND.test(colour) ? colour as `#${string}`
+      : (WEB_BACKGROUNDS as readonly unknown[]).includes(d.background) ? d.background : 'default';
     const width: WebColumnWidth = (WEB_COLUMN_WIDTHS as readonly unknown[]).includes(d.columnWidth) ? d.columnWidth : 'normal';
     const columnsIn: unknown[] = Array.isArray(d.columns) ? d.columns.slice(0, MAX_COLUMNS) : [];
     const ids = new Set<string>();

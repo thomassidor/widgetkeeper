@@ -70,6 +70,14 @@ describe('web dashboards: storage', () => {
     expect(web.save({ name: 'C', background: '__proto__', columns: [[]] }).background).toBe('default');
   });
 
+  it('keeps a custom #rrggbb background, in lower case, and nothing that only looks like one', () => {
+    const { web } = setup();
+    expect(web.save({ name: 'A', background: '#1A2B3C', columns: [[]] }).background).toBe('#1a2b3c');
+    for (const background of ['#abc', '#12345g', '#1a2b3c; color: red', 'url(x)', '#1a2b3c\n', 1193046]) {
+      expect(web.save({ name: 'B', background, columns: [[]] }).background).toBe('default');
+    }
+  });
+
   it("keeps a Keypad code (Any code or a code's id) and drops anything else", () => {
     const { web } = setup();
     expect(web.save({ name: 'Hall', code: { id: 'any', name: 'Any code' }, columns: [[]] }).code).toEqual({ id: 'any', name: 'Any code' });
