@@ -52,7 +52,8 @@
         settings.append(icon('sliders'), el('span', 'wd-bar-label', t('pageSettings')));
         const done = el('a', 'wd-btn primary', t('done'));
         done.href = '#/';
-        root.append(frontBar(wd.brand(), el('span', 'wd-spacer'), settings, done), page);
+        // Settings is in the side pane; where there's none (kiosk mode), here.
+        root.append(frontBar(wd.brand(), el('span', 'wd-spacer'), ...(wd.navBlocked() ? [settings] : []), done), page);
         wd.showNav({ inactive: true });
         return;
       }
@@ -475,7 +476,7 @@
               try {
                 const res = await request('PUT', '/web/backup', body);
                 await loadSetup(); // the dashboards and the front page's choices as restored
-                if (location.hash === '#/edit') renderList(true); // behind the dialog
+                route(); // the view behind the dialog, with what was restored
                 show(null);
                 // Restored either way: an answer without the counts mustn't turn that into a failure.
                 status.textContent = t('backupRestored', { dashboards: (res && res.dashboards) || 0, widgets: (res && res.widgets) || 0 });
@@ -924,6 +925,6 @@
       return section;
     }
 
-    Object.assign(wd, { deleteDashboard, renderList });
+    Object.assign(wd, { deleteDashboard, pageSettings, renderList });
   });
 })();

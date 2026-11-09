@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey no aceptó esta clave.",
     "webScreenFull": "No caben más pantallas (__max__).",
     "webScreenGone": "Esa pantalla ya no existe.",
-    "webBackupHelp": "Para guardar o restaurar tus paneles web, abre su página y toca el lápiz en la página de inicio."
+    "webBackupHelp": "Para hacer una copia de seguridad o restaurar tus paneles web, abre la página de paneles web y toca Ajustes en su panel lateral."
   },
   "heatmap": {
     "selectDevice": "Elige un dispositivo y un valor en los ajustes del widget.",

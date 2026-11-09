@@ -222,6 +222,44 @@ describe('closed, floating and kept open', () => {
   });
 });
 
+describe('Settings in the pane', () => {
+  const settings = (pane: HTMLElement) => pane.querySelector('.wd-nav-settings') as HTMLElement;
+
+  it('opens the dialog from a dashboard and closes a floating pane', () => {
+    const { wd, pane, toggle } = mount();
+    wd.pageSettings = vi.fn();
+    toggle.click();
+    settings(pane).click();
+    expect(wd.pageSettings).toHaveBeenCalledOnce();
+    expect(wd.askCode).not.toHaveBeenCalled();
+    expect(pane.classList.contains('open')).toBe(false);
+  });
+
+  it('leaves a kept-open pane open', () => {
+    const { wd, pane } = mount({ stored: { pinned: true } });
+    wd.pageSettings = vi.fn();
+    settings(pane).click();
+    expect(pane.classList.contains('open')).toBe(true);
+  });
+
+  it('takes the code on a dashboard that has one', () => {
+    const { wd, pane } = mount({ lock: 'home' });
+    wd.pageSettings = vi.fn();
+    settings(pane).click();
+    expect(wd.askCode).toHaveBeenCalledOnce();
+    expect(wd.pageSettings).toHaveBeenCalledOnce();
+  });
+
+  it('says where there\'s no pane, so the front page can keep its button there', () => {
+    const { wd } = mount();
+    expect(wd.navBlocked()).toBe(false);
+    html.classList.add('wd-kiosk');
+    expect(wd.navBlocked()).toBe(true);
+    html.classList.add('wd-kiosk-nav');
+    expect(wd.navBlocked()).toBe(false);
+  });
+});
+
 describe('in the editors', () => {
   it('stays, kept open and out of use, so the page is laid out at its real width', () => {
     const { wd, pane, scrim } = mount({ stored: { pinned: true } });

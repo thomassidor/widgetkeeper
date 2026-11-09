@@ -269,7 +269,7 @@ The button at the left of the bar opens a side pane with your dashboards, under 
 
 <img src="docs/web/front.png" alt="The web dashboards front page in a browser window: seven dashboards as cards, and the widgets you can add" width="100%">
 
-The front page lists the dashboards; the pen reorders, duplicates and deletes them. Its **Settings** has **Keep screen on**, **Dim**, **Dim at set times**, **Rotate dashboards** and **Sign out** for this browser, and the [backup](#backup).
+The front page lists the dashboards; the pen reorders, duplicates and deletes them. **Settings** at the bottom of the [side pane](#moving-between-dashboards) has **Keep screen on**, **Dim**, **Dim at set times**, **Rotate dashboards** and **Sign out** for this browser, and the [backup](#backup).
 
 - **Dim at set times:** a second level between two times, by the device's clock. The Flow card *Dim the web dashboards* sets a level too, on every browser or on those showing a dashboard with a [Popups](docs/widgets/popups.md) widget of that screen name. It lasts until another Flow, a moved slider, or the set times next start or end.
 - **Rotate dashboards:** tick two or more dashboards and how many seconds each shows (at least 10). A touch pauses it for a minute, and it waits while a dialog, a popup or the editor is open.
@@ -284,7 +284,7 @@ Each browser signs in with a code of its own, backed by its own Homey API key:
 **Opens on** sends a screen straight to one dashboard. **Remove** stops a code; for a lost device, also delete its key in the Homey web app. You can also paste an API key on the page instead of using a code.
 
 ### Sync with a Homey dashboard
-**Sync** in a dashboard's editor links it to a dashboard in the Homey app, or makes a new one, and keeps the two the same, both ways: on demand, when it's opened and every night (the time is in the front page's **Settings**).
+**Sync** in a dashboard's editor links it to a dashboard in the Homey app, or makes a new one, and keeps the two the same, both ways: on demand, when it's opened and every night (the time is in the side pane's **Settings**).
 
 - The first sync copies the side you pick. After that, changes on either side reach the other; when the same thing was changed differently on both, the side you picked wins.
 - Homey's own widgets, such as light groups and device tiles, stay on Homey and don't show on the web.
@@ -300,7 +300,7 @@ Give a dashboard a [Keypad](docs/widgets/keypad.md) code (the lock in its editor
 You can set a password under **Web dashboards → Away from home**, which every browser is asked for once, on top of its code. If you forget it, the Flow card **Remove the web dashboards password** removes it.
 
 ### Backup
-In the front page's **Settings**, **Download backup** and **Restore backup** save and bring back the dashboards you tick, with their widgets, settings and tile names. Notes' texts and Days Since's counters aren't included.
+In the side pane's **Settings**, **Download backup** and **Restore backup** save and bring back the dashboards you tick, with their widgets, settings and tile names. Notes' texts and Days Since's counters aren't included.
 
 ### Widgets from other apps
 *Add widget* also lists your other apps' widgets. They need a key with the **Homey** permission and run sealed off from the page; *Trust this widget* runs one as on Homey, and *Size as on Homey* scales one made for a phone's width.

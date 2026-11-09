@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey non ha accettato questa chiave.",
     "webScreenFull": "Non si possono aggiungere altri schermi (__max__).",
     "webScreenGone": "Quello schermo non c’è più.",
-    "webBackupHelp": "Per salvare o ripristinare le dashboard web, apri la loro pagina e tocca la matita nella pagina iniziale."
+    "webBackupHelp": "Per eseguire il backup o il ripristino delle dashboard web, apri la pagina delle dashboard web e tocca Impostazioni nel pannello laterale."
   },
   "heatmap": {
     "selectDevice": "Scegli un dispositivo e un valore nelle impostazioni del widget.",

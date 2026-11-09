@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey nie przyjął tego klucza.",
     "webScreenFull": "Nie można dodać więcej ekranów (__max__).",
     "webScreenGone": "Tego ekranu już nie ma.",
-    "webBackupHelp": "Aby zapisać lub przywrócić pulpity webowe, otwórz ich stronę i stuknij ołówek na stronie głównej."
+    "webBackupHelp": "Aby utworzyć kopię zapasową pulpitów web lub je przywrócić, otwórz stronę pulpitów web i stuknij Ustawienia w panelu bocznym."
   },
   "heatmap": {
     "selectDevice": "Wybierz urządzenie i wartość w ustawieniach widżetu.",

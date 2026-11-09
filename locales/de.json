@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey hat diesen Schlüssel nicht akzeptiert.",
     "webScreenFull": "Mehr Bildschirme gehen nicht (__max__).",
     "webScreenGone": "Diesen Bildschirm gibt es nicht mehr.",
-    "webBackupHelp": "Zum Sichern oder Wiederherstellen öffne die Web-Dashboard-Seite und tippe auf ihrer Startseite auf den Stift."
+    "webBackupHelp": "Um deine Web-Dashboards zu sichern oder wiederherzustellen, öffne die Web-Dashboard-Seite und tippe in der Seitenleiste auf Einstellungen."
   },
   "heatmap": {
     "selectDevice": "Wähle ein Gerät und einen Wert in den Widget-Einstellungen.",

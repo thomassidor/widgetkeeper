@@ -158,6 +158,17 @@
       wd.askCode(here, () => { storageSet(STAY_STORAGE, null); location.hash = hash; });
     }
 
+    /** Settings, over any view; on a dashboard with a code that takes the code, as the way there through the front page did. */
+    function openSettings() {
+      const here = wd.current && wd.current.dashboard;
+      const open = () => {
+        if (isFloating()) { nav.open = false; apply(); }
+        wd.pageSettings();
+      };
+      if (here && wd.lockOf(here)) wd.askCode(here, open);
+      else open();
+    }
+
     /** Customize: on a dashboard with a code that takes the code too. */
     function customize() {
       const here = wd.current && wd.current.dashboard;
@@ -311,10 +322,12 @@
       if (!wd.current) all.setAttribute('aria-current', 'page');
       all.addEventListener('click', (e) => leave(e, '#/'));
       const edit = button('wd-nav-row', '', customize);
-      edit.append(icon('sliders'), el('span', 'wd-nav-name', t('navCustomize')));
+      edit.append(icon('eye'), el('span', 'wd-nav-name', t('navCustomize')));
       const count = nav.prefs.hidden.filter(id => dashboardIds().includes(id)).length;
       if (count) edit.append(el('span', 'wd-nav-count', t('navHiddenCount', { count })));
-      nav.foot.replaceChildren(all, edit);
+      const settings = button('wd-nav-row wd-nav-settings', '', openSettings);
+      settings.append(icon('sliders'), el('span', 'wd-nav-name', t('pageSettings')));
+      nav.foot.replaceChildren(all, edit, settings);
     }
 
     function draw() {
@@ -445,6 +458,6 @@
     window.addEventListener('resize', apply);
     for (const type of ['fullscreenchange', 'webkitfullscreenchange']) document.addEventListener(type, apply);
 
-    Object.assign(wd, { hideNav, navButton, navCopied, navGroups, navInOrder, ordered, readPrefs, redrawNav, reorder, showNav, PIN_MIN_WIDTH });
+    Object.assign(wd, { hideNav, navBlocked: blocked, navButton, navCopied, navGroups, navInOrder, ordered, readPrefs, redrawNav, reorder, showNav, PIN_MIN_WIDTH });
   });
 })();

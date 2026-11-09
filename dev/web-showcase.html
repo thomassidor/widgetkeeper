@@ -385,7 +385,7 @@
     // The nightly view: the front page's edit mode with its Settings open (the backup, the nightly sync, this browser).
     if (VIEW === 'nightly' || VIEW === 'rotate') {
       const open = () => {
-        const settings = [...document.querySelectorAll('.wd-bar .wd-btn')].find(b => b.textContent === 'Settings');
+        const settings = document.querySelector('.wd-nav-settings');
         if (!settings) { setTimeout(open, 50); return; }
         settings.click();
         // The sync time on the 24-hour clock: a time field draws it in the browser's own language (US English here).

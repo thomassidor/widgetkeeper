@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey godtog inte den här nyckeln.",
     "webScreenFull": "Fler skärmar går inte att lägga till (__max__).",
     "webScreenGone": "Den skärmen finns inte längre.",
-    "webBackupHelp": "För att säkerhetskopiera eller återställa dina webbinstrumentpaneler, öppna deras sida och tryck på pennan på startsidan."
+    "webBackupHelp": "För att säkerhetskopiera eller återställa dina webbpaneler öppnar du sidan för webbpaneler och trycker på Inställningar i sidopanelen."
   },
   "heatmap": {
     "selectDevice": "Välj en enhet och ett värde i widgetens inställningar.",

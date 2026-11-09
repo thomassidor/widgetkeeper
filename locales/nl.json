@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey accepteerde deze sleutel niet.",
     "webScreenFull": "Meer schermen kunnen er niet bij (__max__).",
     "webScreenGone": "Dat scherm bestaat niet meer.",
-    "webBackupHelp": "Open de webdashboardpagina en tik op het potlood op de startpagina om een back-up te maken of terug te zetten."
+    "webBackupHelp": "Om je webdashboards te back-uppen of te herstellen, open je de webdashboardpagina en tik je op Instellingen in het zijpaneel."
   },
   "heatmap": {
     "selectDevice": "Kies een apparaat en een waarde in de widgetinstellingen.",

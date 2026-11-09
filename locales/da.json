@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey godtog ikke denne nøgle.",
     "webScreenFull": "Der kan ikke være flere skærme (__max__).",
     "webScreenGone": "Den skærm findes ikke længere.",
-    "webBackupHelp": "For at tage en sikkerhedskopi eller gendanne dine webdashboards skal du åbne deres side og trykke på blyanten på forsiden."
+    "webBackupHelp": "For at sikkerhedskopiere eller gendanne dine webdashboards skal du åbne siden med webdashboards og trykke på Indstillinger i sidepanelet."
   },
   "heatmap": {
     "selectDevice": "Vælg en enhed og en værdi i widgettens indstillinger.",

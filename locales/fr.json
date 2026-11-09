@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey n’a pas accepté cette clé.",
     "webScreenFull": "Impossible d’ajouter plus d’écrans (__max__).",
     "webScreenGone": "Cet écran n’existe plus.",
-    "webBackupHelp": "Pour sauvegarder ou restaurer vos tableaux de bord web, ouvrez leur page et touchez le crayon sur la page d’accueil."
+    "webBackupHelp": "Pour sauvegarder ou restaurer vos tableaux de bord web, ouvrez la page des tableaux de bord web et touchez Réglages dans son panneau latéral."
   },
   "heatmap": {
     "selectDevice": "Choisissez un appareil et une valeur dans les réglages du widget.",
