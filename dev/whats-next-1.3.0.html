@@ -6,13 +6,13 @@
   <title>New in 1.3.0</title>
   <!--
     A teaser of 1.3.0 (CHANGELOG.md), in the look of the 1.1.0 and 1.2.0 posters (whats-next-1.2.0.html): the three new
-    widgets (Combined Value, Value Board, Flow Tiles with its Flow cards drawn), the app's Time format (its card drawn, the
-    Energy Price Strip in 24 and 12 hours), the icons (the real list, kit.js and icons.js, on Flow Buttons), the pickers (the
-    list drawn, with the kit's glyphs), Widen the last tile, Rotate, Go back and dim (docs/web/rotate-dialog.png, the dim Flow card
-    drawn), Add widget's search (docs/web/addwidget-dialog.png) with Undo's message, the side pane (docs/web/nav.png), the
-    header's name and the dashboards' icons (brand.png), a background colour and Widget background (background.png), the
-    charts' height and legend (three of their Looks, docs/variants/), Editing loses no work, and at the bottom an unavailable device
-    beside the rest. Chart names and the hidden legend are 1.2.1's, so not here. All real widgets on made-up data.
+    widgets (Combined Value, Value Board, Flow Tiles with its Flow cards drawn), the icons (the real list, kit.js and icons.js,
+    on Flow Buttons), the pickers (the list drawn, with the kit's glyphs), wall tablets: rotate, go back and dim
+    (docs/web/rotate-dialog.png, the dim Flow card drawn), the side pane (docs/web/nav.png) beside Add widget's search
+    (docs/web/addwidget-dialog.png) with Undo's message, Make it your own (brand.png and background.png side by side), the
+    charts' height and legend (three of their Looks, docs/variants/) beside Safer editing, and And also, where the time
+    format, Widen the last tile and unavailable devices went (the user's review, 2026-11-10). Chart names and the hidden
+    legend are 1.2.1's, so not here. All real widgets on made-up data.
     scripts/render-whats-next.mjs (`npm run whats-next`) renders it to docs/whats-next-1.3.0.png at 2x; the clock is fixed
     (fixed-clock.js).
   -->
@@ -24,11 +24,9 @@
   <link rel="stylesheet" href="../widgets/valueboard/public/widget.css">
   <link rel="stylesheet" href="../widgets/values/public/widget.css">
   <link rel="stylesheet" href="../widgets/flowtiles/public/widget.css">
-  <link rel="stylesheet" href="../widgets/price/public/widget.css">
   <link rel="stylesheet" href="../widgets/flows/public/widget.css">
-  <link rel="stylesheet" href="../widgets/quickactions/public/widget.css">
   <script src="../widgets/spacer/public/kit.js"></script>
-  <!-- The renders' times in 24 hours, as the made-up house's; the Time format panel draws one widget in 12. -->
+  <!-- The renders' times in 24 hours, as the made-up house's. -->
   <script>WidgetkeeperKit.setTimeFormat('24');</script>
   <script src="../widgets/spacer/public/icons.js"></script>
   <script src="../widgets/electricity/public/chart.js"></script>
@@ -36,9 +34,7 @@
   <script src="../widgets/valueboard/public/widget.js"></script>
   <script src="../widgets/values/public/widget.js"></script>
   <script src="../widgets/flowtiles/public/widget.js"></script>
-  <script src="../widgets/price/public/widget.js"></script>
   <script src="../widgets/flows/public/widget.js"></script>
-  <script src="../widgets/quickactions/public/widget.js"></script>
   <script src="../temp/screenshot-icons.js" onerror="window.ICONS = {}"></script>
   <script src="mock-util.js"></script>
   <script src="showcase-data.js"></script>
@@ -109,15 +105,6 @@
     .fc .token { padding: 1px 8px 1px 6px; border-radius: 999px; background: rgba(108, 76, 224, 0.3); color: #D9CFFF; font-size: 12px; line-height: 18px; font-weight: 500; }
     .fc .token::before { content: '◆ '; font-size: 9px; color: #B9A6FF; }
 
-    /* The app settings page's Time format card, drawn in the poster's colours. */
-    .names-card { border-radius: 18px; background: #1F2029; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); padding: 14px 16px; }
-    .names-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
-    .names-head b { font-size: 17px; line-height: 24px; font-weight: 700; }
-    .names-head span { font-size: 14px; line-height: 20px; color: #8E8DA0; }
-    .opts { display: flex; gap: 6px; }
-    .opts span { flex: 1 1 0; padding: 7px 0; text-align: center; border-radius: 10px; background: #2B2C36; color: #DCDAE8; font-size: 14px; line-height: 20px; font-weight: 500; }
-    .opts span.on { background: #6C4CE0; color: #FFFFFF; }
-
     /* The icons: a sample of the list, and Flow Buttons wearing some of them. */
     .icon-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 6px; margin-top: 14px; }
     .icon-grid i { display: grid; place-items: center; aspect-ratio: 1; border-radius: 50%; background: rgba(108, 76, 224, 0.22); }
@@ -159,12 +146,18 @@
     .panels ul.more { margin-top: 0; }
     .panels .looks + ul.more { margin-top: 14px; }
 
-    /* The strip at the bottom: an unavailable device beside the rest, in three columns. */
-    .also { display: flex; gap: 40px; padding: 26px 36px 28px; margin-top: 24px; }
-    .also .dropped { flex: none; width: 358px; }
-    .also .dropped p { margin-bottom: 14px; }
-    .also > div:last-child { flex: 1 1 auto; min-width: 0; }
-    .also ul.more { margin: 0; display: block; columns: 3; column-gap: 36px; }
+    /* Make it your own: the text above, its two images side by side. */
+    .feat.own .pair { display: flex; gap: 24px; margin-top: auto; }
+    .own .pair figure { flex: 1 1 0; min-width: 0; margin: 0; }
+    .own .pair figcaption { margin: 0 0 10px; font-size: 13px; line-height: 16px; font-weight: 500; color: #8E8DA0; text-transform: uppercase; letter-spacing: 0.5px; }
+    .own .pair img { margin-top: 0; }
+    .own .intro { display: flex; gap: 40px; align-items: flex-start; }
+    .own .intro > div { flex: 1 1 0; min-width: 0; }
+    .own .intro ul.more { margin: 0 0 18px; }
+
+    /* The strip at the bottom: And also, in four columns. */
+    .also { padding: 26px 36px 28px; margin-top: 24px; }
+    .also ul.more { margin: 0; display: block; columns: 4; column-gap: 36px; }
     .also ul.more li { break-inside: avoid; margin-bottom: 12px; }
   </style>
 </head>
@@ -174,10 +167,10 @@
     <div>
       <div class="eyebrow">Widgetkeeper 1.3.0 <span>In testing</span></div>
       <h1>New in 1.3.0</h1>
-      <p>Three new widgets, one time format for the whole app, 155 more icons, pickers that find what you type, web dashboards with a side pane, your own look, rotating and dimming, and settings made alike across the widgets.</p>
+      <p>Three new widgets, 155 more icons, pickers that find what you type, and web dashboards that are easier to move around, made for wall tablets and made your own.</p>
     </div>
     <div class="chips">
-      <span>Combined Value</span><span>Value Board</span><span>Flow Tiles</span><span>Time format</span><span>201 icons</span><span>Better pickers</span><span>Widen the last tile</span><span>Side pane</span><span>Your own look</span><span>Rotate and dim</span><span>Undo</span><span>Chart height</span><span>Always live cameras</span><span>Double or long press</span>
+      <span>Combined Value</span><span>Value Board</span><span>Flow Tiles</span><span>201 icons</span><span>Better pickers</span><span>Rotate and dim</span><span>Side pane</span><span>Widget search</span><span>Your own name and colours</span><span>Undo</span><span>Chart height</span><span>Always live cameras</span><span>Double or long press</span><span>Time format</span>
     </div>
   </header>
 
@@ -244,26 +237,7 @@
   <div class="columns">
     <div class="column">
       <section class="feat">
-        <span class="tag">App settings</span>
-        <h2>One time format</h2>
-        <p>24 or 12 hours, set once for every widget that shows a time, or Automatic: the phone's or browser's language. Open widgets change at once.</p>
-        <div class="names-card">
-          <div class="names-head"><b>Time format</b><span>12-hour</span></div>
-          <div class="opts"><span>Automatic</span><span>24-hour</span><span class="on">12-hour</span></div>
-        </div>
-        <div class="label">24-hour</div>
-        <div id="w-price-24"></div>
-        <div class="label">12-hour</div>
-        <div id="w-price-12"></div>
-        <ul class="more">
-          <li><b>Now also</b> the charts' axes, Electricity, Energy Price Strip, Weather Forecast, Heatmap and Timers' end times.</li>
-        </ul>
-      </section>
-    </div>
-
-    <div class="column">
-      <section class="feat">
-        <span class="tag">Every icon setting</span>
+        <span class="tag">Icons</span>
         <h2>155 more icons</h2>
         <p>From 46 to 201, in every icon setting and on the Flow Tiles card. Type to find one by its name, in your language.</p>
         <div id="w-flows"></div>
@@ -274,7 +248,7 @@
     <div class="column">
       <section class="feat">
         <span class="tag">Widget settings</span>
-        <h2>Better pickers</h2>
+        <h2>Pickers that find what you type</h2>
         <p>Every list of devices and values searches by words, in any order, and shows what you'd be picking.</p>
         <div class="pick">
           <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="#8E8DA0" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg><u>temp kitchen</u></div>
@@ -291,41 +265,41 @@
       </section>
     </div>
 
-    <div class="column">
-      <section class="feat">
-        <span class="tag">Tiles</span>
-        <h2>Widen the last tile</h2>
-        <p>At 2 per row, the last of an odd number fills the row: Device Quick Actions, Device Values, Curtains and Sensor Alarms.</p>
-        <div id="w-qa"></div>
-        <div class="label">Device Values</div>
-        <div id="w-wide-values"></div>
-      </section>
-    </div>
-  </div>
-
-  <div class="columns">
     <section class="feat web">
       <div class="side">
         <span class="tag">Web dashboards</span>
-        <h2>Rotate and dim</h2>
-        <p>For a tablet on the wall: it goes through the dashboards you tick, and turns itself down at night.</p>
+        <h2>Made for wall tablets</h2>
+        <p>A tablet on the wall goes through the dashboards you tick, comes back to its own one, and turns itself down at night.</p>
         <ul class="more">
-          <li><b>Rotate dashboards:</b> every so many seconds, per browser. A touch pauses it for a minute.</li>
+          <li><b>Rotate dashboards</b> every so many seconds. A touch pauses it for a minute.</li>
           <li><b>Go back after a while</b> to a dashboard you pick, once nobody has touched the screen.</li>
-          <li><b>Dim at set times,</b> by the device's clock.</li>
-          <li><b>Or from a Flow,</b> for every browser or one screen name:</li>
+          <li><b>Dim at set times,</b> by the tablet's clock.</li>
+          <li><b>Or dim from a Flow,</b> every browser or one screen:</li>
         </ul>
         <div class="fc"><div class="icon" style="background:#2A1958"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="4"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div><div><div class="owner">Widgetkeeper</div><div class="text">Dim <span class="arg">Hall tablet</span> by <span class="arg">60</span> %</div></div></div>
       </div>
       <img src="../docs/web/rotate-dialog.png" alt="" width="470" height="741">
     </section>
+  </div>
+
+  <div class="columns">
+    <section class="feat shot">
+      <span class="tag">Web dashboards</span>
+      <h2>Switch dashboards from anywhere</h2>
+      <p>A side pane lists your dashboards, also in full screen. It floats over the widgets, or stays open beside them on a wide screen, and home sits next to it in every dashboard's header.</p>
+      <ul class="more">
+        <li><b>Your own list:</b> hide dashboards and sections and put them in this browser's own order.</li>
+        <li><b>Web dashboard settings</b> open from the pane or the front page, in tabs.</li>
+      </ul>
+      <img src="../docs/web/nav.png" alt="" width="1520" height="1035">
+    </section>
 
     <section class="feat web editor">
       <div class="top">
         <div class="side">
-          <span class="tag">Web dashboards' editor</span>
-          <h2>Add widget: search and groups</h2>
-          <p style="margin-bottom:0">In place of one long list. And removing or moving a widget offers Undo for 8 seconds.</p>
+          <span class="tag">Web dashboard editor</span>
+          <h2>Find widgets faster</h2>
+          <p style="margin-bottom:0">Add widget has a search and a chip per group, in place of one long list. And moving or removing a widget can be undone for 8 seconds.</p>
         </div>
         <div class="undo">Widget removed <b>Undo</b></div>
       </div>
@@ -334,58 +308,44 @@
   </div>
 
   <div class="columns">
-    <section class="feat shot">
+    <section class="feat shot own">
       <span class="tag">Web dashboards</span>
-      <h2>A side pane with your dashboards</h2>
-      <p>Go from any dashboard to any other, also in full screen. It floats over the widgets, or stays open beside them on a wide screen.</p>
-      <ul class="more">
-        <li><b>Customize this list:</b> hide dashboards and sections, drag them into this browser's own order, and tint the pane like the dashboard if you like.</li>
-        <li><b>All dashboards and Settings</b> are at its foot, which folds away. Settings opens over any view, in tabs.</li>
-      </ul>
-      <img src="../docs/web/nav.png" alt="" width="1520" height="1035">
-    </section>
-
-    <section class="feat shot">
-      <span class="tag">Web dashboards</span>
-      <h2>Your own name and icons</h2>
-      <p>Your home's name and icon in the header and the browser's title, the same in every browser, and an icon for each dashboard if you like.</p>
-      <ul class="more">
-        <li><b>One of the 201 icons,</b> or a picture of your own.</li>
-        <li><b>A dashboard's icon</b> shows in the side pane, on the front page and by its title.</li>
-      </ul>
-      <img src="../docs/web/brand.png" alt="" width="1520" height="1035">
+      <div class="intro">
+        <div>
+          <h2>Make it your own</h2>
+          <p>Your home's name and icon in the header and the browser tab, an icon for each dashboard, any background colour, and widgets that blend into it.</p>
+        </div>
+        <ul class="more">
+          <li><b>One of the 201 icons,</b> or a picture of your own. A dashboard's shows in the side pane, on the front page and by its name.</li>
+          <li><b>Any colour</b> beside the preset tints, per dashboard. The side pane can take it too.</li>
+          <li><b>Widget background:</b> a slider that blends the widgets into the colour, so a white chart doesn't stand out. Turned low, a faint line keeps their edges.</li>
+        </ul>
+      </div>
+      <div class="pair">
+        <figure><figcaption>Your name and icons</figcaption><img src="../docs/web/brand.png" alt="" width="1520" height="1035"></figure>
+        <figure><figcaption>A colour of your own, widgets blended in</figcaption><img src="../docs/web/background.png" alt="" width="1520" height="1035"></figure>
+      </div>
     </section>
   </div>
 
   <div class="columns">
-    <section class="feat shot">
-      <span class="tag">Web dashboards' editor</span>
-      <h2>Any background, and widgets that blend in</h2>
-      <p>A colour of your own beside the preset tints, and a Widget background slider, so a white chart doesn't stand out on a tinted backdrop.</p>
-      <ul class="more">
-        <li><b>Per dashboard,</b> and nothing changes until you move it.</li>
-        <li><b>Turned low,</b> a thin line keeps the tiles' edges.</li>
-      </ul>
-      <img src="../docs/web/background.png" alt="" width="1520" height="1035">
+    <section class="feat" style="flex: 1 1 0; min-width: 0;">
+      <span class="tag">Chart widgets</span>
+      <h2>Chart height and legend</h2>
+      <p>Small, normal or tall on seven chart widgets, for a chart two columns wide. Six more can put the legend above or below, or hide it.</p>
+      <div class="looks">
+        <img src="../docs/variants/totals-small.webp" alt="" width="780" height="596">
+        <img src="../docs/variants/lines-tall.webp" alt="" width="780" height="852">
+        <img src="../docs/variants/dailyrange-below.webp" alt="" width="780" height="670">
+      </div>
     </section>
 
-    <div class="panels">
+    <div class="column" style="width: 520px;">
       <section class="feat">
-        <span class="tag">Chart widgets</span>
-        <h2>Chart height and legend</h2>
-        <p>Small, normal or tall on seven chart widgets, for a chart two columns wide. And six more can put the legend above or below, or hide it.</p>
-        <div class="looks">
-          <img src="../docs/variants/totals-small.webp" alt="" width="780" height="596">
-          <img src="../docs/variants/lines-tall.webp" alt="" width="780" height="852">
-          <img src="../docs/variants/dailyrange-below.webp" alt="" width="780" height="670">
-        </div>
-      </section>
-
-      <section class="feat">
-        <span class="tag">Web dashboards' editor</span>
-        <h2>Editing loses no work</h2>
-        <ul class="more">
-          <li><b>A failed save stays up</b> with Try again and Discard, and Done waits for the saves.</li>
+        <span class="tag">Web dashboard editor</span>
+        <h2>Safer editing</h2>
+        <ul class="more" style="margin-top: 0;">
+          <li><b>A failed save stays on screen</b> with Try again and Discard, and Done waits for the saves.</li>
           <li><b>Undo</b> after deleting a dashboard or removing a column with widgets in it.</li>
           <li><b>Changed settings</b> take a second tap to throw away, and a new widget that's cancelled is gone.</li>
         </ul>
@@ -394,33 +354,27 @@
   </div>
 
   <section class="feat also">
-    <div class="dropped">
-      <span class="tag">Device widgets</span>
-      <h2>Devices that drop off</h2>
-      <p>A device Homey calls unavailable no longer looks live: dimmed, with a small ! in the corner.</p>
-      <div id="w-off-values"></div>
-    </div>
-    <div>
-      <span class="tag">And also</span>
-      <ul class="more">
-        <li><b>Cameras, Always live:</b> pick one to play by itself and fill the widget when the dashboard opens.</li>
-        <li><b>Cameras refresh up to every 12 hours,</b> and opening a dashboard doesn't wake a battery camera. <b>Or only by Flow,</b> with the card <i>Refresh a camera's picture</i>.</li>
-        <li><b>Popups on web dashboards:</b> a camera's live video, and a size that fills the page.</li>
-        <li><b>An unavailable device's old reading doesn't count</b> in Combined Value, Room Health and Value Matrix. A deleted one keeps its name in Device Values and Sparklines.</li>
-        <li><b>Quicker to recover:</b> widgets try again after 5, 15 and 30 seconds, and read again when you come back to a dashboard.</li>
-        <li><b>Web dashboards update themselves</b> after an app update, unless someone is editing or a dialog is open.</li>
-        <li><b>Flow Buttons:</b> activate with a double or long press, so a stray tap can't start a Flow.</li>
-        <li><b>Rename tiles</b> in Activity Dots (each sensor) and Value Board (its rooms and devices).</li>
-        <li><b>Green when fine</b> in Value Matrix, Combined Value and Value Board.</li>
-        <li><b>A vibration on a tap that changes something</b> in Light Controls, Lights by Room, Curtains, Thermostat Presets, Variable Presets and Variables.</li>
-        <li><b>Settings in one order:</b> rename first, then what to show, the layout and display options, colour, then each tile. Nothing you've set changes.</li>
-        <li><b>The same words</b> for the same settings: Smooth chart lines, Tiles per row (from the fewest), Name, Colour, Layout.</li>
-        <li><b>Smooth chart lines</b> in Chart · Stacked and Sparklines; the numbers stay exact.</li>
-        <li><b>A colour for Sparklines</b> and the Energy Price Strip's bars; <b>any colour</b> for the Electricity Overview's usage history.</li>
-        <li><b>Smart Stack:</b> Combined Value and Flow Tiles can be its pages.</li>
-        <li><b>Web dashboards:</b> all three new widgets, in the editor too.</li>
-      </ul>
-    </div>
+    <span class="tag">And also</span>
+    <ul class="more">
+      <li><b>One time format:</b> 24 or 12 hours, set once on the app's settings page for every widget that shows a time, or Automatic. Now also the charts' axes, Electricity, Weather Forecast, Heatmap and Timers.</li>
+      <li><b>Widen the last tile:</b> at 2 per row, the last of an odd number fills the row, in Device Quick Actions, Device Values, Curtains and Sensor Alarms.</li>
+      <li><b>Unavailable devices</b> are dimmed with a small ! in the corner, and their old readings don't count in Combined Value, Room Health and Value Matrix. A deleted one keeps its name in Device Values and Sparklines.</li>
+      <li><b>Cameras, Always live:</b> pick one to play by itself and fill the widget when the dashboard opens.</li>
+      <li><b>Cameras refresh up to every 12 hours,</b> and opening a dashboard doesn't wake a battery camera. <b>Or only by Flow,</b> with the card <i>Refresh a camera's picture</i>.</li>
+      <li><b>Popups on web dashboards:</b> a camera's live video, and a size that fills the page.</li>
+      <li><b>Quicker to recover:</b> widgets try again after 5, 15 and 30 seconds, and read again when you come back to a dashboard.</li>
+      <li><b>Web dashboards update themselves</b> after an app update, unless someone is editing or a dialog is open.</li>
+      <li><b>Flow Buttons:</b> start with a double or long press, so a stray tap can't run a Flow.</li>
+      <li><b>Rename tiles</b> in Activity Dots (each sensor) and Value Board (its rooms and devices).</li>
+      <li><b>Green when fine</b> in Value Matrix, Combined Value and Value Board.</li>
+      <li><b>A vibration on a tap that changes something</b> in Light Controls, Lights by Room, Curtains, Thermostat Presets, Variable Presets and Variables.</li>
+      <li><b>Settings in one order:</b> rename first, then what to show, the layout and display options, colour, then each tile. Nothing you've set changes.</li>
+      <li><b>The same words</b> for the same settings: Smooth chart lines, Tiles per row (from the fewest), Name, Colour, Layout.</li>
+      <li><b>Smooth chart lines</b> in Chart · Stacked and Sparklines; the numbers stay exact.</li>
+      <li><b>A colour for Sparklines</b> and the Energy Price Strip's bars; <b>any colour</b> for the Electricity Overview's usage history.</li>
+      <li><b>Smart Stack:</b> Combined Value and Flow Tiles can be its pages.</li>
+      <li><b>Web dashboards:</b> all three new widgets, in the editor too.</li>
+    </ul>
   </section>
 
   <script>
@@ -481,13 +435,6 @@
         { name: 'Backup', text: 'Finished', icon: 'shieldcheck', second: 'Last night' },
       ] });
 
-      // Time format: the Energy Price Strip drawn in each, the page's format put back after.
-      const price = findWidget('price');
-      MOUNT.price(el('w-price-24'), price);
-      kit.setTimeFormat('12');
-      MOUNT.price(el('w-price-12'), price);
-      kit.setTimeFormat('24');
-
       // Icons: Flow Buttons with some of the new ones, and a sample of the list (kit.js's and icons.js's, all real).
       const buttons = [
         ['f1', 'Feed the cat', 'orange', 'cat'], ['f2', 'Walk the dog', 'green', 'dog'], ['f3', 'Pizza night', 'red', 'pizza'],
@@ -513,20 +460,6 @@
       };
       glyph('g-1', 'measure_temperature', 22);
       glyph('g-2', 'measure_temperature', 4.1);
-
-      // Widen the last tile: Energy's Quick Actions, its three devices at 2 per row.
-      const qa = findWidget('quickactions', 1);
-      MOUNT.quickactions(el('w-qa'), { ...qa, opts: { ...qa.opts, columns: '2', wideLast: true }, devices: qa.devices.slice(0, 3) });
-
-      // Device Values: three readings, the last widened, and at the bottom one unavailable (dev/variants.js's floor lamp).
-      const valueCap = (title, units, decimals, type = 'number') => ({ title, units, decimals, type, min: null, max: null, values: null });
-      const reading = (id, name, capability, capabilityId, value, more = {}) => ({ deviceId: id, capabilityId, name, capability, value, ...more });
-      const second = (capabilityId, capability, value) => ({ capabilityId, capability, value });
-      const living2 = reading('r1', 'Living room', valueCap('Temperature', '°C', 1), 'measure_temperature', 21.4, { second: second('measure_humidity', valueCap('Humidity', '%', 0), 47) });
-      const oven = reading('r3', 'Oven', valueCap('Power', 'W', 0), 'measure_power', 980);
-      const lamp = reading('r4', 'Floor lamp', valueCap('Turned on', null, 0, 'boolean'), 'onoff', true, { second: second('measure_power', valueCap('Power', 'W', 0), 45) });
-      MOUNT.values(el('w-wide-values'), { opts: { columns: '2', wideLast: true }, slots: [living2, oven, reading('r6', 'Car', valueCap('Battery', '%', 0), 'measure_battery', 86)] });
-      MOUNT.values(el('w-off-values'), { opts: { columns: '2' }, slots: [living2, { ...lamp, offline: true }] });
 
       // The page's size and the columns' heights, for the render script.
       document.fonts.ready.then(() => setTimeout(() => {
