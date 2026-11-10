@@ -73,10 +73,19 @@ body { margin: 0; color: var(--wd-text); font-size: var(--homey-font-size-defaul
 .wd-nav .wd-logo svg { width: 100%; height: 100%; }
 .wd-nav .wd-logo:not(.own) svg { stroke: none; } /* the logomark's own strokes, not the pane's icons' */
 .wd-nav-brand .wd-logo.own:not(.picture) .wd-chosen-icon { width: 18px; height: 18px; }
+/* Lines on a colour of the user's own, and in the tinted pane: the text colour, faint, so they take the colour under them
+   (the theme's grey lines looked out of place on a plum one, the user, 2026-11-10). */
+html.wd-own-bg { --wd-line: color-mix(in srgb, var(--wd-text) 14%, transparent); }
+.wd-nav-tinted .wd-nav, .wd-nav-tinted .wd-nav-foot { border-color: color-mix(in srgb, var(--wd-text) 14%, transparent); }
 /* A dashboard's bar: home and the pane's button in one pill, apart from the dashboard's icon and name. */
-.wd-nav-group { flex: none; display: inline-flex; align-items: center; padding: 0 2px; border-radius: 18px; background: color-mix(in srgb, var(--wd-text) 8%, transparent); }
-.wd-nav-group .wd-icon { width: 34px; height: 34px; border-radius: 17px; }
-.wd-nav-group-rule { flex: none; width: 1px; height: 18px; background: var(--wd-line); }
+.wd-nav-group { flex: none; display: inline-flex; align-items: center; overflow: hidden; border-radius: 18px; background: color-mix(in srgb, var(--wd-text) 8%, transparent); }
+/* Each button fills its half of the pill, so hover and focus light that side, not a circle. */
+.wd-nav-group .wd-icon { width: 40px; height: 36px; border-radius: 0; }
+.wd-nav-group .wd-icon:focus-visible { outline: 2px solid var(--wd-accent); outline-offset: -2px; }
+.wd-nav-group > :first-child { border-radius: 18px 0 0 18px; padding-left: 2px; }
+.wd-nav-group > :last-child { border-radius: 0 18px 18px 0; padding-right: 2px; }
+/* The rule in the text's own colour, faint, so it takes the backdrop's tint like the pill (the line colour looked grey on a plum one). */
+.wd-nav-group-rule { flex: none; align-self: stretch; width: 1px; margin: 9px 0; background: color-mix(in srgb, var(--wd-text) 14%, transparent); }
 .wd-nav-pin.on svg { fill: currentColor; color: var(--wd-accent); } /* its row isn't tinted: that's the current dashboard's mark */
 .wd-nav-done { flex: none; }
 .wd-nav-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 8px 8px; }

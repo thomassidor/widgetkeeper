@@ -86,6 +86,7 @@
       if (background && background !== 'default') html.style.setProperty('--wd-bg', wd.backdrop(background, dark));
       else html.style.removeProperty('--wd-bg');
       // A colour of the user's own may be a bright one in dark mode: the editor's forms keep the page's own shade.
+      html.classList.toggle('wd-own-bg', CUSTOM_BACKGROUND.test(background)); // lines that take its colour (dashboard.css)
       if (CUSTOM_BACKGROUND.test(background)) html.style.setProperty('--wd-panel', BACKGROUNDS.default[dark ? 1 : 0]);
       else html.style.removeProperty('--wd-panel');
       wd.surface = surfaceColours(wd.backdrop(background, dark), surface, dark);
