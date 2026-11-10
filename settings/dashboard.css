@@ -328,10 +328,39 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-dash.fresh { animation: wd-fresh 1.6s ease-out; }
 @keyframes wd-fresh { from { box-shadow: 0 0 0 4px var(--wd-accent), 0 10px 28px rgba(0, 0, 0, .18); } }
 .arranging .wd-dash.lifted { z-index: 2; transform: scale(1.02); box-shadow: 0 0 0 2px var(--wd-accent), 0 14px 32px rgba(0, 0, 0, .3); transition: none; }
-/* The edit mode's Settings dialog: the backup, then this browser's settings. */
+/* The Settings dialog: vertical tabs on the left (the Homey's settings, then this browser's), one panel beside them,
+   at one height, so changing tabs doesn't move the dialog; the panel scrolls, the tabs stay. */
 .wd-page-settings .wd-dialog-head .wd-h2 { font-size: 20px; line-height: 28px; } /* above its sections' 17 px heads */
-.wd-page-settings .wd-dialog-head { padding-top: 16px; padding-bottom: 4px; }
-.wd-page-settings .wd-dialog-body { padding-top: 16px; padding-bottom: 20px; }
+.wd-page-settings .wd-dialog-head { padding-top: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--wd-line); }
+.wd-dialog.wd-page-settings { width: min(780px, calc(100vw - 32px)); height: min(640px, calc(100vh - 32px)); overflow: hidden; }
+.wd-dialog.wd-page-settings[open] { display: flex; flex-direction: column; }
+.wd-page-settings .wd-dialog-body.wd-tabbed { flex: 1 1 auto; min-height: 0; padding: 0; }
+.wd-tabs-box { display: grid; grid-template-columns: 184px minmax(0, 1fr); height: 100%; min-height: 0; }
+.wd-tabs { display: flex; flex-direction: column; gap: 2px; padding: 12px 8px; border-right: 1px solid var(--wd-line); overflow-y: auto; }
+.wd-tabs-group {
+  margin: 0; padding: 12px 12px 4px; font-size: 12px; line-height: 16px; font-weight: 700; color: var(--wd-muted);
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.wd-tabs-group:first-child { padding-top: 4px; }
+.wd-tab {
+  -webkit-appearance: none; appearance: none; border: 0; margin: 0; cursor: pointer; text-align: left;
+  padding: 8px 12px; border-radius: 10px; background: none; color: var(--wd-text);
+  font-family: inherit; font-size: 15px; line-height: 20px; font-weight: 500; overflow-wrap: anywhere;
+}
+.wd-tab:hover { background: var(--wd-raised); }
+.wd-tab.on, .wd-tab.on:hover { color: var(--wd-accent); background: color-mix(in srgb, var(--wd-accent) 16%, transparent); } /* as the side pane's current row */
+.wd-tab:focus-visible { outline: 2px solid var(--wd-accent); outline-offset: -2px; }
+.wd-tab-panels { min-height: 0; overflow-y: auto; padding: 16px 20px 20px; }
+.wd-tabs-box .wd-tab-panels > .wd-page-section { padding-top: 0; border-top: 0; } /* not the line between sections */
+.wd-browser-only { margin-top: -4px; }
+/* A phone: the tabs a row that scrolls above the panel, without the group headings (each panel of this browser's says so). */
+@media (max-width: 560px) {
+  .wd-tabs-box { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .wd-tabs { flex-direction: row; padding: 8px 12px; border-right: 0; border-bottom: 1px solid var(--wd-line); overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+  .wd-tabs-group { display: none; }
+  .wd-tab { flex: none; white-space: nowrap; }
+  .wd-tab-panels { padding: 12px; }
+}
 .wd-page-section { display: flex; flex-direction: column; gap: 8px; }
 .wd-page-section + .wd-page-section { padding-top: 16px; border-top: 1px solid var(--wd-line); }
 .wd-page-section .wd-row { flex-wrap: wrap; margin-top: 4px; }

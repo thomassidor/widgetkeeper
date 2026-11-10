@@ -329,12 +329,18 @@
     .viewport.settings { height: 1040px; }
     .shot-backdrop { position: absolute; inset: 0; z-index: 9998; background: rgba(0, 0, 0, .5); }
     /* The sync, nightly and copy views are cropped close to their dialog (the render script's -dialog.png): the page
-       behind dimmed more, and the nightly view's Settings only its sync section. */
+       behind dimmed more; Settings without its tabs: the nightly view only its Sync tab's section, the rotate view the
+       switches of its Screen and Kiosk tabs (Dim at set times, Rotate dashboards, Go back after a while). */
     .crop .shot-backdrop { background: rgba(0, 0, 0, .7); }
-    .crop:not(.rotate) .wd-page-settings .wd-page-section:not(:has(.wd-sync-time)),
-    .rotate .wd-page-settings .wd-page-section { display: none; }
-    .rotate .wd-page-settings .wd-page-section:has(.wd-rotate-list) { display: block; }
-    .rotate .wd-page-section > .wd-h2, .rotate .wd-set-card > :not(.wd-switched) { display: none; }
+    .crop .viewport > .wd-dialog.wd-page-settings[open] { display: block; width: 560px; }
+    .crop .wd-page-settings .wd-tabs { display: none; }
+    .crop .wd-page-settings .wd-tabs-box { display: block; }
+    .crop .wd-page-settings .wd-tab-panels { overflow: visible; }
+    .crop .wd-page-settings .wd-tab-panels > .wd-page-section { display: none; }
+    .crop:not(.rotate) .wd-page-settings #wd-tabpanel-sync,
+    .rotate .wd-page-settings #wd-tabpanel-screen, .rotate .wd-page-settings #wd-tabpanel-kiosk { display: flex; } /* the script unhides them */
+    .rotate .wd-page-settings #wd-tabpanel-kiosk { margin-top: 8px; }
+    .rotate .wd-page-section > .wd-h2, .rotate .wd-browser-only, .rotate .wd-set-card > :not(.wd-switched) { display: none; }
     .rotate .viewport { height: 1040px; }
     .crop .wd-page-settings .wd-page-section { border-top: 0; margin-top: 0; padding-top: 0; }
     .viewport > .wd-dialog { position: absolute; inset: 40px 0 auto; height: calc(100% - 80px); max-height: none; margin: 0 auto; z-index: 9999; box-shadow: 0 24px 64px rgba(0, 0, 0, .5); }
@@ -409,12 +415,14 @@
       open();
     }
     // The sync and copy views: once the editor is there, open the Sync dialog, or Copy to… for the chart with Home picked.
-    // The nightly view: the front page's edit mode with its Settings open (the backup, the nightly sync, this browser).
+    // The nightly view: the front page's edit mode with its Settings open (the CSS shows only its Sync tab's section).
     if (VIEW === 'nightly' || VIEW === 'rotate') {
       const open = () => {
         const settings = document.querySelector('.wd-nav-settings');
         if (!settings) { setTimeout(open, 50); return; }
         settings.click();
+        // The tabs' panels the CSS shows (the page hides the others with `hidden`, which wins over any rule).
+        for (const id of VIEW === 'rotate' ? ['screen', 'kiosk'] : ['sync']) document.getElementById(`wd-tabpanel-${id}`).hidden = false;
         // The sync time on the 24-hour clock: a time field draws it in the browser's own language (US English here).
         const time = () => {
           const inputs = [...document.querySelectorAll('.wd-sync-time, .wd-time')];

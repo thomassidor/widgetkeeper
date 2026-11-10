@@ -181,11 +181,13 @@
       });
     }
 
-    /** The front page's edit mode: Settings in its bar, a dialog with the backup, then this browser's Keep screen on, Dim and Sign out. */
-    function pageSettings() {
+    /**
+     * Settings (the side pane's foot, or the front page's bar where there's no pane): a dialog of vertical tabs, the
+     * Homey's settings (Header, Sync, Backup) then this browser's (Screen, Kiosk, Sign-in). `open`: a tab's id to start on.
+     */
+    function pageSettings(open) {
       const { d, body } = wd.dialog(t('pageSettings'));
       d.classList.add('wd-page-settings');
-      const browser = el('section', 'wd-page-section');
       const forget = button('wd-btn', t('forgetKey'), () => { forget.disabled = true; wd.signOut(); });
       // This browser's settings as the editor's rows: the label and a hint on the left, the control on the right.
       const setRow = (label, hint, control, id) => {
@@ -259,12 +261,99 @@
         route();
       }, false);
       mode.setAttribute('aria-label', t('darkLight'));
-      const card = el('div', 'wd-set-card');
+      // This browser's settings, in three tabs, each saying they're this browser's only.
+      const browserSection = (title, ...rows) => {
+        const section = el('section', 'wd-page-section');
+        const card = el('div', 'wd-set-card');
+        card.append(...rows);
+        section.append(el('h3', 'wd-h2', title), el('p', 'wd-hint wd-browser-only', t('browserOnly')), card);
+        return section;
+      };
       const kiosk = el('p', 'wd-hint wd-kiosk-help', t('kioskHelp'));
-      card.append(setRow(t('darkLight'), t('darkLightText'), mode), awake, dim, scheduled, rotation, goBack, setRow(t('signedIn'), t('forgetKeyText'), forget), kiosk);
-      browser.append(el('h3', 'wd-h2', t('thisBrowser')), card);
-      body.append(wd.brandSection(setRow), backupSection(), wd.syncSettingsSection(), browser);
+      const tabs = [
+        { group: t('allBrowsers') },
+        { id: 'header', label: t('brandTitle'), panel: wd.brandSection(setRow) },
+        { id: 'sync', label: t('tabSync'), panel: wd.syncSettingsSection(() => hideTab('sync')) },
+        { id: 'backup', label: t('backupTitle'), panel: backupSection() },
+        { group: t('thisBrowser') },
+        { id: 'screen', label: t('tabScreen'), panel: browserSection(t('tabScreen'), setRow(t('darkLight'), t('darkLightText'), mode), awake, dim, scheduled) },
+        { id: 'kiosk', label: t('tabKiosk'), panel: browserSection(t('tabKiosk'), rotation, goBack, kiosk) },
+        { id: 'signin', label: t('tabSignIn'), panel: browserSection(t('tabSignIn'), setRow(t('signedIn'), t('forgetKeyText'), forget)) },
+      ];
+      const { box: tabBox, select, hideTab } = settingsTabs(tabs);
+      body.classList.add('wd-tabbed');
+      body.append(tabBox);
+      select(open && tabs.some(tab => tab.id === open) ? open : wd.settingsTab || 'header');
       d.showModal();
+    }
+
+    /**
+     * The Settings dialog's vertical tabs: a list on the left, under the group headings (the Homey's settings, then this
+     * browser's), and one panel at a time beside it. The tab last open comes back (`wd.settingsTab`, for this page's life).
+     * Arrow keys, Home and End move along the tabs, as a tab list's should.
+     */
+    function settingsTabs(tabs) {
+      const box = el('div', 'wd-tabs-box');
+      const list = el('div', 'wd-tabs');
+      list.setAttribute('role', 'tablist');
+      list.setAttribute('aria-orientation', 'vertical');
+      const panels = el('div', 'wd-tab-panels');
+      const shown = [];
+      for (const tab of tabs) {
+        if (tab.group) {
+          list.append(el('p', 'wd-tabs-group', tab.group));
+          continue;
+        }
+        const b = button('wd-tab', tab.label, () => select(tab.id));
+        b.id = `wd-tab-${tab.id}`;
+        b.setAttribute('role', 'tab');
+        b.setAttribute('aria-controls', `wd-tabpanel-${tab.id}`);
+        tab.panel.id = `wd-tabpanel-${tab.id}`;
+        tab.panel.setAttribute('role', 'tabpanel');
+        tab.panel.setAttribute('aria-labelledby', b.id);
+        tab.button = b;
+        shown.push(tab);
+        list.append(b);
+        panels.append(tab.panel);
+      }
+      const usable = () => shown.filter(tab => !tab.button.hidden);
+      function select(id, focus) {
+        const tab = usable().find(x => x.id === id) || usable()[0];
+        wd.settingsTab = tab.id;
+        for (const x of shown) {
+          const on = x === tab;
+          x.button.classList.toggle('on', on);
+          x.button.setAttribute('aria-selected', String(on));
+          x.button.tabIndex = on ? 0 : -1;
+          x.panel.hidden = !on;
+        }
+        panels.scrollTop = 0;
+        if (focus) tab.button.focus();
+        // On a phone the tabs are a row that scrolls: keep the chosen one in view.
+        if (tab.button.scrollIntoView && list.scrollWidth > list.clientWidth) tab.button.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+      /** A tab whose settings can't be read (the sync's): gone, and if it was open, the first one instead. */
+      function hideTab(id) {
+        const tab = shown.find(x => x.id === id);
+        if (!tab) return;
+        tab.button.hidden = true;
+        if (tab.button.classList.contains('on')) {
+          const keep = wd.settingsTab;
+          select(usable()[0].id);
+          wd.settingsTab = keep; // it comes back once it can be read again
+        }
+      }
+      list.addEventListener('keydown', (e) => {
+        const tabsNow = usable();
+        const at = tabsNow.findIndex(x => x.button === document.activeElement);
+        if (at < 0) return;
+        const to = { ArrowDown: at + 1, ArrowRight: at + 1, ArrowUp: at - 1, ArrowLeft: at - 1, Home: 0, End: tabsNow.length - 1 }[e.key];
+        if (to === undefined) return;
+        e.preventDefault();
+        select(tabsNow[(to + tabsNow.length) % tabsNow.length].id, true);
+      });
+      box.append(list, panels);
+      return { box, select, hideTab };
     }
 
     /** A switch's row with rows under it that show only while it's on. */

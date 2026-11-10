@@ -286,7 +286,8 @@
 
     // ---- The front page's Settings: the nightly sync --------------------------------------------------------
 
-    function syncSettingsSection() {
+    /** `unavailable`: called when the schedule can't be read, as the section hides then (the Settings dialog drops its tab). */
+    function syncSettingsSection(unavailable) {
       const section = el('section', 'wd-page-section');
       const card = el('div', 'wd-set-card');
       section.append(el('h3', 'wd-h2', t('syncSettings')), card);
@@ -338,7 +339,10 @@
         nightly.checked = s.nightly !== false;
         time.value = s.time || '03:00';
         timeRow.hidden = !nightly.checked;
-      }, () => { section.hidden = true; });
+      }, () => {
+        section.hidden = true;
+        if (unavailable) unavailable();
+      });
       return section;
     }
 
