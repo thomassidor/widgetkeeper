@@ -1388,12 +1388,14 @@ async function buildApps() {
   return { type: 'apps', name: 'Test · Other apps', cols: apps.length, placed };
 }
 
-/** `Test · Every widget`: one widget of each type, the first of that type on its own test dashboard, titled by the widget's name. */
+/** `Test · Every widget`: one widget of each type, the first of that type on its own test dashboard (not a wide one), titled by the widget's name. */
 async function buildEvery() {
   const placed = [];
   for (const type of types) {
     const { widgets } = await BUILD[type]();
-    const first = widgets.find(x => x.type === type) ?? widgets[0];
+    // Each one column wide (the user's ask): a type's first that isn't wide, and no span on any.
+    const own = widgets.filter(x => x.type === type);
+    const { span, ...first } = own.find(x => !x.span) ?? own[0] ?? widgets[0];
     placed.push({ id: `every-${placed.length + 1}`, ...first, title: widgetDefs[type]?.name?.en ?? type });
   }
   return { type: 'every', name: EVERY_NAME, cols: 3, placed };
