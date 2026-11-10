@@ -37,10 +37,12 @@ const PREFIX = 'test-';
 /** The front page's sections the web test dashboards are under, each as long as it has any: the chart widgets' apart. */
 const SECTION = { id: 'test-dashboards', name: 'Test dashboards' };
 const CHART_SECTION = { id: 'test-charts', name: 'Test charts' };
+/** `--every`'s dashboard's own section, the first of the sections (the user's ask, 2026-11-10). */
+const EVERY_SECTION = { id: 'test-every', name: 'Every widget' };
 // Sparklines takes its time span from the catalog too (1.2.0), but isn't a `Chart · …` widget: it stays with the others.
 const CHART_TYPES = new Set(Object.keys(JSON.parse(readFileSync(new URL('chart-settings.json', import.meta.url), 'utf8')).widgets).filter(t => t !== 'sparklines'));
 /** A test dashboard's section, by its id (`test-<type>`). */
-const sectionOf = id => (CHART_TYPES.has(id.slice(PREFIX.length)) ? CHART_SECTION : SECTION).id;
+const sectionOf = id => (id === `${PREFIX}every` ? EVERY_SECTION : CHART_TYPES.has(id.slice(PREFIX.length)) ? CHART_SECTION : SECTION).id;
 /** The name every native test dashboard starts with: the Homey picks their ids, so the name is the marker. */
 const NATIVE_PREFIX = 'Test · ';
 const MISSING = 'missing-device-0000'; // a device id that doesn't exist: the widgets' missing state
@@ -1446,12 +1448,13 @@ async function writeWeb(built) {
   if (next.length > MAX_WEB_DASHBOARDS) throw new Error(`That would make ${next.length} web dashboards; at most ${MAX_WEB_DASHBOARDS}`);
   // The section first, so the app never reads a test dashboard in one it doesn't know (it'd show under Your dashboards).
   const front = await homeyApi('GET', WEB_FRONT_SETTING);
-  // Each where it is when it's there already (the user may have moved or renamed it), else last; gone without dashboards.
+  // Each where it is when it's there already (the user may have moved or renamed it), else last (Every widget first);
+  // gone without dashboards.
   let kept = front && Array.isArray(front.sections) ? front.sections : [];
-  for (const section of [SECTION, CHART_SECTION]) {
+  for (const section of [SECTION, CHART_SECTION, EVERY_SECTION]) {
     const has = kept.some(x => x && x.id === section.id);
     if (!tests.some(d => d.section === section.id)) kept = kept.filter(x => !x || x.id !== section.id);
-    else if (!has) kept = [...kept, section];
+    else if (!has) kept = section === EVERY_SECTION ? [section, ...kept] : [...kept, section];
   }
   await homeyApi('PUT', WEB_FRONT_SETTING, { value: { ...(front && typeof front === 'object' ? front : {}), sections: kept } });
   await homeyApi('PUT', SETTING, { value: next });
