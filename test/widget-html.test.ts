@@ -198,8 +198,8 @@ describe('fallback strings', () => {
   it.each(WIDGETS.filter(id => id !== 'stack' && id !== 'clock' && id !== 'spacer' && id !== 'popups'))("%s: DEFAULT_STRINGS are en.json's", (id) => {
     const js = readFileSync(`widgets/${id}/public/widget.js`, 'utf8').replace(/\r\n/g, '\n');
     const table = js.match(/\n( *)const DEFAULT_STRINGS = (\{[\s\S]*?\n\1\});/);
-    // The namespace: `opts.t(`<ns>.${key}`)`, or a chart widget's frame's `prefix: '<ns>'` (the chart module's createFrame()).
-    const ns = js.match(/opts\.t\(`(\w+)\.\$\{/) || js.match(/C\.createFrame\(root, \{[^}]*?prefix: '(\w+)'/);
+    // The namespace: the kit's `translator('<ns>', …)`, `opts.t(`<ns>.${key}`)`, or a chart widget's frame's `prefix: '<ns>'` (the chart module's createFrame()).
+    const ns = js.match(/translator\('(\w+)'/) || js.match(/opts\.t\(`(\w+)\.\$\{/) || js.match(/C\.createFrame\(root, \{[^}]*?prefix: '(\w+)'/);
     expect(table && ns).toBeTruthy();
     const strings = new Function(`return ${table![2]}`)();
     for (const [key, value] of Object.entries(strings)) expect([key, value]).toEqual([key, en[ns![1]][key]]);

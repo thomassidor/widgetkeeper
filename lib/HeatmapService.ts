@@ -40,7 +40,7 @@ const SUBSCRIBE_RETRY = 10 * MINUTE;
  * Where the recorded booleans are kept: a file in the app's own `/userdata`, which no API serves. They're presence data
  * (when someone moved or opened a door), and an app setting can be read with a key's *Apps → Control*.
  */
-export const HISTORY_FILE = '/userdata/heatmap-history.json';
+const HISTORY_FILE = '/userdata/heatmap-history.json';
 /** The app setting that held them until 1.1.0: moved into `HISTORY_FILE` at the first start, then unset. */
 export const HISTORY_SETTING = 'heatmapHistory';
 

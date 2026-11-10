@@ -48,7 +48,6 @@
   const SECURE = { locked: true, alarm_contact: false, garagedoor_closed: true };
   const CAP_ORDER = ['locked', 'alarm_contact', 'garagedoor_closed'];
 
-  const SVG_NS = 'http://www.w3.org/2000/svg';
   /** The summary's padlock, closed or open (Flow Buttons' lock glyph: 24 px, 2 px round stroke). */
   const PADLOCK = {
     closed: 'M6.5 11h11a1.5 1.5 0 0 1 1.5 1.5v6a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 18.5v-6A1.5 1.5 0 0 1 6.5 11zM8 11V8a4 4 0 0 1 8 0v3',
@@ -56,16 +55,7 @@
   };
   const CHEVRON = 'M6 9l6 6 6-6';
 
-  function svgPath(cls, d) {
-    const svg = document.createElementNS(SVG_NS, 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.setAttribute('class', cls);
-    svg.setAttribute('aria-hidden', 'true');
-    const path = document.createElementNS(SVG_NS, 'path');
-    path.setAttribute('d', d);
-    svg.appendChild(path);
-    return svg;
-  }
+  const svgPath = (cls, d) => window.WidgetkeeperKit.svgIcon({ d }, cls);
 
   // Every tap stops at its node, so a button's tap doesn't press the row around it too.
   function onTap(node, fn) {
@@ -98,11 +88,7 @@
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any> }} opts
    */
   function createLocksWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`locks.${key}`, tokens) : null;
-      if (s && s !== `locks.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('locks', DEFAULT_STRINGS, opts);
     const names = tileNames(opts, () => render(), (key) => {
       shake(key);
       setMessage(t('renameFailed'), true);
@@ -263,9 +249,7 @@
     function shake(id) {
       const r = rows.get(id);
       if (!r) return;
-      r.row.classList.remove('shake');
-      void r.row.offsetWidth;
-      r.row.classList.add('shake');
+      window.WidgetkeeperKit.shake(r.row);
     }
 
     /**
@@ -343,7 +327,7 @@
 
     const setMask = (node, url) => window.WidgetkeeperKit.setMask(node, url, '--lk-mask');
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       const s = summaryOf();
       tile.dataset.level = s.level;
@@ -399,8 +383,7 @@
       messageEl.style.display = message.text ? '' : 'none';
       messageEl.classList.toggle('error', !!message.text && devices.length > 0);
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     return { setState, setNames: names.set, pushChange, setMessage, render, t, expand: (v) => { expanded = v !== false || alwaysOpen; render(); } };

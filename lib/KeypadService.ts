@@ -78,7 +78,7 @@ export type SourceState =
 export type CodeInfo = { id: string, name: string, digits: number };
 
 /** A widget's code: one code, or Any code (`digits` null when the codes' lengths differ, so the keypad needs OK). */
-export type WidgetCode = { id: string, name: string, digits: number | null };
+type WidgetCode = { id: string, name: string, digits: number | null };
 
 /**
  * `/state`: the source (null without one), the buttons' flows (null when they couldn't be read) and the widget's code

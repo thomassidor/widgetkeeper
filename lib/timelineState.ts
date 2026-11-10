@@ -12,7 +12,7 @@ type Shown = Extract<ValueSlot, { name: string }>;
  * A Timeline row: Device Values' slot state with its recorded changes (a boolean), or its Insights points over the window
  * (a number, which the widget holds against its threshold); `{missing}` where there's no such device or value.
  */
-export type TimelineRow = ValueSlot
+type TimelineRow = ValueSlot
   | (Shown & { changes: [number, 0 | 1][], since: number | null })
   | (Shown & { points: [number, number][] });
 

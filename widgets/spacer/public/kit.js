@@ -6,6 +6,7 @@
  */
 (function () {
   const DAY = 864e5;
+  const SVG_NS = 'http://www.w3.org/2000/svg';
   const TAP_SLOP = 10; // px a finger may move and still count as a tap
   /** How long after a touch the browser's own click is ignored (it still sends one after a short swipe). */
   const CLICK_AFTER_TOUCH_MS = 800;
@@ -1091,6 +1092,34 @@
   }
 
   /**
+   * A widget's strings: `opts.t`'s `<ns>.<key>` (read at each call), else the widget's English fallback from
+   * `defaults` (its DEFAULT_STRINGS, en.json's), with `__token__`s filled in; the key itself when neither has it.
+   */
+  function translator(ns, defaults, opts) {
+    return (key, tokens) => {
+      const s = opts.t ? opts.t(`${ns}.${key}`, tokens) : null;
+      if (s && s !== `${ns}.${key}`) return s;
+      return (defaults[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
+    };
+  }
+
+  /** A function that tells `hooks.onHeight` the root's height (rounded up) whenever it's changed since the last call. */
+  function heightReporter(root, hooks) {
+    let last = 0;
+    return () => {
+      const h = Math.ceil(root.getBoundingClientRect().height);
+      if (h && h !== last) { last = h; if (hooks.onHeight) hooks.onHeight(h); }
+    };
+  }
+
+  /** A 24 px icon `{d, fill}` as an inline SVG of class `cls`; a filled one's path has the class `filled`. */
+  function svgIcon(icon, cls) {
+    const svg = el('svg', { viewBox: '0 0 24 24', class: cls, 'aria-hidden': 'true' }, null, SVG_NS);
+    el('path', { d: icon.d, class: icon.fill ? 'filled' : null }, svg, SVG_NS);
+    return svg;
+  }
+
+  /**
    * A bar (Light Controls', Lights by Room's, Curtains'): a drag sets the value live (`drags`, id → 0–1, then a
    * render) and `commit(id, x)` sends it when let go; a tap sets it where it lands. The touches are taken
    * (preventDefault, touch-action: none) so iOS doesn't scroll the dashboard. Homey's Android app takes the touch
@@ -1294,6 +1323,43 @@
    * over them, and what follows from them (on, brightness, colours). A tile or room is an item `{id, members}`.
    * @param {{ render: () => void, roomLevel?: string }} opts
    */
+  /**
+   * Light Controls' and Lights by Room's swatch panel: which tile or light it's open for (`id`, or null), closed after
+   * `ms` without a touch (`arm()`, on each touch in it), and not opened while `blocked()` (renaming).
+   * `drop()` forgets it without a render, for a render that's on its way.
+   */
+  function lightPanel({ ms, render, blocked }) {
+    let id = null;
+    let timer = null;
+    const panel = {
+      get id() { return id; },
+      arm() {
+        clearTimeout(timer);
+        timer = setTimeout(panel.close, ms);
+      },
+      close() {
+        clearTimeout(timer);
+        timer = null;
+        if (id == null) return;
+        id = null;
+        render();
+      },
+      toggle(next) {
+        if (blocked()) return;
+        if (id === next) { panel.close(); return; }
+        id = next;
+        panel.arm();
+        render();
+      },
+      drop() {
+        if (id == null) return;
+        id = null;
+        clearTimeout(timer);
+      },
+    };
+    return panel;
+  }
+
   function lightModel({ render, roomLevel }) {
     const values = optimistic(render);
     const { shown } = values;
@@ -1403,7 +1469,7 @@
     };
   }
 
-  const LIGHTS = { get glyphs() { return LIGHT_GLYPHS(); }, PALETTES, temperatureColor, hueColor, lightColor, moodDot, swatchList, setBlend, model: lightModel };
+  const LIGHTS = { get glyphs() { return LIGHT_GLYPHS(); }, PALETTES, temperatureColor, hueColor, lightColor, moodDot, swatchList, setBlend, model: lightModel, panel: lightPanel };
 
   /** The colour settings' names (Device Values', Flow Buttons' and Notes' Flow colours, `TILE_COLORS` in lib/tileColors.ts), in kit.css's palette. */
   const COLORS = ['blue', 'red', 'orange', 'yellow', 'green', 'purple', 'teal', 'cyan', 'indigo', 'pink', 'brown', 'grey'];
@@ -1681,10 +1747,10 @@
 
   window.WidgetkeeperKit = {
     applySurface,
-    openVideoStream, framesDecoded, playCameraStream, STREAM_NEXT_MS, STREAM_LAST_MS,
+    openVideoStream, playCameraStream, STREAM_NEXT_MS, STREAM_LAST_MS,
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
     getTimeFormat, setTimeFormat, wireTimeFormat, uses12Hours, clockTime, hourLabel, smoothValues,
     formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, wireRefresh, wireHaptic, pressGuard, markOffline, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
-    onDeviceNames, colorStyle, applyColors, sound, optimistic, shake, wireBar, roomTiles, knownValue, okRange, okLevel,
+    onDeviceNames, colorStyle, applyColors, sound, optimistic, shake, translator, heightReporter, svgIcon, wireBar, roomTiles, knownValue, okRange, okLevel,
   };
 })();

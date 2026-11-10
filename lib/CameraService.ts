@@ -24,7 +24,7 @@ const FILE_PREFIX = 'camera-snapshot-';
 
 /** The Flow card that renews a camera's picture, and what tells the open widgets. */
 export const CAMERAS_REFRESH_CARD = 'cameras_refresh';
-export const CAMERAS_PICTURE_EVENT = 'cameras:picture';
+const CAMERAS_PICTURE_EVENT = 'cameras:picture';
 
 export type CameraImage = DeviceImage;
 

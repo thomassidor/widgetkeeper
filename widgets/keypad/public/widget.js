@@ -48,7 +48,6 @@
 
   const { el, onTap, touchGuard, messageLine, applyColors, formatValue, KEY_PROBLEMS } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   const ICONS = window.WidgetkeeperKit.icons;
-  const SVG = 'http://www.w3.org/2000/svg';
 
   /** The `colorN` settings: kit.css's palette; grey (in it since 1.2.0) keeps the key's own colours here. */
   const COLORS = window.WidgetkeeperKit.COLORS;
@@ -97,16 +96,7 @@
   const IDLE_MS = 30e3; // left alone, an open keypad closes and what was typed goes
 
   /** An icon (the kit's `{d, fill}` or a mark's path) as an inline SVG in `currentColor`. */
-  function glyph(icon, cls) {
-    const svg = document.createElementNS(SVG, 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.setAttribute('class', icon.fill ? `${cls} filled` : cls);
-    svg.setAttribute('aria-hidden', 'true');
-    const path = document.createElementNS(SVG, 'path');
-    path.setAttribute('d', icon.d);
-    svg.appendChild(path);
-    return svg;
-  }
+  const glyph = (icon, cls) => window.WidgetkeeperKit.svgIcon(icon, cls);
 
   /** The state has a button's value: numbers within floating-point noise, the rest exactly. */
   function sameValue(a, b) {
@@ -157,11 +147,7 @@
    *   card (the widget's body).
    */
   function createKeypadWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`keypad.${key}`, tokens) : null;
-      if (s && s !== `keypad.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('keypad', DEFAULT_STRINGS, opts);
     const numberFmt = new Intl.NumberFormat(opts.locale, { maximumFractionDigits: 3 });
     const title = typeof opts.title === 'string' ? opts.title.trim() : '';
     const sourceId = opts.sourceId || null;
@@ -355,9 +341,7 @@
 
     function shake(node) {
       if (!node) return;
-      node.classList.remove('shake');
-      void node.offsetWidth; // restart the animation
-      node.classList.add('shake');
+      window.WidgetkeeperKit.shake(node);
       setTimeout(() => node.classList.remove('shake'), 400);
     }
 

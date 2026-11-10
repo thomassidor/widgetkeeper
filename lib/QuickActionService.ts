@@ -7,7 +7,7 @@ import Timings from './Timings.js';
 
 export const QA_STATE_EVENT = 'quickactions:state';
 
-export type QuickAction = {
+type QuickAction = {
   capabilityId: string,
   value: unknown,
   /** A settable boolean: the widget can trigger it. */

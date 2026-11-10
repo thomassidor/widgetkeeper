@@ -44,7 +44,7 @@ export type StackPage = {
 /** A Flow's request to bring a widget type forward, until `until` (ms). */
 export type StackRequest = { type: StackType, until: number };
 
-export const isStackType = (type: unknown): type is StackType => (STACK_TYPES as readonly unknown[]).includes(type);
+const isStackType = (type: unknown): type is StackType => (STACK_TYPES as readonly unknown[]).includes(type);
 
 /**
  * The pages of a dashboard: this app's widgets (`type: 'app_webview'`, `data.appWidgetId` =

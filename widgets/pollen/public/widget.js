@@ -78,11 +78,7 @@
    *   showUv?: boolean, colorStyle?: string, timeFormat?: string, onHeight?: (h: number) => void }} opts
    */
   function createPollenWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`pollen.${key}`, tokens) : null;
-      if (s && s !== `pollen.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('pollen', DEFAULT_STRINGS, opts);
     const detailed = opts.density === 'detailed';
     const types = Array.isArray(opts.types) ? opts.types.filter(type => TYPES.includes(type)) : pollenTypes({});
     const showUv = opts.showUv !== false;
@@ -94,7 +90,7 @@
     /** @type {any} */
     let data = null;
     let message = '';
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
 
     function setData(next) {
       data = next;
@@ -140,8 +136,7 @@
       } else {
         renderData();
       }
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     function renderData() {

@@ -179,11 +179,7 @@
    *   radonMax?: unknown, pm25Max?: unknown, pm10Max?: unknown, vocMax?: unknown }} opts
    */
   function createRoomHealthWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`roomhealth.${key}`, tokens) : null;
-      if (s && s !== `roomhealth.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('roomhealth', DEFAULT_STRINGS, opts);
 
     const ranges = roomHealthRange(opts);
     const layout = opts.layout === 'bars' ? 'bars' : 'icons';
@@ -200,9 +196,7 @@
     const typed = tileNames(opts, () => render(), (key) => {
       const cell = cells.get(key);
       if (cell) {
-        cell.node.classList.remove('shake');
-        void cell.node.offsetWidth; // restart the animation
-        cell.node.classList.add('shake');
+        window.WidgetkeeperKit.shake(cell.node);
       }
       setMessage(t('renameFailed'), true);
     });
@@ -329,11 +323,7 @@
       }
     }
 
-    let lastHeight = 0;
-    function reportHeight() {
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
-    }
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
 
     function render() {
       rooms = roomHealthRooms(devices);

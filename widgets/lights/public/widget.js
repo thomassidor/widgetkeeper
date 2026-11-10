@@ -27,7 +27,7 @@
     renameFailed: 'Could not save the name.',
   };
 
-  const { glyphs, PALETTES, temperatureColor, hueColor, moodDot, swatchList, setBlend, model } = window.WidgetkeeperKit.lights;
+  const { glyphs, PALETTES, temperatureColor, hueColor, moodDot, swatchList, setBlend, model, panel: panelState } = window.WidgetkeeperKit.lights;
   const { temp: TEMP_GLYPH, hue: HUE_GLYPH, close: CLOSE_GLYPH, pie: PIE_GLYPH } = glyphs;
 
   const clamp01 = x => Math.min(1, Math.max(0, x));
@@ -45,11 +45,7 @@
    *   barMin?: string, roomLevel?: string }} opts
    */
   function createLightsWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`lights.${key}`, tokens) : null;
-      if (s && s !== `lights.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('lights', DEFAULT_STRINGS, opts);
 
     let devices = []; // [{ id, name, icon, zone, caps } | { id, missing }]
     /**
@@ -77,7 +73,8 @@
     // can cover the row; the tiles are kept before it.
     const panel = el('div', { class: 'lc-panel' }, grid);
     panel.style.display = 'none';
-    let panelFor = null; // the tile id the panel is open for
+    /** Which tile the panel is open for (`.id`), and when it closes by itself. */
+    const swatchPanel = panelState({ ms: PANEL_MS, render: () => render(), blocked: () => names.renaming });
     let panelKey = ''; // which swatches it holds, so it's only rebuilt when that changes
     const palette = PALETTES[opts.palette] || PALETTES.default;
     /** `palette: moods`: the room's Moods (`setMoods()`) in place of the colours. */
@@ -87,12 +84,11 @@
     /** The bar's lowest value: 0 turns the light off (the default); `barMin: '1'` stops at 1 %, so it stays on. */
     const barFloor = opts.barMin === '1' ? 0.01 : 0;
     const level = x => Math.max(barFloor, snap(x));
-    let panelTimer = null;
     /** @type {{node: HTMLElement, swatch: {hue?: number, sat?: number, k?: number}}[]} */
     let swatches = [];
     /** The panel's Moods (`palette: moods`), while it shows a room's. */
     let moodRow = null;
-    for (const type of ['touchstart', 'pointerdown']) panel.addEventListener(type, () => armPanel(), { passive: true });
+    for (const type of ['touchstart', 'pointerdown']) panel.addEventListener(type, () => swatchPanel.arm(), { passive: true });
     const messageEl = el('div', { class: 'lc-message', dir: 'auto' }, root);
     const touches = touchGuard(); // the tiles' taps and the bars' touches
     /** @type {Map<string, {tile: HTMLElement, icon: HTMLElement, chip: HTMLButtonElement, chipGlyph: HTMLElement,
@@ -186,7 +182,7 @@
      */
     function pick(id, swatch) {
       const item = itemOf(id);
-      closePanel();
+      swatchPanel.close();
       if (!item) return;
       const changes = [];
       for (const d of item.members) {
@@ -206,7 +202,7 @@
 
     /** A Mood was tapped: Homey starts it (through the API key), and the lights report their new state. */
     async function startMood(id, mood) {
-      closePanel();
+      swatchPanel.close();
       if (!opts.onMood) return;
       try {
         await opts.onMood(mood.id);
@@ -216,27 +212,6 @@
         const reason = err && err.reason;
         setMessage(KEY_PROBLEMS.includes(reason) ? t(reason) : t('moodFailed', { name: mood.name }), true);
       }
-    }
-
-    function armPanel() {
-      clearTimeout(panelTimer);
-      panelTimer = setTimeout(closePanel, PANEL_MS);
-    }
-
-    function closePanel() {
-      clearTimeout(panelTimer);
-      panelTimer = null;
-      if (panelFor == null) return;
-      panelFor = null;
-      render();
-    }
-
-    function togglePanel(id) {
-      if (names.renaming) return;
-      if (panelFor === id) { closePanel(); return; }
-      panelFor = id;
-      armPanel();
-      render();
     }
 
     /**
@@ -264,7 +239,7 @@
           const dot = moodDot(mood.colors);
           if (dot) el('span', { class: 'lc-mood-dot' }, node).style.setProperty('--lc-swatch', dot);
           el('span', { class: 'lc-mood-name', dir: 'auto', text: mood.name }, node);
-          onTap(node, () => { if (panelFor != null) startMood(panelFor, mood); });
+          onTap(node, () => { if (swatchPanel.id != null) startMood(swatchPanel.id, mood); });
         }
       }
       /** @type {{hue?: number, sat?: number, k?: number}[]} */
@@ -272,12 +247,12 @@
       for (const swatch of list) {
         const node = el('button', { type: 'button', class: 'lc-swatch' }, panel);
         node.style.setProperty('--lc-swatch', swatch.k != null ? temperatureColor(swatch.k) : hueColor(swatch.hue / 360, swatch.sat));
-        onTap(node, () => { if (panelFor != null) pick(panelFor, swatch); });
+        onTap(node, () => { if (swatchPanel.id != null) pick(swatchPanel.id, swatch); });
         swatches.push({ node, swatch });
       }
       const close = el('button', { type: 'button', class: 'lc-close', 'aria-label': t('close') }, panel);
       el('span', { class: 'lc-close-glyph' }, close).style.setProperty('--lc-mask', `url("${CLOSE_GLYPH}")`);
-      onTap(close, closePanel);
+      onTap(close, swatchPanel.close);
     }
 
     /** Whether a swatch is the current colour or white of the tile's lead light. */
@@ -285,10 +260,10 @@
 
     /** Places the panel over the row of its tile, or hides it. */
     function renderPanel() {
-      const d = panelFor != null ? itemOf(panelFor) : null;
+      const d = swatchPanel.id != null ? itemOf(swatchPanel.id) : null;
       const tile = d ? tiles.get(d.id) : null;
       if (!d || !tile || !hasChip(d)) {
-        if (panelFor != null) { panelFor = null; clearTimeout(panelTimer); }
+        swatchPanel.drop();
         panel.style.display = 'none';
         return;
       }
@@ -325,7 +300,7 @@
         tile = { tile: node, icon, chip, chipGlyph, name, bar, fill, knob };
         onTap(node, () => toggle(id));
         // The chip is inside the tile: its own taps (and keys) must not toggle the light.
-        onTap(chip, () => togglePanel(id), { stop: true });
+        onTap(chip, () => swatchPanel.toggle(id), { stop: true });
         wireBar(bar, { id, drags, guard: touches, render: () => render(), commit });
         tiles.set(id, tile);
       }
@@ -341,7 +316,7 @@
       extra: d => ({ icon: d.icon }),
     });
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       items = buildItems();
       const ids = new Set(items.map(d => d.id));
@@ -395,7 +370,7 @@
         const hueChip = color || !temp;
         tile.chip.style.display = hasChip(d) ? '' : 'none';
         tile.chip.setAttribute('aria-label', t(color ? 'color' : temp ? 'temperature' : 'moods'));
-        tile.chip.classList.toggle('active', panelFor === d.id);
+        tile.chip.classList.toggle('active', swatchPanel.id === d.id);
         tile.chipGlyph.classList.toggle('hue', hueChip || multi);
         setMask(tile.chipGlyph, multi ? PIE_GLYPH : hueChip ? HUE_GLYPH : TEMP_GLYPH);
         tile.tile.classList.toggle('on', on || (drag != null && x > 0));
@@ -412,8 +387,7 @@
       messageEl.style.display = message.text ? '' : 'none';
       messageEl.classList.toggle('error', !!message.text && devices.length > 0);
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     return { setState, setMoods, setNames: names.set, pushChange, setMessage, render, t };

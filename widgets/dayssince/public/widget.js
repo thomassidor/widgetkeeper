@@ -39,7 +39,6 @@
 
   /** The tile icons: Flow Buttons' (the kit's; the `iconN` settings list them through FlowService's listIcons()). */
   const ICONS = window.WidgetkeeperKit.icons;
-  const SVG_NS = 'http://www.w3.org/2000/svg';
 
   // Every tap stops at its node, so a button's tap doesn't press the row around it too.
   function onTap(node, fn) {
@@ -160,18 +159,7 @@
     return amountText(a.value, a.unit, language, locale);
   }
 
-  function iconSvg(id) {
-    const icon = ICONS[id];
-    const svg = document.createElementNS(SVG_NS, 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.setAttribute('class', 'ds-icon');
-    svg.setAttribute('aria-hidden', 'true');
-    const path = document.createElementNS(SVG_NS, 'path');
-    path.setAttribute('d', icon.d);
-    if (icon.fill) path.setAttribute('class', 'filled');
-    svg.appendChild(path);
-    return svg;
-  }
+  const iconSvg = id => window.WidgetkeeperKit.svgIcon(ICONS[id], 'ds-icon');
 
   /**
    * @param {HTMLElement} root
@@ -183,11 +171,7 @@
    *   onHaptic?: () => void, now?: () => number, onHeight?: (h: number) => void }} opts
    */
   function createDaysSinceWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`dayssince.${key}`, tokens) : null;
-      if (s && s !== `dayssince.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('dayssince', DEFAULT_STRINGS, opts);
     const counters = Array.isArray(opts.counters) ? opts.counters.slice(0, COUNTERS.length) : [];
     const units = opts.units === 'days' ? 'days' : 'friendly';
     // Which rows show: `all`, or only those that are due (`due`: amber and red; `overdue`: red).
@@ -238,9 +222,7 @@
     function shake(key) {
       for (const tl of tiles) {
         if (tl.counter.key !== key) continue;
-        tl.tile.classList.remove('shake');
-        void tl.tile.offsetWidth; // restart the animation
-        tl.tile.classList.add('shake');
+        window.WidgetkeeperKit.shake(tl.tile);
       }
     }
 
@@ -344,7 +326,7 @@
       render();
     }
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     let tickTimer = null;
     let undoTimer = null;
     function render() {
@@ -385,8 +367,7 @@
       messageEl.classList.toggle('error', !!message.text);
       schedule(screenNow);
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     /** Re-renders just after the minute turns (the days, the colours), and when the first Undo should go. */

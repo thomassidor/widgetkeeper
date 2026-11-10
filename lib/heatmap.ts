@@ -6,7 +6,7 @@ const SLICE = 15 * MINUTE;
  * Days the service returns, ending today: 7 cover both the current Mon–Sun week and the last 3 or 7 days;
  * 14 cover the last 10 or 14. They match Insights' `last7Days` and `last14Days` resolutions.
  */
-export const SPANS = [7, 14] as const;
+const SPANS = [7, 14] as const;
 export type Span = typeof SPANS[number];
 
 /** The span to fetch for a widget showing `days` days. */

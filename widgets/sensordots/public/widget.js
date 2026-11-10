@@ -38,11 +38,7 @@
    *   onHeight?: (h: number) => void }} opts
    */
   function createSensorDotsWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`sensordots.${key}`, tokens) : null;
-      if (s && s !== `sensordots.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('sensordots', DEFAULT_STRINGS, opts);
 
     let devices = []; // [{ id, name, icon, alarms: [{ capabilityId, title, value, lastUpdated }] } | { id, missing }]
     let language = null;
@@ -54,9 +50,7 @@
     const typed = tileNames(opts, () => render(), (id) => {
       const row = renameRows.get(id);
       if (row) {
-        row.classList.remove('shake');
-        void row.offsetWidth; // restart the animation
-        row.classList.add('shake');
+        window.WidgetkeeperKit.shake(row);
       }
       setMessage(t('renameFailed'), true);
     });
@@ -209,7 +203,7 @@
       }
     }
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       const ids = new Set(devices.map(d => d.id));
       for (const [id, cell] of cells) {
@@ -231,8 +225,7 @@
       messageEl.style.display = message.text ? '' : 'none';
       messageEl.classList.toggle('error', !!message.text && devices.length > 0);
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     // The width changes the number of dots per row, so the height and the overlay's row.

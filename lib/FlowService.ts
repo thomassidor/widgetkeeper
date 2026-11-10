@@ -19,7 +19,7 @@ export const FLOW_COLORS_SETTING = 'flowColors';
 /** A slot's id: `flow:<id>` for a standard Flow, `advanced:<id>` for an Advanced Flow. */
 export type FlowKind = 'flow' | 'advanced';
 
-export type FlowInfo = {
+type FlowInfo = {
   id: string, // the slot id, `<kind>:<flow id>`
   name: string,
   enabled: boolean,
@@ -228,6 +228,6 @@ export const FLOW_ICONS = Object.keys(FLOW_ICON_IMAGES);
  * reads on a light or a dark settings sheet. Pre-rendered (`npm run flow-icons`): the iOS app showed nothing for an
  * SVG data URL (2026-10-08).
  */
-export function iconImage(id: string): string | undefined {
+function iconImage(id: string): string | undefined {
   return FLOW_ICON_IMAGES[id]?.image;
 }

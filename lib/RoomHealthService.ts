@@ -6,7 +6,7 @@ import Timings from './Timings.js';
 export const RH_STATE_EVENT = 'roomhealth:state';
 
 /** What Room Health scores. The widget has the comfortable ranges; each comes in one unit (see `RULES`). */
-export type Measure = 'temperature' | 'humidity' | 'co2' | 'radon' | 'pm25' | 'pm10' | 'voc';
+type Measure = 'temperature' | 'humidity' | 'co2' | 'radon' | 'pm25' | 'pm10' | 'voc';
 
 /** One capability a device gives for a measure; `scale` turns its value into the measure's unit (radon in pCi/L × 37). */
 export type HealthCap = { measure: Measure, capabilityId: string, scale: number };

@@ -73,11 +73,7 @@
    *   wideLast?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createQuickActionsWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`quickactions.${key}`, tokens) : null;
-      if (s && s !== `quickactions.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('quickactions', DEFAULT_STRINGS, opts);
 
     let devices = []; // [{ id, name, icon, quickAction } | { id, missing }]
     const optimistic = new Map(); // deviceId → { value, until }
@@ -184,9 +180,7 @@
     function shake(id) {
       const tile = tiles.get(id);
       if (!tile) return;
-      tile.button.classList.remove('shake');
-      void tile.button.offsetWidth; // restart the animation
-      tile.button.classList.add('shake');
+      window.WidgetkeeperKit.shake(tile.button);
     }
 
     function tileFor(id) {
@@ -232,7 +226,7 @@
 
     const setMask = (node, url) => window.WidgetkeeperKit.setMask(node, url, '--qa-mask');
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       const ids = new Set(devices.map(d => d.id));
       for (const [id, tile] of tiles) {
@@ -283,8 +277,7 @@
       messageEl.style.display = message.text ? '' : 'none';
       messageEl.classList.toggle('error', !!message.text && devices.length > 0);
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     return { setState, setNames: names.set, pushChange, setMessage, render, t };

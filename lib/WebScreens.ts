@@ -14,8 +14,8 @@ export const WEB_SCREENS_SECRET = 'webScreens';
 
 /** No 0/O, 1/I/L or U: a code read off one screen and typed on another. 30^8, about 39 bits. */
 const ALPHABET = 'ABCDEFGHJKMNPQRSTVWXYZ23456789';
-export const CODE_LENGTH = 8;
-export const MAX_SCREENS = 20;
+const CODE_LENGTH = 8;
+const MAX_SCREENS = 20;
 const MAX_NAME = 40;
 /** `used` is saved at most this often. */
 const SAVE_USED_MS = 3600e3;
@@ -59,7 +59,7 @@ export function normalizeCode(code: unknown): string | null {
 }
 
 /** `ABCD-EFGH`: how a code is shown. */
-export const showCode = (code: string) => `${code.slice(0, 4)}-${code.slice(4)}`;
+const showCode = (code: string) => `${code.slice(0, 4)}-${code.slice(4)}`;
 
 function newCode() {
   let code = '';

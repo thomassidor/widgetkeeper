@@ -26,7 +26,7 @@ export const MEDIA_ART_EVENT = 'media:art';
  * The capabilities the card reads. `speaker_next`/`speaker_prev` aren't getable (buttons); `sonos_sound_input`
  * is the Sonos (LocalAPI) app's read-only input (a string).
  */
-export const MEDIA_CAPS = [
+const MEDIA_CAPS = [
   'speaker_playing', 'speaker_track', 'speaker_artist', 'speaker_album', 'speaker_position', 'speaker_duration',
   'speaker_prev', 'speaker_next', 'speaker_shuffle', 'speaker_repeat', 'volume_set', 'volume_mute', 'sonos_sound_input',
 ] as const;
@@ -47,7 +47,7 @@ const BUILT_IN_CARDS = /:(volume_|speaker_)/;
 
 const TRACK_CAPS = new Set(['speaker_track', 'speaker_artist', 'speaker_album']);
 
-export type MediaCap = { value: unknown, setable: boolean, values?: { id: string, title: string }[] };
+type MediaCap = { value: unknown, setable: boolean, values?: { id: string, title: string }[] };
 
 /** The album art: `device.images`' `media` entry (`/api/image/<id>`, no auth needed on the LAN). */
 export type MediaArt = { url: string, lastUpdated: number | null };
@@ -78,12 +78,12 @@ type Tracked = TrackedEntry & {
 };
 
 /** The media capabilities the device has, in `MEDIA_CAPS` order. */
-export function mediaCaps(device: any): string[] {
+function mediaCaps(device: any): string[] {
   return presentCaps(device, MEDIA_CAPS);
 }
 
 /** A speaker: anything with play/pause or a volume. */
-export function isSpeaker(device: any): boolean {
+function isSpeaker(device: any): boolean {
   const caps = device?.capabilitiesObj || {};
   return !!(caps.speaker_playing || caps.volume_set || caps.volume_mute);
 }
@@ -115,7 +115,7 @@ export function parseCardId(id: string): string | null {
 }
 
 /** A device card's own part: `homey:device:<deviceId>:<card>` → `<card>` (the same on every speaker of one app). */
-export function cardSuffix(cardId: string): string {
+function cardSuffix(cardId: string): string {
   const m = /^homey:device:[^:]+:(.+)$/.exec(cardId || '');
   return m ? m[1] : cardId;
 }

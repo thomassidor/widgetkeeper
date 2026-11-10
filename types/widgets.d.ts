@@ -86,6 +86,7 @@ interface Window {
       setBlend: (node: HTMLElement, colors: string[] | null, prefix: string, angle: string) => void,
       /** The lights' shown state (optimistic over reported) and what follows from it, for Light Controls and Lights by Room. */
       model: (opts: { render: () => void, roomLevel?: string }) => any,
+      panel: (opts: { ms: number, render: () => void, blocked: () => boolean }) => { readonly id: any, arm: () => void, close: () => void, toggle: (id: any) => void, drop: () => void },
     },
     /** Values just sent, shown until the device confirms them (`ms`, 10 s by default). */
     STREAM_NEXT_MS: number,
@@ -93,7 +94,6 @@ interface Window {
     /** Homey's WebRTC offer for one camera stream, through the Cameras routes; null when `current()` says it was dropped. */
     openVideoStream: (pc: RTCPeerConnection, videoId: string, post: (path: string, body: any) => Promise<any>, current: () => boolean) => Promise<any>,
     /** The video frames decoded so far, from the connection's stats; null when the browser can't tell. */
-    framesDecoded: (pc: RTCPeerConnection) => Promise<number | null>,
     /** Plays a camera's streams in turn into a video until one gives a frame (a popup on a web dashboard). */
     playCameraStream: (video: HTMLVideoElement, videoIds: string[], post: (path: string, body: any) => Promise<any>, on: { onPlaying: (videoId: string) => void, onEnded: (played: boolean, why: string, info: { away: boolean }) => void, onStreamFailed?: (videoId: string, why: string, index: number) => void, onKeepAliveFailed?: (err: any) => void }) => { stop: () => void },
     optimistic: (render: () => void, ms?: number) => {
@@ -104,6 +104,9 @@ interface Window {
       drop: (deviceId: string, capabilityIds: string | string[]) => void,
     },
     shake: (node: Element | null | undefined) => void,
+    translator: (ns: string, defaults: Record<string, string>, opts: { t?: (key: string, tokens?: object) => string }) => (key: string, tokens?: object) => string,
+    heightReporter: (root: Element, hooks: { onHeight?: (h: number) => void }) => () => void,
+    svgIcon: (icon: { d: string, fill?: boolean }, cls: string) => SVGSVGElement,
     /** The mount's vibration for a tap that acts; `together`: once for what's sent at once. */
     wireHaptic: (Homey: any, opts?: { together?: boolean }) => () => void,
     /** "Activate with": Double's second tap and Long's hint and hold, by each tile's id. */

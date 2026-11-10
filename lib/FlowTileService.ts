@@ -21,7 +21,7 @@ export const FLOWTILES_TILE_CARDS = [
 ] as const;
 
 /** The board a widget shows, and a Flow card writes on, unless it names another. */
-export const DEFAULT_BOARD = 'Tiles';
+const DEFAULT_BOARD = 'Tiles';
 /** *Any board* / *Any tile* in the trigger's arguments. */
 export const ANY_ID = 'flowtiles:any';
 
@@ -35,7 +35,7 @@ const SAVE_MS = 2000;
 /** Changes to a board within this long go to the widgets as one realtime event (a Flow setting five tiles at once). */
 const SEND_MS = 250;
 
-export type FlowTileDecimals = 'auto' | '0' | '1' | '2';
+type FlowTileDecimals = 'auto' | '0' | '1' | '2';
 
 export type FlowTile = {
   /** As the Flow card last spelled it. */
@@ -61,7 +61,7 @@ export type FlowTile = {
 export type FlowBoard = { name: string, tiles: Record<string, FlowTile>, updatedAt: number };
 
 /** A tile as `/state` and the realtime event carry it. */
-export type FlowTileEntry = Omit<FlowTile, 'order'> & { key: string, tappable: boolean };
+type FlowTileEntry = Omit<FlowTile, 'order'> & { key: string, tappable: boolean };
 export type FlowBoardEntry = { key: string, name: string, tiles: FlowTileEntry[] };
 
 /** A board or tile argument: an autocomplete item (`id` its name), or *Any* in the trigger. */

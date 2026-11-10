@@ -12,7 +12,7 @@ export const DEVICE_NAMES_EVENT = 'devicenames:state';
  * The whole name, the part before the first separator, the part after the last one, the last word, or the name
  * without its room's name at the start or end (`room`, 1.2.0: *Kitchen ceiling lamp* in the Kitchen).
  */
-export const NAME_MODES = ['full', 'before', 'after', 'lastWord', 'room'] as const;
+const NAME_MODES = ['full', 'before', 'after', 'lastWord', 'room'] as const;
 export type NameMode = typeof NAME_MODES[number];
 export type NameRule = { mode: NameMode, separator: string };
 

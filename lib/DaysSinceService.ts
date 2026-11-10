@@ -16,7 +16,7 @@ const SEEN_SAVE = 60 * MINUTE;
 const MAX_NAME = 60;
 const MAX_COUNTERS = 50;
 /** The longest interval and the furthest back a Flow can set a counter, in days (10 years). */
-export const MAX_DAYS = 3650;
+const MAX_DAYS = 3650;
 /** The most counters a widget shows. */
 export const MAX_WIDGET_COUNTERS = 8;
 

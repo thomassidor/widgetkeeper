@@ -9,9 +9,9 @@ import Timings from './Timings.js';
 export const VM_STATE_EVENT = 'valuematrix:state';
 
 /** A column: one capability id, described from the first picked device that has it. */
-export type MatrixColumn = { capabilityId: string, title: string, units: string | null, decimals: number | null };
+type MatrixColumn = { capabilityId: string, title: string, units: string | null, decimals: number | null };
 
-export type MatrixDevice =
+type MatrixDevice =
   | { id: string, name: string, zone: { id: string, name: string } | null, values: Record<string, number | null>, offline?: true }
   | { id: string, missing: true };
 

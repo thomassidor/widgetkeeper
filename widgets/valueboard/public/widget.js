@@ -103,11 +103,7 @@
    *   t?: (key: string, tokens?: object) => string, onHeight?: (h: number) => void }} opts
    */
   function createValueBoardWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`valueboard.${key}`, tokens) : null;
-      if (s && s !== `valueboard.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('valueboard', DEFAULT_STRINGS, opts);
 
     const compact = opts.layout === 'compact';
     const byDevice = opts.groupBy === 'devices';
@@ -292,11 +288,7 @@
       }
     }
 
-    let lastHeight = 0;
-    function reportHeight() {
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
-    }
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
 
     function render() {
       const groups = valueBoardGroups(devices, opts.groupBy);

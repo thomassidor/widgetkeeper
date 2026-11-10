@@ -17,8 +17,6 @@
   const PLOT_H = 122; // Charts' one-chart plot
   const MAX = 6;
   const DAY = 24 * HOUR;
-  /** Units a value may be scaled between (to the first value's): power and energy, as Chart · Stacked's. */
-  const UNIT_SCALE = { W: ['W', 1], kW: ['W', 1e3], MW: ['W', 1e6], Wh: ['Wh', 1], kWh: ['Wh', 1e3], MWh: ['Wh', 1e6] };
 
   const DEFAULT_STRINGS = {
     selectValues: 'Pick the values to show in the widget settings.',
@@ -75,14 +73,6 @@
     const withName = (s, i) => (ok(s) && C.typedName(opts.names, i) ? { ...s, name: C.typedName(opts.names, i) } : s);
     const num = v => typeof v === 'number' && isFinite(v);
 
-    /** The factor from a slot's units to `units` (its side's), or null when they can't be compared. */
-    function factor(s, units) {
-      const from = s.capability.units || '', to = units || '';
-      if (from === to) return 1;
-      const a = UNIT_SCALE[from], b = UNIT_SCALE[to];
-      return a && b && a[0] === b[0] ? a[1] / b[1] : null;
-    }
-
     /**
      * The values that can be drawn, each on its side with its factor to that side's units: the first readable value sets
      * the left scale's units, the first one that can't go on it the right's (`sides`, each `{first, units}`); a value
@@ -92,10 +82,10 @@
       const sides = [];
       const all = state.series.map((s, i) => {
         if (!ok(s)) return { i, s, missing: true, color: colorOf(i) };
-        let side = sides.findIndex(sd => factor(s, sd.units) != null);
+        let side = sides.findIndex(sd => C.unitFactor(s, sd.units) != null);
         if (side < 0 && sides.length < 2) { sides.push({ first: s, units: s.capability.units || '' }); side = sides.length - 1; }
         if (side < 0) return { i, s, color: colorOf(i), other: true };
-        return { i, s, color: colorOf(i), side, f: factor(s, sides[side].units), other: false };
+        return { i, s, color: colorOf(i), side, f: C.unitFactor(s, sides[side].units), other: false };
       });
       return { sides, all, drawable: all.filter(l => !l.missing && !l.other) };
     }

@@ -91,11 +91,7 @@
    *   wideLast?: boolean, labels?: Record<string, string>, onHeight?: (h: number) => void }} opts
    */
   function createValuesWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`values.${key}`, tokens) : null;
-      if (s && s !== `values.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('values', DEFAULT_STRINGS, opts);
 
     let slots = []; // [{ deviceId, capabilityId, name, capability, value, color? } | { deviceId, capabilityId, missing }]
     // What failed: a lasting message replaces the content, a transient one goes by itself.
@@ -106,9 +102,7 @@
       const i = nameKeys(slots).indexOf(key);
       const tile = i >= 0 ? tiles.get(`${keyOf(slots[i])}#${i}`) : null;
       if (tile) {
-        tile.tile.classList.remove('shake');
-        void tile.tile.offsetWidth; // restart the animation
-        tile.tile.classList.add('shake');
+        window.WidgetkeeperKit.shake(tile.tile);
       }
       setMessage(t('renameFailed'), true);
     });
@@ -187,7 +181,7 @@
     /** A gone device's tile keeps the name its setting was picked by (`opts.labels`, by slot), so it's clear which one went. */
     const lastName = s => (opts.labels && opts.labels[`${s.deviceId}:${s.capabilityId}`]) || t('unavailable');
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       const keys = slots.map((s, i) => `${keyOf(s)}#${i}`);
       const named = nameKeys(slots);
@@ -251,8 +245,7 @@
       messageEl.style.display = message.text ? '' : 'none';
       messageEl.classList.toggle('error', !!message.text && slots.length > 0);
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     return { setState, setNames: typed.set, pushChange, pushColor, setMessage, render, t };

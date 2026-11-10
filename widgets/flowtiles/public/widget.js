@@ -66,11 +66,7 @@
    *   onTap?: (tile: string) => Promise<any>, onHeight?: (h: number) => void }} opts
    */
   function createFlowTilesWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`flowtiles.${key}`, tokens) : null;
-      if (s && s !== `flowtiles.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('flowtiles', DEFAULT_STRINGS, opts);
 
     let board = null; // { key, name, tiles: [...] } once loaded
     let skew = 0; // the Homey's clock less the screen's
@@ -163,7 +159,7 @@
       return byName ? list.slice().sort((a, b) => String(a.name).localeCompare(String(b.name), language)) : list;
     }
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       const list = shown();
       const wanted = new Set(list.map(x => x.key));
@@ -216,8 +212,7 @@
       messageEl.style.display = text ? '' : 'none';
       messageEl.classList.toggle('error', !!message.text && list.length > 0);
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     return { setState, pushBoard, setMessage, render, t };

@@ -687,6 +687,11 @@ describe('web dashboards: the routes that act with the stored key', () => {
     for (const id of readdirSync('widgets')) {
       let source: string;
       try { source = readFileSync(`widgets/${id}/api.ts`, 'utf8'); } catch { continue; }
+      // Light Controls' and Lights by Room's shared routes (`...lightRoutes()`): read as if written in the widget's api.ts.
+      if (source.includes('...lightRoutes(')) {
+        const shared = readFileSync('lib/lightRoutes.ts', 'utf8');
+        source += `\n${shared.slice(shared.indexOf('\n    async ') + 1).replace(/^ {2}/gm, '')}`;
+      }
       const handlers = source.split(/\n {2}async (?=\w+\()/).slice(1);
       expect(handlers.length).toBeGreaterThan(0);
       // Every route in the manifest is a handler read here (or the spread tile names and time format routes, which use

@@ -84,11 +84,7 @@
    *   onHeight?: (h: number) => void, title?: string }} opts `title` replaces the device's name.
    */
   function createHeatmapWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`heatmap.${key}`, tokens) : null;
-      if (s && s !== `heatmap.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('heatmap', DEFAULT_STRINGS, opts);
     const period = opts.period == null ? 'week' : String(opts.period);
     const step = [1, 2, 3].includes(Number(opts.step)) ? Number(opts.step) : 2;
     const cols = 24 / step;
@@ -100,7 +96,7 @@
     let data = null;
     // What failed: a lasting message replaces the content, a transient one goes by itself.
     const message = messageLine(() => render(), { clear: () => { data = null; } });
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
 
     root.classList.add('hm');
     applyColors(root, { style: opts.colorStyle });
@@ -167,8 +163,7 @@
       body.style.display = data ? '' : 'none';
       if (data) renderBody();
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     function renderBody() {

@@ -22,9 +22,9 @@ export const DEFAULT_SCREEN = 'Screen';
  * an Advanced Flow on the Homey, 2026-10-22), so a question closes as unanswered a little before that.
  */
 export const MAX_ASK_SECONDS = 85;
-export const MAX_SHOW_SECONDS = 24 * 3600;
+const MAX_SHOW_SECONDS = 24 * 3600;
 /** The sounds a popup can open with, the cards' `sound` dropdown (drawn by the kit's `sound`, widgets/spacer/public/kit.js). */
-export const POPUP_SOUNDS = ['chime', 'doorbell', 'alert'] as const;
+const POPUP_SOUNDS = ['chime', 'doorbell', 'alert'] as const;
 export type PopupSound = typeof POPUP_SOUNDS[number];
 
 const MAX_OPEN = 20;

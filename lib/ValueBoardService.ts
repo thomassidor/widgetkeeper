@@ -11,7 +11,7 @@ export const VB_STATE_EVENT = 'valueboard:state';
 export type ValueBoardMode = 'readings' | 'all';
 
 /** One value of a device: its capability described, and its value. */
-export type BoardValue = CapabilityDescription & { capabilityId: string, value: unknown };
+type BoardValue = CapabilityDescription & { capabilityId: string, value: unknown };
 
 export type BoardDevice =
   | { id: string, name: string, zone: { id: string, name: string } | null, values: BoardValue[], offline?: true }

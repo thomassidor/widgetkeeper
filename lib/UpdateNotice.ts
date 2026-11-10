@@ -12,7 +12,7 @@ export const TIMELINE_UPDATES_SETTING = 'timelineUpdates';
  * The current feature release's Timeline line, one short sentence per language (the changelog entry is far too long
  * for the Timeline, and the CLI leaves `.homeychangelog.json` out of the build anyway). A test checks its version.
  */
-export const RELEASE_NOTES = new URL('./release-notes.json', import.meta.url);
+const RELEASE_NOTES = new URL('./release-notes.json', import.meta.url);
 
 type Changelog = Record<string, Record<string, string>>;
 

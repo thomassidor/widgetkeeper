@@ -564,7 +564,7 @@ export function priceInterval(res: any, samples: Sample[]): number | null {
 }
 
 /** `{value: {costs: {user_fixed_base: {value: 2}}}}` (verified 2026-10-07) → 2. */
-export function parseFixedPrice(res: any): number | null {
+function parseFixedPrice(res: any): number | null {
   const v = res?.value?.costs?.user_fixed_base?.value ?? res?.costs?.user_fixed_base?.value;
   return typeof v === 'number' && Number.isFinite(v) ? v : null;
 }

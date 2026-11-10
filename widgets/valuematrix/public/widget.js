@@ -60,11 +60,7 @@
    *   onRename?: (key: string, name: string) => Promise<any>, onHeight?: (h: number) => void }} opts
    */
   function createValueMatrixWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`valuematrix.${key}`, tokens) : null;
-      if (s && s !== `valuematrix.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('valuematrix', DEFAULT_STRINGS, opts);
 
     const mode = opts.rows === 'devices' ? 'devices' : 'rooms';
     const picked = Array.isArray(opts.columns) ? opts.columns.filter(c => c && c.capabilityId) : [];
@@ -81,9 +77,7 @@
     const typed = tileNames(opts, () => render(), (key) => {
       const row = rowEls.get(key);
       if (row) {
-        row.node.classList.remove('shake');
-        void row.node.offsetWidth; // restart the animation
-        row.node.classList.add('shake');
+        window.WidgetkeeperKit.shake(row.node);
       }
       setMessage(t('renameFailed'), true);
     });
@@ -162,11 +156,7 @@
       return row;
     }
 
-    let lastHeight = 0;
-    function reportHeight() {
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
-    }
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
 
     const LEVEL_WORDS = { good: 'ok', out: 'warning', far: 'alert' };
 

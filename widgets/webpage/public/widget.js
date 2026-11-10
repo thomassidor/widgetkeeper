@@ -75,11 +75,7 @@
    *   asks whether an address's site refuses frames, once per address.
    */
   function createWebPageWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`webpage.${key}`, tokens) : null;
-      if (s && s !== `webpage.${key}`) return s;
-      return String(DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && k in tokens ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('webpage', DEFAULT_STRINGS, opts);
     const pageWidth = settingNumber(opts.pageWidth, 0, 0, 4000);
     const pageHeight = settingNumber(opts.pageHeight, 320, 20, 4000);
     const refreshMs = settingNumber(opts.refresh, 0, 0, 1440) * 60e3;

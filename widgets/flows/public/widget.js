@@ -31,7 +31,6 @@
   /** The button icons (the kit's): the ids are the `icon` setting's. */
   const ICONS = window.WidgetkeeperKit.icons;
   const CHECK = { d: 'M5 12.5 10 17.5 19 7' };
-  const SVG_NS = 'http://www.w3.org/2000/svg';
 
   /** The icon id if it's one of ICONS, else `play`. */
   function iconOf(id) {
@@ -49,19 +48,6 @@
     return n && entry && !('missing' in entry) ? { ...entry, name: n } : entry;
   }
 
-  /** An inline SVG of a glyph, stroked (or filled) in the current colour. */
-  function glyph(icon, cls) {
-    const svg = document.createElementNS(SVG_NS, 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.setAttribute('class', cls);
-    svg.setAttribute('aria-hidden', 'true');
-    const path = document.createElementNS(SVG_NS, 'path');
-    path.setAttribute('d', icon.d);
-    if (icon.fill) path.setAttribute('class', 'filled');
-    svg.appendChild(path);
-    return svg;
-  }
-
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, t?: (key: string, tokens?: object) => string, columns?: number|string,
@@ -70,11 +56,7 @@
    *   onHeight?: (h: number) => void }} opts
    */
   function createFlowsWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`flows.${key}`, tokens) : null;
-      if (s && s !== `flows.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('flows', DEFAULT_STRINGS, opts);
     // Each button's look, by position; the entries from setState() line up with it.
     const buttons = (Array.isArray(opts.buttons) ? opts.buttons : []).map(b => ({
       id: b && b.id, color: colorOf(b && b.color), icon: iconOf(b && b.icon), name: b && b.name,
@@ -120,9 +102,7 @@
     function shake(index) {
       const r = rows[index];
       if (!r) return;
-      r.row.classList.remove('shake');
-      void r.row.offsetWidth; // restart the animation
-      r.row.classList.add('shake');
+      window.WidgetkeeperKit.shake(r.row);
     }
 
     async function start(index) {
@@ -191,7 +171,7 @@
       return r;
     }
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       for (let i = rows.length - 1; i >= flows.length; i--) { rows[i].row.remove(); rows.pop(); busy.delete(i); }
       let placed = null;
@@ -206,7 +186,7 @@
         const icon = state === 'done' ? 'check' : look.icon;
         if (r.icon !== icon) {
           r.icon = icon;
-          r.button.replaceChildren(glyph(icon === 'check' ? CHECK : ICONS[icon], 'fb-glyph'));
+          r.button.replaceChildren(window.WidgetkeeperKit.svgIcon(icon === 'check' ? CHECK : ICONS[icon], 'fb-glyph'));
         }
         const flowColor = f.missing ? null : flowColors.get(f.id) || null;
         r.row.dataset.color = flowColor || look.color;
@@ -227,8 +207,7 @@
       messageEl.style.display = message.text ? '' : 'none';
       messageEl.classList.toggle('error', !!message.text && flows.length > 0);
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     return { setState, pushColor, setMessage, render, t };

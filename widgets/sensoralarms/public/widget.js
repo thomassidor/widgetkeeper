@@ -29,11 +29,7 @@
    *   wideLast?: boolean, onHeight?: (h: number) => void }} opts
    */
   function createSensorAlarmsWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`sensoralarms.${key}`, tokens) : null;
-      if (s && s !== `sensoralarms.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('sensoralarms', DEFAULT_STRINGS, opts);
 
     let devices = []; // [{ id, name, icon, alarms: [{ capabilityId, title, value, state }] } | { id, missing }]
     // What failed: a lasting message replaces the content, a transient one goes by itself.
@@ -48,9 +44,7 @@
     const typed = tileNames(opts, () => render(), (key) => {
       const tile = tiles.get(key);
       if (tile) {
-        tile.tile.classList.remove('shake');
-        void tile.tile.offsetWidth; // restart the animation
-        tile.tile.classList.add('shake');
+        window.WidgetkeeperKit.shake(tile.tile);
       }
       setMessage(t('renameFailed'), true);
     });
@@ -179,7 +173,7 @@
       }
     }
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       const ids = new Set(devices.map(d => d.id));
       for (const [id, tile] of tiles) {
@@ -216,8 +210,7 @@
       messageEl.style.display = message.text ? '' : 'none';
       messageEl.classList.toggle('error', !!message.text && devices.length > 0);
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     return { setState, setNames: typed.set, pushChange, setMessage, render, t };

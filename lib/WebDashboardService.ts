@@ -45,20 +45,20 @@ const CODE_ID = /^(any|[0-9a-f]{12})$/;
  */
 const FOREIGN = /^homey:app:([A-Za-z0-9][A-Za-z0-9._-]{0,99}):([A-Za-z0-9_-]{1,60})$/;
 
-export type WebTheme = 'auto' | 'dark' | 'light';
+type WebTheme = 'auto' | 'dark' | 'light';
 
 /** A dashboard's backdrop: a tint with a light and a dark shade (the page's CSS), following its theme. */
-export const WEB_BACKGROUNDS = ['default', 'black', 'slate', 'ocean', 'forest', 'plum', 'berry', 'sand'] as const;
+const WEB_BACKGROUNDS = ['default', 'black', 'slate', 'ocean', 'forest', 'plum', 'berry', 'sand'] as const;
 /** A backdrop of the user's own: one `#rrggbb` (stored in lower case), the same in both modes. */
 const CUSTOM_BACKGROUND = /^#[0-9a-f]{6}$/;
-export type WebBackground = typeof WEB_BACKGROUNDS[number] | `#${string}`;
+type WebBackground = typeof WEB_BACKGROUNDS[number] | `#${string}`;
 
 /**
  * How wide a dashboard's columns are (the page's `COLUMN_WIDTHS`): `narrow` is a phone's widget width, as on Homey's
  * dashboard; `fit` shares the window's width between them. `normal` (440 px) isn't stored.
  */
-export const WEB_COLUMN_WIDTHS = ['narrow', 'normal', 'wide', 'fit'] as const;
-export type WebColumnWidth = typeof WEB_COLUMN_WIDTHS[number];
+const WEB_COLUMN_WIDTHS = ['narrow', 'normal', 'wide', 'fit'] as const;
+type WebColumnWidth = typeof WEB_COLUMN_WIDTHS[number];
 
 /**
  * One widget on a web dashboard: its type (our widget id, or another app's `homey:app:<appId>:<widgetId>`), settings and
@@ -76,14 +76,14 @@ export type WebWidget = {
 export type ForeignDeviceFilter = { class?: string, capabilities?: string, app?: boolean };
 
 /** A heading on the front page that dashboards are grouped under (`WebDashboard.section`). */
-export type WebSection = { id: string, name: string };
+type WebSection = { id: string, name: string };
 
 /**
  * The front page's choices: whether it shows the widgets' carousel under the dashboards, and its sections, in order
  * (the dashboards in none come first, under Your dashboards).
  */
 /** The web dashboards' own name and icon, in place of Widgetkeeper's: only what's been set. */
-export type WebBrand = { name?: string, icon?: string };
+type WebBrand = { name?: string, icon?: string };
 export type WebFront = { widgets: boolean, sections: WebSection[], brand?: WebBrand };
 
 /** An uploaded icon as the page makes it (never an SVG, which could hold a script), and its longest length. */
@@ -127,7 +127,7 @@ export type WebBackup = {
 };
 
 /** A widget setting as the editor draws it (the manifest's, in Homey's language). */
-export type WebSettingDef = {
+type WebSettingDef = {
   id: string,
   type: string,
   title: string,
@@ -317,7 +317,7 @@ export function passesDeviceFilter(device: any, filter: Record<string, unknown> 
 }
 
 /** Another app's widget type (`homey:app:<appId>:<widgetId>`), split; null for ours, a malformed one or our own app's. */
-export function foreignWidget(type: unknown, ownAppId: string): { appId: string, widgetId: string } | null {
+function foreignWidget(type: unknown, ownAppId: string): { appId: string, widgetId: string } | null {
   const m = typeof type === 'string' ? FOREIGN.exec(type) : null;
   return m && m[1] !== ownAppId ? { appId: m[1], widgetId: m[2] } : null;
 }

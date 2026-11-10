@@ -18,8 +18,6 @@
   /** An area's steps (`areaUnit()`): the shortest giving at most `MAX_STEPS` over the span. */
   const AREA_STEPS = [MIN, 5 * MIN, 15 * MIN, 30 * MIN, HOUR, 3 * HOUR, 6 * HOUR, DAY, 'week'];
   const MAX_STEPS = 150;
-  /** Units a layer may be scaled between (to the first layer's): power and energy. */
-  const UNIT_SCALE = { W: ['W', 1], kW: ['W', 1e3], MW: ['W', 1e6], Wh: ['Wh', 1], kWh: ['Wh', 1e3], MWh: ['Wh', 1e6] };
 
   const DEFAULT_STRINGS = {
     selectValues: 'Pick the values to stack in the widget settings.',
@@ -90,24 +88,16 @@
     const ok = s => !!s && !('missing' in s);
     const num = v => typeof v === 'number' && isFinite(v);
 
-    /** The factor from a slot's units to `units` (the first layer's), or null when they can't be compared. */
-    function factor(s, units) {
-      const from = s.capability.units || '', to = units || '';
-      if (from === to) return 1;
-      const a = UNIT_SCALE[from], b = UNIT_SCALE[to];
-      return a && b && a[0] === b[0] ? a[1] / b[1] : null;
-    }
-
     /** The layers that can be drawn, each with its factor to the shared units; the first readable layer sets them. */
     function plan() {
       const first = state.layers.find(ok);
       const units = first ? first.capability.units || '' : '';
       const layers = state.layers.map((s, i) => {
         if (!ok(s)) return { i, s, missing: true, color: colorOf(i) };
-        const f = factor(s, units);
+        const f = C.unitFactor(s, units);
         return { i, s, color: colorOf(i), f, other: f == null };
       });
-      const total = ok(state.total) && factor(state.total, units) != null ? { s: state.total, f: factor(state.total, units) } : null;
+      const total = ok(state.total) && C.unitFactor(state.total, units) != null ? { s: state.total, f: C.unitFactor(state.total, units) } : null;
       return { first, units, layers, drawable: layers.filter(l => !l.missing && !l.other), total };
     }
 

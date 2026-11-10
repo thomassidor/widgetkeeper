@@ -119,14 +119,11 @@
     }
 
     /**
-     * The device picker: a wide dialog over the settings, with a search, the rooms as filters and the devices grouped
-     * by room as tiles. One device: a tap picks it. Several: taps tick them (in that order), a room's Select all ticks
-     * the room, and Done keeps it.
+     * The device and value pickers' dialog: a search and the room chips over the room groups' box, Cancel below
+     * (`actions`, for the device picker's count and Done before it).
      */
-    function chooseDevices(def, items, current, onDone) {
-      const singular = def.devices.singular;
-      let chosen = current.slice();
-      const { d, body } = wd.dialog(t(singular ? 'chooseDevice' : 'chooseDevices'));
+    function pickerDialog(title) {
+      const { d, body } = wd.dialog(title);
       d.classList.add('wide', 'tall');
       const tools = el('div', 'wd-devtools');
       const search = el('input', 'wd-input');
@@ -134,40 +131,72 @@
       search.placeholder = t('search');
       const rooms = el('div', 'wd-rooms');
       tools.append(search, rooms);
-      const groupsBox = el('div', 'wd-devgroups');
-      body.append(tools, groupsBox);
-      const count = el('span', 'wd-muted wd-devcount');
+      const box = el('div', 'wd-devgroups');
+      body.append(tools, box);
       const actions = el('div', 'wd-actions');
+      d.append(actions);
+      return { d, search, rooms, box, actions };
+    }
+
+    /** The devices by room, in the order of the rooms' place in the home (`Ground floor › Kitchen`), those without one last. */
+    function roomGroups(devices) {
+      const groups = new Map();
+      for (const dev of devices) {
+        const key = dev.zone ? dev.zone.id : '';
+        if (!groups.has(key)) groups.set(key, { key, label: dev.zone ? dev.zone.name : t('noRoom'), path: dev.zone ? dev.zone.path : [], devices: [] });
+        groups.get(key).devices.push(dev);
+      }
+      const sortKey = (g) => (g.key ? [...g.path, g.label].join('\u0000').toLowerCase() : '\uffff');
+      return [...groups.values()].sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
+    }
+
+    /** The room chips (`[id, label, count]`), `room` the one that's on; a tap calls `pick(id)`. */
+    function drawRoomChips(rooms, room, chips, pick) {
+      rooms.textContent = '';
+      for (const [id, label, n] of chips) {
+        const b = button(`wd-room${room === id ? ' on' : ''}`, '', () => pick(id));
+        b.append(el('span', null, label), el('span', 'wd-room-count', String(n)));
+        b.setAttribute('aria-pressed', String(room === id));
+        rooms.append(b);
+      }
+    }
+
+    /** A room group's heading: the zones above it, its name, and `extra` (Select all) on the right. */
+    function groupHead(g, extra) {
+      const head = el('div', 'wd-devgroup-head');
+      const title = el('div', 'wd-devgroup-title');
+      if (g.path.length) title.append(el('span', 'wd-hint', g.path.join(' › ')));
+      title.append(el('h3', 'wd-h2', g.label));
+      head.append(title);
+      if (extra) head.append(extra);
+      return head;
+    }
+
+    /**
+     * The device picker: a wide dialog over the settings, with a search, the rooms as filters and the devices grouped
+     * by room as tiles. One device: a tap picks it. Several: taps tick them (in that order), a room's Select all ticks
+     * the room, and Done keeps it.
+     */
+    function chooseDevices(def, items, current, onDone) {
+      const singular = def.devices.singular;
+      let chosen = current.slice();
+      const { d, search, rooms, box: groupsBox, actions } = pickerDialog(t(singular ? 'chooseDevice' : 'chooseDevices'));
+      const count = el('span', 'wd-muted wd-devcount');
       if (singular) {
         actions.append(button('wd-btn quiet', t('cancel'), () => d.close()));
       } else {
         actions.append(count, el('span', 'wd-spacer'), button('wd-btn quiet', t('cancel'), () => d.close()),
           button('wd-btn primary', t('done'), () => { onDone(chosen); d.close(); }));
       }
-      d.append(actions);
 
-      // The rooms, in the order of their place in the home (`Ground floor › Kitchen`), devices without one last.
-      const groups = new Map();
-      for (const dev of items) {
-        const key = dev.zone ? dev.zone.id : '';
-        if (!groups.has(key)) groups.set(key, { key, label: dev.zone ? dev.zone.name : t('noRoom'), path: dev.zone ? dev.zone.path : [], devices: [] });
-        groups.get(key).devices.push(dev);
-      }
-      const sortKey = (g) => (g.key ? [...g.path, g.label].join('\u0000').toLowerCase() : '\uffff');
-      const ordered = [...groups.values()].sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
+      const ordered = roomGroups(items);
       let room = 'all'; // 'all', 'chosen' or a zone id ('' for no room)
 
       function drawRooms() {
-        rooms.textContent = '';
-        const chip = (id, label, n) => {
-          const b = button(`wd-room${room === id ? ' on' : ''}`, '', () => { room = id; drawRooms(); draw(); });
-          b.append(el('span', null, label), el('span', 'wd-room-count', String(n)));
-          b.setAttribute('aria-pressed', String(room === id));
-          rooms.append(b);
-        };
-        chip('all', t('allRooms'), items.length);
-        if (!singular) chip('chosen', t('chosen'), chosen.length);
-        if (ordered.length > 1) for (const g of ordered) chip(g.key, g.label, g.devices.length);
+        const chips = [['all', t('allRooms'), items.length]];
+        if (!singular) chips.push(['chosen', t('chosen'), chosen.length]);
+        if (ordered.length > 1) for (const g of ordered) chips.push([g.key, g.label, g.devices.length]);
+        drawRoomChips(rooms, room, chips, (id) => { room = id; drawRooms(); draw(); });
       }
 
       function draw() {
@@ -183,20 +212,17 @@
           if (!devices.length) continue;
           shown += devices.length;
           const group = el('section', 'wd-devgroup');
-          const head = el('div', 'wd-devgroup-head');
-          const title = el('div', 'wd-devgroup-title');
-          if (g.path.length) title.append(el('span', 'wd-hint', g.path.join(' › ')));
-          title.append(el('h3', 'wd-h2', g.label));
-          head.append(title);
+          let selectAll = null;
           if (!singular) {
             const all = devices.every(dev => chosen.includes(dev.id));
-            head.append(button('wd-btn quiet small', t(all ? 'clearAll' : 'selectAll'), () => {
+            selectAll = button('wd-btn quiet small', t(all ? 'clearAll' : 'selectAll'), () => {
               if (all) chosen = chosen.filter(id => !devices.some(dev => dev.id === id));
               else for (const dev of devices) if (!chosen.includes(dev.id)) chosen.push(dev.id);
               drawRooms();
               draw();
-            }));
+            });
           }
+          const head = groupHead(g, selectAll);
           const tiles = el('div', 'wd-devtiles');
           for (const dev of devices) {
             const on = chosen.includes(dev.id);
@@ -317,47 +343,21 @@
      * matching values straight away (`temperature` gives every temperature), so one tap is enough.
      */
     function chooseValue(devices, currentId, onDone) {
-      const { d, body } = wd.dialog(t('chooseValue'));
-      d.classList.add('wide', 'tall');
-      const tools = el('div', 'wd-devtools');
-      const search = el('input', 'wd-input');
-      search.type = 'search';
-      search.placeholder = t('search');
-      const rooms = el('div', 'wd-rooms');
-      tools.append(search, rooms);
-      const box = el('div', 'wd-devgroups');
-      body.append(tools, box);
-      const actions = el('div', 'wd-actions');
+      const { d, search, rooms, box, actions } = pickerDialog(t('chooseValue'));
       actions.append(el('span', 'wd-spacer'), button('wd-btn quiet', t('cancel'), () => d.close()));
-      d.append(actions);
 
       const pick = (dev, cap) => { onDone(slotItem(dev, cap)); d.close(); };
 
-      // The rooms, in the order of their place in the home, devices without one last (as the device picker).
-      const groups = new Map();
-      for (const dev of devices) {
-        const key = dev.zone ? dev.zone.id : '';
-        if (!groups.has(key)) groups.set(key, { key, label: dev.zone ? dev.zone.name : t('noRoom'), path: dev.zone ? dev.zone.path : [], devices: [] });
-        groups.get(key).devices.push(dev);
-      }
-      const sortKey = (g) => (g.key ? [...g.path, g.label].join('\u0000').toLowerCase() : '\uffff');
-      const ordered = [...groups.values()].sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
+      const ordered = roomGroups(devices);
       let room = 'all';
       // The device whose values show, or null for the rooms; opens at the current choice's device.
       const sep = typeof currentId === 'string' ? currentId.indexOf(':') : -1;
       let device = sep > 0 ? devices.find(x => x.id === currentId.slice(0, sep) && x.caps.some(c => c.id === currentId.slice(sep + 1))) || null : null;
 
       function drawRooms() {
-        rooms.textContent = '';
         rooms.hidden = !!device || ordered.length < 2;
-        const chip = (id, label, n) => {
-          const b = button(`wd-room${room === id ? ' on' : ''}`, '', () => { room = id; drawRooms(); draw(); });
-          b.append(el('span', null, label), el('span', 'wd-room-count', String(n)));
-          b.setAttribute('aria-pressed', String(room === id));
-          rooms.append(b);
-        };
-        chip('all', t('allRooms'), devices.length);
-        for (const g of ordered) chip(g.key, g.label, g.devices.length);
+        drawRoomChips(rooms, room, [['all', t('allRooms'), devices.length], ...ordered.map(g => [g.key, g.label, g.devices.length])],
+          (id) => { room = id; drawRooms(); draw(); });
       }
 
       /** A value's row: its title over the device (with the device's icon when `withDevice`), and its reading. */
@@ -373,16 +373,6 @@
         if (on) mark.append(icon('check'));
         row.append(mark);
         return row;
-      }
-
-      function groupHead(g, extra) {
-        const head = el('div', 'wd-devgroup-head');
-        const title = el('div', 'wd-devgroup-title');
-        if (g.path.length) title.append(el('span', 'wd-hint', g.path.join(' › ')));
-        title.append(el('h3', 'wd-h2', g.label));
-        head.append(title);
-        if (extra) head.append(extra);
-        return head;
       }
 
       function draw() {

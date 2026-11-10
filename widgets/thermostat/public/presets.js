@@ -92,9 +92,7 @@
         console.error(err);
         optimistic = null;
         if (tiles[index]) {
-          tiles[index].classList.remove('shake');
-          void tiles[index].offsetWidth; // restart the animation
-          tiles[index].classList.add('shake');
+          window.WidgetkeeperKit.shake(tiles[index]);
         }
         setMessage(hooks.failed(err), true);
       }
@@ -112,7 +110,6 @@
     }
 
     let lastIcon;
-    let lastHeight = 0;
     function render() {
       const active = activeSet();
 
@@ -154,10 +151,7 @@
     }
 
     /** Reports the root's height when it changed (also for a widget's own content, like the thermostat's panel). */
-    function refreshHeight() {
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (hooks.onHeight) hooks.onHeight(h); }
-    }
+    const refreshHeight = window.WidgetkeeperKit.heightReporter(root, hooks);
 
     return { setButtons, setState, setMessage, render, refreshHeight, getState: () => state, presets: () => presets };
   }

@@ -12,12 +12,12 @@ export const LOCKS_STATE_EVENT = 'locks:state';
  * The capabilities the Locks widget reads, and the value of each that counts as secure: a lock that's
  * locked, a contact sensor that's closed, a garage door that's closed.
  */
-export const LOCK_CAPS = { locked: true, alarm_contact: false, garagedoor_closed: true } as const;
-export type LockCapId = keyof typeof LOCK_CAPS;
+const LOCK_CAPS = { locked: true, alarm_contact: false, garagedoor_closed: true } as const;
+type LockCapId = keyof typeof LOCK_CAPS;
 /** Only these can be set from the widget (a contact sensor can't). */
-export const SETTABLE_LOCK_CAPS: LockCapId[] = ['locked', 'garagedoor_closed'];
+const SETTABLE_LOCK_CAPS: LockCapId[] = ['locked', 'garagedoor_closed'];
 
-export type LockCap = { value: unknown, setable: boolean, lastUpdated: number | null };
+type LockCap = { value: unknown, setable: boolean, lastUpdated: number | null };
 
 export type LockDevice =
   /** `open`: the capability that opens (unlatches) the lock, when the widget picked one and this lock has it. */
@@ -32,7 +32,7 @@ type Tracked = TrackedEntry & {
 };
 
 /** The lock capabilities the device has, in `LOCK_CAPS` order. */
-export function lockCaps(device: any): LockCapId[] {
+function lockCaps(device: any): LockCapId[] {
   return presentCaps(device, Object.keys(LOCK_CAPS) as LockCapId[]);
 }
 
@@ -41,7 +41,7 @@ export function lockCaps(device: any): LockCapId[] {
  * `open_lock`, Shelly Loqed's `open` …), so the widget's `openCapability` setting picks one of these. None on a
  * device without `locked`.
  */
-export function lockButtons(device: any): string[] {
+function lockButtons(device: any): string[] {
   const caps = device?.capabilitiesObj || {};
   if (!caps.locked) return [];
   return Object.keys(caps).filter(id => !(id in LOCK_CAPS) && caps[id]?.type === 'boolean' && caps[id].setable !== false);

@@ -6,11 +6,11 @@ export const WEB_DIM_SETTING = 'webDimFlows';
 export const WEB_DIM_CARD = 'web_dim';
 export const WEB_DIM_EVENT = 'webdim:state';
 /** The most a page dims (`MAX_DIM` in settings/dashboard.js): never black, so the bar's pen stays findable. */
-export const MAX_WEB_DIM = 80;
+const MAX_WEB_DIM = 80;
 /** Screen names are typed in the Flow card, so what's kept is capped: past it the oldest goes. */
 const MAX_TARGETS = 50;
 
-export type DimEntry = { level: number, at: number };
+type DimEntry = { level: number, at: number };
 export type DimFlows = Record<string, DimEntry>;
 
 /** A Flow's level: a number from 0 to `MAX_WEB_DIM`, in the page's steps of 5. */

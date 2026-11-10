@@ -83,7 +83,7 @@ const ZONE_ICON_FILES: Record<string, string> = {
 };
 
 /** A zone icon's URL in Homey's library (my.homey.app/img/zones/<file>.svg): the generic zone for an unknown one. */
-export function zoneIconUrl(icon: unknown): string {
+function zoneIconUrl(icon: unknown): string {
   const file = typeof icon === 'string' && Object.prototype.hasOwnProperty.call(ZONE_ICON_FILES, icon) ? ZONE_ICON_FILES[icon] : 'zone';
   return `https://my.homey.app/img/zones/${file}.svg`;
 }

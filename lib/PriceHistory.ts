@@ -7,7 +7,7 @@ import { DebouncedSetting } from './storedSetting.js';
  * Where past days' spot prices are kept (Chart · Totals' cost, 1.2.0): a file in the app's own `/userdata`, so a year's
  * chart doesn't fetch 365 days again after every restart. A finished day's prices don't change.
  */
-export const PRICE_HISTORY_FILE = '/userdata/price-history.json';
+const PRICE_HISTORY_FILE = '/userdata/price-history.json';
 /** Days older than this are dropped when the file is written: Insights keeps two years, so a chart can't go further. */
 const KEEP_DAYS = 2 * 366 + 7;
 /** A past day Homey had no prices for is asked for again after this. */

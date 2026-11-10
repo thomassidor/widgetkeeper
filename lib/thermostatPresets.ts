@@ -7,7 +7,7 @@ import type { CapValue } from './ThermostatService.js';
 
 const TEMP_TOLERANCE = 0.25;
 
-export type PresetSlot = 'power' | 'mode' | 'temp' | 'extra';
+type PresetSlot = 'power' | 'mode' | 'temp' | 'extra';
 export type PresetValue = CapValue & { slot: PresetSlot, name?: string };
 /** A button: the values it sets, in the order the widget sends them. */
 export type Preset = { values: PresetValue[] };
@@ -15,7 +15,7 @@ export type Preset = { values: PresetValue[] };
 /** A device's capabilities as `ThermostatService.getState()` gives them (only what's read here). */
 export type PresetCaps = Record<string, { title?: string, values?: { id: string, title: string }[] | null }>;
 
-export function sameValue(capabilityId: string, a: unknown, b: unknown): boolean {
+function sameValue(capabilityId: string, a: unknown, b: unknown): boolean {
   if (typeof a === 'number' && typeof b === 'number') {
     return capabilityId === 'target_temperature' ? Math.abs(a - b) <= TEMP_TOLERANCE : a === b;
   }

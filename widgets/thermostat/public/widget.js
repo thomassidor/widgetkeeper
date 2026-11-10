@@ -64,11 +64,7 @@
    *   Without `onApply` there's no controls panel.
    */
   function createThermostatWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`thermostat.${key}`, tokens) : null;
-      if (s && s !== `thermostat.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('thermostat', DEFAULT_STRINGS, opts);
     const numberFmt = new Intl.NumberFormat(opts.locale, { maximumFractionDigits: 1 });
     const title = typeof opts.title === 'string' ? opts.title.trim() : '';
     const { el } = window.WidgetkeeperKit;
@@ -456,9 +452,7 @@
       } catch (err) {
         console.error(err);
         delete pending[id];
-        node.classList.remove('shake');
-        void node.offsetWidth; // restart the animation
-        node.classList.add('shake');
+        window.WidgetkeeperKit.shake(node);
         showPanelMessage(`${t('applyFailed')} ${(err && err.message) || ''}`.trim());
         updatePanel();
       }

@@ -34,7 +34,7 @@ const DAY = 24 * HOUR;
  * 6 h before the local month; this month's and year's end at the last finished 6 hours. A finished period's log
  * (`finished`: the shortest the period after it can be, an hour short for DST) stays as it is until that one ends.
  */
-export const SPANS = {
+const SPANS = {
   '1h': { resolution: 'lastHour', ms: HOUR, step: 5 * 1000 },
   '6h': { resolution: 'last6Hours', ms: 6 * HOUR, step: MINUTE },
   '24h': { resolution: 'last24Hours', ms: DAY, step: 5 * MINUTE },
@@ -103,12 +103,12 @@ export function sparkCaps(device: any): string[] {
 }
 
 /** The device's logged booleans (on/off, open/closed, motion …). */
-export function booleanCaps(device: any): string[] {
+function booleanCaps(device: any): string[] {
   return heatmapCaps(device).filter(c => c.type === 'boolean').map(c => c.id);
 }
 
 /** Chart · Timeline's values: the device's logged booleans, then its logged numbers (held against a threshold). */
-export function timelineCaps(device: any): string[] {
+function timelineCaps(device: any): string[] {
   return [...booleanCaps(device), ...sparkCaps(device)];
 }
 
@@ -152,7 +152,7 @@ export function downsample(res: any, now: number, spanMs: number, logStep = 0): 
 }
 
 /** `downsample()` of samples. */
-export function downsampleSamples(samples: Sample[], now: number, spanMs: number, logStep = 0, max = MAX_POINTS): [number, number][] {
+function downsampleSamples(samples: Sample[], now: number, spanMs: number, logStep = 0, max = MAX_POINTS): [number, number][] {
   const count = Math.max(1, Math.min(max, logStep ? Math.floor(spanMs / logStep) : max));
   const step = spanMs / count;
   const start = now - spanMs;
@@ -419,7 +419,7 @@ export default class SparklineService {
  * How long a log read now is kept: a finished period's (yesterday, last week … the two years before this one) until the
  * next period begins, once its last step has passed (before that Homey may still be completing it); else `HISTORY_TTL`.
  */
-export function logTtl(log: InsightsLog, now: number, timeZone: string): number {
+function logTtl(log: InsightsLog, now: number, timeZone: string): number {
   if (!log.unit || !log.back) return HISTORY_TTL;
   const [, to] = logCover(log, now, timeZone);
   if (now < to + log.step) return HISTORY_TTL;

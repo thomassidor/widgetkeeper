@@ -5,7 +5,7 @@ import Timings from './Timings.js';
 import ValueMatrixService, { matrixCaps } from './ValueMatrixService.js';
 
 /** The value the widget combines, described from the first counted device that has it. */
-export type CombinedCapability = {
+type CombinedCapability = {
   id: string, title: string, units: string | null, decimals: number | null, min: number | null, max: number | null,
 };
 
@@ -14,7 +14,7 @@ export type CombinedCapability = {
  * `otherUnits` (the device's units, `''` for none): it reports the value in units the others don't, so the widget lists
  * it but leaves it out of the combined value (a Wh meter among kWh ones would make the sum wrong).
  */
-export type CombinedDevice = { id: string, name: string, value: number | null, otherUnits?: string } | { id: string, missing: true };
+type CombinedDevice = { id: string, name: string, value: number | null, otherUnits?: string } | { id: string, missing: true };
 
 /** What the last request for a value counted, for Diagnostics' `combined`. */
 type CombinedRequest = {

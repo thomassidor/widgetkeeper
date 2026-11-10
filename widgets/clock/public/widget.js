@@ -104,15 +104,14 @@
       }
     }
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       const now = clock();
       timeEl.textContent = formatTime(now);
       dateEl.textContent = formatDate(now);
       renderWeather();
       schedule(now);
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     /** Re-renders just after the minute turns. */

@@ -25,7 +25,7 @@ export type VariableEntry = Variable | { id: string, missing: true };
 const TYPES = new Set(['boolean', 'number', 'string']);
 
 /** A Logic variable from homey-api (an item instance or the raw event data), or null when it isn't one. */
-export function toVariable(v: any): Variable | null {
+function toVariable(v: any): Variable | null {
   if (!v || typeof v.id !== 'string' || !TYPES.has(v.type)) return null;
   return { id: v.id, name: typeof v.name === 'string' ? v.name : v.id, type: v.type, value: v.value };
 }

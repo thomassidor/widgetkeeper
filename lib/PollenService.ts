@@ -11,9 +11,9 @@ const FETCH_TIMEOUT = 15e3;
 /** Today and the next three: Open-Meteo forecasts pollen four days ahead. */
 const DAYS = 4;
 
-export const POLLEN_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality';
+const POLLEN_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality';
 
-export type PollenDay = {
+type PollenDay = {
   date: string, // YYYY-MM-DD in the Homey's timezone
   /** Each type's mean of the day's hours (grains/m³) and its level (0 none … 4 very high); null without data. */
   pollen: Record<PollenType, { value: number, level: number } | null>,

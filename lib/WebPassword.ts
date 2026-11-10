@@ -10,7 +10,7 @@ export const WEB_SESSIONS_SETTING = 'webSessions';
 /** The Flow card that removes the password: the way back for a forgotten one. */
 export const WEB_PASSWORD_REMOVE_CARD = 'web_password_remove';
 
-export const MIN_PASSWORD = 8;
+const MIN_PASSWORD = 8;
 const MAX_PASSWORD = 200;
 const MAX_SESSIONS = 50;
 /** A browser that hasn't been used for this long has to sign in again. */

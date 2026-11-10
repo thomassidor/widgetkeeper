@@ -20,7 +20,6 @@
 
   /** The icons (the kit's): the ids are the `icon` setting's. */
   const ICONS = window.WidgetkeeperKit.icons;
-  const SVG_NS = 'http://www.w3.org/2000/svg';
 
   /** The icon id if it's one of ICONS, else `dashboard`. */
   function iconOf(id) {
@@ -32,19 +31,6 @@
     return COLORS.includes(id) ? id : 'blue';
   }
 
-  /** An inline SVG of a glyph, stroked (or filled) in the current colour. */
-  function glyph(icon, cls) {
-    const svg = document.createElementNS(SVG_NS, 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.setAttribute('class', cls);
-    svg.setAttribute('aria-hidden', 'true');
-    const path = document.createElementNS(SVG_NS, 'path');
-    path.setAttribute('d', icon.d);
-    if (icon.fill) path.setAttribute('class', 'filled');
-    svg.appendChild(path);
-    return svg;
-  }
-
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, t?: (key: string, tokens?: object) => string, columns?: number|string,
@@ -53,11 +39,7 @@
    *   onOpen?: (id: string) => void, onHaptic?: () => void, onHeight?: (h: number) => void }} opts
    */
   function createShortcutsWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`shortcuts.${key}`, tokens) : null;
-      if (s && s !== `shortcuts.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('shortcuts', DEFAULT_STRINGS, opts);
     // Each tile's look, by position; the entries from setState() line up with it.
     const looks = (Array.isArray(opts.tiles) ? opts.tiles : []).map(s => ({
       color: colorOf(s && s.color), icon: iconOf(s && s.icon),
@@ -99,9 +81,7 @@
     function shake(index) {
       const r = rows[index];
       if (!r) return;
-      r.row.classList.remove('shake');
-      void r.row.offsetWidth; // restart the animation
-      r.row.classList.add('shake');
+      window.WidgetkeeperKit.shake(r.row);
     }
 
     function open(index) {
@@ -121,7 +101,7 @@
       return r;
     }
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       for (let i = rows.length - 1; i >= dashboards.length; i--) { rows[i].row.remove(); rows.pop(); }
       let placed = null;
@@ -134,7 +114,7 @@
         const look = looks[i] || { color: 'blue', icon: 'dashboard' };
         if (r.glyph !== look.icon) {
           r.glyph = look.icon;
-          r.icon.replaceChildren(glyph(ICONS[look.icon], 'sc-glyph'));
+          r.icon.replaceChildren(window.WidgetkeeperKit.svgIcon(ICONS[look.icon], 'sc-glyph'));
         }
         const here = !d.missing && d.id === current;
         const name = d.missing ? t('missing') : typed.name(d.id, d.name);
@@ -165,8 +145,7 @@
       messageEl.style.display = message.text ? '' : 'none';
       messageEl.classList.toggle('error', !!message.text && dashboards.length > 0);
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     return { setState, setNames: typed.set, setMessage, render, t };

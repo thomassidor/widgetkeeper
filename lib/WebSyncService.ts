@@ -13,7 +13,7 @@ import {
 } from './dashboardSync.js';
 
 /** The links and their bases (`/userdata`: they hold settings and tile names, which no API should serve). */
-export const WEB_SYNC_FILE = '/userdata/web-sync.json';
+const WEB_SYNC_FILE = '/userdata/web-sync.json';
 /** The app setting with the nightly sync (`{nightly, time}`); missing is on at 03:00. */
 export const WEB_SYNC_SCHEDULE_SETTING = 'webSyncSchedule';
 /** Realtime after each sync: `{id, link}`, the web dashboard's id and its link as `status()` gives it (null: unlinked). */
@@ -24,10 +24,10 @@ const RETRY_MS = 3000;
 const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 export type SyncSchedule = { nightly: boolean, time: string };
-export const DEFAULT_SCHEDULE: SyncSchedule = { nightly: true, time: '03:00' };
+const DEFAULT_SCHEDULE: SyncSchedule = { nightly: true, time: '03:00' };
 
 /** Why a sync didn't happen: the key's problems, the Homey dashboard gone, too many widgets for the web, or else. */
-export type SyncProblem = 'noKey' | 'keyScope' | 'keyInvalid' | 'homeyGone' | 'webGone' | 'tooMany' | 'failed';
+type SyncProblem = 'noKey' | 'keyScope' | 'keyInvalid' | 'homeyGone' | 'webGone' | 'tooMany' | 'failed';
 
 export type LastSync = {
   at: number,

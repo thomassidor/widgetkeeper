@@ -97,11 +97,7 @@
    *   liveView?: boolean, liveFor?: string, autoLive?: string, layout?: string, timeFormat?: string }} opts
    */
   function createCamerasWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`cameras.${key}`, tokens) : null;
-      if (s && s !== `cameras.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('cameras', DEFAULT_STRINGS, opts);
     const now = opts.now || (() => Date.now());
     const refreshMs = opts.refreshMs || 10e3;
     const grabMs = Math.max(GRAB_MIN_MS, refreshMs);
@@ -144,9 +140,7 @@
     const names = tileNames(opts, () => render(), (key) => {
       const tile = tiles.get(key);
       if (tile) {
-        tile.tile.classList.remove('shake');
-        void tile.tile.offsetWidth; // restart the animation
-        tile.tile.classList.add('shake');
+        window.WidgetkeeperKit.shake(tile.tile);
       }
       setMessage(t('renameFailed'), true);
     });
@@ -609,7 +603,7 @@
 
     const setMask = (node, url) => window.WidgetkeeperKit.setMask(node, url, '--cw-mask');
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       const ids = new Set(devices.map(d => d.id));
       for (const [id, tile] of tiles) {
@@ -648,10 +642,6 @@
       reportHeight();
     }
 
-    function reportHeight() {
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
-    }
 
     /**
      * Ends live view, e.g. when the dashboard goes to the background. Until tapped, the camera goes live again on

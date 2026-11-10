@@ -68,11 +68,7 @@
    *   onHeight?: (h: number) => void }} opts
    */
   function createVarPresetsWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`varpresets.${key}`, tokens) : null;
-      if (s && s !== `varpresets.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('varpresets', DEFAULT_STRINGS, opts);
     const numberFmt = new Intl.NumberFormat(opts.locale, { maximumFractionDigits: 3 });
     const title = typeof opts.title === 'string' ? opts.title.trim() : '';
     const icon = typeof opts.icon === 'string' && Object.prototype.hasOwnProperty.call(ICONS, opts.icon) ? iconUrl(ICONS[opts.icon]) : null;

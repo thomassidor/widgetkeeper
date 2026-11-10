@@ -10,7 +10,7 @@ export const TEXTLINE_SET_CARD = 'textline_set';
 export const TEXTLINE_SET_COLOR_CARD = 'textline_set_color';
 export const TEXTLINE_CLEAR_CARD = 'textline_clear';
 /** The board a widget shows unless its `board` setting names another. */
-export const DEFAULT_BOARD = 'Note';
+const DEFAULT_BOARD = 'Note';
 
 const MAX_TEXT = 500;
 const MAX_NAME = 60;

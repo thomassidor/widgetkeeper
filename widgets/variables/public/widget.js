@@ -85,11 +85,7 @@
    *   onHeight?: (h: number) => void }} opts
    */
   function createVariablesWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`variables.${key}`, tokens) : null;
-      if (s && s !== `variables.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('variables', DEFAULT_STRINGS, opts);
     const step = Number(opts.step) > 0 ? Number(opts.step) : 1;
     // Read only: the values without −/+, switches or inputs, and no taps (so no API key is needed).
     const readOnly = opts.readOnly === true;
@@ -162,9 +158,7 @@
     function shakeRow(i) {
       if (!rows[i]) return;
       const row = rows[i].row;
-      row.classList.remove('shake');
-      void row.offsetWidth; // restart the animation
-      row.classList.add('shake');
+      window.WidgetkeeperKit.shake(row);
     }
 
     function shake(id) {
@@ -307,7 +301,7 @@
       }
     }
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       for (let i = rows.length - 1; i >= vars.length; i--) { rows[i].row.remove(); rows.pop(); }
       const named = nameKeys(vars);
@@ -360,8 +354,7 @@
       messageEl.style.display = message.text ? '' : 'none';
       messageEl.classList.toggle('error', !!message.text && vars.length > 0);
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     return { setState, setNames: typed.set, pushChange, setMessage, render, t };

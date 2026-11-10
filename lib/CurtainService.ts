@@ -14,12 +14,12 @@ export const CURTAINS_STATE_EVENT = 'curtains:state';
  * tilts (SwitchBot's Blind Tilt: 0 and 1 are both closed, 0.5 is open); the widget uses it when there's no
  * `windowcoverings_set`, and reads it by its `tilt` setting.
  */
-export const CURTAIN_CAPS = ['windowcoverings_set', 'windowcoverings_state', 'windowcoverings_closed', 'windowcoverings_tilt_set'] as const;
+const CURTAIN_CAPS = ['windowcoverings_set', 'windowcoverings_state', 'windowcoverings_closed', 'windowcoverings_tilt_set'] as const;
 
-export type CurtainCap = CapState;
+type CurtainCap = CapState;
 
 /** `blinds` for blinds and sunshades (the tile draws a blind), else `curtain`. */
-export type CurtainKind = 'curtain' | 'blinds';
+type CurtainKind = 'curtain' | 'blinds';
 
 export type CurtainDevice =
   | { id: string, name: string, kind: CurtainKind, zone: { id: string, name: string } | null, caps: Record<string, CurtainCap>, offline?: true }
@@ -33,11 +33,11 @@ type Tracked = TrackedEntry & {
 };
 
 /** The curtain capabilities the device has, in `CURTAIN_CAPS` order. */
-export function curtainCaps(device: any): string[] {
+function curtainCaps(device: any): string[] {
   return presentCaps(device, CURTAIN_CAPS);
 }
 
-export function curtainKind(device: any): CurtainKind {
+function curtainKind(device: any): CurtainKind {
   const cls = device?.virtualClass || device?.class;
   return cls === 'blinds' || cls === 'sunshade' ? 'blinds' : 'curtain';
 }

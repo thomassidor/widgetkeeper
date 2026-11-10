@@ -728,11 +728,7 @@
   function createFrame(root, spec) {
     const { applyColors, messageLine, TIGHT_UNITS } = window.WidgetkeeperKit;
     const { opts = {}, cls, prefix, strings = {}, legendBelow = false } = spec;
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`${prefix}.${key}`, tokens) : null;
-      if (s && s !== `${prefix}.${key}`) return s;
-      return (strings[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator(prefix, strings, opts);
     const locale = opts.locale || navigator.language || 'en';
     const nfCache = {};
     /** A number in the phone's locale: `d` decimals, or none (rounded) without. */
@@ -758,7 +754,7 @@
     });
     const transient = el('div', { class: `ew-message ${cls}-transient`, dir: 'auto' }, wrap);
     const line = messageLine(render, { clear: spec.clear });
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     let offScreen = false;
 
     /** A header column: the value (`–` without one), its units (`units`; `tightUnits` decides the spacing) and the sub line. */
@@ -786,10 +782,7 @@
       const passing = shown && line.text != null;
       show(transient, passing);
       transient.textContent = passing ? line.text : '';
-      if (opts.onHeight) {
-        const h = Math.ceil(root.getBoundingClientRect().height);
-        if (h && h !== lastHeight) { lastHeight = h; opts.onHeight(h); }
-      }
+      reportHeight();
     }
 
     const seen = () => !offScreen && !document.hidden;
@@ -981,10 +974,21 @@
     }
   }
 
+  /** Units that convert into each other: the base unit and the factor to it. */
+  const UNIT_SCALE = { W: ['W', 1], kW: ['W', 1e3], MW: ['W', 1e6], Wh: ['Wh', 1], kWh: ['Wh', 1e3], MWh: ['Wh', 1e6] };
+
+  /** The factor from a slot's units to `units` (Chart · Lines' side's, Chart · Stacked's first layer's), or null when they can't be compared. */
+  function unitFactor(s, units) {
+    const from = s.capability.units || '', to = units || '';
+    if (from === to) return 1;
+    const a = UNIT_SCALE[from], b = UNIT_SCALE[to];
+    return a && b && a[0] === b[0] ? a[1] / b[1] : null;
+  }
+
   window.WidgetkeeperChart = {
     MIN, HOUR, L, X_LABEL_GAP, X_LABEL_H, LABEL_PAD, LABEL_MIN_GAP,
     niceStep, ticks, el, clear, show, f1, smoothValues: window.WidgetkeeperKit.smoothValues, linePath, stepPath, p985, p015,
     compactNumber, ago, stepDecimals, axisLabel, buckets, alignSeries, profile, trendLine, barUnit, useBuckets, meterTotal, calendarLabels, createKit, attachScrub, pointerX,
-    createFrame, legendPlace, plotHeight, wireChart, keepLive, pushLive, currencyUnits, typedName,
+    createFrame, legendPlace, plotHeight, wireChart, keepLive, pushLive, currencyUnits, typedName, unitFactor,
   };
 })();

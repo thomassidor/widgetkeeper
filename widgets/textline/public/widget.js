@@ -30,7 +30,6 @@
 
   /** The tile's optional icon: Flow Buttons' (the kit's; the `icon` setting lists them, listIcons()). */
   const ICONS = window.WidgetkeeperKit.icons;
-  const SVG_NS = 'http://www.w3.org/2000/svg';
 
   /** A board's key: its name trimmed and lower-cased, none for a reserved name (boardKey() in lib/TextLineService.ts). */
   function boardKey(name) {
@@ -79,11 +78,7 @@
    *   t?: (key: string, tokens?: Record<string, unknown>) => string | null, onHeight?: (h: number) => void }} opts
    */
   function createTextLineWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`textline.${key}`, tokens) : null;
-      if (s && s !== `textline.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('textline', DEFAULT_STRINGS, opts);
     const postit = opts.style === 'postit';
     const source = ['flow', 'variable'].includes(opts.source) ? opts.source : 'typed';
     const size = SIZES.includes(opts.size) ? opts.size : 'default';
@@ -111,15 +106,7 @@
     const box = el('div', { class: postit ? 'tl-note' : 'tl-tile' }, root);
     if (postit) box.style.setProperty('--tl-tilt', `${noteTilt(opts.seed)}deg`);
     if (icon) {
-      const svg = document.createElementNS(SVG_NS, 'svg');
-      svg.setAttribute('viewBox', '0 0 24 24');
-      svg.setAttribute('class', 'tl-icon');
-      svg.setAttribute('aria-hidden', 'true');
-      const path = document.createElementNS(SVG_NS, 'path');
-      path.setAttribute('d', icon.d);
-      if (icon.fill) path.setAttribute('class', 'filled');
-      svg.appendChild(path);
-      box.appendChild(svg);
+      box.appendChild(window.WidgetkeeperKit.svgIcon(icon, 'tl-icon'));
     }
     // The note's paper sits inside it, so the curl's shadow (the note's ::after) goes under the paper.
     const wrap = el('div', { class: 'tl-wrap' }, postit ? el('div', { class: 'tl-paper' }, box) : box);
@@ -192,14 +179,7 @@
       wrap.classList.add('scrolling');
     }
 
-    let lastHeight = 0;
-    function reportHeight() {
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) {
-        lastHeight = h;
-        if (opts.onHeight) opts.onHeight(h);
-      }
-    }
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
 
     if (typeof ResizeObserver === 'function') {
       let width = 0;

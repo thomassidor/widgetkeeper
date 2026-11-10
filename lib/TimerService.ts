@@ -8,7 +8,7 @@ const TICK = MINUTE;
 const DONE_KEEP = 10 * MINUTE;
 /** A timer that ran out while the app was stopped still fires its Flow card when it ended at most this long ago. */
 const LATE_FIRE = 5 * MINUTE;
-export const MAX_MINUTES = 24 * 60;
+const MAX_MINUTES = 24 * 60;
 const SAVE_DELAY = 2 * SECOND;
 /**
  * At most this many widget instances with timers (a home has a handful of Timers widgets). Nothing tells the app a

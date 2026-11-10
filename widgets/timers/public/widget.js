@@ -30,7 +30,6 @@
     cancel: 'Cancel',
   };
 
-  const SVG_NS = 'http://www.w3.org/2000/svg';
   /** 24 px glyphs with a 2 px round stroke (Flow Buttons' style); `fill` for a filled shape. */
   const GLYPHS = {
     pause: { fill: true, d: 'M7 5h3.5v14H7zM13.5 5H17v14h-3.5z' },
@@ -39,18 +38,7 @@
     close: { d: 'M7 7l10 10M17 7 7 17' },
   };
 
-  function glyph(name) {
-    const g = GLYPHS[name];
-    const svg = document.createElementNS(SVG_NS, 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.setAttribute('class', 'tm-glyph');
-    svg.setAttribute('aria-hidden', 'true');
-    const path = document.createElementNS(SVG_NS, 'path');
-    path.setAttribute('d', g.d);
-    if (g.fill) path.setAttribute('class', 'filled');
-    svg.appendChild(path);
-    return svg;
-  }
+  const glyph = name => window.WidgetkeeperKit.svgIcon(GLYPHS[name], 'tm-glyph');
 
   // Every tap stops at its node, so a button's tap doesn't press the row around it too.
   function onTap(node, fn) {
@@ -88,11 +76,7 @@
    *   onHaptic?: () => void, now?: () => number, onHeight?: (h: number) => void }} opts
    */
   function createTimersWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`timers.${key}`, tokens) : null;
-      if (s && s !== `timers.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('timers', DEFAULT_STRINGS, opts);
     const presets = Array.isArray(opts.presets) ? opts.presets.slice(0, 4) : [];
     const nf = v => v.toLocaleString(opts.locale || undefined, { maximumFractionDigits: 1 });
 
@@ -225,9 +209,7 @@
         setMessage(t('failed'), true);
         const row = rows.get(id);
         if (row) {
-          row.row.classList.remove('shake');
-          void row.row.offsetWidth;
-          row.row.classList.add('shake');
+          window.WidgetkeeperKit.shake(row.row);
         }
       }
     }
@@ -285,7 +267,7 @@
       return done;
     }
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     let ringing = new Set(); // ids that were done at the last paint, to beep and buzz once each
     function render() {
       const now = serverNow();
@@ -317,8 +299,7 @@
       messageEl.classList.toggle('error', !!message.text && (presets.length > 0 || timers.length > 0));
       scheduleTick();
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     // Repaints the running timers four times a second (only their text and fill; the rows stay), but not on a Smart

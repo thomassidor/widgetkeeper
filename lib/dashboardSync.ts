@@ -29,7 +29,7 @@ export type SyncView = { name: string, columns: string[][], widgets: Record<stri
 /** What one side had that the other can't hold: put back in its column, after the item it followed (null: first). */
 export type Opaque<T> = { item: T, column: number, after: string | null };
 
-export type SyncConflict = { key: string | null, field: string, kept: SyncSideName };
+type SyncConflict = { key: string | null, field: string, kept: SyncSideName };
 
 /** What a merge changes on one side. */
 export type SyncChanges = { added: number, removed: number, updated: number, moved: boolean, renamed: boolean };
@@ -248,7 +248,7 @@ export type WebSyncWidget = {
 export type WebSyncDashboard = { id: string, name: string, columns: WebSyncWidget[][], [extra: string]: unknown };
 
 /** Widgets only the web dashboards have (`deprecated` in their manifest, so Homey's own Add widget leaves them out). */
-export const WEB_ONLY_TYPES = new Set(['shortcuts']);
+const WEB_ONLY_TYPES = new Set(['shortcuts']);
 
 export function webView(d: WebSyncDashboard): { view: SyncView, opaque: Opaque<WebSyncWidget>[] } {
   const { kept, opaque } = split(d.columns, w => w.id, w => (WEB_ONLY_TYPES.has(w.type) ? null : w.id));
@@ -292,7 +292,7 @@ export type HomeySyncOptions = {
 };
 
 /** Our widget type, another app's `homey:app:…` id, or null for what can't be on a web dashboard. */
-export function homeyType(w: HomeyWidget, o: Pick<HomeySyncOptions, 'appId' | 'settingIds'>): string | null {
+function homeyType(w: HomeyWidget, o: Pick<HomeySyncOptions, 'appId' | 'settingIds'>): string | null {
   const appWidgetId = w.type === 'app_webview' && typeof w.data?.appWidgetId === 'string' ? w.data.appWidgetId as string : null;
   if (!appWidgetId) return null;
   const own = `homey:app:${o.appId}:`;

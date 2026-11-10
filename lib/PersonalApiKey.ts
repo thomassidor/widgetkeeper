@@ -39,9 +39,9 @@ export class KeyError extends Error {
   }
 }
 
-export const isMissingScopes = (err: unknown) => /missing scopes/i.test(String((err as any)?.message ?? err));
+const isMissingScopes = (err: unknown) => /missing scopes/i.test(String((err as any)?.message ?? err));
 /** A key revoked after it was saved: `createLocalAPI` only pings, so it's the write that finds out. */
-export const isUnauthorized = (err: unknown) => (err as any)?.statusCode === 401
+const isUnauthorized = (err: unknown) => (err as any)?.statusCode === 401
   || /invalid (session|token)|unauthori[sz]ed/i.test(String((err as any)?.message ?? err));
 
 /** Whether a key with these scopes may be used for `use`. */

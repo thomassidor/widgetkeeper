@@ -7,7 +7,7 @@
  */
 (function () {
   const { el, tileNames, applyColors, KEY_PROBLEMS, onTap: kitOnTap, touchGuard, messageLine, wireBar, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
-  const { glyphs, PALETTES, temperatureColor, hueColor, moodDot, swatchList, setBlend, model } = window.WidgetkeeperKit.lights;
+  const { glyphs, PALETTES, temperatureColor, hueColor, moodDot, swatchList, setBlend, model, panel: panelState } = window.WidgetkeeperKit.lights;
   'use strict';
 
   const PANEL_MS = 8e3; // the swatch panel closes after this long without a touch
@@ -57,11 +57,7 @@
    *   without its Moods, and the controls do nothing.
    */
   function createLightRoomsWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`lightrooms.${key}`, tokens) : null;
-      if (s && s !== `lightrooms.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('lightrooms', DEFAULT_STRINGS, opts);
 
     let devices = []; // [{ id, name, icon, zone, caps, groupLights? } | { id, missing }]
     /** Each room's icon (an SVG data URL) by zone id. */
@@ -100,12 +96,12 @@
 
     /** The swatch panel, under the row of the light it's open for. */
     const panel = el('div', { class: 'lr-panel' });
-    let panelFor = null; // the light id the panel is open for
+    /** Which light the panel is open for (`.id`), and when it closes by itself. */
+    const swatchPanel = panelState({ ms: PANEL_MS, render: () => render(), blocked: () => names.renaming });
     let panelKey = ''; // which swatches it holds, so it's only rebuilt when that changes
-    let panelTimer = null;
     /** @type {{node: HTMLElement, swatch: {hue?: number, sat?: number, k?: number}}[]} */
     let swatches = [];
-    for (const type of ['touchstart', 'pointerdown']) panel.addEventListener(type, () => armPanel(), { passive: true });
+    for (const type of ['touchstart', 'pointerdown']) panel.addEventListener(type, () => swatchPanel.arm(), { passive: true });
 
     /** @type {Map<string, any>} the room cards by key */
     const cards = new Map();
@@ -190,7 +186,7 @@
     /** A swatch was tapped: sets the light's colour or white (as Light Controls does for one light), and closes. */
     function pick(id, swatch) {
       const item = itemOf(id);
-      closePanel();
+      swatchPanel.close();
       if (!item) return;
       const d = item.members[0];
       let change = null;
@@ -224,31 +220,10 @@
       if (open.has(key)) {
         open.delete(key);
         const room = rooms.find(r => r.key === key);
-        if (room && room.rows.some(d => d.id === panelFor)) { panelFor = null; clearTimeout(panelTimer); }
+        if (room && room.rows.some(d => d.id === swatchPanel.id)) swatchPanel.drop();
       } else {
         open.add(key);
       }
-      render();
-    }
-
-    function armPanel() {
-      clearTimeout(panelTimer);
-      panelTimer = setTimeout(closePanel, PANEL_MS);
-    }
-
-    function closePanel() {
-      clearTimeout(panelTimer);
-      panelTimer = null;
-      if (panelFor == null) return;
-      panelFor = null;
-      render();
-    }
-
-    function togglePanel(id) {
-      if (names.renaming) return;
-      if (panelFor === id) { closePanel(); return; }
-      panelFor = id;
-      armPanel();
       render();
     }
 
@@ -268,12 +243,12 @@
       for (const swatch of swatchList(palette, color, temp)) {
         const node = el('button', { type: 'button', class: 'lr-swatch' }, panel);
         node.style.setProperty('--lr-swatch', swatch.k != null ? temperatureColor(swatch.k) : hueColor(swatch.hue / 360, swatch.sat));
-        onTap(node, () => { if (panelFor != null) pick(panelFor, swatch); });
+        onTap(node, () => { if (swatchPanel.id != null) pick(swatchPanel.id, swatch); });
         swatches.push({ node, swatch });
       }
       const close = el('button', { type: 'button', class: 'lr-close', 'aria-label': t('close') }, panel);
       setMask(el('span', { class: 'lr-close-glyph' }, close), glyphs.close);
-      onTap(close, closePanel);
+      onTap(close, swatchPanel.close);
     }
 
     /** Taps on the tile body; `stop` keeps a control's taps (and keys) from also reaching the tile around it. */
@@ -331,7 +306,7 @@
         // The chip is inside the row: its taps open the swatches, or toggle a light without colour.
         onTap(chip, () => {
           const item = itemOf(id);
-          if (item && hasChip(item.members[0])) togglePanel(id);
+          if (item && hasChip(item.members[0])) swatchPanel.toggle(id);
           else toggle(id);
         }, { stop: true });
         wireBar(bar, { id, drags, guard: touches, render: () => render(), commit });
@@ -437,7 +412,7 @@
         const row = rowFor(d.id);
         prev = place(card.rowList, prev, row.row);
         renderRow(d, row);
-        if (panelFor === d.id) prev = place(card.rowList, prev, panel);
+        if (swatchPanel.id === d.id) prev = place(card.rowList, prev, panel);
       }
     }
 
@@ -478,7 +453,7 @@
       row.sub.textContent = d.caps.dim ? '' : t(on ? 'on' : 'off');
       // A light without colour or temperature: a plain dot in its colour.
       row.chip.classList.toggle('plain', !chip);
-      row.chip.classList.toggle('active', panelFor === d.id);
+      row.chip.classList.toggle('active', swatchPanel.id === d.id);
       row.chip.tabIndex = chip ? 0 : -1;
       row.chip.setAttribute('aria-label', t(color ? 'color' : 'temperature'));
       row.glyph.classList.toggle('hue', color || multi);
@@ -486,7 +461,7 @@
       renderBar(row.bar, x, name);
     }
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       rooms = buildRooms();
       const keys = new Set(rooms.map(r => r.key));
@@ -498,10 +473,10 @@
         if (!ids.has(id)) { row.row.remove(); rows.delete(id); }
       }
       // The swatches: only while their light is shown in an open room and can take a colour.
-      const panelItem = panelFor != null ? itemOf(panelFor) : null;
-      const panelRoom = panelItem ? rooms.find(r => r.rows.some(d => d.id === panelFor)) : null;
+      const panelItem = swatchPanel.id != null ? itemOf(swatchPanel.id) : null;
+      const panelRoom = panelItem ? rooms.find(r => r.rows.some(d => d.id === swatchPanel.id)) : null;
       if (!panelItem || !panelRoom || !open.has(panelRoom.key) || !hasChip(panelItem.members[0])) {
-        if (panelFor != null) { panelFor = null; clearTimeout(panelTimer); }
+        swatchPanel.drop();
         panel.remove();
       } else {
         buildPanel(panelItem.members[0]);
@@ -519,8 +494,7 @@
       messageEl.style.display = message.text ? '' : 'none';
       messageEl.classList.toggle('error', !!message.text && devices.length > 0);
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     return { setState, setMoods, setNames: names.set, pushChange, setMessage, render, t };

@@ -60,11 +60,7 @@
    *   tint?: boolean, color?: string, now?: () => number, onHeight?: (h: number) => void }} opts
    */
   function createPriceWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`price.${key}`, tokens) : null;
-      if (s && s !== `price.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('price', DEFAULT_STRINGS, opts);
     const clock = opts.now || (() => Date.now());
     const hours = [12, 24, 36].includes(Number(opts.hours)) ? Number(opts.hours) : 12;
 
@@ -201,7 +197,7 @@
       }
     }
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       const now = clock();
       const m = model(now);
@@ -220,8 +216,7 @@
       messageEl.classList.toggle('error', !!message.text && !!m);
       scheduleNext(now, m ? m.len : HOUR);
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     /** Re-renders when the current slot (an hour or a quarter) moves on (the 5-min refresh brings new days). */

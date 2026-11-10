@@ -76,11 +76,7 @@
    *   `frame`: the element that paints the card (the widget's body), for the `card` theme's background.
    */
   function createWeatherWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`weather.${key}`, tokens) : null;
-      if (s && s !== `weather.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('weather', DEFAULT_STRINGS, opts);
     const now = opts.now || (() => Date.now());
     const iconBase = opts.iconBase != null ? opts.iconBase : 'icons/';
     const intFmt = new Intl.NumberFormat(opts.locale, { maximumFractionDigits: 0 });
@@ -98,7 +94,7 @@
     let message = null;
     let lastKey = null; // what's rendered, so an unchanged refresh doesn't rebuild the strip
     let hourTimer = null;
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
 
     root.classList.add('wf', compact ? 'wf-compact' : 'wf-detailed');
     if (rows === 2) root.classList.add('wf-paged');
@@ -277,7 +273,7 @@
       const from = Math.floor(now() / HOUR) * HOUR;
       const today = new Date(from);
       today.setHours(0, 0, 0, 0);
-      const days = [[t('today'), today.getTime()], [t('tomorrow'), new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).getTime()]];
+      const days = /** @type {[string, number][]} */ ([[t('today'), today.getTime()], [t('tomorrow'), new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).getTime()]]);
       const dayAfter = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2).getTime();
       days.forEach(([label, start], i) => {
         const end = i === 0 ? days[1][1] : dayAfter;
@@ -316,14 +312,6 @@
       if (!hours.length) return;
       const next = (Math.floor(now() / HOUR) + 1) * HOUR;
       hourTimer = setTimeout(render, next - now() + 1000);
-    }
-
-    function reportHeight() {
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) {
-        lastHeight = h;
-        if (opts.onHeight) opts.onHeight(h);
-      }
     }
 
     return { setForecast, setMessage, t, render };

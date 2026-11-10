@@ -176,11 +176,7 @@
    *   layoutTap?: boolean, onLayout?: (layout: 'compact' | 'large') => void }} opts
    */
   function createMediaWidget(root, opts = {}) {
-    const t = (key, tokens) => {
-      const s = opts.t ? opts.t(`media.${key}`, tokens) : null;
-      if (s && s !== `media.${key}`) return s;
-      return (DEFAULT_STRINGS[key] || key).replace(/__(\w+)__/g, (_, k) => (tokens && tokens[k] != null ? tokens[k] : ''));
-    };
+    const t = window.WidgetkeeperKit.translator('media', DEFAULT_STRINGS, opts);
     const step = [0.02, 0.05, 0.1].includes(opts.volumeStep) ? opts.volumeStep : 0.05;
     /** The volume limit (0–1): the bar's right end, and `+` stops there. */
     const maxVolume = typeof opts.maxVolume === 'number' && opts.maxVolume > 0 && opts.maxVolume < 1 ? opts.maxVolume : 1;
@@ -380,9 +376,7 @@
     const settable = id => has(id) && device.caps[id].setable !== false;
 
     function shake() {
-      card.classList.remove('shake');
-      void card.offsetWidth; // restart the animation
-      card.classList.add('shake');
+      window.WidgetkeeperKit.shake(card);
     }
 
     function haptic() {
@@ -811,7 +805,7 @@
     }
     document.addEventListener('visibilitychange', () => render());
 
-    let lastHeight = 0;
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
       const ok = !!device && !device.missing && !!device.caps;
       card.style.display = device ? '' : 'none';
@@ -979,8 +973,7 @@
       speakersPanel.setAttribute('aria-hidden', String(!speakersOpen));
       if (speakersOpen) renderSpeakers();
 
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== lastHeight) { lastHeight = h; if (opts.onHeight) opts.onHeight(h); }
+      reportHeight();
     }
 
     return { setState, pushChange, pushArt, setMessage, render, t, setPanel, setSpeakers, setLayout, setVisible };

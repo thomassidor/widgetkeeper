@@ -9,7 +9,7 @@ export const TIME_FORMAT_SETTING = 'timeFormat';
 /** Sent with `{timeFormat}` when it changes, so open widgets draw their times again. */
 export const TIME_FORMAT_EVENT = 'timeformat:state';
 
-export const TIME_FORMATS = ['auto', '24', '12'] as const;
+const TIME_FORMATS = ['auto', '24', '12'] as const;
 export type TimeFormat = typeof TIME_FORMATS[number];
 
 function isTimeFormat(v: unknown): v is TimeFormat {

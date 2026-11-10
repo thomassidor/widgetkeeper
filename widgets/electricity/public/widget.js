@@ -110,7 +110,6 @@
       settings: { showPrices: true, showUsage: true, nextLow: '12', separateUsage: false, liveWindow: 10, smooth: false, usageColor: 'neutral' }, // nextLow: none/12/24/both; usageColor: neutral/purple
       message: null,
       width: root.clientWidth || 368,
-      lastHeight: 0,
       liveIdx: null, // live scrub: index into the resampled live points
       slotIdx: null, // usage/price scrub: hour slot
       fineIdx: null, // usage/price scrub: 5-min index from the first slot
@@ -210,11 +209,7 @@
       reportHeight();
     }
 
-    function reportHeight() {
-      if (!opts.onHeight) return;
-      const h = Math.ceil(root.getBoundingClientRect().height);
-      if (h && h !== state.lastHeight) { state.lastHeight = h; opts.onHeight(h); }
-    }
+    const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
 
     function renderHeader(header, m) {
       const cur = currencyUnits(m.d.currency);

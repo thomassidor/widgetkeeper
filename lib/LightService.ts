@@ -11,9 +11,9 @@ import Timings from './Timings.js';
 export const LIGHTS_STATE_EVENT = 'lights:state';
 
 /** The capabilities a light tile reads; it needs `dim` or `onoff` (a plug or a switch set to be a light). */
-export const LIGHT_CAPS = ['onoff', 'dim', 'light_temperature', 'light_hue', 'light_saturation', 'light_mode'] as const;
+const LIGHT_CAPS = ['onoff', 'dim', 'light_temperature', 'light_hue', 'light_saturation', 'light_mode'] as const;
 
-export type LightCap = CapState;
+type LightCap = CapState;
 
 /** A light in a Homey group device (`groupLights`), for the group's tile to show its lights' colours. */
 export type LightMember = { id: string, caps: Record<string, LightCap> };
@@ -26,14 +26,14 @@ export type LightDevice =
 export const GROUP_DRIVER = 'homey:virtualdrivergroup:driver';
 
 /** A Homey group device's lights, or null for any other device. */
-export function groupMembers(device: any): string[] | null {
+function groupMembers(device: any): string[] | null {
   if (device?.driverId !== GROUP_DRIVER) return null;
   const ids = device.settings?.deviceIds;
   return Array.isArray(ids) ? ids.filter((id: unknown): id is string => typeof id === 'string' && id !== device.id) : [];
 }
 
 /** A colour a Mood gives one of its lights: a hue and saturation (0–1), or a colour temperature (0 = cool). */
-export type MoodColor = { hue: number, saturation: number } | { temperature: number };
+type MoodColor = { hue: number, saturation: number } | { temperature: number };
 
 /** A Homey Mood of a room, for the Light Controls palette (`palette: moods`). */
 export type LightMood = { id: string, name: string, zone: string, colors: MoodColor[] };
@@ -68,7 +68,7 @@ const unit = (v: unknown) => typeof v === 'number' && Number.isFinite(v) && v >=
  * The colours a Mood gives its lights (each device's stored `state`, keyed by capability), for the pill's dot:
  * a light it turns off has none, and a light in colour mode (or without a temperature) gives its hue.
  */
-export function moodColors(mood: any): MoodColor[] {
+function moodColors(mood: any): MoodColor[] {
   const out: MoodColor[] = [];
   for (const { state } of Object.values<any>(mood?.devices ?? {})) {
     if (!state || state.onoff === false || out.length >= MOOD_COLORS) continue;
@@ -83,7 +83,7 @@ export function moodColors(mood: any): MoodColor[] {
 }
 
 /** The light capabilities the device has, in `LIGHT_CAPS` order. */
-export function lightCaps(device: any): string[] {
+function lightCaps(device: any): string[] {
   return presentCaps(device, LIGHT_CAPS);
 }
 
