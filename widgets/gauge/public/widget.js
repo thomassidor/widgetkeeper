@@ -15,6 +15,8 @@
   const MAX_R = 80; // the arc's radius at most
   const STROKE = 12; // the track and the value's arc
   const RANGE_W = 4; // the time span's band, inside the track
+  const KNOB_R = STROKE / 2 + 2; // the value's knob; its 3 px ring reaches 1.5 px past this
+  const RANGE_IN = KNOB_R + 1.5 + 3 + RANGE_W / 2; // the band's middle from the track's: 3 px clear of the knob's ring
   const CHIP_H = 36; // the chip row, over the svg's top (as every chart widget's)
   const PAD = 6; // above the arc, and room for its round caps
   const ZONES = ['none', 'rising', 'falling'];
@@ -165,14 +167,14 @@
       // The span's lowest to highest, inside the dial or under the bar.
       if (showRange && r.min != null) {
         const f0 = frac(r.min), fEnd = Math.max(frac(r.max), f0 + 0.006);
-        stroke(f0, fEnd, 'gg-range', STROKE / 2 + RANGE_W / 2 + 3);
+        stroke(f0, fEnd, 'gg-range', RANGE_IN);
       }
       // The value now, from the scale's start, in its level's colour with zones.
       const zone = level;
       if (r.value != null) {
         const f = frac(r.value);
         stroke(0, Math.max(f, 0.002), `gg-value${zone ? ` ${zone}` : ''}`).setAttribute('data-value', String(r.value));
-        dot(f, `gg-knob${zone ? ` ${zone}` : ''}`, STROKE / 2 + 2);
+        dot(f, `gg-knob${zone ? ` ${zone}` : ''}`, KNOB_R);
       }
 
       // The scale's ends, the value with its units, and the range.
@@ -219,7 +221,7 @@
       const numY = legend.top + NUM_H / 2;
       const y = legend.top + NUM_H + 8 + STROKE / 2;
       const x = f => x0 + (x1 - x0) * f;
-      const endY = y + STROKE / 2 + 3 + RANGE_W + 3 + 14;
+      const endY = y + RANGE_IN + RANGE_W / 2 + 3 + 14;
       return {
         H: Math.ceil(endY + 6),
         path: (a, b, inside) => `M${f1(x(a))} ${f1(y + inside)}H${f1(x(b))}`,

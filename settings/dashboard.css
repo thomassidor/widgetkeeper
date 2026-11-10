@@ -76,6 +76,9 @@ body { margin: 0; color: var(--wd-text); font-size: var(--homey-font-size-defaul
 .wd-nav-pin.on svg { fill: currentColor; color: var(--wd-accent); } /* its row isn't tinted: that's the current dashboard's mark */
 .wd-nav-done { flex: none; }
 .wd-nav-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 8px 8px; }
+/* A thin, quiet scrollbar on the pane's own fill (the browser's grey one with arrows looked out of place), clearer on hover. */
+.wd-nav-list { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--wd-text) 18%, transparent) transparent; }
+.wd-nav-list:hover { scrollbar-color: color-mix(in srgb, var(--wd-text) 32%, transparent) transparent; }
 .wd-nav-row {
   -webkit-appearance: none; appearance: none; border: 0; margin: 0; background: transparent; font-family: inherit; cursor: pointer;
   display: flex; align-items: center; gap: 12px; box-sizing: border-box; width: 100%; min-height: 44px; padding: 0 10px; border-radius: 10px;
