@@ -53,9 +53,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Dim at set times,** and the Flow card *Dim the web dashboards*, for every browser or one screen name.
 
 ### Web dashboards: a side pane
-- **Your dashboards in a side pane,** from the button at the top left, under the front page's sections, also in full screen. It floats over the widgets, or stays open beside them on a wide screen, in the editors too, so a dashboard is laid out at the width it's seen at.
-- **Customize this list:** hide dashboards and sections and drag them into this browser's own order, which Rotate follows. The pane can take the dashboard's background tint, and its foot (All dashboards, Customize, Keep open and Settings) folds away.
-- **Settings from any view,** at the pane's foot, in tabs: All browsers (Header, Sync, Backup) and This browser (Screen, Kiosk, Sign-in).
+- **Your dashboards in a side pane,** from the button at the top left, under the front page's sections, also in full screen. It floats over the widgets, or stays open beside them on a wide screen, in the editors too, so a dashboard is laid out at the width it's seen at. All dashboards is its first row, and a home button beside the pane's button goes back there.
+- **Customize this list:** hide dashboards, sections and All dashboards, and drag them into this browser's own order, which Rotate follows. The pane can take the dashboard's background tint, and its foot (Customize, Keep open and Settings) folds away.
+- **Web dashboard settings from any view,** at the pane's foot or beside the front page's pen, in tabs: All browsers (Header, Sync, Backup) and This browser (Screen, Kiosk, Sign-in).
 - **Go back after a while:** after 1 to 120 minutes without a touch, a browser returns to the dashboard you pick, or All dashboards. A dashboard with a code, the editor and dialogs hold it.
 
 ### Web dashboards: your own look
