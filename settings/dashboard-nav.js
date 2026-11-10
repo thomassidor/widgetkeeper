@@ -532,6 +532,23 @@
       return b;
     }
 
+    /**
+     * A dashboard's way back (the user's pick of six mock-ups, 2026-11-10: the back arrow was missed): home (the front
+     * page, taking the code on a dashboard that has one, as the pane's rows do) and the pane's button joined in one pill,
+     * so the two ways to move sit apart from the dashboard's own icon and name.
+     */
+    function navGroup() {
+      const home = el('a', 'wd-icon wd-nav-home');
+      home.href = '#/';
+      home.title = t('navAll');
+      home.setAttribute('aria-label', t('navAll'));
+      home.append(icon('home'));
+      home.addEventListener('click', (e) => leave(e, '#/'));
+      const group = el('span', 'wd-nav-group');
+      group.append(home, el('span', 'wd-nav-group-rule'), navButton());
+      return group;
+    }
+
     /** A view is up: called once it's drawn. `inactive`: an editor's, where only a kept-open pane shows, and can't be used. */
     function showNav({ inactive = false } = {}) {
       ensureShell();
@@ -580,6 +597,6 @@
     window.addEventListener('resize', apply);
     for (const type of ['fullscreenchange', 'webkitfullscreenchange']) document.addEventListener(type, () => { draw(); apply(); });
 
-    Object.assign(wd, { tintNav, hideNav, navBlocked: blocked, navButton, navCopied, navGroups, navInOrder, ordered, readPrefs, redrawNav, reorder, showNav, PIN_MIN_WIDTH });
+    Object.assign(wd, { tintNav, hideNav, navBlocked: blocked, navButton, navGroup, navCopied, navGroups, navInOrder, ordered, readPrefs, redrawNav, reorder, showNav, PIN_MIN_WIDTH });
   });
 })();

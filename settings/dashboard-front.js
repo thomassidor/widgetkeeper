@@ -65,7 +65,10 @@
       edit.title = t('edit');
       edit.setAttribute('aria-label', t('edit'));
       edit.append(icon('pen'));
-      root.append(frontBar(wd.navButton(), wd.brand(), el('span', 'wd-spacer'), wd.liveNote(), edit), page);
+      // Web dashboard settings beside the pen too, so it's found without opening the side pane (the user's ask, 2026-11-10).
+      const settings = button('wd-icon wd-front-settings', '', () => pageSettings(), t('pageSettings'));
+      settings.append(icon('sliders'));
+      root.append(frontBar(wd.navButton(), wd.brand(), el('span', 'wd-spacer'), wd.liveNote(), settings, edit), page);
       wd.showNav();
     }
 
@@ -142,7 +145,13 @@
         saveFront({ sections: wd.frontPage.sections });
         renderList(true);
       }, t('tapAgain'), t('deleteSection'));
-      head.append(name, up, down, remove);
+      // The field as wide as its text (a hidden copy beside it sets the width), so the tools follow the name.
+      const box = el('span', 'wd-group-namebox');
+      const fit = () => { box.dataset.value = name.value || name.placeholder; };
+      name.addEventListener('input', fit);
+      fit();
+      box.append(name);
+      head.append(box, up, down, remove);
       return head;
     }
 

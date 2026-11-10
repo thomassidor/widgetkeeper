@@ -479,7 +479,7 @@
       const title = el('span', 'wd-bar-title', d.name || t('untitled'));
       const mark = wd.iconNode(d.icon);
       if (mark) title.prepend(mark);
-      const items = [wd.navButton(), title, el('span', 'wd-spacer'), liveNote()];
+      const items = [wd.navGroup(), title, el('span', 'wd-spacer'), liveNote()];
       // Safari on an iPad only has the webkit-prefixed calls.
       const doc = /** @type {any} */ (document.documentElement);
       const page = /** @type {any} */ (document);

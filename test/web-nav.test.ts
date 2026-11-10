@@ -176,6 +176,20 @@ describe('the pane\'s list', () => {
     expect(mount({ current: null, stored: { allHidden: true } }).pane.querySelector('[aria-current]')?.getAttribute('href')).toBe('#/');
   });
 
+  it('gives a dashboard\'s bar home and the pane\'s button in one group, home asking a dashboard\'s code', () => {
+    const { wd, root } = mount({ lock: 'home' });
+    const group = wd.navGroup() as HTMLElement;
+    root.append(group);
+    const home = group.querySelector('.wd-nav-home') as HTMLAnchorElement;
+    expect(home.getAttribute('href')).toBe('#/');
+    expect(home.getAttribute('aria-label')).toBe('navAll');
+    expect(group.querySelector('.wd-nav-toggle')).not.toBeNull();
+    const e = new MouseEvent('click', { cancelable: true, bubbles: true });
+    home.dispatchEvent(e);
+    expect(e.defaultPrevented).toBe(true);
+    expect(wd.askCode).toHaveBeenCalledOnce();
+  });
+
   it('asks the code before leaving a dashboard that has one', () => {
     const { wd, pane } = mount({ lock: 'home' });
     const e = new MouseEvent('click', { cancelable: true, bubbles: true });
