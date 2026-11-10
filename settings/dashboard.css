@@ -57,7 +57,7 @@ body { margin: 0; color: var(--wd-text); font-size: var(--homey-font-size-defaul
    in a widget never reaches the page. */
 .wd-nav {
   position: fixed; top: 0; bottom: 0; left: 0; z-index: 21; box-sizing: border-box; width: 260px; display: flex; flex-direction: column;
-  padding-left: env(safe-area-inset-left, 0px); color: var(--wd-text); background: var(--wd-tile); border-right: 1px solid var(--wd-line);
+  padding-left: env(safe-area-inset-left, 0px); color: var(--wd-text); background: var(--wd-nav-bg, var(--wd-tile)); border-right: 1px solid var(--wd-line);
   transform: translateX(-102%); transition: transform .2s ease;
 }
 .wd-nav.open { transform: none; }
@@ -90,6 +90,18 @@ a.wd-nav-row:hover, button.wd-nav-row:hover { background: color-mix(in srgb, var
 .wd-nav-fold svg { width: 16px; height: 16px; transition: transform .15s; }
 .wd-nav-fold.folded svg { transform: rotate(-90deg); }
 .wd-nav-foot { flex: none; display: flex; flex-direction: column; gap: 2px; padding: 8px; border-top: 1px solid var(--wd-line); }
+.wd-nav-foot.folded { padding-top: 0; padding-bottom: 0; }
+/* The foot's handle: a thin bar that folds its rows away (Customize's Tint has none). */
+.wd-nav-foot-fold {
+  -webkit-appearance: none; appearance: none; border: 0; margin: 0 0 2px; padding: 0; background: transparent; cursor: pointer;
+  display: grid; place-items: center; width: 100%; height: 24px; border-radius: 8px; color: var(--wd-muted);
+}
+.wd-nav-foot.folded .wd-nav-foot-fold { margin: 4px 0; }
+.wd-nav-foot-fold:hover { color: var(--wd-text); background: color-mix(in srgb, var(--wd-text) 8%, transparent); }
+.wd-nav-foot-fold:focus-visible { outline: 2px solid var(--wd-accent); outline-offset: -2px; }
+.wd-nav .wd-nav-foot-fold svg { width: 18px; height: 18px; }
+.wd-nav-foot > [hidden] { display: none; }
+.wd-nav-tint { cursor: pointer; }
 .wd-nav-count { flex: none; font-size: 13px; color: var(--wd-muted); }
 .wd-nav-note { margin: 2px 10px 6px; font-size: 13px; line-height: 18px; color: var(--wd-muted); }
 .wd-nav-reset { color: var(--wd-accent); }

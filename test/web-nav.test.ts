@@ -26,6 +26,16 @@ const SECTIONS = [{ id: 's1', name: 'Rooms' }, { id: 's2', name: 'Outside' }];
 const ALL = [HOME, ENERGY, KITCHEN, BATH, GARDEN];
 const KEY = 'widgetkeeper.web.nav';
 
+/** The page's own (settings/dashboard.js): under 4.5:1 against the text of that mode. */
+function hardToRead(colour: string, dark: boolean) {
+  const luminance = (hex: string) => [1, 3, 5].reduce((sum, at, i) => {
+    const c = parseInt(hex.slice(at, at + 2), 16) / 255;
+    return sum + [0.2126, 0.7152, 0.0722][i] * (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  }, 0);
+  const [a, b] = [luminance(colour), luminance(dark ? '#E4E4E7' : '#1F2029')];
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) < 4.5;
+}
+
 function setWidth(width: number) {
   Object.defineProperty(window, 'innerWidth', { configurable: true, value: width });
 }
@@ -44,6 +54,7 @@ function mount(opts: { stored?: unknown; dashboards?: any[]; sections?: any[]; c
     current: opts.current === undefined ? { dashboard: HOME } : opts.current,
     lockOf: (d: any) => (d.id === opts.lock ? { digits: 4 } : null),
     askCode: vi.fn((_d: any, then: () => void) => then()),
+    hardToRead,
   };
   (window as any).WidgetkeeperWeb = { part: (_name: string, fn: (w: any) => void) => fn(wd) };
   runFile('settings/dashboard-nav.js');
@@ -509,5 +520,77 @@ describe('the page around the pane', () => {
     for (const file of ['settings/dashboard-views.js', 'settings/dashboard.css']) {
       expect(readFileSync(file, 'utf8')).not.toMatch(/dashboardJump|wd-jump|wd-back\b/);
     }
+  });
+});
+
+describe('the foot', () => {
+  const rows = (pane: HTMLElement) => [...pane.querySelectorAll('.wd-nav-foot > .wd-nav-row')].filter(r => !(r as HTMLElement).hidden).length;
+
+  it('is open at first, and folds its rows away under its handle, remembered', () => {
+    const { pane, stored, toggle } = mount();
+    toggle.click();
+    const fold = () => pane.querySelector('.wd-nav-foot-fold') as HTMLElement;
+    expect(fold().getAttribute('aria-expanded')).toBe('true');
+    expect(rows(pane)).toBe(4);
+    fold().click();
+    expect(fold().getAttribute('aria-expanded')).toBe('false');
+    expect(fold().getAttribute('aria-label')).toBe('navFootShow');
+    expect(rows(pane)).toBe(0);
+    expect(stored().footFolded).toBe(true);
+    expect(document.activeElement).toBe(fold());
+    document.body.textContent = '';
+    const again = mount();
+    expect(rows(again.pane)).toBe(0);
+    (again.pane.querySelector('.wd-nav-foot-fold') as HTMLElement).click();
+    expect(rows(again.pane)).toBe(4);
+    expect(again.stored().footFolded).toBe(false);
+  });
+
+  it('keeps Keep open hidden while folded, as the window widens too', () => {
+    setWidth(1280);
+    const { pane } = mount({ stored: { footFolded: true } });
+    window.dispatchEvent(new Event('resize'));
+    expect((pane.querySelector('.wd-nav-pin') as HTMLElement).hidden).toBe(true);
+  });
+});
+
+describe('Tint', () => {
+  const fill = () => html.style.getPropertyValue('--wd-nav-bg');
+  afterEach(() => { html.removeAttribute('style'); });
+
+  it('is off at first: the pane keeps its own fill on a coloured dashboard', () => {
+    const { wd } = mount();
+    wd.tintNav('#E1ECF9', false);
+    expect(fill()).toBe('');
+  });
+
+  it('is a switch in Customize, stored, that takes some of the backdrop into the pane', () => {
+    const { wd, pane, stored, customize } = mount();
+    wd.tintNav('#0B1A2E', true);
+    customize();
+    const box = pane.querySelector('#wd-nav-tint') as HTMLInputElement;
+    expect(box.checked).toBe(false);
+    box.checked = true;
+    box.dispatchEvent(new Event('change'));
+    expect(stored().tint).toBe(true);
+    expect(fill()).toBe('#101a28'); // 60 % of the dark ocean into the dark tile
+    box.checked = false;
+    box.dispatchEvent(new Event('change'));
+    expect(fill()).toBe('');
+  });
+
+  it('follows the view: none for Default and the front page, light and dark each their own', () => {
+    const { wd } = mount({ stored: { tint: true } });
+    wd.tintNav('#E1ECF9', false);
+    expect(fill()).toBe('#edf4fb');
+    wd.tintNav(null, false);
+    expect(fill()).toBe('');
+  });
+
+  it('takes less of a bright colour of the user\'s own in dark mode, so the text still reads', () => {
+    const { wd } = mount({ stored: { tint: true } });
+    wd.tintNav('#ffd400', true);
+    expect(fill()).not.toBe('');
+    expect(hardToRead(fill(), true)).toBe(false);
   });
 });

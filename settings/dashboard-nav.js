@@ -14,14 +14,16 @@
   const EDGE_PX = 32;
 
   window.WidgetkeeperWeb.part('nav', (wd) => {
-    const { button, el, icon, root, STAY_STORAGE, storageGet, storageSet, t } = wd;
+    const { button, el, hardToRead, icon, root, STAY_STORAGE, storageGet, storageSet, t } = wd;
+    /** At most this much of a dashboard's backdrop goes into the pane's fill, less where the text would be hard to read. */
+    const TINT = 0.6;
 
     /** The stored choices, whatever is stored: a list only of strings, and pinned only if it's true. */
     function readPrefs(raw) {
       let p = null;
       try { p = JSON.parse(raw); } catch (e) { /* none yet, or damaged: the defaults */ }
       const list = (v) => (Array.isArray(v) ? v.filter(x => typeof x === 'string') : []);
-      return { pinned: !!p && p.pinned === true, hidden: list(p && p.hidden), folded: list(p && p.folded), order: list(p && p.order), sectionOrder: list(p && p.sectionOrder) };
+      return { pinned: !!p && p.pinned === true, footFolded: !!p && p.footFolded === true, tint: !!p && p.tint === true, hidden: list(p && p.hidden), folded: list(p && p.folded), order: list(p && p.order), sectionOrder: list(p && p.sectionOrder) };
     }
 
     /** `ids` in the stored order: those it names first (ids that are gone ignored), the others after them as they came. */
@@ -38,7 +40,7 @@
       list.splice(to, 0, item);
     }
 
-    const nav = { prefs: readPrefs(storageGet(NAV_STORAGE)), shown: false, inactive: false, open: false, customizing: false, reveal: null, drag: null, pane: null, scrim: null, head: null, list: null, foot: null };
+    const nav = { prefs: readPrefs(storageGet(NAV_STORAGE)), shown: false, inactive: false, open: false, customizing: false, reveal: null, drag: null, pane: null, scrim: null, head: null, list: null, foot: null, backdrop: null };
     wd.nav = nav;
 
     const sectionsNow = () => (wd.frontPage && wd.frontPage.sections) || [];
@@ -96,6 +98,36 @@
     const isPinned = () => allowed() && nav.prefs.pinned && canPin();
     const isFloating = () => allowed() && !nav.inactive && !isPinned() && nav.open;
 
+    /**
+     * The pane's fill with Tint on: the tile's colour with some of the dashboard's backdrop in it (none for Default, nor on
+     * the front page: the pane as it is). A colour of the user's own may be a bright one in dark mode, so the share goes
+     * down until the text reads.
+     */
+    function tintColour() {
+      const b = nav.backdrop;
+      if (!nav.prefs.tint || !b) return null;
+      const channels = (hex) => [1, 3, 5].map(at => parseInt(hex.slice(at, at + 2), 16));
+      const tile = channels(b.dark ? '#181920' : '#FFFFFF');
+      const back = channels(b.colour);
+      for (let share = TINT; share > 0; share -= 0.1) {
+        const hex = `#${tile.map((c, i) => Math.round(c * (1 - share) + back[i] * share).toString(16).padStart(2, '0')).join('')}`;
+        if (!hardToRead(hex, b.dark)) return hex;
+      }
+      return null;
+    }
+
+    /** The dashboard's backdrop, from `applyTheme()`: null for Default, which leaves the pane as it is. */
+    function tintNav(colour, dark) {
+      nav.backdrop = colour ? { colour, dark } : null;
+      paint();
+    }
+
+    function paint() {
+      const fill = tintColour();
+      if (fill) document.documentElement.style.setProperty('--wd-nav-bg', fill);
+      else document.documentElement.style.removeProperty('--wd-nav-bg');
+    }
+
     /** Puts the pane in the state the choices, the window and the view ask for. */
     function apply() {
       if (nav.pane) {
@@ -109,7 +141,7 @@
         nav.scrim.hidden = !allowed() || nav.inactive;
         nav.scrim.classList.toggle('open', floating);
         const pin = nav.foot.querySelector('.wd-nav-pin');
-        if (pin) pin.hidden = !canPin();
+        if (pin) pin.hidden = !canPin() || nav.prefs.footFolded;
       }
       for (const b of root.querySelectorAll('.wd-nav-toggle')) b.setAttribute('aria-expanded', String(isPinned() || isFloating()));
     }
@@ -333,7 +365,16 @@
     function drawFoot() {
       if (nav.customizing) {
         const p = nav.prefs;
-        const nodes = [el('p', 'wd-nav-note', t('navNote'))];
+        const tint = el('input', 'wd-switch');
+        tint.type = 'checkbox';
+        tint.id = 'wd-nav-tint';
+        tint.setAttribute('role', 'switch');
+        tint.checked = p.tint;
+        tint.addEventListener('change', () => { p.tint = tint.checked; save(); paint(); });
+        const tintRow = el('label', 'wd-nav-row wd-nav-tint');
+        tintRow.htmlFor = tint.id;
+        tintRow.append(el('span', 'wd-nav-name', t('navTint')), tint);
+        const nodes = [el('p', 'wd-nav-note', t('navNote')), tintRow];
         if (p.hidden.length || p.order.length || p.sectionOrder.length) {
           nodes.push(button('wd-nav-row wd-nav-reset', t('navReset'), () => {
             Object.assign(nav.prefs, { hidden: [], order: [], sectionOrder: [] });
@@ -342,6 +383,7 @@
             drawFoot();
           }));
         }
+        nav.foot.classList.remove('folded');
         nav.foot.replaceChildren(...nodes);
         return;
       }
@@ -357,11 +399,25 @@
       const pinned = isPinned();
       const pin = button(`wd-nav-row wd-nav-pin${pinned ? ' on' : ''}`, '', togglePin);
       pin.setAttribute('aria-pressed', String(pinned));
-      pin.hidden = !canPin();
+      pin.hidden = !canPin() || nav.prefs.footFolded;
       pin.append(icon('pin'), el('span', 'wd-nav-name', t(pinned ? 'navStopKeeping' : 'navKeepOpen')));
       const settings = button('wd-nav-row wd-nav-settings', '', openSettings);
       settings.append(icon('sliders'), el('span', 'wd-nav-name', t('pageSettings')));
-      nav.foot.replaceChildren(all, custom, pin, settings);
+      // The foot's rows fold away under its handle, for a list with more room; open unless this browser folded them.
+      const folded = nav.prefs.footFolded;
+      const fold = button('wd-nav-foot-fold', '', () => {
+        nav.prefs.footFolded = !nav.prefs.footFolded;
+        save();
+        drawFoot();
+        apply();
+        const b = /** @type {HTMLElement} */ (nav.foot.querySelector('.wd-nav-foot-fold'));
+        if (b) b.focus({ preventScroll: true });
+      }, t(folded ? 'navFootShow' : 'navFootHide'));
+      fold.setAttribute('aria-expanded', String(!folded));
+      fold.append(icon(folded ? 'up' : 'down'));
+      for (const row of [all, custom, pin, settings]) if (folded) row.hidden = true;
+      nav.foot.classList.toggle('folded', folded);
+      nav.foot.replaceChildren(fold, all, custom, pin, settings);
     }
 
     function draw() {
@@ -494,6 +550,6 @@
     window.addEventListener('resize', apply);
     for (const type of ['fullscreenchange', 'webkitfullscreenchange']) document.addEventListener(type, () => { draw(); apply(); });
 
-    Object.assign(wd, { hideNav, navBlocked: blocked, navButton, navCopied, navGroups, navInOrder, ordered, readPrefs, redrawNav, reorder, showNav, PIN_MIN_WIDTH });
+    Object.assign(wd, { tintNav, hideNav, navBlocked: blocked, navButton, navCopied, navGroups, navInOrder, ordered, readPrefs, redrawNav, reorder, showNav, PIN_MIN_WIDTH });
   });
 })();

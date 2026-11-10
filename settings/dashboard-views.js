@@ -92,6 +92,7 @@
       setVar('--wd-surface', wd.surface && wd.surface.colour);
       setVar('--wd-surface-line', wd.surface && wd.surface.line);
       for (const frame of frames) wd.stampSurface(frame);
+      if (wd.tintNav) wd.tintNav(background && background !== 'default' ? wd.backdrop(background, dark) : null, dark);
     }
 
     // Full screen: the dashboard's bar keeps only the exit button and the live note (dashboard.css).
