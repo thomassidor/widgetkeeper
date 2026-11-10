@@ -23,7 +23,7 @@
       let p = null;
       try { p = JSON.parse(raw); } catch (e) { /* none yet, or damaged: the defaults */ }
       const list = (v) => (Array.isArray(v) ? v.filter(x => typeof x === 'string') : []);
-      return { pinned: !!p && p.pinned === true, footFolded: !!p && p.footFolded === true, tint: !!p && p.tint === true, hidden: list(p && p.hidden), folded: list(p && p.folded), order: list(p && p.order), sectionOrder: list(p && p.sectionOrder) };
+      return { pinned: !!p && p.pinned === true, footFolded: !!p && p.footFolded === true, tint: !!p && p.tint === true, allHidden: !!p && p.allHidden === true, hidden: list(p && p.hidden), folded: list(p && p.folded), order: list(p && p.order), sectionOrder: list(p && p.sectionOrder) };
     }
 
     /** `ids` in the stored order: those it names first (ids that are gone ignored), the others after them as they came. */
@@ -124,6 +124,7 @@
 
     function paint() {
       const fill = tintColour();
+      document.documentElement.classList.toggle('wd-nav-tinted', !!fill);
       if (fill) document.documentElement.style.setProperty('--wd-nav-bg', fill);
       else document.documentElement.style.removeProperty('--wd-nav-bg');
     }
@@ -339,9 +340,29 @@
       return head;
     }
 
+    /** All dashboards (the front page), first in the list; hideable in Customize, but listed while it's the page shown. */
+    function allRow() {
+      if (nav.customizing) {
+        const on = !nav.prefs.allHidden;
+        const row = el('div', `wd-nav-row wd-nav-all${on ? '' : ' off'}`);
+        const room = el('span', 'wd-nav-grip'); // no grip: it stays first, but lines up with the rows that have one
+        room.setAttribute('aria-hidden', 'true');
+        row.append(room, icon('squares'), el('span', 'wd-nav-name', t('navAll')),
+          eyeButton('eye-all', t('navAll'), on, () => { nav.prefs.allHidden = on; }));
+        return row;
+      }
+      const all = el('a', 'wd-nav-row wd-nav-all');
+      all.href = '#/';
+      all.append(icon('squares'), el('span', 'wd-nav-name', t('navAll')));
+      if (!wd.current) all.setAttribute('aria-current', 'page');
+      all.addEventListener('click', (e) => leave(e, '#/'));
+      return all;
+    }
+
     function drawList() {
       const nodes = [];
       const here = wd.current && wd.current.dashboard;
+      if (nav.customizing || !nav.prefs.allHidden || !here) nodes.push(allRow());
       if (!nav.customizing && here && wd.lockOf(here)) nodes.push(el('p', 'wd-nav-note', t('navHeld')));
       for (const group of navGroups(nav.customizing)) {
         if (group.id) nodes.push(nav.customizing ? customHead(group) : plainHead(group));
@@ -349,6 +370,20 @@
         nodes.push(...group.rows.map(d => (nav.customizing ? customRow(d, group) : plainRow(d))));
       }
       nav.list.replaceChildren(...nodes);
+    }
+
+    /**
+     * The pane's title: Dashboards, or with a name or icon of the user's own (the front page's, Settings) that name and the
+     * front page's mark (their icon, else the app's).
+     */
+    function navTitle() {
+      const own = (wd.frontPage && wd.frontPage.brand) || {};
+      if (!own.name && !own.icon) return el('strong', 'wd-nav-title', t('dashboards'));
+      const title = el('strong', 'wd-nav-title wd-nav-brand');
+      const mark = wd.brand().querySelector('.wd-logo');
+      if (mark) title.append(mark);
+      title.append(el('span', 'wd-brand-name', own.name || t('dashboards')));
+      return title;
     }
 
     function drawHead() {
@@ -359,7 +394,7 @@
       }
       const close = button('wd-icon wd-nav-close', '', closePane, t('navClose'));
       close.append(icon('close'));
-      nav.head.replaceChildren(el('strong', 'wd-nav-title', t('dashboards')), close);
+      nav.head.replaceChildren(navTitle(), close);
     }
 
     function drawFoot() {
@@ -375,9 +410,9 @@
         tintRow.htmlFor = tint.id;
         tintRow.append(el('span', 'wd-nav-name', t('navTint')), tint);
         const nodes = [el('p', 'wd-nav-note', t('navNote')), tintRow];
-        if (p.hidden.length || p.order.length || p.sectionOrder.length) {
+        if (p.allHidden || p.hidden.length || p.order.length || p.sectionOrder.length) {
           nodes.push(button('wd-nav-row wd-nav-reset', t('navReset'), () => {
-            Object.assign(nav.prefs, { hidden: [], order: [], sectionOrder: [] });
+            Object.assign(nav.prefs, { allHidden: false, hidden: [], order: [], sectionOrder: [] });
             save();
             drawList();
             drawFoot();
@@ -387,11 +422,6 @@
         nav.foot.replaceChildren(...nodes);
         return;
       }
-      const all = el('a', 'wd-nav-row');
-      all.href = '#/';
-      all.append(icon('squares'), el('span', 'wd-nav-name', t('navAll')));
-      if (!wd.current) all.setAttribute('aria-current', 'page');
-      all.addEventListener('click', (e) => leave(e, '#/'));
       const custom = button('wd-nav-row wd-nav-custom', '', customize);
       custom.append(icon('eye'), el('span', 'wd-nav-name', t('navCustomize')));
       const count = nav.prefs.hidden.filter(id => dashboardIds().includes(id)).length;
@@ -415,9 +445,9 @@
       }, t(folded ? 'navFootShow' : 'navFootHide'));
       fold.setAttribute('aria-expanded', String(!folded));
       fold.append(icon(folded ? 'up' : 'down'));
-      for (const row of [all, custom, pin, settings]) if (folded) row.hidden = true;
+      for (const row of [custom, pin, settings]) if (folded) row.hidden = true;
       nav.foot.classList.toggle('folded', folded);
-      nav.foot.replaceChildren(fold, all, custom, pin, settings);
+      nav.foot.replaceChildren(fold, custom, pin, settings);
     }
 
     function draw() {

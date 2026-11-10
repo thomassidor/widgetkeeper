@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey non ha accettato questa chiave.",
     "webScreenFull": "Non si possono aggiungere altri schermi (__max__).",
     "webScreenGone": "Quello schermo non c’è più.",
-    "webBackupHelp": "Per eseguire il backup o il ripristino delle dashboard web, apri la pagina delle dashboard web e tocca Impostazioni nel pannello laterale."
+    "webBackupHelp": "Per eseguire il backup o il ripristino delle dashboard web, apri la pagina delle dashboard web e tocca Impostazioni dashboard web nel pannello laterale."
   },
   "heatmap": {
     "selectDevice": "Scegli un dispositivo e un valore nelle impostazioni del widget.",
@@ -1099,7 +1099,7 @@
     "thisDashboard": "Questa dashboard",
     "dashboardFull": "Piena",
     "tooManyWidgets": "Al massimo __max__ widget per dashboard.",
-    "pageSettings": "Impostazioni",
+    "pageSettings": "Impostazioni dashboard web",
     "thisBrowser": "Questo browser",
     "allBrowsers": "Tutti i browser",
     "browserOnly": "Solo per questo browser: gli altri browser e schermi mantengono i propri.",

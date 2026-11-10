@@ -40,7 +40,7 @@ function setWidth(width: number) {
   Object.defineProperty(window, 'innerWidth', { configurable: true, value: width });
 }
 
-function mount(opts: { stored?: unknown; dashboards?: any[]; sections?: any[]; current?: any; lock?: string } = {}) {
+function mount(opts: { stored?: unknown; dashboards?: any[]; sections?: any[]; current?: any; lock?: string; brand?: any } = {}) {
   if (opts.stored !== undefined) localStorage.setItem(KEY, JSON.stringify(opts.stored));
   const root = el('div', 'wd');
   document.body.append(root);
@@ -50,7 +50,8 @@ function mount(opts: { stored?: unknown; dashboards?: any[]; sections?: any[]; c
     iconNode: (value?: string) => (value ? el('i', `chosen-${value}`) : null),
     storageGet: (k: string) => localStorage.getItem(k),
     storageSet: (k: string, v: string | null) => (v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v)),
-    dashboards: opts.dashboards ?? ALL, frontPage: { sections: opts.sections ?? SECTIONS },
+    dashboards: opts.dashboards ?? ALL, frontPage: { sections: opts.sections ?? SECTIONS, ...(opts.brand ? { brand: opts.brand } : {}) },
+    brand: () => { const h = el('h1', 'wd-brand'); h.append(el('span', 'wd-logo')); return h; },
     current: opts.current === undefined ? { dashboard: HOME } : opts.current,
     lockOf: (d: any) => (d.id === opts.lock ? { digits: 4 } : null),
     askCode: vi.fn((_d: any, then: () => void) => then()),
@@ -63,7 +64,7 @@ function mount(opts: { stored?: unknown; dashboards?: any[]; sections?: any[]; c
   const pane = document.querySelector('.wd-nav') as HTMLElement;
   const scrim = document.querySelector('.wd-nav-scrim') as HTMLElement;
   const toggle = root.querySelector('.wd-nav-toggle') as HTMLElement;
-  const names = () => [...pane.querySelectorAll('.wd-nav-list .wd-nav-name')].map(x => x.textContent);
+  const names = () => [...pane.querySelectorAll('.wd-nav-list > :not(.wd-nav-all) .wd-nav-name')].map(x => x.textContent);
   const stored = () => JSON.parse(localStorage.getItem(KEY) ?? 'null');
   const customize = () => (pane.querySelector('.wd-nav-custom') as HTMLElement).click();
   return { wd, root, pane, scrim, toggle, names, stored, customize };
@@ -147,9 +148,32 @@ describe('the pane\'s list', () => {
     expect(mount({ current: { dashboard: ENERGY }, stored: { hidden: ['home'] } }).names()).not.toContain('Home');
   });
 
+  it('is titled Dashboards, or with the front page\'s own name and its mark', () => {
+    const title = (pane: HTMLElement) => pane.querySelector('.wd-nav-title') as HTMLElement;
+    expect(title(mount().pane).textContent).toBe('dashboards');
+    document.body.textContent = '';
+    const own = title(mount({ brand: { name: 'Lilletoften 3', icon: 'sun' } }).pane);
+    expect(own.textContent).toBe('Lilletoften 3');
+    expect(own.querySelector('.wd-logo')).not.toBeNull();
+  });
+
   it('marks All dashboards on the front page', () => {
     const { pane } = mount({ current: null });
     expect(pane.querySelector('[aria-current]')?.getAttribute('href')).toBe('#/');
+  });
+
+  it('lists All dashboards first, and Customize hides it, but not on the front page itself', () => {
+    const { pane, stored, customize } = mount();
+    expect(pane.querySelector('.wd-nav-list > .wd-nav-row')?.getAttribute('href')).toBe('#/');
+    expect(pane.querySelector('.wd-nav-foot a[href="#/"]')).toBeNull();
+    customize();
+    (pane.querySelector('[data-nav-key="eye-all"]') as HTMLElement).click();
+    expect(stored().allHidden).toBe(true);
+    expect(pane.querySelector('.wd-nav-list .wd-nav-all')?.classList.contains('off')).toBe(true);
+    document.body.textContent = '';
+    expect(mount({ stored: { allHidden: true } }).pane.querySelector('a[href="#/"]')).toBeNull();
+    document.body.textContent = '';
+    expect(mount({ current: null, stored: { allHidden: true } }).pane.querySelector('[aria-current]')?.getAttribute('href')).toBe('#/');
   });
 
   it('asks the code before leaving a dashboard that has one', () => {
@@ -531,7 +555,7 @@ describe('the foot', () => {
     toggle.click();
     const fold = () => pane.querySelector('.wd-nav-foot-fold') as HTMLElement;
     expect(fold().getAttribute('aria-expanded')).toBe('true');
-    expect(rows(pane)).toBe(4);
+    expect(rows(pane)).toBe(3);
     fold().click();
     expect(fold().getAttribute('aria-expanded')).toBe('false');
     expect(fold().getAttribute('aria-label')).toBe('navFootShow');
@@ -542,7 +566,7 @@ describe('the foot', () => {
     const again = mount();
     expect(rows(again.pane)).toBe(0);
     (again.pane.querySelector('.wd-nav-foot-fold') as HTMLElement).click();
-    expect(rows(again.pane)).toBe(4);
+    expect(rows(again.pane)).toBe(3);
     expect(again.stored().footFolded).toBe(false);
   });
 
@@ -574,9 +598,11 @@ describe('Tint', () => {
     box.dispatchEvent(new Event('change'));
     expect(stored().tint).toBe(true);
     expect(fill()).toBe('#101a28'); // 60 % of the dark ocean into the dark tile
+    expect(html.classList.contains('wd-nav-tinted')).toBe(true); // the current row a shade of the tint, not blue
     box.checked = false;
     box.dispatchEvent(new Event('change'));
     expect(fill()).toBe('');
+    expect(html.classList.contains('wd-nav-tinted')).toBe(false);
   });
 
   it('follows the view: none for Default and the front page, light and dark each their own', () => {

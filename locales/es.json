@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey no aceptó esta clave.",
     "webScreenFull": "No caben más pantallas (__max__).",
     "webScreenGone": "Esa pantalla ya no existe.",
-    "webBackupHelp": "Para hacer una copia de seguridad o restaurar tus paneles web, abre la página de paneles web y toca Ajustes en su panel lateral."
+    "webBackupHelp": "Para hacer una copia de seguridad o restaurar tus paneles web, abre la página de paneles web y toca Ajustes de paneles web en su panel lateral."
   },
   "heatmap": {
     "selectDevice": "Elige un dispositivo y un valor en los ajustes del widget.",
@@ -1099,7 +1099,7 @@
     "thisDashboard": "Este panel",
     "dashboardFull": "Lleno",
     "tooManyWidgets": "Como máximo __max__ widgets por panel.",
-    "pageSettings": "Ajustes",
+    "pageSettings": "Ajustes de paneles web",
     "thisBrowser": "Este navegador",
     "allBrowsers": "Todos los navegadores",
     "browserOnly": "Solo para este navegador: los demás navegadores y pantallas conservan los suyos.",

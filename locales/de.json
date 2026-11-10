@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey hat diesen Schlüssel nicht akzeptiert.",
     "webScreenFull": "Mehr Bildschirme gehen nicht (__max__).",
     "webScreenGone": "Diesen Bildschirm gibt es nicht mehr.",
-    "webBackupHelp": "Um deine Web-Dashboards zu sichern oder wiederherzustellen, öffne die Web-Dashboard-Seite und tippe in der Seitenleiste auf Einstellungen."
+    "webBackupHelp": "Um deine Web-Dashboards zu sichern oder wiederherzustellen, öffne die Web-Dashboard-Seite und tippe in der Seitenleiste auf Web-Dashboard-Einstellungen."
   },
   "heatmap": {
     "selectDevice": "Wähle ein Gerät und einen Wert in den Widget-Einstellungen.",
@@ -1099,7 +1099,7 @@
     "thisDashboard": "Dieses Dashboard",
     "dashboardFull": "Voll",
     "tooManyWidgets": "Höchstens __max__ Widgets pro Dashboard.",
-    "pageSettings": "Einstellungen",
+    "pageSettings": "Web-Dashboard-Einstellungen",
     "thisBrowser": "Dieser Browser",
     "allBrowsers": "Alle Browser",
     "browserOnly": "Nur für diesen Browser: andere Browser und Bildschirme behalten ihre eigenen.",

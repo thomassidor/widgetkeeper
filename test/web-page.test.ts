@@ -61,11 +61,11 @@ describe('web dashboards page: Widget background (surfaceColours)', () => {
     expect(surfaceColours('#ffffff', 95, true).colour).toBe('#24252b');
   });
 
-  it('fades a line in below half, against the fill', () => {
-    expect(surfaceColours('#f3eee4', 50, false).line).toBe('');
-    expect(surfaceColours('#f3eee4', 25, false).line).toBe('rgb(0 0 0 / 0.11)');
-    expect(surfaceColours('#f3eee4', 0, false).line).toBe('rgb(0 0 0 / 0.22)');
-    expect(surfaceColours('#1f1a13', 0, true).line).toBe('rgb(255 255 255 / 0.22)');
+  it('eases a faint line in below a quarter, against the fill', () => {
+    expect(surfaceColours('#f3eee4', 25, false).line).toBe('');
+    expect(surfaceColours('#f3eee4', 10, false).line).toBe('rgb(0 0 0 / 0.029)');
+    expect(surfaceColours('#f3eee4', 0, false).line).toBe('rgb(0 0 0 / 0.08)');
+    expect(surfaceColours('#1f1a13', 0, true).line).toBe('rgb(255 255 255 / 0.08)');
   });
 });
 

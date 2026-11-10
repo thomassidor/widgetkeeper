@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey didn't accept this key.",
     "webScreenFull": "That's as many screens as there can be (__max__).",
     "webScreenGone": "That screen is gone.",
-    "webBackupHelp": "To back up or restore your web dashboards, open the web dashboards page and tap Settings in its side pane."
+    "webBackupHelp": "To back up or restore your web dashboards, open the web dashboards page and tap Web dashboard settings in its side pane."
   },
   "heatmap": {
     "selectDevice": "Select a device and a value in the widget settings.",
@@ -1099,7 +1099,7 @@
     "thisDashboard": "This dashboard",
     "dashboardFull": "Full",
     "tooManyWidgets": "At most __max__ widgets on a dashboard.",
-    "pageSettings": "Settings",
+    "pageSettings": "Web dashboard settings",
     "thisBrowser": "This browser",
     "allBrowsers": "All browsers",
     "browserOnly": "Only for this browser: other browsers and screens keep their own.",

@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey godtog inte den här nyckeln.",
     "webScreenFull": "Fler skärmar går inte att lägga till (__max__).",
     "webScreenGone": "Den skärmen finns inte längre.",
-    "webBackupHelp": "För att säkerhetskopiera eller återställa dina webbpaneler öppnar du sidan för webbpaneler och trycker på Inställningar i sidopanelen."
+    "webBackupHelp": "För att säkerhetskopiera eller återställa dina webbpaneler öppnar du sidan för webbpaneler och trycker på Inställningar för webbinstrumentpaneler i sidopanelen."
   },
   "heatmap": {
     "selectDevice": "Välj en enhet och ett värde i widgetens inställningar.",
@@ -1099,7 +1099,7 @@
     "thisDashboard": "Den här instrumentpanelen",
     "dashboardFull": "Full",
     "tooManyWidgets": "Högst __max__ widgetar på en instrumentpanel.",
-    "pageSettings": "Inställningar",
+    "pageSettings": "Inställningar för webbinstrumentpaneler",
     "thisBrowser": "Den här webbläsaren",
     "allBrowsers": "Alla webbläsare",
     "browserOnly": "Bara för den här webbläsaren: andra webbläsare och skärmar behåller sina egna.",

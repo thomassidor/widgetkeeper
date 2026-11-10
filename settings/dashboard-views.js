@@ -60,6 +60,7 @@
     function brandChanged() {
       for (const node of root.querySelectorAll('.wd-brand')) node.replaceWith(brand());
       setTitle(wd.current && wd.current.dashboard);
+      if (wd.redrawNav) wd.redrawNav(); // the side pane's title
     }
 
     function clearRoot() {

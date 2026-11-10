@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey n’a pas accepté cette clé.",
     "webScreenFull": "Impossible d’ajouter plus d’écrans (__max__).",
     "webScreenGone": "Cet écran n’existe plus.",
-    "webBackupHelp": "Pour sauvegarder ou restaurer vos tableaux de bord web, ouvrez la page des tableaux de bord web et touchez Réglages dans son panneau latéral."
+    "webBackupHelp": "Pour sauvegarder ou restaurer vos tableaux de bord web, ouvrez la page des tableaux de bord web et touchez Réglages des tableaux de bord web dans son panneau latéral."
   },
   "heatmap": {
     "selectDevice": "Choisissez un appareil et une valeur dans les réglages du widget.",
@@ -1099,7 +1099,7 @@
     "thisDashboard": "Ce tableau de bord",
     "dashboardFull": "Plein",
     "tooManyWidgets": "Au plus __max__ widgets par tableau de bord.",
-    "pageSettings": "Réglages",
+    "pageSettings": "Réglages des tableaux de bord web",
     "thisBrowser": "Ce navigateur",
     "allBrowsers": "Tous les navigateurs",
     "browserOnly": "Pour ce navigateur seulement : les autres navigateurs et écrans gardent les leurs.",

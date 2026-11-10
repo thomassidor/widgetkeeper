@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey accepteerde deze sleutel niet.",
     "webScreenFull": "Meer schermen kunnen er niet bij (__max__).",
     "webScreenGone": "Dat scherm bestaat niet meer.",
-    "webBackupHelp": "Om je webdashboards te back-uppen of te herstellen, open je de webdashboardpagina en tik je op Instellingen in het zijpaneel."
+    "webBackupHelp": "Om je webdashboards te back-uppen of te herstellen, open je de webdashboardpagina en tik je op Webdashboard-instellingen in het zijpaneel."
   },
   "heatmap": {
     "selectDevice": "Kies een apparaat en een waarde in de widgetinstellingen.",
@@ -1099,7 +1099,7 @@
     "thisDashboard": "Dit dashboard",
     "dashboardFull": "Vol",
     "tooManyWidgets": "Hoogstens __max__ widgets op een dashboard.",
-    "pageSettings": "Instellingen",
+    "pageSettings": "Webdashboard-instellingen",
     "thisBrowser": "Deze browser",
     "allBrowsers": "Alle browsers",
     "browserOnly": "Alleen voor deze browser: andere browsers en schermen houden hun eigen instellingen.",

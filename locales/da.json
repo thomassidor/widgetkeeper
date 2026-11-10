@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey godtog ikke denne nøgle.",
     "webScreenFull": "Der kan ikke være flere skærme (__max__).",
     "webScreenGone": "Den skærm findes ikke længere.",
-    "webBackupHelp": "For at sikkerhedskopiere eller gendanne dine webdashboards skal du åbne siden med webdashboards og trykke på Indstillinger i sidepanelet."
+    "webBackupHelp": "For at sikkerhedskopiere eller gendanne dine webdashboards skal du åbne siden med webdashboards og trykke på Webdashboard-indstillinger i sidepanelet."
   },
   "heatmap": {
     "selectDevice": "Vælg en enhed og en værdi i widgettens indstillinger.",
@@ -1099,7 +1099,7 @@
     "thisDashboard": "Dette dashboard",
     "dashboardFull": "Fuldt",
     "tooManyWidgets": "Højst __max__ widgets på et dashboard.",
-    "pageSettings": "Indstillinger",
+    "pageSettings": "Webdashboard-indstillinger",
     "thisBrowser": "Denne browser",
     "allBrowsers": "Alle browsere",
     "browserOnly": "Kun for denne browser: andre browsere og skærme beholder deres egne.",

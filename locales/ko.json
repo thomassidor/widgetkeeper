@@ -321,7 +321,7 @@
     "webScreenKeyInvalid": "Homey가 이 키를 받아들이지 않았습니다.",
     "webScreenFull": "화면을 더 추가할 수 없습니다(__max__).",
     "webScreenGone": "그 화면은 더 이상 없습니다.",
-    "webBackupHelp": "웹 대시보드를 백업하거나 복원하려면 웹 대시보드 페이지를 열고 측면 창에서 설정을 누르세요."
+    "webBackupHelp": "웹 대시보드를 백업하거나 복원하려면 웹 대시보드 페이지를 열고 측면 창에서 웹 대시보드 설정을 누르세요."
   },
   "heatmap": {
     "selectDevice": "위젯 설정에서 기기와 값을 선택하세요.",
@@ -1099,7 +1099,7 @@
     "thisDashboard": "이 대시보드",
     "dashboardFull": "가득 참",
     "tooManyWidgets": "대시보드당 위젯은 최대 __max__개입니다.",
-    "pageSettings": "설정",
+    "pageSettings": "웹 대시보드 설정",
     "thisBrowser": "이 브라우저",
     "allBrowsers": "모든 브라우저",
     "browserOnly": "이 브라우저에만 적용됩니다. 다른 브라우저와 화면은 각자의 설정을 유지합니다.",

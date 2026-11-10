@@ -161,7 +161,7 @@
     syncTime: 'Time',
     syncAll: 'Sync all now',
     syncCount: '__count__ synced dashboards',
-    pageSettings: 'Settings',
+    pageSettings: 'Web dashboard settings',
     thisBrowser: 'This browser',
     allBrowsers: 'All browsers',
     browserOnly: 'Only for this browser: other browsers and screens keep their own.',
@@ -504,19 +504,20 @@
 
   /**
    * A dashboard's Widget background (`surface`, 0–95; none is the widgets as they are): their fill, the tile's colour in
-   * this mode blended into the backdrop, solid, as charts cut their dots out with it. Below `OUTLINE_FROM` a line fades
-   * in, dark or light against the fill, so tiles keep their edges. `{colour, line}`, or null at 100.
+   * this mode blended into the backdrop, solid, as charts cut their dots out with it. Below `OUTLINE_FROM` a faint line
+   * eases in (squared, up to `OUTLINE_MAX`), dark or light against the fill, so tiles keep their edges without it showing. `{colour, line}`, or null at 100.
    */
   function surfaceColours(backdrop, surface, dark) {
     if (!(surface >= 0 && surface < 100)) return null;
-    const OUTLINE_FROM = 50;
+    const OUTLINE_FROM = 25;
+    const OUTLINE_MAX = 0.08;
     const channels = (hex) => [1, 3, 5].map(at => parseInt(hex.slice(at, at + 2), 16));
     const tile = channels(dark ? '#181920' : '#FFFFFF');
     const mixed = channels(backdrop).map((c, i) => Math.round(tile[i] * (surface / 100) + c * (1 - surface / 100)));
     const colour = `#${mixed.map(c => c.toString(16).padStart(2, '0')).join('')}`;
     const ink = 0.299 * mixed[0] + 0.587 * mixed[1] + 0.114 * mixed[2] > 128 ? 0 : 255;
-    const strength = Math.max(0, 1 - surface / OUTLINE_FROM);
-    return { colour, line: strength ? `rgb(${ink} ${ink} ${ink} / ${Math.round(strength * 22) / 100})` : '' };
+    const alpha = Math.round(Math.max(0, 1 - surface / OUTLINE_FROM) ** 2 * OUTLINE_MAX * 1000) / 1000;
+    return { colour, line: alpha ? `rgb(${ink} ${ink} ${ink} / ${alpha})` : '' };
   }
 
   /** A widget's width on Homey's dashboard on a phone, which other apps' widgets are designed at (wk-089). */
