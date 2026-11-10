@@ -69,6 +69,14 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Settings in one order** across the widgets: rename first, then what to show, the layout and display options, colour and colour style, then each tile's settings. Nothing you've set changes.
 - The same words for the same settings: *Smooth chart lines* everywhere, *Tiles per row* (Flow Buttons, Dashboard Shortcuts, Variables; everywhere its options from the fewest), each button's *Name* (Keypad, Variable Presets), *Colour* (Variable Presets), *Layout* (Weather Forecast), and grey last in Activity Dots' colours.
 
+## 1.2.1
+
+### Cameras
+- **A widget can be added with only Camera 1 to 6:** Homey wouldn't save one with no device picked, even with those filled in, and cameras that aren't on its device list (Synology's) left nothing to pick. The Devices list is gone from the Homey app's settings and Camera 1 to 6 now come first. Widgets already on your dashboards keep their cameras until you fill in any of Camera 1 to 6: from then on they show only those, so that's also how to change or remove a camera. Web dashboards keep their device list, with the same rule.
+
+### Charts
+- Chart · Lines, Stacked, Ranking and Timeline: give each value a name of your own. Chart · Basic, Lines and Stacked: the legend can be hidden.
+
 ## 1.2.0
 
 ### New: Device names

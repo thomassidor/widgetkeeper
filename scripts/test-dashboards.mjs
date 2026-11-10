@@ -407,7 +407,7 @@ const BUILD = {
       w('cameras', 'Live view off (a tap does nothing)', { liveView: false }, cams.slice(0, 2)),
       w('cameras', 'Every 60 s (a late snapshot shows its time)', { refresh: '60' }, cams.slice(0, 2)),
       renaming('cameras', 'Rename tiles', {}, cams.slice(0, 2), cams[0] ? { [cams[0]]: 'Typed name' } : {}),
-      w('cameras', 'Camera slots after a device, it again in Camera 1 (shows once)', slots('camera', [repeat, ...others].filter(Boolean).slice(0, 6)), cams.slice(0, 1)),
+      w('cameras', 'Camera slots replace the device stored here', slots('camera', [repeat, ...others].filter(Boolean).slice(0, 6)), cams.slice(1, 2)),
       w('cameras', 'Camera slots only', slots('camera', slotCams)),
     ] };
   },

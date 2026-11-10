@@ -14,7 +14,9 @@ To decide yourself when a camera wakes, for example at sunrise and sunset, set i
 
 **Flow cards:** *Refresh a camera's picture*.
 
-**Settings:** cameras, layout (a large camera at the top or bottom, or one per row), refresh interval, how long live view stays on, always live, [rename tiles](../../README.md#tile-names), and Camera 1 to 6 for cameras missing from the device list, such as Synology Surveillance Station's: they list every device with a snapshot or video.
+**Settings:** [rename tiles](../../README.md#tile-names), Camera 1 to 6, which list every device with a snapshot or video (Synology Surveillance Station's too), layout (a large camera at the top or bottom, or one per row), refresh interval, how long live view stays on and always live.
+
+A widget set up before version 1.2.1 keeps the cameras picked under Devices until you fill in any of Camera 1 to 6: from then on it shows only those. So to change or remove one, fill in the cameras you want.
 
 ## Looks
 

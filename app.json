@@ -955,13 +955,6 @@
       },
       "height": 240,
       "transparent": true,
-      "devices": {
-        "type": "global",
-        "singular": false,
-        "filter": {
-          "class": "camera|doorbell"
-        }
-      },
       "settings": [
         {
           "id": "renameTiles",
@@ -997,6 +990,135 @@
             "ar": "لتسمية المربعات: شغّل هذا الخيار واحفظ الأداة، ثم اخرج من وضع تحرير لوحة التحكم. يعرض كل مربع حقلًا نصيًا: اكتب اسمه، أو اتركه فارغًا لإبقاء اسم الجهاز (أو الغرفة). بعد ذلك حرّر الأداة مجددًا وأوقف هذا الخيار."
           },
           "value": false
+        },
+        {
+          "id": "camera1",
+          "type": "autocomplete",
+          "title": {
+            "en": "Camera 1",
+            "nl": "Camera 1",
+            "de": "Kamera 1",
+            "fr": "Caméra 1",
+            "it": "Telecamera 1",
+            "sv": "Kamera 1",
+            "no": "Kamera 1",
+            "es": "Cámara 1",
+            "da": "Kamera 1",
+            "ru": "Камера 1",
+            "pl": "Kamera 1",
+            "ko": "카메라 1",
+            "ar": "الكاميرا 1"
+          },
+          "hint": {
+            "en": "Lists every device with a snapshot or video, such as Synology Surveillance Station's. A widget set up before 1.2.1 keeps its earlier cameras until you fill in any of these: then only these show.",
+            "nl": "Toont elk apparaat met een momentopname of video, zoals die van Synology Surveillance Station. Een widget van vóór 1.2.1 houdt zijn eerdere camera's tot je hier iets invult: dan verschijnen alleen deze.",
+            "de": "Listet jedes Gerät mit Schnappschuss oder Video auf, etwa die von Synology Surveillance Station. Ein Widget von vor 1.2.1 behält seine bisherigen Kameras, bis du hier eine wählst: Dann erscheinen nur diese.",
+            "fr": "Liste chaque appareil avec une capture ou une vidéo, comme ceux de Synology Surveillance Station. Un widget d'avant la 1.2.1 garde ses caméras jusqu'à ce que vous en choisissiez une ici : seules celles-ci s'affichent alors.",
+            "it": "Elenca ogni dispositivo con un'istantanea o un video, come quelli di Synology Surveillance Station. Un widget di prima della 1.2.1 mantiene le sue telecamere finché non ne scegli una qui: poi appaiono solo queste.",
+            "sv": "Listar varje enhet med en ögonblicksbild eller video, till exempel Synology Surveillance Stations. En widget från före 1.2.1 behåller sina kameror tills du väljer någon här: då visas bara dessa.",
+            "no": "Viser hver enhet med et stillbilde eller en video, for eksempel Synology Surveillance Stations. En widget fra før 1.2.1 beholder kameraene sine til du velger noe her: da vises bare disse.",
+            "es": "Muestra cada dispositivo con una instantánea o un vídeo, como los de Synology Surveillance Station. Un widget anterior a la 1.2.1 conserva sus cámaras hasta que elijas alguna aquí: entonces solo aparecen estas.",
+            "da": "Viser hver enhed med et stillbillede eller en video, fx Synology Surveillance Stations. En widget fra før 1.2.1 beholder sine kameraer, til du vælger noget her: så vises kun disse.",
+            "ru": "Здесь перечислены все устройства со снимком или видео, например из Synology Surveillance Station. Виджет, созданный до 1.2.1, сохраняет свои камеры, пока вы не выберете что-то здесь: тогда показываются только эти.",
+            "pl": "Pokazuje każde urządzenie z migawką lub wideo, np. z Synology Surveillance Station. Widżet sprzed wersji 1.2.1 zachowuje swoje kamery, dopóki nie wybierzesz czegoś tutaj: wtedy pokazywane są tylko te.",
+            "ko": "Synology Surveillance Station의 카메라처럼 스냅샷이나 영상이 있는 모든 기기를 보여 줍니다. 1.2.1 이전에 설정한 위젯은 여기에서 선택할 때까지 기존 카메라를 유지하며, 선택하면 여기에서 고른 카메라만 표시됩니다.",
+            "ar": "تعرض كل جهاز به لقطة أو فيديو، مثل كاميرات Synology Surveillance Station. تحتفظ الأداة المُعدّة قبل 1.2.1 بكاميراتها إلى أن تختار هنا: عندها تظهر هذه فقط."
+          }
+        },
+        {
+          "id": "camera2",
+          "type": "autocomplete",
+          "title": {
+            "en": "Camera 2",
+            "nl": "Camera 2",
+            "de": "Kamera 2",
+            "fr": "Caméra 2",
+            "it": "Telecamera 2",
+            "sv": "Kamera 2",
+            "no": "Kamera 2",
+            "es": "Cámara 2",
+            "da": "Kamera 2",
+            "ru": "Камера 2",
+            "pl": "Kamera 2",
+            "ko": "카메라 2",
+            "ar": "الكاميرا 2"
+          }
+        },
+        {
+          "id": "camera3",
+          "type": "autocomplete",
+          "title": {
+            "en": "Camera 3",
+            "nl": "Camera 3",
+            "de": "Kamera 3",
+            "fr": "Caméra 3",
+            "it": "Telecamera 3",
+            "sv": "Kamera 3",
+            "no": "Kamera 3",
+            "es": "Cámara 3",
+            "da": "Kamera 3",
+            "ru": "Камера 3",
+            "pl": "Kamera 3",
+            "ko": "카메라 3",
+            "ar": "الكاميرا 3"
+          }
+        },
+        {
+          "id": "camera4",
+          "type": "autocomplete",
+          "title": {
+            "en": "Camera 4",
+            "nl": "Camera 4",
+            "de": "Kamera 4",
+            "fr": "Caméra 4",
+            "it": "Telecamera 4",
+            "sv": "Kamera 4",
+            "no": "Kamera 4",
+            "es": "Cámara 4",
+            "da": "Kamera 4",
+            "ru": "Камера 4",
+            "pl": "Kamera 4",
+            "ko": "카메라 4",
+            "ar": "الكاميرا 4"
+          }
+        },
+        {
+          "id": "camera5",
+          "type": "autocomplete",
+          "title": {
+            "en": "Camera 5",
+            "nl": "Camera 5",
+            "de": "Kamera 5",
+            "fr": "Caméra 5",
+            "it": "Telecamera 5",
+            "sv": "Kamera 5",
+            "no": "Kamera 5",
+            "es": "Cámara 5",
+            "da": "Kamera 5",
+            "ru": "Камера 5",
+            "pl": "Kamera 5",
+            "ko": "카메라 5",
+            "ar": "الكاميرا 5"
+          }
+        },
+        {
+          "id": "camera6",
+          "type": "autocomplete",
+          "title": {
+            "en": "Camera 6",
+            "nl": "Camera 6",
+            "de": "Kamera 6",
+            "fr": "Caméra 6",
+            "it": "Telecamera 6",
+            "sv": "Kamera 6",
+            "no": "Kamera 6",
+            "es": "Cámara 6",
+            "da": "Kamera 6",
+            "ru": "Камера 6",
+            "pl": "Kamera 6",
+            "ko": "카메라 6",
+            "ar": "الكاميرا 6"
+          }
         },
         {
           "id": "layout",
@@ -1482,135 +1604,6 @@
             "pl": "Ta kamera sama działa na żywo, wypełnia widżet i pozostaje włączona. Dotknij jej, aby zobaczyć inne kamery: wróci po minucie. Strumień wideo pozostaje otwarty, dopóki pulpit jest widoczny.",
             "ko": "이 카메라는 자동으로 실시간 재생되어 위젯을 가득 채우고 계속 켜져 있습니다. 탭하면 다른 카메라를 볼 수 있으며, 1분 후 다시 돌아옵니다. 대시보드가 표시되는 동안 비디오 스트림이 열려 있습니다.",
             "ar": "تعمل هذه الكاميرا مباشرةً من تلقاء نفسها وتملأ الأداة وتبقى قيد التشغيل. اضغط عليها لرؤية الكاميرات الأخرى: وستعود بعد دقيقة. يبقى بث الفيديو مفتوحًا ما دامت لوحة التحكم معروضة."
-          }
-        },
-        {
-          "id": "camera1",
-          "type": "autocomplete",
-          "title": {
-            "en": "Camera 1",
-            "nl": "Camera 1",
-            "de": "Kamera 1",
-            "fr": "Caméra 1",
-            "it": "Telecamera 1",
-            "sv": "Kamera 1",
-            "no": "Kamera 1",
-            "es": "Cámara 1",
-            "da": "Kamera 1",
-            "ru": "Камера 1",
-            "pl": "Kamera 1",
-            "ko": "카메라 1",
-            "ar": "الكاميرا 1"
-          },
-          "hint": {
-            "en": "Cameras the device list leaves out, such as Synology Surveillance Station's: this lists every device with a snapshot or video. They show after the picked devices.",
-            "nl": "Camera's die de apparatenlijst weglaat, zoals die van Synology Surveillance Station: hier staat elk apparaat met een momentopname of video. Ze komen na de gekozen apparaten.",
-            "de": "Kameras, die die Geräteliste auslässt, etwa die von Synology Surveillance Station: Hier steht jedes Gerät mit Schnappschuss oder Video. Sie erscheinen nach den gewählten Geräten.",
-            "fr": "Les caméras que la liste d'appareils omet, comme celles de Synology Surveillance Station : ici figure chaque appareil avec une capture ou une vidéo. Elles s'affichent après les appareils choisis.",
-            "it": "Le telecamere che l'elenco dei dispositivi esclude, come quelle di Synology Surveillance Station: qui c'è ogni dispositivo con un'istantanea o un video. Appaiono dopo i dispositivi scelti.",
-            "sv": "Kameror som enhetslistan utelämnar, till exempel Synology Surveillance Stations: här finns varje enhet med en ögonblicksbild eller video. De visas efter de valda enheterna.",
-            "no": "Kameraer som enhetslisten utelater, for eksempel Synology Surveillance Stations: her finnes hver enhet med et stillbilde eller en video. De vises etter de valgte enhetene.",
-            "es": "Las cámaras que la lista de dispositivos omite, como las de Synology Surveillance Station: aquí está cada dispositivo con una instantánea o un vídeo. Se muestran después de los dispositivos elegidos.",
-            "da": "Kameraer, som enhedslisten udelader, fx Synology Surveillance Stations: her står hver enhed med et stillbillede eller en video. De vises efter de valgte enheder.",
-            "ru": "Камеры, которых нет в списке устройств, например из Synology Surveillance Station: здесь есть каждое устройство со снимком или видео. Они показываются после выбранных устройств.",
-            "pl": "Kamery, których brak na liście urządzeń, np. z Synology Surveillance Station: tu jest każde urządzenie ze zdjęciem lub wideo. Pojawiają się po wybranych urządzeniach.",
-            "ko": "기기 목록에 없는 카메라(예: Synology Surveillance Station의 카메라): 여기에는 스냅샷이나 영상이 있는 모든 기기가 나옵니다. 선택한 기기 뒤에 표시됩니다.",
-            "ar": "الكاميرات التي لا تظهر في قائمة الأجهزة، مثل كاميرات Synology Surveillance Station: هنا كل جهاز له لقطة أو فيديو. تظهر بعد الأجهزة المختارة."
-          }
-        },
-        {
-          "id": "camera2",
-          "type": "autocomplete",
-          "title": {
-            "en": "Camera 2",
-            "nl": "Camera 2",
-            "de": "Kamera 2",
-            "fr": "Caméra 2",
-            "it": "Telecamera 2",
-            "sv": "Kamera 2",
-            "no": "Kamera 2",
-            "es": "Cámara 2",
-            "da": "Kamera 2",
-            "ru": "Камера 2",
-            "pl": "Kamera 2",
-            "ko": "카메라 2",
-            "ar": "الكاميرا 2"
-          }
-        },
-        {
-          "id": "camera3",
-          "type": "autocomplete",
-          "title": {
-            "en": "Camera 3",
-            "nl": "Camera 3",
-            "de": "Kamera 3",
-            "fr": "Caméra 3",
-            "it": "Telecamera 3",
-            "sv": "Kamera 3",
-            "no": "Kamera 3",
-            "es": "Cámara 3",
-            "da": "Kamera 3",
-            "ru": "Камера 3",
-            "pl": "Kamera 3",
-            "ko": "카메라 3",
-            "ar": "الكاميرا 3"
-          }
-        },
-        {
-          "id": "camera4",
-          "type": "autocomplete",
-          "title": {
-            "en": "Camera 4",
-            "nl": "Camera 4",
-            "de": "Kamera 4",
-            "fr": "Caméra 4",
-            "it": "Telecamera 4",
-            "sv": "Kamera 4",
-            "no": "Kamera 4",
-            "es": "Cámara 4",
-            "da": "Kamera 4",
-            "ru": "Камера 4",
-            "pl": "Kamera 4",
-            "ko": "카메라 4",
-            "ar": "الكاميرا 4"
-          }
-        },
-        {
-          "id": "camera5",
-          "type": "autocomplete",
-          "title": {
-            "en": "Camera 5",
-            "nl": "Camera 5",
-            "de": "Kamera 5",
-            "fr": "Caméra 5",
-            "it": "Telecamera 5",
-            "sv": "Kamera 5",
-            "no": "Kamera 5",
-            "es": "Cámara 5",
-            "da": "Kamera 5",
-            "ru": "Камера 5",
-            "pl": "Kamera 5",
-            "ko": "카메라 5",
-            "ar": "الكاميرا 5"
-          }
-        },
-        {
-          "id": "camera6",
-          "type": "autocomplete",
-          "title": {
-            "en": "Camera 6",
-            "nl": "Camera 6",
-            "de": "Kamera 6",
-            "fr": "Caméra 6",
-            "it": "Telecamera 6",
-            "sv": "Kamera 6",
-            "no": "Kamera 6",
-            "es": "Cámara 6",
-            "da": "Kamera 6",
-            "ru": "Камера 6",
-            "pl": "Kamera 6",
-            "ko": "카메라 6",
-            "ar": "الكاميرا 6"
           }
         }
       ],

@@ -181,7 +181,9 @@ interface Window {
       watches?: (id: string) => boolean,
       setState?: ((state: any) => void) | null,
       onState?: ((state: any) => void) | null,
-      /** Ids picked another way (the Cameras widget's Camera slots), after the `devices` setting's. */
+      /** Ids picked another way (the Cameras widget's Camera slots): any at all replace the `devices` setting's. */
+      picks?: string[],
+      /** Ids shown as well, after those (Cameras' Always live). */
       more?: string[],
       /** The widget shows times: it follows the app's time format. */
       times?: boolean,

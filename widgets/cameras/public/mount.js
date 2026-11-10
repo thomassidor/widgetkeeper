@@ -49,10 +49,11 @@ window.mountCamerasWidget = function (Homey, { root, frame }) {
   });
 
   // The cameras (names, image and video ids) with their tile names, now and every 5 min; snapshots start with the first.
-  // Camera 1 … 6 add cameras the `devices` list leaves out (Synology's are class sensor), after the picked ones.
+  // Camera 1 … 6 pick the cameras (1.2.1: the manifest has no `devices`). Any at all replace the ids a widget stored before that, which can't be edited any more.
   // Always live's camera is shown too, if it isn't among them.
-  const more = [...[1, 2, 3, 4, 5, 6].map(n => pickedId(settings[`camera${n}`])), pickedId(settings.autoLive)].filter(Boolean);
-  const cameras = wireDeviceState(Homey, link, widget, { tileNames, onState: startSnapshots, more, times: true });
+  const picks = [1, 2, 3, 4, 5, 6].map(n => pickedId(settings[`camera${n}`])).filter(Boolean);
+  const more = [pickedId(settings.autoLive)].filter(Boolean);
+  const cameras = wireDeviceState(Homey, link, widget, { tileNames, onState: startSnapshots, picks, more, times: true });
 
   // A Flow renewed a picture. While the page is hidden the tile only stays due, for when it shows.
   Homey.on('cameras:picture', (data) => {

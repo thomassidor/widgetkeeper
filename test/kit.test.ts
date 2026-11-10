@@ -288,11 +288,27 @@ describe('wireDeviceState()', () => {
     expect(widget.pushChange).toHaveBeenCalledTimes(1);
   });
 
-  it('adds `more` ids after the devices, without repeats', async () => {
-    const { Homey, devices } = setup({ more: ['b c', 'x'] });
+  it('takes `picks` instead of the devices, without repeats', async () => {
+    const { Homey, devices } = setup({ picks: ['x', 'b c', 'x'] });
     await vi.advanceTimersByTimeAsync(0);
-    expect(Homey.api).toHaveBeenCalledWith('GET', '/state?deviceIds=a,b%20c,x&perf=1');
-    expect(devices.ids()).toEqual(['a', 'b c', 'x']);
+    expect(Homey.api).toHaveBeenCalledWith('GET', '/state?deviceIds=x,b%20c&perf=1');
+    expect(devices.ids()).toEqual(['x', 'b c']);
+  });
+
+  it('keeps the devices with no `picks`', async () => {
+    const { Homey, devices } = setup({ picks: [] });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(Homey.api).toHaveBeenCalledWith('GET', '/state?deviceIds=a,b%20c&perf=1');
+    expect(devices.ids()).toEqual(['a', 'b c']);
+  });
+
+  it('adds `more` after the picks or the devices, a repeat left out (Cameras\' Always live)', async () => {
+    const withPicks = setup({ picks: ['x'], more: ['x', 'y'] });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(withPicks.devices.ids()).toEqual(['x', 'y']);
+    const without = setup({ more: ['a', 'y'] });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(without.devices.ids()).toEqual(['a', 'b c', 'y']);
   });
 
   it('reads through the tile names when given, and `watches` adds devices to the realtime filter', async () => {

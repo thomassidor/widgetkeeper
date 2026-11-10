@@ -972,8 +972,9 @@
    * `selectDevices` (or what `need()` says is missing); a failed refresh keeps the tiles with a passing message, only
    * a failed first load replaces them. `tileNames` (the mount's `wireTileNames()`) reads the names with it; `query()`
    * adds to the request; `setState(state)` hands the answer to the widget (default `widget.setState(state)`), and
-   * `onState(state)` runs after each good one. `more` are ids picked another way (the Cameras widget's Camera slots),
-   * after the `devices` setting's, a repeat left out. `times`: the widget shows times, so it follows the app's time
+   * `onState(state)` runs after each good one. `picks` are ids picked another way (the Cameras widget's Camera slots):
+   * any at all replace the `devices` setting's, which can't be edited there any more. `more` are ids shown as well,
+   * after those, a repeat left out (Cameras' Always live). `times`: the widget shows times, so it follows the app's time
    * format (`wireTimeFormat()`). `devicesOptional`: no devices is a pick too (Combined Value: every device with the
    * value), so `/state` is asked with none and only `need()` can hold it back. Ready is told after the first load, once the
    * text font is in (at most 1 s), so the names don't pop in after the icons.
@@ -982,11 +983,12 @@
    * @param {any} widget
    * @param {{ event?: string | null, tileNames?: { state: (path: string) => Promise<any> } | null, query?: () => string,
    *   need?: (ids: string[]) => string | null, watches?: (id: string) => boolean, setState?: ((state: any) => void) | null,
-   *   onState?: ((state: any) => void) | null, more?: string[], times?: boolean, devicesOptional?: boolean }} [opts]
+   *   onState?: ((state: any) => void) | null, picks?: string[], more?: string[], times?: boolean,
+   *   devicesOptional?: boolean }} [opts]
    */
   function wireDeviceState(Homey, link, widget, {
-    event = null, tileNames = null, query = () => '', need = () => null, watches = () => false, setState = null, onState = null, more = [],
-    times = false, devicesOptional = false,
+    event = null, tileNames = null, query = () => '', need = () => null, watches = () => false, setState = null, onState = null, picks = [],
+    more = [], times = false, devicesOptional = false,
   } = {}) {
     let deviceIds = [];
     let loaded = false;
@@ -1024,7 +1026,7 @@
       });
     }
     getDeviceIds(Homey)
-      .then((ids) => { deviceIds = [...new Set([...ids, ...more])]; })
+      .then((ids) => { deviceIds = [...new Set([...(picks.length ? picks : ids), ...more])]; })
       .then(() => {
         refresh = wireRefresh(load);
         onDeviceNames(Homey, load);
@@ -1033,7 +1035,7 @@
     // A widget that shows times draws them again when the app's time format changes.
     if (times) wireTimeFormat(Homey, () => { if (loaded) load(); });
     return {
-      /** The `devices` setting's ids, then `more` (empty until read). */
+      /** `picks`, or without any the `devices` setting's ids, then `more` (empty until read). */
       ids: () => deviceIds,
       /** Whether a `/state` has come. */
       loaded: () => loaded,
