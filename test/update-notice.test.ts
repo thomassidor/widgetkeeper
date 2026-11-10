@@ -100,8 +100,8 @@ describe('the update notice on the Timeline', () => {
   });
 
   it("reads the release notes it ships", async () => {
-    const homey = homeyAt('1.2.0', '1.1.2');
+    const homey = homeyAt('1.3.0', '1.2.1');
     await postUpdateNotice(homey, () => {}, { ranBefore: true });
-    expect(excerpts(homey)[0]).toBe('**Widgetkeeper 1.2.0**: Nine new chart widgets, shorter device names and sign-in codes for web dashboards.');
+    expect(excerpts(homey)[0]).toBe('**Widgetkeeper 1.3.0**: Three new widgets, one time format for the whole app, 155 more icons and web dashboards with a side pane.');
   });
 });

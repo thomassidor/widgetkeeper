@@ -7,13 +7,13 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 ### New: Flow Tiles
 - **Tiles your Flows write:** Device Values' tiles, each set by Flow cards instead of a device: a text, or a number in your screen's format with units and decimals, a second line, an icon, a colour and a fill from the left, like a battery level. Tiles are on named boards, so every Flow Tiles widget showing a board shows its tiles, on every screen.
 - **Tap a tile** to start a Flow: the trigger *Flow Tile … on … was tapped*, for one tile, a board's or any. Only tiles a Flow listens to can be tapped, and they light up on a tap unless you turn it off.
-- Show only some tiles in the order you type them, or sort them by name; 1, 2 or 3 per row, compact or pill, Muted or Vivid, and optionally when each changed.
+- Show only some tiles in the order you type them, or sort them by name; 1, 2 or 3 per row, compact or pill, Muted or Vivid, and optionally when each changed. Also a Smart Stack page.
 
 ### New: Combined Value
 - **One value of several devices as one:** the average temperature of every room, the house's total power, the lowest battery or the highest CO₂, large on one full-width tile, with the lowest to the highest under its name. A chart shows each device against the others (a dot on a shared scale, or for a sum each device's share), or leave it out. Pick no devices to count every device with the value. Compact or pill tile, and a colour if you like.
 - **OK range:** type `18–24`, `<1000` or `>20`, and the tile turns orange when the value is outside it (red when it's far outside), with an orange or red dot for each device outside it. Show the **number outside the OK range** to see how many batteries are low, named worst first.
 - **Tap for every device:** a tap opens each device's value under the tile, sorted, the ones outside the range marked.
-- **Median**, besides the average. A device that reports the value in other units than the others is left out of the sum or average, and the tile says so.
+- **Median**, besides the average. A device that reports the value in other units than the others is left out of the sum or average, and the tile says so. Also a Smart Stack page.
 
 ### New: Value Board
 - **Every value of the devices you pick in one widget,** grouped by room or by device, so a house's readings don't take a dozen Device Values widgets: readings only, or everything including switches and set temperatures.
@@ -24,8 +24,10 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Live video in a popup:** the Show and Ask cards can show a camera's live video on a web dashboard instead of images, with images until it starts and if it can't play.
 - **Full screen:** these cards also have a new Size, so a Flow can fill the page with a camera, such as when the doorbell rings. Your Flows keep working as they are, with images at the usual size.
 
-### Cameras: always live
+### Cameras
 - **Pick a camera to be always live:** it plays by itself when the dashboard opens and fills the widget, and it reconnects if the stream drops. Tap it to see the other cameras: it comes back after a minute. Where live video can't play, such as away from home without a VPN, it stays on snapshots.
+- **Battery cameras: refresh up to every 12 hours.** From 5 minutes up the app keeps each camera's last picture, so opening a dashboard shows it and doesn't wake the camera; a new one is only asked for when it's due.
+- **Only by Flow**, with the Flow card *Refresh a camera's picture*: you decide when a camera wakes, such as at sunrise and sunset. It works with no dashboard open, and the tile shows when its picture is from.
 
 ### More icons
 - **155 more icons, 201 in all,** in every icon setting and on the Flow Tiles card. The list opens with the 46 you know; type to find the others by name, in your language.
@@ -50,9 +52,22 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Rotate dashboards:** a browser goes through the dashboards you tick, every so many seconds. A touch pauses it for a minute.
 - **Dim at set times,** and the Flow card *Dim the web dashboards*, for every browser or one screen name.
 
+### Web dashboards: a side pane
+- **Your dashboards in a side pane,** from the button at the top left, under the front page's sections, also in full screen. It floats over the widgets, or stays open beside them on a wide screen, in the editors too, so a dashboard is laid out at the width it's seen at.
+- **Customize this list:** hide dashboards and sections and drag them into this browser's own order, which Rotate follows. The pane can take the dashboard's background tint, and its foot (All dashboards, Customize, Keep open and Settings) folds away.
+- **Settings from any view,** at the pane's foot, in tabs: All browsers (Header, Sync, Backup) and This browser (Screen, Kiosk, Sign-in).
+- **Go back after a while:** after 1 to 120 minutes without a touch, a browser returns to the dashboard you pick, or All dashboards. A dashboard with a code, the editor and dialogs hold it.
+
+### Web dashboards: your own look
+- **Your home's name and icon** in the header and the browser's title, the same in every browser, and an icon for each dashboard if you like: one of the 201 icons or a picture of your own. It shows in the side pane, on the front page and by the dashboard's title.
+- **A background colour of your own,** beside the preset tints.
+- **Widget background:** a slider per dashboard that blends the widgets into the backdrop, so a white chart doesn't stand out on a tinted one. Turned low, a thin line keeps the tiles' edges; nothing changes until you move it.
+
 ### Web dashboards' editor
 - **Add widget has a search and groups,** in place of one long list.
-- **Undo:** removing or moving a widget offers Undo for 8 seconds.
+- **Undo:** removing or moving a widget, deleting a dashboard or removing a column with widgets in it offers Undo for 8 seconds.
+- **Editing loses no work:** a failed save stays up with Try again and Discard, and Done waits for the saves. Changed settings take a second tap to throw away, and a new widget that's cancelled is gone.
+- The resize handle is a round grip, which no longer reads as a scrollbar.
 
 ### Settings made alike across the widgets
 - **Time format for the whole app:** 24 or 12 hours (or Automatic, the phone's or browser's language) under **Apps → Widgetkeeper → Configure → Time format**, for every widget that shows a time: now also the charts' axes and tapped times, the Electricity Overview and Energy Price Strip, the Weather Forecast's hours, the Heatmap, Daily Profile and Timers' end times. It replaces the Time format setting of the Clock, Cameras, Locks and Doors, Pollen and UV and Activity Dots: a widget set to 24 or 12 hours there now follows the app's, so set it once on that page.
@@ -60,9 +75,9 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 - **Flow Buttons: activate with a double or long press**, as Device Quick Actions, so a stray tap can't start a Flow.
 - **Green when fine** in Value Matrix (on, as before; off leaves a value inside its range plain) and Combined Value (off; on colours the tile green inside the OK range).
 - Light Controls, Lights by Room, Curtains, Thermostat Presets, Variable Presets and Variables now vibrate on a tap that changes something, as the other widgets that act.
-- **Name a chart's values:** Chart · Lines, Stacked, Timeline and Ranking take an optional name per value, in place of the device's.
 - **Widen the last tile** in Curtains, Device Quick Actions, Device Values and Sensor Alarms: at 2 per row, the last of an odd number of tiles fills the row.
-- **Hide the legend** in Chart · Basic, Lines and Stacked (a typed title stays in Lines and Stacked).
+- **Chart height:** small, normal or tall in Chart · Basic, Totals, Scatter (XY), Daily Profile, Min/Max, Stacked and Lines, for a chart two columns wide.
+- **Legend above, below or hidden** in Chart · Daily Profile, Totals, Min/Max, Scatter (XY), Ranking and Gauge too.
 - **A colour for Sparklines**, and for the Energy Price Strip's bars when *Colour by price level* is off.
 - **Smooth chart lines** in Chart · Stacked (areas) and Sparklines; the numbers stay exact.
 - **Electricity Overview: any colour for the usage history**, not only Neutral or Purple.

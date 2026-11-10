@@ -1,18 +1,18 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "notes": {
-    "en": "Nine new chart widgets, shorter device names and sign-in codes for web dashboards.",
-    "nl": "Negen nieuwe grafiekwidgets, kortere apparaatnamen en inlogcodes voor webdashboards.",
-    "de": "Neun neue Diagramm-Widgets, kürzere Gerätenamen und Anmeldecodes für Web-Dashboards.",
-    "fr": "Neuf nouveaux widgets graphiques, des noms d'appareils plus courts et des codes de connexion pour les tableaux de bord web.",
-    "it": "Nove nuovi widget grafici, nomi dei dispositivi più corti e codici di accesso per le dashboard web.",
-    "sv": "Nio nya diagramwidgetar, kortare enhetsnamn och inloggningskoder för webbinstrumentpaneler.",
-    "no": "Ni nye diagramwidgeter, kortere enhetsnavn og påloggingskoder for nettdashbord.",
-    "es": "Nueve nuevos widgets de gráficos, nombres de dispositivos más cortos y códigos de acceso para paneles web.",
-    "da": "Ni nye grafwidgets, kortere enhedsnavne og login-koder til webdashboards.",
-    "ru": "Девять новых виджетов-графиков, короткие имена устройств и коды входа для веб-панелей.",
-    "pl": "Dziewięć nowych widżetów wykresów, krótsze nazwy urządzeń i kody logowania do pulpitów webowych.",
-    "ko": "새 차트 위젯 9개, 더 짧은 기기 이름, 웹 대시보드 로그인 코드.",
-    "ar": "تسع أدوات مخططات جديدة، وأسماء أجهزة أقصر، ورموز دخول للوحات الويب."
+    "en": "Three new widgets, one time format for the whole app, 155 more icons and web dashboards with a side pane.",
+    "nl": "Drie nieuwe widgets, één tijdnotatie voor de hele app, 155 extra pictogrammen en webdashboards met een zijpaneel.",
+    "de": "Drei neue Widgets, ein Zeitformat für die ganze App, 155 weitere Symbole und Web-Dashboards mit Seitenleiste.",
+    "fr": "Trois nouveaux widgets, un format d'heure pour toute l'app, 155 icônes de plus et un panneau latéral sur les tableaux de bord web.",
+    "it": "Tre nuovi widget, un formato orario per tutta l'app, 155 icone in più e dashboard web con un pannello laterale.",
+    "sv": "Tre nya widgetar, ett tidsformat för hela appen, 155 fler ikoner och webbinstrumentpaneler med sidopanel.",
+    "no": "Tre nye widgeter, ett tidsformat for hele appen, 155 flere ikoner og nettdashbord med sidepanel.",
+    "es": "Tres widgets nuevos, un formato de hora para toda la app, 155 iconos más y paneles web con panel lateral.",
+    "da": "Tre nye widgets, ét tidsformat for hele appen, 155 ikoner mere og webdashboards med sidepanel.",
+    "ru": "Три новых виджета, один формат времени для всего приложения, ещё 155 значков и веб-панели с боковой панелью.",
+    "pl": "Trzy nowe widżety, jeden format czasu dla całej aplikacji, 155 nowych ikon i pulpity webowe z panelem bocznym.",
+    "ko": "새 위젯 3개, 앱 전체의 시간 형식 하나, 아이콘 155개 추가, 사이드 패널이 있는 웹 대시보드.",
+    "ar": "ثلاث أدوات جديدة، وتنسيق وقت واحد للتطبيق كله، و155 أيقونة إضافية، ولوحات ويب بلوحة جانبية."
   }
 }

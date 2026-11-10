@@ -270,10 +270,11 @@ The button at the left of the bar opens a side pane with your dashboards, under 
 
 <img src="docs/web/front.png" alt="The web dashboards front page in a browser window: seven dashboards as cards, and the widgets you can add" width="100%">
 
-The front page lists the dashboards; the pen reorders, duplicates and deletes them. **Settings** at the bottom of the [side pane](#moving-between-dashboards) has **Header**, your own name and icon in place of Widgetkeeper's, on every browser (the sign-in screens keep Widgetkeeper's), then **Keep screen on**, **Dim**, **Dim at set times**, **Rotate dashboards** and **Sign out** for this browser, and the [backup](#backup).
+The front page lists the dashboards; the pen reorders, duplicates and deletes them. **Settings** at the bottom of the [side pane](#moving-between-dashboards) has its tabs in two groups. **All browsers:** **Header**, your own name and icon in place of Widgetkeeper's (the sign-in screens keep Widgetkeeper's), [Sync](#sync-with-a-homey-dashboard) and the [backup](#backup). **This browser:** **Screen** (light or dark, **Keep screen on**, **Dim**, **Dim at set times**), **Kiosk** (**Rotate dashboards**, **Go back after a while**) and **Sign-in** (**Sign out**).
 
 - **Dim at set times:** a second level between two times, by the device's clock. The Flow card *Dim the web dashboards* sets a level too, on every browser or on those showing a dashboard with a [Popups](docs/widgets/popups.md) widget of that screen name. It lasts until another Flow, a moved slider, or the set times next start or end.
 - **Rotate dashboards:** tick two or more dashboards and how many seconds each shows (at least 10). A touch pauses it for a minute, and it waits while a dialog, a popup or the editor is open.
+- **Go back after a while:** after 1 to 120 minutes without a touch, the page returns to the dashboard you pick, or All dashboards. Rotate decides while it's on, and a dashboard with a code, the editor or a dialog holds the page where it is.
 
 ### Screens and browsers
 Each browser signs in with a code of its own, backed by its own Homey API key:
