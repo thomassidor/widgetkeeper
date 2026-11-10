@@ -8,7 +8,7 @@
     A teaser of 1.3.0 (CHANGELOG.md), in the look of the 1.1.0 and 1.2.0 posters (whats-next-1.2.0.html): the three new
     widgets (Combined Value, Value Board, Flow Tiles with its Flow cards drawn), the app's Time format (its card drawn, the
     Energy Price Strip in 24 and 12 hours), the icons (the real list, kit.js and icons.js, on Flow Buttons), the pickers (the
-    list drawn, with the kit's glyphs), Widen the last tile, Rotate and dim (docs/web/rotate-dialog.png, the dim Flow card
+    list drawn, with the kit's glyphs), Widen the last tile, Rotate, Go back and dim (docs/web/rotate-dialog.png, the dim Flow card
     drawn), Add widget's search (docs/web/addwidget-dialog.png) with Undo's message, the side pane (docs/web/nav.png), the
     header's name and the dashboards' icons (brand.png), a background colour and Widget background (background.png), the
     charts' height and legend (three of their Looks, docs/variants/), Editing loses no work, and at the bottom an unavailable device
@@ -311,6 +311,7 @@
         <p>For a tablet on the wall: it goes through the dashboards you tick, and turns itself down at night.</p>
         <ul class="more">
           <li><b>Rotate dashboards:</b> every so many seconds, per browser. A touch pauses it for a minute.</li>
+          <li><b>Go back after a while</b> to a dashboard you pick, once nobody has touched the screen.</li>
           <li><b>Dim at set times,</b> by the device's clock.</li>
           <li><b>Or from a Flow,</b> for every browser or one screen name:</li>
         </ul>
@@ -338,8 +339,8 @@
       <h2>A side pane with your dashboards</h2>
       <p>Go from any dashboard to any other, also in full screen. It floats over the widgets, or stays open beside them on a wide screen.</p>
       <ul class="more">
-        <li><b>Customize this list:</b> hide dashboards and sections, and drag them into this browser's own order.</li>
-        <li><b>All dashboards and Settings</b> are at its foot, whichever dashboard you're on.</li>
+        <li><b>Customize this list:</b> hide dashboards and sections, drag them into this browser's own order, and tint the pane like the dashboard if you like.</li>
+        <li><b>All dashboards and Settings</b> are at its foot, which folds away. Settings opens over any view, in tabs.</li>
       </ul>
       <img src="../docs/web/nav.png" alt="" width="1520" height="1035">
     </section>
@@ -403,7 +404,7 @@
       <span class="tag">And also</span>
       <ul class="more">
         <li><b>Cameras, Always live:</b> pick one to play by itself and fill the widget when the dashboard opens.</li>
-        <li><b>Cameras refresh up to every 12 hours,</b> and opening a dashboard doesn't wake a battery camera.</li>
+        <li><b>Cameras refresh up to every 12 hours,</b> and opening a dashboard doesn't wake a battery camera. <b>Or only by Flow,</b> with the card <i>Refresh a camera's picture</i>.</li>
         <li><b>Popups on web dashboards:</b> a camera's live video, and a size that fills the page.</li>
         <li><b>An unavailable device's old reading doesn't count</b> in Combined Value, Room Health and Value Matrix. A deleted one keeps its name in Device Values and Sparklines.</li>
         <li><b>Quicker to recover:</b> widgets try again after 5, 15 and 30 seconds, and read again when you come back to a dashboard.</li>
