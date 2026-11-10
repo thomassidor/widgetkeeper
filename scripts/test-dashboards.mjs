@@ -8,6 +8,8 @@
 //   npm run test-dashboards -- --remove     removes every test dashboard (`test-…` web ones, or `Test · …` with --native)
 //   npm run test-dashboards -- --native …   the same as native Homey dashboards (the Homey app's), instead of web ones
 //   npm run test-dashboards -- --apps "Widgey,Sun Times"   other apps' widgets instead: `Test · Other apps`, id `test-apps`
+//   npm run test-dashboards -- --every [--native]   one dashboard with one widget of each type (the first of its own test
+//                                           dashboard's), `Test · Every widget`, id `test-every`; the others stay
 //
 // It writes the app setting `webDashboards` through the Homey CLI's login (the web dashboards' own API wants the
 // password's session too), so the app's `normalize()` checks it on the next read, as for any saved dashboard.
@@ -43,7 +45,7 @@ const sectionOf = id => (CHART_TYPES.has(id.slice(PREFIX.length)) ? CHART_SECTIO
 const NATIVE_PREFIX = 'Test · ';
 const MISSING = 'missing-device-0000'; // a device id that doesn't exist: the widgets' missing state
 
-const { values: opts, positionals } = parseArgs({ options: { remove: { type: 'boolean' }, native: { type: 'boolean' }, apps: { type: 'string' } }, allowPositionals: true });
+const { values: opts, positionals } = parseArgs({ options: { remove: { type: 'boolean' }, native: { type: 'boolean' }, apps: { type: 'string' }, every: { type: 'boolean' } }, allowPositionals: true });
 
 const { api: homeyApi, close } = await connect();
 
@@ -1320,6 +1322,7 @@ const BUILD = {
 
 // ---------------------------------------------------------------- write
 
+if (opts.every && (opts.apps || positionals.length)) throw new Error('--every builds one dashboard of every type: no --apps or widget types with it');
 if (opts.apps && (opts.native || positionals.length)) throw new Error('--apps builds a web dashboard of its own: no --native or widget types with it');
 /** Widgets Homey's own dashboards don't offer (deprecated there): left out with --native. */
 const WEB_ONLY = Object.keys(widgetDefs).filter(t => widgetDefs[t].deprecated === true);
@@ -1329,7 +1332,9 @@ for (const t of types) if (!BUILD[t]) throw new Error(`Unknown widget type: ${t}
 const missingBuilders = Object.keys(widgetDefs).filter(t => !BUILD[t]);
 if (missingBuilders.length) console.warn(`No test dashboard for: ${missingBuilders.join(', ')}`);
 /** Whether a type's test dashboard is rebuilt or removed this run. */
-const replacing = type => types.includes(type) || (opts.remove && !positionals.length);
+const replacing = type => (opts.every ? type === 'every' : types.includes(type) || (opts.remove && !positionals.length));
+/** `--every`'s dashboard's name: native ones are found by it. */
+const EVERY_NAME = `${NATIVE_PREFIX}Every widget`;
 
 function testName(type) {
   return `${NATIVE_PREFIX}${widgetDefs[type]?.name?.en ?? type}`;
@@ -1381,6 +1386,17 @@ async function buildApps() {
   return { type: 'apps', name: 'Test · Other apps', cols: apps.length, placed };
 }
 
+/** `Test · Every widget`: one widget of each type, the first of that type on its own test dashboard, titled by the widget's name. */
+async function buildEvery() {
+  const placed = [];
+  for (const type of types) {
+    const { widgets } = await BUILD[type]();
+    const first = widgets.find(x => x.type === type) ?? widgets[0];
+    placed.push({ id: `every-${placed.length + 1}`, ...first, title: widgetDefs[type]?.name?.en ?? type });
+  }
+  return { type: 'every', name: EVERY_NAME, cols: 3, placed };
+}
+
 /** Every listed type's test dashboard: the builder's widgets and their Vivid copies, numbered (`id`). */
 async function buildAll() {
   const out = [];
@@ -1422,7 +1438,7 @@ async function writeWeb(built) {
     return { id: PREFIX + type, name, theme: 'auto', columns: laid, section: sectionOf(PREFIX + type) };
   });
   // The user's dashboards first, as they were; then the test ones in the manifest's order.
-  const order = [...Object.keys(widgetDefs), 'apps'].map(t => PREFIX + t);
+  const order = ['every', ...Object.keys(widgetDefs), 'apps'].map(t => PREFIX + t);
   const tests = [...current.filter(d => d.id.startsWith(PREFIX) && !replace.has(d.id)), ...dashboards]
     .map(d => ({ ...d, section: sectionOf(d.id) }))
     .sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
@@ -1473,7 +1489,8 @@ async function writeNative(built) {
   const all = Object.values(await homeyApi('GET', DASHBOARDS) ?? {});
   const typeOf = new Map(Object.keys(widgetDefs).map(t => [testName(t), t]));
   // Without widget types named, every `Test · …` dashboard goes or is replaced, also one of a type no longer built.
-  const old = all.filter(d => typeOf.has(d.name)
+  // With --every only its own one.
+  const old = opts.every ? all.filter(d => d.name === EVERY_NAME) : all.filter(d => typeOf.has(d.name)
     ? replacing(typeOf.get(d.name))
     : !positionals.length && String(d.name ?? '').startsWith(NATIVE_PREFIX));
   const dropped = new Set(old.flatMap(d => (d.columns ?? []).flatMap(c => (c.widgets ?? []).map(x => x.id))));
@@ -1504,6 +1521,6 @@ async function writeNative(built) {
   console.log(`${opts.remove ? 'Removed' : 'Saved'}; ${count} Homey dashboards now.`);
 }
 
-const built = opts.remove ? [] : opts.apps ? [await buildApps()] : await buildAll();
+const built = opts.remove ? [] : opts.apps ? [await buildApps()] : opts.every ? [await buildEvery()] : await buildAll();
 await (opts.native ? writeNative(built) : writeWeb(built));
 await close();
