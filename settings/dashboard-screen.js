@@ -1,6 +1,6 @@
 /*
  * The web dashboards page — what a screen does by itself: Dim at set times or from a Flow (the choices are in
- * dashboard.js, `dimWanted()`), and Rotate dashboards. A part of the page (settings/dashboard.js): mountWebDashboards()
+ * dashboard.js, `dimWanted()`), Rotate dashboards and Go back after a while. A part of the page (settings/dashboard.js): mountWebDashboards()
  * runs it once with `wd`, the page's shared state and functions. The core's functions and constants are taken from `wd`
  * at the top; the state that changes, and the other parts' functions, are read as `wd.<name>`. Plain browser JS (served
  * as-is).
@@ -16,6 +16,41 @@
   const ROTATE_DEFAULT_SECONDS = 30;
   /** After a touch, a key or a scroll: long enough to use a widget without it being taken away. */
   const TOUCH_PAUSE_MS = 60e3;
+
+  /** Go back after a while, this browser's choice in Settings: `{to: 'front' | dashboard id, minutes}`; absent is off. */
+  const GO_BACK_STORAGE = 'widgetkeeper.web.goBack';
+  const GO_BACK_MIN_MINUTES = 1;
+  const GO_BACK_MAX_MINUTES = 120;
+  const GO_BACK_DEFAULT_MINUTES = 5;
+
+  /** A stored choice as `{to, minutes}`, the minutes within limits; null when off or unreadable. */
+  function goBackConfigOf(raw) {
+    let value = raw;
+    try { if (typeof raw === 'string') value = JSON.parse(raw); } catch (e) { return null; }
+    if (!value || typeof value !== 'object' || typeof value.to !== 'string' || !value.to) return null;
+    const minutes = Math.round(Number(value.minutes));
+    return {
+      to: value.to,
+      minutes: Number.isFinite(minutes) ? Math.min(GO_BACK_MAX_MINUTES, Math.max(GO_BACK_MIN_MINUTES, minutes)) : GO_BACK_DEFAULT_MINUTES,
+    };
+  }
+
+  /** Where it goes back to: the chosen dashboard, or the front page (chosen, or the dashboard was deleted). */
+  function goBackHash(config, dashboards) {
+    return config.to !== 'front' && dashboards.some(d => d.id === config.to) ? `#/d/${config.to}` : '#/';
+  }
+
+  /** Whether `hash` is already that view (the front page's edit mode isn't: that's held anyway). */
+  function isGoBackView(target, hash) {
+    if (target === '#/') return !hash || hash === '#' || hash === '#/';
+    const m = /^#\/d\/([A-Za-z0-9_-]+)/.exec(hash || '');
+    return !!m && `#/d/${m[1]}` === target;
+  }
+
+  /** When it goes back: `minutes` after this view came up or the last touch, whichever is later. */
+  function goBackDue(shownAt, touchedAt, minutes) {
+    return Math.max(shownAt, touchedAt) + minutes * 60e3;
+  }
 
   /** A stored choice as `{ids, seconds}`, the seconds within limits; null when off or unreadable. */
   function rotateConfigOf(raw) {
@@ -139,9 +174,26 @@
       }
       const config = rotateConfigOf(storageGet(ROTATE_STORAGE));
       const list = rotationList(config, (wd.navInOrder ? wd.navInOrder() : wd.dashboards) || []);
-      if (!list.length || now < rotationDue(shownAt, touchedAt, config.seconds)) return;
+      if (list.length) { // Rotate decides where the screen goes; going back would only cut a dashboard's turn short
+        if (now < rotationDue(shownAt, touchedAt, config.seconds)) return;
+        shownAt = now;
+        location.hash = `#/d/${nextInRotation(list, location.hash)}`;
+        return;
+      }
+      goBackTick(now);
+    }
+
+    /** Go back after a while: to the chosen view, unless the screen is held on a dashboard with a code. */
+    function goBackTick(now) {
+      const config = goBackConfigOf(storageGet(GO_BACK_STORAGE));
+      if (!config) return;
+      const target = goBackHash(config, wd.dashboards || []);
+      if (isGoBackView(target, location.hash) || now < goBackDue(shownAt, touchedAt, config.minutes)) return;
+      const m = /^#\/d\/([A-Za-z0-9_-]+)/.exec(location.hash);
+      const here = m && (wd.dashboards || []).find(d => d.id === m[1]);
+      if (here && wd.lockOf && wd.lockOf(here)) return; // leaving it takes the code
       shownAt = now;
-      location.hash = `#/d/${nextInRotation(list, location.hash)}`;
+      location.hash = target;
     }
     setInterval(rotateTick, 1000);
 
@@ -153,6 +205,14 @@
       storageSet(ROTATE_STORAGE, config ? JSON.stringify(config) : null);
     }
 
-    Object.assign(wd, { dimFlowLevel, refreshDim, ROTATE_DEFAULT_SECONDS, ROTATE_MAX_SECONDS, ROTATE_MIN_SECONDS, rotateConfig, saveRotate, setDimFlows, syncDim, watchTouches });
+    function goBackConfig() {
+      return goBackConfigOf(storageGet(GO_BACK_STORAGE));
+    }
+
+    function saveGoBack(config) {
+      storageSet(GO_BACK_STORAGE, config ? JSON.stringify(config) : null);
+    }
+
+    Object.assign(wd, { dimFlowLevel, GO_BACK_DEFAULT_MINUTES, GO_BACK_MAX_MINUTES, GO_BACK_MIN_MINUTES, goBackConfig, saveGoBack, refreshDim, ROTATE_DEFAULT_SECONDS, ROTATE_MAX_SECONDS, ROTATE_MIN_SECONDS, rotateConfig, saveRotate, setDimFlows, syncDim, watchTouches });
   });
 })();

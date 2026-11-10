@@ -344,7 +344,8 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-switched + .wd-set-row, .wd-set-row + .wd-switched > .wd-set-row:first-child, .wd-switched + .wd-switched > .wd-set-row:first-child { border-top: 1px solid var(--wd-line); }
 .wd-switched .wd-set-sub[hidden] { display: none; }
 .wd-page-settings .wd-time { width: 120px; }
-.wd-page-settings .wd-rotate-seconds { width: 96px; }
+.wd-page-settings .wd-rotate-seconds, .wd-page-settings .wd-go-back-minutes { width: 96px; }
+.wd-page-settings .wd-go-back-to { max-width: 220px; }
 .wd-rotate-list { margin: 4px 16px 12px; }
 .wd-switched .wd-backup-note { margin: 0 16px 12px; }
 .wd-dim-value { font-size: 14px; line-height: 20px; color: var(--wd-muted); text-align: right; font-variant-numeric: tabular-nums; }

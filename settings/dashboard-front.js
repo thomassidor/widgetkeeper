@@ -250,6 +250,7 @@
       dim.append(flowNote);
       const scheduled = dimTimes(setRow, dimChanged);
       const rotation = rotateRows(setRow);
+      const goBack = goBackRows(setRow);
       // Dark or light: this browser's own mode for every dashboard, or each one's theme (Automatic). The front page
       // behind redraws in it (the dialog is on body, so it stays).
       const modes = [['auto', 'themeAuto'], ['dark', 'themeDark'], ['light', 'themeLight']].map(([id, key]) => ({ id, title: t(key) }));
@@ -260,7 +261,7 @@
       mode.setAttribute('aria-label', t('darkLight'));
       const card = el('div', 'wd-set-card');
       const kiosk = el('p', 'wd-hint wd-kiosk-help', t('kioskHelp'));
-      card.append(setRow(t('darkLight'), t('darkLightText'), mode), awake, dim, scheduled, rotation, setRow(t('signedIn'), t('forgetKeyText'), forget), kiosk);
+      card.append(setRow(t('darkLight'), t('darkLightText'), mode), awake, dim, scheduled, rotation, goBack, setRow(t('signedIn'), t('forgetKeyText'), forget), kiosk);
       browser.append(el('h3', 'wd-h2', t('thisBrowser')), card);
       body.append(wd.brandSection(setRow), backupSection(), wd.syncSettingsSection(), browser);
       d.showModal();
@@ -374,6 +375,47 @@
       }
       sub.append(setRow(t('rotateEvery'), t('rotateEveryText'), seconds, seconds.id), list, note);
       if (config) save(true); // says so when a ticked dashboard has been deleted since
+      return part;
+    }
+
+    /** Go back after a while: where to (the front page or a dashboard, in the side pane's order) and after how long. */
+    function goBackRows(setRow) {
+      const config = wd.goBackConfig();
+      const state = { to: config ? config.to : 'front', minutes: config ? config.minutes : wd.GO_BACK_DEFAULT_MINUTES };
+      const note = el('p', 'wd-backup-note');
+      note.setAttribute('role', 'status');
+      const save = (on) => {
+        wd.saveGoBack(on ? { to: state.to, minutes: state.minutes } : null);
+        note.textContent = on && wd.rotateConfig() ? t('goBackRotating') : '';
+      };
+      const { part, sub } = switchedRows(setRow, t('goBack'), t('goBackText'), 'wd-go-back', !!config, save);
+      const to = el('select', 'wd-input wd-go-back-to');
+      to.id = 'wd-go-back-to';
+      const option = (value, text) => {
+        const o = el('option', '', text);
+        o.value = value;
+        o.dir = 'auto';
+        to.append(o);
+      };
+      option('front', t('navAll'));
+      for (const dash of wd.navInOrder()) option(dash.id, dash.name || t('untitled'));
+      // A deleted dashboard reads as the front page, where it goes back to then.
+      to.value = wd.dashboards.some(d => d.id === state.to) ? state.to : 'front';
+      to.addEventListener('change', () => { state.to = to.value; save(true); });
+      const minutes = el('input', 'wd-input wd-go-back-minutes');
+      minutes.id = 'wd-go-back-minutes';
+      minutes.type = 'number';
+      minutes.min = String(wd.GO_BACK_MIN_MINUTES);
+      minutes.max = String(wd.GO_BACK_MAX_MINUTES);
+      minutes.value = String(state.minutes);
+      minutes.addEventListener('change', () => {
+        const typed = Math.round(Number(minutes.value));
+        state.minutes = Math.min(wd.GO_BACK_MAX_MINUTES, Math.max(wd.GO_BACK_MIN_MINUTES, Number.isFinite(typed) ? typed : wd.GO_BACK_DEFAULT_MINUTES));
+        minutes.value = String(state.minutes);
+        save(true);
+      });
+      sub.append(setRow(t('goBackTo'), '', to, to.id), setRow(t('goBackAfter'), t('goBackAfterText'), minutes, minutes.id), note);
+      if (config) save(true);
       return part;
     }
 

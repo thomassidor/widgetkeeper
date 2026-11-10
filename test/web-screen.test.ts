@@ -20,8 +20,9 @@ function fn(name: string): string {
 
 const page = new Function([
   'const MAX_DIM = 80, ROTATE_MIN_SECONDS = 10, ROTATE_MAX_SECONDS = 3600, ROTATE_DEFAULT_SECONDS = 30, TOUCH_PAUSE_MS = 60000;',
-  ...['dimScheduleOf', 'scheduleAt', 'dimWanted', 'dimFlowHolds', 'rotateConfigOf', 'rotationList', 'nextInRotation', 'rotationDue', 'matchesWords'].map(fn),
-  'return { dimScheduleOf, scheduleAt, dimWanted, rotateConfigOf, rotationList, nextInRotation, rotationDue, matchesWords };',
+  'const GO_BACK_MIN_MINUTES = 1, GO_BACK_MAX_MINUTES = 120, GO_BACK_DEFAULT_MINUTES = 5;',
+  ...['dimScheduleOf', 'scheduleAt', 'dimWanted', 'dimFlowHolds', 'rotateConfigOf', 'rotationList', 'nextInRotation', 'rotationDue', 'goBackConfigOf', 'goBackHash', 'isGoBackView', 'goBackDue', 'matchesWords'].map(fn),
+  'return { dimScheduleOf, scheduleAt, dimWanted, rotateConfigOf, rotationList, nextInRotation, rotationDue, goBackConfigOf, goBackHash, isGoBackView, goBackDue, matchesWords };',
 ].join('\n'))();
 
 const at = (h: number, m = 0) => new Date(2026, 10, 6, h, m);
@@ -161,6 +162,27 @@ describe('Reduced motion', () => {
   });
 });
 
+describe('Go back after a while', () => {
+  it('reads what\'s stored, with the minutes within limits', () => {
+    expect(page.goBackConfigOf('{"to":"a","minutes":10}')).toEqual({ to: 'a', minutes: 10 });
+    expect(page.goBackConfigOf({ to: 'front', minutes: 0 }).minutes).toBe(1);
+    expect(page.goBackConfigOf({ to: 'front', minutes: 999 }).minutes).toBe(120);
+    expect(page.goBackConfigOf({ to: 'front', minutes: 'x' }).minutes).toBe(5);
+    for (const off of [null, '', 'nope', '{}', '{"to":""}']) expect(page.goBackConfigOf(off)).toBeNull();
+  });
+
+  it('goes to the chosen dashboard, or the front page when that\'s gone', () => {
+    expect(page.goBackHash({ to: 'a' }, [{ id: 'a' }])).toBe('#/d/a');
+    expect(page.goBackHash({ to: 'gone' }, [{ id: 'a' }])).toBe('#/');
+    expect(page.goBackHash({ to: 'front' }, [{ id: 'front' }])).toBe('#/');
+    expect(page.isGoBackView('#/', '')).toBe(true);
+    expect(page.isGoBackView('#/', '#/edit')).toBe(false);
+    expect(page.isGoBackView('#/d/a', '#/d/a')).toBe(true);
+    expect(page.isGoBackView('#/d/a', '#/d/ab')).toBe(false);
+    expect(page.goBackDue(0, 120000, 5)).toBe(420000);
+  });
+});
+
 describe('The page\'s screen part, running', () => {
   function mount(stored: Record<string, string> = {}, dashboards = [{ id: 'a', columns: [[{ type: 'popups', settings: { name: 'Hall' } }]] }, { id: 'b', columns: [] }]) {
     const storage = new Map(Object.entries(stored));
@@ -247,6 +269,42 @@ describe('The page\'s screen part, running', () => {
     location.hash = '#/d/a/edit';
     vi.advanceTimersByTime(30000);
     expect(location.hash).toBe('#/d/a/edit');
+    vi.useRealTimers();
+  });
+
+  it('goes back after its minutes without a touch, but not from a dashboard with a code or while rotating', () => {
+    vi.useFakeTimers();
+    location.hash = '#/d/b';
+    const { wd } = mount({ 'widgetkeeper.web.goBack': '{"to":"a","minutes":2}' });
+    vi.advanceTimersByTime(100000);
+    window.dispatchEvent(new Event('pointerdown'));
+    vi.advanceTimersByTime(100000);
+    expect(location.hash).toBe('#/d/b'); // the touch started it over
+    vi.advanceTimersByTime(25000);
+    expect(location.hash).toBe('#/d/a');
+    vi.advanceTimersByTime(300000);
+    expect(location.hash).toBe('#/d/a'); // already there
+
+    // The editor and a dashboard held by its code stay.
+    location.hash = '#/d/b/edit';
+    vi.advanceTimersByTime(300000);
+    expect(location.hash).toBe('#/d/b/edit');
+    wd.lockOf = (d: { id: string }) => d.id === 'b';
+    location.hash = '#/d/b';
+    vi.advanceTimersByTime(300000);
+    expect(location.hash).toBe('#/d/b');
+    wd.lockOf = () => null;
+
+    // To the front page.
+    wd.saveGoBack({ to: 'front', minutes: 1 });
+    vi.advanceTimersByTime(61000);
+    expect(location.hash).toBe('#/');
+
+    // Rotate decides while it's on.
+    wd.saveRotate({ ids: ['a', 'b'], seconds: 600 });
+    location.hash = '#/d/a';
+    vi.advanceTimersByTime(300000);
+    expect(location.hash).toBe('#/d/a');
     vi.useRealTimers();
   });
 
