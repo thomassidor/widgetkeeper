@@ -607,6 +607,9 @@ textarea.wd-input { width: 100%; resize: vertical; }
 }
 
 /* Dialogs. */
+/* Their scrollbars as the side pane's: thin and quiet, clearer on hover; :where(), so a rule of a part's own (no scrollbar under the tabs or chips) still wins. */
+:where(.wd-dialog, .wd-dialog *) { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--wd-text) 18%, transparent) transparent; }
+:where(.wd-dialog :hover) { scrollbar-color: color-mix(in srgb, var(--wd-text) 32%, transparent) transparent; }
 .wd-dialog {
   box-sizing: border-box; width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 32px); padding: 0; margin: auto; /* Homey's reset sets every margin to 0 */
   border: 0; border-radius: 14px; background: var(--wd-tile); color: var(--wd-text); overflow: auto;
@@ -734,7 +737,9 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-dialog.tall { height: calc(100vh - 32px); display: flex; flex-direction: column; overflow: hidden; }
 .wd-dialog.tall .wd-dialog-body { flex: 1 1 auto; min-height: 0; padding-bottom: 0; gap: 12px; }
 .wd-devtools { display: flex; flex-direction: column; gap: 10px; }
-.wd-rooms { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; padding-bottom: 2px; }
+/* The room chips scroll sideways with no scrollbar under them (a swipe, or the wheel: dashboard-pickers.js). */
+.wd-rooms { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.wd-rooms::-webkit-scrollbar { display: none; }
 .wd-rooms.wrap { flex-wrap: wrap; overflow: visible; }
 @media (max-width: 720px) { .wd-rooms.wrap { flex-wrap: nowrap; overflow-x: auto; } }
 .wd-room {

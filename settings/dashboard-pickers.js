@@ -130,6 +130,12 @@
       search.type = 'search';
       search.placeholder = t('search');
       const rooms = el('div', 'wd-rooms');
+      // The chips scroll sideways without a scrollbar: a finger swipes them, and a mouse's wheel turns them here.
+      rooms.addEventListener('wheel', (ev) => {
+        if (ev.deltaX || !ev.deltaY || rooms.scrollWidth <= rooms.clientWidth) return;
+        ev.preventDefault();
+        rooms.scrollLeft += ev.deltaY;
+      }, { passive: false });
       tools.append(search, rooms);
       const box = el('div', 'wd-devgroups');
       body.append(tools, box);
