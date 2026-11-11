@@ -115,6 +115,25 @@ describe('taps and live values', () => {
     expect(r.all('circle.dot-core.ln-dot')).toHaveLength(3);
   });
 
+  it('puts the dots on the smoothed line with `smooth`, not at the real values', () => {
+    // A spike at 04:00 (the 13th hour): smoothing flattens it, so a dot at the real value would float above the line.
+    const spike = room('s', 'Spike', k => (k === 12 ? 30 : 20), 20);
+    /** A path's points: the last x and y of each segment (`M`, `L` or `C`). */
+    const ends = (d: string) => d.split(/[MLC]/).filter(Boolean).map(seg => seg.trim().split(/[ ,]+/).map(Number).slice(-2));
+    for (const smooth of [false, true]) {
+      const r = widget({ smooth }, [spike]);
+      const x = 38 + 326 * 12.5 / 24;
+      r.q('svg')!.dispatchEvent(new PointerEvent('pointerdown', { clientX: x, clientY: 50, pointerType: 'mouse' }));
+      const dot = r.q('circle.dot-core.ln-dot')!;
+      const [cx, cy] = [Number(dot.getAttribute('cx')), Number(dot.getAttribute('cy'))];
+      const vertex = ends(r.q('path.ln-line')!.getAttribute('d')!).find(([px]) => Math.abs(px - cx) < 0.11);
+      expect(vertex, `smooth ${smooth}`).toBeDefined();
+      expect(Math.abs(vertex![1] - cy), `smooth ${smooth}`).toBeLessThan(0.11);
+      expect(r.header()[0]).toBe('30°C | Spike · 04:00'); // the header keeps the real value
+      r.root.remove();
+    }
+  });
+
   it('adds a realtime value onto its line', () => {
     const r = widget({}, [kitchen(), bedroom()]);
     vi.setSystemTime(NOW + MIN);

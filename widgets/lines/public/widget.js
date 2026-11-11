@@ -153,8 +153,8 @@
       if (state.sel != null && d.known.length) {
         // The line nearest the pointer at the tapped time, then the next nearest.
         const at = d.known.map(l => ({ l, q: pointAt(l, state.sel) })).filter(a => a.q);
-        const y = drawn && drawn.yOf;
-        at.sort((a, b) => (y && state.selY != null ? Math.abs(y(a.l)(a.q[1]) - state.selY) - Math.abs(y(b.l)(b.q[1]) - state.selY) : 0));
+        const y = drawn && drawn.yAt;
+        at.sort((a, b) => (y && state.selY != null ? Math.abs(y(a.l, a.q) - state.selY) - Math.abs(y(b.l, b.q) - state.selY) : 0));
         at.slice(0, 2).forEach((a, k) => colOf(a.l, a.q[1], timeText(a.q[0], d.win), k ? ' low' : '', a.q[0] !== now()));
         return;
       }
@@ -215,6 +215,7 @@
       // The lines in their order, each with its area under it with `area`; the last picked on top.
       for (const l of d.known) {
         const vs = smooth ? smoothValues(l.pts.map(q => q[1])) : l.pts.map(q => q[1]);
+        l.drawnVs = vs; // the values the line goes through, for the dots
         const y = yOf(l);
         const xy = l.pts.map((q, j) => [x(q[0]), y(vs[j])]);
         const g = C.el('svg:g', { class: 'ln-series', 'data-wk-color': l.color }, svg);
@@ -225,10 +226,12 @@
       }
       if (win.end < win.to) C.el('svg:rect', { class: 'future', x: f1(x(win.end)), y: top - 6, width: f1(x(win.to) - x(win.end)), height: f1(base - top + 6) }, svg);
 
+      // A point's height on its line as drawn: with `smooth`, the smoothed value, so the dot sits on the line.
+      const yAt = (l, q) => { const j = l.pts.indexOf(q); return yOf(l)(j >= 0 && l.drawnVs ? l.drawnVs[j] : q[1]); };
       // A dot on each line's latest point while live; at the tapped time, a cursor and a dot on each line.
       const dotsAt = list => list.forEach(([l, q]) => {
         const g = C.el('svg:g', { class: 'ln-series', 'data-wk-color': l.color }, svg);
-        kit.dot(g, x(q[0]), yOf(l)(q[1]), 'ln-dot', true);
+        kit.dot(g, x(q[0]), yAt(l, q), 'ln-dot', true);
       });
       if (state.sel != null && state.sel >= win.from && state.sel <= win.end) {
         C.el('svg:path', { class: 'cursor', d: `M${f1(x(state.sel))} ${top}V${base}` }, svg);
@@ -236,7 +239,7 @@
       } else if (d.live) {
         dotsAt(d.known.map(l => [l, l.pts[l.pts.length - 1]]));
       }
-      drawn = { ...d, p, x, yOf };
+      drawn = { ...d, p, x, yOf, yAt };
     }
 
     // ------------------------------------------------------------------ interaction

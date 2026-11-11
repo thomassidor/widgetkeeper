@@ -89,6 +89,15 @@
       return hour ? hour.v : null;
     }
 
+    /** The height of the line through `xy` (by x) at `px`, between its points; null outside them. */
+    function yOnLine(xy, px) {
+      for (let k = 1; k < xy.length; k++) {
+        const [x0, y0] = xy[k - 1], [x1, y1] = xy[k];
+        if (px >= x0 && px <= x1) return x1 === x0 ? y1 : y0 + (y1 - y0) * (px - x0) / (x1 - x0);
+      }
+      return null;
+    }
+
     // ------------------------------------------------------------------ render
 
     /** The chart, shown (`on`) or hidden; the frame draws the message, the header and the passing message around it. */
@@ -157,18 +166,22 @@
 
       // Today's line up to now, its dot at the end (or at the tapped hour).
       let dotAt = null;
+      let lineXY = null;
       if (d.today.length >= 2) {
         const vs = d.today.map(p => disp(p[1]));
         const ws = smooth ? smoothValues(vs) : vs;
         const xy = ws.map((v, k) => [x(d.today[k][0]), y(v)]);
         kit.trace(svg, { line: C.linePath(xy, smooth), area: null, kind: 'series', lineClass: 'series-line', zeroY: scale.zeroY, top, base, split: false });
         dotAt = xy[xy.length - 1];
+        lineXY = xy;
       }
       if (state.sel != null) {
         const cx = x(d.mid(state.sel));
         C.el('svg:path', { class: 'cursor', d: `M${f1(cx)} ${top}V${base}` }, svg);
         const v = todayAt(state.sel, d);
-        dotAt = v != null ? [cx, y(disp(v))] : null;
+        // On the line as drawn (smoothed with `smooth`), not at the hour's average, so the dot sits on it.
+        const onLine = lineXY ? yOnLine(lineXY, cx) : null;
+        dotAt = v != null ? [cx, onLine != null ? onLine : y(disp(v))] : null;
       }
       if (dotAt) kit.dot(svg, dotAt[0], dotAt[1], 'series');
       drawn = { ...d, pw };

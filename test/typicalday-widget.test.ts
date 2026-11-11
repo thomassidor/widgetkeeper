@@ -80,6 +80,28 @@ describe('the usual day', () => {
   });
 });
 
+describe('the dot', () => {
+  it("sits on today's line as drawn at a tapped hour, also smoothed", () => {
+    // A spike at 08:30: the hour's average is well above the smoothed line there.
+    const spiked = today();
+    spiked.points = spiked.points.map(([t, v]) => [t, t === MIDNIGHT + 8.5 * HOUR ? 12 : v] as [number, number]);
+    /** The line's height at `px`, between the points either side (the last x and y of each segment). */
+    const lineY = (d: string, px: number) => {
+      const pts = d.split(/[MLC]/).filter(Boolean).map(seg => seg.trim().split(/[ ,]+/).map(Number).slice(-2));
+      const k = pts.findIndex(([x]) => x >= px);
+      const [[x0, y0], [x1, y1]] = [pts[k - 1], pts[k]];
+      return y0 + (y1 - y0) * (px - x0) / (x1 - x0);
+    };
+    for (const smooth of [false, true]) {
+      const r = widget({ smooth }, [spiked, past()]);
+      r.tap(8);
+      const dot = r.q('circle.dot-core')!;
+      const y = lineY(r.q('path.series-line')!.getAttribute('d')!, Number(dot.getAttribute('cx')));
+      expect(Math.abs(Number(dot.getAttribute('cy')) - y), `smooth ${smooth}`).toBeLessThan(0.2);
+    }
+  });
+});
+
 describe('the requests and messages', () => {
   it('asks for today and for the last 7 (or 3) days', () => {
     const t = win.WidgetkeeperKit.timeSpan('1d!', NOW);
