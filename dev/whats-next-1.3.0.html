@@ -447,11 +447,27 @@
       const SAMPLE = ['lamp', 'floorlamp', 'heater', 'hot', 'cold', 'solar', 'evcharger', 'plugzap', 'piggybank', 'rain', 'snow', 'storm', 'cloudsun', 'sunrise', 'rainbow', 'armchair', 'bath', 'shower',
         'toilet', 'dooropen', 'fence', 'fridge', 'microwave', 'cookingpot', 'laundry', 'smoke', 'router', 'gamepad', 'projector', 'radio', 'headphones', 'popcorn', 'cctv', 'siren', 'shieldcheck', 'fingerprint',
         'tree', 'flower', 'bird', 'fish', 'rabbit', 'baby', 'bike', 'bus', 'plane', 'tractor', 'boat', 'wine', 'beer', 'cake', 'party', 'ghost', 'trophy', 'rocket'];
-      el('icon-grid').innerHTML = SAMPLE.map((id) => {
+      const iconCell = (id) => {
         const icon = kit.icons[id];
         if (!icon) throw new Error(`No icon ${id}`);
         return `<i><svg viewBox="0 0 24 24"><path d="${icon.d}"/></svg></i>`;
-      }).join('');
+      };
+      el('icon-grid').innerHTML = SAMPLE.map(iconCell).join('');
+      // Then as many whole rows of the other new icons (those after 'lamp' in the list) as the panel has room for,
+      // once the row's height is known (the user's ask, 2026-11-11: the panel had room for many more).
+      const fillIcons = () => {
+        const grid = el('icon-grid');
+        const feat = grid.closest('.feat');
+        const cell = grid.firstElementChild.getBoundingClientRect().height;
+        const perRow = getComputedStyle(grid).gridTemplateColumns.split(' ').length;
+        const free = feat.getBoundingClientRect().bottom - parseFloat(getComputedStyle(feat).paddingBottom) - grid.getBoundingClientRect().bottom;
+        const rows = Math.floor(free / (cell + 6));
+        const ids = Object.keys(kit.icons);
+        const shown = new Set([...SAMPLE, ...buttons.map(b => b[3])]);
+        const more = ids.slice(ids.indexOf('lamp')).filter(id => !shown.has(id)).slice(0, rows * perRow);
+        grid.insertAdjacentHTML('beforeend', more.map(iconCell).join(''));
+        document.body.dataset.icons = String(grid.children.length);
+      };
 
       // The pickers' glyphs: the kit's, as lib/valueGlyphImages.ts draws them on a row's neutral circle.
       const glyph = (id, cap, value) => {
@@ -463,6 +479,7 @@
 
       // The page's size and the columns' heights, for the render script.
       document.fonts.ready.then(() => setTimeout(() => {
+        fillIcons();
         const r = document.body.getBoundingClientRect();
         document.body.dataset.width = String(Math.ceil(r.width));
         document.body.dataset.height = String(Math.ceil(r.height));
