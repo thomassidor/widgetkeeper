@@ -129,8 +129,9 @@
       const search = el('input', 'wd-input');
       search.type = 'search';
       search.placeholder = t('search');
-      const rooms = el('div', 'wd-rooms');
-      // The chips scroll sideways without a scrollbar: a finger swipes them, and a mouse's wheel turns them here.
+      const rooms = el('div', 'wd-rooms wrap');
+      // The chips wrap; on a narrow screen they scroll sideways without a scrollbar: a finger swipes them, and a
+      // mouse's wheel turns them here.
       rooms.addEventListener('wheel', (ev) => {
         if (ev.deltaX || !ev.deltaY || rooms.scrollWidth <= rooms.clientWidth) return;
         ev.preventDefault();

@@ -737,7 +737,8 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-dialog.tall { height: calc(100vh - 32px); display: flex; flex-direction: column; overflow: hidden; }
 .wd-dialog.tall .wd-dialog-body { flex: 1 1 auto; min-height: 0; padding-bottom: 0; gap: 12px; }
 .wd-devtools { display: flex; flex-direction: column; gap: 10px; }
-/* The room chips scroll sideways with no scrollbar under them (a swipe, or the wheel: dashboard-pickers.js). */
+/* The room chips wrap (`wrap`: the pickers' and Add widget's); one row on a narrow screen, scrolling sideways with no
+   scrollbar under it (a swipe, or the wheel: dashboard-pickers.js). */
 .wd-rooms { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
 .wd-rooms::-webkit-scrollbar { display: none; }
 .wd-rooms.wrap { flex-wrap: wrap; overflow: visible; }
