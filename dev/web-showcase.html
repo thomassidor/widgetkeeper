@@ -157,7 +157,10 @@
     // background turned down, its popover open.
     const BRAND = { name: 'Solbakken', icon: 'home' };
     const DASH_ICONS = { home: 'home', energy: 'bolt', security: 'shield', climate: 'thermometer', livingroom: 'armchair', garden: 'flower', kitchen: 'cookingpot' };
-    if (VIEW === 'brand' || VIEW === 'blend') for (const b of BOARDS) b.icon = DASH_ICONS[b.id];
+    // Since 2026-11-12 (the user's ask: the showcase shows the new designs) every view has them, and the full-page views
+    // the side pane kept open (PANE_VIEWS); the cropped dialogs and the kiosk tablet don't.
+    const PANE_VIEWS = ['dashboard', 'front', 'editor', 'settings', 'preview', 'light', 'wide', 'popup', 'nav', 'brand', 'blend'];
+    for (const b of BOARDS) b.icon = DASH_ICONS[b.id];
     // The blend view (not on a poster): Home on a colour of its own with its widgets blended in, the pane open with the icons.
     if (VIEW === 'blend') Object.assign(BOARDS.find(b => b.id === 'home'), { background: '#17414a', surface: 35 });
     if (VIEW === 'background') Object.assign(BOARDS.find(b => b.id === LIGHT_BOARD), { background: '#b9cdb4', surface: 45 });
@@ -203,7 +206,7 @@
     // settings and drawn alike behind the dialog (the showcase's has two).
     const SETTINGS_WIDGET = 'home-0-2';
     // The rotate view (1.3.0's teaser): this browser's Rotate dashboards and Dim at set times, already on.
-    if (VIEW === 'nav' || VIEW === 'brand' || VIEW === 'blend') localStorage.setItem('widgetkeeper.web.nav', JSON.stringify({ pinned: true }));
+    if (PANE_VIEWS.includes(VIEW)) localStorage.setItem('widgetkeeper.web.nav', JSON.stringify({ pinned: true }));
     if (VIEW === 'rotate') {
       localStorage.setItem('widgetkeeper.web.rotate', JSON.stringify({ ids: ['home', 'energy', 'security'], seconds: 45 }));
       localStorage.setItem('widgetkeeper.web.dimSchedule', JSON.stringify({ from: '22:00', to: '07:00', level: 60 }));
@@ -260,7 +263,7 @@
       const time = Date.prototype.toLocaleTimeString;
       Date.prototype.toLocaleTimeString = function (lang, o) { return time.call(this, lang === 'en' ? 'en-GB' : lang, o); };
     }
-    mockWebApi({ lang: 'en', dashboards: BOARDS, popups, sync, front: VIEW === 'brand' || VIEW === 'blend' ? { brand: BRAND } : undefined, ...picks });
+    mockWebApi({ lang: 'en', dashboards: BOARDS, popups, sync, front: { brand: BRAND }, ...picks });
     history.replaceState(null, '', HASH);
   </script>
   <script src="../settings/dashboard-layout.js"></script>
