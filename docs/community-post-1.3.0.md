@@ -17,6 +17,7 @@ Everything from 1.2.1, and: https://homey.app/a/com.thomassidor.widgetkeeper/tes
 * **One time format for the whole app:** 24 or 12 hours, under **Configure → Time format**, now also on the charts, Electricity, the price strip, Weather and Timers.
 * **155 more icons,** 201 in all, found by typing their name.
 * **Better pickers:** search by words in any order, with each value's room and reading in the list.
+* **Names:** the setting that shortens device names can now shorten room names and Flow names on Flow Buttons too.
 * **Unavailable devices** are dimmed with a small **!**, and their old readings don't count in averages.
 * **Web dashboards:**
   * A side pane with your dashboards, which can stay open beside them, in your own order.
