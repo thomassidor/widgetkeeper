@@ -3,7 +3,7 @@ import { devicesAndZones, filterItems, nameOrder, withNone, type AutocompleteIte
 import { describeCapability } from './capabilities.js';
 import { valueGlyphImage } from './valueGlyphs.js';
 import DeviceTracker, { readZones, zoneRef, type TrackedEntry, offlineFlag } from './DeviceTracker.js';
-import { deviceNamer } from './deviceNames.js';
+import { deviceNamer, roomNamer } from './deviceNames.js';
 import Timings from './Timings.js';
 
 export const VM_STATE_EVENT = 'valuematrix:state';
@@ -134,6 +134,7 @@ export default class ValueMatrixService {
     const tm = new Timings();
     const zonesP = readZones(this.homey, tm, this.log, 'Value matrix');
     const show = await deviceNamer(this.homey, tm, this.log, 'Value matrix');
+    const room = roomNamer(this.homey);
     const reads = await Promise.all(deviceIds.map(id => this.tracker.each(capabilityIds.map(c => `${id}:${c}`), tm, this.log, 'Matrix value', t => t)));
     const zones = await zonesP;
     const devices = deviceIds.map((id, i): MatrixDevice => {
@@ -143,7 +144,7 @@ export default class ValueMatrixService {
       for (const t of read) {
         if (!t.absent) values[t.capabilityId] = t.value;
       }
-      return { id, name: show(read[0]?.name ?? '', read[0]?.zone), zone: zoneRef(zones, read[0]?.zone ?? null), values, ...(read[0] ? offlineFlag(read[0]) : {}) };
+      return { id, name: show(read[0]?.name ?? '', read[0]?.zone), zone: zoneRef(zones, read[0]?.zone ?? null, room), values, ...(read[0] ? offlineFlag(read[0]) : {}) };
     });
     // Each column described by the first device (in the order picked) that has it.
     const columns = capabilityIds.map((c) => {

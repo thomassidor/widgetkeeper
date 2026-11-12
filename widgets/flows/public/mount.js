@@ -69,6 +69,7 @@ window.mountFlowsWidget = function (Homey, { root, frame }) {
   });
 
   const refresh = window.WidgetkeeperKit.wireRefresh(load, REFRESH_MS);
+  window.WidgetkeeperKit.onDeviceNames(Homey, load); // Flow names follow the app settings' Names
   load();
 };
 /** The classes index.html puts on its body; the Smart Stack puts them on the slide. */

@@ -111,9 +111,12 @@ describe('widget mount.js: its requests reach its own routes', () => {
   });
 });
 
-/** The widgets that show device names. The names come with their reads, so these read again when the setting changes. */
+/**
+ * The widgets that show device names (or Flow names: Flow Buttons). The names come with their reads, so these read
+ * again when the setting changes.
+ */
 const DEVICE_NAMES: WidgetName[] = [
-  'cameras', 'charts', 'curtains', 'heatmap', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions', 'roomhealth',
+  'cameras', 'charts', 'curtains', 'flows', 'heatmap', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions', 'roomhealth',
   'sensoralarms', 'sensordots', 'sparklines', 'thermostat', 'totals', 'scatter', 'typicalday', 'dailyrange', 'compare', 'timeline', 'stacked', 'lines', 'gauge', 'valuematrix', 'valueboard', 'values', 'combined',
 ];
 

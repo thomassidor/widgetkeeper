@@ -183,8 +183,8 @@ it('Web dashboards: the line, the password form for a new one or the current one
   expect(($('device') as unknown as HTMLSelectElement).options.length).toBe(2);
 });
 
-it('Device names: the line, the separator only for its two choices, the examples; each change saved at once', () => {
-  let stored = { mode: 'full', separator: '|' };
+it('Names: the line, the separator only for its two choices, what it applies to, the examples; each change saved at once', () => {
+  let stored: { mode: string, separator: string, apply?: string[] } = { mode: 'full', separator: '|' }; // stored before the checkboxes
   const names = ['Bed | Bedroom', 'Ceiling lamp | Kitchen', 'Hall'];
   const answer = () => {
     const shown = names.map(name => [name, stored.mode === 'before' && name.includes(stored.separator) ? name.split(stored.separator)[0].trim() : name]);
@@ -195,25 +195,35 @@ it('Device names: the line, the separator only for its two choices, the examples
     if (path !== '/device-names') return undefined;
     if (method === 'GET') return answer();
     if (body.separator === '') return { ok: false, reason: 'separator' };
-    stored = { mode: body.mode, separator: body.separator ?? stored.separator };
+    stored = { mode: body.mode, separator: body.separator ?? stored.separator, apply: body.apply ?? stored.apply };
     return { ok: true, ...answer() };
   });
   const select = $('namesMode') as unknown as HTMLSelectElement;
+  const box = (id: string) => $(id) as unknown as HTMLInputElement;
+  const ticked = () => ['namesDevices', 'namesRooms', 'namesFlows'].map(id => box(id).checked);
   const examples = () => [...document.querySelectorAll('#namesExamples li')].map(li => li.textContent);
-  expect([$('namesLine').textContent, select.value, select.disabled, $('namesSepGroup').hidden, $('namesCount').hidden, examples()])
-    .toEqual(['namesFull', 'full', false, true, true, []]);
+  // A setting without `apply` is devices only; with full names there's nothing to tick.
+  expect([$('namesLine').textContent, select.value, select.disabled, $('namesSepGroup').hidden, $('namesApplyGroup').hidden, ticked(), $('namesCount').hidden, examples()])
+    .toEqual(['namesFull', 'full', false, true, true, [true, false, false], true, []]);
   select.value = 'before';
   select.dispatchEvent(new Event('change'));
-  expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'before', separator: '|' }]);
-  expect([$('namesLine').textContent, $('namesSepGroup').hidden, $('namesCount').textContent, examples()]).toEqual([
-    'namesBeforeLine{"separator":"|"}', false, 'namesChanged{"changed":2,"total":3}',
+  expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'before', separator: '|', apply: ['devices'] }]);
+  expect([$('namesLine').textContent, $('namesSepGroup').hidden, $('namesApplyGroup').hidden, $('namesRoomOnly').hidden, $('namesCount').textContent, examples()]).toEqual([
+    'namesBeforeLine{"separator":"|"} · namesDevices', false, false, true, 'namesChanged{"changed":2,"total":3}',
     ['Bed | Bedroom → Bed', 'Ceiling lamp | Kitchen → Ceiling lamp'],
   ]);
+  // Ticking rooms and Flows saves at once, and the line names them.
+  box('namesRooms').checked = true;
+  box('namesRooms').dispatchEvent(new Event('change'));
+  box('namesFlows').checked = true;
+  box('namesFlows').dispatchEvent(new Event('change'));
+  expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'before', separator: '|', apply: ['devices', 'rooms', 'flows'] }]);
+  expect([$('namesLine').textContent, ticked()]).toEqual(['namesBeforeLine{"separator":"|"} · namesDevices, namesRooms, namesFlows', [true, true, true]]);
   // A separator no name has: no examples, and the line says so.
   $('namesSep').value = ' - ';
   $('namesSep').dispatchEvent(new Event('change'));
-  expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'before', separator: ' - ' }]);
-  expect([$('namesLine').textContent, $('namesCount').textContent, examples()]).toEqual(['namesBeforeLine{"separator":" - "}', 'namesNoneSep{"separator":" - "}', []]);
+  expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'before', separator: ' - ', apply: ['devices', 'rooms', 'flows'] }]);
+  expect([$('namesCount').textContent, examples()]).toEqual(['namesNoneSep{"separator":" - "}', []]);
   // An emptied one isn't sent: the stored one comes back.
   const sent = calls.length;
   $('namesSep').value = '';
@@ -222,13 +232,21 @@ it('Device names: the line, the separator only for its two choices, the examples
   // Last word has no separator.
   select.value = 'lastWord';
   select.dispatchEvent(new Event('change'));
-  expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'lastWord', separator: ' - ' }]);
-  expect([$('namesLine').textContent, $('namesSepGroup').hidden, $('namesStatus').textContent]).toEqual(['namesLastWord', true, '']);
-  // Nor has Without the room name; no name changes here, which the line says without a separator.
+  expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'lastWord', separator: ' - ', apply: ['devices', 'rooms', 'flows'] }]);
+  expect([$('namesLine').textContent, $('namesSepGroup').hidden, $('namesStatus').textContent]).toEqual(['namesLastWord · namesDevices, namesRooms, namesFlows', true, '']);
+  // Nor has Without the room name, which only shortens devices: the line says so, and a hint under the boxes.
   select.value = 'room';
   select.dispatchEvent(new Event('change'));
-  expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'room', separator: ' - ' }]);
-  expect([$('namesLine').textContent, $('namesSepGroup').hidden, $('namesCount').textContent]).toEqual(['namesRoom', true, 'namesNone']);
+  expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'room', separator: ' - ', apply: ['devices', 'rooms', 'flows'] }]);
+  expect([$('namesLine').textContent, $('namesSepGroup').hidden, $('namesRoomOnly').hidden, $('namesCount').textContent])
+    .toEqual(['namesRoom · namesDevices', true, false, 'namesNone']);
+  // Nothing ticked: every name whole.
+  for (const id of ['namesDevices', 'namesRooms', 'namesFlows']) {
+    box(id).checked = false;
+    box(id).dispatchEvent(new Event('change'));
+  }
+  expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'room', separator: ' - ', apply: [] }]);
+  expect($('namesLine').textContent).toBe('namesFull');
 });
 
 it('Time format: the line and the choice, saved at once; put back when saving fails', () => {

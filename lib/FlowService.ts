@@ -1,6 +1,7 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
 import { byName, hintRow, matches, withNone, type AutocompleteItem } from './autocomplete.js';
+import { shownFlowName } from './deviceNames.js';
 import { FLOW_ICON_IMAGES } from './flowIconImages.js';
 import PersonalApiKey from './PersonalApiKey.js';
 import { sharedCache } from './sharedCache.js';
@@ -132,7 +133,9 @@ export default class FlowService {
     return ids.map(id => {
       const f = flows.get(id);
       if (!f) return { id, missing: true as const };
-      const { folder, ...info } = f;
+      const { folder, ...flow } = f;
+      // As the widgets show Flow names (the app settings' Names); a name typed on the button still wins.
+      const info = { ...flow, name: shownFlowName(this.homey, flow.name) };
       const color = colors[id];
       return color ? { ...info, color } : info;
     });

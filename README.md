@@ -4,7 +4,7 @@ Extra dashboard widgets for Homey Pro, made to sit naturally next to Homey's own
 
 <img src="docs/showcase/home.png" alt="Widgetkeeper widgets on a Homey dashboard on a tablet" width="100%">
 
-**Contents:** [Widgets](#widgets) · [Web dashboards](#web-dashboards) · [Dashboard examples](#dashboard-examples) · [Colour style](#colour-style) · [Device names](#device-names) · [Time format](#time-format) · [Tile names](#tile-names) · [API key](#api-key) · [Installation](#installation) · [Troubleshooting](#troubleshooting)
+**Contents:** [Widgets](#widgets) · [Web dashboards](#web-dashboards) · [Dashboard examples](#dashboard-examples) · [Colour style](#colour-style) · [Names](#names) · [Time format](#time-format) · [Tile names](#tile-names) · [API key](#api-key) · [Installation](#installation) · [Troubleshooting](#troubleshooting)
 
 ## Widgets
 Every widget follows Homey's light and dark mode and is translated into all 13 of Homey's languages. Tap one for what it does and its settings.
@@ -339,10 +339,13 @@ Turning web dashboards off keeps them on your Homey.
 ## Colour style
 Every widget with a coloured state has a **Colour style** setting: *Muted* is the calmer look, *Vivid* the stronger one, and a colour you pick in the widget follows it. Weather Forecast has a *Vivid* of its own, which puts the card on a gradient for the current weather.
 
-## Device names
-If your device names say more than the device, such as *Ceiling lamp | Kitchen*, choose under **Apps → Widgetkeeper → Configure → Device names** which part every widget shows: the full name (the default), the part before or after a separator you type, the last word, or the name without its room (*Kitchen ceiling lamp* in the Kitchen shows as *Ceiling lamp*).
+<a name="device-names"></a>
+## Names
+If your device names say more than the device, such as *Ceiling lamp | Kitchen*, choose under **Apps → Widgetkeeper → Configure → Names** which part every widget shows: the full name (the default), the part before or after a separator you type, the last word, or the name without its room (*Kitchen ceiling lamp* in the Kitchen shows as *Ceiling lamp*).
 
-The page shows a few of your own names as they'll look. Device lists in widget settings, Flow tokens and [names typed on tiles](#tile-names) stay as they are.
+Under **Apply to**, tick what it shortens: **Devices** (ticked unless you untick it), **Rooms** (the room names on Light Controls, Lights by Room, Curtains, Room Health, Value Matrix and Value Board) and **Flows** (the names on Flow Buttons). *Without the room name* only shortens device names.
+
+The page shows a few of your own names as they'll look. Lists in widget settings, Flow tokens and [names typed on tiles](#tile-names) or buttons stay as they are.
 
 ## Time format
 Every widget that shows a time (the Clock, the charts' axes, the price strips, Timers' end times, *since 18:17* …) shows it in 24 or 12 hours as you choose under **Apps → Widgetkeeper → Configure → Time format**. *Automatic* (the default) follows the language of the phone or browser that shows the dashboard. Open widgets change at once.

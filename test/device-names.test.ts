@@ -1,9 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
 import {
-  DEVICE_NAMES_EVENT, DEVICE_NAMES_SETTING, deviceNamer, deviceNamesState, nameRule, setDeviceNames, shortName, shownName,
-  withoutRoom, type NameRule,
+  DEVICE_NAMES_EVENT, DEVICE_NAMES_SETTING, deviceNamer, deviceNamesState, nameRule, roomNamer, setDeviceNames, shortName,
+  shownFlowName, shownName, withoutRoom, type NameRule,
 } from '../lib/deviceNames.js';
+import CurtainService from '../lib/CurtainService.js';
+import FlowService from '../lib/FlowService.js';
 import QuickActionService from '../lib/QuickActionService.js';
 import { thermostatState } from '../widgets/thermostat/api.js';
 import Diagnostics from '../lib/Diagnostics.js';
@@ -11,7 +13,7 @@ import api from '../api.js';
 
 vi.mock('homey-api', () => homeyApiMock);
 
-const rule = (mode: NameRule['mode'], separator = '|'): NameRule => ({ mode, separator });
+const rule = (mode: NameRule['mode'], separator = '|'): NameRule => ({ mode, separator, apply: ['devices'] });
 
 describe('shortName', () => {
   it('shows the whole name by default', () => {
@@ -86,15 +88,22 @@ describe('withoutRoom', () => {
 describe('nameRule', () => {
   it('reads a missing or broken setting as full names with `|`', () => {
     for (const v of [null, undefined, 'before', 42, [], {}, { mode: 'first' }, { mode: '__proto__' }]) {
-      expect(nameRule(v)).toEqual({ mode: 'full', separator: '|' });
+      expect(nameRule(v)).toEqual({ mode: 'full', separator: '|', apply: ['devices'] });
     }
   });
 
+  it('applies to devices only when stored before the checkboxes; keeps known kinds once, in order', () => {
+    expect(nameRule({ mode: 'after', separator: '|' }).apply).toEqual(['devices']);
+    expect(nameRule({ mode: 'after', apply: 'rooms' }).apply).toEqual(['devices']);
+    expect(nameRule({ mode: 'after', apply: [] }).apply).toEqual([]);
+    expect(nameRule({ mode: 'after', apply: ['flows', 'rooms', 'flows', 'zones', '__proto__'] }).apply).toEqual(['rooms', 'flows']);
+  });
+
   it('keeps a known mode and a separator of 1–5 characters', () => {
-    expect(nameRule({ mode: 'after', separator: ' - ' })).toEqual({ mode: 'after', separator: ' - ' });
-    expect(nameRule({ mode: 'before', separator: '' })).toEqual({ mode: 'before', separator: '|' });
-    expect(nameRule({ mode: 'before', separator: '123456' })).toEqual({ mode: 'before', separator: '|' });
-    expect(nameRule({ mode: 'lastWord', separator: 7 })).toEqual({ mode: 'lastWord', separator: '|' });
+    expect(nameRule({ mode: 'after', separator: ' - ' })).toMatchObject({ mode: 'after', separator: ' - ' });
+    expect(nameRule({ mode: 'before', separator: '' })).toMatchObject({ mode: 'before', separator: '|' });
+    expect(nameRule({ mode: 'before', separator: '123456' })).toMatchObject({ mode: 'before', separator: '|' });
+    expect(nameRule({ mode: 'lastWord', separator: 7 })).toMatchObject({ mode: 'lastWord', separator: '|' });
   });
 });
 
@@ -116,11 +125,12 @@ describe('the setting', () => {
 
   it('answers the rule with three of the names it changes, by name, and the counts', async () => {
     const { homey } = setup();
-    expect(await deviceNamesState(homey, vi.fn())).toEqual({ mode: 'full', separator: '|', examples: [], changed: 0, total: 5 });
+    expect(await deviceNamesState(homey, vi.fn())).toEqual({ mode: 'full', separator: '|', apply: ['devices'], examples: [], changed: 0, total: 5 });
     homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'before', separator: '|' });
     expect(await api.getDeviceNames({ homey })).toEqual({
       mode: 'before',
       separator: '|',
+      apply: ['devices'],
       examples: [
         { name: 'Bed | Bedroom', shown: 'Bed' },
         { name: 'Ceiling lamp | Kitchen', shown: 'Ceiling lamp' },
@@ -150,7 +160,7 @@ describe('the setting', () => {
     // Through a service's answer, and on the settings page.
     expect(await new QuickActionService(homey, () => {}).getState(['lamp'])).toMatchObject([{ id: 'lamp', name: 'Lamp' }]);
     expect(await deviceNamesState(homey, vi.fn())).toEqual({
-      mode: 'room', separator: '|', examples: [{ name: 'Kitchen lamp', shown: 'Lamp' }], changed: 1, total: 2,
+      mode: 'room', separator: '|', apply: ['devices'], examples: [{ name: 'Kitchen lamp', shown: 'Lamp' }], changed: 1, total: 2,
     });
   });
 
@@ -166,7 +176,7 @@ describe('the setting', () => {
   it('answers the rule alone when the devices can\'t be read', async () => {
     const { homey, log } = setup();
     homey.fakeApi.devices.getDevices.mockRejectedValue(new Error('Too many requests'));
-    expect(await deviceNamesState(homey, log)).toEqual({ mode: 'full', separator: '|' });
+    expect(await deviceNamesState(homey, log)).toEqual({ mode: 'full', separator: '|', apply: ['devices'] });
     expect(log).toHaveBeenCalledWith('Device names: the devices could not be read:', expect.any(Error));
   });
 
@@ -174,21 +184,28 @@ describe('the setting', () => {
     const { homey } = setup();
     const saved = await api.putDeviceNames({ homey, body: { mode: 'after', separator: ' | ' } });
     expect(saved).toMatchObject({ ok: true, mode: 'after', separator: ' | ', changed: 4, total: 5 });
-    expect(homey.settings.get(DEVICE_NAMES_SETTING)).toEqual({ mode: 'after', separator: ' | ' });
-    expect(homey.api.realtime).toHaveBeenCalledWith(DEVICE_NAMES_EVENT, { mode: 'after', separator: ' | ' });
+    expect(homey.settings.get(DEVICE_NAMES_SETTING)).toEqual({ mode: 'after', separator: ' | ', apply: ['devices'] });
+    expect(homey.api.realtime).toHaveBeenCalledWith(DEVICE_NAMES_EVENT, { mode: 'after', separator: ' | ', apply: ['devices'] });
     homey.api.realtime.mockClear();
     // The same again changes nothing a widget shows; without a separator, the stored one stays.
     await setDeviceNames(homey, vi.fn(), { mode: 'after' });
     expect(homey.api.realtime).not.toHaveBeenCalled();
     await setDeviceNames(homey, vi.fn(), { mode: 'lastWord' });
-    expect(homey.settings.get(DEVICE_NAMES_SETTING)).toEqual({ mode: 'lastWord', separator: ' | ' });
+    expect(homey.settings.get(DEVICE_NAMES_SETTING)).toEqual({ mode: 'lastWord', separator: ' | ', apply: ['devices'] });
     expect(homey.api.realtime).toHaveBeenCalledTimes(1);
+    // Ticking a kind is a change too; without `apply` the stored one stays.
+    await setDeviceNames(homey, vi.fn(), { mode: 'lastWord', apply: ['rooms', 'devices'] });
+    expect(homey.settings.get(DEVICE_NAMES_SETTING)).toEqual({ mode: 'lastWord', separator: ' | ', apply: ['devices', 'rooms'] });
+    expect(homey.api.realtime).toHaveBeenCalledTimes(2);
+    await setDeviceNames(homey, vi.fn(), { mode: 'lastWord' });
+    expect(homey.api.realtime).toHaveBeenCalledTimes(2);
+    await expect(setDeviceNames(homey, vi.fn(), { mode: 'lastWord', apply: 'rooms' })).rejects.toThrow('Invalid apply');
   });
 
   it('is in the diagnostics report', async () => {
     const { homey } = setup();
     homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'after', separator: ' - ' });
-    expect((await new Diagnostics(homey).report(undefined)).deviceNames).toEqual({ mode: 'after', separator: ' - ' });
+    expect((await new Diagnostics(homey).report(undefined)).deviceNames).toEqual({ mode: 'after', separator: ' - ', apply: ['devices'] });
   });
 
   it('refuses an unknown mode, and an empty or too long separator', async () => {
@@ -200,6 +217,70 @@ describe('the setting', () => {
     expect(await api.putDeviceNames({ homey, body: { mode: 'before', separator: 5 } })).toEqual({ ok: false, reason: 'separator' });
     expect(homey.settings.set).not.toHaveBeenCalled();
     expect(homey.api.realtime).not.toHaveBeenCalled();
+  });
+});
+
+describe('rooms and Flows', () => {
+  const FLOWS = {
+    f1: { id: 'f1', name: 'Lights | Evening', triggerable: true },
+    f2: { id: 'f2', name: 'Alarm | Night', triggerable: true },
+    f3: { id: 'f3', name: 'Hidden | Not by hand', triggerable: false },
+  };
+  function setup() {
+    const devices = [
+      fakeDevice({ id: 'c1', name: 'Blind | Kitchen', zone: 'k', caps: { windowcoverings_set: { type: 'number', value: 0.5 } } }),
+    ];
+    const api = { ...fakeApi({ devices, zones: { k: { id: 'k', name: '1st | Kitchen' }, l: { id: 'l', name: 'Living room' } } }),
+      flow: { getFlows: vi.fn(async () => FLOWS), getAdvancedFlows: vi.fn(async () => ({})), getFlowFolders: vi.fn(async () => ({})) } };
+    const homey = fakeHomey(api as any);
+    homey.app = { log: vi.fn(), debug: vi.fn() };
+    return homey;
+  }
+
+  it('shortens them only when ticked, and never by Leave out the room', () => {
+    const homey = setup();
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'after', separator: '|' });
+    expect([roomNamer(homey)('1st | Kitchen'), shownFlowName(homey, 'Lights | Evening'), shownName(homey, 'Blind | Kitchen')])
+      .toEqual(['1st | Kitchen', 'Lights | Evening', 'Kitchen']);
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'after', separator: '|', apply: ['rooms', 'flows'] });
+    expect([roomNamer(homey)('1st | Kitchen'), shownFlowName(homey, 'Lights | Evening'), shownName(homey, 'Blind | Kitchen')])
+      .toEqual(['Kitchen', 'Evening', 'Blind | Kitchen']);
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'room', separator: '|', apply: ['devices', 'rooms', 'flows'] });
+    expect([roomNamer(homey)('Kitchen'), shownFlowName(homey, 'Kitchen lights')]).toEqual(['Kitchen', 'Kitchen lights']);
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'full', separator: '|', apply: ['rooms', 'flows'] });
+    expect([roomNamer(homey)('1st | Kitchen'), shownFlowName(homey, 'Lights | Evening')]).toEqual(['1st | Kitchen', 'Lights | Evening']);
+  });
+
+  it('names the rooms in a widget\'s answer, and Leave out the room still takes the room\'s own name', async () => {
+    const homey = setup();
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'after', separator: '|', apply: ['rooms'] });
+    expect(await new CurtainService(homey, () => {}).getState(['c1']))
+      .toMatchObject([{ id: 'c1', name: 'Blind | Kitchen', zone: { id: 'k', name: 'Kitchen' } }]);
+  });
+
+  it('names the Flows in Flow Buttons\' answer', async () => {
+    const homey = setup();
+    const flows = new FlowService(homey, () => {});
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'after', separator: '|', apply: ['flows'] });
+    expect(await flows.getState(['flow:f1'])).toMatchObject([{ id: 'flow:f1', name: 'Evening' }]);
+  });
+
+  it('counts the names of every ticked kind on the settings page, its examples taken in turn', async () => {
+    const homey = setup();
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'after', separator: '|', apply: ['devices', 'rooms', 'flows'] });
+    // One device, two rooms, two Flows a button can start.
+    expect(await deviceNamesState(homey, vi.fn())).toMatchObject({
+      examples: [
+        { name: 'Blind | Kitchen', shown: 'Kitchen' },
+        { name: '1st | Kitchen', shown: 'Kitchen' },
+        { name: 'Alarm | Night', shown: 'Night' },
+      ],
+      changed: 4,
+      total: 5,
+    });
+    // Flows that can't be read are left out.
+    homey.fakeApi.flow.getFlows.mockRejectedValue(new Error('Too many requests'));
+    expect(await deviceNamesState(homey, vi.fn())).toMatchObject({ changed: 2, total: 3 });
   });
 });
 
@@ -221,5 +302,13 @@ describe('where the rule is applied', () => {
       expect(readFileSync(`lib/${f}`, 'utf8'), f).toMatch(/deviceNamer\(this\.homey, |shownName\(this\.homey, [^,()]+, /);
     }
     expect(readFileSync('widgets/thermostat/api.ts', 'utf8')).toMatch(/deviceNamer\(homey, /);
+  });
+
+  it('names every room a service sends a widget: each zoneRef() call passes the room namer', async () => {
+    const { readdirSync, readFileSync } = await import('node:fs');
+    const calls = readdirSync('lib').filter(f => f.endsWith('Service.ts'))
+      .flatMap(f => [...readFileSync(`lib/${f}`, 'utf8').matchAll(/zoneRef\(([^;]*?)\)[,;]/g)].map(m => [f, m[1]]));
+    expect(calls.length).toBeGreaterThan(4);
+    for (const [f, args] of calls) expect(args, f).toMatch(/, room$/);
   });
 });

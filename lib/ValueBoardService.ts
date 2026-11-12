@@ -1,7 +1,7 @@
 import type Homey from 'homey';
 import { describeCapability, type CapabilityDescription } from './capabilities.js';
 import DeviceTracker, { readZones, zoneRef, type TrackedEntry, offlineFlag } from './DeviceTracker.js';
-import { deviceNamer } from './deviceNames.js';
+import { deviceNamer, roomNamer } from './deviceNames.js';
 import Timings from './Timings.js';
 import { valueCaps } from './ValueService.js';
 
@@ -90,10 +90,11 @@ export default class ValueBoardService {
     const tm = new Timings();
     const zonesP = readZones(this.homey, tm, this.log, 'Value board');
     const show = await deviceNamer(this.homey, tm, this.log, 'Value board');
+    const room = roomNamer(this.homey);
     const out = await this.tracker.each(deviceIds, tm, this.log, 'Value board device', async (t, id): Promise<BoardDevice> => ({
       id,
       name: show(t.name, t.zone),
-      zone: zoneRef(await zonesP, t.zone),
+      zone: zoneRef(await zonesP, t.zone, room),
       ...offlineFlag(t),
       values: t.caps
         .filter(c => mode === 'all' || isReading(c.capabilityId))

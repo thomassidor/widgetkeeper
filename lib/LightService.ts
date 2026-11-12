@@ -3,7 +3,7 @@ import { getAppApi } from './appApi.js';
 import { capValuesText, copyCaps, presentCaps, readCaps, type CapState } from './capabilities.js';
 import DeviceTracker, { readZones, zoneRef, type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { fetchZoneIcon } from './deviceIcon.js';
-import { shownName } from './deviceNames.js';
+import { roomNamer, shownName } from './deviceNames.js';
 import PersonalApiKey from './PersonalApiKey.js';
 import { sharedCache } from './sharedCache.js';
 import Timings from './Timings.js';
@@ -162,6 +162,7 @@ export default class LightService {
   async getState(deviceIds: string[]): Promise<LightDevice[]> {
     const tm = new Timings();
     const zonesP = readZones(this.homey, tm, this.log, 'Light');
+    const room = roomNamer(this.homey);
     // Each device is read once per request, also when it's both a tile and in a group (or in two groups).
     const reads = new Map<string, Promise<Tracked>>();
     const read = (id: string) => {
@@ -177,8 +178,10 @@ export default class LightService {
         this.log(`Light ${id} unavailable:`, err);
         return { id, missing: true };
       }
-      const zone = zoneRef(await zonesP, t.zone);
-      const entry: LightDevice = { id, name: shownName(this.homey, t.name, zone?.name), icon: t.icon, zone, caps: copyCaps(t.caps), ...offlineFlag(t) };
+      const zones = await zonesP;
+      const zone = zoneRef(zones, t.zone, room);
+      // Leave out the room takes the room's own name, not the one shown.
+      const entry: LightDevice = { id, name: shownName(this.homey, t.name, t.zone ? zones[t.zone]?.name : null), icon: t.icon, zone, caps: copyCaps(t.caps), ...offlineFlag(t) };
       if (t.members) entry.groupLights = await this.groupLights(t.members, read);
       return entry;
     }));

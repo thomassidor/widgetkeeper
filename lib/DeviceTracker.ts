@@ -269,7 +269,10 @@ export function readZones(homey: Homey.App['homey'], tm: Timings, log: (...args:
     .catch((err: unknown) => { log(`${what} zones unavailable:`, err); return r.last; });
 }
 
-/** A zone id as `{id, name}`, or null when it's unknown. */
-export function zoneRef(zones: Record<string, any>, zoneId: string | null): { id: string, name: string } | null {
-  return zoneId && zones[zoneId] ? { id: zoneId, name: String(zones[zoneId].name) } : null;
+/**
+ * A zone id as `{id, name}`, or null when it's unknown. `show` names it as the widgets show rooms (`roomNamer()` in
+ * `lib/deviceNames.ts`; every service answering a widget passes it, `test/device-names.test.ts` checks).
+ */
+export function zoneRef(zones: Record<string, any>, zoneId: string | null, show: (name: string) => string = n => n): { id: string, name: string } | null {
+  return zoneId && zones[zoneId] ? { id: zoneId, name: show(String(zones[zoneId].name)) } : null;
 }

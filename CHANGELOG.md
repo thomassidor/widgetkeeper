@@ -71,6 +71,7 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 
 ### Settings made alike across the widgets
 - **Time format for the whole app:** 24 or 12 hours (or Automatic, the phone's or browser's language) under **Apps → Widgetkeeper → Configure → Time format**, for every widget that shows a time: now also the charts' axes and tapped times, the Electricity Overview and Energy Price Strip, the Weather Forecast's hours, the Heatmap, Daily Profile and Timers' end times. It replaces the Time format setting of the Clock, Cameras, Locks and Doors, Pollen and UV and Activity Dots: a widget set to 24 or 12 hours there now follows the app's, so set it once on that page.
+- **Names for rooms and Flows too:** the app setting that shortens device names (now **Names**, under **Apps → Widgetkeeper → Configure**) can also shorten room names and Flow names on Flow Buttons: tick them under **Apply to**. Only device names are ticked until you change it, so nothing changes by itself.
 - **Rename tiles** in Value Board (its rooms and devices) and Activity Dots (each sensor).
 - **Flow Buttons: activate with a double or long press**, as Device Quick Actions, so a stray tap can't start a Flow.
 - **Green when fine** in Value Matrix (on, as before; off leaves a value inside its range plain) and Combined Value (off; on colours the tile green inside the OK range).

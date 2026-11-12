@@ -1,9 +1,14 @@
 import type Homey from 'homey';
+import { getAppApi } from './appApi.js';
 import { devicesAndZones } from './autocomplete.js';
 import { readZones } from './DeviceTracker.js';
 import Timings from './Timings.js';
 
-/** The app setting: how the widgets show device names, `{mode, separator}` (`NameRule`), from the app settings page. */
+/**
+ * The app setting: how the widgets show names, `{mode, separator, apply}` (`NameRule`), from the app settings page.
+ * `apply` (1.3.0, the user's ask, 2026-11-12) is what it shortens: devices, rooms and Flows; a setting stored before
+ * it shortens devices only, as it did.
+ */
 export const DEVICE_NAMES_SETTING = 'deviceNames';
 /** Sent when it changes, so open widgets read their devices again. */
 export const DEVICE_NAMES_EVENT = 'devicenames:state';
@@ -14,7 +19,10 @@ export const DEVICE_NAMES_EVENT = 'devicenames:state';
  */
 const NAME_MODES = ['full', 'before', 'after', 'lastWord', 'room'] as const;
 export type NameMode = typeof NAME_MODES[number];
-export type NameRule = { mode: NameMode, separator: string };
+/** What the rule may shorten, in the settings page's order. */
+const NAME_KINDS = ['devices', 'rooms', 'flows'] as const;
+export type NameKind = typeof NAME_KINDS[number];
+export type NameRule = { mode: NameMode, separator: string, apply: NameKind[] };
 
 const DEFAULT_SEPARATOR = '|';
 const MAX_SEPARATOR = 5;
@@ -30,10 +38,35 @@ function isMode(v: unknown): v is NameMode {
   return NAME_MODES.includes(v as NameMode);
 }
 
-/** The stored setting as a rule: full names when it's missing or broken, `|` without a usable separator. */
+/** A list of kinds, known ones only, each once, in `NAME_KINDS`' order; null when it isn't a list. */
+function kindList(v: unknown): NameKind[] | null {
+  return Array.isArray(v) ? NAME_KINDS.filter(k => v.includes(k)) : null;
+}
+
+/**
+ * The stored setting as a rule: full names when it's missing or broken, `|` without a usable separator, devices only
+ * without a list of what it applies to (an empty list is none).
+ */
 export function nameRule(value: unknown): NameRule {
   const v = value && typeof value === 'object' ? value as Record<string, unknown> : {};
-  return { mode: isMode(v.mode) ? v.mode : 'full', separator: isSeparator(v.separator) ? v.separator : DEFAULT_SEPARATOR };
+  return {
+    mode: isMode(v.mode) ? v.mode : 'full',
+    separator: isSeparator(v.separator) ? v.separator : DEFAULT_SEPARATOR,
+    apply: kindList(v.apply) ?? ['devices'],
+  };
+}
+
+/**
+ * Whether the rule shortens names of this kind: ticked, and not *Leave out the room* on a room or a Flow, which have no
+ * room to leave out.
+ */
+function applies(rule: NameRule, kind: NameKind): boolean {
+  return rule.mode !== 'full' && rule.apply.includes(kind) && (rule.mode !== 'room' || kind === 'devices');
+}
+
+/** `shortName()` for a name of this kind: the whole name where the rule doesn't apply to it. */
+function shortNameOf(kind: NameKind, name: string, rule: NameRule, room?: string | null): string {
+  return applies(rule, kind) ? shortName(name, rule, room) : name;
 }
 
 /** What may stand between a room's name and the rest: spaces, dashes, `|`, `:`, `·`, `,` and `/`. */
@@ -91,7 +124,21 @@ export function shortName(name: string, rule: NameRule, room?: string | null): s
  * the full name.
  */
 export function shownName(homey: Homey.App['homey'], name: string, room?: string | null): string {
-  return shortName(name, nameRule(homey.settings.get(DEVICE_NAMES_SETTING)), room);
+  return shortNameOf('devices', name, nameRule(homey.settings.get(DEVICE_NAMES_SETTING)), room);
+}
+
+/**
+ * How a widget's answer names rooms (`zoneRef()`'s third argument), by the setting as it is now. Only for what a
+ * widget shows; a device's own *Leave out the room* takes the room's full name.
+ */
+export function roomNamer(homey: Homey.App['homey']): (name: string) => string {
+  const rule = nameRule(homey.settings.get(DEVICE_NAMES_SETTING));
+  return name => shortNameOf('rooms', name, rule);
+}
+
+/** A Flow's name as Flow Buttons shows it, by the setting (a name typed on the button still wins, in the widget). */
+export function shownFlowName(homey: Homey.App['homey'], name: string): string {
+  return shortNameOf('flows', name, nameRule(homey.settings.get(DEVICE_NAMES_SETTING)));
 }
 
 /**
@@ -100,33 +147,58 @@ export function shownName(homey: Homey.App['homey'], name: string, room?: string
  */
 export async function deviceNamer(homey: Homey.App['homey'], tm: Timings | null, log: (...args: any[]) => void, what: string) {
   const rule = nameRule(homey.settings.get(DEVICE_NAMES_SETTING));
-  const zones = rule.mode === 'room' ? await readZones(homey, tm ?? new Timings(), log, what) : {};
+  const zones = applies(rule, 'devices') && rule.mode === 'room' ? await readZones(homey, tm ?? new Timings(), log, what) : {};
   return (name: string, zoneId?: string | null): string => {
     const room = zoneId && Object.prototype.hasOwnProperty.call(zones, zoneId) ? zones[zoneId]?.name : null;
-    return shortName(name, rule, typeof room === 'string' ? room : null);
+    return shortNameOf('devices', name, rule, typeof room === 'string' ? room : null);
   };
 }
 
 export type DeviceNamesState = NameRule & {
-  /** Up to three of the Homey's device names the rule changes, by name. */
+  /** Up to three of the Homey's names the rule changes, taken in turn from each kind it applies to, each by name. */
   examples?: { name: string, shown: string }[],
-  /** How many names it changes, of how many. */
+  /** How many names it changes, of how many (of the kinds it applies to). */
   changed?: number,
   total?: number,
 };
 
-/** For the app settings page: the rule and what it does to the Homey's device names (left out when they can't be read). */
+/** The names of the Flows that can be started by hand (those a Flow Button can have). */
+async function flowNames(homey: Homey.App['homey']): Promise<string[]> {
+  const api = await getAppApi(homey);
+  const [plain, advanced] = await Promise.all([api.flow.getFlows(), api.flow.getAdvancedFlows()]) as Record<string, any>[];
+  return [...Object.values(plain ?? {}), ...Object.values(advanced ?? {})]
+    .filter(f => f?.triggerable === true && typeof f.name === 'string').map(f => f.name as string);
+}
+
+/**
+ * For the app settings page: the rule and what it does to the Homey's names of each kind it applies to (left out when
+ * the devices and rooms can't be read; Flows that can't be read are left out of the counts).
+ */
 export async function deviceNamesState(homey: Homey.App['homey'], log: (...args: any[]) => void): Promise<DeviceNamesState> {
   const rule = nameRule(homey.settings.get(DEVICE_NAMES_SETTING));
   try {
     const [devices, zones] = await devicesAndZones(homey);
-    const named = devices.map(d => ({ name: String(d.name ?? ''), room: zones[d.zone]?.name as string | undefined }))
-      .sort((a, b) => a.name.localeCompare(b.name));
-    const changed = named.flatMap(({ name, room }) => {
-      const shown = shortName(name, rule, room);
-      return shown === name ? [] : [{ name, shown }];
-    });
-    return { ...rule, examples: changed.slice(0, EXAMPLES), changed: changed.length, total: named.length };
+    const kinds: { name: string, shown: string }[][] = [];
+    const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
+    if (rule.apply.includes('devices')) {
+      kinds.push(devices.map(d => ({ name: String(d.name ?? ''), room: zones[d.zone]?.name as string | undefined }))
+        .sort(byName).map(({ name, room }) => ({ name, shown: shortNameOf('devices', name, rule, room) })));
+    }
+    if (rule.apply.includes('rooms')) {
+      kinds.push(Object.values(zones).map(z => String(z?.name ?? '')).sort((a, b) => a.localeCompare(b))
+        .map(name => ({ name, shown: shortNameOf('rooms', name, rule) })));
+    }
+    if (rule.apply.includes('flows')) {
+      const names = await flowNames(homey).catch((err) => { log('Names: the Flows could not be read:', err); return []; });
+      kinds.push(names.sort((a, b) => a.localeCompare(b)).map(name => ({ name, shown: shortNameOf('flows', name, rule) })));
+    }
+    const changes = kinds.map(list => list.filter(n => n.shown !== n.name));
+    const examples: { name: string, shown: string }[] = [];
+    for (let i = 0; examples.length < EXAMPLES && changes.some(c => c.length > i); i++) {
+      for (const c of changes) if (c[i] && examples.length < EXAMPLES) examples.push(c[i]);
+    }
+    const count = (lists: unknown[][]) => lists.reduce((n, l) => n + l.length, 0);
+    return { ...rule, examples, changed: count(changes), total: count(kinds) };
   } catch (err) {
     log('Device names: the devices could not be read:', err);
     return rule;
@@ -134,16 +206,24 @@ export async function deviceNamesState(homey: Homey.App['homey'], log: (...args:
 }
 
 /**
- * The app settings page's choice, `{mode, separator?}` (without a separator the stored one stays): stored, and open
- * widgets told when it changed. Answers `{ok: true, …deviceNamesState()}`, or `{ok: false, reason: 'separator'}` for
- * an empty or too long one.
+ * The app settings page's choice, `{mode, separator?, apply?}` (without a separator or `apply` the stored one stays):
+ * stored, and open widgets told when it changed. Answers `{ok: true, …deviceNamesState()}`, or `{ok: false, reason:
+ * 'separator'}` for an empty or too long one.
  */
-export async function setDeviceNames(homey: Homey.App['homey'], log: (...args: any[]) => void, body: { mode?: unknown, separator?: unknown }) {
+export async function setDeviceNames(homey: Homey.App['homey'], log: (...args: any[]) => void, body: { mode?: unknown, separator?: unknown, apply?: unknown }) {
   if (!isMode(body?.mode)) throw new Error('Invalid mode');
+  const apply = body.apply === undefined ? undefined : kindList(body.apply);
+  if (apply === null) throw new Error('Invalid apply');
   const before = nameRule(homey.settings.get(DEVICE_NAMES_SETTING));
   if (body.separator !== undefined && !isSeparator(body.separator)) return { ok: false as const, reason: 'separator' as const };
-  const rule: NameRule = { mode: body.mode, separator: isSeparator(body.separator) ? body.separator : before.separator };
+  const rule: NameRule = {
+    mode: body.mode,
+    separator: isSeparator(body.separator) ? body.separator : before.separator,
+    apply: apply ?? before.apply,
+  };
   homey.settings.set(DEVICE_NAMES_SETTING, rule);
-  if (rule.mode !== before.mode || rule.separator !== before.separator) homey.api.realtime(DEVICE_NAMES_EVENT, rule);
+  if (rule.mode !== before.mode || rule.separator !== before.separator || rule.apply.join() !== before.apply.join()) {
+    homey.api.realtime(DEVICE_NAMES_EVENT, rule);
+  }
   return { ok: true as const, ...await deviceNamesState(homey, log) };
 }

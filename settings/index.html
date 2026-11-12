@@ -142,10 +142,11 @@
     </div>
   </details>
 
-  <!-- How every widget shows device names: the whole name or a part of it (`lib/deviceNames.ts`), with what that does to
-       the Homey's own names. Widget settings, Flows and typed tile names keep theirs. -->
+  <!-- How every widget shows names of devices, and of rooms and Flows where ticked: the whole name or a part of it
+       (`lib/deviceNames.ts`), with what that does to the Homey's own names. Widget settings, Flow tokens and typed tile
+       names keep theirs. -->
   <details class="card" id="namesCard">
-    <summary><span class="card-titles"><span class="card-title" data-i18n="namesTitle">Device names</span><span class="card-line" id="namesLine"></span></span></summary>
+    <summary><span class="card-titles"><span class="card-title" data-i18n="namesTitle">Names</span><span class="card-line" id="namesLine"></span></span></summary>
     <div class="card-body">
       <p class="help" data-i18n="namesHelp"></p>
       <div class="homey-form-group">
@@ -162,6 +163,25 @@
         <label class="homey-form-label" for="namesSep" data-i18n="namesSeparator">Separator</label>
         <input class="homey-form-input" id="namesSep" type="text" maxlength="5" autocomplete="off" spellcheck="false">
         <p class="help" data-i18n="namesSepHelp"></p>
+      </div>
+      <div class="homey-form-group" id="namesApplyGroup" hidden>
+        <p class="sub-title" data-i18n="namesApply">Apply to</p>
+        <label class="homey-form-checkbox">
+          <input class="homey-form-checkbox-input names-kind" id="namesDevices" value="devices" type="checkbox" disabled>
+          <span class="homey-form-checkbox-checkmark"></span>
+          <span class="homey-form-checkbox-text" data-i18n="namesDevices">Devices</span>
+        </label>
+        <label class="homey-form-checkbox">
+          <input class="homey-form-checkbox-input names-kind" id="namesRooms" value="rooms" type="checkbox" disabled>
+          <span class="homey-form-checkbox-checkmark"></span>
+          <span class="homey-form-checkbox-text" data-i18n="namesRooms">Rooms</span>
+        </label>
+        <label class="homey-form-checkbox">
+          <input class="homey-form-checkbox-input names-kind" id="namesFlows" value="flows" type="checkbox" disabled>
+          <span class="homey-form-checkbox-checkmark"></span>
+          <span class="homey-form-checkbox-text" data-i18n="namesFlows">Flows</span>
+        </label>
+        <p class="help" id="namesRoomOnly" data-i18n="namesRoomOnly" hidden></p>
       </div>
       <p class="help" id="namesCount"></p>
       <ul class="names-examples" id="namesExamples"></ul>
@@ -482,8 +502,16 @@
       $('varCancel').addEventListener('click', () => { showKeyForm(false); varStatus.textContent = ''; });
       showKeyState();
 
-      // ---- Device names: how every widget shows them, saved at once, with examples from the Homey's own. ----
+      // ---- Names: how every widget shows those of devices (and of rooms and Flows, where ticked), saved at once,
+      // with examples from the Homey's own. ----
       const namesMode = $('namesMode');
+      const namesKinds = [...document.querySelectorAll('.names-kind')];
+      const NAME_KINDS = { devices: 'namesDevices', rooms: 'namesRooms', flows: 'namesFlows' };
+      const showApply = (mode) => {
+        $('namesApplyGroup').hidden = mode === 'full';
+        // Leave out the room has nothing to leave out of a room's or a Flow's name.
+        $('namesRoomOnly').hidden = mode !== 'room';
+      };
       const namesSep = $('namesSep');
       const namesStatus = $('namesStatus');
       const NAME_MODES = { full: 'namesFull', before: 'namesBefore', after: 'namesAfter', lastWord: 'namesLastWord', room: 'namesRoom' };
@@ -493,11 +521,21 @@
         names = res;
         const mode = NAME_MODES[res.mode] ? res.mode : 'full';
         const sep = { separator: res.separator || '' };
+        // Stored before the checkboxes: devices only, as it was.
+        const apply = Array.isArray(res.apply) ? res.apply.filter(k => NAME_KINDS[k]) : ['devices'];
         namesMode.value = mode;
         namesMode.disabled = false;
         namesSep.value = sep.separator;
+        for (const box of namesKinds) {
+          box.checked = apply.includes(box.value);
+          box.disabled = false;
+        }
         $('namesSepGroup').hidden = !usesSeparator(mode);
-        setLine('namesLine', t(usesSeparator(mode) ? `${NAME_MODES[mode]}Line` : NAME_MODES[mode], usesSeparator(mode) ? sep : undefined));
+        showApply(mode);
+        // The line: the choice and what it applies to; nothing ticked shows every name whole.
+        const kinds = (mode === 'room' ? apply.filter(k => k === 'devices') : apply).map(k => t(NAME_KINDS[k]));
+        setLine('namesLine', mode === 'full' || !kinds.length ? t('namesFull')
+          : `${t(usesSeparator(mode) ? `${NAME_MODES[mode]}Line` : NAME_MODES[mode], usesSeparator(mode) ? sep : undefined)} · ${kinds.join(', ')}`);
         // Without the devices (the app couldn't read them) or with full names, no examples.
         const count = mode === 'full' || !res.total ? ''
           : res.changed ? t('namesChanged', { changed: res.changed, total: res.total })
@@ -519,10 +557,13 @@
       }
       function saveNames() {
         // An emptied field sends no separator: the stored one stays.
-        const body = namesSep.value ? { mode: namesMode.value, separator: namesSep.value } : { mode: namesMode.value };
+        const apply = namesKinds.filter(box => box.checked).map(box => box.value);
+        const body = namesSep.value ? { mode: namesMode.value, separator: namesSep.value, apply } : { mode: namesMode.value, apply };
         namesMode.disabled = true;
+        for (const box of namesKinds) box.disabled = true;
         Homey.api('PUT', '/device-names', body, (err, res) => {
           namesMode.disabled = false;
+          for (const box of namesKinds) box.disabled = false;
           if (err || !res || !res.ok) {
             // The choice as it was, and why.
             if (names) showNames(names);
@@ -534,8 +575,10 @@
       }
       namesMode.addEventListener('change', () => {
         $('namesSepGroup').hidden = !usesSeparator(namesMode.value);
+        showApply(namesMode.value);
         saveNames();
       });
+      for (const box of namesKinds) box.addEventListener('change', saveNames);
       namesSep.addEventListener('change', () => {
         if (!namesSep.value) { namesStatus.textContent = t('namesSepNeeded'); namesSep.value = names ? names.separator : ''; return; }
         saveNames();
