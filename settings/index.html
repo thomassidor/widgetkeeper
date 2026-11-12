@@ -565,9 +565,11 @@
           namesMode.disabled = false;
           for (const box of namesKinds) box.disabled = false;
           if (err || !res || !res.ok) {
-            // The choice as it was, and why.
+            // The choice as it was, and why: only a refused separator is about the separator. Homey's settings bridge
+            // hands an error that isn't an Error on as no answer at all, so that says so too.
             if (names) showNames(names);
-            namesStatus.textContent = err ? err.message || String(err) : t('namesSepNeeded');
+            namesStatus.textContent = res && res.reason === 'separator' ? t('namesSepNeeded')
+              : t('namesFailed', { error: err ? err.message || JSON.stringify(err) : res ? JSON.stringify(res) : 'no answer' });
             return;
           }
           showNames(res);

@@ -262,6 +262,7 @@
     "namesFlows": "플로우",
     "namesRoomOnly": "방 이름 빼기는 기기 이름만 줄입니다.",
     "namesSepNeeded": "1~5자의 구분자를 입력하세요.",
+    "namesFailed": "저장하지 못했습니다: __error__",
     "namesChanged": "이름 __total__개 중 __changed__개가 바뀝니다:",
     "namesNoneSep": "‘__separator__’가 들어간 이름이 없습니다.",
     "namesNone": "바뀌는 이름이 없습니다.",

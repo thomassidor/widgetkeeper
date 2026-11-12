@@ -262,6 +262,7 @@
     "namesFlows": "Потоки",
     "namesRoomOnly": "«Без названия комнаты» сокращает только имена устройств.",
     "namesSepNeeded": "Введите разделитель длиной от 1 до 5 символов.",
+    "namesFailed": "Не удалось сохранить: __error__",
     "namesChanged": "Изменятся __changed__ из __total__ имён:",
     "namesNoneSep": "Ни одно имя не содержит «__separator__».",
     "namesNone": "Ни одно имя не меняется.",

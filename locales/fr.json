@@ -262,6 +262,7 @@
     "namesFlows": "Flows",
     "namesRoomOnly": "Sans le nom de la pièce ne raccourcit que les noms d'appareils.",
     "namesSepNeeded": "Tapez un séparateur de 1 à 5 caractères.",
+    "namesFailed": "Impossible d'enregistrer : __error__",
     "namesChanged": "__changed__ noms sur __total__ changent :",
     "namesNoneSep": "Aucun nom ne contient « __separator__ ».",
     "namesNone": "Aucun nom ne change.",

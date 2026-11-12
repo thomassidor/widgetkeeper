@@ -112,7 +112,7 @@ describe('the setting', () => {
     const devices = names.map((name, i) => fakeDevice({ id: `d${i}`, name, caps: {} }));
     const homey = fakeHomey(fakeApi({ devices }));
     const log = vi.fn();
-    homey.app = { log, debug: vi.fn() };
+    homey.app = { log, debug: vi.fn(), error: vi.fn() };
     return { homey, log };
   }
 
@@ -211,6 +211,8 @@ describe('the setting', () => {
   it('refuses an unknown mode, and an empty or too long separator', async () => {
     const { homey } = setup();
     await expect(api.putDeviceNames({ homey, body: { mode: 'first' } })).rejects.toThrow('Invalid mode');
+    // Logged for the diagnostics report: Homey's settings bridge may hand the page no answer at all.
+    expect(homey.app.error).toHaveBeenCalledWith('Names: could not save {"mode":"first"}:', expect.any(Error));
     await expect(api.putDeviceNames({ homey, body: {} as any })).rejects.toThrow('Invalid mode');
     expect(await api.putDeviceNames({ homey, body: { mode: 'before', separator: '' } })).toEqual({ ok: false, reason: 'separator' });
     expect(await api.putDeviceNames({ homey, body: { mode: 'before', separator: '123456' } })).toEqual({ ok: false, reason: 'separator' });

@@ -262,6 +262,7 @@
     "namesFlows": "Flows",
     "namesRoomOnly": "Without the room name only shortens device names.",
     "namesSepNeeded": "Type a separator of 1 to 5 characters.",
+    "namesFailed": "Could not save: __error__",
     "namesChanged": "__changed__ of __total__ names change:",
     "namesNoneSep": "No name has “__separator__” in it.",
     "namesNone": "No name changes.",

@@ -262,6 +262,7 @@
     "namesFlows": "Flows",
     "namesRoomOnly": "Ohne den Raumnamen kürzt nur Gerätenamen.",
     "namesSepNeeded": "Gib ein Trennzeichen mit 1 bis 5 Zeichen ein.",
+    "namesFailed": "Konnte nicht speichern: __error__",
     "namesChanged": "__changed__ von __total__ Namen ändern sich:",
     "namesNoneSep": "Kein Name enthält „__separator__“.",
     "namesNone": "Kein Name ändert sich.",

@@ -109,7 +109,13 @@ export default {
   /** Used by the app settings page: `{mode, separator?}` → `{ok, …}` as above, or `{ok: false, reason: 'separator'}`. */
   async putDeviceNames({ homey, body }: { homey: Homey, body: { mode?: unknown, separator?: unknown } }) {
     const app = homey.app as WidgetkeeperApp;
-    return setDeviceNames(homey, (...args) => app.log(...args), body);
+    try {
+      return await setDeviceNames(homey, (...args) => app.log(...args), body);
+    } catch (err) {
+      // In the diagnostics report: the settings page may only learn that it failed.
+      app.error(`Names: could not save ${JSON.stringify(body)}:`, err);
+      throw err;
+    }
   },
 
   /** Used by the app settings page: the widgets' time format, `{timeFormat}` (`auto`, `24` or `12`). */

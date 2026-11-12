@@ -262,6 +262,7 @@
     "namesFlows": "Flow",
     "namesRoomOnly": "Bez nazwy pomieszczenia skraca tylko nazwy urządzeń.",
     "namesSepNeeded": "Wpisz separator o długości od 1 do 5 znaków.",
+    "namesFailed": "Nie udało się zapisać: __error__",
     "namesChanged": "Zmieni się __changed__ z __total__ nazw:",
     "namesNoneSep": "Żadna nazwa nie zawiera „__separator__”.",
     "namesNone": "Żadna nazwa się nie zmienia.",

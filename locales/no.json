@@ -262,6 +262,7 @@
     "namesFlows": "Flows",
     "namesRoomOnly": "Uten romnavnet forkorter bare enhetsnavn.",
     "namesSepNeeded": "Skriv et skilletegn på 1 til 5 tegn.",
+    "namesFailed": "Kunne ikke lagre: __error__",
     "namesChanged": "__changed__ av __total__ navn endres:",
     "namesNoneSep": "Ingen navn inneholder «__separator__».",
     "namesNone": "Ingen navn endres.",

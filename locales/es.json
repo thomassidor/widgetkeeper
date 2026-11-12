@@ -262,6 +262,7 @@
     "namesFlows": "Flows",
     "namesRoomOnly": "Sin el nombre de la habitación solo acorta los nombres de dispositivos.",
     "namesSepNeeded": "Escribe un separador de 1 a 5 caracteres.",
+    "namesFailed": "No se pudo guardar: __error__",
     "namesChanged": "Cambian __changed__ de __total__ nombres:",
     "namesNoneSep": "Ningún nombre contiene «__separator__».",
     "namesNone": "Ningún nombre cambia.",

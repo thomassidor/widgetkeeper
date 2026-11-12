@@ -262,6 +262,7 @@
     "namesFlows": "Flows",
     "namesRoomOnly": "Zonder de ruimtenaam verkort alleen apparaatnamen.",
     "namesSepNeeded": "Typ een scheidingsteken van 1 tot 5 tekens.",
+    "namesFailed": "Kon niet opslaan: __error__",
     "namesChanged": "__changed__ van __total__ namen veranderen:",
     "namesNoneSep": "Geen naam bevat “__separator__”.",
     "namesNone": "Geen naam verandert.",

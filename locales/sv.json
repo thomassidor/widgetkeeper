@@ -262,6 +262,7 @@
     "namesFlows": "Flows",
     "namesRoomOnly": "Utan rummets namn kortar bara enhetsnamn.",
     "namesSepNeeded": "Skriv en avgränsare på 1 till 5 tecken.",
+    "namesFailed": "Kunde inte spara: __error__",
     "namesChanged": "__changed__ av __total__ namn ändras:",
     "namesNoneSep": "Inget namn innehåller ”__separator__”.",
     "namesNone": "Inget namn ändras.",

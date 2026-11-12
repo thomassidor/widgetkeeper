@@ -185,6 +185,7 @@ it('Web dashboards: the line, the password form for a new one or the current one
 
 it('Names: the line, the separator only for its two choices, what it applies to, the examples; each change saved at once', () => {
   let stored: { mode: string, separator: string, apply?: string[] } = { mode: 'full', separator: '|' }; // stored before the checkboxes
+  let fail = false; // an answer without ok
   const names = ['Bed | Bedroom', 'Ceiling lamp | Kitchen', 'Hall'];
   const answer = () => {
     const shown = names.map(name => [name, stored.mode === 'before' && name.includes(stored.separator) ? name.split(stored.separator)[0].trim() : name]);
@@ -194,6 +195,7 @@ it('Names: the line, the separator only for its two choices, what it applies to,
   const { calls, $ } = loadPage((method, path, body) => {
     if (path !== '/device-names') return undefined;
     if (method === 'GET') return answer();
+    if (fail) return null;
     if (body.separator === '') return { ok: false, reason: 'separator' };
     stored = { mode: body.mode, separator: body.separator ?? stored.separator, apply: body.apply ?? stored.apply };
     return { ok: true, ...answer() };
@@ -247,6 +249,11 @@ it('Names: the line, the separator only for its two choices, what it applies to,
   }
   expect(calls.at(-1)).toEqual(['PUT', '/device-names', { mode: 'room', separator: ' - ', apply: [] }]);
   expect($('namesLine').textContent).toBe('namesFull');
+  // A save that fails puts the choice back and says why; only a refused separator says to type one.
+  fail = true;
+  box('namesFlows').checked = true;
+  box('namesFlows').dispatchEvent(new Event('change'));
+  expect([box('namesFlows').checked, $('namesStatus').textContent]).toEqual([false, 'namesFailed{"error":"{}"}']);
 });
 
 it('Time format: the line and the choice, saved at once; put back when saving fails', () => {

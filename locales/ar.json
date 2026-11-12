@@ -262,6 +262,7 @@
     "namesFlows": "التدفقات",
     "namesRoomOnly": "«بدون اسم الغرفة» يختصر أسماء الأجهزة فقط.",
     "namesSepNeeded": "اكتب فاصلًا من 1 إلى 5 أحرف.",
+    "namesFailed": "تعذّر الحفظ: __error__",
     "namesChanged": "يتغير __changed__ من أصل __total__ من الأسماء:",
     "namesNoneSep": "لا يحتوي أي اسم على «__separator__».",
     "namesNone": "لا يتغير أي اسم.",
