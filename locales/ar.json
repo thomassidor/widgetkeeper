@@ -374,7 +374,8 @@
     "allOk": "الكل ضمن النطاق",
     "noRange": "اضبط النطاق الجيد",
     "unavailable": "غير متاح: __count__",
-    "otherUnits": "وحدة أخرى، مستبعد"
+    "otherUnits": "وحدة أخرى، مستبعد",
+    "renameFailed": "تعذّر حفظ الاسم."
   },
   "sparklines": {
     "selectSlots": "اختر قيم الأجهزة في إعدادات الأداة.",

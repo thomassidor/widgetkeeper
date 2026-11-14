@@ -4,10 +4,11 @@
  * on the right; the name and the range on the left; under them a chart of the devices against each other: a dot each on
  * a shared scale, or for a sum of values that are all zero or more, each device's share of it. A pill style puts the
  * dots (or the share) on the right. An OK range colours the tile when the value is outside it, and the dots outside it.
- * A tap opens every device's value under the tile. Plain browser JS (served as-is).
+ * A tap opens every device's value under the tile. Rename tiles puts a name field on each device in that list, and a
+ * typed name stands for the device everywhere the widget names it. Plain browser JS (served as-is).
  */
 (function () {
-  const { el, COLORS, TIGHT_UNITS, formatNumber, scaled, valueGlyph, setMask, applyColors, messageLine, okRange, okLevel, onTap } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, COLORS, TIGHT_UNITS, formatNumber, scaled, valueGlyph, setMask, applyColors, messageLine, okRange, okLevel, onTap, tileNames, shake } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -24,6 +25,7 @@
     noRange: 'Set an OK range in the settings',
     unavailable: '__count__ unavailable',
     otherUnits: 'other unit, left out',
+    renameFailed: 'Could not save the name.',
   };
 
   const SHOWS = ['avg', 'median', 'sum', 'min', 'max', 'range', 'out'];
@@ -89,7 +91,7 @@
    * @param {HTMLElement} root
    * @param {{ t?: (key: string, tokens?: object) => string, show?: string, name?: string, range?: boolean, chart?: boolean,
    *   okRange?: string, greenWhenFine?: boolean, tileStyle?: string, color?: string, colorStyle?: string, onHeight?: (h: number) => void,
-   *   onTap?: () => void }} opts
+   *   onTap?: () => void, renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any> }} opts
    */
   function createCombinedWidget(root, opts = {}) {
     const t = window.WidgetkeeperKit.translator('combined', DEFAULT_STRINGS, opts);
@@ -104,6 +106,11 @@
     /** Every device's value is open under the tile (a tap toggles it). */
     let listOpen = false;
     const message = messageLine(() => render(), { clear: () => { state = null; } });
+    // The names typed on the devices (keyed by the device id): in rename mode the list stays open with a field per device.
+    const typed = tileNames(opts, () => render(), () => {
+      shake(tile);
+      setMessage(t('renameFailed'), true);
+    });
 
     root.classList.add('cv');
     root.classList.toggle('cv-pill', pill);
@@ -111,6 +118,7 @@
     applyColors(root, { style: opts.colorStyle, color: COLORS.includes(opts.color) ? opts.color : null });
     root.classList.toggle('cv-colored', COLORS.includes(opts.color));
     root.dataset.show = show;
+    root.classList.toggle('renaming', typed.renaming);
 
     const tile = el('div', { class: 'cv-tile' }, root);
     const head = el('div', { class: 'cv-head' }, tile);
@@ -128,7 +136,8 @@
     tile.setAttribute('tabindex', '0');
     tile.setAttribute('aria-expanded', 'false');
     const toggle = () => {
-      if (!state || !state.capability) return;
+      // Rename mode keeps the list open, and a tap does nothing meanwhile.
+      if (!state || !state.capability || typed.renaming) return;
       listOpen = !listOpen;
       if (opts.onTap) opts.onTap();
       render();
@@ -214,6 +223,14 @@
      * highest, worst first for the count, else lowest first), then those without a reading or in other units, and how
      * many can't be read. The device the value comes from is bold, one outside the OK range marked by its level.
      */
+    /** A reading's text in the list: in the value's units, in its own (left out), or a dash. */
+    function rowValue(d) {
+      if (counts(d)) return withUnits(num(d.value));
+      const u = d.otherUnits;
+      return typeof d.value === 'number' && isFinite(d.value) && u != null
+        ? `${formatNumber({ ...state.capability, units: u, min: null, max: null }, d.value).replace(/^-/, '−')}${u ? (TIGHT_UNITS.test(u) ? u : ` ${u}`) : ''}` : '–';
+    }
+
     function renderList(read, c, f) {
       listEl.textContent = '';
       const down = show === 'sum' || show === 'max';
@@ -230,12 +247,42 @@
         const row = el('div', { class: 'cv-row left' }, listEl);
         el('i', { class: 'cv-mark' }, row);
         el('span', { class: 'cv-row-name', dir: 'auto' }, row).textContent = d.name;
-        const u = d.otherUnits;
-        const v = typeof d.value === 'number' && isFinite(d.value) && u != null
-          ? `${formatNumber({ ...state.capability, units: u, min: null, max: null }, d.value).replace(/^-/, '−')}${u ? (TIGHT_UNITS.test(u) ? u : ` ${u}`) : ''}` : '–';
-        el('span', { class: 'cv-row-value', title: u != null ? t('otherUnits') : null }, row).textContent = v;
+        el('span', { class: 'cv-row-value', title: d.otherUnits != null ? t('otherUnits') : null }, row).textContent = rowValue(d);
       }
       if (f.unavailable) el('div', { class: 'cv-row left' }, listEl).textContent = t('unavailable', { count: f.unavailable });
+    }
+
+    /** @type {Map<string, {node: HTMLElement, mark: HTMLElement, name: HTMLElement, value: HTMLElement}>} */
+    const renameRows = new Map();
+    /**
+     * Rename mode's list: a row per device in the order picked (so a row doesn't move while its name is typed), each with
+     * a name field. The rows are kept and only moved where out of place: a field rebuilt or moved would lose its focus.
+     */
+    function renderRenameList(devices, read) {
+      const levels = new Map(read.map(d => [d.id, d.level]));
+      const seen = new Set();
+      let placed = null;
+      for (const d of devices) {
+        if (d.missing || seen.has(d.id)) continue;
+        seen.add(d.id);
+        let row = renameRows.get(d.id);
+        if (!row) {
+          const node = el('div', { class: 'cv-row' });
+          row = { node, mark: el('i', { class: 'cv-mark' }, node), name: el('span', { class: 'cv-row-name', dir: 'auto' }, node), value: el('span', { class: 'cv-row-value' }, node) };
+          renameRows.set(d.id, row);
+        }
+        const want = placed ? placed.nextSibling : listEl.firstChild;
+        if (row.node !== want) listEl.insertBefore(row.node, want);
+        placed = row.node;
+        row.node.classList.toggle('left', !counts(d));
+        if (levels.has(d.id)) row.mark.dataset.level = levels.get(d.id);
+        else delete row.mark.dataset.level;
+        row.name.textContent = d.name;
+        const field = typed.field(d.id, d.own);
+        if (field.previousSibling !== row.name) row.name.after(field);
+        row.value.textContent = rowValue(d);
+      }
+      for (const [id, row] of renameRows) if (!seen.has(id)) { row.node.remove(); renameRows.delete(id); }
     }
 
     function renderDots(read, c) {
@@ -279,16 +326,21 @@
       }
     }
 
+    /** A reading that's folded into the value: a number in the value's units. */
+    const counts = d => !d.missing && d.otherUnits == null && typeof d.value === 'number' && isFinite(d.value);
+
     const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
+      const open = (listOpen || typed.renaming) && !!state && !!state.capability;
       if (state && state.capability) {
         const cap = state.capability;
-        const counts = d => !d.missing && d.otherUnits == null && typeof d.value === 'number' && isFinite(d.value);
-        const read = state.devices.filter(counts).map(d => ({ name: d.name, value: d.value, level: levelOf(d.value, ok) }));
-        const total = state.devices.length;
-        const unread = state.devices.filter(d => !d.missing && !counts(d));
+        // Each device by its typed name where there is one (`own`: the device's), everywhere the widget names it.
+        const devices = state.devices.map(d => (d.missing ? d : { ...d, own: d.name, name: typed.name(d.id, d.name) }));
+        const read = devices.filter(counts).map(d => ({ id: d.id, name: d.name, value: d.value, level: levelOf(d.value, ok) }));
+        const total = devices.length;
+        const unread = devices.filter(d => !d.missing && !counts(d));
         const leftOut = unread.filter(d => d.otherUnits != null).length;
-        const unavailable = state.devices.filter(d => d.missing).length;
+        const unavailable = devices.filter(d => d.missing).length;
         const f = {
           ok, total, unread, unavailable, leftOut: leftOut ? total - read.length : 0, missing: total - read.length,
           past: read.filter(d => PAST.includes(d.level)).sort((a, b) => PAST.indexOf(b.level) - PAST.indexOf(a.level)),
@@ -328,9 +380,9 @@
         }
         chartEl.hidden = !withChart || !c;
         root.dataset.chart = !withChart || !c ? 'none' : share ? 'share' : 'dots';
-        if (listOpen) renderList(read, c || { min: null, max: null }, f);
+        if (open && typed.renaming) renderRenameList(devices, read);
+        else if (open) renderList(read, c || { min: null, max: null }, f);
       }
-      const open = listOpen && !!state && !!state.capability;
       listEl.hidden = !open;
       tile.setAttribute('aria-expanded', String(open));
       root.classList.toggle('cv-open', open);
@@ -345,7 +397,7 @@
       reportHeight();
     }
 
-    return { setState, pushChange, setMessage, render, t, toggle };
+    return { setState, setNames: typed.set, pushChange, setMessage, render, t, toggle };
   }
 
   window.createCombinedWidget = createCombinedWidget;

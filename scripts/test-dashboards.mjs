@@ -540,6 +540,7 @@ const BUILD = {
       w('combined', 'Pill · lowest battery · Vivid purple', { capability: battery, tileStyle: 'pill', show: 'min', color: 'purple', colorStyle: 'deep' }, batteries),
       w('combined', 'None of the devices has the value', { capability: temp }, lamps.filter(id => !climate.includes(id)).slice(0, 2)),
       w('combined', 'No value picked', {}, climate.slice(0, 3)),
+      renaming('combined', 'Rename tiles', { capability: temp, show: 'min' }, climate.slice(0, 3), climate.length ? { [climate[0]]: 'Typed device name' } : {}),
     ] };
   },
 

@@ -2,6 +2,11 @@
 
 All notable changes to Widgetkeeper. The version numbers match the Homey app version.
 
+## 1.3.1
+
+### Combined Value
+- **Rename tiles:** give each device a name of your own, such as *Emma* instead of *Kids sensor*. Turn on **Rename tiles**, and the list under the tile shows a field for each device; the names are then used everywhere the widget names a device: the line under the name, the chart and the list.
+
 ## 1.3.0
 
 ### New: Flow Tiles

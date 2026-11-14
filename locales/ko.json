@@ -374,7 +374,8 @@
     "allOk": "모두 범위 안",
     "noRange": "정상 범위를 설정하세요",
     "unavailable": "__count__개 사용 불가",
-    "otherUnits": "다른 단위, 제외됨"
+    "otherUnits": "다른 단위, 제외됨",
+    "renameFailed": "이름을 저장하지 못했습니다."
   },
   "sparklines": {
     "selectSlots": "위젯 설정에서 기기 값을 선택하세요.",

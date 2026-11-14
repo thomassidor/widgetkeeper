@@ -306,6 +306,69 @@ describe('the Combined Value widget', () => {
     });
   });
 
+  describe('Rename tiles (1.3.1)', () => {
+    const tap = (node: HTMLElement) => node.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    const fields = (all: (s: string) => HTMLElement[]) => all('.wk-rename') as HTMLInputElement[];
+
+    it('uses a typed name everywhere the widget names a device, and the own name without one', () => {
+      const min = widget({ capability: TEMP, devices: temps() }, { show: 'min' });
+      min.w.setNames({ b: 'Guest room' });
+      expect(min.line()).toBe(`Guest room · up to ${num(23.1, 1)}°C`);
+      expect(min.all('.cv-end').map(e => e.textContent)).toEqual(['Guest room', 'Office']);
+      expect(min.q('.cv-dot.hl')!.title).toBe(`Guest room: ${num(19.6, 1)}°C`);
+      min.w.toggle();
+      expect(min.all('.cv-row-name').map(e => e.textContent)).toEqual(['Guest room', 'Living room', 'Office']);
+      min.w.setNames({});
+      expect(min.all('.cv-row-name').map(e => e.textContent)).toEqual(['Bedroom', 'Living room', 'Office']);
+
+      const out = widget({ capability: TEMP, devices: temps() }, { show: 'out', okRange: '20–23' });
+      out.w.setNames({ o: 'Study' });
+      expect(out.line()).toMatch(/^Bedroom, Study · /);
+      const share = widget({ capability: POWER, devices: power().slice(0, 3) }, { show: 'sum' });
+      share.w.setNames({ h: 'Heating' });
+      expect(share.all('.cv-key-name').map(e => e.textContent)).toEqual(['Heating', 'Oven', 'Dishwasher']);
+    });
+
+    it('keeps the list open with a field per device in the order picked, saved on change; taps do nothing', () => {
+      const onRename = vi.fn(async () => {});
+      const devices = [...temps(), { id: 'k', name: 'Kitchen', value: null }, { id: 'x', missing: true }];
+      const { w, q, all, root } = widget({ capability: TEMP, devices }, { renameTiles: true, onRename, show: 'max' });
+      expect(root.classList.contains('renaming')).toBe(true);
+      expect(q('.cv-list')!.hidden).toBe(false);
+      // Every device that answered (also one without a reading), in the order picked, not by value.
+      expect(fields(all).map(f => f.placeholder)).toEqual(['Living room', 'Bedroom', 'Office', 'Kitchen']);
+      w.setNames({ l: 'Lounge' });
+      expect(fields(all)[0].value).toBe('Lounge');
+      expect(fields(all)[0].placeholder).toBe('Living room');
+      const office = fields(all)[2];
+      office.value = '  Study  ';
+      office.dispatchEvent(new Event('change'));
+      expect(onRename).toHaveBeenLastCalledWith('o', 'Study');
+      expect(all('.cv-end').map(e => e.textContent)).toEqual(['Bedroom', 'Study']);
+      // The same field stays: a change re-renders without rebuilding it.
+      w.pushChange({ deviceId: 'o', capabilityId: 'measure_temperature', value: 24 });
+      expect(fields(all)[2]).toBe(office);
+      const before = root.innerHTML;
+      for (const node of [q('.cv-tile')!, q('.cv-list')!, office]) tap(node);
+      expect(q('.cv-list')!.hidden).toBe(false);
+      expect(root.innerHTML).toBe(before);
+    });
+
+    it('puts the name back when it could not be saved, and says so', async () => {
+      vi.useFakeTimers();
+      const onRename = vi.fn(async () => { throw new Error('offline'); });
+      const { all, q } = widget({ capability: TEMP, devices: temps() }, { renameTiles: true, onRename, show: 'min' });
+      const field = fields(all)[1];
+      field.value = 'Nope';
+      field.dispatchEvent(new Event('change'));
+      await vi.runAllTicks();
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(q('.cv-line')!.textContent).toMatch(/^Bedroom/);
+      expect(q('.cv-message')!.textContent).toBe('Could not save the name.');
+    });
+  });
+
   it('keeps the tile on a failed refresh, with a passing message', () => {
     vi.useFakeTimers();
     const { w, q } = widget({ capability: TEMP, devices: temps() });
@@ -348,6 +411,19 @@ describe('the Combined Value mount', () => {
     expect(api).not.toHaveBeenCalled();
     expect(root.querySelector('.cv-message')!.textContent).toBe('Pick a value in the widget settings.');
     expect(root.querySelector<HTMLElement>('.cv-tile')!.style.display).toBe('none');
+  });
+
+  it('asks for the typed names with the state, and saves one with the instance', async () => {
+    const answer = { state: { capability: TEMP, devices: temps() }, tileNames: { b: 'Guest room' } };
+    const { api, root } = mount({ capability: { id: 'measure_temperature' }, show: 'min', renameTiles: true }, [], answer);
+    await settle();
+    expect(api.mock.calls[0][1]).toMatch(/&instance=default$/);
+    expect(root.querySelector('.cv-line')!.textContent).toMatch(/^Guest room/);
+    const field = root.querySelectorAll<HTMLInputElement>('.wk-rename')[0];
+    field.value = 'Lounge';
+    field.dispatchEvent(new Event('change'));
+    await settle();
+    expect(api).toHaveBeenLastCalledWith('POST', '/names', { instance: 'default', key: 'l', name: 'Lounge' });
   });
 
   it("takes Value Matrix's realtime changes of the counted devices and that value only", async () => {

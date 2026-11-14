@@ -374,7 +374,8 @@
     "allOk": "Alla inom intervallet",
     "noRange": "Ange ett OK-intervall",
     "unavailable": "__count__ otillgängliga",
-    "otherUnits": "annan enhet, utelämnad"
+    "otherUnits": "annan enhet, utelämnad",
+    "renameFailed": "Kunde inte spara namnet."
   },
   "sparklines": {
     "selectSlots": "Välj enhetsvärden i widgetinställningarna.",

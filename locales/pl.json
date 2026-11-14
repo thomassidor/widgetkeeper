@@ -374,7 +374,8 @@
     "allOk": "Wszystko w zakresie",
     "noRange": "Ustaw zakres OK",
     "unavailable": "Niedostępne: __count__",
-    "otherUnits": "inna jednostka, pominięto"
+    "otherUnits": "inna jednostka, pominięto",
+    "renameFailed": "Nie udało się zapisać nazwy."
   },
   "sparklines": {
     "selectSlots": "Wybierz wartości w ustawieniach widżetu.",

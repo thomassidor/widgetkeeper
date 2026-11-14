@@ -374,7 +374,8 @@
     "allOk": "Todo dentro del rango",
     "noRange": "Define un rango OK",
     "unavailable": "__count__ no disponibles",
-    "otherUnits": "otra unidad, omitido"
+    "otherUnits": "otra unidad, omitido",
+    "renameFailed": "No se pudo guardar el nombre."
   },
   "sparklines": {
     "selectSlots": "Elige valores en los ajustes del widget.",

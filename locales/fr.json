@@ -374,7 +374,8 @@
     "allOk": "Tout dans la plage",
     "noRange": "Définissez une plage OK",
     "unavailable": "__count__ indisponible(s)",
-    "otherUnits": "autre unité, ignoré"
+    "otherUnits": "autre unité, ignoré",
+    "renameFailed": "Impossible d'enregistrer le nom."
   },
   "sparklines": {
     "selectSlots": "Choisissez des valeurs dans les réglages du widget.",

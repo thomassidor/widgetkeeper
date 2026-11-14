@@ -316,5 +316,20 @@
     "pl": "Trzy nowe widżety: Wartość łączna, Tablica wartości i Kafelki Flow. Jeden format czasu dla całej aplikacji, 155 nowych ikon i listy wyszukujące po słowach. Niedostępne urządzenia są oznaczone. Pulpity webowe: panel boczny, własna nazwa, ikony i tło, przełączanie i przyciemnianie. Kamery: zawsze na żywo.",
     "ko": "새 위젯 3개: 통합 값, 값 보드, 플로우 타일. 앱 전체에 하나의 시간 형식, 아이콘 155개 추가, 단어로 찾는 선택 목록. 사용할 수 없는 기기를 표시합니다. 웹 대시보드: 사이드 패널, 나만의 이름·아이콘·배경, 순환 및 어둡게. 카메라: 항상 실시간.",
     "ar": "ثلاث أدوات جديدة: قيمة مجمّعة ولوحة القيم ومربعات التدفقات. تنسيق وقت واحد للتطبيق كله، و155 أيقونة إضافية، وقوائم تبحث بالكلمات. تُميَّز الأجهزة غير المتاحة. لوحات الويب: لوحة جانبية، واسمك وأيقوناتك وخلفيتك، والتبديل والتعتيم. الكاميرات: بث مباشر دائمًا."
+  },
+  "1.3.1": {
+    "en": "Combined Value: give each device a name of your own with Rename tiles.",
+    "nl": "Gecombineerde waarde: geef elk apparaat een eigen naam met Tegels hernoemen.",
+    "de": "Kombinierter Wert: Gib jedem Gerät mit Kacheln umbenennen einen eigenen Namen.",
+    "fr": "Valeur combinée : donnez à chaque appareil un nom de votre choix avec Renommer les tuiles.",
+    "it": "Valore combinato: dai a ogni dispositivo un nome a tua scelta con Rinomina riquadri.",
+    "sv": "Kombinerat värde: ge varje enhet ett eget namn med Byt namn på rutor.",
+    "no": "Kombinert verdi: gi hver enhet et eget navn med Gi nytt navn til fliser.",
+    "es": "Valor combinado: pon a cada dispositivo un nombre propio con Renombrar mosaicos.",
+    "da": "Samlet værdi: giv hver enhed sit eget navn med Omdøb felter.",
+    "ru": "Сводное значение: задайте каждому устройству своё название с помощью «Переименовать плитки».",
+    "pl": "Wartość łączna: nadaj każdemu urządzeniu własną nazwę opcją Zmień nazwy kafelków.",
+    "ko": "통합 값: 타일 이름 바꾸기로 각 기기에 원하는 이름을 붙일 수 있습니다.",
+    "ar": "قيمة مجمّعة: امنح كل جهاز اسمًا من اختيارك عبر إعادة تسمية المربعات."
   }
 }

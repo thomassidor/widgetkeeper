@@ -208,5 +208,19 @@ html, body { background: transparent !important; }
 .cv-row.left { color: var(--cv-muted); }
 .cv-row.left .cv-row-value { font-weight: var(--cv-regular); }
 
+/* Rename tiles: the list stays open and each device's name becomes a text field (as Value Matrix's). */
+.cv.renaming .cv-tile, .cv.renaming .cv-list { cursor: default; }
+.cv.renaming .cv-row { padding: 3px 0; }
+.cv.renaming .cv-row-name { display: none; }
+.cv .wk-rename {
+  flex: 1 1 auto; width: 100%; min-width: 0; height: 24px; margin: 0; padding: 0 6px;
+  font: inherit; font-size: var(--cv-fs-small); font-weight: var(--cv-medium); color: var(--cv-text);
+  background: color-mix(in srgb, var(--cv-text) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cv-text) 24%, transparent); border-radius: 8px; outline: none;
+  user-select: text; -webkit-user-select: text;
+}
+.cv .wk-rename::placeholder { color: var(--cv-muted); opacity: 1; }
+.cv .wk-rename:focus { border-color: var(--homey-color-blue, #0091EA); }
+
 .cv-message { font-size: var(--cv-fs-small); line-height: var(--cv-lh-small); color: var(--cv-muted); }
 .cv-message.error { color: var(--homey-color-red, #F25F5C); }

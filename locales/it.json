@@ -374,7 +374,8 @@
     "allOk": "Tutto nell'intervallo",
     "noRange": "Imposta un intervallo OK",
     "unavailable": "__count__ non disponibili",
-    "otherUnits": "altra unità, escluso"
+    "otherUnits": "altra unità, escluso",
+    "renameFailed": "Impossibile salvare il nome."
   },
   "sparklines": {
     "selectSlots": "Scegli i valori nelle impostazioni del widget.",

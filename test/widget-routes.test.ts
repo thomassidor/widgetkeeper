@@ -141,6 +141,7 @@ const ROUTES: Route[] = [
   // Every device with the value when none were picked.
   ['combined', 'GET', '/state', { capabilityId: 'measure_temperature', deviceIds: 'a,b' }, {}, [['combined.getState', ['measure_temperature', ['a', 'b']]]]],
   ['combined', 'GET', '/state', { capabilityId: 'measure_power' }, {}, [['combined.getState', ['measure_power', []]]]],
+  setName('combined'),
   ['variables', 'GET', '/state', { ids: 'v1,v2' }, {}, [['variables.getState', [['v1', 'v2']]]]],
   ['variables', 'POST', '/set', {}, { id: 'v1', value: true }, [['variables.set', ['v1', true]]]],
   setName('variables'),

@@ -374,7 +374,8 @@
     "allOk": "Alle im Bereich",
     "noRange": "OK-Bereich einstellen",
     "unavailable": "__count__ nicht verfügbar",
-    "otherUnits": "andere Einheit, ausgelassen"
+    "otherUnits": "andere Einheit, ausgelassen",
+    "renameFailed": "Der Name konnte nicht gespeichert werden."
   },
   "sparklines": {
     "selectSlots": "Wähle Gerätewerte in den Widget-Einstellungen.",

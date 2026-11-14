@@ -374,7 +374,8 @@
     "allOk": "Alles binnen bereik",
     "noRange": "Stel een OK-bereik in",
     "unavailable": "__count__ niet beschikbaar",
-    "otherUnits": "andere eenheid, weggelaten"
+    "otherUnits": "andere eenheid, weggelaten",
+    "renameFailed": "Kon de naam niet opslaan."
   },
   "sparklines": {
     "selectSlots": "Kies apparaatwaarden in de widgetinstellingen.",

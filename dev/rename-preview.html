@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="../widgets/shortcuts/public/widget.css">
   <link rel="stylesheet" href="../widgets/valueboard/public/widget.css">
   <link rel="stylesheet" href="../widgets/sensordots/public/widget.css">
+  <link rel="stylesheet" href="../widgets/combined/public/widget.css">
   <script src="../widgets/spacer/public/kit.js"></script>
   <!-- The renders' times in 24 hours, as the made-up house's (the app's Time format; a widget's own timeFormat still wins). -->
   <script>WidgetkeeperKit.setTimeFormat('24');</script>
@@ -38,6 +39,7 @@
   <script src="../widgets/shortcuts/public/widget.js"></script>
   <script src="../widgets/valueboard/public/widget.js"></script>
   <script src="../widgets/sensordots/public/widget.js"></script>
+  <script src="../widgets/combined/public/widget.js"></script>
   <script src="i18n.js"></script>
   <link rel="stylesheet" href="preview.css">
   <style>
@@ -52,7 +54,7 @@
   <!-- Every widget with device tiles in rename mode (the `renameTiles` setting): a field per tile, the own name as
        its placeholder. Typed names save after 300 ms (a name with "fail" in it fails, to show the shake). -->
   <script>
-    const WIDGETS = ['lights', 'lightrooms', 'curtains', 'quickactions', 'sensoralarms', 'roomhealth', 'valuematrix', 'values', 'sparklines', 'locks', 'cameras', 'variables', 'shortcuts', 'valueboard', 'sensordots'];
+    const WIDGETS = ['lights', 'lightrooms', 'curtains', 'quickactions', 'sensoralarms', 'roomhealth', 'valuematrix', 'values', 'sparklines', 'locks', 'cameras', 'variables', 'shortcuts', 'valueboard', 'sensordots', 'combined'];
     const cap = (value) => ({ value, setable: true, lastUpdated: Date.now() - 3600e3 });
     const living = { id: 'z1', name: 'Living room' };
     const kitchen = { id: 'z2', name: 'Kitchen' };
@@ -168,6 +170,18 @@
           { id: 'd2', name: 'Hall motion', alarms: [{ capabilityId: 'alarm_motion', title: 'Motion', value: false }] },
           { id: 'd3', missing: true },
         ] },
+      },
+      combined: {
+        create: 'createCombinedWidget', names: { c2: 'Emma' }, opts: { show: 'min' },
+        state: {
+          capability: { id: 'measure_temperature', title: 'Temperature', units: '°C', decimals: 1, min: null, max: null },
+          devices: [
+            { id: 'c1', name: 'Living room sensor', value: 21.8 },
+            { id: 'c2', name: 'Kids sensor', value: 19.6 },
+            { id: 'c3', name: 'Office sensor', value: 23.1 },
+            { id: 'c4', missing: true },
+          ],
+        },
       },
       shortcuts: {
         create: 'createShortcutsWidget', names: { lights: 'Lamps' },

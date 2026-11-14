@@ -374,7 +374,8 @@
     "allOk": "Alle innenfor området",
     "noRange": "Angi et OK-område",
     "unavailable": "__count__ utilgjengelige",
-    "otherUnits": "annen enhet, utelatt"
+    "otherUnits": "annen enhet, utelatt",
+    "renameFailed": "Kunne ikke lagre navnet."
   },
   "sparklines": {
     "selectSlots": "Velg enhetsverdier i widgetinnstillingene.",

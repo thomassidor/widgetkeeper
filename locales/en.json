@@ -374,7 +374,8 @@
     "allOk": "All within range",
     "noRange": "Set an OK range in the settings",
     "unavailable": "__count__ unavailable",
-    "otherUnits": "other unit, left out"
+    "otherUnits": "other unit, left out",
+    "renameFailed": "Could not save the name."
   },
   "sparklines": {
     "selectSlots": "Pick device values in the widget settings.",
