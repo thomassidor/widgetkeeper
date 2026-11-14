@@ -318,18 +318,18 @@
     "ar": "ثلاث أدوات جديدة: قيمة مجمّعة ولوحة القيم ومربعات التدفقات. تنسيق وقت واحد للتطبيق كله، و155 أيقونة إضافية، وقوائم تبحث بالكلمات. تُميَّز الأجهزة غير المتاحة. لوحات الويب: لوحة جانبية، واسمك وأيقوناتك وخلفيتك، والتبديل والتعتيم. الكاميرات: بث مباشر دائمًا."
   },
   "1.3.1": {
-    "en": "Combined Value: give each device a name of your own with Rename tiles.",
-    "nl": "Gecombineerde waarde: geef elk apparaat een eigen naam met Tegels hernoemen.",
-    "de": "Kombinierter Wert: Gib jedem Gerät mit Kacheln umbenennen einen eigenen Namen.",
-    "fr": "Valeur combinée : donnez à chaque appareil un nom de votre choix avec Renommer les tuiles.",
-    "it": "Valore combinato: dai a ogni dispositivo un nome a tua scelta con Rinomina riquadri.",
-    "sv": "Kombinerat värde: ge varje enhet ett eget namn med Byt namn på rutor.",
-    "no": "Kombinert verdi: gi hver enhet et eget navn med Gi nytt navn til fliser.",
-    "es": "Valor combinado: pon a cada dispositivo un nombre propio con Renombrar mosaicos.",
-    "da": "Samlet værdi: giv hver enhed sit eget navn med Omdøb felter.",
-    "ru": "Сводное значение: задайте каждому устройству своё название с помощью «Переименовать плитки».",
-    "pl": "Wartość łączna: nadaj każdemu urządzeniu własną nazwę opcją Zmień nazwy kafelków.",
-    "ko": "통합 값: 타일 이름 바꾸기로 각 기기에 원하는 이름을 붙일 수 있습니다.",
-    "ar": "قيمة مجمّعة: امنح كل جهاز اسمًا من اختيارك عبر إعادة تسمية المربعات."
+    "en": "Combined Value: give each device a name of your own with Rename tiles. In light mode, the tiles of transparent widgets now have the native tiles' soft shadow.",
+    "nl": "Gecombineerde waarde: geef elk apparaat een eigen naam met Tegels hernoemen. In de lichte modus hebben de tegels van transparante widgets nu de zachte schaduw van de eigen tegels van Homey.",
+    "de": "Kombinierter Wert: Gib jedem Gerät mit Kacheln umbenennen einen eigenen Namen. Im hellen Modus haben die Kacheln transparenter Widgets jetzt den sanften Schatten der Homey-eigenen Kacheln.",
+    "fr": "Valeur combinée : donnez à chaque appareil un nom de votre choix avec Renommer les tuiles. En mode clair, les tuiles des widgets transparents ont désormais l'ombre douce des tuiles natives.",
+    "it": "Valore combinato: dai a ogni dispositivo un nome a tua scelta con Rinomina riquadri. In modalità chiara, i riquadri dei widget trasparenti hanno ora l'ombra leggera dei riquadri nativi.",
+    "sv": "Kombinerat värde: ge varje enhet ett eget namn med Byt namn på rutor. I ljust läge har rutorna i genomskinliga widgetar nu Homeys egna rutors mjuka skugga.",
+    "no": "Kombinert verdi: gi hver enhet et eget navn med Gi nytt navn til fliser. I lys modus har flisene i gjennomsiktige widgeter nå den myke skyggen til Homeys egne fliser.",
+    "es": "Valor combinado: pon a cada dispositivo un nombre propio con Renombrar mosaicos. En modo claro, los mosaicos de los widgets transparentes tienen ahora la sombra suave de los mosaicos nativos.",
+    "da": "Samlet værdi: giv hver enhed sit eget navn med Omdøb felter. I lys tilstand har felterne i gennemsigtige widgets nu Homeys egne felters bløde skygge.",
+    "ru": "Сводное значение: задайте каждому устройству своё название с помощью «Переименовать плитки». В светлой теме плитки прозрачных виджетов теперь отбрасывают мягкую тень, как родные плитки Homey.",
+    "pl": "Wartość łączna: nadaj każdemu urządzeniu własną nazwę opcją Zmień nazwy kafelków. W trybie jasnym kafelki przezroczystych widżetów mają teraz delikatny cień, jak natywne kafelki Homey.",
+    "ko": "통합 값: 타일 이름 바꾸기로 각 기기에 원하는 이름을 붙일 수 있습니다. 라이트 모드에서 투명 위젯의 타일에 이제 기본 타일과 같은 부드러운 그림자가 있습니다.",
+    "ar": "قيمة مجمّعة: امنح كل جهاز اسمًا من اختيارك عبر إعادة تسمية المربعات. في الوضع الفاتح، أصبح لمربعات الأدوات الشفافة الآن الظل الخفيف نفسه لمربعات Homey الأصلية."
   }
 }

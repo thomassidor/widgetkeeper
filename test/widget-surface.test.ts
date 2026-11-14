@@ -51,6 +51,15 @@ describe("every widget's fill follows it", () => {
     }
   });
 
+  it("kit.css gives the light-mode tile shadow to the same tiles as the line", () => {
+    const list = (re: RegExp) => new Set(KIT_CSS.match(re)?.[1].match(/\.[a-z]+-[a-z]+/g));
+    const line = list(/html\[data-wk-surface\] :is\(([^)]*)\)/);
+    const shadow = list(/:where\(([^)]*)\) \{\s*box-shadow: var\(--wk-tile-shadow\)/);
+    expect(line.size).toBeGreaterThan(20);
+    expect([...shadow].sort()).toEqual([...line].sort());
+    expect(KIT_CSS).toMatch(/\.homey-dark-mode \{ --wk-tile-shadow: none; \}/);
+  });
+
   it("kit.css gives every transparent widget's tiles their line", () => {
     for (const id of WIDGETS) {
       if (!readFileSync(`widgets/${id}/widget.compose.json`, 'utf8').match(/"transparent": *true/)) continue;

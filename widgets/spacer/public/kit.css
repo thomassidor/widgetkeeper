@@ -26,6 +26,20 @@ html[data-wk-surface] :is(.ck-tile, .ct-tile, .cv-tile, .cv-list, .cw-tile, .fb-
   .qa-tile, .rh-tile, .sa-tile, .sa-panel, .sc-row, .sd-tile, .sk-card, .sl-tile, .tl-tile, .tm-row, .tm-preset, .vb-tile, .vm-tile, .vr-row, .vt-tile):not(:focus-visible) {
   outline: 1px solid var(--wk-surface-line, transparent); outline-offset: -1px;
 }
+/*
+ * Light mode: the native tiles' soft shadow (issue #20; measured from a phone screenshot at 3x: 24/244 darker right under
+ * the tile, half that along the top, gone ~4 px out). Homey draws a card's shadow outside a non-transparent widget's
+ * frame; a transparent one draws its own tiles, so it has to give them theirs. The frame clips it along the widget's
+ * outer edges (the tiles reach them), so it shows between tiles. None in dark mode, where the rim (each widget's
+ * `::after`) does the job. `:where()`, so a widget's own box-shadow (a focus ring, an open tile, a panel) wins.
+ * The same list as above (a test checks).
+ */
+:root { --wk-tile-shadow: 0 1px 5px rgb(0 0 0 / .15); }
+.homey-dark-mode { --wk-tile-shadow: none; }
+:where(.ck-tile, .ct-tile, .cv-tile, .cv-list, .cw-tile, .fb-row, .lc-tile, .lc-panel, .lk-tile, .lr-room, .pb-tile,
+  .qa-tile, .rh-tile, .sa-tile, .sa-panel, .sc-row, .sd-tile, .sk-card, .sl-tile, .tl-tile, .tm-row, .tm-preset, .vb-tile, .vm-tile, .vr-row, .vt-tile) {
+  box-shadow: var(--wk-tile-shadow);
+}
 
 .wk {
   --wk-blue-bright: var(--homey-color-blue, #2F8DF6);
