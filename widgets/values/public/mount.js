@@ -9,6 +9,7 @@ window.mountValuesWidget = function (Homey, { root, frame }) {
   const { wireFrame, wireTileNames, onDeviceNames, slotId } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
+  window.WidgetkeeperKit.wireTileShadow(Homey); // the app's Tile shadows (kit.css)
 
   const settings = Homey.getSettings() || {};
   // Each slot setting is an autocomplete item whose id is `<deviceId>:<capabilityId>`, and so is its second value (`secondN`),

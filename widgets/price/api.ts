@@ -2,10 +2,12 @@ import type { App } from 'homey';
 import { timeFormatRoutes } from '../../lib/timeFormat.js';
 import type WidgetkeeperApp from '../../app.js';
 import { logPerf } from '../../lib/widgetApi.js';
+import { tileShadowRoutes } from '../../lib/tileShadow.js';
 
 type Homey = App['homey'];
 
 export default {
+  ...tileShadowRoutes,
   ...timeFormatRoutes,
   /**
    * The Electricity Overview's hourly price slots (24 back, the current hour, 24 ahead; 36 with `hours=36`),

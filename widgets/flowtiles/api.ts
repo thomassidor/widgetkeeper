@@ -2,10 +2,12 @@ import type { App } from 'homey';
 import { timeFormatRoutes } from '../../lib/timeFormat.js';
 import type WidgetkeeperApp from '../../app.js';
 import { logged, logPerf } from '../../lib/widgetApi.js';
+import { tileShadowRoutes } from '../../lib/tileShadow.js';
 
 type Homey = App['homey'];
 
 export default {
+  ...tileShadowRoutes,
   ...timeFormatRoutes,
   /** `board`: the board's name (empty: Tiles). Its tiles in the order added, with the Homey's clock and language. */
   async getState({ homey, query }: {

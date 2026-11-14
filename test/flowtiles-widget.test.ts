@@ -150,6 +150,8 @@ describe('taps', () => {
 });
 
 describe('mount', () => {
+  /** The widget's own reads, without the app's Tile shadows (asked once after the first). */
+  const reads = (api: { mock: { calls: unknown[][] } }) => api.mock.calls.filter(c => c[1] !== '/tile-shadow').length;
   it('asks for its board, follows its realtime events and sends a tap with a vibration', async () => {
     vi.useFakeTimers();
     const api = vi.fn(async (method: string, _path: string) => (method === 'GET' ? state([tile('car', { tappable: true, text: 'Full' })], 'car') : { ok: true }));
@@ -211,19 +213,19 @@ describe('mount', () => {
     document.dispatchEvent(new Event('visibilitychange'));
     hidden.mockRestore();
     await vi.advanceTimersByTimeAsync(0);
-    expect(api).toHaveBeenCalledTimes(2);
+    expect(reads(api)).toBe(2);
   });
 
   it("doesn't let a read that left before a realtime change undo it", async () => {
     vi.useFakeTimers();
     const answers: ((value: any) => void)[] = [];
-    const api = vi.fn((_method: string, _path: string) => new Promise((resolve) => { answers.push(resolve); }));
+    const api = vi.fn((_method: string, path: string) => (path === '/tile-shadow' ? Promise.resolve({}) : new Promise((resolve) => { answers.push(resolve); })));
     const Homey = fakeFrame({}, { api });
     const { frame, root } = frameElements();
     win.mountFlowTilesWidget(Homey, { root, frame });
     await vi.advanceTimersByTimeAsync(0);
     Homey.emit('flowtiles:state', { key: 'tiles', name: 'Tiles', tiles: [tile('a', { text: 'new' })] });
-    expect(api).toHaveBeenCalledTimes(2);
+    expect(reads(api)).toBe(2);
     answers[0](state([tile('a', { text: 'old' })]));
     await vi.advanceTimersByTimeAsync(0);
     expect(root.querySelector('.vt-value')!.textContent).toBe('new');
@@ -233,7 +235,7 @@ describe('mount', () => {
     expect(Homey.ready).toHaveBeenCalled();
     // Nothing on its way: a change is only taken, with no read.
     Homey.emit('flowtiles:state', { key: 'tiles', name: 'Tiles', tiles: [tile('a', { text: 'newer' })] });
-    expect(api).toHaveBeenCalledTimes(2);
+    expect(reads(api)).toBe(2);
     // Another board's change is none of its business.
     Homey.emit('flowtiles:state', { key: 'other', name: 'Other', tiles: [] });
     expect(root.querySelector('.vt-value')!.textContent).toBe('newer');

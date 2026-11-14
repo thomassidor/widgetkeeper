@@ -423,7 +423,7 @@ describe('the Combined Value mount', () => {
     field.value = 'Lounge';
     field.dispatchEvent(new Event('change'));
     await settle();
-    expect(api).toHaveBeenLastCalledWith('POST', '/names', { instance: 'default', key: 'l', name: 'Lounge' });
+    expect(api).toHaveBeenCalledWith('POST', '/names', { instance: 'default', key: 'l', name: 'Lounge' });
   });
 
   it("takes Value Matrix's realtime changes of the counted devices and that value only", async () => {

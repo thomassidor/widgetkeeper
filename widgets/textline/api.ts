@@ -1,10 +1,12 @@
 import type { App } from 'homey';
 import type WidgetkeeperApp from '../../app.js';
 import { logged, logPerf } from '../../lib/widgetApi.js';
+import { tileShadowRoutes } from '../../lib/tileShadow.js';
 
 type Homey = App['homey'];
 
 export default {
+  ...tileShadowRoutes,
   /**
    * `board`: the note's name (its text, written by Flows); `variable`: a Logic variable id (its value, through Flow
    * Variables' service, which sends its changes as `variables:state`). Either may be left out.

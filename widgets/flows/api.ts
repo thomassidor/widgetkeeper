@@ -1,10 +1,12 @@
 import type { App } from 'homey';
 import type WidgetkeeperApp from '../../app.js';
 import { idList, keyResult, logged, logPerf, requireId } from '../../lib/widgetApi.js';
+import { tileShadowRoutes } from '../../lib/tileShadow.js';
 
 type Homey = App['homey'];
 
 export default {
+  ...tileShadowRoutes,
   /** `ids`: comma-separated slot ids, `flow:<id>` or `advanced:<id>`. */
   async getState({ homey, query }: {
     homey: Homey,

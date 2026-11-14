@@ -14,6 +14,7 @@ window.mountStackWidget = function (Homey, { root, frame }) {
 
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = window.WidgetkeeperKit.wireFrame(Homey, frame);
+  window.WidgetkeeperKit.wireTileShadow(Homey); // the app's Tile shadows (kit.css)
 
   const settings = Homey.getSettings() || {};
   // `none`: the autocomplete's item that says an API key is needed (StackService.listDashboards()).

@@ -4,6 +4,7 @@ import type WidgetkeeperApp from '../../app.js';
 import { STATE_ALARMS, type SensorAlarm } from '../../lib/SensorAlarmService.js';
 import { idList, logged, logPerf } from '../../lib/widgetApi.js';
 import { tileNameRoutes, withTileNames } from '../../lib/TileNameService.js';
+import { tileShadowRoutes } from '../../lib/tileShadow.js';
 
 type Homey = App['homey'];
 
@@ -19,6 +20,7 @@ export function activityAlarms(alarms: SensorAlarm[]): SensorAlarm[] {
 }
 
 export default {
+  ...tileShadowRoutes,
   ...timeFormatRoutes,
   ...tileNameRoutes,
   /** Sensor Alarms' state, with only the motion, presence, contact, vibration and camera detections of each device. */

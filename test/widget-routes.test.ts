@@ -24,6 +24,11 @@ const names = { instance: 'w1', key: 'd1', name: 'Sofa' };
 const setName = (type: string): Route => [type, 'POST', '/names', {}, names, [['tileNames.set', ['w1', 'd1', 'Sofa']]]];
 /** The app's time format (`lib/timeFormat.ts`), spread into every widget that shows a time: no service call. */
 const timeFormat = (type: string): Route => [type, 'GET', '/time-format', {}, {}, []];
+/** The app's Tile shadows (`lib/tileShadow.ts`), spread into every widget with tiles in kit.css's list: no service call. */
+const tileShadow = (type: string): Route => [type, 'GET', '/tile-shadow', {}, {}, []];
+/** The widgets whose tiles take kit.css's light-mode shadow. */
+const TILE_WIDGETS = ['cameras', 'clock', 'combined', 'curtains', 'flows', 'flowtiles', 'lightrooms', 'lights', 'locks', 'price', 'quickactions',
+  'roomhealth', 'sensoralarms', 'sensordots', 'shortcuts', 'sparklines', 'stack', 'textline', 'timers', 'valueboard', 'valuematrix', 'values', 'variables'];
 
 type Route = [type: string, method: string, path: string, query: Record<string, string>, body: object, calls: ServiceCall[]];
 
@@ -174,6 +179,7 @@ const ROUTES: Route[] = [
   timeFormat('totals'),
   timeFormat('typicalday'),
   timeFormat('weather'),
+  ...TILE_WIDGETS.map(tileShadow),
   ['webpage', 'GET', '/check', { url: 'https://x.example/?a=1' }, {}, [['frameCheck.check', ['https://x.example/?a=1']]]],
 ];
 
@@ -224,7 +230,7 @@ describe('widget routes: from the request to the service', () => {
     ['timers', 'POST', '/action', {}, { instance: 'w1', id: 't1', action: 'explode' }, /Unknown action/],
     ['variables', 'POST', '/set', {}, { value: true }, /Missing id/],
     ['varpresets', 'GET', '/state', {}, {}, /Missing id/],
-    ['webpage', 'GET', '/check', {}, {}, /Missing address/],
+  ['webpage', 'GET', '/check', {}, {}, /Missing address/],
     ['combined', 'GET', '/state', { deviceIds: 'a' }, {}, /Missing capabilityId/],
   ] as const)('%s %s %s refuses a request without what it needs', async (type, method, path, query, body, error) => {
     const { call, calls } = setup();

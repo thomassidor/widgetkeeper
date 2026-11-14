@@ -665,6 +665,10 @@
     "setName": {
       "method": "POST",
       "path": "/names"
+    },
+    "getTileShadow": {
+      "method": "GET",
+      "path": "/tile-shadow"
     }
   }
 }

@@ -183,6 +183,9 @@ export function memoryStorage(text: string | null = null): SecretStorage & { tex
 
 export function fakeHomey(api: ReturnType<typeof fakeApi>) {
   const settings = new Map<string, unknown>();
+  // Homey's ManagerSettings is an EventEmitter: `set` and `unset` with the key.
+  const listeners: Record<string, ((key: string) => void)[]> = {};
+  const emit = (event: string, key: string) => { for (const fn of listeners[event] ?? []) fn(key); };
   const homey = {
     fakeApi: api,
     setTimeout: (fn: () => void, ms: number) => setTimeout(fn, ms),
@@ -194,8 +197,9 @@ export function fakeHomey(api: ReturnType<typeof fakeApi>) {
     i18n: { getLanguage: () => 'en' },
     settings: {
       get: (key: string) => settings.get(key) ?? null,
-      set: vi.fn((key: string, value: unknown) => { settings.set(key, JSON.parse(JSON.stringify(value))); }),
-      unset: vi.fn((key: string) => { settings.delete(key); }),
+      set: vi.fn((key: string, value: unknown) => { settings.set(key, JSON.parse(JSON.stringify(value))); emit('set', key); }),
+      unset: vi.fn((key: string) => { settings.delete(key); emit('unset', key); }),
+      on: (event: string, fn: (key: string) => void) => { (listeners[event] ??= []).push(fn); },
       getKeys: () => [...settings.keys()],
     },
     notifications: { createNotification: vi.fn(async (_n: { excerpt: string }) => {}) },

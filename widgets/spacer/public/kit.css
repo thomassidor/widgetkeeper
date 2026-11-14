@@ -32,10 +32,12 @@ html[data-wk-surface] :is(.ck-tile, .ct-tile, .cv-tile, .cv-list, .cw-tile, .fb-
  * frame; a transparent one draws its own tiles, so it has to give them theirs. The frame clips it along the widget's
  * outer edges (the tiles reach them), so it shows between tiles. None in dark mode, where the rim (each widget's
  * `::after`) does the job. `:where()`, so a widget's own box-shadow (a focus ring, an open tile, a panel) wins.
- * The same list as above (a test checks).
+ * The same list as above (a test checks). The app setting `tileShadow` turns it off (`wk-flat`, below).
  */
 :root { --wk-tile-shadow: 0 1px 5px rgb(0 0 0 / .15); }
 .homey-dark-mode { --wk-tile-shadow: none; }
+/* The app's Tile shadows turned off (the settings page's Appearance card; kit.js `wireTileShadow()`). */
+html.wk-flat, html.wk-flat * { --wk-tile-shadow: none; }
 :where(.ck-tile, .ct-tile, .cv-tile, .cv-list, .cw-tile, .fb-row, .lc-tile, .lc-panel, .lk-tile, .lr-room, .pb-tile,
   .qa-tile, .rh-tile, .sa-tile, .sa-panel, .sc-row, .sd-tile, .sk-card, .sl-tile, .tl-tile, .tm-row, .tm-preset, .vb-tile, .vm-tile, .vr-row, .vt-tile) {
   box-shadow: var(--wk-tile-shadow);

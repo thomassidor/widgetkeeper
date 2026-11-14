@@ -5,6 +5,7 @@ import { logSlot } from '../lib/appLogs.js';
 import PersonalApiKey from '../lib/PersonalApiKey.js';
 import TileNameService, { TILE_NAMES_EVENT, TILE_NAMES_SETTING, tileNameRoutes } from '../lib/TileNameService.js';
 import { timeFormatRoutes } from '../lib/timeFormat.js';
+import { tileShadowRoutes } from '../lib/tileShadow.js';
 import WebDashboardService, { MAX_DASHBOARDS, MAX_ICON_PICTURE, MAX_WIDGETS, passesDeviceFilter, settingSections, WEB_BACKUP_FORMAT, WEB_DASHBOARDS_SETTING, WEB_ENABLED_SETTING, WEB_FRONT_SETTING, WEB_REMOTE_SETTING } from '../lib/WebDashboardService.js';
 import { widgetAutocompletes } from '../lib/widgetAutocompletes.js';
 import { DEVICE_WRITES, pageKeyUse, routeKeyUse } from '../lib/widgetRoutes.js';
@@ -703,10 +704,11 @@ describe('web dashboards: the routes that act with the stored key', () => {
       }
       const handlers = source.split(/\n {2}async (?=\w+\()/).slice(1);
       expect(handlers.length).toBeGreaterThan(0);
-      // Every route in the manifest is a handler read here (or the spread tile names and time format routes, which use
+      // Every route in the manifest is a handler read here (or the spread tile names, time format and tile shadow routes, which use
       // no key), so a handler written in another form fails here instead of being skipped.
       const read = [...handlers.map(h => h.match(/^\w+/)![0]), ...(source.includes('...tileNameRoutes') ? Object.keys(tileNameRoutes) : []),
-        ...(source.includes('...timeFormatRoutes') ? Object.keys(timeFormatRoutes) : [])];
+        ...(source.includes('...timeFormatRoutes') ? Object.keys(timeFormatRoutes) : []),
+        ...(source.includes('...tileShadowRoutes') ? Object.keys(tileShadowRoutes) : [])];
       expect([id, read.sort()]).toEqual([id, Object.keys(app.widgets[id]?.api ?? {}).sort()]);
       for (const handler of handlers) {
         const name = handler.match(/^\w+/)![0];

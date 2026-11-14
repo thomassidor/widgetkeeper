@@ -40,6 +40,7 @@ import clock from '../clock/api.js';
 import textline from '../textline/api.js';
 import dayssince from '../dayssince/api.js';
 import type { StackType } from '../../lib/StackService.js';
+import { tileShadowRoutes } from '../../lib/tileShadow.js';
 
 type Homey = App['homey'];
 
@@ -50,6 +51,7 @@ export const PAGE_APIS: Record<StackType, WidgetApis[string]> = {
 };
 
 export default {
+  ...tileShadowRoutes,
   /**
    * `dashboardId`: that dashboard's pages (this app's widgets on it) and the Flow requests running. Without a
    * usable API key it answers `{ok: false, reason}` (`noKey`, `keyScope`, `keyInvalid`), so the widget can say what to do.

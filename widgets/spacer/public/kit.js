@@ -235,6 +235,49 @@
     }, 0);
   }
 
+  /**
+   * The app's Tile shadows (the settings page's Appearance card, the app setting `tileShadow`, on unless turned off;
+   * `lib/tileShadow.ts`): off puts `wk-flat` on the page's html, which takes kit.css's light-mode tile shadow away, for
+   * every widget on the page. Kept in the screen's storage like the time format, so a widget draws without it at once.
+   */
+  const TILE_SHADOW_KEY = 'widgetkeeper.tileShadow';
+  function setTileShadow(on) {
+    const flat = on === false;
+    try { document.documentElement.classList.toggle('wk-flat', flat); } catch { /* no page */ }
+    try { if (window.localStorage) window.localStorage.setItem(TILE_SHADOW_KEY, flat ? 'off' : 'on'); } catch { /* kept for this page only */ }
+  }
+  try {
+    if (window.localStorage && window.localStorage.getItem(TILE_SHADOW_KEY) === 'off') document.documentElement.classList.add('wk-flat');
+  } catch { /* no storage: the shadow until the app answers */ }
+
+  /**
+   * A tile widget's mount (each has `GET /tile-shadow`; a test checks): the app's choice, and its realtime
+   * `tileshadow:state`. Pure CSS, so nothing redraws. Asked a tick after the widget's own first request, never before
+   * it: a widget that asks the app nothing (Dashboard Shortcuts on a Homey dashboard, a Combined Value without a value)
+   * asks this neither, and the first request keeps the load marks.
+   */
+  function wireTileShadow(Homey) {
+    const apply = (res) => {
+      // An answer without one (an older app's) changes nothing.
+      if (res && typeof res.tileShadow === 'boolean') setTileShadow(res.tileShadow);
+    };
+    try { Homey.on('tileshadow:state', apply); } catch { /* the stored one stays */ }
+    const api = Homey.api;
+    if (typeof api !== 'function') return;
+    const ask = () => {
+      try {
+        Promise.resolve(api.call(Homey, 'GET', '/tile-shadow')).then(apply, () => { /* the stored one stays */ });
+      } catch { /* the stored one stays */ }
+    };
+    try {
+      Homey.api = function (...args) {
+        Homey.api = api;
+        setTimeout(ask, 0);
+        return api.apply(this, args);
+      };
+    } catch { /* a Homey whose api can't be wrapped: ask now */ setTimeout(ask, 0); }
+  }
+
   const timeFormats = new Map();
   /**
    * Hours and minutes in `locale` (else the screen's), which picks 24 or 12 hours unless `timeFormat` (`24`, `12`;
@@ -1751,7 +1794,7 @@
     applySurface,
     openVideoStream, playCameraStream, STREAM_NEXT_MS, STREAM_LAST_MS,
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
-    getTimeFormat, setTimeFormat, wireTimeFormat, uses12Hours, clockTime, hourLabel, smoothValues,
+    getTimeFormat, setTimeFormat, wireTimeFormat, setTileShadow, wireTileShadow, uses12Hours, clockTime, hourLabel, smoothValues,
     formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, wireRefresh, wireHaptic, pressGuard, markOffline, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     onDeviceNames, colorStyle, applyColors, sound, optimistic, shake, translator, heightReporter, svgIcon, wireBar, roomTiles, knownValue, okRange, okLevel,
   };

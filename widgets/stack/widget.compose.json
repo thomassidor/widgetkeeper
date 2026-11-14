@@ -473,6 +473,10 @@
     "call": {
       "method": "POST",
       "path": "/call"
+    },
+    "getTileShadow": {
+      "method": "GET",
+      "path": "/tile-shadow"
     }
   }
 }

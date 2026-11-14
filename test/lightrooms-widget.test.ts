@@ -279,7 +279,7 @@ describe('the mount', () => {
     document.body.append(root);
     win.mountLightRoomsWidget(homey({}, api), { root, frame: root });
     await vi.advanceTimersByTimeAsync(0);
-    expect(api.mock.calls.map(c => c[1].split('&perf')[0])).toEqual(['/state?deviceIds=k1,l1', '/moods?zones=z1,z2']);
+    expect(api.mock.calls.map(c => c[1].split('&perf')[0]).filter(p => p !== '/tile-shadow')).toEqual(['/state?deviceIds=k1,l1', '/moods?zones=z1,z2']);
     expect(root.querySelectorAll('.lr-room').length).toBe(2);
   });
 
@@ -290,6 +290,6 @@ describe('the mount', () => {
     document.body.append(root);
     win.mountLightRoomsWidget(homey({ showMoods: false }, api), { root, frame: root });
     await vi.advanceTimersByTimeAsync(0);
-    expect(api).toHaveBeenCalledTimes(1);
+    expect(api.mock.calls.filter(c => (c as unknown[])[1] !== '/tile-shadow')).toHaveLength(1);
   });
 });

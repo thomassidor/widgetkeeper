@@ -41,6 +41,62 @@ describe('the kit: applySurface()', () => {
   });
 });
 
+describe('the kit: the app\'s Tile shadows (wireTileShadow)', () => {
+  const html = document.documentElement;
+  beforeEach(() => { html.classList.remove('wk-flat'); localStorage.clear(); });
+
+  /** A Homey whose `GET /tile-shadow` answers `answer`, and whose realtime can be sent. */
+  function homey(answer: unknown) {
+    const on: Record<string, (data: unknown) => void> = {};
+    const paths: string[] = [];
+    return {
+      paths, on: (event: string, fn: (data: unknown) => void) => { on[event] = fn; },
+      api: async (_method: string, path: string) => { paths.push(path); return path === '/tile-shadow' ? answer : {}; },
+      send: (data: unknown) => on['tileshadow:state']?.(data),
+    };
+  }
+  const tick = () => new Promise(r => setTimeout(r, 5));
+
+  it('turns the shadow off and on as the app says, and keeps it for the next load', async () => {
+    const { WidgetkeeperKit: kit } = loadWidget('spacer');
+    const h = homey({ tileShadow: false });
+    kit.wireTileShadow(h);
+    await tick();
+    // Not before the widget's own first request.
+    expect(h.paths).toEqual([]);
+    expect(html.classList.contains('wk-flat')).toBe(false);
+    await h.api('GET', '/state');
+    await tick();
+    expect(h.paths).toEqual(['/state', '/tile-shadow']);
+    await h.api('GET', '/state');
+    await tick();
+    expect(h.paths).toEqual(['/state', '/tile-shadow', '/state']);
+    expect(html.classList.contains('wk-flat')).toBe(true);
+    expect(localStorage.getItem('widgetkeeper.tileShadow')).toBe('off');
+    h.send({ tileShadow: true });
+    expect(html.classList.contains('wk-flat')).toBe(false);
+    expect(localStorage.getItem('widgetkeeper.tileShadow')).toBe('on');
+  });
+
+  it('draws the last one kept before the app answers, and an answer without one changes nothing', async () => {
+    localStorage.setItem('widgetkeeper.tileShadow', 'off');
+    const { WidgetkeeperKit: kit } = loadWidget('spacer');
+    expect(html.classList.contains('wk-flat')).toBe(true);
+    const h = homey({});
+    kit.wireTileShadow(h);
+    await h.api('GET', '/state');
+    await tick();
+    expect(html.classList.contains('wk-flat')).toBe(true);
+  });
+
+  it('keeps going when Homey fails', async () => {
+    const { WidgetkeeperKit: kit } = loadWidget('spacer');
+    kit.wireTileShadow({ on() { throw new Error('no'); }, api() { throw new Error('no'); } });
+    await tick();
+    expect(html.classList.contains('wk-flat')).toBe(false);
+  });
+});
+
 describe("every widget's fill follows it", () => {
   it('no tile or card is a fixed dark colour', () => {
     for (const id of WIDGETS) {
@@ -58,6 +114,23 @@ describe("every widget's fill follows it", () => {
     expect(line.size).toBeGreaterThan(20);
     expect([...shadow].sort()).toEqual([...line].sort());
     expect(KIT_CSS).toMatch(/\.homey-dark-mode \{ --wk-tile-shadow: none; \}/);
+  });
+
+  it("the widgets with tiles in kit.css's list follow the app's Tile shadows: the route and the mount's call", () => {
+    const list = new Set(KIT_CSS.match(/html\[data-wk-surface\] :is\(([^)]*)\)/)?.[1].match(/\.[a-z]+-[a-z]+/g));
+    // A widget has tiles when a selector in its own stylesheet names one of the list's classes (Flow Tiles' `.ft .vt-tile`).
+    const owns = (id: string) => stylesheets(id).some(css => [...list].some(c => new RegExp(`^[^{}\\n]*\\${c}(?![-\\w])[^{}\\n]*\\{`, 'm').test(css)));
+    const withTiles = WIDGETS.filter(id => id !== 'spacer' && owns(id)).sort();
+    const routed = WIDGETS.filter(id => /"path": "\/tile-shadow"/.test(readFileSync(`widgets/${id}/widget.compose.json`, 'utf8'))).sort();
+    const wired = WIDGETS.filter(id => { try { return /wireTileShadow\(Homey\)/.test(readFileSync(`widgets/${id}/public/mount.js`, 'utf8')); } catch { return false; } }).sort();
+    expect(withTiles.length).toBeGreaterThan(20);
+    expect(routed).toEqual(withTiles);
+    expect(wired).toEqual(withTiles);
+    for (const id of withTiles) expect(readFileSync(`widgets/${id}/api.ts`, 'utf8'), id).toMatch(/\.\.\.tileShadowRoutes,/);
+  });
+
+  it("kit.css takes the shadow away when the app's Tile shadows are off", () => {
+    expect(KIT_CSS).toMatch(/html\.wk-flat, html\.wk-flat \* \{ --wk-tile-shadow: none; \}/);
   });
 
   it("kit.css gives every transparent widget's tiles their line", () => {

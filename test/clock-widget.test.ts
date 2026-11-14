@@ -145,7 +145,7 @@ describe('mount', () => {
 
   it("shows the time without waiting long for the weather, which follows", async () => {
     let answer: (v: any) => void = () => {};
-    const { Homey, root } = mount((_method, path) => (path === '/time-format' ? Promise.resolve({ timeFormat: 'auto' }) : new Promise((resolve) => { answer = resolve; }))); // MET is slow
+    const { Homey, root } = mount((_method, path) => (path.startsWith('/clock') ? new Promise((resolve) => { answer = resolve; }) : Promise.resolve({ timeFormat: 'auto', tileShadow: true }))); // MET is slow
     await vi.advanceTimersByTimeAsync(1000);
     expect(Homey.ready).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(600);

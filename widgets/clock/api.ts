@@ -4,6 +4,7 @@ import type WidgetkeeperApp from '../../app.js';
 import { localHour } from '../../lib/heatmap.js';
 import type { Forecast } from '../../lib/WeatherService.js';
 import { logged, logPerf } from '../../lib/widgetApi.js';
+import { tileShadowRoutes } from '../../lib/tileShadow.js';
 
 type Homey = App['homey'];
 
@@ -39,6 +40,7 @@ export function clockWeather(forecast: Forecast, timeZone: string): ClockWeather
 }
 
 export default {
+  ...tileShadowRoutes,
   ...timeFormatRoutes,
   /** `{language, weather}`; the weather (the Weather Forecast's, so no extra MET traffic) only with `weather=1`. */
   async getClock({ homey, query }: {

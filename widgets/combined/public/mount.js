@@ -8,6 +8,7 @@ window.mountCombinedWidget = function (Homey, { root, frame }) {
   const { wireFrame, wireDeviceState, wireTileNames } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
+  window.WidgetkeeperKit.wireTileShadow(Homey); // the app's Tile shadows (kit.css)
 
   const settings = Homey.getSettings() || {};
   // The `capability` setting is an autocomplete item whose id is the capability id (`none` for none).

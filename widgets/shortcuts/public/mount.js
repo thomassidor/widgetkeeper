@@ -23,6 +23,7 @@ window.mountShortcutsWidget = function (Homey, { root, frame }) {
     .filter(s => typeof s.id === 'string' && s.id && s.id !== 'none');
   const ids = tiles.map(s => s.id);
   let loaded = false;
+  let shadowWired = false;
 
   let instance = '';
   try { instance = typeof Homey.getWidgetInstanceId === 'function' ? Homey.getWidgetInstanceId() : ''; } catch (e) { /* not on the web */ }
@@ -59,6 +60,8 @@ window.mountShortcutsWidget = function (Homey, { root, frame }) {
       ready();
       return;
     }
+    // The app's Tile shadows (kit.css), asked only where the widget asks the app at all.
+    if (!shadowWired) { shadowWired = true; window.WidgetkeeperKit.wireTileShadow(Homey); }
     try {
       widget.setState(await tileNames.state(`/state?ids=${ids.map(encodeURIComponent).join(',')}${link.perfParam()}`));
       loaded = true;

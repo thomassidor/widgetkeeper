@@ -3,6 +3,7 @@ import { timeFormatRoutes } from '../../lib/timeFormat.js';
 import type WidgetkeeperApp from '../../app.js';
 import { TIMER_ACTIONS, type TimerAction } from '../../lib/TimerService.js';
 import { logPerf, requireId } from '../../lib/widgetApi.js';
+import { tileShadowRoutes } from '../../lib/tileShadow.js';
 
 type Homey = App['homey'];
 
@@ -13,6 +14,7 @@ function instanceOf(value: unknown): string {
 }
 
 export default {
+  ...tileShadowRoutes,
   ...timeFormatRoutes,
   /** `instance`: the widget instance. Its timers and the Homey's clock (`{instance, timers, now}`). */
   async getState({ homey, query }: {

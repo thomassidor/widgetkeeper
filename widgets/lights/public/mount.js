@@ -7,6 +7,7 @@ window.mountLightsWidget = function (Homey, { root, frame }) {
   const { wireFrame, wireTileNames, wireDeviceState } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
+  window.WidgetkeeperKit.wireTileShadow(Homey); // the app's Tile shadows (kit.css)
 
   /** The lights in Homey group devices among the picked ones: their realtime events count too. */
   let groupLights = new Set();

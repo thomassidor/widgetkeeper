@@ -141,6 +141,8 @@ interface Window {
     getTimeFormat: () => 'auto' | '24' | '12',
     setTimeFormat: (value: unknown) => boolean,
     wireTimeFormat: (Homey: any, changed?: () => void) => void,
+    setTileShadow: (on: unknown) => void,
+    wireTileShadow: (Homey: any) => void,
     uses12Hours: (locale?: string, timeFormat?: unknown) => boolean,
     smoothValues: (vs: number[]) => number[],
     clockTime: (ms: number, opts?: { locale?: string, timeFormat?: unknown, pad?: boolean, seconds?: boolean }) => string,
