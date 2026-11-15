@@ -1,4 +1,5 @@
 import type Homey from 'homey';
+import { tileShadowOf } from './tileShadow.js';
 
 /**
  * The app setting: whether the widgets show times in 24 or 12 hours, or as the screen's language does (`auto`). Set on
@@ -34,10 +35,11 @@ export function setTimeFormat(homey: Homey.App['homey'], body: { timeFormat?: un
 
 /**
  * The widget route every widget that shows a time spreads into its `api.ts` (and declares in its manifest), for the
- * kit's `wireTimeFormat()`: `GET /time-format` → `{timeFormat}`.
+ * kit's `wireTimeFormat()`: `GET /time-format` → `{timeFormat, tileShadow}` (the app's Tile shadows ride along, so the
+ * Clock, Flow Tiles, the Energy Price Strip and Timers need no request for them; `lib/tileShadow.ts`).
  */
 export const timeFormatRoutes = {
   async getTimeFormat({ homey }: { homey: Homey.App['homey'] }) {
-    return { timeFormat: timeFormatOf(homey) };
+    return { timeFormat: timeFormatOf(homey), tileShadow: tileShadowOf(homey) };
   },
 };

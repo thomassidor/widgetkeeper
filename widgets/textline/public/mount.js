@@ -59,7 +59,9 @@ window.mountTextLineWidget = function (Homey, { root, frame }) {
       ? (variableId ? `variable=${encodeURIComponent(variableId)}` : '')
       : `board=${encodeURIComponent(board)}`;
     try {
-      widget.setState(await Homey.api('GET', `/state?${query}${link.perfParam()}`));
+      const res = await Homey.api('GET', `/state?${query}${link.perfParam()}`);
+      window.WidgetkeeperKit.takeTileShadow(res); // the app's Tile shadows come with it (kit.css)
+      widget.setState(res);
     } catch (err) {
       console.error(err);
       widget.setError(); // the widget's own message: an error's text is Homey's, in English

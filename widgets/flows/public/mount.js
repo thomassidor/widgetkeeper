@@ -53,7 +53,10 @@ window.mountFlowsWidget = function (Homey, { root, frame }) {
       return;
     }
     try {
-      widget.setState(await Homey.api('GET', `/state?ids=${ids.map(encodeURIComponent).join(',')}${link.perfParam()}`));
+      // `{state, tileShadow}`: the buttons, and the app's Tile shadows (kit.css).
+      const res = await Homey.api('GET', `/state?ids=${ids.map(encodeURIComponent).join(',')}${link.perfParam()}`);
+      window.WidgetkeeperKit.takeTileShadow(res);
+      widget.setState(res && !Array.isArray(res) && 'state' in res ? res.state : res);
       loaded = true;
     } catch (err) {
       console.error(err);

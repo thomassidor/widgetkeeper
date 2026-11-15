@@ -205,6 +205,6 @@ describe('stack widget API', () => {
 
   it('answers a key problem with its reason', async () => {
     const homey = homeyWith({ stack: { getPages: async () => { throw new KeyError('noKey'); } } });
-    expect(await stackApi.getPages({ homey, query: { dashboardId: 'd' } })).toEqual({ ok: false, reason: 'noKey', language: 'en' });
+    expect(await stackApi.getPages({ homey, query: { dashboardId: 'd' } })).toEqual({ ok: false, reason: 'noKey', language: 'en', tileShadow: true });
   });
 });

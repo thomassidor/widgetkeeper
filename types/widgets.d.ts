@@ -142,6 +142,7 @@ interface Window {
     setTimeFormat: (value: unknown) => boolean,
     wireTimeFormat: (Homey: any, changed?: () => void) => void,
     setTileShadow: (on: unknown) => void,
+    takeTileShadow: (res: unknown) => void,
     wireTileShadow: (Homey: any) => void,
     uses12Hours: (locale?: string, timeFormat?: unknown) => boolean,
     smoothValues: (vs: number[]) => number[],

@@ -881,10 +881,6 @@
     "getState": {
       "method": "GET",
       "path": "/state"
-    },
-    "getTileShadow": {
-      "method": "GET",
-      "path": "/tile-shadow"
     }
   }
 }

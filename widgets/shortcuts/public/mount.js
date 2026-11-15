@@ -10,6 +10,7 @@ window.mountShortcutsWidget = function (Homey, { root, frame }) {
   const { wireFrame, wireTileNames } = window.WidgetkeeperKit;
   // Homey's frame: ready, the height, and the load marks sent with the first request.
   const link = wireFrame(Homey, frame);
+  window.WidgetkeeperKit.wireTileShadow(Homey); // the app's Tile shadows (kit.css)
 
   const settings = Homey.getSettings() || {};
   // Each tile: a dashboard (an autocomplete item whose id is the dashboard's; `none` empties it), a colour (dropdown)
@@ -23,7 +24,6 @@ window.mountShortcutsWidget = function (Homey, { root, frame }) {
     .filter(s => typeof s.id === 'string' && s.id && s.id !== 'none');
   const ids = tiles.map(s => s.id);
   let loaded = false;
-  let shadowWired = false;
 
   let instance = '';
   try { instance = typeof Homey.getWidgetInstanceId === 'function' ? Homey.getWidgetInstanceId() : ''; } catch (e) { /* not on the web */ }
@@ -60,8 +60,6 @@ window.mountShortcutsWidget = function (Homey, { root, frame }) {
       ready();
       return;
     }
-    // The app's Tile shadows (kit.css), asked only where the widget asks the app at all.
-    if (!shadowWired) { shadowWired = true; window.WidgetkeeperKit.wireTileShadow(Homey); }
     try {
       widget.setState(await tileNames.state(`/state?ids=${ids.map(encodeURIComponent).join(',')}${link.perfParam()}`));
       loaded = true;

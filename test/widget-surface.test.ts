@@ -1,12 +1,17 @@
 // @vitest-environment happy-dom
 import { readdirSync, readFileSync } from 'node:fs';
-import { beforeEach, describe, expect, it } from 'vitest';
-import { loadWidget } from './helpers/loadWidget.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { fakeFrame, frameElements, mountName } from './helpers/fakeFrame.js';
+import { loadMount, loadWidget } from './helpers/loadWidget.js';
 
 /** A web dashboard's Widget background: what reaches a widget's frame, and that every widget's fill follows it. */
 const WIDGETS = readdirSync('widgets', { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name);
 const stylesheets = (id: string) => readdirSync(`widgets/${id}/public`).filter(f => f.endsWith('.css')).map(f => readFileSync(`widgets/${id}/public/${f}`, 'utf8'));
 const KIT_CSS = readFileSync('widgets/spacer/public/kit.css', 'utf8');
+/** The widgets with a tile in kit.css's list: a selector in their own stylesheet names one (Flow Tiles' `.ft .vt-tile`). */
+const TILE_LIST = new Set(KIT_CSS.match(/html\[data-wk-surface\] :is\(([^)]*)\)/)?.[1].match(/\.[a-z]+-[a-z]+/g));
+const TILE_WIDGETS = WIDGETS.filter(id => id !== 'spacer'
+  && stylesheets(id).some(css => [...TILE_LIST].some(c => new RegExp(`^[^{}\\n]*\\${c}(?![-\\w])[^{}\\n]*\\{`, 'm').test(css)))).sort();
 
 describe('the kit: applySurface()', () => {
   const html = document.documentElement;
@@ -41,59 +46,91 @@ describe('the kit: applySurface()', () => {
   });
 });
 
-describe('the kit: the app\'s Tile shadows (wireTileShadow)', () => {
+describe("the kit: the app's Tile shadows (takeTileShadow, wireTileShadow)", () => {
   const html = document.documentElement;
+  const flat = () => html.classList.contains('wk-flat');
   beforeEach(() => { html.classList.remove('wk-flat'); localStorage.clear(); });
 
-  /** A Homey whose `GET /tile-shadow` answers `answer`, and whose realtime can be sent. */
+  /** A Homey whose every answer is `answer`, and whose realtime can be sent. */
   function homey(answer: unknown) {
     const on: Record<string, (data: unknown) => void> = {};
     const paths: string[] = [];
     return {
       paths, on: (event: string, fn: (data: unknown) => void) => { on[event] = fn; },
-      api: async (_method: string, path: string) => { paths.push(path); return path === '/tile-shadow' ? answer : {}; },
-      send: (data: unknown) => on['tileshadow:state']?.(data),
+      api: async (_method: string, path: string) => { paths.push(path); return answer; },
+      getWidgetInstanceId: () => 'w1',
+      emit: (event: string, data: unknown) => on[event]?.(data),
     };
   }
   const tick = () => new Promise(r => setTimeout(r, 5));
 
-  it('turns the shadow off and on as the app says, and keeps it for the next load', async () => {
+  it('takes it from an answer, keeps it for the next load, and leaves it for an answer without one', () => {
     const { WidgetkeeperKit: kit } = loadWidget('spacer');
-    const h = homey({ tileShadow: false });
-    kit.wireTileShadow(h);
-    await tick();
-    // Not before the widget's own first request.
-    expect(h.paths).toEqual([]);
-    expect(html.classList.contains('wk-flat')).toBe(false);
-    await h.api('GET', '/state');
-    await tick();
-    expect(h.paths).toEqual(['/state', '/tile-shadow']);
-    await h.api('GET', '/state');
-    await tick();
-    expect(h.paths).toEqual(['/state', '/tile-shadow', '/state']);
-    expect(html.classList.contains('wk-flat')).toBe(true);
+    kit.takeTileShadow({ tileShadow: false });
+    expect(flat()).toBe(true);
     expect(localStorage.getItem('widgetkeeper.tileShadow')).toBe('off');
-    h.send({ tileShadow: true });
-    expect(html.classList.contains('wk-flat')).toBe(false);
+    for (const res of [null, [], { state: [] }, { tileShadow: 'no' }]) kit.takeTileShadow(res);
+    expect(flat()).toBe(true);
+    kit.takeTileShadow({ tileShadow: true });
+    expect(flat()).toBe(false);
     expect(localStorage.getItem('widgetkeeper.tileShadow')).toBe('on');
   });
 
-  it('draws the last one kept before the app answers, and an answer without one changes nothing', async () => {
+  it('draws the last one kept before any answer', () => {
     localStorage.setItem('widgetkeeper.tileShadow', 'off');
-    const { WidgetkeeperKit: kit } = loadWidget('spacer');
-    expect(html.classList.contains('wk-flat')).toBe(true);
-    const h = homey({});
-    kit.wireTileShadow(h);
-    await h.api('GET', '/state');
-    await tick();
-    expect(html.classList.contains('wk-flat')).toBe(true);
+    loadWidget('spacer');
+    expect(flat()).toBe(true);
   });
 
-  it('keeps going when Homey fails', async () => {
+  it('follows the realtime event, and asks nothing', async () => {
     const { WidgetkeeperKit: kit } = loadWidget('spacer');
-    kit.wireTileShadow({ on() { throw new Error('no'); }, api() { throw new Error('no'); } });
+    const h = homey({});
+    kit.wireTileShadow(h);
     await tick();
-    expect(html.classList.contains('wk-flat')).toBe(false);
+    expect(h.paths).toEqual([]);
+    h.emit('tileshadow:state', { tileShadow: false });
+    expect(flat()).toBe(true);
+    expect(() => kit.wireTileShadow({ on() { throw new Error('no'); } })).not.toThrow();
+  });
+
+  it('comes with the tile names wrapper and with the time format', async () => {
+    const { WidgetkeeperKit: kit } = loadWidget('spacer');
+    const names = homey({ state: [1], tileNames: {}, tileShadow: false });
+    expect(await kit.wireTileNames(names, () => {}).state('/state?x=1')).toEqual([1]);
+    expect(flat()).toBe(true);
+    const times = homey({ timeFormat: '24', tileShadow: true });
+    kit.wireTimeFormat(times, () => {});
+    await tick();
+    expect(times.paths).toEqual(['/time-format']);
+    expect(flat()).toBe(false);
+  });
+});
+
+/** Settings that make each tile widget read: a device, a slot, a value, a flow, a dashboard, a board. */
+const READING = {
+  device: { id: 'd1' }, slot1: { id: 'd1:measure_temperature' }, capability: { id: 'measure_temperature' }, flow1: { id: 'flow:f1' },
+  dashboard: { id: 'dash1' }, dashboard1: { id: 'dash1' }, col1: { id: 'measure_temperature' }, board: 'Kitchen', source: 'flow', minutes1: 5, counter1: { id: 'Filter' },
+};
+
+describe('every widget with tiles follows the Tile shadows with no request of its own', () => {
+  afterEach(() => { vi.useRealTimers(); document.documentElement.classList.remove('wk-flat'); localStorage.clear(); document.body.innerHTML = ''; });
+
+  it.each(TILE_WIDGETS)('%s', async (id) => {
+    vi.useFakeTimers();
+    const win = loadWidget(id as never);
+    loadMount(id as never);
+    const { frame, root } = frameElements();
+    // Every answer carries it, as the app's do: whichever the widget reads first brings it.
+    const Homey = fakeFrame(READING, {
+      instance: id === 'shortcuts' ? 'web-dash1-w1' : 'w1',
+      api: async () => ({ tileShadow: false, tileNames: {}, timeFormat: '24', ok: true, pages: [], requests: [] }),
+    });
+    win[mountName(id)](Homey, { root, frame });
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(Homey.on.mock.calls.some(c => c[0] === 'tileshadow:state')).toBe(true);
+    expect(Homey.api.mock.calls.length).toBeGreaterThan(0);
+    expect(Homey.api.mock.calls.some(c => String(c[1]).startsWith('/tile-shadow'))).toBe(false);
+    expect(document.documentElement.classList.contains('wk-flat')).toBe(true);
   });
 });
 
@@ -116,17 +153,10 @@ describe("every widget's fill follows it", () => {
     expect(KIT_CSS).toMatch(/\.homey-dark-mode \{ --wk-tile-shadow: none; \}/);
   });
 
-  it("the widgets with tiles in kit.css's list follow the app's Tile shadows: the route and the mount's call", () => {
-    const list = new Set(KIT_CSS.match(/html\[data-wk-surface\] :is\(([^)]*)\)/)?.[1].match(/\.[a-z]+-[a-z]+/g));
-    // A widget has tiles when a selector in its own stylesheet names one of the list's classes (Flow Tiles' `.ft .vt-tile`).
-    const owns = (id: string) => stylesheets(id).some(css => [...list].some(c => new RegExp(`^[^{}\\n]*\\${c}(?![-\\w])[^{}\\n]*\\{`, 'm').test(css)));
-    const withTiles = WIDGETS.filter(id => id !== 'spacer' && owns(id)).sort();
-    const routed = WIDGETS.filter(id => /"path": "\/tile-shadow"/.test(readFileSync(`widgets/${id}/widget.compose.json`, 'utf8'))).sort();
+  it("the widgets with tiles in kit.css's list are the ones that follow the app's Tile shadows", () => {
     const wired = WIDGETS.filter(id => { try { return /wireTileShadow\(Homey\)/.test(readFileSync(`widgets/${id}/public/mount.js`, 'utf8')); } catch { return false; } }).sort();
-    expect(withTiles.length).toBeGreaterThan(20);
-    expect(routed).toEqual(withTiles);
-    expect(wired).toEqual(withTiles);
-    for (const id of withTiles) expect(readFileSync(`widgets/${id}/api.ts`, 'utf8'), id).toMatch(/\.\.\.tileShadowRoutes,/);
+    expect(TILE_WIDGETS.length).toBeGreaterThan(20);
+    expect(wired).toEqual(TILE_WIDGETS);
   });
 
   it("kit.css takes the shadow away when the app's Tile shadows are off", () => {

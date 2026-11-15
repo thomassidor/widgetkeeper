@@ -24,12 +24,9 @@ export function watchTileShadow(homey: Homey.App['homey']): void {
   homey.settings.on('unset', changed);
 }
 
-/**
- * The widget route every widget with tiles in kit.css's list spreads into its `api.ts` (and declares in its manifest),
- * for the kit's `wireTileShadow()`: `GET /tile-shadow` → `{tileShadow}`.
+/*
+ * No route of its own (the user's ask, 2026-11-15: no extra request): `tileShadow` comes with an answer each widget with
+ * tiles reads anyway, and the kit takes it from there (`takeTileShadow()`): the tile names' `{state, tileNames}`
+ * (`withTileNames()`), the time format's `GET /time-format`, Notes' and Flow Tiles' `/state`, the Smart Stack's `/pages` and Flow
+ * Buttons' `/state` (`{state, tileShadow}`). A change comes as realtime `tileshadow:state` (`wireTileShadow()`).
  */
-export const tileShadowRoutes = {
-  async getTileShadow({ homey }: { homey: Homey.App['homey'] }) {
-    return { tileShadow: tileShadowOf(homey) };
-  },
-};

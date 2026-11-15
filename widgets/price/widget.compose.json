@@ -513,10 +513,6 @@
     "getTimeFormat": {
       "method": "GET",
       "path": "/time-format"
-    },
-    "getTileShadow": {
-      "method": "GET",
-      "path": "/tile-shadow"
     }
   }
 }

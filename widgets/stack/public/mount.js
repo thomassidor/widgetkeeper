@@ -213,6 +213,7 @@ window.mountStackWidget = function (Homey, { root, frame }) {
     }
     try {
       const res = await Homey.api('GET', `/pages?dashboardId=${encodeURIComponent(dashboardId)}${link.perfParam()}`);
+      window.WidgetkeeperKit.takeTileShadow(res); // the app's Tile shadows come with it (kit.css)
       if (res && res.ok === false) {
         if (!loaded) widget.setMessage(widget.t(window.WidgetkeeperKit.KEY_PROBLEMS.includes(res.reason) ? res.reason : 'error'), true);
         ready(false);

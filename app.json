@@ -933,10 +933,6 @@
         "setName": {
           "method": "POST",
           "path": "/names"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "sensordots"
@@ -1643,10 +1639,6 @@
         "getTimeFormat": {
           "method": "GET",
           "path": "/time-format"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "cameras"
@@ -18690,10 +18682,6 @@
         "getTimeFormat": {
           "method": "GET",
           "path": "/time-format"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "clock"
@@ -19539,10 +19527,6 @@
         "setName": {
           "method": "POST",
           "path": "/names"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "combined"
@@ -20378,10 +20362,6 @@
         "setName": {
           "method": "POST",
           "path": "/names"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "curtains"
@@ -22804,10 +22784,6 @@
         "setName": {
           "method": "POST",
           "path": "/names"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "shortcuts"
@@ -24571,10 +24547,6 @@
         "setName": {
           "method": "POST",
           "path": "/names"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "quickactions"
@@ -25248,10 +25220,6 @@
         "setName": {
           "method": "POST",
           "path": "/names"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "values"
@@ -26626,10 +26594,6 @@
         "getTimeFormat": {
           "method": "GET",
           "path": "/time-format"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "price"
@@ -29282,10 +29246,6 @@
         "trigger": {
           "method": "POST",
           "path": "/trigger"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "flows"
@@ -29779,10 +29739,6 @@
         "getTimeFormat": {
           "method": "GET",
           "path": "/time-format"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "flowtiles"
@@ -32434,10 +32390,6 @@
         "setName": {
           "method": "POST",
           "path": "/names"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "lights"
@@ -32870,10 +32822,6 @@
         "setName": {
           "method": "POST",
           "path": "/names"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "lightrooms"
@@ -33160,10 +33108,6 @@
         "getTimeFormat": {
           "method": "GET",
           "path": "/time-format"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "locks"
@@ -35322,10 +35266,6 @@
         "getState": {
           "method": "GET",
           "path": "/state"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "textline"
@@ -36391,10 +36331,6 @@
         "setName": {
           "method": "POST",
           "path": "/names"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "roomhealth"
@@ -36667,10 +36603,6 @@
         "setName": {
           "method": "POST",
           "path": "/names"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "sensoralarms"
@@ -37150,10 +37082,6 @@
         "call": {
           "method": "POST",
           "path": "/call"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "stack"
@@ -38102,10 +38030,6 @@
         "setName": {
           "method": "POST",
           "path": "/names"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "sparklines"
@@ -39385,10 +39309,6 @@
         "getTimeFormat": {
           "method": "GET",
           "path": "/time-format"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "timers"
@@ -39863,10 +39783,6 @@
         "setName": {
           "method": "POST",
           "path": "/names"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "valueboard"
@@ -40538,10 +40454,6 @@
         "setName": {
           "method": "POST",
           "path": "/names"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "valuematrix"
@@ -42032,10 +41944,6 @@
         "setName": {
           "method": "POST",
           "path": "/names"
-        },
-        "getTileShadow": {
-          "method": "GET",
-          "path": "/tile-shadow"
         }
       },
       "id": "variables"

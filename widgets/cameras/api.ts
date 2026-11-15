@@ -4,12 +4,10 @@ import type WidgetkeeperApp from '../../app.js';
 import type { KeptSnapshot, SamePicture, Snapshot } from '../../lib/CameraService.js';
 import { idList, logged, logPerf } from '../../lib/widgetApi.js';
 import { tileNameRoutes, withTileNames } from '../../lib/TileNameService.js';
-import { tileShadowRoutes } from '../../lib/tileShadow.js';
 
 type Homey = App['homey'];
 
 export default {
-  ...tileShadowRoutes,
   ...timeFormatRoutes,
   ...tileNameRoutes,
 

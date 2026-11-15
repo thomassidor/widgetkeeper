@@ -1,20 +1,23 @@
 import type { App } from 'homey';
 import type WidgetkeeperApp from '../../app.js';
 import { idList, keyResult, logged, logPerf, requireId } from '../../lib/widgetApi.js';
-import { tileShadowRoutes } from '../../lib/tileShadow.js';
+import { tileShadowOf } from '../../lib/tileShadow.js';
 
 type Homey = App['homey'];
 
 export default {
-  ...tileShadowRoutes,
-  /** `ids`: comma-separated slot ids, `flow:<id>` or `advanced:<id>`. */
+  /**
+   * `ids`: comma-separated slot ids, `flow:<id>` or `advanced:<id>`. `{state, tileShadow}`: the buttons, and the app's
+   * Tile shadows, which ride along so the widget needs no request for them (`lib/tileShadow.ts`).
+   */
   async getState({ homey, query }: {
     homey: Homey,
     query: Record<string, string>,
   }) {
     const app = homey.app as WidgetkeeperApp;
     logPerf(app, 'Flow buttons', query);
-    return logged(app, 'Flow buttons state failed:', () => app.flows.getState(idList(query.ids)));
+    const state = await logged(app, 'Flow buttons state failed:', () => app.flows.getState(idList(query.ids)));
+    return { state, tileShadow: tileShadowOf(homey) };
   },
 
   /**

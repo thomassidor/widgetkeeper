@@ -219,6 +219,7 @@
     // This mount's own: a Smart Stack's pages share the kit, so the page's format has changed for all but the first to hear.
     let drawn = timeFormatNow;
     const apply = (res) => {
+      takeTileShadow(res); // `/time-format` brings the app's Tile shadows too
       // An answer without one (an older app's) changes nothing.
       if (!res || !isTimeFormat(res.timeFormat)) return;
       setTimeFormat(res.timeFormat);
@@ -251,31 +252,20 @@
   } catch { /* no storage: the shadow until the app answers */ }
 
   /**
-   * A tile widget's mount (each has `GET /tile-shadow`; a test checks): the app's choice, and its realtime
-   * `tileshadow:state`. Pure CSS, so nothing redraws. Asked a tick after the widget's own first request, never before
-   * it: a widget that asks the app nothing (Dashboard Shortcuts on a Homey dashboard, a Combined Value without a value)
-   * asks this neither, and the first request keeps the load marks.
+   * Takes the app's Tile shadows from an answer the widget reads anyway (`lib/tileShadow.ts`: the tile names' wrapper,
+   * `/time-format`, Notes' and Flow Buttons' `/state`, the Smart Stack's `/pages`), so no widget asks for it. An
+   * answer without one (an older app's, or a failed read) changes nothing.
+   */
+  function takeTileShadow(res) {
+    if (res && typeof res === 'object' && typeof res.tileShadow === 'boolean') setTileShadow(res.tileShadow);
+  }
+
+  /**
+   * A tile widget's mount (a test checks each calls it): the app's realtime `tileshadow:state`. Asks nothing: the setting
+   * comes with the widget's own reads (`takeTileShadow()`). Pure CSS, so nothing redraws.
    */
   function wireTileShadow(Homey) {
-    const apply = (res) => {
-      // An answer without one (an older app's) changes nothing.
-      if (res && typeof res.tileShadow === 'boolean') setTileShadow(res.tileShadow);
-    };
-    try { Homey.on('tileshadow:state', apply); } catch { /* the stored one stays */ }
-    const api = Homey.api;
-    if (typeof api !== 'function') return;
-    const ask = () => {
-      try {
-        Promise.resolve(api.call(Homey, 'GET', '/tile-shadow')).then(apply, () => { /* the stored one stays */ });
-      } catch { /* the stored one stays */ }
-    };
-    try {
-      Homey.api = function (...args) {
-        Homey.api = api;
-        setTimeout(ask, 0);
-        return api.apply(this, args);
-      };
-    } catch { /* a Homey whose api can't be wrapped: ask now */ setTimeout(ask, 0); }
+    try { Homey.on('tileshadow:state', takeTileShadow); } catch { /* the stored one stays */ }
   }
 
   const timeFormats = new Map();
@@ -846,6 +836,7 @@
         .then(() => Homey.api('GET', `${path}&instance=${encodeURIComponent(instance)}`))
         .then((res) => {
           if (!res || typeof res !== 'object' || !('tileNames' in res)) return res;
+          takeTileShadow(res); // the wrapper brings the app's Tile shadows too
           setNames(res.tileNames);
           return res.state;
         }),
@@ -1794,7 +1785,7 @@
     applySurface,
     openVideoStream, playCameraStream, STREAM_NEXT_MS, STREAM_LAST_MS,
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
-    getTimeFormat, setTimeFormat, wireTimeFormat, setTileShadow, wireTileShadow, uses12Hours, clockTime, hourLabel, smoothValues,
+    getTimeFormat, setTimeFormat, wireTimeFormat, setTileShadow, takeTileShadow, wireTileShadow, uses12Hours, clockTime, hourLabel, smoothValues,
     formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, wireRefresh, wireHaptic, pressGuard, markOffline, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     onDeviceNames, colorStyle, applyColors, sound, optimistic, shake, translator, heightReporter, svgIcon, wireBar, roomTiles, knownValue, okRange, okLevel,
   };

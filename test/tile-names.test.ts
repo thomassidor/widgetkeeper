@@ -94,7 +94,7 @@ describe('TileNameService', () => {
   it('adds the names to a /state answer that asks with its instance', async () => {
     const { homey, service } = setup();
     service.set('w1', 'd1', 'Hall');
-    expect(await withTileNames(homey as any, { instance: 'w1' }, Promise.resolve([{ id: 'd1' }]))).toEqual({ state: [{ id: 'd1' }], tileNames: { d1: 'Hall' } });
+    expect(await withTileNames(homey as any, { instance: 'w1' }, Promise.resolve([{ id: 'd1' }]))).toEqual({ state: [{ id: 'd1' }], tileNames: { d1: 'Hall' }, tileShadow: true });
     expect(await withTileNames(homey as any, { deviceIds: 'd1' }, Promise.resolve([{ id: 'd1' }]))).toEqual([{ id: 'd1' }]);
   });
 
@@ -173,7 +173,7 @@ describe("taking over the names of a widget's old settings", () => {
     const { homey } = setup();
     const query = { ids: 'a', instance: 'w1', oldNames: JSON.stringify({ a: 'Guests', 'a#2': 'Again' }) };
     expect(await withTileNames(homey as any, query, Promise.resolve([{ id: 'a' }, { id: 'a' }])))
-      .toEqual({ state: [{ id: 'a' }, { id: 'a' }], tileNames: { a: 'Guests', 'a#2': 'Again' } });
+      .toEqual({ state: [{ id: 'a' }, { id: 'a' }], tileNames: { a: 'Guests', 'a#2': 'Again' }, tileShadow: true });
   });
 
   it('answers /state when the old names are no JSON', async () => {
@@ -181,7 +181,7 @@ describe("taking over the names of a widget's old settings", () => {
     const log = vi.fn();
     (homey as any).app.log = log;
     expect(await withTileNames(homey as any, { instance: 'w1', oldNames: '{oops' }, Promise.resolve([])))
-      .toEqual({ state: [], tileNames: {} });
+      .toEqual({ state: [], tileNames: {}, tileShadow: true });
     expect(log).toHaveBeenCalledWith('Old tile names not taken over:', expect.any(SyntaxError));
   });
 

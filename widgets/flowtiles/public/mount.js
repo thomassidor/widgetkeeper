@@ -46,6 +46,7 @@ window.mountFlowTilesWidget = function (Homey, { root, frame }) {
     loading = true;
     try {
       const state = await Homey.api('GET', `/state?board=${encodeURIComponent(board)}${link.perfParam()}`);
+      window.WidgetkeeperKit.takeTileShadow(state); // the app's Tile shadows come with it (kit.css)
       if (seq !== loadSeq) return; // a newer load is on its way
       loading = false;
       widget.setState(state);

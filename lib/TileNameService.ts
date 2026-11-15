@@ -1,3 +1,4 @@
+import { tileShadowOf } from './tileShadow.js';
 import type Homey from 'homey';
 import { isReservedKey } from './storedSetting.js';
 import { logged } from './widgetApi.js';
@@ -204,7 +205,7 @@ const service = (homey: RouteArgs['homey']) => (homey.app as any).tileNames as T
  * state as it was. `oldNames` (JSON `{key: name}`, the names in the widget's old settings) are taken over first
  * (`adopt()`), so this answer has them; that going wrong never fails the state.
  */
-export async function withTileNames<T>(homey: RouteArgs['homey'], query: RouteArgs['query'], state: Promise<T>): Promise<T | { state: T, tileNames: Record<string, string> }> {
+export async function withTileNames<T>(homey: RouteArgs['homey'], query: RouteArgs['query'], state: Promise<T>): Promise<T | { state: T, tileNames: Record<string, string>, tileShadow: boolean }> {
   if (typeof query?.instance === 'string' && typeof query.oldNames === 'string') {
     try {
       service(homey).adopt(query.instance, JSON.parse(query.oldNames));
@@ -214,7 +215,8 @@ export async function withTileNames<T>(homey: RouteArgs['homey'], query: RouteAr
   }
   const s = await state;
   if (typeof query?.instance !== 'string') return s;
-  return { state: s, tileNames: service(homey).get(query.instance).names };
+  // The app's Tile shadows ride along, so a tile widget needs no request for it (`lib/tileShadow.ts`).
+  return { state: s, tileNames: service(homey).get(query.instance).names, tileShadow: tileShadowOf(homey) };
 }
 
 /** `POST /names {instance, key, name}`: spread into each device-tile widget's api.ts (the names come with `/state`, `withTileNames()`). */

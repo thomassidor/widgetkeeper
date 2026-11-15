@@ -28,8 +28,8 @@ describe('the app setting', () => {
     setTimeFormat(homey as any, { timeFormat: '12' });
     expect(homey.api.realtime).not.toHaveBeenCalled();
     expect(await (api as any).getTimeFormat({ homey })).toEqual({ timeFormat: '12' });
-    // The widgets' route answers the same.
-    expect(await timeFormatRoutes.getTimeFormat({ homey: homey as any })).toEqual({ timeFormat: '12' });
+    // The widgets' route answers the same, with the app's Tile shadows (lib/tileShadow.ts), so they need no request.
+    expect(await timeFormatRoutes.getTimeFormat({ homey: homey as any })).toEqual({ timeFormat: '12', tileShadow: true });
   });
 
   it('refuses another value', () => {

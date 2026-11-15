@@ -3,12 +3,10 @@ import type WidgetkeeperApp from '../../app.js';
 import { lightRoutes } from '../../lib/lightRoutes.js';
 import { idList, logged, logPerf } from '../../lib/widgetApi.js';
 import { tileNameRoutes, withTileNames } from '../../lib/TileNameService.js';
-import { tileShadowRoutes } from '../../lib/tileShadow.js';
 
 type Homey = App['homey'];
 
 export default {
-  ...tileShadowRoutes,
   ...tileNameRoutes,
 
   async getState({ homey, query }: {
