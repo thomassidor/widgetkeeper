@@ -89,6 +89,14 @@ describe('healthCaps', () => {
       { measure: 'pm10', capabilityId: 'measure_pm10', scale: 1 },
     ]);
   });
+
+  it('turns a temperature in °F into °C, as the ranges are in °C', () => {
+    for (const units of ['°F', '° F', '℉', 'F', 'Fahrenheit']) {
+      const [cap] = healthCaps(fakeDevice({ caps: { measure_temperature: { type: 'number', value: 71, units } } }));
+      expect(cap).toMatchObject({ measure: 'temperature', scale: 5 / 9, offset: -32 });
+    }
+    expect(healthCaps(fakeDevice({ caps: { measure_temperature: { type: 'number', value: 21, units: '°C' } } }))[0].offset).toBeUndefined();
+  });
 });
 
 describe('getState', () => {
@@ -155,6 +163,15 @@ describe('getState', () => {
     devices[0].report('measure_co2', 1400);
     expect(homey.api.realtime).toHaveBeenLastCalledWith(RH_STATE_EVENT, { deviceId: 'air', capabilityId: 'measure_co2', measure: 'co2', value: 1400 });
     expect(await service.getState(['air'])).toMatchObject([{ measures: { co2: { value: 1400 } } }]);
+  });
+
+  it('reads and sends a temperature in °F as °C (71 °F is inside 18–26 °C, not far above it)', async () => {
+    const t = fakeDevice({ id: 'f', name: 'Thermostat', caps: { measure_temperature: { type: 'number', value: 71, units: '°F' } } });
+    const { service, homey, devices } = setup([t]);
+    const [read] = await service.getState(['f']) as any[];
+    expect(read.measures.temperature.value).toBeCloseTo(21.667, 3);
+    devices[0].report('measure_temperature', 50);
+    expect(homey.api.realtime).toHaveBeenCalledWith(RH_STATE_EVENT, expect.objectContaining({ measure: 'temperature', value: 10 }));
   });
 
   it('listens to the chosen capabilities only, and stops when a device goes', async () => {

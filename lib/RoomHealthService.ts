@@ -8,8 +8,11 @@ export const RH_STATE_EVENT = 'roomhealth:state';
 /** What Room Health scores. The widget has the comfortable ranges; each comes in one unit (see `RULES`). */
 type Measure = 'temperature' | 'humidity' | 'co2' | 'radon' | 'pm25' | 'pm10' | 'voc';
 
-/** One capability a device gives for a measure; `scale` turns its value into the measure's unit (radon in pCi/L × 37). */
-export type HealthCap = { measure: Measure, capabilityId: string, scale: number };
+/**
+ * One capability a device gives for a measure; `(value + offset) × scale` turns its value into the measure's unit
+ * (radon in pCi/L × 37; a temperature in °F, as some apps report it, `(F − 32) × 5/9`).
+ */
+export type HealthCap = { measure: Measure, capabilityId: string, scale: number, offset?: number };
 
 export type RoomHealthDevice =
   | { id: string, name: string, zone: { id: string, name: string } | null, measures: Partial<Record<Measure, { capabilityId: string, value: number | null }>>, offline?: true }
@@ -54,16 +57,21 @@ export function healthCaps(device: any): HealthCap[] {
       : undefined;
     const id = plain || indoor;
     if (!id) continue;
-    const scale = rule.measure === 'radon' && /pci/i.test(String(caps[id]?.units ?? '')) ? 37 : 1;
+    const units = String(caps[id]?.units ?? '').trim();
+    if (rule.measure === 'temperature' && /^(°\s*F|℉|F|fahrenheit)$/i.test(units)) {
+      out.push({ measure: rule.measure, capabilityId: id, scale: 5 / 9, offset: -32 });
+      continue;
+    }
+    const scale = rule.measure === 'radon' && /pci/i.test(units) ? 37 : 1;
     out.push({ measure: rule.measure, capabilityId: id, scale });
   }
   return out;
 }
 
-const toValue = (value: unknown, scale: number) => (typeof value === 'number' && Number.isFinite(value) ? value * scale : null);
+const toValue = (value: unknown, { scale, offset = 0 }: HealthCap) => (typeof value === 'number' && Number.isFinite(value) ? (value + offset) * scale : null);
 
 function readValues(device: any, caps: HealthCap[]): Partial<Record<Measure, number | null>> {
-  return Object.fromEntries(caps.map(c => [c.measure, toValue(device.capabilitiesObj?.[c.capabilityId]?.value, c.scale)]));
+  return Object.fromEntries(caps.map(c => [c.measure, toValue(device.capabilitiesObj?.[c.capabilityId]?.value, c)]));
 }
 
 /**
@@ -83,7 +91,7 @@ export default class RoomHealthService {
       homey,
       debug,
       what: 'Room health capabilities',
-      signature: device => healthCaps(device).map(c => `${c.capabilityId}*${c.scale}`).join(),
+      signature: device => healthCaps(device).map(c => `${c.capabilityId}*${c.scale}+${c.offset ?? 0}`).join(),
       // A device with nothing usable (VOC only in μg/m³) isn't missing: it gives no readings, and is tracked
       // again by itself once it has some (its signature changes).
       create: async (device) => {
@@ -91,8 +99,9 @@ export default class RoomHealthService {
         return { caps, values: readValues(device, caps) };
       },
       listen: (t, device) => {
-        const instances = t.caps.map(({ measure, capabilityId, scale }) => device.makeCapabilityInstance(capabilityId, (raw: unknown) => {
-          const value = toValue(raw, scale);
+        const instances = t.caps.map(cap => device.makeCapabilityInstance(cap.capabilityId, (raw: unknown) => {
+          const { measure, capabilityId } = cap;
+          const value = toValue(raw, cap);
           t.values[measure] = value;
           this.homey.api.realtime(RH_STATE_EVENT, { deviceId: t.key, capabilityId, measure, value });
         }));
