@@ -7,6 +7,12 @@ All notable changes to Widgetkeeper. The version numbers match the Homey app ver
 ### Combined Value
 - **Rename tiles:** give each device a name of your own, such as *Emma* instead of *Kids sensor*. Turn on **Rename tiles**, and the list under the tile shows a field for each device; the names are then used everywhere the widget names a device: the line under the name, the chart and the list.
 
+### Light mode: tile shadows
+- **The tiles of transparent widgets now have the soft shadow of Homey's own tiles** in light mode (Light Controls, Lights by Room, Device Values, Quick Actions and the others whose tiles sit on the dashboard), so they no longer look flat beside them. Prefer flat tiles? Turn it off under **Configure → Appearance**; every widget follows at once. Thanks to @saschaeggi for reporting it (#20).
+
+### Room Health
+- **A temperature sensor that reports °F** was scored against the °C ranges (71 °F as 71 °C), so every room showed red. It's now converted to °C first.
+
 ## 1.3.0
 
 ### New: Flow Tiles
