@@ -14,7 +14,7 @@
     "lint": "biome lint .",
     "audit": "node scripts/audit-check.mjs",
     "release-check": "node scripts/release-check.mjs",
-    "publish-app": "node scripts/release-check.mjs && homey app publish",
+    "publish-app": "node scripts/publish-app.mjs",
     "typecheck": "tsc --noEmit --noUnusedLocals && tsc -p tsconfig.widgets.json --noUnusedLocals && tsc -p tsconfig.test.json --noUnusedLocals",
     "test": "vitest run",
     "test:watch": "vitest",
