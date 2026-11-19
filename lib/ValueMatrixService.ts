@@ -4,6 +4,7 @@ import { describeCapability } from './capabilities.js';
 import { valueGlyphImage } from './valueGlyphs.js';
 import DeviceTracker, { readZones, zoneRef, type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { deviceNamer, roomNamer } from './deviceNames.js';
+import { temperatureShower } from './temperatureUnit.js';
 import Timings from './Timings.js';
 
 export const VM_STATE_EVENT = 'valuematrix:state';
@@ -82,7 +83,8 @@ export default class ValueMatrixService {
         return [device.makeCapabilityInstance(capabilityId, (raw: unknown) => {
           const value = toNumber(raw);
           t.value = value;
-          this.homey.api.realtime(VM_STATE_EVENT, { deviceId, capabilityId, value });
+          // In the app's temperature unit, as `/state` sends it (each cell by its own device's units).
+          this.homey.api.realtime(VM_STATE_EVENT, { deviceId, capabilityId, value: temperatureShower(this.homey).value(t.column?.units, value) });
         })];
       },
       refresh: (t, device) => {
@@ -128,7 +130,8 @@ export default class ValueMatrixService {
 
   /**
    * The columns (described from the first device that has each, null when none does) and one entry per device in the
-   * order asked for: its zone and a value per column it has. A deleted device doesn't fail the others.
+   * order asked for: its zone and a value per column it has. A deleted device doesn't fail the others. Temperatures in
+   * the app's unit, each cell from its own device's units (one may report °F, another °C).
    */
   async getState(deviceIds: string[], capabilityIds: string[]): Promise<MatrixState> {
     const tm = new Timings();
@@ -137,12 +140,13 @@ export default class ValueMatrixService {
     const room = roomNamer(this.homey);
     const reads = await Promise.all(deviceIds.map(id => this.tracker.each(capabilityIds.map(c => `${id}:${c}`), tm, this.log, 'Matrix value', t => t)));
     const zones = await zonesP;
+    const temps = temperatureShower(this.homey);
     const devices = deviceIds.map((id, i): MatrixDevice => {
       const read = reads[i].filter((c): c is Tracked => !('missing' in c));
       if (!read.length && capabilityIds.length) return { id, missing: true };
       const values: Record<string, number | null> = {};
       for (const t of read) {
-        if (!t.absent) values[t.capabilityId] = t.value;
+        if (!t.absent) values[t.capabilityId] = temps.value(t.column?.units, t.value);
       }
       return { id, name: show(read[0]?.name ?? '', read[0]?.zone), zone: zoneRef(zones, read[0]?.zone ?? null, room), values, ...(read[0] ? offlineFlag(read[0]) : {}) };
     });
@@ -150,7 +154,7 @@ export default class ValueMatrixService {
     const columns = capabilityIds.map((c) => {
       for (const list of reads) {
         const t = list.find((x): x is Tracked => !('missing' in x) && x.capabilityId === c && !!x.column);
-        if (t) return { ...t.column! };
+        if (t) return temps.cap({ ...t.column! });
       }
       return null;
     });

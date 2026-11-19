@@ -1,6 +1,7 @@
 import type Homey from 'homey';
 import { byName, devicesAndZones, type AutocompleteItem } from './autocomplete.js';
 import { describeCapability } from './capabilities.js';
+import { temperatureShower } from './temperatureUnit.js';
 import Timings from './Timings.js';
 import ValueMatrixService, { matrixCaps } from './ValueMatrixService.js';
 
@@ -75,13 +76,15 @@ export default class CombinedService {
         .map(d => d.id as string));
     }
     // The value's units are those most counted devices report it in (the first's on a tie); the rest are left out.
-    const unitsOf = (id: string) => describeCapability(byId.get(id).capabilitiesObj[capabilityId], capabilityId).units ?? '';
+    // In the app's temperature unit, as Value Matrix sends the values: a °F and a °C thermometer count together.
+    const temps = temperatureShower(this.homey);
+    const unitsOf = (id: string) => temps.cap(describeCapability(byId.get(id).capabilitiesObj[capabilityId], capabilityId)).units ?? '';
     const tally = new Map<string, number>();
     for (const id of counted) tally.set(unitsOf(id), (tally.get(unitsOf(id)) ?? 0) + 1);
     let units: string | null = null;
     for (const [u, n] of tally) if (units === null || n > tally.get(units)!) units = u;
     const first = counted.find(id => unitsOf(id) === units);
-    const c = first ? describeCapability(byId.get(first).capabilitiesObj[capabilityId], capabilityId) : null;
+    const c = first ? temps.cap(describeCapability(byId.get(first).capabilitiesObj[capabilityId], capabilityId)) : null;
     const capability = c ? { id: capabilityId, title: c.title, units: c.units, decimals: c.decimals, min: c.min, max: c.max } : null;
     const read = counted.length ? (await this.matrix.getState(counted, [capabilityId])).devices : [];
     const otherUnits: { id: string, units: string }[] = [];

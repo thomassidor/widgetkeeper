@@ -487,6 +487,22 @@
   /** Why a write through the personal API key failed (`KeyProblem` in lib/PersonalApiKey.ts): each has its own message. */
   const KEY_PROBLEMS = ['noKey', 'keyScope', 'keyInvalid'];
 
+  /**
+   * A temperature in `units` (`°C`, `°F`, `℃`, `F` …; none is Homey's °C) in `scale` (`c` or `f`, the app's Temperature
+   * unit; anything else leaves it). For the answers that keep Homey's °C and say the scale (Thermostat Presets', Weather
+   * Forecast's; `lib/temperatureUnit.ts`), as every other widget gets its temperatures converted by the app.
+   * @param {number} value
+   * @param {string | null | undefined} units
+   * @param {string | null | undefined} scale
+   */
+  function temperatureIn(value, units, scale) {
+    if (typeof value !== 'number' || (scale !== 'c' && scale !== 'f')) return value;
+    const u = units == null ? '' : String(units).trim();
+    const from = /^(°\s*F|℉|F|fahrenheit)$/i.test(u) ? 'f' : (!u || /^(°\s*C|℃|C|celsius)$/i.test(u)) ? 'c' : null;
+    if (!from || from === scale) return value;
+    return scale === 'f' ? value * 9 / 5 + 32 : (value - 32) * 5 / 9;
+  }
+
   /** Units written right after the number: `21°C`, `45%`. */
   const TIGHT_UNITS = /^(°|%)/;
 
@@ -583,6 +599,8 @@
    */
   const KNOWN_VALUES = [
     { id: /^measure_temperature(\.|$)/, units: /^°C$/, range: { min: 18, max: 24 }, label: '°C' },
+    // In the app's temperature unit Fahrenheit (`lib/temperatureUnit.ts`): 18–24 °C, rounded.
+    { id: /^measure_temperature(\.|$)/, units: /^°F$/, range: { min: 64, max: 75 }, label: '°F' },
     { id: /^measure_humidity(\.|$)/, units: /^%$/, range: { min: 30, max: 60 }, label: '%' },
     { id: /^measure_co2$/, units: /^ppm$/i, optional: true, range: { min: null, max: 1000 }, label: 'CO₂' },
     { id: /^measure_radon$/, units: /^bq\/m(3|³)$/i, range: { min: null, max: 100 }, label: { key: 'radon' } },
@@ -997,13 +1015,14 @@
   }
 
   /**
-   * Runs `load` when the app settings page changes how device names show (`lib/deviceNames.ts`): the names come with
-   * the widget's own read, so it reads again.
+   * Runs `load` when the app settings page changes how device names show (`lib/deviceNames.ts`) or the temperature unit
+   * (`lib/temperatureUnit.ts`): both come with the widget's own read, so it reads again.
    * @param {any} Homey
    * @param {() => void} load
    */
   function onDeviceNames(Homey, load) {
     Homey.on('devicenames:state', () => load());
+    Homey.on('temperatureunit:state', () => load());
   }
 
   /**
@@ -1795,6 +1814,6 @@
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
     getTimeFormat, setTimeFormat, wireTimeFormat, setTileShadow, takeTileShadow, wireTileShadow, uses12Hours, clockTime, hourLabel, smoothValues,
     formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, wireRefresh, wireHaptic, pressGuard, markOffline, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
-    onDeviceNames, colorStyle, applyColors, sound, optimistic, shake, translator, heightReporter, svgIcon, wireBar, roomTiles, knownValue, okRange, okLevel,
+    onDeviceNames, temperatureIn, colorStyle, applyColors, sound, optimistic, shake, translator, heightReporter, svgIcon, wireBar, roomTiles, knownValue, okRange, okLevel,
   };
 })();

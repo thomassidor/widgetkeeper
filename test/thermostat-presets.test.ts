@@ -160,7 +160,7 @@ function setup({ dashboards = DASHBOARDS as any[], fail = null as unknown, web =
   const stack = { dashboards: vi.fn(async (_fresh?: boolean) => { if (fail) throw fail; return dashboards; }) };
   const onTap = vi.fn(async (_tokens: object, _state: object) => {});
   const log = vi.fn();
-  const homey = { __: () => undefined, i18n: { getLanguage: () => 'en' }, manifest: { id: APP } } as any;
+  const homey = { __: () => undefined, i18n: { getLanguage: () => 'en' }, settings: { get: () => undefined }, manifest: { id: APP } } as any;
   const service = new ThermostatPresetService(homey, { thermostat, stack, web: { list: () => web, enabled }, onTap }, log);
   return { service, thermostat, stack, onTap, log };
 }

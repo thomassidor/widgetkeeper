@@ -89,6 +89,14 @@
       "method": "PUT",
       "path": "/time-format"
     },
+    "getTemperatureUnit": {
+      "method": "GET",
+      "path": "/temperature-unit"
+    },
+    "putTemperatureUnit": {
+      "method": "PUT",
+      "path": "/temperature-unit"
+    },
     "getWebSetup": {
       "method": "GET",
       "path": "/web/setup"
@@ -36038,19 +36046,19 @@
           "id": "tempMin",
           "type": "number",
           "title": {
-            "en": "Temperature: lowest (°C)",
-            "nl": "Temperatuur: laagste (°C)",
-            "de": "Temperatur: niedrigste (°C)",
-            "fr": "Température : minimale (°C)",
-            "it": "Temperatura: minima (°C)",
-            "sv": "Temperatur: lägsta (°C)",
-            "no": "Temperatur: laveste (°C)",
-            "es": "Temperatura: mínima (°C)",
-            "da": "Temperatur: laveste (°C)",
-            "ru": "Температура: минимум (°C)",
-            "pl": "Temperatura: najniższa (°C)",
-            "ko": "온도: 최저 (°C)",
-            "ar": "درجة الحرارة: الأدنى (°C)"
+            "en": "Temperature: lowest (°C/°F)",
+            "nl": "Temperatuur: laagste (°C/°F)",
+            "de": "Temperatur: niedrigste (°C/°F)",
+            "fr": "Température : minimale (°C/°F)",
+            "it": "Temperatura: minima (°C/°F)",
+            "sv": "Temperatur: lägsta (°C/°F)",
+            "no": "Temperatur: laveste (°C/°F)",
+            "es": "Temperatura: mínima (°C/°F)",
+            "da": "Temperatur: laveste (°C/°F)",
+            "ru": "Температура: минимум (°C/°F)",
+            "pl": "Temperatura: najniższa (°C/°F)",
+            "ko": "온도: 최저 (°C/°F)",
+            "ar": "درجة الحرارة: الأدنى (°C/°F)"
           },
           "hint": {
             "en": "Comfortable ranges, the same for every room: inside them a value is grey (or green), and it turns yellow, then red, the further it is outside.",
@@ -36075,19 +36083,19 @@
           "id": "tempMax",
           "type": "number",
           "title": {
-            "en": "  – Highest (°C)",
-            "nl": "  – Hoogste (°C)",
-            "de": "  – Höchste (°C)",
-            "fr": "  – Maximale (°C)",
-            "it": "  – Massima (°C)",
-            "sv": "  – Högsta (°C)",
-            "no": "  – Høyeste (°C)",
-            "es": "  – Máxima (°C)",
-            "da": "  – Højeste (°C)",
-            "ru": "  – Максимум (°C)",
-            "pl": "  – Najwyższa (°C)",
-            "ko": "  – 최고 (°C)",
-            "ar": "  – الأعلى (°C)"
+            "en": "  – Highest (°C/°F)",
+            "nl": "  – Hoogste (°C/°F)",
+            "de": "  – Höchste (°C/°F)",
+            "fr": "  – Maximale (°C/°F)",
+            "it": "  – Massima (°C/°F)",
+            "sv": "  – Högsta (°C/°F)",
+            "no": "  – Høyeste (°C/°F)",
+            "es": "  – Máxima (°C/°F)",
+            "da": "  – Højeste (°C/°F)",
+            "ru": "  – Максимум (°C/°F)",
+            "pl": "  – Najwyższa (°C/°F)",
+            "ko": "  – 최고 (°C/°F)",
+            "ar": "  – الأعلى (°C/°F)"
           },
           "value": 24,
           "min": -20,
@@ -40100,19 +40108,19 @@
             "ar": "  – النطاق الجيد"
           },
           "hint": {
-            "en": "In the value's unit: 18–24, <1000 or >10. Inside it a cell is OK (green), outside it a warning (orange), and an alert (red) once it's past by half the range (or half the limit). Empty: the usual range for temperature (°C), humidity, CO₂, radon, PM2.5, PM10 and VOC (ppb), none for other values. – for none.",
-            "nl": "In de eenheid van de waarde: 18–24, <1000 of >10. Daarbinnen is een vak OK (groen), daarbuiten een waarschuwing (oranje), en een alarm (rood) zodra het er een half bereik (of de helft van de grens) voorbij is. Leeg: het gebruikelijke bereik voor temperatuur (°C), luchtvochtigheid, CO₂, radon, PM2.5, PM10 en VOS (ppb), geen voor andere waarden. – voor geen.",
-            "de": "In der Einheit des Werts: 18–24, <1000 oder >10. Innerhalb ist ein Feld OK (grün), außerhalb eine Warnung (orange) und ein Alarm (rot), sobald es um den halben Bereich (oder die halbe Grenze) darüber hinaus liegt. Leer: der übliche Bereich für Temperatur (°C), Luftfeuchte, CO₂, Radon, PM2.5, PM10 und VOC (ppb), keiner für andere Werte. – für keinen.",
-            "fr": "Dans l'unité de la valeur : 18–24, <1000 ou >10. Dedans, une case est OK (vert), dehors en attention (orange), et en alerte (rouge) une fois dépassée de la moitié de la plage (ou de la moitié de la limite). Vide : la plage habituelle pour la température (°C), l'humidité, le CO₂, le radon, les PM2.5, PM10 et COV (ppb), aucune pour les autres valeurs. – pour aucune.",
-            "it": "Nell'unità del valore: 18–24, <1000 o >10. Dentro una casella è OK (verde), fuori un avviso (arancione), e un allarme (rosso) quando lo supera di metà intervallo (o di metà limite). Vuoto: l'intervallo abituale per temperatura (°C), umidità, CO₂, radon, PM2.5, PM10 e COV (ppb), nessuno per gli altri valori. – per nessuno.",
-            "sv": "I värdets enhet: 18–24, <1000 eller >10. Inom det är en ruta OK (grön), utanför en varning (orange), och ett larm (röd) när den ligger ett halvt intervall (eller en halv gräns) utanför. Tomt: det vanliga intervallet för temperatur (°C), luftfuktighet, CO₂, radon, PM2.5, PM10 och VOC (ppb), inget för andra värden. – för inget.",
-            "no": "I verdiens enhet: 18–24, <1000 eller >10. Innenfor er en rute OK (grønn), utenfor en advarsel (oransje), og en alarm (rød) når den er et halvt område (eller en halv grense) utenfor. Tomt: det vanlige området for temperatur (°C), fuktighet, CO₂, radon, PM2.5, PM10 og VOC (ppb), ingen for andre verdier. – for ingen.",
-            "es": "En la unidad del valor: 18–24, <1000 o >10. Dentro, una casilla está OK (verde), fuera es un aviso (naranja), y una alerta (roja) cuando lo supera en medio rango (o en la mitad del límite). Vacío: el rango habitual para temperatura (°C), humedad, CO₂, radón, PM2.5, PM10 y COV (ppb), ninguno para otros valores. – para ninguno.",
-            "da": "I værdiens enhed: 18–24, <1000 eller >10. Inden for er et felt OK (grønt), uden for en advarsel (orange), og en alarm (rødt), når det ligger et halvt interval (eller en halv grænse) udenfor. Tomt: det sædvanlige interval for temperatur (°C), luftfugtighed, CO₂, radon, PM2.5, PM10 og VOC (ppb), intet for andre værdier. – for intet.",
-            "ru": "В единицах значения: 18–24, <1000 или >10. Внутри ячейка в норме (зелёная), снаружи — внимание (оранжевая), а тревога (красная), когда выходит за диапазон на его половину (или на половину предела). Пусто: обычный диапазон для температуры (°C), влажности, CO₂, радона, PM2.5, PM10 и ЛОС (ppb), для других значений никакого. – чтобы без диапазона.",
-            "pl": "W jednostce wartości: 18–24, <1000 lub >10. W zakresie komórka jest OK (zielona), poza nim to ostrzeżenie (pomarańczowa), a alarm (czerwona), gdy wykracza o połowę zakresu (lub połowę limitu). Puste: zwykły zakres dla temperatury (°C), wilgotności, CO₂, radonu, PM2.5, PM10 i LZO (ppb), brak dla innych wartości. – aby nie było zakresu.",
-            "ko": "값의 단위로: 18–24, <1000 또는 >10. 범위 안이면 칸이 정상(초록), 밖이면 주의(주황), 범위의 절반(또는 한계의 절반)만큼 벗어나면 경고(빨강)입니다. 비워 두면 온도(°C), 습도, CO₂, 라돈, PM2.5, PM10, VOC(ppb)는 일반적인 범위를, 다른 값은 범위 없음을 씁니다. 범위를 없애려면 – 를 입력하세요.",
-            "ar": "بوحدة القيمة: 18–24 أو <1000 أو >10. داخله تكون الخانة جيدة (خضراء)، وخارجه تحذيرًا (برتقالية)، وإنذارًا (حمراء) متى تجاوزته بنصف النطاق (أو نصف الحد). فارغ: النطاق المعتاد لدرجة الحرارة (°C) والرطوبة وCO₂ والرادون وPM2.5 وPM10 وVOC (ppb)، ولا نطاق للقيم الأخرى. – لعدم وجود نطاق."
+            "en": "In the value's unit: 18–24, <1000 or >10. Inside it a cell is OK (green), outside it a warning (orange), and an alert (red) once it's past by half the range (or half the limit). Empty: the usual range for temperature (°C/°F), humidity, CO₂, radon, PM2.5, PM10 and VOC (ppb), none for other values. – for none.",
+            "nl": "In de eenheid van de waarde: 18–24, <1000 of >10. Daarbinnen is een vak OK (groen), daarbuiten een waarschuwing (oranje), en een alarm (rood) zodra het er een half bereik (of de helft van de grens) voorbij is. Leeg: het gebruikelijke bereik voor temperatuur (°C/°F), luchtvochtigheid, CO₂, radon, PM2.5, PM10 en VOS (ppb), geen voor andere waarden. – voor geen.",
+            "de": "In der Einheit des Werts: 18–24, <1000 oder >10. Innerhalb ist ein Feld OK (grün), außerhalb eine Warnung (orange) und ein Alarm (rot), sobald es um den halben Bereich (oder die halbe Grenze) darüber hinaus liegt. Leer: der übliche Bereich für Temperatur (°C/°F), Luftfeuchte, CO₂, Radon, PM2.5, PM10 und VOC (ppb), keiner für andere Werte. – für keinen.",
+            "fr": "Dans l'unité de la valeur : 18–24, <1000 ou >10. Dedans, une case est OK (vert), dehors en attention (orange), et en alerte (rouge) une fois dépassée de la moitié de la plage (ou de la moitié de la limite). Vide : la plage habituelle pour la température (°C/°F), l'humidité, le CO₂, le radon, les PM2.5, PM10 et COV (ppb), aucune pour les autres valeurs. – pour aucune.",
+            "it": "Nell'unità del valore: 18–24, <1000 o >10. Dentro una casella è OK (verde), fuori un avviso (arancione), e un allarme (rosso) quando lo supera di metà intervallo (o di metà limite). Vuoto: l'intervallo abituale per temperatura (°C/°F), umidità, CO₂, radon, PM2.5, PM10 e COV (ppb), nessuno per gli altri valori. – per nessuno.",
+            "sv": "I värdets enhet: 18–24, <1000 eller >10. Inom det är en ruta OK (grön), utanför en varning (orange), och ett larm (röd) när den ligger ett halvt intervall (eller en halv gräns) utanför. Tomt: det vanliga intervallet för temperatur (°C/°F), luftfuktighet, CO₂, radon, PM2.5, PM10 och VOC (ppb), inget för andra värden. – för inget.",
+            "no": "I verdiens enhet: 18–24, <1000 eller >10. Innenfor er en rute OK (grønn), utenfor en advarsel (oransje), og en alarm (rød) når den er et halvt område (eller en halv grense) utenfor. Tomt: det vanlige området for temperatur (°C/°F), fuktighet, CO₂, radon, PM2.5, PM10 og VOC (ppb), ingen for andre verdier. – for ingen.",
+            "es": "En la unidad del valor: 18–24, <1000 o >10. Dentro, una casilla está OK (verde), fuera es un aviso (naranja), y una alerta (roja) cuando lo supera en medio rango (o en la mitad del límite). Vacío: el rango habitual para temperatura (°C/°F), humedad, CO₂, radón, PM2.5, PM10 y COV (ppb), ninguno para otros valores. – para ninguno.",
+            "da": "I værdiens enhed: 18–24, <1000 eller >10. Inden for er et felt OK (grønt), uden for en advarsel (orange), og en alarm (rødt), når det ligger et halvt interval (eller en halv grænse) udenfor. Tomt: det sædvanlige interval for temperatur (°C/°F), luftfugtighed, CO₂, radon, PM2.5, PM10 og VOC (ppb), intet for andre værdier. – for intet.",
+            "ru": "В единицах значения: 18–24, <1000 или >10. Внутри ячейка в норме (зелёная), снаружи — внимание (оранжевая), а тревога (красная), когда выходит за диапазон на его половину (или на половину предела). Пусто: обычный диапазон для температуры (°C/°F), влажности, CO₂, радона, PM2.5, PM10 и ЛОС (ppb), для других значений никакого. – чтобы без диапазона.",
+            "pl": "W jednostce wartości: 18–24, <1000 lub >10. W zakresie komórka jest OK (zielona), poza nim to ostrzeżenie (pomarańczowa), a alarm (czerwona), gdy wykracza o połowę zakresu (lub połowę limitu). Puste: zwykły zakres dla temperatury (°C/°F), wilgotności, CO₂, radonu, PM2.5, PM10 i LZO (ppb), brak dla innych wartości. – aby nie było zakresu.",
+            "ko": "값의 단위로: 18–24, <1000 또는 >10. 범위 안이면 칸이 정상(초록), 밖이면 주의(주황), 범위의 절반(또는 한계의 절반)만큼 벗어나면 경고(빨강)입니다. 비워 두면 온도(°C/°F), 습도, CO₂, 라돈, PM2.5, PM10, VOC(ppb)는 일반적인 범위를, 다른 값은 범위 없음을 씁니다. 범위를 없애려면 – 를 입력하세요.",
+            "ar": "بوحدة القيمة: 18–24 أو <1000 أو >10. داخله تكون الخانة جيدة (خضراء)، وخارجه تحذيرًا (برتقالية)، وإنذارًا (حمراء) متى تجاوزته بنصف النطاق (أو نصف الحد). فارغ: النطاق المعتاد لدرجة الحرارة (°C/°F) والرطوبة وCO₂ والرادون وPM2.5 وPM10 وVOC (ppb)، ولا نطاق للقيم الأخرى. – لعدم وجود نطاق."
           }
         },
         {

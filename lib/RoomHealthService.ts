@@ -1,6 +1,7 @@
 import type Homey from 'homey';
 import DeviceTracker, { readZones, zoneRef, type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { deviceNamer, roomNamer } from './deviceNames.js';
+import { temperatureShower } from './temperatureUnit.js';
 import Timings from './Timings.js';
 
 export const RH_STATE_EVENT = 'roomhealth:state';
@@ -14,8 +15,11 @@ type Measure = 'temperature' | 'humidity' | 'co2' | 'radon' | 'pm25' | 'pm10' | 
  */
 export type HealthCap = { measure: Measure, capabilityId: string, scale: number, offset?: number };
 
+/** A reading: in its measure's unit, a temperature in the app's (`units: '°F'` when that's Fahrenheit). */
+type Reading = { capabilityId: string, value: number | null, units?: '°F' };
+
 export type RoomHealthDevice =
-  | { id: string, name: string, zone: { id: string, name: string } | null, measures: Partial<Record<Measure, { capabilityId: string, value: number | null }>>, offline?: true }
+  | { id: string, name: string, zone: { id: string, name: string } | null, measures: Partial<Record<Measure, Reading>>, offline?: true }
   | { id: string, missing: true };
 
 type Tracked = TrackedEntry & {
@@ -103,7 +107,9 @@ export default class RoomHealthService {
           const { measure, capabilityId } = cap;
           const value = toValue(raw, cap);
           t.values[measure] = value;
-          this.homey.api.realtime(RH_STATE_EVENT, { deviceId: t.key, capabilityId, measure, value });
+          // A temperature in the app's unit, as `/state` sends it.
+          const shown = measure === 'temperature' ? temperatureShower(this.homey).value('°C', value) : value;
+          this.homey.api.realtime(RH_STATE_EVENT, { deviceId: t.key, capabilityId, measure, value: shown });
         }));
         this.debug(`Tracking room health of ${device.name} (${t.key}): ${t.caps.map(c => `${c.capabilityId}=${t.values[c.measure]}`).join(', ') || 'nothing'}`);
         return instances;
@@ -130,13 +136,18 @@ export default class RoomHealthService {
     const zonesP = readZones(this.homey, tm, this.log, 'Room health');
     const show = await deviceNamer(this.homey, tm, this.log, 'Room health');
     const room = roomNamer(this.homey);
+    // Kept in °C; a temperature leaves in the app's unit, saying so when it's °F (the widget's range is in it too).
+    const temps = temperatureShower(this.homey);
+    const reading = (c: HealthCap, value: number | null): Reading => (c.measure === 'temperature' && temps.scale === 'f'
+      ? { capabilityId: c.capabilityId, value: temps.value('°C', value), units: '°F' }
+      : { capabilityId: c.capabilityId, value });
     const out = await this.tracker.each(deviceIds, tm, this.log, 'Room health sensor', async (t, id): Promise<RoomHealthDevice> => {
       return {
         id,
         name: show(t.name, t.zone),
         zone: zoneRef(await zonesP, t.zone, room),
         ...offlineFlag(t),
-        measures: Object.fromEntries(t.caps.map(c => [c.measure, { capabilityId: c.capabilityId, value: t.values[c.measure] ?? null }])),
+        measures: Object.fromEntries(t.caps.map(c => [c.measure, reading(c, t.values[c.measure] ?? null)])),
       };
     });
     this.debug(`Room health state for ${deviceIds.length} devices: ${tm.summary()}`);

@@ -1,7 +1,8 @@
 import type { App } from 'homey';
 import type WidgetkeeperApp from '../app.js';
 import { calendarUnit } from './logPlan.js';
-import { parseSlot, type ValueSlot } from './ValueService.js';
+import { parseSlot, showSlot, type ValueSlot } from './ValueService.js';
+import { temperatureShower } from './temperatureUnit.js';
 import { idList, logged, logPerf } from './widgetApi.js';
 
 type Homey = App['homey'];
@@ -35,7 +36,7 @@ export async function timelineState(homey: Homey, query: Record<string, string>)
     const end = Number(query.end);
     const stop = Number.isFinite(end) && end >= start ? end : Date.now();
     const unit = calendarUnit(query.unit);
-    const states = await app.values.getState(slots);
+    const states = await app.values.getState(slots, [], { raw: true });
     const numbers = states.map((s, i) => ('missing' in s || s.capability.type !== 'number' ? null : slots[i]));
     const wanted = numbers.filter((s): s is string => s != null);
     const [windows, changes] = await Promise.all([
@@ -49,11 +50,13 @@ export async function timelineState(homey: Homey, query: Record<string, string>)
         });
       })),
     ]);
+    const show = temperatureShower(homey);
     const rows: TimelineRow[] = states.map((s, i) => {
       if ('missing' in s) return s;
       if (numbers[i] != null) {
         const w = windows[wanted.indexOf(numbers[i]!)];
-        return { ...s, points: w ? w.points : [] };
+        // In the app's temperature unit, as the threshold is typed.
+        return showSlot(show, { ...s, points: w ? w.points : [] });
       }
       return { ...s, ...(changes[i] ?? { changes: [], since: null }) };
     });

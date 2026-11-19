@@ -61,7 +61,8 @@ window.mountKeypadWidget = function (Homey, { root, frame }) {
 
   Homey.on('values:state', (data) => {
     if (!cap || !data || data.deviceId !== cap[1] || data.capabilityId !== cap[2]) return;
-    if (loaded) widget.pushValue(data.value);
+    // Homey's own value (`raw`, where the app's temperature unit changed it), as `/state` sends the Keypad's.
+    if (loaded) widget.pushValue('raw' in data ? data.raw : data.value);
     else load();
   });
   Homey.on('variables:state', (data) => {

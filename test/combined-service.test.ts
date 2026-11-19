@@ -94,27 +94,38 @@ describe('CombinedService', () => {
   });
 
   it('leaves out devices in other units than most, logs that once, and keeps the last requests for Diagnostics', async () => {
-    const odd = sensor('f', 'Fahrenheit', 70, { units: '°F' });
+    const odd = sensor('k', 'Kelvin', 294, { units: 'K' });
     const { service, log } = setup([odd, sensor('b', 'Bedroom', 19.6), sensor('a', 'Attic', 14.2)]);
     const state = await service.getState(T, []);
     expect(state.capability!.units).toBe('°C');
     expect(state.devices).toEqual([
       { id: 'a', name: 'Attic', value: 14.2 },
       { id: 'b', name: 'Bedroom', value: 19.6 },
-      { id: 'f', name: 'Fahrenheit', value: 70, otherUnits: '°F' },
+      { id: 'k', name: 'Kelvin', value: 294, otherUnits: 'K' },
     ]);
-    expect(log).toHaveBeenCalledWith('Combined value measure_temperature: 1 device(s) left out for other units than °C: °F');
+    expect(log).toHaveBeenCalledWith('Combined value measure_temperature: 1 device(s) left out for other units than °C: K');
     await service.getState(T, []);
     expect(log).toHaveBeenCalledTimes(1);
     expect(service.describe()).toEqual({
-      [T]: { at: expect.any(String), picked: 0, counted: 3, notFound: 0, units: '°C', otherUnits: [{ id: 'f', units: '°F' }] },
+      [T]: { at: expect.any(String), picked: 0, counted: 3, notFound: 0, units: '°C', otherUnits: [{ id: 'k', units: 'K' }] },
     });
   });
 
   it("takes the first device's units on a tie", async () => {
-    const { service } = setup([sensor('f', 'Fahrenheit', 70, { units: '°F' }), sensor('b', 'Bedroom', 19.6)]);
-    const state = await service.getState(T, ['f', 'b']);
-    expect(state.capability!.units).toBe('°F');
+    const { service } = setup([sensor('k', 'Kelvin', 294, { units: 'K' }), sensor('b', 'Bedroom', 19.6)]);
+    const state = await service.getState(T, ['k', 'b']);
+    expect(state.capability!.units).toBe('K');
     expect(state.devices[1]).toEqual({ id: 'b', name: 'Bedroom', value: 19.6, otherUnits: '°C' });
+  });
+
+  it("counts °F and °C devices together in the app's temperature unit (lib/temperatureUnit.ts)", async () => {
+    const { service, homey } = setup([sensor('f', 'Fahrenheit', 68, { units: '°F' }), sensor('b', 'Bedroom', 19.6)]);
+    let state = await service.getState(T, ['f', 'b']);
+    expect(state.capability!.units).toBe('°C');
+    expect(state.devices).toEqual([{ id: 'f', name: 'Fahrenheit', value: 20 }, { id: 'b', name: 'Bedroom', value: 19.6 }]);
+    homey.settings.set('temperatureUnit', 'f');
+    state = await service.getState(T, ['f', 'b']);
+    expect(state.capability!.units).toBe('°F');
+    expect(state.devices).toEqual([{ id: 'f', name: 'Fahrenheit', value: 68 }, { id: 'b', name: 'Bedroom', value: 67.28 }]);
   });
 });

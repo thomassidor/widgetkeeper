@@ -17,7 +17,7 @@ const airthings = () => fakeDevice({
 });
 const thermometer = () => fakeDevice({
   id: 'thermo', name: 'Thermometer', zone: 'kitchen',
-  caps: { measure_temperature: { type: 'number', value: 22.8, units: '°F', decimals: 2, title: 'Temp' } },
+  caps: { measure_temperature: { type: 'number', value: 295.9, units: 'K', decimals: 2, title: 'Temp' } },
 });
 const ZONES = { bed: { name: 'Bedroom' }, kitchen: { name: 'Kitchen' } };
 
@@ -51,7 +51,7 @@ describe('getState', () => {
     const { service } = setup();
     const state = await service.getState(['thermo', 'gone', 'air'], ['measure_temperature', 'measure_co2']);
     expect(state.devices).toEqual([
-      { id: 'thermo', name: 'Thermometer', zone: { id: 'kitchen', name: 'Kitchen' }, values: { measure_temperature: 22.8 } },
+      { id: 'thermo', name: 'Thermometer', zone: { id: 'kitchen', name: 'Kitchen' }, values: { measure_temperature: 295.9 } },
       { id: 'gone', missing: true },
       { id: 'air', name: 'View Plus', zone: { id: 'bed', name: 'Bedroom' }, values: { measure_temperature: 21.4, measure_co2: 720 } },
     ]);
@@ -61,7 +61,7 @@ describe('getState', () => {
     const { service } = setup();
     const state = await service.getState(['thermo', 'air'], ['measure_temperature', 'measure_co2', 'measure_pm25']);
     expect(state.columns).toEqual([
-      { capabilityId: 'measure_temperature', title: 'Temp', units: '°F', decimals: 2 },
+      { capabilityId: 'measure_temperature', title: 'Temp', units: 'K', decimals: 2 },
       { capabilityId: 'measure_co2', title: 'CO2', units: 'ppm', decimals: null },
       null,
     ]);

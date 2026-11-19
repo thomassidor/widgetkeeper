@@ -474,7 +474,9 @@ export default class KeypadService {
       return !v || 'missing' in v ? { kind: 'variable', id: source.id, missing: true } : { kind: 'variable', ...v };
     }
     const { deviceId, capabilityId } = source;
-    const [slot] = await this.deps.values.getState([`${deviceId}:${capabilityId}`]);
+    // Homey's own units, not the app's temperature unit: a button's value is the capability's as Homey has it, and the lit
+    // button is the one whose value the state has (a Keypad on a temperature would light none after a conversion).
+    const [slot] = await this.deps.values.getState([`${deviceId}:${capabilityId}`], [], { raw: true });
     if (!slot || 'missing' in slot) return { kind: 'capability', deviceId, capabilityId, missing: true };
     return { kind: 'capability', deviceId, capabilityId, name: slot.name, capability: slot.capability, value: slot.value };
   }

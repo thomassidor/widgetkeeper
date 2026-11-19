@@ -3,6 +3,7 @@
  * with a button (`presetsFromSettings()`, `modeCap()`, `deviceValues()`, `presetMatches()`, `presetText()`), copied.
  * `test/thermostat-presets.test.ts` runs both on the same cases, so they stay equal.
  */
+import { showerFor, type TemperatureScale } from './temperatureUnit.js';
 import type { CapValue } from './ThermostatService.js';
 
 const TEMP_TOLERANCE = 0.25;
@@ -13,7 +14,7 @@ export type PresetValue = CapValue & { slot: PresetSlot, name?: string };
 export type Preset = { values: PresetValue[] };
 
 /** A device's capabilities as `ThermostatService.getState()` gives them (only what's read here). */
-export type PresetCaps = Record<string, { title?: string, values?: { id: string, title: string }[] | null }>;
+export type PresetCaps = Record<string, { title?: string, units?: string | null, values?: { id: string, title: string }[] | null }>;
 
 function sameValue(capabilityId: string, a: unknown, b: unknown): boolean {
   if (typeof a === 'number' && typeof b === 'number') {
@@ -118,8 +119,9 @@ function shortSetting(capTitle: string, valueTitle: string) {
 /**
  * A button's text on one line, as its tile shows it: `21° · Heat · Fan low`, `Cool`, `Off`. The titles come from the
  * device's capabilities, else from the settings' item names (`Mode: Cool`), as the widget's do before its state loads.
+ * `scale`: the app's temperature unit to show the setpoint in (`lib/temperatureUnit.ts`; none leaves Homey's).
  */
-export function presetLabel(preset: Preset, caps: PresetCaps, modeCap: string, words: { off: string, on: string }, locale?: string): string {
+export function presetLabel(preset: Preset, caps: PresetCaps, modeCap: string, words: { off: string, on: string }, locale?: string, scale?: TemperatureScale): string {
   const numberFmt = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
   const enumTitle = (v: PresetValue) => {
     const match = caps[v.capabilityId]?.values?.find(x => String(x.id) === String(v.value));
@@ -137,7 +139,7 @@ export function presetLabel(preset: Preset, caps: PresetCaps, modeCap: string, w
   }
   const extras = preset.values.filter(v => v.slot === 'extra').map(v => shortSetting(capTitle(v), enumTitle(v)));
   const parts = [
-    tt && typeof tt.value === 'number' ? `${numberFmt.format(tt.value)}°` : '',
+    tt && typeof tt.value === 'number' ? `${numberFmt.format(scale ? showerFor(scale).value(caps.target_temperature?.units || '°C', tt.value) : tt.value)}°` : '',
     mode ? enumTitle(mode) : '',
     ...extras,
   ].filter(Boolean);

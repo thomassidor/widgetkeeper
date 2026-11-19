@@ -194,6 +194,7 @@ interface Window {
       devicesOptional?: boolean,
     }) => { ids: () => string[], loaded: () => boolean },
     onDeviceNames: (Homey: any, load: () => void) => void,
+    temperatureIn: (value: number, units: string | null | undefined, scale: string | null | undefined) => number,
     COLORS: string[],
     colorStyle: (value: unknown) => 'soft' | 'deep',
     applyColors: (root: HTMLElement, opts?: { style?: unknown, color?: unknown, fallback?: string | null }) => 'soft' | 'deep',

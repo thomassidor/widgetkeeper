@@ -205,7 +205,12 @@
       return fallbackName && fallbackName.includes(': ') ? fallbackName.split(': ')[0] : capabilityId;
     }
 
-    function temp(v) { return `${numberFmt.format(v)}°`; }
+    /** A setpoint as shown: in the app's temperature unit (the state's `temperatureUnit`), the state keeping Homey's. */
+    function temp(v) {
+      const state = core.getState();
+      const info = state && state.caps && state.caps.target_temperature;
+      return `${numberFmt.format(window.WidgetkeeperKit.temperatureIn(v, info ? info.units : null, state && state.temperatureUnit))}°`;
+    }
 
     /** What a preset tile shows: a big line, an optional coloured mode line and extra settings. */
     function presetText(p) {

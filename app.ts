@@ -43,6 +43,7 @@ import TileNameService from './lib/TileNameService.js';
 import TimerService, { TIMER_FINISHED_CARD, timerDurationText, type Timer } from './lib/TimerService.js';
 import { postUpdateNotice, ranBefore } from './lib/UpdateNotice.js';
 import { watchTileShadow } from './lib/tileShadow.js';
+import { watchTemperatureUnit } from './lib/temperatureUnit.js';
 import ValueService from './lib/ValueService.js';
 import VariableService from './lib/VariableService.js';
 import WeatherService from './lib/WeatherService.js';
@@ -109,6 +110,7 @@ export default class WidgetkeeperApp extends Homey.App {
     const updateNotice = postUpdateNotice(this.homey, log, { ranBefore: ranBefore(this.homey) });
     const debug = this.debug.bind(this);
     watchTileShadow(this.homey);
+    watchTemperatureUnit(this.homey);
     this.electricity = new ElectricityService(this.homey, log, debug);
     this.electricity.start();
     // Connect to Homey's API and fetch the prices now, not when the first widget asks.

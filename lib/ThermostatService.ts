@@ -3,6 +3,7 @@ import { getAppApi } from './appApi.js';
 import { hintRow, listDevicesWhere, matches, type AutocompleteItem } from './autocomplete.js';
 import { capabilityValues, describeCapability } from './capabilities.js';
 import DeviceTracker, { isTransientError, type TrackedEntry, offlineFlag } from './DeviceTracker.js';
+import { temperatureShower } from './temperatureUnit.js';
 import Timings from './Timings.js';
 
 const CONFIRM_TIMEOUT = 4000; // wait for a value to be reported before sending the next
@@ -254,13 +255,17 @@ export default class ThermostatService {
     const min = typeof cap.min === 'number' ? cap.min : 16;
     const max = typeof cap.max === 'number' ? cap.max : 30;
     const step = typeof cap.step === 'number' && cap.step > 0 ? cap.step : 0.5;
-    const units = typeof cap.units === 'string' ? cap.units : '°C';
+    const units = typeof cap.units === 'string' && cap.units ? cap.units : '°C';
+    // Named in the app's temperature unit; the value stays the device's own (a preset sets and matches it).
+    const temps = temperatureShower(this.homey);
+    const shownUnits = temps.cap({ units }).units;
+    const numberFmt = (v: number) => String(Math.round(v * 10) / 10);
     const items: PresetOption[] = [];
     // Every value (a fine step has hundreds), then the search; the list's cap (`finishList()`) comes after that, so any
     // setpoint can be found by typing it.
     for (let v = min; v <= max + 1e-9 && items.length < 5000; v += step) {
       const value = Math.round(v * 100) / 100;
-      items.push({ name: `${value} ${units}`, capabilityId: 'target_temperature', value });
+      items.push({ name: `${numberFmt(temps.value(units, value))} ${shownUnits}`, capabilityId: 'target_temperature', value });
     }
     return this.withUnchanged(query, items.filter(i => matches(query, i.name)));
   }

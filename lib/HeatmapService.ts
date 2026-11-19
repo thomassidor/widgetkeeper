@@ -11,6 +11,7 @@ import { limitInsights, readCapabilityLog } from './insightsLog.js';
 import { HOUR, MINUTE, parseInsightsEntries } from './series.js';
 import { fileStorage, type SecretStorage } from './secrets.js';
 import { DebouncedSetting, isReservedKey } from './storedSetting.js';
+import { temperatureShower } from './temperatureUnit.js';
 import Timings from './Timings.js';
 
 const TICK = MINUTE;
@@ -271,12 +272,17 @@ export default class HeatmapService {
     ]);
     const raw = device.capabilitiesObj?.[capabilityId]?.value;
     this.debug(`Heatmap ${device.name} ${capabilityId}: ${tm.summary()}`);
+    // In the app's temperature unit: the value, its units and every hour.
+    const temps = temperatureShower(this.homey);
+    const shownDays = temps.converts(capability.units)
+      ? history.map(d => ({ ...d, hours: d.hours.map(h => temps.value(capability.units, h)) }))
+      : history;
     return {
       name: (await deviceNamer(this.homey, tm, this.log, 'Heatmap'))(device.name, device.zone),
       icon,
-      capability,
-      value: typeof raw === 'number' || typeof raw === 'boolean' ? raw : null,
-      days: history,
+      capability: temps.cap(capability),
+      value: typeof raw === 'number' || typeof raw === 'boolean' ? temps.value(capability.units, raw) : null,
+      days: shownDays,
       language: this.homey.i18n.getLanguage(),
     };
   }

@@ -88,6 +88,14 @@
       "method": "PUT",
       "path": "/time-format"
     },
+    "getTemperatureUnit": {
+      "method": "GET",
+      "path": "/temperature-unit"
+    },
+    "putTemperatureUnit": {
+      "method": "PUT",
+      "path": "/temperature-unit"
+    },
     "getWebSetup": {
       "method": "GET",
       "path": "/web/setup"

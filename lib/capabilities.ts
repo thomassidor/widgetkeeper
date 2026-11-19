@@ -1,4 +1,5 @@
 import type Homey from 'homey';
+import { temperatureShower } from './temperatureUnit.js';
 
 /** A capability as most widgets read it: its value and whether the widget may set it. */
 export type CapState = { value: unknown, setable: boolean };
@@ -40,9 +41,13 @@ export function describeCapability(cap: any, id: string): CapabilityDescription 
 
 /**
  * A capability's value for an autocomplete row's description, as the kit's `formatValue()` shows it on a tile but in
- * Homey's language (the tiles use the device's); null without a value worth showing (none, or a long text).
+ * Homey's language (the tiles use the device's), a temperature in the app's unit; null without a value worth showing
+ * (none, or a long text).
  */
-export function capabilityReading(homey: Homey.App['homey'], cap: CapabilityDescription, value: unknown): string | null {
+export function capabilityReading(homey: Homey.App['homey'], described: CapabilityDescription, reported: unknown): string | null {
+  const temps = temperatureShower(homey);
+  const cap = temps.cap(described);
+  const value = temps.value(described.units, reported);
   if (typeof value === 'boolean') return homey.__(`values.${value ? 'on' : 'off'}`) || (value ? 'On' : 'Off');
   if (typeof value === 'number' && Number.isFinite(value)) {
     const percent = cap.units === '%' && cap.max === 1 && (cap.min == null || cap.min === 0);

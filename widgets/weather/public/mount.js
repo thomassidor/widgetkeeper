@@ -42,8 +42,9 @@ window.mountWeatherWidget = function (Homey, { root, frame }) {
     ready();
   }
 
-  // The hours follow the app's time format: drawn again when it changes.
+  // The hours follow the app's time format, the temperatures its unit: read again when either changes.
   wireTimeFormat(Homey, () => { if (loaded) load(); });
+  Homey.on('temperatureunit:state', () => { if (loaded) load(); });
   const refresh = window.WidgetkeeperKit.wireRefresh(load, REFRESH_MS);
   load();
 };

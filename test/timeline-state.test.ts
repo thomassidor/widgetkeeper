@@ -18,7 +18,7 @@ function setup() {
     sparklines: { histories: vi.fn(async (requests: any[]) => requests.map(() => ({ points: [[150, 80]] }))) },
     heatmap: { getChanges: vi.fn(async () => ({ changes: [[120, 1]], since: 110 })) },
   };
-  const homey = { app, i18n: { getLanguage: () => 'en' } } as any;
+  const homey = { app, i18n: { getLanguage: () => 'en' }, settings: { get: () => undefined } } as any;
   return { app, homey };
 }
 

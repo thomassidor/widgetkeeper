@@ -2,6 +2,7 @@ import type Homey from 'homey';
 import { describeCapability, type CapabilityDescription } from './capabilities.js';
 import DeviceTracker, { readZones, zoneRef, type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { deviceNamer, roomNamer } from './deviceNames.js';
+import { temperatureShower } from './temperatureUnit.js';
 import Timings from './Timings.js';
 import { valueCaps } from './ValueService.js';
 
@@ -59,9 +60,10 @@ export default class ValueBoardService {
         return { caps, values: readValues(device, caps) };
       },
       listen: (t, device) => {
-        const instances = t.caps.map(({ capabilityId }) => device.makeCapabilityInstance(capabilityId, (value: unknown) => {
+        const instances = t.caps.map(({ capabilityId, capability }) => device.makeCapabilityInstance(capabilityId, (value: unknown) => {
           t.values[capabilityId] = value ?? null;
-          this.homey.api.realtime(VB_STATE_EVENT, { deviceId: t.key, capabilityId, value: value ?? null });
+          // In the app's temperature unit, as `/state` sends it.
+          this.homey.api.realtime(VB_STATE_EVENT, { deviceId: t.key, capabilityId, value: temperatureShower(this.homey).value(capability.units, value ?? null) });
         }));
         this.debug(`Tracking value board device ${device.name} (${t.key}): ${t.caps.length} values`);
         return instances;
@@ -91,6 +93,7 @@ export default class ValueBoardService {
     const zonesP = readZones(this.homey, tm, this.log, 'Value board');
     const show = await deviceNamer(this.homey, tm, this.log, 'Value board');
     const room = roomNamer(this.homey);
+    const temps = temperatureShower(this.homey);
     const out = await this.tracker.each(deviceIds, tm, this.log, 'Value board device', async (t, id): Promise<BoardDevice> => ({
       id,
       name: show(t.name, t.zone),
@@ -98,7 +101,7 @@ export default class ValueBoardService {
       ...offlineFlag(t),
       values: t.caps
         .filter(c => mode === 'all' || isReading(c.capabilityId))
-        .map(c => ({ capabilityId: c.capabilityId, ...c.capability, value: t.values[c.capabilityId] ?? null })),
+        .map(c => ({ capabilityId: c.capabilityId, ...temps.cap(c.capability), value: temps.value(c.capability.units, t.values[c.capabilityId] ?? null) })),
     }));
     this.debug(`Value board state for ${deviceIds.length} devices: ${tm.summary()}`);
     return out;

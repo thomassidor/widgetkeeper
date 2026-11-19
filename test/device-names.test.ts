@@ -170,7 +170,7 @@ describe('the setting', () => {
     homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'room', separator: '|' });
     const app = { thermostat: { getState: vi.fn(async () => ({ name: 'Kitchen thermostat', zone: 'k', icon: null, values: {}, caps: {} })) }, values: { getState: vi.fn() } };
     const state = await thermostatState(homey, app as any, 't1');
-    expect(state).toEqual({ name: 'Thermostat', icon: null, values: {}, caps: {} });
+    expect(state).toEqual({ name: 'Thermostat', icon: null, values: {}, caps: {}, temperatureUnit: 'c' });
   });
 
   it('answers the rule alone when the devices can\'t be read', async () => {

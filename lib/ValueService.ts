@@ -6,6 +6,7 @@ import { valueGlyphImage } from './valueGlyphs.js';
 import DeviceTracker, { type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { fetchSvgIcon } from './deviceIcon.js';
 import { deviceNamer } from './deviceNames.js';
+import { temperatureShower, type TemperatureShower } from './temperatureUnit.js';
 import { FlowColors, parseTileColor, type TileColor } from './tileColors.js';
 import Timings from './Timings.js';
 
@@ -47,6 +48,26 @@ function slotOf(key: string): { deviceId: string, capabilityId: string } {
   const s = parseSlot(key);
   if (!s) throw new Error(`Not a slot (<deviceId>:<capabilityId>): ${key}`);
   return s;
+}
+
+/**
+ * A slot (with its history, for the chart widgets) in the app's temperature unit (`lib/temperatureUnit.ts`): its value,
+ * units, range, second value and points. Anything that isn't a temperature comes back as it was.
+ */
+export function showSlot<S extends ValueSlot & { points?: [number, number][] }>(show: TemperatureShower, slot: S): S {
+  if ('missing' in slot) return slot;
+  const units = slot.capability.units;
+  const second = slot.second && show.converts(slot.second.capability.units)
+    ? { ...slot.second, capability: show.cap(slot.second.capability), value: show.value(slot.second.capability.units, slot.second.value) }
+    : slot.second;
+  if (!show.converts(units)) return second === slot.second ? slot : { ...slot, second };
+  return {
+    ...slot,
+    capability: show.cap(slot.capability),
+    value: show.value(units, slot.value),
+    ...(second ? { second } : {}),
+    ...(slot.points ? { points: show.points(units, slot.points) } : {}),
+  };
 }
 
 /** The device's capabilities a tile can show: readable numbers, booleans, enums and strings. */
@@ -93,7 +114,9 @@ export default class ValueService {
         this.debug(`Tracking value ${capabilityId} of ${device.name} (${deviceId}) = ${JSON.stringify(t.value)}`);
         return [device.makeCapabilityInstance(capabilityId, (value: unknown) => {
           t.value = value;
-          this.homey.api.realtime(VALUES_STATE_EVENT, { deviceId, capabilityId, value });
+          // In the app's temperature unit, as `/state` sends it; `raw` Homey's own where it differs (the Keypad's).
+          const shown = temperatureShower(this.homey).value(t.capability.units, value);
+          this.homey.api.realtime(VALUES_STATE_EVENT, { deviceId, capabilityId, value: shown, ...(shown !== value ? { raw: value } : {}) });
         })];
       },
       refresh: (t, device) => {
@@ -166,8 +189,10 @@ export default class ValueService {
   /**
    * One entry per slot, in the order asked for. A deleted device or capability doesn't fail the others. `seconds[i]`
    * is slot i's second value, a capability id of the same device; one that can't be read is left out of the entry.
+   * Temperatures in the app's unit (`showSlot()`); `raw` keeps Homey's, for a caller that converts them with more
+   * (the chart widgets' histories).
    */
-  async getState(slots: string[], seconds: (string | undefined)[] = []): Promise<ValueSlot[]> {
+  async getState(slots: string[], seconds: (string | undefined)[] = [], { raw = false } = {}): Promise<ValueSlot[]> {
     const tm = new Timings();
     const colors = this.colors.all();
     const show = await deviceNamer(this.homey, tm, this.log, 'Values');
@@ -189,7 +214,10 @@ export default class ValueService {
       }
     }));
     this.debug(`Values state for ${slots.length} slots: ${tm.summary()}`);
-    return out.filter((x): x is ValueSlot => x !== null);
+    const kept = out.filter((x): x is ValueSlot => x !== null);
+    if (raw) return kept;
+    const temps = temperatureShower(this.homey);
+    return kept.map(s => showSlot(temps, s));
   }
 
   /**

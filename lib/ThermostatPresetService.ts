@@ -1,4 +1,5 @@
 import type Homey from 'homey';
+import { shownTemperatureScale } from './temperatureUnit.js';
 import { matches, nameOrder, type AutocompleteItem } from './autocomplete.js';
 import { KeyError } from './PersonalApiKey.js';
 import { dashboardPages } from './StackService.js';
@@ -99,7 +100,7 @@ export default class ThermostatPresetService {
         const where = isWeb ? t('thermostat.web', `${w.dashboard} (web)`, { name: w.dashboard }) : w.dashboard;
         presets.forEach((p, i) => {
           if (!p.values.length) return;
-          const label = presetLabel(p, {}, modeCapOf(modeCap, {}), words, language);
+          const label = presetLabel(p, {}, modeCapOf(modeCap, {}), words, language, shownTemperatureScale(this.homey));
           const button = t('thermostat.button', `Button ${i + 1}`, { n: i + 1 });
           const name = [title, label || button].filter(Boolean).join(' · ');
           const item = { id: `${w.instance}:${i + 1}`, name, description: `${where} · ${button}` };
@@ -214,7 +215,7 @@ export default class ThermostatPresetService {
       const caps = 'missing' in state ? {} : state.caps;
       const words = { off: this.homey.__('thermostat.off') || 'Off', on: this.homey.__('thermostat.on') || 'On' };
       const modeCap = modeCapOf(null, caps);
-      const preset = presetLabel(slotted(values, modeCap), caps, modeCap, words, this.homey.i18n.getLanguage());
+      const preset = presetLabel(slotted(values, modeCap), caps, modeCap, words, this.homey.i18n.getLanguage(), shownTemperatureScale(this.homey));
       this.taps++;
       this.debug(`Thermostat Presets: button ${button} of ${instance} tapped`);
       await this.deps.onTap({ device: 'missing' in state ? '' : state.name, preset, button }, { id: `${instance}:${button}` });

@@ -3,6 +3,7 @@ import type WidgetkeeperApp from './app.js';
 import { deviceNamesState, setDeviceNames } from './lib/deviceNames.js';
 import { KeyError, scopesAllow, type KeyUse } from './lib/PersonalApiKey.js';
 import { setTimeFormat, timeFormatOf } from './lib/timeFormat.js';
+import { homeyTemperatureScale, setTemperatureUnit, shownTemperatureScale, temperatureUnitOf } from './lib/temperatureUnit.js';
 import { idList } from './lib/widgetApi.js';
 import { MAX_DASHBOARDS, MAX_SECTIONS, MAX_WIDGETS } from './lib/WebDashboardService.js';
 import { autocompleteKeyUse, callWidgetRoute, pageKeyUse, type WidgetApis } from './lib/widgetRoutes.js';
@@ -126,6 +127,19 @@ export default {
   /** Used by the app settings page: `{timeFormat}` → `{ok, timeFormat}`, sent to open widgets; `{ok: false}` for another value. */
   async putTimeFormat({ homey, body }: { homey: Homey, body: { timeFormat?: unknown } }) {
     return setTimeFormat(homey, body);
+  },
+
+  /**
+   * Used by the app settings page: the widgets' temperature unit, `{temperatureUnit, shown, homey}` (the setting, `auto`,
+   * `c` or `f`; the scale shown; the Homey's own, which Automatic follows).
+   */
+  async getTemperatureUnit({ homey }: { homey: Homey }) {
+    return { temperatureUnit: temperatureUnitOf(homey), shown: shownTemperatureScale(homey), homey: homeyTemperatureScale(homey) };
+  },
+
+  /** Used by the app settings page: `{temperatureUnit}` → `{ok, temperatureUnit, shown}`, sent to open widgets; `{ok: false}` for another value. */
+  async putTemperatureUnit({ homey, body }: { homey: Homey, body: { temperatureUnit?: unknown } }) {
+    return setTemperatureUnit(homey, body);
   },
 
   /** The running app's version: an open web dashboards page reloads itself when it's not the one it started with. */

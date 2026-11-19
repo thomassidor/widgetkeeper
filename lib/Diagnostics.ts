@@ -3,6 +3,7 @@ import type Homey from 'homey';
 import { DEVICE_NAMES_SETTING, nameRule } from './deviceNames.js';
 import { tileShadowOf } from './tileShadow.js';
 import { timeFormatOf } from './timeFormat.js';
+import { homeyTemperatureScale, temperatureUnitOf } from './temperatureUnit.js';
 import { heatmapCaps } from './HeatmapService.js';
 import { healthCaps } from './RoomHealthService.js';
 import { alarmCaps } from './SensorAlarmService.js';
@@ -49,6 +50,8 @@ export default class Diagnostics {
       // How the widgets show device names (the report's own names are always the full ones).
       deviceNames: nameRule(this.homey.settings.get(DEVICE_NAMES_SETTING)),
       timeFormat: timeFormatOf(this.homey),
+      // The widgets' temperature unit (`auto`, `c`, `f`) and the Homey's own, which Automatic follows.
+      temperatureUnit: { setting: temperatureUnitOf(this.homey), homey: homeyTemperatureScale(this.homey) },
       tileShadow: tileShadowOf(this.homey),
       electricity: await (this.homey.app as any)?.electricity?.describe?.().catch((err: unknown) => String(err)) ?? null,
       weather: (this.homey.app as any)?.weather?.describe?.() ?? null,

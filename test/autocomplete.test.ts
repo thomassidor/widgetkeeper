@@ -16,7 +16,7 @@ import { loadWidget } from './helpers/loadWidget.js';
 
 vi.mock('homey-api', () => homeyApiMock);
 
-const homeyIn = (language: string) => ({ i18n: { getLanguage: () => language }, __: () => undefined }) as any;
+const homeyIn = (language: string) => ({ i18n: { getLanguage: () => language }, settings: { get: () => undefined }, __: () => undefined }) as any;
 const PNG = /^data:image\/png;base64,/;
 
 describe('matches', () => {

@@ -9,7 +9,8 @@ import { logCover, mergeLogs, periodStart, planLogs, type CalendarUnit, type Ins
 import { bucketAverage, HOUR, MINUTE, parseInsightsEntries, runningTotal, type Meter, type Sample } from './series.js';
 import Timings from './Timings.js';
 import type ValueService from './ValueService.js';
-import { parseSlot, type ValueSlot } from './ValueService.js';
+import { parseSlot, showSlot, type ValueSlot } from './ValueService.js';
+import { temperatureShower } from './temperatureUnit.js';
 
 const TICK = MINUTE;
 /** A history is re-read from Insights at most this often (widgets refresh every 5 min). */
@@ -266,11 +267,12 @@ export default class SparklineService {
     const tm = new Timings();
     const valid = slots.filter(s => parseSlot(s));
     const [states, histories] = await Promise.all([
-      tm.time('values', () => this.values.getState(valid)),
+      tm.time('values', () => this.values.getState(valid, [], { raw: true })),
       tm.time('insights', () => Promise.all(valid.map(s => this.history(s, span)))),
     ]);
     this.debug(`Sparklines state for ${valid.length} slots (${span}): ${tm.summary()}`);
-    return states.map((s, i) => ('missing' in s ? s : { ...s, ...histories[i] }));
+    const show = temperatureShower(this.homey);
+    return states.map((s, i) => ('missing' in s ? s : showSlot(show, { ...s, ...histories[i] })));
   }
 
   /**
@@ -281,16 +283,17 @@ export default class SparklineService {
     const tm = new Timings();
     const valid = requests.filter(r => parseSlot(r.slot));
     const [states, histories] = await Promise.all([
-      tm.time('values', () => this.values.getState([...new Set(valid.map(r => r.slot))])),
+      tm.time('values', () => this.values.getState([...new Set(valid.map(r => r.slot))], [], { raw: true })),
       tm.time('insights', () => this.histories(valid)),
     ]);
     this.debug(`Chart state for ${valid.length} windows (${valid.map(r => `${r.span ?? '?'}${r.use ? ' use' : ''}`).join(', ')}): ${tm.summary()}`);
     const bySlot = new Map(states.map(s => [`${s.deviceId}:${s.capabilityId}`, s]));
+    const show = temperatureShower(this.homey);
     return requests.map((r) => {
       const at = valid.indexOf(r);
       const s = at < 0 ? null : bySlot.get(r.slot);
       if (!s) return { ...(parseSlot(r.slot) ?? { deviceId: r.slot, capabilityId: '' }), missing: true as const };
-      return 'missing' in s ? s : { ...s, ...histories[at] };
+      return 'missing' in s ? s : showSlot(show, { ...s, ...histories[at] });
     });
   }
 

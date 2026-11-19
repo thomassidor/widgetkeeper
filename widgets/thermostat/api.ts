@@ -3,6 +3,7 @@ import type WidgetkeeperApp from '../../app.js';
 import { deviceNamer } from '../../lib/deviceNames.js';
 import type { CapValue } from '../../lib/ThermostatService.js';
 import { parseSlot } from '../../lib/ValueService.js';
+import { shownTemperatureScale } from '../../lib/temperatureUnit.js';
 import { logged, logPerf, requireId } from '../../lib/widgetApi.js';
 
 type Homey = App['homey'];
@@ -11,7 +12,9 @@ type Homey = App['homey'];
  * The thermostat's state, its name as the widgets show device names (`ThermostatService` keeps the full one for the
  * Flow token), with the value beside its name (`sensor`, a Device Values slot `<deviceId>:<capabilityId>`, tracked by
  * `app.values`) as `sensor: {deviceId, capabilityId, capability, value}`. A sensor that can't be read is left out: it
- * never fails the thermostat.
+ * never fails the thermostat. The thermostat's own values stay Homey's (a preset holds the device's value, and is lit
+ * while the device has it), with the app's temperature unit as `temperatureUnit` (`c`, `f`) for the widget to show them
+ * in; the sensor comes converted, as every Device Values slot (`lib/temperatureUnit.ts`).
  */
 export async function thermostatState(homey: Homey, app: Pick<WidgetkeeperApp, 'thermostat' | 'values'>, deviceId: string, sensor?: string) {
   const slot = sensor && parseSlot(sensor) ? sensor : null;
@@ -22,7 +25,7 @@ export async function thermostatState(homey: Homey, app: Pick<WidgetkeeperApp, '
   if ('missing' in full) return full;
   const show = await deviceNamer(homey, null, (...args) => homey.app?.log(...args), 'Thermostat');
   const { zone, ...rest } = full;
-  const state = { ...rest, name: show(full.name, zone) };
+  const state = { ...rest, name: show(full.name, zone), temperatureUnit: shownTemperatureScale(homey) };
   const s = values[0];
   if (!s || 'missing' in s) return state;
   return { ...state, sensor: { deviceId: s.deviceId, capabilityId: s.capabilityId, capability: s.capability, value: s.value } };

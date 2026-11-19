@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import type Homey from 'homey';
 import ForecastCache from './forecastCache.js';
+import { shownTemperatureScale } from './temperatureUnit.js';
 import Timings from './Timings.js';
 
 // MET's icons, shipped with the widget. Relative to the compiled lib/ (and to lib/ in the tests).
@@ -26,6 +27,8 @@ export type ForecastHour = {
 
 export type Forecast = {
   hours: ForecastHour[],
+  /** The app's temperature unit, which the widget shows `temp` in (`lib/temperatureUnit.ts`). */
+  temperatureUnit?: 'c' | 'f',
   updatedAt: string | null, // when MET ran the model
   language: string,
   /**
@@ -80,7 +83,8 @@ export default class WeatherService {
     const hours = hoursFrom(cached.body, Date.now());
     const icons = await tm.time('icons', () => this.iconsFor(hours));
     this.debug(`Weather forecast: ${tm.summary()}`);
-    return { hours, updatedAt: cached.body?.properties?.meta?.updated_at ?? null, language, icons };
+    // MET's °C, with the app's temperature unit for the widget to show them in (its colours are set in °C).
+    return { hours, updatedAt: cached.body?.properties?.meta?.updated_at ?? null, language, icons, temperatureUnit: shownTemperatureScale(this.homey) };
   }
 
   /** Icon files are read once per app run. */

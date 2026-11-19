@@ -56,6 +56,13 @@
   };
   /** How far outside the range a value is red: degrees and percentage points; the concentrations at 1.5 × their limit. */
   const MARGINS = { temperature: 3, humidity: 10 };
+  /**
+   * In Fahrenheit (the app's temperature unit; the app sends the temperatures with `units: '°F'`): the default range
+   * (18–24 °C, rounded) and the margin (3 °C). A typed or stored range end up to `CELSIUS_UP_TO` is read as °C: a placed
+   * widget keeps the defaults 18 and 24, and no indoor comfort range in °F is that low.
+   */
+  const FAHRENHEIT = { min: 64, max: 75, margin: 5.4 };
+  const CELSIUS_UP_TO = 45;
   /** The state word (a room's label for screen readers), per measure and side. */
   const PROBLEMS = {
     temperature: { low: 'cold', high: 'warm' },
@@ -83,20 +90,24 @@
 
   /**
    * The comfortable ranges from the settings: `{temperature: {min, max}, co2: {min: null, max} …}`. A missing, empty or
-   * non-numeric setting is its default; a lowest above the highest is swapped.
+   * non-numeric setting is its default; a lowest above the highest is swapped. `scale` `f`: the temperature's in °F
+   * (`FAHRENHEIT`), with its `margin`.
    */
-  function roomHealthRange(settings) {
+  function roomHealthRange(settings, scale) {
     const s = settings || {};
-    const num = ([id, fallback]) => {
+    const fahrenheit = scale === 'f';
+    const num = ([id, fallback], m) => {
       const v = s[id];
-      return v !== '' && v != null && isFinite(Number(v)) ? Number(v) : fallback;
+      if (!(v !== '' && v != null && isFinite(Number(v)))) return fahrenheit && m === 'temperature' ? FAHRENHEIT[id === 'tempMin' ? 'min' : 'max'] : fallback;
+      const n = Number(v);
+      return fahrenheit && m === 'temperature' && n <= CELSIUS_UP_TO ? Math.round((n * 9 / 5 + 32) * 10) / 10 : n;
     };
     const out = {};
     for (const m of MEASURES) {
-      let min = RANGES[m].min ? num(RANGES[m].min) : null;
-      let max = num(RANGES[m].max);
+      let min = RANGES[m].min ? num(RANGES[m].min, m) : null;
+      let max = num(RANGES[m].max, m);
       if (min != null && min > max) [min, max] = [max, min];
-      out[m] = { min, max };
+      out[m] = fahrenheit && m === 'temperature' ? { min, max, margin: FAHRENHEIT.margin } : { min, max };
     }
     return out;
   }
@@ -108,7 +119,7 @@
   function roomHealthScore(measure, value, ranges) {
     const r = ranges && ranges[measure];
     if (!r || typeof value !== 'number' || !isFinite(value)) return null;
-    const margin = MARGINS[measure] != null ? MARGINS[measure] : r.max / 2;
+    const margin = r.margin != null ? r.margin : MARGINS[measure] != null ? MARGINS[measure] : r.max / 2;
     const out = (distance, side) => ({ score: margin > 0 ? Math.min(1, distance / margin) : 1, side });
     if (r.min != null && value < r.min) return out(r.min - value, 'low');
     if (value > r.max) return out(value - r.max, 'high');
@@ -181,7 +192,8 @@
   function createRoomHealthWidget(root, opts = {}) {
     const t = window.WidgetkeeperKit.translator('roomhealth', DEFAULT_STRINGS, opts);
 
-    const ranges = roomHealthRange(opts);
+    let scale = 'c'; // the temperatures' (`units: '°F'` on a temperature reading says `f`)
+    let ranges = roomHealthRange(opts, scale);
     const layout = opts.layout === 'bars' ? 'bars' : 'icons';
     let devices = []; // [{ id, name, zone, measures: {[measure]: {capabilityId, value}} } | { id, missing }]
     let rooms = [];
@@ -209,6 +221,11 @@
 
     function setState(list) {
       devices = Array.isArray(list) ? list : [];
+      const next = devices.some(d => d && d.measures && d.measures.temperature && d.measures.temperature.units === '°F') ? 'f' : 'c';
+      if (next !== scale) {
+        scale = next;
+        ranges = roomHealthRange(opts, scale);
+      }
       message.reset();
       render();
     }
@@ -235,7 +252,8 @@
     function formatValue(measure, value) {
       const text = formatNumber(measure, value);
       if (text === '–') return text;
-      return measure === 'temperature' || measure === 'humidity' ? `${text}${UNITS[measure]}` : `${text} ${UNITS[measure]}`;
+      const units = measure === 'temperature' && scale === 'f' ? '°F' : UNITS[measure];
+      return measure === 'temperature' || measure === 'humidity' ? `${text}${units}` : `${text} ${units}`;
     }
 
     /**

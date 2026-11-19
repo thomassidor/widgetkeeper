@@ -278,6 +278,29 @@ it('Time format: the line and the choice, saved at once; put back when saving fa
   expect([$('timeLine').textContent, select.value, select.disabled]).toEqual(['time12', '12', false]);
 });
 
+it('Temperature: the line says what Automatic shows, the choice saved at once; put back when saving fails', () => {
+  let stored = 'auto';
+  let fail = false;
+  const shown = () => (stored === 'auto' ? 'f' : stored);
+  const { calls, $ } = loadPage((method, path, body) => {
+    if (path !== '/temperature-unit') return undefined;
+    if (method === 'GET') return { temperatureUnit: stored, shown: shown(), homey: 'f' };
+    if (fail) return { ok: false };
+    stored = body.temperatureUnit;
+    return { ok: true, temperatureUnit: stored, shown: shown() };
+  });
+  const select = $('temperatureUnit') as unknown as HTMLSelectElement;
+  expect([$('tempLine').textContent, select.value, select.disabled]).toEqual(['tempAutoLine{"unit":"°F"}', 'auto', false]);
+  select.value = 'c';
+  select.dispatchEvent(new Event('change'));
+  expect(calls.at(-1)).toEqual(['PUT', '/temperature-unit', { temperatureUnit: 'c' }]);
+  expect([$('tempLine').textContent, select.value]).toEqual(['°C', 'c']);
+  fail = true;
+  select.value = 'f';
+  select.dispatchEvent(new Event('change'));
+  expect([$('tempLine').textContent, select.value, select.disabled]).toEqual(['°C', 'c', false]);
+});
+
 it('Screens and browsers: adds one with a key, shows its code and address once, gives one a new code and removes one', () => {
   let screens: any[] = [{ id: 's0', name: 'Hall', created: 1, used: 0, needsPassword: true }];
   const { calls, $, typeIn, click } = loadPage((method, path, body) => {

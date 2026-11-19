@@ -119,7 +119,7 @@ const ROUTES: Route[] = [
     [['sparklines.getWindows', [[{ slot: 'a:measure_temperature', span: '1d!', from: 100, end: 200, unit: 'day', use: false, window: true }, { slot: 'b:measure_temperature', span: '1d!', from: 100, end: 200, unit: 'day', use: false, window: true }]]]]],
   // The states first: a number's points come from Insights, a boolean's changes from the recording (test/timeline-state.test.ts).
   ['timeline', 'GET', '/state', { slots: 'a:alarm_contact,,b:onoff', from: '100', end: '200', unit: 'day' }, {},
-    [['values.getState', [['a:alarm_contact', 'b:onoff']]]]],
+    [['values.getState', [['a:alarm_contact', 'b:onoff'], [], { raw: true }]]]],
   ['stacked', 'GET', '/state', { charts: 'm:measure_power~24h~100~200~,a:measure_power~24h~100~200~' }, {},
     [['sparklines.getWindows', [[{ slot: 'm:measure_power', span: '24h', from: 100, end: 200, unit: null, use: false, window: true }, { slot: 'a:measure_power', span: '24h', from: 100, end: 200, unit: null, use: false, window: true }]]]]],
   ['lines', 'GET', '/state', { charts: 'a:measure_temperature~24h~100~200~,b:measure_temperature~24h~100~200~' }, {},

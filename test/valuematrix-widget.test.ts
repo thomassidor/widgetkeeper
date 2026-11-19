@@ -54,7 +54,9 @@ describe('valueMatrixRange', () => {
   it('is the usual range when empty, only for a known capability in its unit', () => {
     expect(win.valueMatrixRange('', DESCRIBED[T])).toEqual({ min: 18, max: 24 });
     expect(win.valueMatrixRange(undefined, { capabilityId: 'measure_temperature.room', units: '°C' })).toEqual({ min: 18, max: 24 });
-    expect(win.valueMatrixRange('', { capabilityId: T, units: '°F' })).toBeNull();
+    expect(win.valueMatrixRange('', { capabilityId: T, units: 'K' })).toBeNull();
+    // In the app's temperature unit Fahrenheit: 18–24 °C, rounded.
+    expect(win.valueMatrixRange('', { capabilityId: T, units: '°F' })).toEqual({ min: 64, max: 75 });
     expect(win.valueMatrixRange('', DESCRIBED[H])).toEqual({ min: 30, max: 60 });
     expect(win.valueMatrixRange('', DESCRIBED[C])).toEqual({ min: null, max: 1000 });
     expect(win.valueMatrixRange('', { capabilityId: C, units: null })).toEqual({ min: null, max: 1000 });

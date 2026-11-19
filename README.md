@@ -4,7 +4,7 @@ Extra dashboard widgets for Homey Pro, made to sit naturally next to Homey's own
 
 <img src="docs/showcase/home.png" alt="Widgetkeeper widgets on a Homey dashboard on a tablet" width="100%">
 
-**Contents:** [Widgets](#widgets) · [Web dashboards](#web-dashboards) · [Dashboard examples](#dashboard-examples) · [Colour style](#colour-style) · [Names](#names) · [Time format](#time-format) · [Appearance](#appearance) · [Tile names](#tile-names) · [API key](#api-key) · [Installation](#installation) · [Troubleshooting](#troubleshooting)
+**Contents:** [Widgets](#widgets) · [Web dashboards](#web-dashboards) · [Dashboard examples](#dashboard-examples) · [Colour style](#colour-style) · [Names](#names) · [Time format](#time-format) · [Temperature](#temperature) · [Appearance](#appearance) · [Tile names](#tile-names) · [API key](#api-key) · [Installation](#installation) · [Troubleshooting](#troubleshooting)
 
 ## Widgets
 Every widget follows Homey's light and dark mode and is translated into all 13 of Homey's languages. Tap one for what it does and its settings.
@@ -349,6 +349,9 @@ The page shows a few of your own names as they'll look. Lists in widget settings
 
 ## Time format
 Every widget that shows a time (the Clock, the charts' axes, the price strips, Timers' end times, *since 18:17* …) shows it in 24 or 12 hours as you choose under **Apps → Widgetkeeper → Configure → Time format**. *Automatic* (the default) follows the language of the phone or browser that shows the dashboard. Open widgets change at once.
+
+## Temperature
+Every widget shows temperatures in °C or °F as you choose under **Apps → Widgetkeeper → Configure → Temperature**. *Automatic* (the default) follows your Homey's units. A sensor that reports in the other unit is converted too, and temperatures you type in a widget's settings (Room Health's range, Value Matrix's and Combined Value's OK range, a chart's threshold or scale) are in the unit you chose. Open widgets change at once.
 
 ## Appearance
 In light mode, the tiles of the transparent widgets (Light Controls, Lights by Room, Device Quick Actions, Device Values …) have a soft shadow like Homey's own tiles. To turn it off for every widget, untick **Shadows under tiles** under **Apps → Widgetkeeper → Configure → Appearance**. Open widgets change at once. Dark mode has no shadow.

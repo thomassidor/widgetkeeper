@@ -121,9 +121,18 @@
     strip.addEventListener('scroll', updateEdges, { passive: true });
     enableMouseDrag(strip);
 
+    /** The app's temperature unit (`c`, `f`; the forecast's `temperatureUnit`): MET's °C are shown in it. */
+    let scale = 'c';
+    /** A °C temperature as shown: whole degrees in the app's unit (`-0` as `0`). */
+    function shownTemp(celsius) {
+      const v = Math.round(window.WidgetkeeperKit.temperatureIn(celsius, '°C', scale));
+      return v === 0 ? 0 : v;
+    }
+
     /** `data`: the app's `/forecast` response. */
     function setForecast(data) {
       message = null;
+      scale = data && data.temperatureUnit === 'f' ? 'f' : 'c';
       if (data && data.language) {
         try { weekdayFmt = new Intl.DateTimeFormat(data.language, { weekday: 'short' }); } catch (e) { /* keep the default */ }
       }
@@ -157,7 +166,7 @@
     function render() {
       const list = message ? [] : group(visibleHours());
       // The widget refetches every 5 min, mostly getting the same forecast back.
-      const key = JSON.stringify([message, hours, Math.floor(now() / HOUR), rows === 2 ? columns() : 0]);
+      const key = JSON.stringify([message, hours, scale, Math.floor(now() / HOUR), rows === 2 ? columns() : 0]);
       if (key === lastKey) {
         scheduleHourTick();
         return;
@@ -251,9 +260,8 @@
       }
       const temp = el('div', { class: 'wf-temp' }, col);
       if (h.temp != null) {
-        const rounded = Math.round(h.temp);
-        temp.textContent = `${intFmt.format(rounded === 0 ? 0 : rounded)}°`;
-        colorTemp(temp, rounded);
+        temp.textContent = `${intFmt.format(shownTemp(h.temp))}°`;
+        colorTemp(temp, Math.round(h.temp)); // the colours are set in °C
       }
       el('div', { class: 'wf-precip', text: h.precip > 0 ? `${mmFmt.format(h.precip)}${compact ? '' : ' mm'}` : '' }, col);
       const wind = el('div', { class: 'wf-wind' }, col);
@@ -279,7 +287,7 @@
         const end = i === 0 ? days[1][1] : dayAfter;
         const temps = hours
           .filter(h => h.temp != null && Date.parse(h.t) >= Math.max(from, start) && Date.parse(h.t) < end)
-          .map(h => Math.round(h.temp));
+          .map(h => h.temp);
         if (!temps.length) return;
         const day = el('span', { class: 'wf-day' }, summary);
         el('span', { class: 'wf-day-label', dir: 'auto', text: label }, day);
@@ -288,9 +296,10 @@
       });
     }
 
+    /** `value`: °C. */
     function tempRange(parent, value, arrow) {
-      const v = value === 0 ? 0 : value;
-      colorTemp(el('span', { class: 'wf-range', text: `${arrow}${intFmt.format(v)}°` }, parent), v);
+      const v = Math.round(value);
+      colorTemp(el('span', { class: 'wf-range', text: `${arrow}${intFmt.format(shownTemp(value))}°` }, parent), v === 0 ? 0 : v);
     }
 
     function iconSrc(symbol) {

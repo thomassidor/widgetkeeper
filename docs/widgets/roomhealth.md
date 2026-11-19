@@ -8,7 +8,7 @@ The indoor climate of the whole house on one card. The sensors you pick are grou
 
 | Value | Comfortable by default | Red at |
 |---|---|---|
-| Temperature | 18–24 °C (18 °C is WHO's minimum) | 3 °C outside |
+| Temperature | 18–24 °C (18 °C is WHO's minimum), 64–75 °F | 3 °C (5.4 °F) outside |
 | Humidity | 30–60 % | 10 points outside |
 | CO₂ | up to 1000 ppm | 1.5 × the limit |
 | Radon | up to 100 Bq/m³ (WHO's reference level) | 1.5 × |
@@ -16,7 +16,7 @@ The indoor climate of the whole house on one card. The sensors you pick are grou
 | PM10 | up to 45 μg/m³ (WHO's 24-hour guideline) | 1.5 × |
 | VOC | up to 1000 ppb | 1.5 × |
 
-A heat pump's room temperature counts; outdoor and water temperatures don't. Left out on purpose: carbon monoxide (a safety alarm: use [Sensor Alarms](sensoralarms.md)), air quality indexes and VOC in μg/m³ or as an index (their scales differ between devices), and PM1 (no guideline).
+Temperatures show, and are typed, in the app's [temperature unit](../../README.md#temperature). In °F, a range end of 45 or less is read as °C, so a widget placed with the defaults 18 and 24 keeps 18–24 °C. A heat pump's room temperature counts; outdoor and water temperatures don't. Left out on purpose: carbon monoxide (a safety alarm: use [Sensor Alarms](sensoralarms.md)), air quality indexes and VOC in μg/m³ or as an index (their scales differ between devices), and PM1 (no guideline).
 
 **Settings:** sensors, [rename tiles](../../README.md#tile-names), [colour style](../../README.md#colour-style), icons or bars, green when fine, the comfortable range of each value (one range for every room).
 
