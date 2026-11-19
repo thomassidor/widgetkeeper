@@ -262,9 +262,11 @@
 
   /**
    * A tile widget's mount (a test checks each calls it): the app's realtime `tileshadow:state`. Asks nothing: the setting
-   * comes with the widget's own reads (`takeTileShadow()`). Pure CSS, so nothing redraws.
+   * comes with the widget's own reads (`takeTileShadow()`). Pure CSS, so nothing redraws. Marks the page `wk-tiles`,
+   * which keeps room for the shadow under the tiles (kit.css).
    */
   function wireTileShadow(Homey) {
+    try { document.documentElement.classList.add('wk-tiles'); } catch { /* no page */ }
     try { Homey.on('tileshadow:state', takeTileShadow); } catch { /* the stored one stays */ }
   }
 
@@ -660,6 +662,12 @@
     let readyStarted = false;
     let readySent = false;
     const height = () => Math.ceil(frame.getBoundingClientRect().height);
+    // Homey's dark mode (about 1 s in) and the Tile shadows setting change the room kept under a tile widget's tiles
+    // (kit.css `--wk-shadow-room`), which no render follows.
+    try {
+      const watch = new MutationObserver(() => { if (readySent) Homey.setHeight(height()); });
+      for (const node of [document.documentElement, document.body]) if (node) watch.observe(node, { attributes: true, attributeFilter: ['class'] });
+    } catch { /* no observer: the next render's height */ }
     return {
       height,
       setHeight() {

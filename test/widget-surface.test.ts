@@ -93,6 +93,25 @@ describe("the kit: the app's Tile shadows (takeTileShadow, wireTileShadow)", () 
     expect(() => kit.wireTileShadow({ on() { throw new Error('no'); } })).not.toThrow();
   });
 
+  it("marks a tile widget's page, and a ready frame passes its height on again when the page's classes change", async () => {
+    document.documentElement.classList.remove('wk-tiles');
+    const { WidgetkeeperKit: kit } = loadWidget('spacer');
+    const heights: number[] = [];
+    const h = { ready() {}, setHeight(n: number) { heights.push(n); }, on() {} };
+    kit.wireTileShadow(h);
+    expect(document.documentElement.classList.contains('wk-tiles')).toBe(true);
+    const frame = kit.wireFrame(h, document.body);
+    document.body.classList.add('x-before');
+    await tick();
+    expect(heights).toEqual([]);
+    await frame.ready();
+    document.body.classList.add('homey-dark-mode');
+    await tick();
+    expect(heights.length).toBe(1);
+    document.body.classList.remove('homey-dark-mode', 'x-before');
+    document.documentElement.classList.remove('wk-tiles');
+  });
+
   it('comes with the tile names wrapper and with the time format', async () => {
     const { WidgetkeeperKit: kit } = loadWidget('spacer');
     const names = homey({ state: [1], tileNames: {}, tileShadow: false });
@@ -150,7 +169,7 @@ describe("every widget's fill follows it", () => {
     const shadow = list(/:where\(([^)]*)\) \{\s*box-shadow: var\(--wk-tile-shadow\)/);
     expect(line.size).toBeGreaterThan(20);
     expect([...shadow].sort()).toEqual([...line].sort());
-    expect(KIT_CSS).toMatch(/\.homey-dark-mode \{ --wk-tile-shadow: none; \}/);
+    expect(KIT_CSS).toMatch(/\.homey-dark-mode \{ --wk-tile-shadow: none; --wk-shadow-room: 0px; \}/);
   });
 
   it("the widgets with tiles in kit.css's list are the ones that follow the app's Tile shadows", () => {
@@ -160,7 +179,13 @@ describe("every widget's fill follows it", () => {
   });
 
   it("kit.css takes the shadow away when the app's Tile shadows are off", () => {
-    expect(KIT_CSS).toMatch(/html\.wk-flat, html\.wk-flat \* \{ --wk-tile-shadow: none; \}/);
+    expect(KIT_CSS).toMatch(/html\.wk-flat, html\.wk-flat \* \{ --wk-tile-shadow: none; --wk-shadow-room: 0px; \}/);
+  });
+
+  it('kit.css keeps room for the shadow under a tile widget, in light mode with shadows only (issue #20)', () => {
+    expect(KIT_CSS).toMatch(/:root \{ --wk-tile-shadow: [^;]+; --wk-shadow-room: 6px; \}/);
+    expect(KIT_CSS).toMatch(/\.homey-dark-mode \{ --wk-tile-shadow: none; --wk-shadow-room: 0px; \}/);
+    expect(KIT_CSS).toMatch(/html\.wk-tiles body \{ padding-bottom: var\(--wk-shadow-room\); \}/);
   });
 
   it("kit.css gives every transparent widget's tiles their line", () => {
