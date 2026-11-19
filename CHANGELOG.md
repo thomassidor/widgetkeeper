@@ -2,6 +2,15 @@
 
 All notable changes to Widgetkeeper. The version numbers match the Homey app version.
 
+## 1.3.2
+
+### Temperature: °C or °F
+- **Choose the unit every widget shows temperatures in** under **Configure → Temperature**: *Automatic* (the default) follows your Homey's units, so a Homey set to imperial now shows °F; or pick Celsius or Fahrenheit. Device Values, Sparklines and the charts, Value Matrix, Combined Value, Value Board, Insights Heatmap, Room Health, Thermostat Presets and Weather Forecast all follow it, and open widgets change at once. A sensor that reports in the other unit is converted too, so Combined Value now counts °F and °C sensors together.
+- **The temperatures you type in widget settings are in that unit too:** Room Health's range (64–75 °F by default in Fahrenheit; a range end of 45 or less is still read as °C, so a widget that kept 18 and 24 keeps 18–24 °C), Value Matrix's and Combined Value's OK range, and a chart's threshold or scale. If you typed a °C threshold in one of those and your Homey is set to imperial, type it again in °F. Wind and rain stay in m/s and mm. Thanks to Martin_Martinez for asking.
+
+### Light mode: tile shadows
+- **The shadow under the tiles is no longer cut off** along the widget's bottom edge, where grey corners showed (#20).
+
 ## 1.3.1
 
 ### Combined Value
