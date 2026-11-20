@@ -21,6 +21,7 @@ const RETURNS: Record<string, (...args: any[]) => unknown> = {
     prices: Array.from({ length: 49 }, () => ({ price: 1 })), quarters: null, priceError: null, fixedPrice: null, currency: 'DKK', language: 'en',
   }),
   'tileNames.get': () => ({ names: {} }),
+  'stack.getPages': async () => ({ pages: [] }),
 };
 
 /**
