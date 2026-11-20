@@ -17,6 +17,7 @@ import stack, { PAGE_APIS } from './widgets/stack/api.js';
 import valueboard from './widgets/valueboard/api.js';
 import webpage from './widgets/webpage/api.js';
 import { readEnergyReport } from './lib/energyReport.js';
+import { finishList } from './lib/autocomplete.js';
 import { APP_SETTINGS_SCOPE, appSettingValues, findAppSettingsRoute, setAppSettingFlag } from './lib/webAppSettings.js';
 
 type Homey = App['homey'];
@@ -151,6 +152,45 @@ const api = {
   },
 
   /** The icon picker's list: `[{id, name}]`, the page draws the icons itself. */
+  /** The Widget Builder's page: saves a design (a new one gets an id); answers it as kept and the library. */
+  async putWebDesign({ homey, query, body }: { homey: Homey, query?: Record<string, string>, body: unknown }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    const design = app.custom.save(body);
+    return { design, designs: app.custom.all() };
+  },
+
+  async deleteWebDesign({ homey, query, params }: { homey: Homey, query?: Record<string, string>, params: Record<string, string> }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    return { ...app.custom.remove(params?.id || ''), designs: app.custom.all() };
+  },
+
+  /** Duplicate: a copy of a design with new ids, last in the library. */
+  async postWebDesignCopy({ homey, query, params }: { homey: Homey, query?: Record<string, string>, params: Record<string, string> }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    const design = app.custom.duplicate(params?.id || '');
+    return { design, designs: app.custom.all() };
+  },
+
+  /** The builder's preview of a design as it's being built (not saved): what the widget's `/state` would answer. */
+  async postWebDesignPreview({ homey, query, body }: { homey: Homey, query?: Record<string, string>, body: { design?: unknown } }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    return app.custom.previewState(body?.design);
+  },
+
+  /** The builder's lists to pick from (`{what: flow | variable, query}`), as the widgets' autocompletes list them. */
+  async postWebDesignPick({ homey, query, body }: { homey: Homey, query?: Record<string, string>, body: { what?: unknown, query?: unknown } }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    const q = String(body?.query ?? '');
+    if (body?.what === 'flow') return finishList(homey, q, await app.flows.listFlows(q));
+    if (body?.what === 'variable') return finishList(homey, q, await app.variables.listVariables(q));
+    throw new Error('Nothing to pick');
+  },
+
   async getWebIcons({ homey, query }: { homey: Homey, query?: Record<string, string> }) {
     assertWebSession(homey.app as WidgetkeeperApp, query);
     return (homey.app as WidgetkeeperApp).flows.iconNames();
@@ -190,6 +230,7 @@ const api = {
       popups: app.popups.all(),
       dim: app.webDim?.state() ?? null,
       sync: app.webSync?.status() ?? {},
+      designs: app.custom?.all() ?? [], // the Widget Builder's library (`lib/CustomWidgetService.ts`)
     };
   },
 

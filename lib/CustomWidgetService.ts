@@ -213,6 +213,20 @@ export default class CustomWidgetService {
   async getState(id: string) {
     const design = this.get(id);
     if (!design) return { missing: true as const, now: Date.now() };
+    return this.stateOf(design, this.flowState(design.id));
+  }
+
+  /**
+   * The builder's preview: a design as it's being built, read as `readDesign()` keeps it, with what Flows set on the
+   * saved one's parts (so a Flow value shows). Nothing is saved.
+   */
+  async previewState(body: unknown) {
+    const design = readDesign(body);
+    if (!design) throw new Error('Not a design');
+    return this.stateOf(design, this.get(design.id) ? this.flowState(design.id) : {});
+  }
+
+  private async stateOf(design: Design, flow: Record<string, FlowValues & { expires?: number }>) {
     const slots = designSlots(design);
     const variables = designVariables(design);
     const flows = designFlows(design);
@@ -233,7 +247,7 @@ export default class CustomWidgetService {
       variables: Object.fromEntries((vars as any[]).map(v => [v.id, v])),
       flows: Object.fromEntries((flowList as any[]).map(f => [f.id, f])),
       histories: Object.fromEntries(histories.flat()),
-      flow: this.flowState(design.id),
+      flow,
       now: Date.now(),
     };
   }

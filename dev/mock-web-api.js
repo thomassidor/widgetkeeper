@@ -141,6 +141,31 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
     return { ok: false, reason: 'preview' };
   }
 
+  /** The Widget Builder's library: the made-up designs, when mock-custom.js is loaded. */
+  const designs = window.mockCustomState ? ['living', 'container', 'free', 'controls'].map(s => window.mockCustomState(s).design) : [];
+
+  /** A design's preview: mock-custom.js' readings, else the made-up house's (`readings`) for a value picked here. */
+  function designPreview(design) {
+    const base = window.mockCustomState ? window.mockCustomState() : { values: {}, variables: {}, flows: {}, histories: {} };
+    const slots = [];
+    const walk = parts => (parts || []).forEach((x) => { if (x.slot) slots.push(x.slot); walk(x.parts); });
+    walk(design.parts);
+    const values = {};
+    for (const slot of slots) {
+      if (base.values[slot]) { values[slot] = base.values[slot]; continue; }
+      const [deviceId, capabilityId] = slot.split(':');
+      const d = devices.find(x => x.id === deviceId);
+      const r = readings[capabilityId];
+      values[slot] = d && r
+        ? { deviceId, capabilityId, name: d.name, capability: { icon: null, values: null, min: null, max: null, ...r }, value: typeof r.value === 'function' ? r.value(d, 0) : r.value }
+        : { deviceId, capabilityId, missing: true };
+    }
+    const histories = { ...base.histories };
+    for (const slot of slots) if (!Object.keys(histories).some(k => k.endsWith(`\n${slot}`))) histories[`24h\n${slot}`] = base.histories['24h\nlr:measure_temperature'];
+    for (const span of ['1h', '6h', '7d', '30d', 'today', 'yesterday', 'thisWeek']) for (const slot of slots) histories[`${span}\n${slot}`] = histories[`24h\n${slot}`];
+    return { design, values, variables: base.variables, flows: { ...base.flows, 'flow:goodnight': { id: 'flow:goodnight', name: 'Good night' }, 'advanced:away': { id: 'advanced:away', name: 'Leaving home' } }, histories, flow: {}, now: Date.now() };
+  }
+
   async function answer(method, path, body) {
     await ready;
     const [p, qs] = path.split('?');
@@ -169,6 +194,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
         maxDashboards: 64, maxWidgets: 60, maxSections: 20, popups: { popups, now: Date.now() }, dim: { flows: {}, now: Date.now() },
         codes: codes.map(({ id, name, digits }) => ({ id, name, digits: digits.length })),
         sync: syncLinks,
+        designs,
       };
     }
     // The app's settings (lib/webAppSettings.ts), as for a key with full access: made-up answers, kept for the page's life.
@@ -241,6 +267,33 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
         }))
         .filter(d => d.caps.length)
         .sort((a, b) => a.name.localeCompare(b.name));
+    }
+    // The Widget Builder (lib/CustomWidgetService.ts): the made-up designs of mock-custom.js, kept for the page's life.
+    if (p === '/web/designs' && method === 'PUT') {
+      const saved = { ...JSON.parse(JSON.stringify(body)), id: body.id || Math.random().toString(36).slice(2, 10), updatedAt: Date.now() };
+      const i = designs.findIndex(d => d.id === saved.id);
+      if (i >= 0) designs[i] = saved; else designs.push(saved);
+      return { design: saved, designs };
+    }
+    if (/^\/web\/designs\/[^/]+$/.test(p) && method === 'DELETE') {
+      const i = designs.findIndex(d => d.id === p.split('/')[3]);
+      if (i >= 0) designs.splice(i, 1);
+      return { removed: i >= 0, designs };
+    }
+    if (/^\/web\/designs\/[^/]+\/copy$/.test(p)) {
+      const d = designs.find(x => x.id === p.split('/')[3]);
+      const fresh = x => ({ ...x, id: Math.random().toString(36).slice(2, 10), ...(x.parts ? { parts: x.parts.map(fresh) } : {}) });
+      const copy = { ...fresh(JSON.parse(JSON.stringify(d))), name: `${d.name} (copy)` };
+      designs.push(copy);
+      return { design: copy, designs };
+    }
+    if (p === '/web/designs/preview') return designPreview(body.design);
+    if (p === '/web/designs/pick') {
+      const items = body.what === 'flow'
+        ? [['flow:movie', 'Movie night', 'Flow'], ['flow:goodnight', 'Good night', 'Flow'], ['advanced:away', 'Leaving home', 'Advanced Flow']]
+        : [['v1', 'House mode', 'Text'], ['v2', 'Vacation', 'Yes/No'], ['v3', 'Guests tonight', 'Number']];
+      const q = String(body.query || '').toLowerCase();
+      return items.filter(([, name]) => name.toLowerCase().includes(q)).map(([id, name, description]) => ({ id, name, description }));
     }
     if (p === '/web/dashboards' && method === 'PUT') {
       const saved = { ...body, id: body.id || Math.random().toString(36).slice(2, 10) };

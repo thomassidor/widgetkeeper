@@ -58,6 +58,7 @@
         wd.showNav({ inactive: true });
         return;
       }
+      page.append(wd.designsSection()); // the Widget Builder's designs (dashboard-builder.js)
       if (wd.types.size && wd.frontPage.widgets) page.append(widgetCarousel());
 
       const edit = el('a', 'wd-icon');

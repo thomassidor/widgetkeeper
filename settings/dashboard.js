@@ -26,7 +26,7 @@
    * mountWebDashboards() runs them. A part registers itself with `WidgetkeeperWeb.part(name, fn)`; `fn(wd)` is
    * the code that was once in mountWebDashboards() itself, sharing the page's state and functions through `wd`.
    */
-  const PARTS = ['realtime', 'frames', 'views', 'front', 'editing', 'settings', 'pickers', 'popups', 'sync', 'screen', 'icons', 'app', 'nav'];
+  const PARTS = ['realtime', 'frames', 'views', 'front', 'editing', 'settings', 'pickers', 'popups', 'sync', 'screen', 'icons', 'app', 'builder', 'nav'];
   window.WidgetkeeperWeb = {
     /** @type {Map<string, (wd: any) => void>} */
     parts: new Map(),
@@ -362,6 +362,143 @@
       webpage: 'Any web page, scaled to fill the widget.',
       popups: 'Shows the popups that Flows send to its screen name here too.',
     },
+    // The Widget Builder (dashboard-builder.js).
+    builderTitle: "Widget Builder",
+    builderNew: "New design",
+    builderUntitled: "New design",
+    builderPartCount: "__count__ parts",
+    builderName: "Design's name",
+    builderDesigns: "Designs",
+    builderSaved: "Saved",
+    builderSaving: "Saving…",
+    builderNotSaved: "Not saved",
+    builderDelete: "Delete design",
+    builderAddTo: "Add to dashboard",
+    builderAdded: "Added to __name__",
+    builderOpen: "Open",
+    builderNoDashboards: "There are no web dashboards yet.",
+    builderParts: "Parts",
+    builderLayers: "Layers",
+    builderLayersHint: "Later in the list is drawn on top.",
+    builderSearch: "Search parts",
+    builderNoMatches: "No parts match.",
+    builderGroup_show: "Show",
+    builderGroup_control: "Control",
+    builderGroup_layout: "Layout",
+    builderAdd: "Add __name__",
+    builderAddsTop: "A tap on a part adds it at the bottom.",
+    builderAddsInto: "A tap on a part adds it into __name__.",
+    builderEmpty: "No parts yet.",
+    builderPreview: "Preview of the design",
+    builderMuted: "Muted",
+    builderVivid: "Vivid",
+    builderTip: "Drag a part to move it, its corner to resize it. Changes are saved as you go.",
+    builderFine: "Fine grid",
+    builderFree: "Free-form",
+    builderNothing: "Nothing selected",
+    builderNothingHint: "Add a part from the list, or tap one in the design to change it.",
+    builderTab_part: "Part",
+    builderTab_look: "Look",
+    builderTab_rules: "Rules",
+    builderTab_flow: "Flow",
+    builderIn: "__kind__ · in __name__",
+    builderText: "Text",
+    builderTextDefault: "Text",
+    builderSize: "Size",
+    builderHeading: "Heading",
+    builderBody: "Normal",
+    builderSmall: "Small",
+    builderAlign: "Align",
+    builderLeft: "Left",
+    builderCenter: "Centre",
+    builderRight: "Right",
+    builderPartName: "Name",
+    builderNameHint: "The device's",
+    builderFrom: "Value from",
+    builderDevice: "A device",
+    builderVariable: "Variable",
+    builderValue: "Device value",
+    builderStarts: "Starts the Flow",
+    builderTapTrigger: "None: only the trigger card",
+    builderStartsHint: "Starting a Flow needs the API key. Without one, a tap fires A Widget Builder button was tapped.",
+    builderShow: "Show",
+    builderJustValue: "The value",
+    builderWithChart: "With its line",
+    builderSpan: "Time span",
+    builderSpan_1h: "Last hour",
+    builderSpan_6h: "Last 6 hours",
+    builderSpan_24h: "Last 24 hours",
+    builderSpan_7d: "Last 7 days",
+    builderSpan_30d: "Last 30 days",
+    builderSpan_today: "Today",
+    builderSpan_yesterday: "Yesterday",
+    builderSpan_thisWeek: "This week",
+    builderMin: "Lowest",
+    builderMax: "Highest",
+    builderAuto: "The device's",
+    builderStep: "Step",
+    builderChoices: "Choices",
+    builderChoicesHint: "Each its label and the value it sets. A device's list of values fills them when picked.",
+    builderLabel: "Label",
+    builderChoiceValue: "Value",
+    builderAddChoice: "Add a choice",
+    builderUntilFlow: "Until a Flow sets it",
+    builderUnits: "Units",
+    builderFlowValueHint: "Set it with the Flow card Set the value of a Widget Builder part.",
+    builderMode: "Parts inside",
+    builderBackground: "Background",
+    builderNone: "None",
+    builderColour: "Colour",
+    builderGradient: "Gradient",
+    builderGradientFrom: "From",
+    builderTo: "To",
+    builderAngle: "Angle (°)",
+    builderPlace: "Place on the grid",
+    builderPlaceFine: "Place on the fine grid (12 columns, rows of 8 px)",
+    builderPlaceFree: "Place in per cent of the container",
+    builderColumn: "Column",
+    builderRow: "Row",
+    builderLeftPc: "Left %",
+    builderTopPc: "Top %",
+    builderWidth: "Width",
+    builderHeight: "Height",
+    builderRemove: "Remove part",
+    builderNoColour: "Its own",
+    builderColourHint: "Colours its icon, toggle, bar or line. A rule's or a Flow's colour tints the whole tile.",
+    builderIcon: "Icon",
+    builderNoIcon: "No icon",
+    builderChange: "Change",
+    builderIconHint: "Without one, a device value shows its capability's own.",
+    builderTile: "Drawn",
+    builderOwnTile: "On a tile",
+    builderOnBackground: "On the background",
+    builderOp_above: "Above",
+    builderOp_below: "Below",
+    builderOp_is: "Is",
+    builderOp_isNot: "Is not",
+    builderRuleValue: "25, open, heat…",
+    builderHide: "Hide",
+    builderNoRules: "No rules: the part keeps its look.",
+    builderAddRule: "Add a rule",
+    builderRulesHint: "The first rule that holds wins. A hidden part leaves its cells empty. Yes or no reads as on, off, open, closed.",
+    builderFlowHint: "Switch on what a Flow may change. Only those show in the Flow cards, as __name__.",
+    builderFlowValueAlways: "A Flow value always takes its value from a Flow.",
+    builderFlow_text: "Text or name",
+    builderFlow_value: "Value",
+    builderFlow_color: "Colour",
+    builderFlow_icon: "Icon",
+    builderFlow_hidden: "Shown or hidden",
+    builderFlowCard_text: "Set the text of __name__ to …",
+    builderFlowCard_value: "Set the value of __name__ to …",
+    builderFlowCard_color: "Colour __name__ …, or a custom colour",
+    builderFlowCard_icon: "Give __name__ the icon …",
+    builderFlowCard_hidden: "Show or hide __name__, and the condition … is shown",
+    builderReset: "Back to the design",
+    builderResetNever: "Never",
+    builderResetHour: "After an hour",
+    builderResetMidnight: "At midnight",
+    builderResetHint: "When what a Flow set goes back to the design.",
+    builderTapHint: "A tap fires the Flow card A Widget Builder button was tapped, with __name__.",
   };
 
   const KEY_STORAGE = 'widgetkeeper.web.key';
@@ -841,6 +978,7 @@
       wd.setup = await request('GET', '/web/setup');
       wd.types = new Map((wd.setup.widgets || []).map(w => [w.type, w]));
       wd.dashboards = wd.setup.dashboards || [];
+      wd.designs = wd.setup.designs || []; // the Widget Builder's library (dashboard-builder.js)
       wd.frontPage = { widgets: true, sections: [], ...wd.setup.front };
       wd.syncLinks = wd.setup.sync || {}; // the dashboards synced with Homey dashboards (dashboard-sync.js)
       if (wd.setup.maxDashboards > 0) wd.maxDashboards = wd.setup.maxDashboards;
@@ -1074,7 +1212,7 @@
       part(wd);
     }
 
-    // ---- Routing: #/ the list, #/d/<id> a dashboard, #/d/<id>/edit editing it ---------------------------------
+    // ---- Routing: #/ the list, #/d/<id> a dashboard, #/d/<id>/edit editing it, #/builder/<id> a Widget Builder design ----
 
     function route() {
       queueMicrotask(wd.syncPopups); // once this view is drawn: its popups show, another view's close
@@ -1096,6 +1234,8 @@
         return;
       }
       if (location.hash === '#/edit') { wd.renderList(true); return; }
+      const design = location.hash.match(/^#\/builder\/([A-Za-z0-9_-]+)$/);
+      if (design) { wd.renderBuilder(design[1]); return; }
       if (!m) { wd.renderList(); return; }
       const dashboard = wd.dashboards.find(d => d.id === m[1]);
       if (!dashboard) { wd.renderMissing(); return; }

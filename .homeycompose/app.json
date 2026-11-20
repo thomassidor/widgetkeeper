@@ -108,6 +108,26 @@
       "method": "GET",
       "path": "/web/icons"
     },
+    "putWebDesign": {
+      "method": "PUT",
+      "path": "/web/designs"
+    },
+    "deleteWebDesign": {
+      "method": "DELETE",
+      "path": "/web/designs/:id"
+    },
+    "postWebDesignCopy": {
+      "method": "POST",
+      "path": "/web/designs/:id/copy"
+    },
+    "postWebDesignPreview": {
+      "method": "POST",
+      "path": "/web/designs/preview"
+    },
+    "postWebDesignPick": {
+      "method": "POST",
+      "path": "/web/designs/pick"
+    },
     "getWebDevices": {
       "method": "GET",
       "path": "/web/devices"

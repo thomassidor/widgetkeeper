@@ -2,7 +2,13 @@
 
 [← All widgets](../../README.md#widgets)
 
-For [web dashboards](../../README.md#web-dashboards) only, for now: a widget you design yourself. On the web dashboards' **Widget Builder** page, you put parts on a grid of four columns and save the design. Then you place it on any web dashboard with Add widget → Widget Builder and pick the design in its settings. A change to a design shows on every dashboard that has it.
+For [web dashboards](../../README.md#web-dashboards) only, for now: a widget you design yourself. On the web dashboards' front page, under **Widget Builder**, tap **New design**. The builder shows your design at its real size, with its live values:
+
+- Tap a part on the left to add it. It goes at the bottom, or into the container you've selected.
+- Drag a part to move it and its corner to resize it; the parts below make room.
+- On the right, the selected part's settings: **Part** (what it shows or changes, its size and place), **Look** (colour, icon), **Rules** and **Flow**.
+
+Changes are saved as you go, and Undo takes them back. **Add to dashboard** puts the design on a web dashboard, or add it there yourself with Add widget → Widget Builder and pick it in the widget's settings. A change to a design shows on every dashboard that has it.
 
 **Parts:**
 - **Show:** Value (big on two rows, with its line over a span if you like), Mini chart, Gauge, Level bar, Status (a dot that lights up), Flow value (only Flows fill it).
