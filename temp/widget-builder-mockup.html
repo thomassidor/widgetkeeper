@@ -3,250 +3,256 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Widget Builder: mock-up</title>
+<title>Widget Builder: mock-up 2</title>
 <style>
   :root {
     --bg: #111217; --tile: #181920; --raised: #2B2C36; --lighter: #2E3039; --line: #383944;
-    --text: #EDEEF0; --muted: #9A9BA5; --accent: #2F8DF6;
-    --blue: #2F8DF6; --red: #F25F5C; --orange: #F07A1F; --green: #71D51B; --yellow: #F5C518; --purple: #9B5CFF;
+    --text: #EDEEF0; --muted: #9A9BA5; --accent: #2F8DF6; --guide: #FF4FA3;
+    --blue: #2F8DF6; --red: #F25F5C; --orange: #F07A1F; --green: #71D51B; --yellow: #F5C518; --purple: #9B5CFF; --teal: #19B5A5;
   }
   .light { --bg: #F4F4FA; --tile: #FFFFFF; --raised: #EAEAF1; --lighter: #EEF0F4; --line: #DADAE2; --text: #1F2029; --muted: #6B6C75; }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: #0B0C10; font: 15px/20px Roboto, -apple-system, system-ui, sans-serif; color: var(--text); }
   body { padding: 24px; }
   h1 { font-size: 22px; margin: 0 0 4px; } h2 { font-size: 17px; font-weight: 500; margin: 0 0 4px; }
-  .lede { color: #A9AAB3; max-width: 980px; margin: 0 0 22px; }
-  section.shot { margin-bottom: 36px; }
-  section.shot > p { color: #A9AAB3; max-width: 980px; margin: 0 0 12px; }
-  .label { color: #8A8B94; font-size: 13px; margin-bottom: 6px; }
+  .lede, section.shot > p { color: #A9AAB3; max-width: 1040px; margin: 0 0 14px; }
+  section.shot { margin-bottom: 40px; }
   .row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+  .note { color: var(--muted); font-size: 12px; line-height: 16px; }
 
-  /* ── the page frame (the web dashboards' bar and look) ── */
   .page { background: var(--bg); color: var(--text); border-radius: 12px; overflow: hidden; border: 1px solid #22232B; }
   .bar { display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 16px; border-bottom: 1px solid var(--line); }
-  .bar .title { font-size: 20px; font-weight: 500; flex: 1; }
-  .bar .crumb { color: var(--muted); font-size: 15px; font-weight: 400; }
-  .btn { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 18px; border: 0; font: 500 15px Roboto, system-ui, sans-serif; color: var(--text); background: var(--raised); cursor: pointer; }
-  .btn.primary { background: var(--accent); color: #fff; }
-  .btn.ghost { background: transparent; color: var(--muted); }
-  .btn svg, .ic { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .bar .title { font-size: 20px; font-weight: 500; flex: 1; display: flex; align-items: center; gap: 8px; }
+  .bar .design { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px 4px 10px; border-radius: 8px; background: var(--tile); font-size: 15px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 18px; border: 0; font: 500 15px Roboto, system-ui, sans-serif; color: var(--text); background: var(--raised); }
+  .btn.primary { background: var(--accent); color: #fff; } .btn.ghost { background: transparent; color: var(--muted); }
+  .ic { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  h3 { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin: 12px 4px 6px; }
 
-  /* ── the builder ── */
-  .builder { display: grid; grid-template-columns: 220px 1fr 320px; height: 760px; }
-  .lib { border-right: 1px solid var(--line); padding: 12px 8px; overflow: auto; }
-  .lib h3, .insp h3, .palette h3 { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin: 8px 8px 6px; }
-  .lib-item { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 8px; cursor: pointer; }
-  .lib-item:hover { background: color-mix(in srgb, var(--text) 8%, transparent); }
-  .lib-item.on { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); font-weight: 500; }
-  .lib-item .thumb { width: 36px; height: 28px; border-radius: 6px; background: var(--raised); display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; padding: 3px; flex: none; }
-  .lib-item .thumb i { background: color-mix(in srgb, var(--text) 30%, transparent); border-radius: 2px; }
-  .lib-item small { display: block; color: var(--muted); font-weight: 400; font-size: 12px; line-height: 16px; }
-  .lib .new { margin: 10px 8px; width: calc(100% - 16px); justify-content: center; }
+  /* ── builder ── */
+  .builder { display: grid; grid-template-columns: 250px 1fr 330px; height: 820px; }
+  .pal { border-right: 1px solid var(--line); padding: 10px; overflow: hidden; display: flex; flex-direction: column; }
+  .ptabs { display: flex; padding: 3px; gap: 2px; background: var(--tile); border-radius: 10px; margin-bottom: 8px; }
+  .ptabs span { flex: 1; text-align: center; padding: 5px 0; border-radius: 8px; font-size: 13px; color: var(--muted); }
+  .ptabs span.on { background: var(--lighter); color: var(--text); font-weight: 500; }
+  .search { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; border-radius: 8px; background: var(--tile); border: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  .search .ic { width: 16px; height: 16px; }
+  .chips { display: flex; gap: 4px; flex-wrap: wrap; margin: 8px 0 2px; }
+  .chips span { font-size: 12px; padding: 3px 9px; border-radius: 12px; background: var(--tile); color: var(--muted); }
+  .chips span.on { background: color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); }
+  .comps { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .comp { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 9px 4px 7px; border-radius: 10px; background: var(--tile); font-size: 12px; line-height: 15px; text-align: center; cursor: grab; position: relative; }
+  .comp .ic { width: 22px; height: 22px; color: var(--muted); }
+  .comp.new::after { content: 'new'; position: absolute; top: 4px; right: 5px; font-size: 9px; line-height: 12px; padding: 0 4px; border-radius: 6px; background: color-mix(in srgb, var(--accent) 25%, transparent); color: var(--accent); }
+  .comp.drag { outline: 2px solid var(--accent); }
+
+  .layers .ly { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px; font-size: 14px; }
+  .layers .ly .ic { width: 16px; height: 16px; color: var(--muted); }
+  .layers .ly.on { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
+  .layers .ly.in { padding-left: 30px; }
+  .layers .ly .bolt { margin-left: auto; color: var(--orange); width: 14px; height: 14px; }
 
   .stage { display: flex; flex-direction: column; min-width: 0; }
-  .palette { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
-  .palette h3 { margin: 0 6px 0 0; }
-  .chip { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px 0 10px; border-radius: 10px; background: var(--tile); border: 1px dashed color-mix(in srgb, var(--text) 25%, transparent); font-size: 14px; cursor: grab; }
-  .chip svg { width: 18px; height: 18px; }
-  .canvas-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 22px; gap: 14px; overflow: auto;
+  .canvas-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 18px; gap: 12px; overflow: hidden;
     background-image: radial-gradient(color-mix(in srgb, var(--text) 10%, transparent) 1px, transparent 1px); background-size: 16px 16px; }
   .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--tile); gap: 2px; }
-  .seg span { padding: 5px 12px; border-radius: 8px; font-size: 13px; color: var(--muted); cursor: pointer; }
+  .seg span { padding: 5px 12px; border-radius: 8px; font-size: 13px; color: var(--muted); }
   .seg span.on { background: var(--lighter); color: var(--text); font-weight: 500; }
-  .tools { display: flex; gap: 10px; align-items: center; }
+  .tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; }
   .canvas { position: relative; }
-  .canvas .grid-guide { position: absolute; inset: 0; display: grid; gap: 8px; pointer-events: none; }
-  .canvas .grid-guide i { border: 1px dashed color-mix(in srgb, var(--text) 16%, transparent); border-radius: 10px; }
-  .width-note { color: var(--muted); font-size: 12px; }
+  .gguide { position: absolute; inset: 0; display: grid; gap: 8px; pointer-events: none; }
+  .gguide i { border: 1px dashed color-mix(in srgb, var(--text) 16%, transparent); border-radius: 10px; }
 
-  .insp { border-left: 1px solid var(--line); padding: 12px 16px; overflow: auto; }
-  .field { margin: 0 0 12px; }
+  .insp { border-left: 1px solid var(--line); padding: 10px 16px; overflow: hidden; }
+  .itabs { display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: var(--tile); margin-bottom: 6px; }
+  .itabs span { flex: 1; text-align: center; padding: 5px 0; border-radius: 8px; font-size: 13px; color: var(--muted); display: inline-flex; justify-content: center; align-items: center; gap: 4px; }
+  .itabs span.on { background: var(--lighter); color: var(--text); font-weight: 500; }
+  .itabs .ic { width: 14px; height: 14px; }
+  .field { margin: 0 0 10px; }
   .field > span { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
-  .input { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 38px; padding: 0 12px; border-radius: 8px; background: var(--tile); border: 1px solid var(--line); font-size: 15px; }
-  .input .ic { width: 18px; height: 18px; color: var(--muted); }
+  .input { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 36px; padding: 0 10px; border-radius: 8px; background: var(--tile); border: 1px solid var(--line); font-size: 14px; }
+  .input .ic { width: 16px; height: 16px; color: var(--muted); }
   .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .sizes { display: flex; gap: 6px; }
-  .sizes span { flex: 1; text-align: center; padding: 7px 0; border-radius: 8px; background: var(--tile); border: 1px solid var(--line); font-size: 13px; color: var(--muted); }
-  .sizes span.on { border-color: var(--accent); color: var(--accent); font-weight: 500; }
-  .rule { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 8px; background: var(--tile); border: 1px solid var(--line); margin-bottom: 6px; font-size: 14px; }
-  .rule .swatch { width: 14px; height: 14px; border-radius: 50%; }
-  .rule .x { color: var(--muted); }
-  .addrule { color: var(--accent); font-size: 14px; font-weight: 500; padding: 4px 0; }
-  .divider { border-top: 1px solid var(--line); margin: 14px -16px; }
+  .three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .opts { display: flex; gap: 4px; }
+  .opts span { flex: 1; text-align: center; padding: 7px 0; border-radius: 8px; background: var(--tile); border: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  .opts span.on { border-color: var(--accent); color: var(--accent); font-weight: 500; }
+  .sw { width: 34px; height: 20px; border-radius: 10px; background: var(--raised); position: relative; flex: none; }
+  .sw::after { content: ''; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--muted); }
+  .sw.on { background: var(--accent); } .sw.on::after { left: 17px; background: #fff; }
+  .frow { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .frow .card { grid-column: 1 / -1; font-size: 12px; line-height: 16px; color: var(--muted); }
+  .frow .card b { color: var(--text); font-weight: 500; }
+  .divider { border-top: 1px solid var(--line); margin: 12px -16px; }
 
-  /* ── the widget itself: the native tiles' look ── */
+  /* ── parts ── */
   .cw { display: grid; gap: 8px; grid-auto-rows: 64px; }
   .part { position: relative; border-radius: 10px; background: var(--tile); padding: 8px 10px; min-width: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; --c: var(--blue); }
-  .part.sel { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .part.sel::after { content: ''; position: absolute; right: 3px; bottom: 3px; width: 10px; height: 10px; border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent); border-radius: 0 0 4px 0; }
+  .part.sel, .kid.sel { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .part.flow::before, .kid.flow::before { content: ''; position: absolute; z-index: 3; top: 3px; right: 3px; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--orange) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z" fill="white"/></svg>') center/10px no-repeat; }
   .part .top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-  .part .ic { width: 22px; height: 22px; color: var(--muted); }
-  .part .name { font-size: 14px; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .part .sub { font-size: 12px; line-height: 16px; color: var(--muted); }
-  .part .val { font-size: 17px; line-height: 24px; font-weight: 500; white-space: nowrap; }
-  .part .val small { font-size: 14px; color: var(--muted); font-weight: 400; margin-left: 1px; }
-  .part.big { justify-content: flex-start; gap: 0; }
-  .part.big .val { font-size: 32px; line-height: 40px; font-weight: 700; }
-  .part.big .spark { height: 42%; }
-  .part.tinted { background: color-mix(in srgb, var(--c) 22%, var(--tile)); }
-  .part.tinted .ic { color: var(--c); }
-  .part.alert .val, .part.alert .sub { color: var(--c); }
-  .part.center { align-items: center; justify-content: center; text-align: center; }
-  .part.bare { background: transparent; padding: 0 2px; justify-content: center; }
-  .part.bare .heading { font-size: 20px; line-height: 28px; font-weight: 500; }
-  .part.bare .body { font-size: 14px; line-height: 20px; color: var(--muted); }
-  .part .spark { position: absolute; left: 0; right: 0; bottom: 0; height: 55%; }
-  .part .spark path.l { fill: none; stroke: var(--c); stroke-width: 2; }
-  .part .spark path.a { fill: color-mix(in srgb, var(--c) 18%, transparent); stroke: none; }
-  .part .tog { width: 36px; height: 22px; border-radius: 11px; background: var(--raised); position: relative; flex: none; }
-  .part .tog::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--muted); }
-  .part.tinted .tog { background: var(--c); } .part.tinted .tog::after { left: 17px; background: #fff; }
-  .part.slider { padding: 0; justify-content: center; }
-  .part.slider .fill { position: absolute; inset: 0 auto 0 0; background: color-mix(in srgb, var(--c) 40%, var(--tile)); }
-  .part.slider .in { position: relative; display: flex; align-items: center; gap: 10px; padding: 0 12px; }
-  .part.slider .in .ic { color: var(--text); }
-  .part.slider .in .name { flex: 1; }
-  .part.slider .in .val { font-size: 15px; }
-  .part.slider .knob { position: absolute; top: 14px; bottom: 14px; width: 4px; border-radius: 2px; background: #fff; opacity: .9; }
-  .part.press { align-items: center; justify-content: center; gap: 4px; }
-  .part.press .ic { width: 24px; height: 24px; color: var(--c); }
-  .part.iconpart { align-items: center; justify-content: center; }
-  .part.iconpart .ic { width: 34px; height: 34px; color: var(--c); }
-  .part.hidden-by-rule > * { opacity: .25; }
-  .part.hidden-by-rule { border: 1px dashed var(--muted); background: repeating-linear-gradient(45deg, var(--tile) 0 8px, transparent 8px 16px); }
-  .part.hidden-by-rule::before { content: 'Hidden now: charger off'; position: absolute; inset: 0; display: grid; place-items: center; font-size: 12px; color: var(--text); }
+  .part .ic, .kid .ic { width: 22px; height: 22px; color: var(--muted); }
+  .name { font-size: 14px; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sub { font-size: 12px; line-height: 16px; color: var(--muted); }
+  .val { font-size: 17px; line-height: 24px; font-weight: 500; white-space: nowrap; }
+  .val small { font-size: 14px; color: var(--muted); font-weight: 400; margin-left: 1px; }
+  .big { font-size: 32px; line-height: 40px; font-weight: 700; }
+  .tinted { background: color-mix(in srgb, var(--c) 22%, var(--tile)) !important; }
+  .tinted .ic { color: var(--c); }
+  .tog { width: 36px; height: 22px; border-radius: 11px; background: var(--raised); position: relative; flex: none; }
+  .tog::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--muted); }
+  .tinted .tog { background: var(--c); } .tinted .tog::after { left: 17px; background: #fff; }
+  .spark { position: absolute; left: 0; right: 0; bottom: 0; height: 45%; }
+  .spark path.l { fill: none; stroke: var(--c); stroke-width: 2; }
+  .spark path.a { fill: color-mix(in srgb, var(--c) 18%, transparent); stroke: none; }
 
-  /* the front page */
-  .front { padding: 20px 24px 28px; }
-  .front h4 { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin: 18px 0 10px; display: flex; justify-content: space-between; align-items: center; }
-  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-  .card { background: var(--tile); border-radius: 12px; padding: 12px; min-height: 92px; }
-  .card b { display: block; font-weight: 500; font-size: 17px; line-height: 24px; }
-  .card small { color: var(--muted); font-size: 13px; }
-  .card .mini { margin-top: 10px; background: var(--bg); border-radius: 8px; padding: 6px; }
-  .card .mini .cw { gap: 3px; grid-auto-rows: 14px; }
-  .card .mini .cw > i { border-radius: 3px; background: var(--raised); }
-  .card .mini .cw > i.t { background: color-mix(in srgb, var(--blue) 40%, var(--raised)); }
-  .card .mini .cw > i.r { background: color-mix(in srgb, var(--red) 40%, var(--raised)); }
-  .card.add { display: grid; place-items: center; border: 1px dashed var(--line); background: transparent; color: var(--accent); font-weight: 500; }
+  /* containers */
+  .box { position: relative; border-radius: 14px; overflow: visible; padding: 0; }
+  .box .inner { position: absolute; inset: 10px; }
+  .box .fine { position: absolute; inset: 10px; pointer-events: none;
+    background-image: linear-gradient(to right, color-mix(in srgb, #fff 9%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, #fff 9%, transparent) 1px, transparent 1px);
+    background-size: calc(100% / 12) 8px; }
+  .box .tag { position: absolute; left: 10px; top: -22px; font-size: 11px; color: var(--accent); white-space: nowrap; }
+  .kid { position: absolute; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; min-width: 0; --c: var(--blue); }
+  .kid.tile { background: color-mix(in srgb, var(--tile) 82%, transparent); padding: 6px 10px; backdrop-filter: blur(6px); }
+  .kid.bare { padding: 0 2px; }
+  .guide-v { position: absolute; top: -10px; bottom: -10px; width: 0; border-left: 1px dashed var(--guide); }
+  .guide-h { position: absolute; left: -10px; right: -10px; height: 0; border-top: 1px dashed var(--guide); }
+  .readout { position: absolute; font-size: 11px; line-height: 16px; padding: 1px 6px; border-radius: 4px; background: var(--guide); color: #fff; white-space: nowrap; }
+  .handle { position: absolute; width: 8px; height: 8px; background: #fff; border: 2px solid var(--accent); border-radius: 2px; }
 
-  .dash { padding: 16px; display: flex; gap: 16px; align-items: flex-start; }
-  .wtitle { font-size: 17px; font-weight: 500; margin: 0 0 8px 2px; }
+  /* the new parts */
+  .gauge svg { width: 100%; height: 100%; }
+  .levelbar { height: 8px; border-radius: 4px; background: var(--raised); overflow: hidden; }
+  .levelbar i { display: block; height: 100%; border-radius: 4px; background: var(--c); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 25%, transparent); flex: none; }
+  .stepper { display: flex; align-items: center; justify-content: space-between; }
+  .stepper b { width: 32px; height: 32px; border-radius: 16px; display: grid; place-items: center; background: var(--raised); font-size: 20px; font-weight: 400; }
+  .choice { display: flex; gap: 3px; padding: 3px; border-radius: 9px; background: var(--raised); }
+  .choice span { flex: 1; text-align: center; font-size: 13px; padding: 4px 0; border-radius: 7px; color: var(--muted); }
+  .choice span.on { background: var(--c); color: #fff; font-weight: 500; }
+  .cam { background: linear-gradient(160deg, #3a4a5e 0%, #24303d 45%, #1a2129 46%, #2c3a2e 100%) !important; }
+  .cam .live { position: absolute; top: 8px; left: 8px; display: flex; gap: 4px; align-items: center; font-size: 11px; color: #fff; background: rgb(0 0 0 / .45); padding: 1px 6px; border-radius: 8px; }
+  .cam .live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+  .art { width: 46px; height: 46px; border-radius: 6px; background: linear-gradient(135deg, #9B5CFF, #F07A1F); flex: none; }
+  .play { width: 32px; height: 32px; border-radius: 16px; background: var(--text); color: var(--bg); display: grid; place-items: center; flex: none; }
+  .play .ic { width: 16px !important; height: 16px !important; color: var(--bg) !important; fill: currentColor; }
 
-  /* the phone */
-  .phone { width: 390px; border-radius: 28px; padding: 10px; background: #000; }
-  .phone .page { border-radius: 20px; height: 820px; overflow: hidden; }
-  .phone .insp { border: 0; padding: 12px 16px; }
-  .sheet { border-top: 1px solid var(--line); background: var(--bg); border-radius: 16px 16px 0 0; box-shadow: 0 -8px 24px rgb(0 0 0 / .4); }
-  .sheet .grab { width: 36px; height: 4px; border-radius: 2px; background: var(--line); margin: 8px auto 0; }
-  .tabs { display: flex; gap: 6px; padding: 10px 16px 0; }
-  .tabs span { padding: 6px 12px; border-radius: 16px; font-size: 14px; color: var(--muted); background: var(--tile); }
-  .tabs span.on { color: #fff; background: var(--accent); }
+  .gallery { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .gcard { background: var(--bg); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .gcard .t { font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .gcard .t .n { font-size: 11px; color: var(--muted); font-weight: 400; }
+  .gcard .d { font-size: 12px; line-height: 16px; color: var(--muted); }
+  .gcard .fl { font-size: 11px; line-height: 15px; color: var(--orange); }
+  .gcard .demo { height: 136px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 64px 64px; gap: 8px; }
+
+  .light .kid.tile { --text: #1F2029; --muted: #6B6C75; color: var(--text); }
+  #d1 .flow::before, #d2 .flow::before, #d3 .flow::before { display: none; } /* the badge is the builder's only */
+  .box .tag { top: -18px; }
+  /* Flow cards */
+  .flowcards { display: flex; flex-direction: column; gap: 10px; width: 520px; }
+  .fc { border-radius: 12px; overflow: hidden; background: #fff; color: #1F2029; box-shadow: 0 2px 8px rgb(0 0 0 / .3); }
+  .fc .h { display: flex; gap: 10px; align-items: center; padding: 8px 12px; color: #fff; font-size: 13px; font-weight: 500; }
+  .fc .h.when { background: #D6A100; } .fc .h.then { background: #2F8DF6; } .fc .h.and { background: #8B5CF6; }
+  .fc .b { padding: 10px 12px 12px; font-size: 15px; line-height: 26px; }
+  .fc .arg { display: inline-block; padding: 0 8px; border-radius: 6px; background: #EEF0F4; font-weight: 500; line-height: 24px; }
+  .fc .tok { display: inline-block; padding: 0 8px; border-radius: 12px; background: #2A1958; color: #fff; font-size: 12px; line-height: 20px; margin-right: 4px; }
+  .fc .foot { padding: 0 12px 10px; font-size: 12px; color: #6B6C75; }
 </style>
 </head>
 <body>
-<h1>Widget Builder (mock-up)</h1>
-<p class="lede">Build a design from parts on a grid, save it, then place it on any web dashboard as the <b>Widget Builder</b> widget and choose the design in its settings. Changing a design updates every copy. Everything shown is made-up data from the house Solbakken.</p>
+<h1>Widget Builder · mock-up 2</h1>
+<p class="lede">With your feedback: the parts library is now on the left (a search, groups, and a Layers tab for what's in the design); designs are picked from the title. <b>Containers</b> hold parts on a finer grid (12 columns, 8 px rows) or freely placed. Any part can be <b>opened to Flows</b>, one setting at a time, from the new Flow tab. The ⚡ badge marks parts a Flow can change. All data is made up (the house Solbakken).</p>
 
-<section class="shot" id="s-builder">
-  <h2>1 · The builder page <span style="color:#8A8B94;font-weight:400">(#/builder/&lt;design&gt;)</span></h2>
-  <p>Left: your saved designs. Middle: the design at its real size on a 4-column grid; drag a part from the bar to place it, drag its corner to resize, and use the switch above to preview it at 300 or 440 px, in dark or light. Right: settings for the selected part, with its rules at the bottom. The preview shows live values.</p>
+<section class="shot">
+  <h2>1 · Builder: a container on the fine grid</h2>
+  <p>The "Living room" container is 4×3 on the widget's grid; inside, its parts snap to 12 columns × 8 px. A part inside a container can drop its own tile (Look → Tile: off) and sit right on the background. Left: the parts library, grouped by Show, Control, Layout and Media, with a search, since there will be many.</p>
   <div class="page">
     <div class="bar">
       <svg class="ic" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-      <div class="title">Widget Builder <span class="crumb">· Living room</span></div>
-      <span class="width-note">Saved</span>
-      <button class="btn ghost"><svg viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>Undo</button>
-      <button class="btn"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Duplicate</button>
-      <button class="btn primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add to dashboard</button>
+      <div class="title">Widget Builder <span class="design">Living room <svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></div>
+      <span class="note">Saved</span>
+      <button class="btn ghost"><svg class="ic" viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>Undo</button>
+      <button class="btn primary"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add to dashboard</button>
     </div>
     <div class="builder">
-      <div class="lib">
-        <h3>Designs</h3>
-        <div class="lib-item on"><span class="thumb"><i style="grid-column:span 2"></i><i></i><i></i><i style="grid-column:span 4"></i></span><span>Living room<small>on 2 dashboards</small></span></div>
-        <div class="lib-item"><span class="thumb"><i style="grid-column:span 4"></i><i style="grid-column:span 2"></i><i style="grid-column:span 2"></i></span><span>Garage<small>on 1 dashboard</small></span></div>
-        <div class="lib-item"><span class="thumb"><i style="grid-column:span 2;grid-row:span 2"></i><i style="grid-column:span 2"></i><i style="grid-column:span 2"></i></span><span>Energy now<small>on 3 dashboards</small></span></div>
-        <div class="lib-item"><span class="thumb"><i></i><i></i><i></i><i></i></span><span>Kids' room<small>not placed</small></span></div>
-        <button class="btn new"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>New design</button>
-      </div>
-      <div class="stage">
-        <div class="palette">
-          <h3>Add</h3>
-          <span class="chip"><svg class="ic" viewBox="0 0 24 24"><path d="M14 4v10.5a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0z"/></svg>Value</span>
-          <span class="chip"><svg class="ic" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16" cy="12" r="2"/></svg>Switch</span>
-          <span class="chip"><svg class="ic" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9z"/></svg>Button</span>
-          <span class="chip"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12h16"/><circle cx="10" cy="12" r="3"/></svg>Slider</span>
-          <span class="chip"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/></svg>Mini chart</span>
-          <span class="chip"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>Text</span>
-          <span class="chip"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2l3 7 7 .5-5.5 4.5 2 7L12 17l-6.5 4 2-7L2 9.5 9 9z"/></svg>Icon</span>
+      <div class="pal" id="pal1"></div>
+      <div class="stage"><div class="canvas-wrap">
+        <div class="tools">
+          <span class="seg"><span>300 px</span><span class="on">440 px</span></span>
+          <span class="seg"><span class="on">Dark</span><span>Light</span></span>
+          <span class="seg"><span class="on">Muted</span><span>Vivid</span></span>
         </div>
-        <div class="canvas-wrap">
-          <div class="tools">
-            <span class="seg"><span>300 px</span><span class="on">440 px</span></span>
-            <span class="seg"><span class="on">Dark</span><span>Light</span></span>
-            <span class="seg"><span class="on">Muted</span><span>Vivid</span></span>
-          </div>
-          <div class="canvas" id="builder-canvas" style="width:440px"></div>
-          <span class="width-note">4 columns · rows grow as you add parts · tap a part to select it</span>
+        <div class="canvas" id="c1" style="width:440px"></div>
+        <span class="note">Double-click a container to edit inside it · Esc goes back out</span>
+      </div></div>
+      <div class="insp" id="i1"></div>
+    </div>
+  </div>
+</section>
+
+<section class="shot">
+  <h2>2 · Builder: a free-form container and the Flow tab</h2>
+  <p>"Entrance" is a camera picture as the background with parts placed freely on top: positions in % of the container, so it scales between 300 and 440 px. Pink lines snap a part to the edges and centres of the others, and the readout shows the position. On the right, the Flow tab of the "Message" text part: each setting a Flow may change is switched on one at a time and shows the card it adds.</p>
+  <div class="page">
+    <div class="bar">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      <div class="title">Widget Builder <span class="design">Entrance <svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></div>
+      <span class="note">Saved</span>
+      <button class="btn primary"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add to dashboard</button>
+    </div>
+    <div class="builder">
+      <div class="pal" id="pal2"></div>
+      <div class="stage"><div class="canvas-wrap">
+        <div class="tools">
+          <span class="seg"><span>Grid</span><span class="on">Free-form</span></span>
+          <span class="seg"><span class="on">Snap to parts</span><span>No snap</span></span>
+          <span class="seg"><span>300 px</span><span class="on">440 px</span></span>
         </div>
-      </div>
-      <div class="insp" id="insp"></div>
+        <div class="canvas" id="c2" style="width:440px"></div>
+      </div></div>
+      <div class="insp" id="i2"></div>
     </div>
   </div>
 </section>
 
-<section class="shot" id="s-front">
-  <h2>2 · On the front page</h2>
-  <p>The builder gets its own section on the web dashboards' front page, after the dashboards: a card per design with a sketch of its grid and where it's used.</p>
-  <div class="page front">
-    <div style="font-size:24px;font-weight:700">Widgetkeeper Web Dashboards</div>
-    <h4>Dashboards</h4>
-    <div class="cards">
-      <div class="card"><b>Home</b><small>9 widgets</small></div>
-      <div class="card"><b>Kitchen tablet</b><small>6 widgets</small></div>
-      <div class="card"><b>Energy</b><small>4 widgets</small></div>
-      <div class="card"><b>Garage</b><small>3 widgets</small></div>
-    </div>
-    <h4>Widget Builder <span class="btn" style="height:30px;font-size:13px;text-transform:none;letter-spacing:0">+ New design</span></h4>
-    <div class="cards">
-      <div class="card"><b>Living room</b><small>on Home, Kitchen tablet</small><div class="mini"><div class="cw" style="grid-template-columns:repeat(4,1fr)"><i style="grid-column:span 2;grid-row:span 2" class="t"></i><i></i><i class="t"></i><i style="grid-column:span 2"></i><i style="grid-column:span 4" class="t"></i></div></div></div>
-      <div class="card"><b>Garage</b><small>on Garage</small><div class="mini"><div class="cw" style="grid-template-columns:repeat(4,1fr)"><i style="grid-column:span 4;background:transparent"></i><i style="grid-column:span 2" class="r"></i><i style="grid-column:span 2" class="t"></i><i style="grid-column:span 2"></i><i style="grid-column:span 2"></i></div></div></div>
-      <div class="card"><b>Energy now</b><small>on 3 dashboards</small><div class="mini"><div class="cw" style="grid-template-columns:repeat(4,1fr)"><i style="grid-column:span 2;grid-row:span 2"></i><i style="grid-column:span 2"></i><i style="grid-column:span 2" class="t"></i></div></div></div>
-      <div class="card add">+ New design</div>
-    </div>
-  </div>
-</section>
-
-<section class="shot" id="s-dash">
-  <h2>3 · The designs on a dashboard</h2>
-  <p>Placed with Add widget → Widget Builder, then <i>Design</i> in its settings. The parts are the native tiles' look and the widgets' own (Device Values' tile, Quick Actions' switch, Light Controls' bar, Sparklines' line). In <b>Garage</b> the door's rule turns it red while it's open, and the "Car charging" part has a rule that hides it while the charger is off.</p>
+<section class="shot">
+  <h2>3 · The Flow cards it adds</h2>
+  <p>Only parts and settings opened to Flows appear in the cards' lists, named <i>Design · Part</i>. A value set by a Flow is kept by the app (as Flow Buttons' colours are) and reaches every copy of the design at once. A button or tile can also be a trigger instead of acting itself.</p>
   <div class="row">
-    <div class="page dash">
-      <div><div class="wtitle">Living room</div><div id="d-living" style="width:440px"></div></div>
-      <div><div class="wtitle">Garage</div><div id="d-garage" style="width:300px"></div></div>
+    <div class="flowcards">
+      <div class="fc"><div class="h then">THEN · Widgetkeeper</div><div class="b">Set the text of Widget Builder part <span class="arg">Entrance · Message</span> to <span class="arg">Parcel by the door</span></div></div>
+      <div class="fc"><div class="h then">THEN · Widgetkeeper</div><div class="b">Colour Widget Builder part <span class="arg">Entrance · Message</span> <span class="arg">Orange</span></div></div>
+      <div class="fc"><div class="h then">THEN · Widgetkeeper</div><div class="b"><span class="arg">Hide</span> Widget Builder part <span class="arg">Living room · Movie</span></div></div>
+      <div class="fc"><div class="h then">THEN · Widgetkeeper</div><div class="b">Set Widget Builder value <span class="arg">Energy · Today's cost</span> to <span class="arg">42.50</span> <span class="arg">kr</span></div><div class="foot">for a "Flow value" part, whose value only Flows give</div></div>
     </div>
-    <div class="page dash light">
-      <div><div class="wtitle">Living room</div><div id="d-living-l" style="width:300px"></div></div>
-      <div><div class="wtitle">Energy now</div><div id="d-energy-l" style="width:300px"></div></div>
+    <div class="flowcards">
+      <div class="fc"><div class="h when">WHEN · Widgetkeeper</div><div class="b">Widget Builder part <span class="arg">Entrance · Ring</span> was tapped</div><div class="foot"><span class="tok">Part</span><span class="tok">Design</span><span class="tok">Dashboard</span></div></div>
+      <div class="fc"><div class="h when">WHEN · Widgetkeeper</div><div class="b">Widget Builder choice <span class="arg">Living room · Scene</span> changed</div><div class="foot"><span class="tok">Choice</span><span class="tok">Index</span></div></div>
+      <div class="fc"><div class="h and">AND · Widgetkeeper</div><div class="b">Widget Builder part <span class="arg">Living room · Movie</span> is <span class="arg">shown</span></div></div>
+      <div class="fc"><div class="h then">THEN · Widgetkeeper</div><div class="b">Set the icon of Widget Builder part <span class="arg">Garage · Door</span> to <span class="arg">lock</span></div></div>
     </div>
   </div>
 </section>
 
-<section class="shot" id="s-phone">
-  <h2>4 · The builder on a phone</h2>
-  <p>On a narrow screen the designs list folds into the bar's title, the preview fills the width, and the selected part's settings come up as a sheet from the bottom, with tabs for the part, its look and its rules.</p>
+<section class="shot">
+  <h2>4 · Ten new parts</h2>
+  <p>On top of Value, Switch, Button, Slider, Mini chart, Text, Icon and Container. Each borrows from a widget we already have where it can. In orange: what a Flow could change.</p>
+  <div class="page" style="padding:16px"><div class="gallery" id="gallery"></div></div>
+</section>
+
+<section class="shot">
+  <h2>5 · On a dashboard</h2>
+  <p>The two designs as placed, dark and light.</p>
   <div class="row">
-    <div class="phone"><div class="page" style="display:flex;flex-direction:column">
-      <div class="bar"><svg class="ic" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><div class="title" style="font-size:17px">Garage ▾</div><button class="btn primary" style="height:32px;padding:0 10px"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
-      <div class="palette" style="padding:8px 12px;gap:6px;flex-wrap:nowrap;overflow:hidden">
-        <span class="chip">Value</span><span class="chip">Switch</span><span class="chip">Button</span><span class="chip">Slider</span><span class="chip">Chart</span>
-      </div>
-      <div style="padding:14px 18px 18px;flex:none"><div class="canvas" id="phone-canvas" style="width:334px"></div></div>
-      <div class="sheet" style="flex:1"><div class="grab"></div>
-        <div class="tabs"><span>Part</span><span>Look</span><span class="on">Rules</span></div>
-        <div class="insp" id="phone-rules"></div>
-      </div>
-    </div></div>
+    <div class="page" style="padding:16px;display:flex;gap:16px">
+      <div><div style="font-weight:500;margin:0 0 8px 2px">Living room</div><div id="d1" style="width:440px"></div></div>
+      <div><div style="font-weight:500;margin:0 0 8px 2px">Entrance</div><div id="d2" style="width:300px"></div></div>
+    </div>
+    <div class="page light" style="padding:16px">
+      <div style="font-weight:500;margin:0 0 8px 2px">Living room</div><div id="d3" style="width:300px"></div>
+    </div>
   </div>
 </section>
 
@@ -255,150 +261,211 @@ const I = {
   thermo: '<path d="M14 4v10.5a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0z"/>',
   drop: '<path d="M12 2.7l5.7 5.6a8 8 0 1 1-11.4 0z"/>',
   bulb: '<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/>',
-  plug: '<path d="M12 22v-5M9 8V2M15 8V2M18 8v4a6 6 0 0 1-12 0V8z"/>',
   play: '<path d="M6 4l14 8-14 8z"/>',
-  film: '<rect x="2" y="3" width="20" height="18" rx="2"/><path d="M7 3v18M17 3v18M2 12h20M2 7.5h5M2 16.5h5M17 7.5h5M17 16.5h5"/>',
+  film: '<rect x="2" y="3" width="20" height="18" rx="2"/><path d="M7 3v18M17 3v18M2 12h20"/>',
   door: '<path d="M4 21h16M6 21V3h12v18"/><circle cx="15" cy="12" r="1"/>',
-  car: '<path d="M5 17h14M3 13l2-6h14l2 6v4H3z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>',
   bolt: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
-  sofa: '<path d="M4 18v2M20 18v2M3 11a2 2 0 0 1 4 0v3h10v-3a2 2 0 0 1 4 0v7H3z"/><path d="M5 9V7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v2"/>',
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
-  co2: '<path d="M17.5 19a4.5 4.5 0 1 0-1.3-8.8A6 6 0 1 0 6 16.9"/><path d="M6 19h11.5"/>',
+  cloudsun: '<path d="M12 2v2M4.9 4.9l1.4 1.4M20 12h2M19.1 4.9l-1.4 1.4"/><path d="M15.9 13A4 4 0 0 0 8.4 9.2"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6z"/>',
   chev: '<path d="M6 9l6 6 6-6"/>',
-  x: '<path d="M18 6L6 18M6 6l12 12"/>',
+  lock: '<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/>',
+  text: '<path d="M4 7V4h16v3M9 20h6M12 4v16"/>',
+  star: '<path d="M12 2l3 7 7 .5-5.5 4.5 2 7L12 17l-6.5 4 2-7L2 9.5 9 9z"/>',
+  toggle: '<rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16" cy="12" r="2"/>',
+  slider: '<path d="M4 12h16"/><circle cx="10" cy="12" r="3"/>',
+  chart: '<path d="M3 17l6-6 4 4 8-8"/>',
+  box: '<rect x="3" y="3" width="18" height="18" rx="4"/><rect x="7" y="7" width="5" height="4" rx="1"/>',
+  gauge: '<path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-5"/>',
+  level: '<rect x="2" y="9" width="18" height="6" rx="3"/><path d="M5 12h8"/>',
+  dot: '<circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/>',
+  step: '<path d="M5 12h4M17 10v4M15 12h4"/><rect x="2" y="7" width="20" height="10" rx="5"/>',
+  choice: '<rect x="2" y="7" width="20" height="10" rx="3"/><path d="M9 7v10M15 7v10"/>',
+  variable: '<path d="M8 4c-2 0-3 1-3 3v2c0 1-1 2-2 2 1 0 2 1 2 2v2c0 2 1 3 3 3M16 4c2 0 3 1 3 3v2c0 1 1 2 2 2-1 0-2 1-2 2v2c0 2-1 3-3 3"/>',
+  camera: '<path d="M23 7l-7 5 7 5z"/><rect x="1" y="5" width="15" height="14" rx="2"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  flowval: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+  img: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/>',
+  spacer: '<path d="M4 4v16M20 4v16M8 12h8"/>',
+  pin: '<path d="M12 22s7-6 7-12a7 7 0 0 0-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/>',
 };
-const svg = (n, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24">${I[n] || ''}</svg>`;
+const svg = (n, cls = 'ic', st = '') => `<svg class="${cls}" viewBox="0 0 24 24" style="${st}">${I[n] || ''}</svg>`;
+const C = { blue: 'var(--blue)', red: 'var(--red)', orange: 'var(--orange)', green: 'var(--green)', yellow: 'var(--yellow)', purple: 'var(--purple)', teal: 'var(--teal)' };
 function spark(pts) {
   const w = 100, h = 40, mn = Math.min(...pts), mx = Math.max(...pts);
   const xy = pts.map((v, i) => [i / (pts.length - 1) * w, h - 4 - (v - mn) / ((mx - mn) || 1) * (h - 10)]);
   const d = 'M' + xy.map(p => p.map(n => n.toFixed(1)).join(',')).join(' L');
   return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path class="a" d="${d} L${w},${h} L0,${h}z"/><path class="l" d="${d}" vector-effect="non-scaling-stroke"/></svg>`;
 }
-const C = { blue: 'var(--blue)', red: 'var(--red)', orange: 'var(--orange)', green: 'var(--green)', yellow: 'var(--yellow)', purple: 'var(--purple)' };
-
-function part(p) {
-  const s = `grid-column: span ${p.w || 1}; grid-row: span ${p.h || 1}; --c: ${C[p.color || 'blue']};`;
-  const cls = ['part'];
-  if (p.sel) cls.push('sel');
-  if (p.hidden) cls.push('hidden-by-rule');
-  let inner = '';
-  switch (p.type) {
-    case 'value':
-      if (p.alert) cls.push('tinted', 'alert');
-      if (p.big) {
-        cls.push('big');
-        inner = `<div class="top"><span class="name">${p.label}</span>${svg(p.icon)}</div><div class="val" style="position:relative;z-index:1">${p.value}<small>${p.unit || ''}</small></div>${p.chart ? spark(p.chart) : ''}`;
-      } else if ((p.w || 1) === 1) {
-        cls.push('center');
-        inner = `${svg(p.icon)}<div class="val">${p.value}<small>${p.unit || ''}</small></div>`;
-      } else {
-        inner = `<div class="top">${svg(p.icon)}<span class="val">${p.value}<small>${p.unit || ''}</small></span></div><div class="name">${p.label}${p.sub ? ` <span class="sub">· ${p.sub}</span>` : ''}</div>`;
-      }
-      break;
-    case 'chart':
-      inner = `<div class="top"><span class="name">${p.label}</span><span class="val" style="font-size:15px">${p.value}<small>${p.unit}</small></span></div>${spark(p.chart)}`;
-      break;
-    case 'switch':
-      if (p.on) cls.push('tinted');
-      inner = `<div class="top">${svg(p.icon)}<span class="tog"></span></div><div class="name">${p.label}</div>`;
-      break;
-    case 'button':
-      cls.push('press');
-      inner = `${svg(p.icon)}<div class="name">${p.label}</div>`;
-      break;
-    case 'slider':
-      cls.push('slider');
-      inner = `<span class="fill" style="width:${p.value}%"></span><span class="knob" style="left:calc(${p.value}% - 8px)"></span><div class="in">${svg(p.icon)}<span class="name">${p.label}</span><span class="val">${p.value} %</span></div>`;
-      break;
-    case 'text':
-      cls.push('bare');
-      inner = `<div class="${p.style || 'heading'}">${p.text}</div>${p.sub ? `<div class="body">${p.sub}</div>` : ''}`;
-      break;
-    case 'icon':
-      cls.push('iconpart');
-      inner = svg(p.icon);
-      break;
-  }
-  return `<div class="${cls.join(' ')}" style="${s}" data-i="${p.i ?? ''}">${inner}</div>`;
+function arc(frac, color) {
+  const r = 34, cx = 50, cy = 46, a0 = Math.PI * 0.8, a1 = Math.PI * 2.2;
+  const pt = a => [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  const path = (from, to) => { const [x0, y0] = pt(from), [x1, y1] = pt(to); return `M${x0.toFixed(1)},${y0.toFixed(1)} A${r},${r} 0 ${to - from > Math.PI ? 1 : 0} 1 ${x1.toFixed(1)},${y1.toFixed(1)}`; };
+  return `<svg viewBox="0 0 100 80"><path d="${path(a0, a1)}" stroke="var(--raised)" stroke-width="8" fill="none" stroke-linecap="round"/><path d="${path(a0, a0 + (a1 - a0) * frac)}" stroke="${color}" stroke-width="8" fill="none" stroke-linecap="round"/></svg>`;
 }
-function widget(el, parts, cols = 4, guide = 0) {
-  const g = guide ? `<div class="grid-guide" style="grid-template-columns:repeat(${cols},1fr);grid-auto-rows:64px">${'<i></i>'.repeat(cols * guide)}</div>` : '';
+
+/* palette */
+const GROUPS = [
+  ['Show', [['Value', 'thermo'], ['Gauge', 'gauge', 1], ['Level bar', 'level', 1], ['Status', 'dot', 1], ['Mini chart', 'chart'], ['Flow value', 'flowval', 1]]],
+  ['Control', [['Switch', 'toggle'], ['Button', 'play'], ['Slider', 'slider'], ['Stepper', 'step', 1], ['Choice', 'choice', 1], ['Variable', 'variable', 1]]],
+  ['Layout', [['Container', 'box', 0, 1], ['Text', 'text'], ['Icon', 'star'], ['Image', 'img']]],
+  ['Media and time', [['Camera', 'camera', 1], ['Now playing', 'music', 1], ['Clock', 'clock', 1], ['Weather now', 'cloudsun', 1]]],
+];
+function palette(el, layers) {
+  const tabs = `<div class="ptabs"><span class="${layers ? '' : 'on'}">Parts</span><span class="${layers ? 'on' : ''}">Layers</span></div>`;
+  if (layers) {
+    el.innerHTML = tabs + `<div class="layers">
+      <div class="ly">${svg('box')}Entrance <span class="note" style="margin-left:auto">free-form</span></div>
+      <div class="ly in">${svg('camera')}Front door camera</div>
+      <div class="ly in">${svg('lock')}Lock</div>
+      <div class="ly in">${svg('clock')}Clock</div>
+      <div class="ly in on">${svg('text')}Message ${svg('bolt', 'ic bolt')}</div>
+      <div class="ly in">${svg('bell')}Ring ${svg('bolt', 'ic bolt')}</div>
+      <div class="ly">${svg('toggle')}Porch light</div>
+      <div class="ly">${svg('dot')}Doorbell battery</div>
+    </div><p class="note" style="margin:10px 4px">Drag to change the order (what's on top); ⚡ marks parts open to Flows.</p>`;
+    return;
+  }
+  el.innerHTML = tabs + `<div class="search">${svg('search')}Search parts</div>
+    <div class="chips"><span class="on">All</span><span>Show</span><span>Control</span><span>Layout</span><span>Media</span></div>` +
+    GROUPS.map(([g, items]) => `<h3>${g}</h3><div class="comps">${items.map(([n, ic, isNew, drag]) => `<div class="comp${isNew ? ' new' : ''}${drag ? ' drag' : ''}">${svg(ic)}${n}</div>`).join('')}</div>`).join('');
+}
+
+/* main-grid parts */
+function part(p) {
+  const s = `grid-column: span ${p.w || 1}; grid-row: span ${p.h || 1}; --c: ${C[p.color || 'blue']}; ${p.style || ''}`;
+  const cls = ['part'].concat(p.cls || []);
+  if (p.sel) cls.push('sel'); if (p.flow) cls.push('flow');
+  return `<div class="${cls.join(' ')}" style="${s}">${p.html}</div>`;
+}
+function grid(el, parts, guide = 0) {
   if (guide) el.style.minHeight = (guide * 64 + (guide - 1) * 8) + 'px';
-  el.innerHTML = g + `<div class="cw" style="grid-template-columns:repeat(${cols},1fr)">${parts.map(part).join('')}</div>`;
+  const g = guide ? `<div class="gguide" style="grid-template-columns:repeat(4,1fr);grid-auto-rows:64px">${'<i></i>'.repeat(4 * guide)}</div>` : '';
+  el.innerHTML = g + `<div class="cw" style="grid-template-columns:repeat(4,1fr)">${parts.map(part).join('')}</div>`;
+}
+/* a container: kids at x/y/w/h in % of its inner box */
+function box(p, kids, opts = {}) {
+  const k = kids.map(c => `<div class="kid ${c.tile ? 'tile' : 'bare'}${c.sel ? ' sel' : ''}${c.flow ? ' flow' : ''}${c.cls ? ' ' + c.cls : ''}" style="left:${c.x}%;top:${c.y}%;width:${c.w}%;height:${c.h}%;--c:${C[c.color || 'blue']};${c.style || ''}">${c.html}</div>`).join('');
+  return {
+    ...p, cls: ['box'].concat(p.cls || []),
+    html: (opts.fine ? '<div class="fine"></div>' : '') + (opts.tag ? `<div class="tag">${opts.tag}</div>` : '') + `<div class="inner">${k}${opts.extra || ''}</div>`,
+  };
 }
 
 const temps = [21.2, 21.0, 20.8, 20.7, 20.9, 21.4, 21.9, 22.3, 22.6, 22.4, 22.1, 21.8, 21.9, 22.2, 22.5, 22.4];
-const living = [
-  { type: 'value', w: 2, h: 2, big: true, icon: 'thermo', label: 'Living room', value: '22.4', unit: '°C', chart: temps,
-    device: 'Living room sensor', cap: 'Temperature', rules: [['above', '25', 'red'], ['below', '18', 'blue']] },
-  { type: 'value', w: 1, icon: 'drop', label: 'Humidity', value: '46', unit: '%', device: 'Living room sensor', cap: 'Humidity', rules: [['above', '65', 'orange']] },
-  { type: 'value', w: 1, icon: 'co2', label: 'CO₂', value: '640', unit: '', device: 'Air monitor', cap: 'CO₂', rules: [['above', '1000', 'orange']] },
-  { type: 'switch', w: 2, icon: 'bulb', label: 'Floor lamp', on: true, device: 'Floor lamp', cap: 'On/off', rules: [] },
-  { type: 'slider', w: 3, icon: 'sun', label: 'Ceiling', value: 65, device: 'Ceiling light', cap: 'Dim level', rules: [] },
-  { type: 'button', w: 1, icon: 'film', label: 'Movie', color: 'purple', flow: 'Movie night', rules: [] },
+const livingKids = (sel) => [
+  { x: 0, y: 0, w: 66, h: 16, html: `<div style="font-size:20px;line-height:24px;font-weight:500">Living room</div>` },
+  { x: 66, y: 0, w: 34, h: 16, html: `<div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;--c:var(--green)"><span class="dot" style="background:var(--green);box-shadow:0 0 0 4px color-mix(in srgb,var(--green) 25%,transparent)"></span><span class="sub">Motion · 2 min</span></div>` },
+  { x: 0, y: 22, w: 50, h: 34, sel, html: `<div class="big" style="color:#fff">22.4<small style="font-size:17px;font-weight:400;color:rgb(255 255 255 / .7)">°C</small></div><div class="sub" style="color:rgb(255 255 255 / .7)">46 % · CO₂ 640</div>` },
+  { x: 58, y: 18, w: 42, h: 44, cls: 'gauge', html: `<div style="position:relative;height:100%">${arc(0.46, 'var(--teal)')}<div style="position:absolute;inset:34% 0 0;text-align:center"><div class="val" style="color:#fff">46<small>%</small></div><div class="sub" style="color:rgb(255 255 255 / .7)">Humidity</div></div></div>` },
+  { x: 0, y: 66, w: 48.5, h: 34, tile: true, color: 'yellow', cls: 'tinted', html: `<div style="display:flex;justify-content:space-between;align-items:center">${svg('bulb')}<span class="tog"></span></div><div class="name">Floor lamp</div>` },
+  { x: 51.5, y: 66, w: 48.5, h: 34, tile: true, flow: true, html: `<div class="choice" style="--c:var(--purple)"><span>Day</span><span class="on">Movie</span><span>Off</span></div><div class="sub" style="margin-top:4px">Scene</div>` },
 ];
-const garage = [
-  { type: 'text', w: 4, text: 'Garage', sub: 'Door, car and charger' },
-  { type: 'value', w: 2, icon: 'door', label: 'Garage door', value: 'Open', alert: true, color: 'red', sub: '4 min',
-    device: 'Garage door sensor', cap: 'Contact alarm', rules: [['equals', 'open', 'red']] },
-  { type: 'switch', w: 2, icon: 'bulb', label: 'Garage light', on: false, rules: [] },
-  { type: 'value', w: 2, icon: 'car', label: 'Car charging', value: '7.2', unit: ' kW', rules: [['equals', 'off', 'hide']] },
-  { type: 'button', w: 2, icon: 'door', label: 'Close door', color: 'orange', rules: [] },
+const livingBox = (sel, fine) => box({ w: 4, h: 3, style: 'background: linear-gradient(135deg, #2D4C7A, #1E2A44 60%, #2A1958); --text: #fff; --muted: rgb(255 255 255 / .7); color: var(--text);' }, livingKids(sel), { fine, tag: fine ? 'Container · fine grid 12 × 8 px' : '' });
+
+/* shot 1 */
+palette(document.getElementById('pal1'));
+grid(document.getElementById('c1'), [
+  { ...livingBox(true, true), sel: false, cls: ['box'], style: 'background: linear-gradient(135deg, #2D4C7A, #1E2A44 60%, #2A1958); outline: 2px dashed var(--accent); outline-offset: 2px;' },
+  { w: 2, color: 'orange', html: `<div class="top">${svg('bolt', 'ic', 'color:var(--orange)')}<span class="val">2.4<small> kW</small></span></div><div class="name">Using now</div>` },
+  { w: 2, cls: ['tinted'], color: 'red', html: `<div class="top">${svg('door', 'ic', 'color:var(--red)')}<span class="val" style="color:var(--red)">Open</span></div><div class="name">Terrace door</div>` },
+], 5);
+document.getElementById('i1').innerHTML = `
+  <div class="itabs"><span class="on">Part</span><span>Look</span><span>Rules</span><span>${svg('bolt')}Flow</span></div>
+  <h3>Value · in Living room</h3>
+  <div class="field"><span>Device</span><div class="input">Living room sensor${svg('chev')}</div></div>
+  <div class="field"><span>Value</span><div class="input">Temperature${svg('chev')}</div></div>
+  <div class="field"><span>Second line</span><div class="input">Humidity, CO₂${svg('chev')}</div></div>
+  <div class="divider"></div>
+  <h3>Placement in the container</h3>
+  <div class="field"><span>Mode (the container's)</span><div class="opts"><span class="on">Fine grid</span><span>Free-form</span></div></div>
+  <div class="three"><div class="field"><span>Column</span><div class="input">1</div></div><div class="field"><span>Width</span><div class="input">6 of 12</div></div><div class="field"><span>Row</span><div class="input">6</div></div></div>
+  <div class="field"><span>Tile</span><div class="opts"><span>Own tile</span><span class="on">On the background</span></div></div>
+  <div class="divider"></div>
+  <h3>Container</h3>
+  <div class="field"><span>Background</span><div class="opts"><span>Colour</span><span class="on">Gradient</span><span>Picture</span><span>Camera</span></div></div>
+  <div class="two"><div class="field"><span>From</span><div class="input"><span style="display:flex;gap:6px;align-items:center"><i style="width:14px;height:14px;border-radius:50%;background:#2D4C7A"></i>#2D4C7A</span></div></div><div class="field"><span>To</span><div class="input"><span style="display:flex;gap:6px;align-items:center"><i style="width:14px;height:14px;border-radius:50%;background:#2A1958"></i>#2A1958</span></div></div></div>
+  <div class="three"><div class="field"><span>Corners</span><div class="input">14 px</div></div><div class="field"><span>Padding</span><div class="input">10 px</div></div><div class="field"><span>Grid rows</span><div class="input">8 px</div></div></div>`;
+
+/* shot 2: free-form over a camera */
+palette(document.getElementById('pal2'), true);
+const entranceKids = (edit) => [
+  { x: 0, y: 0, w: 100, h: 100, cls: 'cam', html: '<span class="live">Front door</span>' },
+  { x: 4, y: 74, w: 40, h: 20, tile: true, cls: 'tinted', color: 'green', html: `<div style="display:flex;gap:8px;align-items:center">${svg('lock', 'ic', 'width:18px;height:18px')}<span class="name">Locked</span></div>` },
+  { x: 68, y: 6, w: 28, h: 18, html: `<div style="text-align:right;color:#fff;font-size:20px;font-weight:500;line-height:24px;text-shadow:0 1px 3px rgb(0 0 0 / .6)">14:05</div>` },
+  { x: 4, y: 40, w: 56, h: 22, tile: true, flow: true, sel: edit, color: 'orange', cls: 'tinted', html: `<div class="name" style="font-weight:500">Parcel by the door</div><div class="sub">set by a Flow · 13:52</div>` },
+  { x: 68, y: 66, w: 28, h: 28, tile: true, flow: true, html: `<div style="display:flex;flex-direction:column;align-items:center;gap:2px">${svg('bell', 'ic', 'color:var(--yellow)')}<span class="name">Ring</span></div>` },
 ];
-const power = [1.9, 2.2, 2.0, 2.6, 3.1, 2.8, 2.4, 2.1, 1.8, 2.3, 2.9, 3.4, 3.0, 2.7, 2.5, 2.4];
-const energy = [
-  { type: 'value', w: 2, h: 2, big: true, icon: 'bolt', label: 'Using now', value: '2.4', unit: ' kW', chart: power, color: 'orange' },
-  { type: 'value', w: 2, icon: 'sun', label: 'Solar', value: '1.1', unit: ' kW', color: 'yellow' },
-  { type: 'value', w: 2, icon: 'plug', label: 'Price', value: '1.84', unit: ' kr', alert: true, color: 'orange', sub: 'high' },
+const guides = `<div class="guide-v" style="left:4%"></div><div class="guide-h" style="top:62%"></div><div class="guide-v" style="left:60%"></div>
+  <span class="handle" style="left:calc(4% - 5px);top:calc(40% - 5px)"></span><span class="handle" style="left:calc(60% - 3px);top:calc(40% - 5px)"></span><span class="handle" style="left:calc(4% - 5px);top:calc(62% - 3px)"></span><span class="handle" style="left:calc(60% - 3px);top:calc(62% - 3px)"></span>
+  <span class="readout" style="left:4%;top:calc(62% + 8px)">x 4 % · y 40 % · 56 × 22 %</span>`;
+grid(document.getElementById('c2'), [
+  box({ w: 4, h: 4, style: 'background: var(--tile); outline: 2px dashed var(--accent); outline-offset: 2px;' }, entranceKids(true), { tag: 'Container · free-form', extra: guides }),
+  { w: 2, cls: ['tinted'], color: 'yellow', html: `<div class="top">${svg('bulb')}<span class="tog"></span></div><div class="name">Porch light</div>` },
+  { w: 2, html: `<div class="top">${svg('dot')}<span class="val">82<small>%</small></span></div><div><div class="levelbar" style="--c:var(--green)"><i style="width:82%"></i></div><div class="sub" style="margin-top:3px">Doorbell battery</div></div>` },
+]);
+document.getElementById('i2').innerHTML = `
+  <div class="itabs"><span>Part</span><span>Look</span><span>Rules</span><span class="on">${svg('bolt')}Flow</span></div>
+  <h3>Text · Message</h3>
+  <div class="field"><span>Name in Flow cards</span><div class="input">Entrance · Message</div></div>
+  <p class="note" style="margin:0 0 4px">Switch on what a Flow may change. Others stay as designed.</p>
+  <div class="frow"><span>Text</span><span class="sw on"></span><span class="card">Set the text of <b>Entrance · Message</b> to …</span></div>
+  <div class="frow"><span>Colour</span><span class="sw on"></span><span class="card">Colour <b>Entrance · Message</b> …</span></div>
+  <div class="frow"><span>Shown or hidden</span><span class="sw on"></span><span class="card">Show / hide <b>Entrance · Message</b>, and the AND card "is shown"</span></div>
+  <div class="frow"><span>Icon</span><span class="sw"></span></div>
+  <div class="frow"><span>Size of text</span><span class="sw"></span></div>
+  <div class="divider"></div>
+  <h3>When set by a Flow</h3>
+  <div class="field"><span>Go back to the design's own</span><div class="opts"><span>Never</span><span class="on">After 1 h</span><span>At midnight</span></div></div>
+  <div class="field"><span>Show when it was set</span><div class="opts"><span class="on">Yes</span><span>No</span></div></div>`;
+
+/* gallery: the ten new parts */
+const T = (html, extra = '', cls = '') => `<div class="part ${cls}" style="${extra}">${html}</div>`;
+const NEW = [
+  ['Gauge', 'A value on an arc, from its min to its max; colours by range (Chart · Gauge\'s look).', 'min, max, colour',
+    T(`<div style="position:relative;height:100%">${arc(0.62, 'var(--orange)')}<div style="position:absolute;inset:38% 0 0;text-align:center"><div class="val">2.4<small>kW</small></div></div></div>`, 'grid-column:span 2;grid-row:span 2;padding:6px 20px')],
+  ['Level bar', 'A value as a filled bar: battery, tank, filter, a washer\'s progress.', 'value, colour',
+    T(`<div class="top"><span class="name">Rain tank</span><span class="val">68<small>%</small></span></div><div class="levelbar" style="--c:var(--blue)"><i style="width:68%"></i></div>`, 'grid-column:span 2') +
+    T(`<div class="top"><span class="name">Doorbell</span><span class="val">12<small>%</small></span></div><div class="levelbar" style="--c:var(--red)"><i style="width:12%"></i></div>`, 'grid-column:span 2')],
+  ['Status', 'A dot and words for a yes/no: motion, contact, alarm, with "for 4 min" (Activity Dots).', 'colour, words',
+    T(`<div class="top"><span class="dot" style="--c:var(--green)"></span><span class="sub">2 min</span></div><div class="name">Hall motion</div>`, '--c:var(--green)') +
+    T(`<div class="top"><span class="dot" style="--c:var(--red)"></span><span class="sub">4 min</span></div><div class="name">Back door</div>`, '--c:var(--red)', 'tinted') +
+    T(`<div style="display:flex;gap:8px;align-items:center"><span class="dot" style="--c:var(--muted);background:var(--muted);box-shadow:none"></span><span class="name">Washer · idle</span></div>`, 'grid-column:span 2;justify-content:center')],
+  ['Stepper', 'Minus and plus for a setpoint, a volume or a number variable, in set steps.', 'step, min, max',
+    T(`<div class="sub">Bedroom</div><div class="stepper"><b>−</b><span class="val" style="font-size:24px">19.5°</span><b>+</b></div>`, 'grid-column:span 2;grid-row:span 1')],
+  ['Choice', 'One of a few: a thermostat mode, a scene, a variable\'s value, or Flows to start (Variable Presets).', 'which is lit; tapped → trigger',
+    T(`<div class="sub">House mode</div><div class="choice" style="--c:var(--blue)"><span class="on">Home</span><span>Away</span><span>Night</span></div>`, 'grid-column:span 2')],
+  ['Variable', 'Read or change a Homey variable: a number, a yes/no or a text (Variables).', 'via the variable itself',
+    T(`<div class="top"><span class="name">Guests tonight</span>${svg('variable', 'ic', 'width:18px;height:18px')}</div><div class="val">4</div>`) +
+    T(`<div class="top"><span class="name">Vacation</span><span class="tog"></span></div><div class="sub">yes/no variable</div>`, '--c:var(--purple)', 'tinted')],
+  ['Camera', 'A camera\'s picture, refreshed every few seconds, or live on a tap (Cameras). Also a container background.', 'which camera',
+    T('<span class="live">Garden</span>', 'grid-column:span 2;grid-row:span 2', 'cam')],
+  ['Now playing', 'A speaker\'s track, artist and cover with play/pause (Media).', 'speaker',
+    T(`<div style="display:flex;gap:10px;align-items:center;height:100%"><span class="art"></span><span style="flex:1;min-width:0"><div class="name" style="font-weight:500">Slow Morning</div><div class="sub">Kitchen · Nordlys</div></span><span class="play">${svg('play')}</span></div>`, 'grid-column:span 2;justify-content:center')],
+  ['Clock', 'The time, the date, or both; 12 or 24 hours by the app\'s Time format (Clock).', 'text under it',
+    T(`<div class="big" style="line-height:36px">14:05</div><div class="sub">Friday 20 November</div>`, 'grid-column:span 2')],
+  ['Weather now', 'The Homey location\'s weather now and today\'s range from the Weather Forecast\'s source.', '—',
+    T(`<div class="top">${svg('cloudsun', 'ic', 'color:var(--yellow);width:28px;height:28px')}<span class="val" style="font-size:24px">8°</span></div><div class="sub">Partly cloudy · 3° / 9°</div>`, 'grid-column:span 2')],
 ];
+document.getElementById('gallery').innerHTML = NEW.map(([n, d, f, demo], i) => `
+  <div class="gcard"><div class="t"><span class="n">${i + 1}</span>${n}</div><div class="demo">${demo}</div><div class="d">${d}</div><div class="fl">⚡ ${f}</div></div>`).join('')
+  + `<div class="gcard" style="grid-column:span 5;flex-direction:row;gap:24px"><div style="flex:1"><div class="t">Also proposed: Flow value</div><div class="d">A value part with no device behind it: only Flows set it (a number with units, or a text), like Flow Tiles' tiles, for things Homey has no device for (today's cost, next bin day). In the library already, as it's what makes the Flow cards most useful.</div></div><div style="flex:1"><div class="t">Next in line</div><div class="d">Image (a picture of your own), Spacer, Countdown (Timers / Days Since), Price strip (Energy Price Strip), Lock (Locks and Doors), Light colour, Room summary (Room Health).</div></div></div>`;
 
-/* the builder: Garage's door part is selected in the phone, the living room's temperature at the desktop */
-function inspector(p, el, rulesOnly) {
-  const colorName = { red: 'Red', blue: 'Blue', orange: 'Orange', green: 'Green', hide: 'Hide' };
-  const rules = (p.rules || []).map(([op, v, c]) => `<div class="rule">${c === 'hide' ? '<span class="swatch" style="border:2px dashed var(--muted)"></span>' : `<span class="swatch" style="background:${C[c]}"></span>`}<span>When ${op === 'above' ? 'above' : op === 'below' ? 'below' : 'it is'} <b>${v}</b> → ${colorName[c]}</span><span class="x">${svg('x')}</span></div>`).join('');
-  const rulesBlock = `<h3>Rules</h3>${rules || '<p class="width-note">No rules: the part keeps its colour.</p>'}<div class="addrule">+ Add rule</div><p class="width-note">The first rule that holds wins. A part that's hidden leaves its cells empty.</p>`;
-  if (rulesOnly) { el.innerHTML = rulesBlock; return; }
-  const kind = { value: 'Value', switch: 'Switch', slider: 'Slider', button: 'Button', chart: 'Mini chart', text: 'Text', icon: 'Icon' }[p.type];
-  const sizes = ['1×1', '2×1', '3×1', '4×1', '2×2'];
-  const now = `${p.w || 1}×${p.h || 1}`;
-  el.innerHTML = `
-    <h3>${kind}</h3>
-    ${p.device ? `<div class="field"><span>Device</span><div class="input">${p.device}${svg('chev')}</div></div>
-    <div class="field"><span>Value</span><div class="input">${p.cap}${svg('chev')}</div></div>` : ''}
-    ${p.flow ? `<div class="field"><span>Starts the Flow</span><div class="input">${p.flow}${svg('chev')}</div></div>` : ''}
-    ${p.text ? `<div class="field"><span>Text</span><div class="input">${p.text}</div></div>` : ''}
-    <div class="two">
-      <div class="field"><span>Name</span><div class="input">${p.label || '—'}</div></div>
-      <div class="field"><span>Icon</span><div class="input">${svg(p.icon || 'sun')}${svg('chev')}</div></div>
-    </div>
-    <div class="field"><span>Size</span><div class="sizes">${sizes.map(s => `<span class="${s === now ? 'on' : ''}">${s}</span>`).join('')}</div></div>
-    ${p.type === 'value' ? `<div class="two"><div class="field"><span>Show</span><div class="input">${p.chart ? 'Value + last 24 h' : 'Value'}${svg('chev')}</div></div><div class="field"><span>Colour</span><div class="input"><span class="swatch" style="width:14px;height:14px;border-radius:50%;background:${C[p.color || 'blue']}"></span>${(p.color || 'blue').replace(/^./, c => c.toUpperCase())}${svg('chev')}</div></div></div>` : `<div class="field"><span>Colour</span><div class="input"><span style="display:flex;gap:8px;align-items:center"><span style="width:14px;height:14px;border-radius:50%;background:${C[p.color || 'blue']}"></span>${(p.color || 'blue').replace(/^./, c => c.toUpperCase())}</span>${svg('chev')}</div></div>`}
-    <div class="divider"></div>
-    ${rulesBlock}
-    <div class="divider"></div>
-    <button class="btn ghost" style="color:var(--red);padding:0">Remove part</button>`;
-}
-
-function drawBuilder(sel) {
-  const parts = living.map((p, i) => ({ ...p, i, sel: i === sel }));
-  widget(document.getElementById('builder-canvas'), parts, 4, 5);
-  inspector(living[sel], document.getElementById('insp'));
-}
-document.getElementById('builder-canvas').addEventListener('click', e => {
-  const p = e.target.closest('.part'); if (p) drawBuilder(+p.dataset.i);
-});
-drawBuilder(0);
-
-widget(document.getElementById('d-living'), living);
-widget(document.getElementById('d-garage'), garage.filter(p => p.label !== 'Car charging').concat([]));
-widget(document.getElementById('d-living-l'), living);
-widget(document.getElementById('d-energy-l'), energy);
-
-const phoneParts = garage.map((p, i) => ({ ...p, i, sel: i === 3, hidden: p.label === 'Car charging' }));
-widget(document.getElementById('phone-canvas'), phoneParts, 4, 3);
-inspector(garage[3], document.getElementById('phone-rules'), true);
-document.getElementById('phone-rules').innerHTML = document.getElementById('phone-rules').innerHTML
-  .replace('<h3>Rules</h3>', '<h3>Rules · Car charging</h3>');
+/* dashboards */
+const dash = (el) => grid(el, [
+  livingBox(false, false),
+  { w: 2, color: 'orange', html: `<div class="top">${svg('bolt', 'ic', 'color:var(--orange)')}<span class="val">2.4<small> kW</small></span></div><div class="name">Using now</div>` },
+  { w: 2, cls: ['tinted'], color: 'red', html: `<div class="top">${svg('door', 'ic', 'color:var(--red)')}<span class="val" style="color:var(--red)">Open</span></div><div class="name">Terrace door</div>` },
+]);
+dash(document.getElementById('d1'));
+dash(document.getElementById('d3'));
+grid(document.getElementById('d2'), [
+  box({ w: 4, h: 4, style: 'background: var(--tile);' }, entranceKids(false)),
+  { w: 2, cls: ['tinted'], color: 'yellow', html: `<div class="top">${svg('bulb')}<span class="tog"></span></div><div class="name">Porch light</div>` },
+  { w: 2, html: `<div class="top">${svg('dot')}<span class="val">82<small>%</small></span></div><div><div class="levelbar" style="--c:var(--green)"><i style="width:82%"></i></div><div class="sub" style="margin-top:3px">Battery</div></div>` },
+]);
 </script>
 </body>
 </html>
