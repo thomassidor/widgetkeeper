@@ -112,6 +112,35 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
   /** @type {Record<string, any>} */
   const syncLinks = { ...sync };
 
+  /** The app settings page's routes, through the web dashboards' App settings: what the cards read and change. */
+  const appValues = { webDashboardsEnabled: true, webRemoteAccess: false, timelineUpdates: null, tileShadow: null };
+  let appNames = { mode: 'before', separator: '|', apply: ['devices'] };
+  let appTime = 'auto';
+  let appTemp = 'auto';
+  function appSetting(method, path, body) {
+    const route = `${method} ${path.split('?')[0]}`;
+    if (route === 'GET /settings') return { ...appValues };
+    if (route === 'PUT /settings') { appValues[body.name] = body.value; return { ok: true }; }
+    if (route === 'GET /variables-key') return { set: true };
+    if (route === 'PUT /variables-key') return { ok: true, variables: true, flows: true, dashboards: true, moods: true };
+    if (route === 'GET /device-names' || route === 'PUT /device-names') {
+      if (method === 'PUT') appNames = { ...appNames, ...body };
+      const examples = appNames.mode === 'full' ? [] : [{ name: 'Kitchen | Ceiling', shown: 'Kitchen' }, { name: 'Hall | Spots', shown: 'Hall' }];
+      return { ok: true, ...appNames, examples, changed: examples.length ? 14 : 0, total: 31 };
+    }
+    if (route === 'GET /time-format' || route === 'PUT /time-format') { if (method === 'PUT') appTime = body.timeFormat; return { ok: true, timeFormat: appTime }; }
+    if (route === 'GET /temperature-unit' || route === 'PUT /temperature-unit') {
+      if (method === 'PUT') appTemp = body.temperatureUnit;
+      return { ok: true, temperatureUnit: appTemp, shown: appTemp === 'f' ? 'f' : 'c', homey: 'c' };
+    }
+    if (route === 'GET /keypad-codes') return { codes: codes.map(({ id, name, digits }) => ({ id, name, digits: digits.length })) };
+    if (route === 'GET /web/address') return { url: 'http://192.168.1.20/app/com.thomassidor.widgetkeeper/settings/dashboard.html', remoteUrl: 'https://preview.connect.athom.com/app/com.thomassidor.widgetkeeper/settings/dashboard.html' };
+    if (route === 'GET /web/password') return { set: false };
+    if (route === 'GET /web/screens') return { screens: [{ id: 's1', name: 'Hall tablet', used: Date.now() - 86400000 }], dashboards: dashboards.map(d => ({ id: d.id, name: d.name })) };
+    if (route === 'GET /diagnostics') return { app: 'Widgetkeeper', preview: true, devices: [] };
+    return { ok: false, reason: 'preview' };
+  }
+
   async function answer(method, path, body) {
     await ready;
     const [p, qs] = path.split('?');
@@ -142,6 +171,8 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
         sync: syncLinks,
       };
     }
+    // The app's settings (lib/webAppSettings.ts), as for a key with full access: made-up answers, kept for the page's life.
+    if (p === '/web/app-settings') return appSetting(String(body.method), String(body.path), body.body);
     // Syncing with Homey dashboards (lib/WebSyncService.ts): made-up Homey dashboards; a sync changes nothing here.
     if (p === '/web/sync' && method === 'GET') return { schedule: syncSchedule, links: syncLinks };
     if (p === '/web/sync' && method === 'PUT') { syncSchedule = { ...syncSchedule, ...body }; return syncSchedule; }

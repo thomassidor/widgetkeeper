@@ -26,7 +26,7 @@
    * mountWebDashboards() runs them. A part registers itself with `WidgetkeeperWeb.part(name, fn)`; `fn(wd)` is
    * the code that was once in mountWebDashboards() itself, sharing the page's state and functions through `wd`.
    */
-  const PARTS = ['realtime', 'frames', 'views', 'front', 'editing', 'settings', 'pickers', 'popups', 'sync', 'screen', 'icons', 'nav'];
+  const PARTS = ['realtime', 'frames', 'views', 'front', 'editing', 'settings', 'pickers', 'popups', 'sync', 'screen', 'icons', 'app', 'nav'];
   window.WidgetkeeperWeb = {
     /** @type {Map<string, (wd: any) => void>} */
     parts: new Map(),
@@ -165,6 +165,8 @@
     thisBrowser: 'This browser',
     allBrowsers: 'All browsers',
     browserOnly: 'Only for this browser: other browsers and screens keep their own.',
+    appSettings: 'App settings',
+    appOnly: 'For the whole app, Homey\'s own dashboards included.',
     tabSync: 'Sync',
     tabScreen: 'Screen',
     tabKiosk: 'Kiosk',
@@ -1060,7 +1062,7 @@
     }
 
     // ---- The parts (settings/dashboard-<part>.js), each run once with `wd` ------------------------------------------
-    Object.assign(wd, { APP_ID, leaveEditor, applyDim, appWidget, AWAKE_STORAGE, BACKGROUNDS, CUSTOM_BACKGROUND, hardToRead, surfaceColours, bracketQuery, button, clone, CONFIRM_MS,
+    Object.assign(wd, { APP_ID, AWAY, leaveEditor, applyDim, appWidget, AWAKE_STORAGE, BACKGROUNDS, CUSTOM_BACKGROUND, hardToRead, surfaceColours, bracketQuery, button, clone, CONFIRM_MS,
       confirmButton, darkQuery, DEFAULT_STRINGS, deleted, DIM_CHANGED_STORAGE, dimChoices, dimFlowHolds, DIM_SCHEDULE_STORAGE, DIM_STORAGE, dimLevel, dimScheduleOf, dimWanted, DRAG_SLOP, EDGE_PX, el, failed,
       frames, HOMEY_WIDTH, homeyRequest, icon, isScreenCode, keepAwake, KEY_STORAGE, LAYOUT, listeners, loadAll, loadSetup, MAX_DIM,
       newId, opts, persist, request, root, route, SESSION_STORAGE, start, STAY_STORAGE, storageGet, storageSet,

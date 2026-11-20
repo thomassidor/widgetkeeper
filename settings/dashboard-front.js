@@ -192,7 +192,8 @@
 
     /**
      * Settings (the side pane's foot, or the front page's bar where there's no pane): a dialog of vertical tabs, the
-     * Homey's settings (Header, Sync, Backup) then this browser's (Screen, Kiosk, Sign-in). `open`: a tab's id to start on.
+     * Homey's settings (Header, Sync, Backup), this browser's (Screen, Kiosk, Sign-in), then the app's own (the app
+     * settings page's cards, for a key with full access only). `open`: a tab's id to start on.
      */
     function pageSettings(open) {
       const { d, body } = wd.dialog(t('pageSettings'));
@@ -279,6 +280,7 @@
         return section;
       };
       const kiosk = el('p', 'wd-hint wd-kiosk-help', t('kioskHelp'));
+      const app = wd.appSettingsTabs();
       const tabs = [
         { group: t('allBrowsers') },
         { id: 'header', label: t('brandTitle'), panel: wd.brandSection(setRow) },
@@ -288,11 +290,17 @@
         { id: 'screen', label: t('tabScreen'), panel: browserSection(t('tabScreen'), setRow(t('darkLight'), t('darkLightText'), mode), awake, dim, scheduled) },
         { id: 'kiosk', label: t('tabKiosk'), panel: browserSection(t('tabKiosk'), rotation, goBack, kiosk) },
         { id: 'signin', label: t('tabSignIn'), panel: browserSection(t('tabSignIn'), setRow(t('signedIn'), t('forgetKeyText'), forget)) },
+        // The app's own settings (`dashboard-app.js`), shown once the app says this browser's key may change them.
+        ...app.tabs,
       ];
-      const { box: tabBox, select, hideTab } = settingsTabs(tabs);
+      const { box: tabBox, select, hideTab, showTab } = settingsTabs(tabs);
       body.classList.add('wd-tabbed');
       body.append(tabBox);
-      select(open && tabs.some(tab => tab.id === open) ? open : wd.settingsTab || 'header');
+      const want = open && tabs.some(tab => tab.id === open) ? open : wd.settingsTab || 'header';
+      select(want);
+      const fallback = wd.settingsTab;
+      // A tab of the app's last open: back on it once it shows, unless another was picked meanwhile.
+      app.load(showTab).then(() => { if (want !== fallback && wd.settingsTab === fallback) select(want); });
       d.showModal();
     }
 
@@ -308,9 +316,13 @@
       list.setAttribute('aria-orientation', 'vertical');
       const panels = el('div', 'wd-tab-panels');
       const shown = [];
+      const groups = new Map(); // a group heading with an id, shown later (`showTab`)
       for (const tab of tabs) {
         if (tab.group) {
-          list.append(el('p', 'wd-tabs-group', tab.group));
+          const head = el('p', 'wd-tabs-group', tab.group);
+          head.hidden = !!tab.hidden;
+          if (tab.id) groups.set(tab.id, head);
+          list.append(head);
           continue;
         }
         const b = button('wd-tab', tab.label, () => select(tab.id));
@@ -321,6 +333,7 @@
         tab.panel.setAttribute('role', 'tabpanel');
         tab.panel.setAttribute('aria-labelledby', b.id);
         tab.button = b;
+        b.hidden = !!tab.hidden;
         shown.push(tab);
         list.append(b);
         panels.append(tab.panel);
@@ -337,6 +350,7 @@
           x.panel.hidden = !on;
         }
         panels.scrollTop = 0;
+        if (tab.shown) tab.shown();
         if (focus) tab.button.focus();
         // On a phone the tabs are a row that scrolls: keep the chosen one in view.
         if (tab.button.scrollIntoView && list.scrollWidth > list.clientWidth) tab.button.scrollIntoView({ block: 'nearest', inline: 'nearest' });
@@ -352,6 +366,12 @@
           wd.settingsTab = keep; // it comes back once it can be read again
         }
       }
+      /** A tab (or a group heading) hidden until its settings could be read: shown. */
+      function showTab(id) {
+        if (groups.has(id)) groups.get(id).hidden = false;
+        const tab = shown.find(x => x.id === id);
+        if (tab) tab.button.hidden = false;
+      }
       list.addEventListener('keydown', (e) => {
         const tabsNow = usable();
         const at = tabsNow.findIndex(x => x.button === document.activeElement);
@@ -362,7 +382,7 @@
         select(tabsNow[(to + tabsNow.length) % tabsNow.length].id, true);
       });
       box.append(list, panels);
-      return { box, select, hideTab };
+      return { box, select, hideTab, showTab };
     }
 
     /** A switch's row with rows under it that show only while it's on. */

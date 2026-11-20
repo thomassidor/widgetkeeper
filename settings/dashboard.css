@@ -409,6 +409,21 @@ textarea.wd-input { width: 100%; resize: vertical; }
   .wd-tab-panels { padding: 12px; }
 }
 .wd-page-section { display: flex; flex-direction: column; gap: 8px; }
+/* App settings (dashboard-app.js): the app settings page's cards (app-settings.js and .css) in the page's own controls
+   and colours. Each card's line under its title, ticked when it's set up, as on the settings page. */
+.wd-app-section .card-line { display: block; margin-top: -4px; }
+.wd-app-section .card-line.ok::before { content: '✓ '; font-weight: 700; color: var(--homey-color-green, #3FC700); }
+.wd-app-section .card-line:empty { display: none; }
+.wd-app-card { padding: 12px 16px 16px; }
+.wd-app-card .wk-as { --as-muted: var(--wd-muted); --as-line: var(--wd-line); --as-chip: var(--wd-raised); --as-link: var(--wd-accent); }
+.wd-app-card .wk-as > :first-child { margin-top: 0; }
+.wd-as-group { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; margin: 12px 0 0; }
+.wd-as-group > input.wd-input { width: 100%; max-width: 360px; }
+.wd-as-group > select.wd-input { max-width: 100%; }
+.wd-as-check { align-self: stretch; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 12px 0 0; cursor: pointer; }
+.wd-app-card .wk-as .wd-input { background: var(--wd-panel); }
+.wd-app-card .wk-as .row > .wd-btn { flex: 0 1 auto; }
+.wd-app-card .wk-as .report { padding: 8px; border: 1px solid var(--wd-line); border-radius: 8px; background: var(--wd-panel); color: var(--wd-text); }
 .wd-page-section + .wd-page-section { padding-top: 16px; border-top: 1px solid var(--wd-line); }
 .wd-page-section .wd-row { flex-wrap: wrap; margin-top: 4px; }
 .wd-backup-status:empty { display: none; }

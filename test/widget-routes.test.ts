@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { APP_SETTINGS_ROUTES } from '../lib/webAppSettings.js';
 import { describe, expect, it } from 'vitest';
 import { fakeApi, fakeHomey } from './helpers/fakeHomey.js';
 import { spyApp, type ServiceCall } from './helpers/spyApp.js';
@@ -282,13 +283,17 @@ describe('the pages call routes that exist', () => {
     expect(used.filter(r => !routes.includes(r))).toEqual([]);
   });
 
-  it('the app settings page (`Homey.api()`)', () => {
-    const html = readFileSync('settings/index.html', 'utf8');
+  it("the app settings page's cards (`Homey.api()`), which the web dashboards may call through `/web/app-settings`", () => {
+    const html = readFileSync('settings/app-settings.js', 'utf8');
     // A path built with a template (`/keypad-codes/${id}`) counts a plain `${…}` as any value, as on the web page; one
     // that adds a query (`/diagnostics${device ? `?…` : ''}`) ends the path.
     const used = [...html.matchAll(/Homey\.api\('(GET|POST|PUT|DELETE)', [`'](\/(?:[^`'?$]|\$\{[^}`'?]*\})*)/g)].map(m => route(m[1], m[2]));
     expect(used.length).toBeGreaterThanOrEqual(6);
     expect(used.filter(r => !routes.includes(r))).toEqual([]);
+    // Every one of them, and nothing else, is in the web dashboards' table, each to the manifest's handler.
+    const table = APP_SETTINGS_ROUTES.map(([method, path]) => route(method, path.replace(/:\w+/g, '${id}')));
+    expect([...new Set(used)].sort()).toEqual([...table].sort());
+    for (const [method, path, handler] of APP_SETTINGS_ROUTES) expect(manifest.api[handler]).toEqual({ method, path });
   });
 
   it("the popup prompt page (`call()`, POST /popup/:id…)", () => {

@@ -184,6 +184,10 @@
       "method": "POST",
       "path": "/web/call"
     },
+    "postWebAppSettings": {
+      "method": "POST",
+      "path": "/web/app-settings"
+    },
     "getWebAddress": {
       "method": "GET",
       "path": "/web/address"

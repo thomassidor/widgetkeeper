@@ -1121,6 +1121,8 @@
     "thisBrowser": "Ta przeglądarka",
     "allBrowsers": "Wszystkie przeglądarki",
     "browserOnly": "Tylko dla tej przeglądarki: inne przeglądarki i ekrany mają własne ustawienia.",
+    "appSettings": "Ustawienia aplikacji",
+    "appOnly": "Dla całej aplikacji, także pulpitów Homey.",
     "tabSync": "Synchronizacja",
     "tabScreen": "Ekran",
     "tabKiosk": "Kiosk",

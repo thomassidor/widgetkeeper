@@ -12,6 +12,14 @@ interface Window {
   mountWebDashboards: (root: HTMLElement) => void;
   /** The web dashboards page's parts (settings/dashboard-<part>.js), which mountWebDashboards() runs with the page's shared `wd`. */
   WidgetkeeperWeb: { parts: Map<string, (wd: any) => void>, part: (name: string, fn: (wd: any) => void) => void };
+  /** settings/app-settings.js, the app settings page's cards, also the web dashboards' App settings (settings/dashboard-app.js). */
+  WidgetkeeperAppSettings: {
+    CARDS: Array<{ id: string, title: string }>,
+    HOMEY_SKIN: object,
+    cards: (Homey: any, opts?: { skin?: object, web?: boolean, away?: boolean }) => Array<{ id: string, title: string, line: HTMLElement, body: HTMLElement, opened: () => void }>,
+  };
+  /** settings/qrcode.js, qrcode-generator (MIT): a screen's address as a QR code. */
+  qrcode: (type: number, level: string) => any;
   io: (url: string, opts?: object) => any;
   /** settings/popup.js, the prompt page a Popups widget opens: its fallback strings and its mount. */
   POPUP_PAGE_STRINGS: Record<string, string>;

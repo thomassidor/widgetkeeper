@@ -1121,6 +1121,8 @@
     "thisBrowser": "Questo browser",
     "allBrowsers": "Tutti i browser",
     "browserOnly": "Solo per questo browser: gli altri browser e schermi mantengono i propri.",
+    "appSettings": "Impostazioni dell'app",
+    "appOnly": "Per tutta l'app, comprese le dashboard di Homey.",
     "tabSync": "Sincronizzazione",
     "tabScreen": "Schermo",
     "tabKiosk": "Chiosco",

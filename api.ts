@@ -16,6 +16,7 @@ import stack, { PAGE_APIS } from './widgets/stack/api.js';
 import valueboard from './widgets/valueboard/api.js';
 import webpage from './widgets/webpage/api.js';
 import { readEnergyReport } from './lib/energyReport.js';
+import { APP_SETTINGS_SCOPE, appSettingValues, findAppSettingsRoute, setAppSettingFlag } from './lib/webAppSettings.js';
 
 type Homey = App['homey'];
 
@@ -62,7 +63,7 @@ function signedIn(app: WidgetkeeperApp, query: Record<string, string> | undefine
   return !app.webPassword.isSet || app.webPassword.check(query?.session) || !!app.webScreens?.checkSession(query?.session);
 }
 
-export default {
+const api = {
   /**
    * Used by the app settings page: `GET /diagnostics[?device=<id or name>]`. With `heatmap=<deviceId>:<capabilityId>[:<days>]`,
    * the report also has the heatmap widget's history for it (`npm run diagnostics -- --heatmap …`).
@@ -377,6 +378,32 @@ export default {
     return callWidgetRoute(homey, WEB_APIS, type, method, path, body?.query, body?.body);
   },
 
+  /**
+   * The web dashboards' Settings dialog: the app settings page's cards (`settings/app-settings.js`), whose calls come
+   * here as `{key, method, path, body}` (`lib/webAppSettings.ts`): one of the settings page's routes, answered as it
+   * would be, or `GET`/`PUT /settings` for the app settings the cards read and write. Signed in as every web route,
+   * and only with this browser's own key having full access (`homey`); otherwise it throws `… (keyScope)` or
+   * `… (keyInvalid)`, and the dialog leaves the app's tabs out.
+   */
+  async postWebAppSettings({ homey, query, body }: {
+    homey: Homey,
+    query?: Record<string, string>,
+    body: { key?: unknown, method?: unknown, path?: unknown, body?: unknown },
+  }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    const scopes = typeof body?.key === 'string' && body.key ? await app.apiKey.scopesOf(body.key) : null;
+    if (!scopes) throw new Error("This browser's API key wasn't accepted (keyInvalid)");
+    if (!scopes.includes(APP_SETTINGS_SCOPE)) throw new Error("This browser's API key may not change the app's settings (keyScope)");
+    const method = String(body?.method ?? '').toUpperCase();
+    if (body?.path === '/settings' && method === 'GET') return appSettingValues(homey);
+    if (body?.path === '/settings' && method === 'PUT') return setAppSettingFlag(homey, body?.body, isAway(query));
+    const route = findAppSettingsRoute(method, body?.path);
+    if (!route) throw new Error(`Not an app setting: ${method} ${String(body?.path)}`);
+    const handler = (api as Record<string, any>)[route.handler] as (args: object) => Promise<unknown>;
+    return handler({ homey, params: route.params, query: route.query, body: body?.body ?? {} });
+  },
+
   /** The app settings page: the Keypad's codes by name and length (`{codes}`), never their digits or hashes. */
   async getKeypadCodes({ homey }: { homey: Homey }) {
     const app = homey.app as WidgetkeeperApp;
@@ -562,3 +589,5 @@ export default {
     return app.popups.answerWithToken(params.id, body?.answer, body?.t);
   },
 };
+
+export default api;

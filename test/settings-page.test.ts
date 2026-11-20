@@ -10,6 +10,8 @@ function loadPage(routes: (method: string, path: string, body: any) => any, sett
   const html = readFileSync('settings/index.html', 'utf8');
   document.body.innerHTML = html.slice(html.indexOf('<body>') + 6, html.indexOf('<script type="text/javascript">', html.indexOf('<body>')));
   const script = html.slice(html.indexOf('function onHomeyReady'), html.lastIndexOf('</script>'));
+  // The cards come from the shared script (`settings/app-settings.js`), loaded first as the page's <head> does.
+  new Function(readFileSync('settings/app-settings.js', 'utf8'))();
   const calls: any[] = [];
   const Homey = {
     __: (k: string, tokens?: any) => `${k.replace('settings.', '')}${tokens ? JSON.stringify(tokens) : ''}`,

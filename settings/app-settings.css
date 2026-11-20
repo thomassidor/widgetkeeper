@@ -1,0 +1,70 @@
+/* The app's settings cards' content (`app-settings.js`), on the app settings page and in the web dashboards' Settings
+   dialog. Each card's body is `.wk-as`; a page sets the colours below on it (the settings page keeps these, Homey's
+   settings tokens; the web page its own, `dashboard.css`). */
+.wk-as {
+  --as-muted: var(--homey-color-mono-50, #7A7B7D);
+  --as-line: var(--homey-color-mono-05, #E9EAEE);
+  --as-chip: var(--homey-color-mono-02, #F1F2F6);
+  --as-link: var(--homey-color-blue, #0082FA);
+  --as-ok: var(--homey-color-green, #3FC700);
+  --as-warn: var(--homey-color-orange-500, #FF8400);
+  --as-medium: var(--homey-font-weight-medium, 500);
+}
+/* A part of a card: a line above it and a heading. */
+.wk-as .sub { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--as-line); }
+.wk-as .sub-title { margin: 0; font-size: 15px; line-height: 20px; font-weight: var(--as-medium); }
+.wk-as .help { margin: 8px 0 0; font-size: 14px; line-height: 20px; color: var(--as-muted); }
+.wk-as .row { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 0; }
+.wk-as .row > * { flex: 1 1 auto; }
+.wk-as .status:empty { display: none; }
+/* A part inside a part (the password under Away from home): space above, no line. */
+.wk-as .sub-part { margin-top: 20px; }
+/* Making a screen's key, step by step. */
+.wk-as .steps { margin: 12px 0 0; padding-left: 22px; font-size: 14px; line-height: 20px; }
+.wk-as .steps li { margin: 4px 0 0; }
+.wk-as .steps .help { display: block; margin: 2px 0 0; }
+.wk-as .tick { padding: 0 8px; border-radius: 5px; font-weight: var(--as-medium); background: var(--as-chip); }
+/* Where a key or password stands: a tick, or ! while there's none. */
+.wk-as .state { display: flex; align-items: flex-start; gap: 8px; margin: 12px 0 0; font-size: 15px; line-height: 20px; font-weight: 500; }
+.wk-as .state::before {
+  content: '✓'; flex: none; width: 20px; height: 20px; border-radius: 10px; text-align: center; line-height: 20px;
+  font-size: 13px; font-weight: 700; color: #FFFFFF; background: var(--as-ok);
+}
+.wk-as .state.warn::before { content: '!'; background: var(--as-warn); }
+/* Each feature and the box to tick for it. */
+.wk-as .perms { list-style: none; margin: 8px 0 0; padding: 0; }
+.wk-as .perms li { display: flex; align-items: baseline; gap: 12px; padding: 6px 0; font-size: 14px; line-height: 20px; border-bottom: 1px solid var(--as-line); }
+.wk-as .perms li:last-child { border-bottom: 0; }
+.wk-as .perms span { flex: 1 1 auto; }
+.wk-as .perms strong { flex: none; padding: 0 8px; border-radius: 5px; font-weight: var(--as-medium); background: var(--as-chip); }
+/* The Keypad's codes: a row each, the name, its length, Change and Remove. */
+.wk-as .kp-codes { list-style: none; margin: 8px 0 0; padding: 0; }
+.wk-as .kp-codes li { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--as-line); }
+.wk-as .kp-code-name { flex: 1 1 auto; min-width: 0; font-weight: var(--as-medium); overflow-wrap: anywhere; }
+.wk-as .kp-code-digits { flex: none; font-size: 14px; color: var(--as-muted); }
+.wk-as .kp-codes button { flex: none; }
+.wk-as .kp-changing { margin: 12px 0 0; font-weight: var(--as-medium); }
+/* Device names: a few of the Homey's own, as they are and as the widgets show them. */
+.wk-as .names-examples { list-style: none; margin: 8px 0 0; padding: 0; }
+.wk-as .names-examples li { padding: 6px 0; font-size: 14px; line-height: 20px; overflow-wrap: anywhere; border-bottom: 1px solid var(--as-line); }
+.wk-as .names-examples li:last-child { border-bottom: 0; }
+.wk-as .names-from { color: var(--as-muted); }
+.wk-as .names-to { font-weight: var(--as-medium); }
+/* A screen's code, shown once, and its address as a QR code (dark modules on white, whatever the theme). */
+.wk-as .scr-code { margin: 12px 0 0; font: 700 28px/36px ui-monospace, Menlo, Consolas, monospace; letter-spacing: 2px; }
+.wk-as .scr-qr { margin: 12px 0 0; width: 180px; padding: 8px; background: #FFFFFF; border-radius: 5px; }
+.wk-as .scr-qr svg { display: block; width: 100%; height: auto; }
+.wk-as .scr-address { margin-top: 12px; }
+/* A screen's row: its name with how it stands under it, then its buttons together; they wrap under as one. */
+.wk-as .scr-list li { flex-wrap: wrap; }
+.wk-as .scr-info { flex: 1 1 9em; min-width: 0; }
+.wk-as .scr-info .kp-code-name, .wk-as .scr-info .kp-code-digits { display: block; }
+.wk-as .scr-info .scr-warn { color: #A85700; font-weight: var(--as-medium); }
+.wk-as .scr-info .scr-opens { display: block; width: auto; max-width: 100%; margin-top: 6px; }
+.wk-as .scr-buttons { display: flex; flex: none; gap: 8px; margin-left: auto; }
+.wk-as .scr-address .sub-title { font-size: 14px; }
+.wk-as .web-url { display: block; margin-top: 4px; font-size: 14px; line-height: 20px; word-break: break-all; text-decoration: none; color: var(--as-link); }
+.wk-as .report {
+  display: block; width: 100%; box-sizing: border-box; height: 40vh; min-height: 180px; margin-top: 12px;
+  font: 11px/1.4 ui-monospace, Menlo, Consolas, monospace; white-space: pre; overflow: auto; resize: vertical;
+}
