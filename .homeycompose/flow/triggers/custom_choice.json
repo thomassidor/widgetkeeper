@@ -1,0 +1,188 @@
+{
+  "id": "custom_choice",
+  "title": {
+    "en": "A Widget Builder choice was made",
+    "nl": "Een Widgetbouwer-keuze is gemaakt",
+    "de": "Eine Widget-Baukasten-Auswahl wurde getroffen",
+    "fr": "Un choix du Créateur de widgets a été fait",
+    "it": "È stata fatta una scelta del Costruttore di widget",
+    "sv": "Ett Widgetbyggare-val gjordes",
+    "no": "Et Widgetbygger-valg ble gjort",
+    "es": "Se hizo una elección del Creador de widgets",
+    "da": "Der blev foretaget et Widgetbygger-valg",
+    "ru": "Сделан выбор в конструкторе виджетов",
+    "pl": "Dokonano wyboru w Kreatorze widżetów",
+    "ko": "위젯 빌더에서 선택했을 때",
+    "ar": "تم اختيار في منشئ الأدوات"
+  },
+  "titleFormatted": {
+    "en": "A choice was made on [[part]]",
+    "nl": "Er is een keuze gemaakt op [[part]]",
+    "de": "Auf [[part]] wurde gewählt",
+    "fr": "Un choix a été fait sur [[part]]",
+    "it": "È stata fatta una scelta su [[part]]",
+    "sv": "Ett val gjordes på [[part]]",
+    "no": "Et valg ble gjort på [[part]]",
+    "es": "Se eligió en [[part]]",
+    "da": "Der blev valgt på [[part]]",
+    "ru": "Сделан выбор на [[part]]",
+    "pl": "Dokonano wyboru na [[part]]",
+    "ko": "[[part]]에서 선택했을 때",
+    "ar": "تم الاختيار في [[part]]"
+  },
+  "hint": {
+    "en": "After the choice was set.",
+    "nl": "Nadat de keuze is ingesteld.",
+    "de": "Nachdem die Auswahl gesetzt wurde.",
+    "fr": "Une fois le choix appliqué.",
+    "it": "Dopo che la scelta è stata impostata.",
+    "sv": "När valet har satts.",
+    "no": "Etter at valget er satt.",
+    "es": "Después de aplicar la elección.",
+    "da": "Når valget er sat.",
+    "ru": "После применения выбора.",
+    "pl": "Po ustawieniu wyboru.",
+    "ko": "선택이 적용된 후입니다.",
+    "ar": "بعد تطبيق الاختيار."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "part",
+      "title": {
+        "en": "Part",
+        "nl": "Onderdeel",
+        "de": "Element",
+        "fr": "Élément",
+        "it": "Elemento",
+        "sv": "Del",
+        "no": "Del",
+        "es": "Elemento",
+        "da": "Del",
+        "ru": "Элемент",
+        "pl": "Element",
+        "ko": "요소",
+        "ar": "العنصر"
+      },
+      "placeholder": {
+        "en": "Living room · Message",
+        "nl": "Woonkamer · Bericht",
+        "de": "Wohnzimmer · Nachricht",
+        "fr": "Salon · Message",
+        "it": "Soggiorno · Messaggio",
+        "sv": "Vardagsrum · Meddelande",
+        "no": "Stue · Melding",
+        "es": "Salón · Mensaje",
+        "da": "Stue · Besked",
+        "ru": "Гостиная · Сообщение",
+        "pl": "Salon · Wiadomość",
+        "ko": "거실 · 메시지",
+        "ar": "غرفة المعيشة · رسالة"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "choice",
+      "type": "string",
+      "title": {
+        "en": "Choice",
+        "nl": "Keuze",
+        "de": "Auswahl",
+        "fr": "Choix",
+        "it": "Scelta",
+        "sv": "Val",
+        "no": "Valg",
+        "es": "Elección",
+        "da": "Valg",
+        "ru": "Выбор",
+        "pl": "Wybór",
+        "ko": "선택",
+        "ar": "الاختيار"
+      },
+      "example": {
+        "en": "Movie",
+        "nl": "Film",
+        "de": "Film",
+        "fr": "Film",
+        "it": "Film",
+        "sv": "Film",
+        "no": "Film",
+        "es": "Película",
+        "da": "Film",
+        "ru": "Кино",
+        "pl": "Film",
+        "ko": "영화",
+        "ar": "فيلم"
+      }
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "title": {
+        "en": "Value",
+        "nl": "Waarde",
+        "de": "Wert",
+        "fr": "Valeur",
+        "it": "Valore",
+        "sv": "Värde",
+        "no": "Verdi",
+        "es": "Valor",
+        "da": "Værdi",
+        "ru": "Значение",
+        "pl": "Wartość",
+        "ko": "값",
+        "ar": "القيمة"
+      },
+      "example": {
+        "en": "movie",
+        "nl": "movie",
+        "de": "movie",
+        "fr": "movie",
+        "it": "movie",
+        "sv": "movie",
+        "no": "movie",
+        "es": "movie",
+        "da": "movie",
+        "ru": "movie",
+        "pl": "movie",
+        "ko": "movie",
+        "ar": "movie"
+      }
+    },
+    {
+      "name": "index",
+      "type": "number",
+      "title": {
+        "en": "Number",
+        "nl": "Nummer",
+        "de": "Nummer",
+        "fr": "Numéro",
+        "it": "Numero",
+        "sv": "Nummer",
+        "no": "Nummer",
+        "es": "Número",
+        "da": "Nummer",
+        "ru": "Номер",
+        "pl": "Numer",
+        "ko": "번호",
+        "ar": "الرقم"
+      },
+      "example": {
+        "en": "2",
+        "nl": "2",
+        "de": "2",
+        "fr": "2",
+        "it": "2",
+        "sv": "2",
+        "no": "2",
+        "es": "2",
+        "da": "2",
+        "ru": "2",
+        "pl": "2",
+        "ko": "2",
+        "ar": "2"
+      }
+    }
+  ]
+}

@@ -12,6 +12,7 @@ import keypad from './widgets/keypad/api.js';
 import lightrooms from './widgets/lightrooms/api.js';
 import popups from './widgets/popups/api.js';
 import shortcuts from './widgets/shortcuts/api.js';
+import custom from './widgets/custom/api.js';
 import stack, { PAGE_APIS } from './widgets/stack/api.js';
 import valueboard from './widgets/valueboard/api.js';
 import webpage from './widgets/webpage/api.js';
@@ -25,7 +26,7 @@ type Homey = App['homey'];
  * Room, Value Board, Dashboard Shortcuts, Web Page, Popups and Keypad, which aren't stack pages; a Popups widget on a web dashboard never
  * calls it).
  */
-export const WEB_APIS: WidgetApis = { ...PAGE_APIS, stack, dayssince, lightrooms, valueboard, shortcuts, webpage, popups, keypad };
+export const WEB_APIS: WidgetApis = { ...PAGE_APIS, stack, dayssince, lightrooms, valueboard, shortcuts, webpage, popups, keypad, custom };
 
 /** Why the web page's own key (`key`) may not do what the app's stored key would do here, or null when it may. */
 async function pageKeyProblem(app: WidgetkeeperApp, key: unknown, use: KeyUse): Promise<'keyInvalid' | 'keyScope' | null> {

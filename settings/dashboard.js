@@ -358,6 +358,7 @@
       dayssince: "Days since a chore was done, turning red when it's due.",
       stack: 'Widgets from another dashboard, taking turns.',
       shortcuts: 'Jump to your other web dashboards, in your colours and icons.',
+      custom: 'Your own widget from parts: values, switches, sliders, gauges and more, Flows included.',
       webpage: 'Any web page, scaled to fill the widget.',
       popups: 'Shows the popups that Flows send to its screen name here too.',
     },

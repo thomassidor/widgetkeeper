@@ -26,7 +26,7 @@ function optionsUsed(value: unknown, found = new Set<string>()): Set<string> {
 /** An image that only changes colours says little: the Looks are there to show what a widget can do. */
 const onlyColours = (x: Variant) => !x.act && Object.keys(x.opts || {}).every(k => k === 'colorStyle' || k === 'color');
 /** Widgets with little to show. The others need this many images that do more than change colours. */
-const FEW_MODES: Record<string, number> = { shortcuts: 1, webpage: 1, flows: 2, varpresets: 2, clock: 2, cameras: 3, dailyrange: 3, dayssince: 3, popups: 3, sensordots: 3, textline: 3, thermostat: 3, typicalday: 3, variables: 3 };
+const FEW_MODES: Record<string, number> = { shortcuts: 1, custom: 4, webpage: 1, flows: 2, varpresets: 2, clock: 2, cameras: 3, dailyrange: 3, dayssince: 3, popups: 3, sensordots: 3, textline: 3, thermostat: 3, typicalday: 3, variables: 3 };
 
 /**
  * The settings that change how a widget looks (not what it reads or does), each in some image. A new one goes here and
@@ -61,6 +61,7 @@ const SHOWN_SETTINGS: Record<string, string[]> = {
   sensoralarms: ['columns', 'wideLast'],
   sensordots: ['idleColor', 'activeColor'],
   shortcuts: ['columns'],
+  custom: [],
   sparklines: ['columns', 'smooth', 'color'],
   stack: ['dotsSize', 'dotsPosition', 'showDots', 'dotsStyle'],
   stacked: ['style', 'plotHeight', 'legend', 'total', 'smooth', 'showHeader'],

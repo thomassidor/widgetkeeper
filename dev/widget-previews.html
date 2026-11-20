@@ -6,7 +6,7 @@
 <title>Widget Previews</title>
 <!--
   Source for the widget preview PNGs (from the "Widget Previews" Claude Design project).
-  Without a query it shows them all on a canvas; `?p=elec-dark|elec-light|thermo-dark|thermo-light|qa-dark|qa-light|sa-dark|sa-light|sd-dark|sd-light|rh-dark|rh-light|weather-dark|weather-light|hm-dark|hm-light|cam-dark|cam-light|val-dark|val-light|cv-dark|cv-light|ft-dark|ft-light|lc-dark|lc-light|lr-dark|lr-light|spark-dark|spark-light|chart-dark|chart-light|var-dark|var-light|vp-dark|vp-light|sd-dark|sd-light|fb-dark|fb-light|pb-dark|pb-light|tm-dark|tm-light|lk-dark|lk-light|ct-dark|ct-light|mw-dark|mw-light|sk-dark|sk-light|ck-dark|ck-light|sp-dark|sp-light|tl-dark|tl-light|ds-dark|ds-light|sc-dark|sc-light|wp-dark|wp-light|pw-dark|pw-light|pu-dark|pu-light|kp-dark|kp-light|tt-dark|tt-light|xy-dark|xy-light|td-dark|td-light|dr-dark|dr-light|cp-dark|cp-light|tln-dark|tln-light|stk-dark|stk-light|lns-dark|lns-light|gg-dark|gg-light`
+  Without a query it shows them all on a canvas; `?p=elec-dark|elec-light|thermo-dark|thermo-light|qa-dark|qa-light|sa-dark|sa-light|sd-dark|sd-light|rh-dark|rh-light|weather-dark|weather-light|hm-dark|hm-light|cam-dark|cam-light|val-dark|val-light|cv-dark|cv-light|ft-dark|ft-light|lc-dark|lc-light|lr-dark|lr-light|spark-dark|spark-light|chart-dark|chart-light|var-dark|var-light|vp-dark|vp-light|sd-dark|sd-light|fb-dark|fb-light|pb-dark|pb-light|tm-dark|tm-light|lk-dark|lk-light|ct-dark|ct-light|mw-dark|mw-light|sk-dark|sk-light|ck-dark|ck-light|sp-dark|sp-light|tl-dark|tl-light|ds-dark|ds-light|sc-dark|sc-light|wp-dark|wp-light|pw-dark|pw-light|pu-dark|pu-light|kp-dark|kp-light|tt-dark|tt-light|xy-dark|xy-light|td-dark|td-light|dr-dark|dr-light|cp-dark|cp-light|tln-dark|tln-light|stk-dark|stk-light|lns-dark|lns-light|gg-dark|gg-light|wb-dark|wb-light`
   renders that one 1024×1024 frame alone on a transparent page, for scripts/render-previews.mjs.
 -->
 <style>
@@ -1023,6 +1023,28 @@ function dashboardShortcuts(t, theme) {
   </div>`;
 }
 
+// Widget Builder: a design of parts on the 4-column grid (a large value with its line, two small values, a switch that's
+// on and a dimmer bar), with a dashed outline on one part as in the builder, and a sparkle badge (the logo's) over the corner.
+function widgetBuilder(t, theme) {
+  const tileBg = theme === 'dark' ? '#181920' : '#FFFFFF';
+  const shadow = theme === 'dark' ? 'inset 0 2px 0 rgba(255,255,255,.06), 0 12px 40px rgba(0,0,0,.45)' : '0 12px 40px rgba(17,18,23,.12)';
+  const muted = theme === 'dark' ? 'rgba(237,238,240,.45)' : 'rgba(31,32,41,.4)';
+  const ring = theme === 'dark' ? '#111217' : '#F4F4FA';
+  const tile = (area, inner, extra = '') => `<div style="grid-area:${area};border-radius:30px;background:${tileBg};box-shadow:${shadow};position:relative;overflow:hidden;${extra}">${inner}</div>`;
+  const line = `<svg viewBox="0 0 100 40" preserveAspectRatio="none" style="position:absolute;left:0;right:0;bottom:0;width:100%;height:46%"><path d="M0,30 L12,27 L24,31 L36,22 L48,18 L60,21 L72,12 L84,15 L100,8 L100,40 L0,40Z" fill="${BLUE}" opacity=".2"/><path d="M0,30 L12,27 L24,31 L36,22 L48,18 L60,21 L72,12 L84,15 L100,8" fill="none" stroke="${BLUE}" stroke-width="5" vector-effect="non-scaling-stroke"/></svg>`;
+  const sparkle = '<svg viewBox="0 0 24 24" width="120" height="120"><path fill="#FFFFFF" d="M12 1.5c.5 4.9 2.6 8 7.5 10.5-4.9 2.5-7 5.6-7.5 10.5-.5-4.9-2.6-8-7.5-10.5C9.4 9.5 11.5 6.4 12 1.5z"/></svg>';
+  return `<div style="width:880px;position:relative">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:170px 170px 150px;gap:28px;grid-template-areas:'a a b c' 'a a d d' 'e e e e'">
+      ${tile('a', `<div style="padding:34px 36px;display:flex;flex-direction:column;gap:22px">${pill(150, 26, muted)}<div style="font-size:96px;line-height:96px;font-weight:700;color:${t.fg}">22.4°</div></div>${line}`)}
+      ${tile('b', `<div style="padding:30px;display:flex;flex-direction:column;justify-content:space-between;height:100%;box-sizing:border-box"><div style="width:40px;height:40px;border-radius:50%;border:7px solid ${BLUE};box-sizing:border-box"></div>${pill(90, 30, t.fg)}</div>`)}
+      ${tile('c', `<div style="padding:30px;display:flex;flex-direction:column;justify-content:space-between;height:100%;box-sizing:border-box"><div style="width:40px;height:40px;border-radius:50%;background:${t.green}"></div>${pill(80, 30, t.fg)}</div>`, `outline:7px dashed ${BLUE};outline-offset:9px`)}
+      ${tile('d', `<div style="padding:30px 34px;display:flex;justify-content:space-between;align-items:flex-start;height:100%;box-sizing:border-box;background:color-mix(in srgb, #F5C518 22%, ${tileBg})">${pill(150, 30, t.fg, 'align-self:flex-end')}<div style="width:96px;height:56px;border-radius:28px;background:#F5C518;position:relative"><div style="position:absolute;right:8px;top:8px;width:40px;height:40px;border-radius:50%;background:#FFFFFF"></div></div></div>`)}
+      ${tile('e', `<div style="position:absolute;inset:0 38% 0 0;background:color-mix(in srgb, ${BLUE} 40%, ${tileBg})"></div><div style="position:relative;display:flex;align-items:center;height:100%;padding:0 40px;gap:30px">${pill(56, 56, t.fg, 'border-radius:50%')}${pill(220, 30, t.fg)}</div>`)}
+    </div>
+    <div style="position:absolute;right:-36px;top:-60px;width:232px;height:232px;border-radius:50%;background:#2A1958;box-shadow:0 0 0 14px ${ring}, 0 16px 40px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center">${sparkle}</div>
+  </div>`;
+}
+
 // Energy Price Strip: one tile with the price now (the red level dot and label over the value) and the coming hours as bars
 // in their level colours, the current one full strength and a dot over the cheapest.
 function priceBadge(t, theme) {
@@ -1413,6 +1435,8 @@ const PREVIEWS = [
   { id: 'pu-light',     label: '3n · Popups — preview-light.png',                theme: 'light', render: popups },
   { id: 'kp-dark',      label: '3o · Keypad — preview-dark.png',                 theme: 'dark',  render: keypad },
   { id: 'kp-light',     label: '3p · Keypad — preview-light.png',                theme: 'light', render: keypad },
+  { id: 'wb-dark',      label: '3q · Widget Builder — preview-dark.png',         theme: 'dark',  render: widgetBuilder },
+  { id: 'wb-light',     label: '3r · Widget Builder — preview-light.png',        theme: 'light', render: widgetBuilder },
 ];
 
 const solo = new URLSearchParams(location.search).get('p');

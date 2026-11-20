@@ -1,0 +1,339 @@
+{
+  "id": "custom_set_color",
+  "title": {
+    "en": "Colour a Widget Builder part",
+    "nl": "Een Widgetbouwer-onderdeel kleuren",
+    "de": "Ein Widget-Baukasten-Element färben",
+    "fr": "Colorer un élément du Créateur de widgets",
+    "it": "Colora un elemento del Costruttore di widget",
+    "sv": "Färga en Widgetbyggare-del",
+    "no": "Farg en Widgetbygger-del",
+    "es": "Colorear un elemento del Creador de widgets",
+    "da": "Farv en Widgetbygger-del",
+    "ru": "Задать цвет элемента конструктора виджетов",
+    "pl": "Pokoloruj element Kreatora widżetów",
+    "ko": "위젯 빌더 요소 색상 지정",
+    "ar": "تلوين عنصر في منشئ الأدوات"
+  },
+  "titleFormatted": {
+    "en": "Colour [[part]] [[color]]",
+    "nl": "Kleur [[part]] [[color]]",
+    "de": "[[part]] [[color]] färben",
+    "fr": "Colorer [[part]] en [[color]]",
+    "it": "Colora [[part]] di [[color]]",
+    "sv": "Färga [[part]] [[color]]",
+    "no": "Farg [[part]] [[color]]",
+    "es": "Colorear [[part]] de [[color]]",
+    "da": "Farv [[part]] [[color]]",
+    "ru": "Цвет [[part]]: [[color]]",
+    "pl": "Pokoloruj [[part]] na [[color]]",
+    "ko": "[[part]]을(를) [[color]](으)로",
+    "ar": "لوّن [[part]] بـ [[color]]"
+  },
+  "hint": {
+    "en": "Only parts opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
+    "nl": "Alleen onderdelen die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+    "de": "Nur Elemente, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+    "fr": "Seuls les éléments ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+    "it": "Sono elencati solo gli elementi aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+    "sv": "Bara delar som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
+    "no": "Bare deler som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
+    "es": "Solo se listan los elementos abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+    "da": "Kun dele, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
+    "ru": "В списке только элементы, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+    "pl": "Na liście są tylko elementy otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+    "ko": "위젯 빌더의 Flow 탭에서 허용한 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+    "ar": "تظهر فقط العناصر المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "part",
+      "title": {
+        "en": "Part",
+        "nl": "Onderdeel",
+        "de": "Element",
+        "fr": "Élément",
+        "it": "Elemento",
+        "sv": "Del",
+        "no": "Del",
+        "es": "Elemento",
+        "da": "Del",
+        "ru": "Элемент",
+        "pl": "Element",
+        "ko": "요소",
+        "ar": "العنصر"
+      },
+      "placeholder": {
+        "en": "Living room · Message",
+        "nl": "Woonkamer · Bericht",
+        "de": "Wohnzimmer · Nachricht",
+        "fr": "Salon · Message",
+        "it": "Soggiorno · Messaggio",
+        "sv": "Vardagsrum · Meddelande",
+        "no": "Stue · Melding",
+        "es": "Salón · Mensaje",
+        "da": "Stue · Besked",
+        "ru": "Гостиная · Сообщение",
+        "pl": "Salon · Wiadomość",
+        "ko": "거실 · 메시지",
+        "ar": "غرفة المعيشة · رسالة"
+      }
+    },
+    {
+      "type": "dropdown",
+      "name": "color",
+      "title": {
+        "en": "Colour",
+        "nl": "Kleur",
+        "de": "Farbe",
+        "fr": "Couleur",
+        "it": "Colore",
+        "sv": "Färg",
+        "no": "Farge",
+        "es": "Color",
+        "da": "Farve",
+        "ru": "Цвет",
+        "pl": "Kolor",
+        "ko": "색상",
+        "ar": "اللون"
+      },
+      "values": [
+        {
+          "id": "default",
+          "title": {
+            "en": "Default",
+            "nl": "Standaard",
+            "de": "Standard",
+            "fr": "Par défaut",
+            "it": "Predefinito",
+            "sv": "Standard",
+            "no": "Standard",
+            "es": "Predeterminado",
+            "da": "Standard",
+            "ru": "По умолчанию",
+            "pl": "Domyślny",
+            "ko": "기본값",
+            "ar": "افتراضي"
+          }
+        },
+        {
+          "id": "red",
+          "title": {
+            "en": "Red",
+            "nl": "Rood",
+            "de": "Rot",
+            "fr": "Rouge",
+            "it": "Rosso",
+            "sv": "Röd",
+            "no": "Rød",
+            "es": "Rojo",
+            "da": "Rød",
+            "ru": "Красный",
+            "pl": "Czerwony",
+            "ko": "빨강",
+            "ar": "أحمر"
+          }
+        },
+        {
+          "id": "orange",
+          "title": {
+            "en": "Orange",
+            "nl": "Oranje",
+            "de": "Orange",
+            "fr": "Orange",
+            "it": "Arancione",
+            "sv": "Orange",
+            "no": "Oransje",
+            "es": "Naranja",
+            "da": "Orange",
+            "ru": "Оранжевый",
+            "pl": "Pomarańczowy",
+            "ko": "주황",
+            "ar": "برتقالي"
+          }
+        },
+        {
+          "id": "yellow",
+          "title": {
+            "en": "Yellow",
+            "nl": "Geel",
+            "de": "Gelb",
+            "fr": "Jaune",
+            "it": "Giallo",
+            "sv": "Gul",
+            "no": "Gul",
+            "es": "Amarillo",
+            "da": "Gul",
+            "ru": "Жёлтый",
+            "pl": "Żółty",
+            "ko": "노랑",
+            "ar": "أصفر"
+          }
+        },
+        {
+          "id": "green",
+          "title": {
+            "en": "Green",
+            "nl": "Groen",
+            "de": "Grün",
+            "fr": "Vert",
+            "it": "Verde",
+            "sv": "Grön",
+            "no": "Grønn",
+            "es": "Verde",
+            "da": "Grøn",
+            "ru": "Зелёный",
+            "pl": "Zielony",
+            "ko": "초록",
+            "ar": "أخضر"
+          }
+        },
+        {
+          "id": "blue",
+          "title": {
+            "en": "Blue",
+            "nl": "Blauw",
+            "de": "Blau",
+            "fr": "Bleu",
+            "it": "Blu",
+            "sv": "Blå",
+            "no": "Blå",
+            "es": "Azul",
+            "da": "Blå",
+            "ru": "Синий",
+            "pl": "Niebieski",
+            "ko": "파랑",
+            "ar": "أزرق"
+          }
+        },
+        {
+          "id": "purple",
+          "title": {
+            "en": "Purple",
+            "nl": "Paars",
+            "de": "Lila",
+            "fr": "Violet",
+            "it": "Viola",
+            "sv": "Lila",
+            "no": "Lilla",
+            "es": "Morado",
+            "da": "Lilla",
+            "ru": "Фиолетовый",
+            "pl": "Fioletowy",
+            "ko": "보라",
+            "ar": "بنفسجي"
+          }
+        },
+        {
+          "id": "teal",
+          "title": {
+            "en": "Teal",
+            "nl": "Blauwgroen",
+            "de": "Petrol",
+            "fr": "Bleu canard",
+            "it": "Verde acqua",
+            "sv": "Blågrön",
+            "no": "Blågrønn",
+            "es": "Verde azulado",
+            "da": "Blågrøn",
+            "ru": "Бирюзовый",
+            "pl": "Morski",
+            "ko": "청록",
+            "ar": "أزرق مخضر"
+          }
+        },
+        {
+          "id": "cyan",
+          "title": {
+            "en": "Cyan",
+            "nl": "Cyaan",
+            "de": "Cyan",
+            "fr": "Cyan",
+            "it": "Ciano",
+            "sv": "Cyan",
+            "no": "Cyan",
+            "es": "Cian",
+            "da": "Cyan",
+            "ru": "Голубой",
+            "pl": "Cyjan",
+            "ko": "하늘",
+            "ar": "سماوي"
+          }
+        },
+        {
+          "id": "indigo",
+          "title": {
+            "en": "Indigo",
+            "nl": "Indigo",
+            "de": "Indigo",
+            "fr": "Indigo",
+            "it": "Indaco",
+            "sv": "Indigo",
+            "no": "Indigo",
+            "es": "Índigo",
+            "da": "Indigo",
+            "ru": "Индиго",
+            "pl": "Indygo",
+            "ko": "남색",
+            "ar": "نيلي"
+          }
+        },
+        {
+          "id": "pink",
+          "title": {
+            "en": "Pink",
+            "nl": "Roze",
+            "de": "Rosa",
+            "fr": "Rose",
+            "it": "Rosa",
+            "sv": "Rosa",
+            "no": "Rosa",
+            "es": "Rosa",
+            "da": "Lyserød",
+            "ru": "Розовый",
+            "pl": "Różowy",
+            "ko": "분홍",
+            "ar": "وردي"
+          }
+        },
+        {
+          "id": "brown",
+          "title": {
+            "en": "Brown",
+            "nl": "Bruin",
+            "de": "Braun",
+            "fr": "Marron",
+            "it": "Marrone",
+            "sv": "Brun",
+            "no": "Brun",
+            "es": "Marrón",
+            "da": "Brun",
+            "ru": "Коричневый",
+            "pl": "Brązowy",
+            "ko": "갈색",
+            "ar": "بني"
+          }
+        },
+        {
+          "id": "grey",
+          "title": {
+            "en": "Grey",
+            "nl": "Grijs",
+            "de": "Grau",
+            "fr": "Gris",
+            "it": "Grigio",
+            "sv": "Grå",
+            "no": "Grå",
+            "es": "Gris",
+            "da": "Grå",
+            "ru": "Серый",
+            "pl": "Szary",
+            "ko": "회색",
+            "ar": "رمادي"
+          }
+        }
+      ]
+    }
+  ]
+}

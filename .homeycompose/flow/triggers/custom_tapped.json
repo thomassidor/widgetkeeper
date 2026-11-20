@@ -1,0 +1,188 @@
+{
+  "id": "custom_tapped",
+  "title": {
+    "en": "A Widget Builder button was tapped",
+    "nl": "Op een Widgetbouwer-knop is getikt",
+    "de": "Eine Widget-Baukasten-Taste wurde angetippt",
+    "fr": "Un bouton du Créateur de widgets a été touché",
+    "it": "È stato toccato un pulsante del Costruttore di widget",
+    "sv": "En Widgetbyggare-knapp trycktes",
+    "no": "En Widgetbygger-knapp ble trykket",
+    "es": "Se tocó un botón del Creador de widgets",
+    "da": "Der blev trykket på en Widgetbygger-knap",
+    "ru": "Нажата кнопка конструктора виджетов",
+    "pl": "Dotknięto przycisku Kreatora widżetów",
+    "ko": "위젯 빌더 버튼을 눌렀을 때",
+    "ar": "تم النقر على زر في منشئ الأدوات"
+  },
+  "titleFormatted": {
+    "en": "Widget Builder button [[part]] was tapped",
+    "nl": "Op Widgetbouwer-knop [[part]] is getikt",
+    "de": "Widget-Baukasten-Taste [[part]] wurde angetippt",
+    "fr": "Le bouton [[part]] du Créateur de widgets a été touché",
+    "it": "È stato toccato il pulsante [[part]] del Costruttore di widget",
+    "sv": "Widgetbyggare-knappen [[part]] trycktes",
+    "no": "Widgetbygger-knappen [[part]] ble trykket",
+    "es": "Se tocó el botón [[part]] del Creador de widgets",
+    "da": "Der blev trykket på Widgetbygger-knappen [[part]]",
+    "ru": "Нажата кнопка [[part]] конструктора виджетов",
+    "pl": "Dotknięto przycisku [[part]] Kreatora widżetów",
+    "ko": "위젯 빌더 버튼 [[part]]을(를) 눌렀을 때",
+    "ar": "تم النقر على زر منشئ الأدوات [[part]]"
+  },
+  "hint": {
+    "en": "Buttons without a Flow of their own fire this.",
+    "nl": "Knoppen zonder eigen Flow starten dit.",
+    "de": "Tasten ohne eigenen Flow lösen dies aus.",
+    "fr": "Les boutons sans Flow propre déclenchent ceci.",
+    "it": "I pulsanti senza un Flow proprio attivano questo.",
+    "sv": "Knappar utan eget Flow startar detta.",
+    "no": "Knapper uten egen Flow starter dette.",
+    "es": "Los botones sin Flow propio activan esto.",
+    "da": "Knapper uden eget Flow starter dette.",
+    "ru": "Срабатывает от кнопок без своего Flow.",
+    "pl": "Uruchamiają to przyciski bez własnego Flow.",
+    "ko": "자체 Flow가 없는 버튼이 이를 실행합니다.",
+    "ar": "تُطلق هذا الأزرار التي ليس لها Flow خاص."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "part",
+      "title": {
+        "en": "Part",
+        "nl": "Onderdeel",
+        "de": "Element",
+        "fr": "Élément",
+        "it": "Elemento",
+        "sv": "Del",
+        "no": "Del",
+        "es": "Elemento",
+        "da": "Del",
+        "ru": "Элемент",
+        "pl": "Element",
+        "ko": "요소",
+        "ar": "العنصر"
+      },
+      "placeholder": {
+        "en": "Living room · Message",
+        "nl": "Woonkamer · Bericht",
+        "de": "Wohnzimmer · Nachricht",
+        "fr": "Salon · Message",
+        "it": "Soggiorno · Messaggio",
+        "sv": "Vardagsrum · Meddelande",
+        "no": "Stue · Melding",
+        "es": "Salón · Mensaje",
+        "da": "Stue · Besked",
+        "ru": "Гостиная · Сообщение",
+        "pl": "Salon · Wiadomość",
+        "ko": "거실 · 메시지",
+        "ar": "غرفة المعيشة · رسالة"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "part",
+      "type": "string",
+      "title": {
+        "en": "Part",
+        "nl": "Onderdeel",
+        "de": "Element",
+        "fr": "Élément",
+        "it": "Elemento",
+        "sv": "Del",
+        "no": "Del",
+        "es": "Elemento",
+        "da": "Del",
+        "ru": "Элемент",
+        "pl": "Element",
+        "ko": "요소",
+        "ar": "العنصر"
+      },
+      "example": {
+        "en": "Ring",
+        "nl": "Bel",
+        "de": "Klingeln",
+        "fr": "Sonner",
+        "it": "Suona",
+        "sv": "Ring",
+        "no": "Ring",
+        "es": "Timbre",
+        "da": "Ring",
+        "ru": "Звонок",
+        "pl": "Dzwonek",
+        "ko": "벨",
+        "ar": "الجرس"
+      }
+    },
+    {
+      "name": "design",
+      "type": "string",
+      "title": {
+        "en": "Design",
+        "nl": "Ontwerp",
+        "de": "Entwurf",
+        "fr": "Modèle",
+        "it": "Design",
+        "sv": "Design",
+        "no": "Design",
+        "es": "Diseño",
+        "da": "Design",
+        "ru": "Макет",
+        "pl": "Projekt",
+        "ko": "디자인",
+        "ar": "التصميم"
+      },
+      "example": {
+        "en": "Entrance",
+        "nl": "Entree",
+        "de": "Eingang",
+        "fr": "Entrée",
+        "it": "Ingresso",
+        "sv": "Entré",
+        "no": "Inngang",
+        "es": "Entrada",
+        "da": "Indgang",
+        "ru": "Вход",
+        "pl": "Wejście",
+        "ko": "현관",
+        "ar": "المدخل"
+      }
+    },
+    {
+      "name": "dashboard",
+      "type": "string",
+      "title": {
+        "en": "Web dashboard",
+        "nl": "Webdashboard",
+        "de": "Web-Dashboard",
+        "fr": "Tableau de bord web",
+        "it": "Dashboard web",
+        "sv": "Webbpanel",
+        "no": "Nettdashbord",
+        "es": "Panel web",
+        "da": "Webdashboard",
+        "ru": "Веб-панель",
+        "pl": "Pulpit webowy",
+        "ko": "웹 대시보드",
+        "ar": "لوحة الويب"
+      },
+      "example": {
+        "en": "home",
+        "nl": "home",
+        "de": "home",
+        "fr": "home",
+        "it": "home",
+        "sv": "home",
+        "no": "home",
+        "es": "home",
+        "da": "home",
+        "ru": "home",
+        "pl": "home",
+        "ko": "home",
+        "ar": "home"
+      }
+    }
+  ]
+}

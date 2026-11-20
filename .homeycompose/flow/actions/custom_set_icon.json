@@ -1,0 +1,118 @@
+{
+  "id": "custom_set_icon",
+  "title": {
+    "en": "Set the icon of a Widget Builder part",
+    "nl": "Pictogram van een Widgetbouwer-onderdeel instellen",
+    "de": "Symbol eines Widget-Baukasten-Elements setzen",
+    "fr": "Définir l'icône d'un élément du Créateur de widgets",
+    "it": "Imposta l'icona di un elemento del Costruttore di widget",
+    "sv": "Ange ikonen för en Widgetbyggare-del",
+    "no": "Angi ikonet til en Widgetbygger-del",
+    "es": "Establecer el icono de un elemento del Creador de widgets",
+    "da": "Angiv ikonet for en Widgetbygger-del",
+    "ru": "Задать значок элемента конструктора виджетов",
+    "pl": "Ustaw ikonę elementu Kreatora widżetów",
+    "ko": "위젯 빌더 요소의 아이콘 설정",
+    "ar": "تعيين أيقونة عنصر في منشئ الأدوات"
+  },
+  "titleFormatted": {
+    "en": "Give [[part]] the icon [[icon]]",
+    "nl": "Geef [[part]] het pictogram [[icon]]",
+    "de": "[[part]] das Symbol [[icon]] geben",
+    "fr": "Donner à [[part]] l'icône [[icon]]",
+    "it": "Dai a [[part]] l'icona [[icon]]",
+    "sv": "Ge [[part]] ikonen [[icon]]",
+    "no": "Gi [[part]] ikonet [[icon]]",
+    "es": "Dar a [[part]] el icono [[icon]]",
+    "da": "Giv [[part]] ikonet [[icon]]",
+    "ru": "Дать [[part]] значок [[icon]]",
+    "pl": "Nadaj [[part]] ikonę [[icon]]",
+    "ko": "[[part]]에 아이콘 [[icon]] 지정",
+    "ar": "امنح [[part]] الأيقونة [[icon]]"
+  },
+  "hint": {
+    "en": "Only parts opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
+    "nl": "Alleen onderdelen die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+    "de": "Nur Elemente, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+    "fr": "Seuls les éléments ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+    "it": "Sono elencati solo gli elementi aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+    "sv": "Bara delar som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
+    "no": "Bare deler som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
+    "es": "Solo se listan los elementos abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+    "da": "Kun dele, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
+    "ru": "В списке только элементы, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+    "pl": "Na liście są tylko elementy otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+    "ko": "위젯 빌더의 Flow 탭에서 허용한 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+    "ar": "تظهر فقط العناصر المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "part",
+      "title": {
+        "en": "Part",
+        "nl": "Onderdeel",
+        "de": "Element",
+        "fr": "Élément",
+        "it": "Elemento",
+        "sv": "Del",
+        "no": "Del",
+        "es": "Elemento",
+        "da": "Del",
+        "ru": "Элемент",
+        "pl": "Element",
+        "ko": "요소",
+        "ar": "العنصر"
+      },
+      "placeholder": {
+        "en": "Living room · Message",
+        "nl": "Woonkamer · Bericht",
+        "de": "Wohnzimmer · Nachricht",
+        "fr": "Salon · Message",
+        "it": "Soggiorno · Messaggio",
+        "sv": "Vardagsrum · Meddelande",
+        "no": "Stue · Melding",
+        "es": "Salón · Mensaje",
+        "da": "Stue · Besked",
+        "ru": "Гостиная · Сообщение",
+        "pl": "Salon · Wiadomość",
+        "ko": "거실 · 메시지",
+        "ar": "غرفة المعيشة · رسالة"
+      }
+    },
+    {
+      "type": "autocomplete",
+      "name": "icon",
+      "title": {
+        "en": "Icon",
+        "nl": "Pictogram",
+        "de": "Symbol",
+        "fr": "Icône",
+        "it": "Icona",
+        "sv": "Ikon",
+        "no": "Ikon",
+        "es": "Icono",
+        "da": "Ikon",
+        "ru": "Значок",
+        "pl": "Ikona",
+        "ko": "아이콘",
+        "ar": "الأيقونة"
+      },
+      "placeholder": {
+        "en": "No icon",
+        "nl": "Geen pictogram",
+        "de": "Kein Symbol",
+        "fr": "Aucune icône",
+        "it": "Nessuna icona",
+        "sv": "Ingen ikon",
+        "no": "Ingen ikon",
+        "es": "Sin icono",
+        "da": "Intet ikon",
+        "ru": "Без значка",
+        "pl": "Bez ikony",
+        "ko": "아이콘 없음",
+        "ar": "بلا أيقونة"
+      }
+    }
+  ]
+}

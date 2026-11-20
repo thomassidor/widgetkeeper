@@ -1308,7 +1308,8 @@
       "stack": "Widgets fra et andet dashboard, på skift.",
       "shortcuts": "Hop til dine andre webdashboards, i dine farver og ikoner.",
       "webpage": "Enhver webside, skaleret så den fylder widgeten.",
-      "popups": "Viser også her de popups, som Flows sender til dens skærmnavn."
+      "popups": "Viser også her de popups, som Flows sender til dens skærmnavn.",
+      "custom": "Din egen widget af dele: værdier, kontakter, skydere, målere og mere, med Flows."
     },
     "sync": "Synk",
     "syncTitle": "Synkroniser med et Homey-dashboard",
@@ -1379,5 +1380,38 @@
     "noDashboards": "Ingen webdashboards endnu",
     "noLocks": "Ingen låse med en knap til at åbne",
     "more": "__count__ mere: skriv videre"
+  },
+  "custom": {
+    "error": "Kunne ikke indlæse designet.",
+    "missing": "Dette design blev fjernet.",
+    "pickDesign": "Vælg et design i widgettens indstillinger.",
+    "empty": "Dette design har ingen dele endnu.",
+    "webOnly": "Widgetbyggerens designs vises indtil videre kun på webdashboards.",
+    "unavailable": "Ikke tilgængelig",
+    "on": "Tændt",
+    "off": "Slukket",
+    "setFailed": "Kunne ikke ændre __name__.",
+    "noValue": "Ingen værdi valgt",
+    "noKey": "Tilføj en API-nøgle i appindstillingerne til dette.",
+    "keyScope": "API-nøglen må ikke gøre dette (Flows eller Variabler).",
+    "keyInvalid": "API-nøglen blev ikke accepteret.",
+    "partCount": "__count__ dele",
+    "kinds": {
+      "value": "Værdi",
+      "chart": "Minidiagram",
+      "gauge": "Måler",
+      "level": "Niveaubjælke",
+      "status": "Status",
+      "flowvalue": "Flowværdi",
+      "switch": "Kontakt",
+      "button": "Knap",
+      "slider": "Skyder",
+      "stepper": "Trinvælger",
+      "choice": "Valg",
+      "variable": "Variabel",
+      "container": "Beholder",
+      "text": "Tekst",
+      "icon": "Ikon"
+    }
   }
 }

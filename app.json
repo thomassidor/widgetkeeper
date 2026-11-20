@@ -42785,11 +42785,539 @@
         }
       },
       "id": "webpage"
+    },
+    "custom": {
+      "name": {
+        "en": "Widget Builder",
+        "nl": "Widgetbouwer",
+        "de": "Widget-Baukasten",
+        "fr": "Créateur de widgets",
+        "it": "Costruttore di widget",
+        "sv": "Widgetbyggare",
+        "no": "Widgetbygger",
+        "es": "Creador de widgets",
+        "da": "Widgetbygger",
+        "ru": "Конструктор виджетов",
+        "pl": "Kreator widżetów",
+        "ko": "위젯 빌더",
+        "ar": "منشئ الأدوات"
+      },
+      "deprecated": true,
+      "height": 100,
+      "transparent": true,
+      "settings": [
+        {
+          "id": "design",
+          "type": "autocomplete",
+          "title": {
+            "en": "Design",
+            "nl": "Ontwerp",
+            "de": "Entwurf",
+            "fr": "Modèle",
+            "it": "Design",
+            "sv": "Design",
+            "no": "Design",
+            "es": "Diseño",
+            "da": "Design",
+            "ru": "Макет",
+            "pl": "Projekt",
+            "ko": "디자인",
+            "ar": "التصميم"
+          },
+          "hint": {
+            "en": "Built on the web dashboards' Widget Builder page.",
+            "nl": "Gemaakt op de pagina Widgetbouwer van de webdashboards.",
+            "de": "Erstellt auf der Seite Widget-Baukasten der Web-Dashboards.",
+            "fr": "Créé sur la page Créateur de widgets des tableaux de bord web.",
+            "it": "Creato nella pagina Costruttore di widget delle dashboard web.",
+            "sv": "Byggd på webbpanelernas sida Widgetbyggare.",
+            "no": "Laget på nettdashbordenes side Widgetbygger.",
+            "es": "Creado en la página Creador de widgets de los paneles web.",
+            "da": "Lavet på webdashboardenes side Widgetbygger.",
+            "ru": "Создаётся на странице «Конструктор виджетов» веб-панелей.",
+            "pl": "Tworzony na stronie Kreator widżetów pulpitów webowych.",
+            "ko": "웹 대시보드의 위젯 빌더 페이지에서 만듭니다.",
+            "ar": "يُنشأ في صفحة منشئ الأدوات في لوحات الويب."
+          }
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
+            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
+            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
+            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
+            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
+            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
+            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
+            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
+            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
+            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
+            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
+            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
+            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
+              }
+            }
+          ]
+        }
+      ],
+      "api": {
+        "getState": {
+          "method": "GET",
+          "path": "/state"
+        },
+        "set": {
+          "method": "POST",
+          "path": "/set"
+        },
+        "variable": {
+          "method": "POST",
+          "path": "/variable"
+        },
+        "flow": {
+          "method": "POST",
+          "path": "/flow"
+        },
+        "tap": {
+          "method": "POST",
+          "path": "/tap"
+        }
+      },
+      "id": "custom"
     }
   },
   "esm": true,
   "flow": {
     "triggers": [
+      {
+        "id": "custom_choice",
+        "title": {
+          "en": "A Widget Builder choice was made",
+          "nl": "Een Widgetbouwer-keuze is gemaakt",
+          "de": "Eine Widget-Baukasten-Auswahl wurde getroffen",
+          "fr": "Un choix du Créateur de widgets a été fait",
+          "it": "È stata fatta una scelta del Costruttore di widget",
+          "sv": "Ett Widgetbyggare-val gjordes",
+          "no": "Et Widgetbygger-valg ble gjort",
+          "es": "Se hizo una elección del Creador de widgets",
+          "da": "Der blev foretaget et Widgetbygger-valg",
+          "ru": "Сделан выбор в конструкторе виджетов",
+          "pl": "Dokonano wyboru w Kreatorze widżetów",
+          "ko": "위젯 빌더에서 선택했을 때",
+          "ar": "تم اختيار في منشئ الأدوات"
+        },
+        "titleFormatted": {
+          "en": "A choice was made on [[part]]",
+          "nl": "Er is een keuze gemaakt op [[part]]",
+          "de": "Auf [[part]] wurde gewählt",
+          "fr": "Un choix a été fait sur [[part]]",
+          "it": "È stata fatta una scelta su [[part]]",
+          "sv": "Ett val gjordes på [[part]]",
+          "no": "Et valg ble gjort på [[part]]",
+          "es": "Se eligió en [[part]]",
+          "da": "Der blev valgt på [[part]]",
+          "ru": "Сделан выбор на [[part]]",
+          "pl": "Dokonano wyboru na [[part]]",
+          "ko": "[[part]]에서 선택했을 때",
+          "ar": "تم الاختيار في [[part]]"
+        },
+        "hint": {
+          "en": "After the choice was set.",
+          "nl": "Nadat de keuze is ingesteld.",
+          "de": "Nachdem die Auswahl gesetzt wurde.",
+          "fr": "Une fois le choix appliqué.",
+          "it": "Dopo che la scelta è stata impostata.",
+          "sv": "När valet har satts.",
+          "no": "Etter at valget er satt.",
+          "es": "Después de aplicar la elección.",
+          "da": "Når valget er sat.",
+          "ru": "После применения выбора.",
+          "pl": "Po ustawieniu wyboru.",
+          "ko": "선택이 적용된 후입니다.",
+          "ar": "بعد تطبيق الاختيار."
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "part",
+            "title": {
+              "en": "Part",
+              "nl": "Onderdeel",
+              "de": "Element",
+              "fr": "Élément",
+              "it": "Elemento",
+              "sv": "Del",
+              "no": "Del",
+              "es": "Elemento",
+              "da": "Del",
+              "ru": "Элемент",
+              "pl": "Element",
+              "ko": "요소",
+              "ar": "العنصر"
+            },
+            "placeholder": {
+              "en": "Living room · Message",
+              "nl": "Woonkamer · Bericht",
+              "de": "Wohnzimmer · Nachricht",
+              "fr": "Salon · Message",
+              "it": "Soggiorno · Messaggio",
+              "sv": "Vardagsrum · Meddelande",
+              "no": "Stue · Melding",
+              "es": "Salón · Mensaje",
+              "da": "Stue · Besked",
+              "ru": "Гостиная · Сообщение",
+              "pl": "Salon · Wiadomość",
+              "ko": "거실 · 메시지",
+              "ar": "غرفة المعيشة · رسالة"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "choice",
+            "type": "string",
+            "title": {
+              "en": "Choice",
+              "nl": "Keuze",
+              "de": "Auswahl",
+              "fr": "Choix",
+              "it": "Scelta",
+              "sv": "Val",
+              "no": "Valg",
+              "es": "Elección",
+              "da": "Valg",
+              "ru": "Выбор",
+              "pl": "Wybór",
+              "ko": "선택",
+              "ar": "الاختيار"
+            },
+            "example": {
+              "en": "Movie",
+              "nl": "Film",
+              "de": "Film",
+              "fr": "Film",
+              "it": "Film",
+              "sv": "Film",
+              "no": "Film",
+              "es": "Película",
+              "da": "Film",
+              "ru": "Кино",
+              "pl": "Film",
+              "ko": "영화",
+              "ar": "فيلم"
+            }
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "title": {
+              "en": "Value",
+              "nl": "Waarde",
+              "de": "Wert",
+              "fr": "Valeur",
+              "it": "Valore",
+              "sv": "Värde",
+              "no": "Verdi",
+              "es": "Valor",
+              "da": "Værdi",
+              "ru": "Значение",
+              "pl": "Wartość",
+              "ko": "값",
+              "ar": "القيمة"
+            },
+            "example": {
+              "en": "movie",
+              "nl": "movie",
+              "de": "movie",
+              "fr": "movie",
+              "it": "movie",
+              "sv": "movie",
+              "no": "movie",
+              "es": "movie",
+              "da": "movie",
+              "ru": "movie",
+              "pl": "movie",
+              "ko": "movie",
+              "ar": "movie"
+            }
+          },
+          {
+            "name": "index",
+            "type": "number",
+            "title": {
+              "en": "Number",
+              "nl": "Nummer",
+              "de": "Nummer",
+              "fr": "Numéro",
+              "it": "Numero",
+              "sv": "Nummer",
+              "no": "Nummer",
+              "es": "Número",
+              "da": "Nummer",
+              "ru": "Номер",
+              "pl": "Numer",
+              "ko": "번호",
+              "ar": "الرقم"
+            },
+            "example": {
+              "en": "2",
+              "nl": "2",
+              "de": "2",
+              "fr": "2",
+              "it": "2",
+              "sv": "2",
+              "no": "2",
+              "es": "2",
+              "da": "2",
+              "ru": "2",
+              "pl": "2",
+              "ko": "2",
+              "ar": "2"
+            }
+          }
+        ]
+      },
+      {
+        "id": "custom_tapped",
+        "title": {
+          "en": "A Widget Builder button was tapped",
+          "nl": "Op een Widgetbouwer-knop is getikt",
+          "de": "Eine Widget-Baukasten-Taste wurde angetippt",
+          "fr": "Un bouton du Créateur de widgets a été touché",
+          "it": "È stato toccato un pulsante del Costruttore di widget",
+          "sv": "En Widgetbyggare-knapp trycktes",
+          "no": "En Widgetbygger-knapp ble trykket",
+          "es": "Se tocó un botón del Creador de widgets",
+          "da": "Der blev trykket på en Widgetbygger-knap",
+          "ru": "Нажата кнопка конструктора виджетов",
+          "pl": "Dotknięto przycisku Kreatora widżetów",
+          "ko": "위젯 빌더 버튼을 눌렀을 때",
+          "ar": "تم النقر على زر في منشئ الأدوات"
+        },
+        "titleFormatted": {
+          "en": "Widget Builder button [[part]] was tapped",
+          "nl": "Op Widgetbouwer-knop [[part]] is getikt",
+          "de": "Widget-Baukasten-Taste [[part]] wurde angetippt",
+          "fr": "Le bouton [[part]] du Créateur de widgets a été touché",
+          "it": "È stato toccato il pulsante [[part]] del Costruttore di widget",
+          "sv": "Widgetbyggare-knappen [[part]] trycktes",
+          "no": "Widgetbygger-knappen [[part]] ble trykket",
+          "es": "Se tocó el botón [[part]] del Creador de widgets",
+          "da": "Der blev trykket på Widgetbygger-knappen [[part]]",
+          "ru": "Нажата кнопка [[part]] конструктора виджетов",
+          "pl": "Dotknięto przycisku [[part]] Kreatora widżetów",
+          "ko": "위젯 빌더 버튼 [[part]]을(를) 눌렀을 때",
+          "ar": "تم النقر على زر منشئ الأدوات [[part]]"
+        },
+        "hint": {
+          "en": "Buttons without a Flow of their own fire this.",
+          "nl": "Knoppen zonder eigen Flow starten dit.",
+          "de": "Tasten ohne eigenen Flow lösen dies aus.",
+          "fr": "Les boutons sans Flow propre déclenchent ceci.",
+          "it": "I pulsanti senza un Flow proprio attivano questo.",
+          "sv": "Knappar utan eget Flow startar detta.",
+          "no": "Knapper uten egen Flow starter dette.",
+          "es": "Los botones sin Flow propio activan esto.",
+          "da": "Knapper uden eget Flow starter dette.",
+          "ru": "Срабатывает от кнопок без своего Flow.",
+          "pl": "Uruchamiają to przyciski bez własnego Flow.",
+          "ko": "자체 Flow가 없는 버튼이 이를 실행합니다.",
+          "ar": "تُطلق هذا الأزرار التي ليس لها Flow خاص."
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "part",
+            "title": {
+              "en": "Part",
+              "nl": "Onderdeel",
+              "de": "Element",
+              "fr": "Élément",
+              "it": "Elemento",
+              "sv": "Del",
+              "no": "Del",
+              "es": "Elemento",
+              "da": "Del",
+              "ru": "Элемент",
+              "pl": "Element",
+              "ko": "요소",
+              "ar": "العنصر"
+            },
+            "placeholder": {
+              "en": "Living room · Message",
+              "nl": "Woonkamer · Bericht",
+              "de": "Wohnzimmer · Nachricht",
+              "fr": "Salon · Message",
+              "it": "Soggiorno · Messaggio",
+              "sv": "Vardagsrum · Meddelande",
+              "no": "Stue · Melding",
+              "es": "Salón · Mensaje",
+              "da": "Stue · Besked",
+              "ru": "Гостиная · Сообщение",
+              "pl": "Salon · Wiadomość",
+              "ko": "거실 · 메시지",
+              "ar": "غرفة المعيشة · رسالة"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "part",
+            "type": "string",
+            "title": {
+              "en": "Part",
+              "nl": "Onderdeel",
+              "de": "Element",
+              "fr": "Élément",
+              "it": "Elemento",
+              "sv": "Del",
+              "no": "Del",
+              "es": "Elemento",
+              "da": "Del",
+              "ru": "Элемент",
+              "pl": "Element",
+              "ko": "요소",
+              "ar": "العنصر"
+            },
+            "example": {
+              "en": "Ring",
+              "nl": "Bel",
+              "de": "Klingeln",
+              "fr": "Sonner",
+              "it": "Suona",
+              "sv": "Ring",
+              "no": "Ring",
+              "es": "Timbre",
+              "da": "Ring",
+              "ru": "Звонок",
+              "pl": "Dzwonek",
+              "ko": "벨",
+              "ar": "الجرس"
+            }
+          },
+          {
+            "name": "design",
+            "type": "string",
+            "title": {
+              "en": "Design",
+              "nl": "Ontwerp",
+              "de": "Entwurf",
+              "fr": "Modèle",
+              "it": "Design",
+              "sv": "Design",
+              "no": "Design",
+              "es": "Diseño",
+              "da": "Design",
+              "ru": "Макет",
+              "pl": "Projekt",
+              "ko": "디자인",
+              "ar": "التصميم"
+            },
+            "example": {
+              "en": "Entrance",
+              "nl": "Entree",
+              "de": "Eingang",
+              "fr": "Entrée",
+              "it": "Ingresso",
+              "sv": "Entré",
+              "no": "Inngang",
+              "es": "Entrada",
+              "da": "Indgang",
+              "ru": "Вход",
+              "pl": "Wejście",
+              "ko": "현관",
+              "ar": "المدخل"
+            }
+          },
+          {
+            "name": "dashboard",
+            "type": "string",
+            "title": {
+              "en": "Web dashboard",
+              "nl": "Webdashboard",
+              "de": "Web-Dashboard",
+              "fr": "Tableau de bord web",
+              "it": "Dashboard web",
+              "sv": "Webbpanel",
+              "no": "Nettdashbord",
+              "es": "Panel web",
+              "da": "Webdashboard",
+              "ru": "Веб-панель",
+              "pl": "Pulpit webowy",
+              "ko": "웹 대시보드",
+              "ar": "لوحة الويب"
+            },
+            "example": {
+              "en": "home",
+              "nl": "home",
+              "de": "home",
+              "fr": "home",
+              "it": "home",
+              "sv": "home",
+              "no": "home",
+              "es": "home",
+              "da": "home",
+              "ru": "home",
+              "pl": "home",
+              "ko": "home",
+              "ar": "home"
+            }
+          }
+        ]
+      },
       {
         "id": "dayssince_overdue",
         "title": {
@@ -43749,6 +44277,90 @@
     ],
     "conditions": [
       {
+        "id": "custom_is_shown",
+        "title": {
+          "en": "A Widget Builder part is shown",
+          "nl": "Een Widgetbouwer-onderdeel wordt getoond",
+          "de": "Ein Widget-Baukasten-Element wird gezeigt",
+          "fr": "Un élément du Créateur de widgets est affiché",
+          "it": "Un elemento del Costruttore di widget è mostrato",
+          "sv": "En Widgetbyggare-del visas",
+          "no": "En Widgetbygger-del vises",
+          "es": "Un elemento del Creador de widgets se muestra",
+          "da": "En Widgetbygger-del vises",
+          "ru": "Элемент конструктора виджетов показан",
+          "pl": "Element Kreatora widżetów jest widoczny",
+          "ko": "위젯 빌더 요소가 표시됨",
+          "ar": "عنصر في منشئ الأدوات ظاهر"
+        },
+        "titleFormatted": {
+          "en": "[[part]] !{{is|is not}} shown",
+          "nl": "[[part]] !{{wordt|wordt niet}} getoond",
+          "de": "[[part]] !{{wird|wird nicht}} gezeigt",
+          "fr": "[[part]] !{{est|n'est pas}} affiché",
+          "it": "[[part]] !{{è|non è}} mostrato",
+          "sv": "[[part]] !{{visas|visas inte}}",
+          "no": "[[part]] !{{vises|vises ikke}}",
+          "es": "[[part]] !{{se muestra|no se muestra}}",
+          "da": "[[part]] !{{vises|vises ikke}}",
+          "ru": "[[part]] !{{показан|не показан}}",
+          "pl": "[[part]] !{{jest|nie jest}} widoczny",
+          "ko": "[[part]]이(가) !{{표시됨|표시되지 않음}}",
+          "ar": "[[part]] !{{ظاهر|غير ظاهر}}"
+        },
+        "hint": {
+          "en": "Hidden by a Flow card, not by the part's own rules.",
+          "nl": "Verborgen door een Flow-kaart, niet door de eigen regels van het onderdeel.",
+          "de": "Von einer Flow-Karte ausgeblendet, nicht von den Regeln des Elements.",
+          "fr": "Masqué par une carte Flow, pas par les règles de l'élément.",
+          "it": "Nascosto da una scheda Flow, non dalle regole dell'elemento.",
+          "sv": "Dold av ett Flow-kort, inte av delens egna regler.",
+          "no": "Skjult av et Flow-kort, ikke av delens egne regler.",
+          "es": "Oculto por una tarjeta Flow, no por las reglas del elemento.",
+          "da": "Skjult af et Flow-kort, ikke af delens egne regler.",
+          "ru": "Скрыт картой Flow, а не правилами элемента.",
+          "pl": "Ukryty przez kartę Flow, nie przez reguły elementu.",
+          "ko": "요소 자체 규칙이 아니라 Flow 카드로 숨긴 경우입니다.",
+          "ar": "مخفي ببطاقة Flow، لا بقواعد العنصر نفسه."
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "part",
+            "title": {
+              "en": "Part",
+              "nl": "Onderdeel",
+              "de": "Element",
+              "fr": "Élément",
+              "it": "Elemento",
+              "sv": "Del",
+              "no": "Del",
+              "es": "Elemento",
+              "da": "Del",
+              "ru": "Элемент",
+              "pl": "Element",
+              "ko": "요소",
+              "ar": "العنصر"
+            },
+            "placeholder": {
+              "en": "Living room · Message",
+              "nl": "Woonkamer · Bericht",
+              "de": "Wohnzimmer · Nachricht",
+              "fr": "Salon · Message",
+              "it": "Soggiorno · Messaggio",
+              "sv": "Vardagsrum · Meddelande",
+              "no": "Stue · Melding",
+              "es": "Salón · Mensaje",
+              "da": "Stue · Besked",
+              "ru": "Гостиная · Сообщение",
+              "pl": "Salon · Wiadomość",
+              "ko": "거실 · 메시지",
+              "ar": "غرفة المعيشة · رسالة"
+            }
+          }
+        ]
+      },
+      {
         "id": "dayssince_is_overdue",
         "title": {
           "en": "A Days Since counter is overdue",
@@ -43998,6 +44610,1078 @@
               "pl": "Kamera",
               "ko": "카메라",
               "ar": "الكاميرا"
+            }
+          }
+        ]
+      },
+      {
+        "id": "custom_reset",
+        "title": {
+          "en": "Put a Widget Builder part back as designed",
+          "nl": "Een Widgetbouwer-onderdeel terugzetten naar het ontwerp",
+          "de": "Ein Widget-Baukasten-Element auf den Entwurf zurücksetzen",
+          "fr": "Remettre un élément du Créateur de widgets comme conçu",
+          "it": "Riporta un elemento del Costruttore di widget al design",
+          "sv": "Återställ en Widgetbyggare-del till designen",
+          "no": "Sett en Widgetbygger-del tilbake til designet",
+          "es": "Devolver un elemento del Creador de widgets a su diseño",
+          "da": "Sæt en Widgetbygger-del tilbage til designet",
+          "ru": "Вернуть элемент конструктора виджетов к макету",
+          "pl": "Przywróć element Kreatora widżetów do projektu",
+          "ko": "위젯 빌더 요소를 디자인대로 되돌리기",
+          "ar": "إعادة عنصر في منشئ الأدوات كما صُمم"
+        },
+        "titleFormatted": {
+          "en": "Put [[part]] back as designed",
+          "nl": "Zet [[part]] terug naar het ontwerp",
+          "de": "[[part]] auf den Entwurf zurücksetzen",
+          "fr": "Remettre [[part]] comme conçu",
+          "it": "Riporta [[part]] al design",
+          "sv": "Återställ [[part]] till designen",
+          "no": "Sett [[part]] tilbake til designet",
+          "es": "Devolver [[part]] a su diseño",
+          "da": "Sæt [[part]] tilbage til designet",
+          "ru": "Вернуть [[part]] к макету",
+          "pl": "Przywróć [[part]] do projektu",
+          "ko": "[[part]]을(를) 디자인대로 되돌리기",
+          "ar": "أعد [[part]] كما صُمم"
+        },
+        "hint": {
+          "en": "Drops everything Flows set on the part: its text, value, colour, icon and whether it's hidden.",
+          "nl": "Wist alles wat Flows op het onderdeel hebben ingesteld: tekst, waarde, kleur, pictogram en of het verborgen is.",
+          "de": "Verwirft alles, was Flows am Element gesetzt haben: Text, Wert, Farbe, Symbol und ob es ausgeblendet ist.",
+          "fr": "Efface tout ce que les Flows ont défini sur l'élément : texte, valeur, couleur, icône et masquage.",
+          "it": "Elimina tutto ciò che i Flow hanno impostato sull'elemento: testo, valore, colore, icona e se è nascosto.",
+          "sv": "Tar bort allt Flows har satt på delen: text, värde, färg, ikon och om den är dold.",
+          "no": "Fjerner alt Flows har satt på delen: tekst, verdi, farge, ikon og om den er skjult.",
+          "es": "Quita todo lo que los Flows han puesto en el elemento: texto, valor, color, icono y si está oculto.",
+          "da": "Fjerner alt, Flows har sat på delen: tekst, værdi, farve, ikon og om den er skjult.",
+          "ru": "Сбрасывает всё, что Flow задали элементу: текст, значение, цвет, значок и скрытие.",
+          "pl": "Usuwa wszystko, co Flow ustawiły na elemencie: tekst, wartość, kolor, ikonę i ukrycie.",
+          "ko": "Flow가 요소에 설정한 텍스트, 값, 색상, 아이콘, 숨김을 모두 지웁니다.",
+          "ar": "يزيل كل ما ضبطته Flows على العنصر: النص والقيمة واللون والأيقونة والإخفاء."
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "part",
+            "title": {
+              "en": "Part",
+              "nl": "Onderdeel",
+              "de": "Element",
+              "fr": "Élément",
+              "it": "Elemento",
+              "sv": "Del",
+              "no": "Del",
+              "es": "Elemento",
+              "da": "Del",
+              "ru": "Элемент",
+              "pl": "Element",
+              "ko": "요소",
+              "ar": "العنصر"
+            },
+            "placeholder": {
+              "en": "Living room · Message",
+              "nl": "Woonkamer · Bericht",
+              "de": "Wohnzimmer · Nachricht",
+              "fr": "Salon · Message",
+              "it": "Soggiorno · Messaggio",
+              "sv": "Vardagsrum · Meddelande",
+              "no": "Stue · Melding",
+              "es": "Salón · Mensaje",
+              "da": "Stue · Besked",
+              "ru": "Гостиная · Сообщение",
+              "pl": "Salon · Wiadomość",
+              "ko": "거실 · 메시지",
+              "ar": "غرفة المعيشة · رسالة"
+            }
+          }
+        ]
+      },
+      {
+        "id": "custom_set_color",
+        "title": {
+          "en": "Colour a Widget Builder part",
+          "nl": "Een Widgetbouwer-onderdeel kleuren",
+          "de": "Ein Widget-Baukasten-Element färben",
+          "fr": "Colorer un élément du Créateur de widgets",
+          "it": "Colora un elemento del Costruttore di widget",
+          "sv": "Färga en Widgetbyggare-del",
+          "no": "Farg en Widgetbygger-del",
+          "es": "Colorear un elemento del Creador de widgets",
+          "da": "Farv en Widgetbygger-del",
+          "ru": "Задать цвет элемента конструктора виджетов",
+          "pl": "Pokoloruj element Kreatora widżetów",
+          "ko": "위젯 빌더 요소 색상 지정",
+          "ar": "تلوين عنصر في منشئ الأدوات"
+        },
+        "titleFormatted": {
+          "en": "Colour [[part]] [[color]]",
+          "nl": "Kleur [[part]] [[color]]",
+          "de": "[[part]] [[color]] färben",
+          "fr": "Colorer [[part]] en [[color]]",
+          "it": "Colora [[part]] di [[color]]",
+          "sv": "Färga [[part]] [[color]]",
+          "no": "Farg [[part]] [[color]]",
+          "es": "Colorear [[part]] de [[color]]",
+          "da": "Farv [[part]] [[color]]",
+          "ru": "Цвет [[part]]: [[color]]",
+          "pl": "Pokoloruj [[part]] na [[color]]",
+          "ko": "[[part]]을(를) [[color]](으)로",
+          "ar": "لوّن [[part]] بـ [[color]]"
+        },
+        "hint": {
+          "en": "Only parts opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
+          "nl": "Alleen onderdelen die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+          "de": "Nur Elemente, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+          "fr": "Seuls les éléments ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+          "it": "Sono elencati solo gli elementi aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+          "sv": "Bara delar som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
+          "no": "Bare deler som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
+          "es": "Solo se listan los elementos abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+          "da": "Kun dele, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
+          "ru": "В списке только элементы, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+          "pl": "Na liście są tylko elementy otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+          "ko": "위젯 빌더의 Flow 탭에서 허용한 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+          "ar": "تظهر فقط العناصر المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "part",
+            "title": {
+              "en": "Part",
+              "nl": "Onderdeel",
+              "de": "Element",
+              "fr": "Élément",
+              "it": "Elemento",
+              "sv": "Del",
+              "no": "Del",
+              "es": "Elemento",
+              "da": "Del",
+              "ru": "Элемент",
+              "pl": "Element",
+              "ko": "요소",
+              "ar": "العنصر"
+            },
+            "placeholder": {
+              "en": "Living room · Message",
+              "nl": "Woonkamer · Bericht",
+              "de": "Wohnzimmer · Nachricht",
+              "fr": "Salon · Message",
+              "it": "Soggiorno · Messaggio",
+              "sv": "Vardagsrum · Meddelande",
+              "no": "Stue · Melding",
+              "es": "Salón · Mensaje",
+              "da": "Stue · Besked",
+              "ru": "Гостиная · Сообщение",
+              "pl": "Salon · Wiadomość",
+              "ko": "거실 · 메시지",
+              "ar": "غرفة المعيشة · رسالة"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "color",
+            "title": {
+              "en": "Colour",
+              "nl": "Kleur",
+              "de": "Farbe",
+              "fr": "Couleur",
+              "it": "Colore",
+              "sv": "Färg",
+              "no": "Farge",
+              "es": "Color",
+              "da": "Farve",
+              "ru": "Цвет",
+              "pl": "Kolor",
+              "ko": "색상",
+              "ar": "اللون"
+            },
+            "values": [
+              {
+                "id": "default",
+                "title": {
+                  "en": "Default",
+                  "nl": "Standaard",
+                  "de": "Standard",
+                  "fr": "Par défaut",
+                  "it": "Predefinito",
+                  "sv": "Standard",
+                  "no": "Standard",
+                  "es": "Predeterminado",
+                  "da": "Standard",
+                  "ru": "По умолчанию",
+                  "pl": "Domyślny",
+                  "ko": "기본값",
+                  "ar": "افتراضي"
+                }
+              },
+              {
+                "id": "red",
+                "title": {
+                  "en": "Red",
+                  "nl": "Rood",
+                  "de": "Rot",
+                  "fr": "Rouge",
+                  "it": "Rosso",
+                  "sv": "Röd",
+                  "no": "Rød",
+                  "es": "Rojo",
+                  "da": "Rød",
+                  "ru": "Красный",
+                  "pl": "Czerwony",
+                  "ko": "빨강",
+                  "ar": "أحمر"
+                }
+              },
+              {
+                "id": "orange",
+                "title": {
+                  "en": "Orange",
+                  "nl": "Oranje",
+                  "de": "Orange",
+                  "fr": "Orange",
+                  "it": "Arancione",
+                  "sv": "Orange",
+                  "no": "Oransje",
+                  "es": "Naranja",
+                  "da": "Orange",
+                  "ru": "Оранжевый",
+                  "pl": "Pomarańczowy",
+                  "ko": "주황",
+                  "ar": "برتقالي"
+                }
+              },
+              {
+                "id": "yellow",
+                "title": {
+                  "en": "Yellow",
+                  "nl": "Geel",
+                  "de": "Gelb",
+                  "fr": "Jaune",
+                  "it": "Giallo",
+                  "sv": "Gul",
+                  "no": "Gul",
+                  "es": "Amarillo",
+                  "da": "Gul",
+                  "ru": "Жёлтый",
+                  "pl": "Żółty",
+                  "ko": "노랑",
+                  "ar": "أصفر"
+                }
+              },
+              {
+                "id": "green",
+                "title": {
+                  "en": "Green",
+                  "nl": "Groen",
+                  "de": "Grün",
+                  "fr": "Vert",
+                  "it": "Verde",
+                  "sv": "Grön",
+                  "no": "Grønn",
+                  "es": "Verde",
+                  "da": "Grøn",
+                  "ru": "Зелёный",
+                  "pl": "Zielony",
+                  "ko": "초록",
+                  "ar": "أخضر"
+                }
+              },
+              {
+                "id": "blue",
+                "title": {
+                  "en": "Blue",
+                  "nl": "Blauw",
+                  "de": "Blau",
+                  "fr": "Bleu",
+                  "it": "Blu",
+                  "sv": "Blå",
+                  "no": "Blå",
+                  "es": "Azul",
+                  "da": "Blå",
+                  "ru": "Синий",
+                  "pl": "Niebieski",
+                  "ko": "파랑",
+                  "ar": "أزرق"
+                }
+              },
+              {
+                "id": "purple",
+                "title": {
+                  "en": "Purple",
+                  "nl": "Paars",
+                  "de": "Lila",
+                  "fr": "Violet",
+                  "it": "Viola",
+                  "sv": "Lila",
+                  "no": "Lilla",
+                  "es": "Morado",
+                  "da": "Lilla",
+                  "ru": "Фиолетовый",
+                  "pl": "Fioletowy",
+                  "ko": "보라",
+                  "ar": "بنفسجي"
+                }
+              },
+              {
+                "id": "teal",
+                "title": {
+                  "en": "Teal",
+                  "nl": "Blauwgroen",
+                  "de": "Petrol",
+                  "fr": "Bleu canard",
+                  "it": "Verde acqua",
+                  "sv": "Blågrön",
+                  "no": "Blågrønn",
+                  "es": "Verde azulado",
+                  "da": "Blågrøn",
+                  "ru": "Бирюзовый",
+                  "pl": "Morski",
+                  "ko": "청록",
+                  "ar": "أزرق مخضر"
+                }
+              },
+              {
+                "id": "cyan",
+                "title": {
+                  "en": "Cyan",
+                  "nl": "Cyaan",
+                  "de": "Cyan",
+                  "fr": "Cyan",
+                  "it": "Ciano",
+                  "sv": "Cyan",
+                  "no": "Cyan",
+                  "es": "Cian",
+                  "da": "Cyan",
+                  "ru": "Голубой",
+                  "pl": "Cyjan",
+                  "ko": "하늘",
+                  "ar": "سماوي"
+                }
+              },
+              {
+                "id": "indigo",
+                "title": {
+                  "en": "Indigo",
+                  "nl": "Indigo",
+                  "de": "Indigo",
+                  "fr": "Indigo",
+                  "it": "Indaco",
+                  "sv": "Indigo",
+                  "no": "Indigo",
+                  "es": "Índigo",
+                  "da": "Indigo",
+                  "ru": "Индиго",
+                  "pl": "Indygo",
+                  "ko": "남색",
+                  "ar": "نيلي"
+                }
+              },
+              {
+                "id": "pink",
+                "title": {
+                  "en": "Pink",
+                  "nl": "Roze",
+                  "de": "Rosa",
+                  "fr": "Rose",
+                  "it": "Rosa",
+                  "sv": "Rosa",
+                  "no": "Rosa",
+                  "es": "Rosa",
+                  "da": "Lyserød",
+                  "ru": "Розовый",
+                  "pl": "Różowy",
+                  "ko": "분홍",
+                  "ar": "وردي"
+                }
+              },
+              {
+                "id": "brown",
+                "title": {
+                  "en": "Brown",
+                  "nl": "Bruin",
+                  "de": "Braun",
+                  "fr": "Marron",
+                  "it": "Marrone",
+                  "sv": "Brun",
+                  "no": "Brun",
+                  "es": "Marrón",
+                  "da": "Brun",
+                  "ru": "Коричневый",
+                  "pl": "Brązowy",
+                  "ko": "갈색",
+                  "ar": "بني"
+                }
+              },
+              {
+                "id": "grey",
+                "title": {
+                  "en": "Grey",
+                  "nl": "Grijs",
+                  "de": "Grau",
+                  "fr": "Gris",
+                  "it": "Grigio",
+                  "sv": "Grå",
+                  "no": "Grå",
+                  "es": "Gris",
+                  "da": "Grå",
+                  "ru": "Серый",
+                  "pl": "Szary",
+                  "ko": "회색",
+                  "ar": "رمادي"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "custom_set_custom_color",
+        "title": {
+          "en": "Give a Widget Builder part a custom colour",
+          "nl": "Een Widgetbouwer-onderdeel een eigen kleur geven",
+          "de": "Einem Widget-Baukasten-Element eine eigene Farbe geben",
+          "fr": "Donner une couleur personnalisée à un élément du Créateur de widgets",
+          "it": "Dai un colore personalizzato a un elemento del Costruttore di widget",
+          "sv": "Ge en Widgetbyggare-del en egen färg",
+          "no": "Gi en Widgetbygger-del en egen farge",
+          "es": "Dar un color propio a un elemento del Creador de widgets",
+          "da": "Giv en Widgetbygger-del en egen farve",
+          "ru": "Задать свой цвет элементу конструктора виджетов",
+          "pl": "Nadaj elementowi Kreatora widżetów własny kolor",
+          "ko": "위젯 빌더 요소에 사용자 색상 지정",
+          "ar": "منح عنصر في منشئ الأدوات لونًا مخصصًا"
+        },
+        "titleFormatted": {
+          "en": "Give [[part]] the colour [[color]]",
+          "nl": "Geef [[part]] de kleur [[color]]",
+          "de": "[[part]] die Farbe [[color]] geben",
+          "fr": "Donner à [[part]] la couleur [[color]]",
+          "it": "Dai a [[part]] il colore [[color]]",
+          "sv": "Ge [[part]] färgen [[color]]",
+          "no": "Gi [[part]] fargen [[color]]",
+          "es": "Dar a [[part]] el color [[color]]",
+          "da": "Giv [[part]] farven [[color]]",
+          "ru": "Дать [[part]] цвет [[color]]",
+          "pl": "Nadaj [[part]] kolor [[color]]",
+          "ko": "[[part]]에 색상 [[color]] 지정",
+          "ar": "امنح [[part]] اللون [[color]]"
+        },
+        "hint": {
+          "en": "Only parts opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
+          "nl": "Alleen onderdelen die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+          "de": "Nur Elemente, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+          "fr": "Seuls les éléments ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+          "it": "Sono elencati solo gli elementi aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+          "sv": "Bara delar som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
+          "no": "Bare deler som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
+          "es": "Solo se listan los elementos abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+          "da": "Kun dele, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
+          "ru": "В списке только элементы, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+          "pl": "Na liście są tylko elementy otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+          "ko": "위젯 빌더의 Flow 탭에서 허용한 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+          "ar": "تظهر فقط العناصر المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "part",
+            "title": {
+              "en": "Part",
+              "nl": "Onderdeel",
+              "de": "Element",
+              "fr": "Élément",
+              "it": "Elemento",
+              "sv": "Del",
+              "no": "Del",
+              "es": "Elemento",
+              "da": "Del",
+              "ru": "Элемент",
+              "pl": "Element",
+              "ko": "요소",
+              "ar": "العنصر"
+            },
+            "placeholder": {
+              "en": "Living room · Message",
+              "nl": "Woonkamer · Bericht",
+              "de": "Wohnzimmer · Nachricht",
+              "fr": "Salon · Message",
+              "it": "Soggiorno · Messaggio",
+              "sv": "Vardagsrum · Meddelande",
+              "no": "Stue · Melding",
+              "es": "Salón · Mensaje",
+              "da": "Stue · Besked",
+              "ru": "Гостиная · Сообщение",
+              "pl": "Salon · Wiadomość",
+              "ko": "거실 · 메시지",
+              "ar": "غرفة المعيشة · رسالة"
+            }
+          },
+          {
+            "type": "text",
+            "name": "color",
+            "title": {
+              "en": "Colour",
+              "nl": "Kleur",
+              "de": "Farbe",
+              "fr": "Couleur",
+              "it": "Colore",
+              "sv": "Färg",
+              "no": "Farge",
+              "es": "Color",
+              "da": "Farve",
+              "ru": "Цвет",
+              "pl": "Kolor",
+              "ko": "색상",
+              "ar": "اللون"
+            },
+            "placeholder": {
+              "en": "#FF0000",
+              "nl": "#FF0000",
+              "de": "#FF0000",
+              "fr": "#FF0000",
+              "it": "#FF0000",
+              "sv": "#FF0000",
+              "no": "#FF0000",
+              "es": "#FF0000",
+              "da": "#FF0000",
+              "ru": "#FF0000",
+              "pl": "#FF0000",
+              "ko": "#FF0000",
+              "ar": "#FF0000"
+            }
+          }
+        ]
+      },
+      {
+        "id": "custom_set_icon",
+        "title": {
+          "en": "Set the icon of a Widget Builder part",
+          "nl": "Pictogram van een Widgetbouwer-onderdeel instellen",
+          "de": "Symbol eines Widget-Baukasten-Elements setzen",
+          "fr": "Définir l'icône d'un élément du Créateur de widgets",
+          "it": "Imposta l'icona di un elemento del Costruttore di widget",
+          "sv": "Ange ikonen för en Widgetbyggare-del",
+          "no": "Angi ikonet til en Widgetbygger-del",
+          "es": "Establecer el icono de un elemento del Creador de widgets",
+          "da": "Angiv ikonet for en Widgetbygger-del",
+          "ru": "Задать значок элемента конструктора виджетов",
+          "pl": "Ustaw ikonę elementu Kreatora widżetów",
+          "ko": "위젯 빌더 요소의 아이콘 설정",
+          "ar": "تعيين أيقونة عنصر في منشئ الأدوات"
+        },
+        "titleFormatted": {
+          "en": "Give [[part]] the icon [[icon]]",
+          "nl": "Geef [[part]] het pictogram [[icon]]",
+          "de": "[[part]] das Symbol [[icon]] geben",
+          "fr": "Donner à [[part]] l'icône [[icon]]",
+          "it": "Dai a [[part]] l'icona [[icon]]",
+          "sv": "Ge [[part]] ikonen [[icon]]",
+          "no": "Gi [[part]] ikonet [[icon]]",
+          "es": "Dar a [[part]] el icono [[icon]]",
+          "da": "Giv [[part]] ikonet [[icon]]",
+          "ru": "Дать [[part]] значок [[icon]]",
+          "pl": "Nadaj [[part]] ikonę [[icon]]",
+          "ko": "[[part]]에 아이콘 [[icon]] 지정",
+          "ar": "امنح [[part]] الأيقونة [[icon]]"
+        },
+        "hint": {
+          "en": "Only parts opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
+          "nl": "Alleen onderdelen die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+          "de": "Nur Elemente, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+          "fr": "Seuls les éléments ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+          "it": "Sono elencati solo gli elementi aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+          "sv": "Bara delar som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
+          "no": "Bare deler som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
+          "es": "Solo se listan los elementos abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+          "da": "Kun dele, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
+          "ru": "В списке только элементы, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+          "pl": "Na liście są tylko elementy otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+          "ko": "위젯 빌더의 Flow 탭에서 허용한 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+          "ar": "تظهر فقط العناصر المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "part",
+            "title": {
+              "en": "Part",
+              "nl": "Onderdeel",
+              "de": "Element",
+              "fr": "Élément",
+              "it": "Elemento",
+              "sv": "Del",
+              "no": "Del",
+              "es": "Elemento",
+              "da": "Del",
+              "ru": "Элемент",
+              "pl": "Element",
+              "ko": "요소",
+              "ar": "العنصر"
+            },
+            "placeholder": {
+              "en": "Living room · Message",
+              "nl": "Woonkamer · Bericht",
+              "de": "Wohnzimmer · Nachricht",
+              "fr": "Salon · Message",
+              "it": "Soggiorno · Messaggio",
+              "sv": "Vardagsrum · Meddelande",
+              "no": "Stue · Melding",
+              "es": "Salón · Mensaje",
+              "da": "Stue · Besked",
+              "ru": "Гостиная · Сообщение",
+              "pl": "Salon · Wiadomość",
+              "ko": "거실 · 메시지",
+              "ar": "غرفة المعيشة · رسالة"
+            }
+          },
+          {
+            "type": "autocomplete",
+            "name": "icon",
+            "title": {
+              "en": "Icon",
+              "nl": "Pictogram",
+              "de": "Symbol",
+              "fr": "Icône",
+              "it": "Icona",
+              "sv": "Ikon",
+              "no": "Ikon",
+              "es": "Icono",
+              "da": "Ikon",
+              "ru": "Значок",
+              "pl": "Ikona",
+              "ko": "아이콘",
+              "ar": "الأيقونة"
+            },
+            "placeholder": {
+              "en": "No icon",
+              "nl": "Geen pictogram",
+              "de": "Kein Symbol",
+              "fr": "Aucune icône",
+              "it": "Nessuna icona",
+              "sv": "Ingen ikon",
+              "no": "Ingen ikon",
+              "es": "Sin icono",
+              "da": "Intet ikon",
+              "ru": "Без значка",
+              "pl": "Bez ikony",
+              "ko": "아이콘 없음",
+              "ar": "بلا أيقونة"
+            }
+          }
+        ]
+      },
+      {
+        "id": "custom_set_text",
+        "title": {
+          "en": "Set the text of a Widget Builder part",
+          "nl": "Tekst van een Widgetbouwer-onderdeel instellen",
+          "de": "Text eines Widget-Baukasten-Elements setzen",
+          "fr": "Définir le texte d'un élément du Créateur de widgets",
+          "it": "Imposta il testo di un elemento del Costruttore di widget",
+          "sv": "Ange texten för en Widgetbyggare-del",
+          "no": "Angi teksten til en Widgetbygger-del",
+          "es": "Establecer el texto de un elemento del Creador de widgets",
+          "da": "Angiv teksten for en Widgetbygger-del",
+          "ru": "Задать текст элемента конструктора виджетов",
+          "pl": "Ustaw tekst elementu Kreatora widżetów",
+          "ko": "위젯 빌더 요소의 텍스트 설정",
+          "ar": "تعيين نص عنصر في منشئ الأدوات"
+        },
+        "titleFormatted": {
+          "en": "Set the text of [[part]] to [[text]]",
+          "nl": "Zet de tekst van [[part]] op [[text]]",
+          "de": "Text von [[part]] auf [[text]] setzen",
+          "fr": "Définir le texte de [[part]] sur [[text]]",
+          "it": "Imposta il testo di [[part]] su [[text]]",
+          "sv": "Sätt texten för [[part]] till [[text]]",
+          "no": "Sett teksten til [[part]] til [[text]]",
+          "es": "Poner el texto de [[part]] en [[text]]",
+          "da": "Sæt teksten for [[part]] til [[text]]",
+          "ru": "Задать текст [[part]]: [[text]]",
+          "pl": "Ustaw tekst [[part]] na [[text]]",
+          "ko": "[[part]]의 텍스트를 [[text]](으)로 설정",
+          "ar": "تعيين نص [[part]] إلى [[text]]"
+        },
+        "hint": {
+          "en": "Only parts opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
+          "nl": "Alleen onderdelen die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+          "de": "Nur Elemente, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+          "fr": "Seuls les éléments ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+          "it": "Sono elencati solo gli elementi aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+          "sv": "Bara delar som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
+          "no": "Bare deler som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
+          "es": "Solo se listan los elementos abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+          "da": "Kun dele, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
+          "ru": "В списке только элементы, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+          "pl": "Na liście są tylko elementy otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+          "ko": "위젯 빌더의 Flow 탭에서 허용한 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+          "ar": "تظهر فقط العناصر المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "part",
+            "title": {
+              "en": "Part",
+              "nl": "Onderdeel",
+              "de": "Element",
+              "fr": "Élément",
+              "it": "Elemento",
+              "sv": "Del",
+              "no": "Del",
+              "es": "Elemento",
+              "da": "Del",
+              "ru": "Элемент",
+              "pl": "Element",
+              "ko": "요소",
+              "ar": "العنصر"
+            },
+            "placeholder": {
+              "en": "Living room · Message",
+              "nl": "Woonkamer · Bericht",
+              "de": "Wohnzimmer · Nachricht",
+              "fr": "Salon · Message",
+              "it": "Soggiorno · Messaggio",
+              "sv": "Vardagsrum · Meddelande",
+              "no": "Stue · Melding",
+              "es": "Salón · Mensaje",
+              "da": "Stue · Besked",
+              "ru": "Гостиная · Сообщение",
+              "pl": "Salon · Wiadomość",
+              "ko": "거실 · 메시지",
+              "ar": "غرفة المعيشة · رسالة"
+            }
+          },
+          {
+            "type": "text",
+            "name": "text",
+            "required": false,
+            "title": {
+              "en": "Text",
+              "nl": "Tekst",
+              "de": "Text",
+              "fr": "Texte",
+              "it": "Testo",
+              "sv": "Text",
+              "no": "Tekst",
+              "es": "Texto",
+              "da": "Tekst",
+              "ru": "Текст",
+              "pl": "Tekst",
+              "ko": "텍스트",
+              "ar": "النص"
+            },
+            "placeholder": {
+              "en": "Parcel by the door",
+              "nl": "Pakket bij de deur",
+              "de": "Paket an der Tür",
+              "fr": "Colis devant la porte",
+              "it": "Pacco alla porta",
+              "sv": "Paket vid dörren",
+              "no": "Pakke ved døra",
+              "es": "Paquete en la puerta",
+              "da": "Pakke ved døren",
+              "ru": "Посылка у двери",
+              "pl": "Paczka pod drzwiami",
+              "ko": "문 앞에 택배",
+              "ar": "طرد عند الباب"
+            }
+          }
+        ]
+      },
+      {
+        "id": "custom_set_value",
+        "title": {
+          "en": "Set the value of a Widget Builder part",
+          "nl": "Waarde van een Widgetbouwer-onderdeel instellen",
+          "de": "Wert eines Widget-Baukasten-Elements setzen",
+          "fr": "Définir la valeur d'un élément du Créateur de widgets",
+          "it": "Imposta il valore di un elemento del Costruttore di widget",
+          "sv": "Ange värdet för en Widgetbyggare-del",
+          "no": "Angi verdien til en Widgetbygger-del",
+          "es": "Establecer el valor de un elemento del Creador de widgets",
+          "da": "Angiv værdien for en Widgetbygger-del",
+          "ru": "Задать значение элемента конструктора виджетов",
+          "pl": "Ustaw wartość elementu Kreatora widżetów",
+          "ko": "위젯 빌더 요소의 값 설정",
+          "ar": "تعيين قيمة عنصر في منشئ الأدوات"
+        },
+        "titleFormatted": {
+          "en": "Set the value of [[part]] to [[value]] [[units]]",
+          "nl": "Zet de waarde van [[part]] op [[value]] [[units]]",
+          "de": "Wert von [[part]] auf [[value]] [[units]] setzen",
+          "fr": "Définir la valeur de [[part]] sur [[value]] [[units]]",
+          "it": "Imposta il valore di [[part]] su [[value]] [[units]]",
+          "sv": "Sätt värdet för [[part]] till [[value]] [[units]]",
+          "no": "Sett verdien til [[part]] til [[value]] [[units]]",
+          "es": "Poner el valor de [[part]] en [[value]] [[units]]",
+          "da": "Sæt værdien for [[part]] til [[value]] [[units]]",
+          "ru": "Задать значение [[part]]: [[value]] [[units]]",
+          "pl": "Ustaw wartość [[part]] na [[value]] [[units]]",
+          "ko": "[[part]]의 값을 [[value]] [[units]](으)로 설정",
+          "ar": "تعيين قيمة [[part]] إلى [[value]] [[units]]"
+        },
+        "hint": {
+          "en": "A Flow value part shows only what Flows give it; another part shows this instead of its device value, if opened to it. A number is shown in the screen's locale.",
+          "nl": "Een Flow-waarde-onderdeel toont alleen wat Flows het geven; een ander onderdeel toont dit in plaats van de apparaatwaarde, als het hiervoor openstaat. Een getal wordt getoond in de taal van het scherm.",
+          "de": "Ein Flow-Wert-Element zeigt nur, was Flows ihm geben; ein anderes Element zeigt dies statt seines Gerätewerts, wenn es dafür freigegeben ist. Eine Zahl erscheint im Format des Bildschirms.",
+          "fr": "Un élément Valeur de Flow n'affiche que ce que les Flows lui donnent ; un autre élément l'affiche à la place de la valeur de l'appareil, s'il y est ouvert. Un nombre suit la langue de l'écran.",
+          "it": "Un elemento Valore Flow mostra solo ciò che i Flow gli danno; un altro elemento lo mostra al posto del valore del dispositivo, se aperto a questo. Un numero segue la lingua dello schermo.",
+          "sv": "En Flödesvärde-del visar bara vad Flows ger den; en annan del visar detta i stället för enhetens värde, om den är öppnad för det. Ett tal visas i skärmens språk.",
+          "no": "En Flytverdi-del viser bare det Flows gir den; en annen del viser dette i stedet for enhetsverdien, hvis den er åpnet for det. Et tall vises i skjermens språk.",
+          "es": "Un elemento Valor de Flow solo muestra lo que le dan los Flows; otro elemento lo muestra en vez del valor del dispositivo, si está abierto a ello. Un número sigue el idioma de la pantalla.",
+          "da": "En Flowværdi-del viser kun, hvad Flows giver den; en anden del viser dette i stedet for enhedens værdi, hvis den er åbnet for det. Et tal vises i skærmens sprog.",
+          "ru": "Элемент «Значение из Flow» показывает только то, что задают Flow; другой элемент показывает это вместо значения устройства, если открыт для этого. Число — в формате экрана.",
+          "pl": "Element Wartość z Flow pokazuje tylko to, co dadzą mu Flow; inny element pokazuje to zamiast wartości urządzenia, jeśli jest na to otwarty. Liczba w formacie ekranu.",
+          "ko": "Flow 값 요소는 Flow가 준 값만 표시하고, 다른 요소는 허용된 경우 기기 값 대신 이를 표시합니다. 숫자는 화면 언어 형식입니다.",
+          "ar": "عنصر قيمة Flow يعرض فقط ما تعطيه له Flows؛ وعنصر آخر يعرضه بدلًا من قيمة الجهاز إن كان مفتوحًا لذلك. يُعرض الرقم بلغة الشاشة."
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "part",
+            "title": {
+              "en": "Part",
+              "nl": "Onderdeel",
+              "de": "Element",
+              "fr": "Élément",
+              "it": "Elemento",
+              "sv": "Del",
+              "no": "Del",
+              "es": "Elemento",
+              "da": "Del",
+              "ru": "Элемент",
+              "pl": "Element",
+              "ko": "요소",
+              "ar": "العنصر"
+            },
+            "placeholder": {
+              "en": "Living room · Message",
+              "nl": "Woonkamer · Bericht",
+              "de": "Wohnzimmer · Nachricht",
+              "fr": "Salon · Message",
+              "it": "Soggiorno · Messaggio",
+              "sv": "Vardagsrum · Meddelande",
+              "no": "Stue · Melding",
+              "es": "Salón · Mensaje",
+              "da": "Stue · Besked",
+              "ru": "Гостиная · Сообщение",
+              "pl": "Salon · Wiadomość",
+              "ko": "거실 · 메시지",
+              "ar": "غرفة المعيشة · رسالة"
+            }
+          },
+          {
+            "type": "text",
+            "name": "value",
+            "title": {
+              "en": "Value",
+              "nl": "Waarde",
+              "de": "Wert",
+              "fr": "Valeur",
+              "it": "Valore",
+              "sv": "Värde",
+              "no": "Verdi",
+              "es": "Valor",
+              "da": "Værdi",
+              "ru": "Значение",
+              "pl": "Wartość",
+              "ko": "값",
+              "ar": "القيمة"
+            },
+            "placeholder": {
+              "en": "42.5",
+              "nl": "42.5",
+              "de": "42.5",
+              "fr": "42.5",
+              "it": "42.5",
+              "sv": "42.5",
+              "no": "42.5",
+              "es": "42.5",
+              "da": "42.5",
+              "ru": "42.5",
+              "pl": "42.5",
+              "ko": "42.5",
+              "ar": "42.5"
+            }
+          },
+          {
+            "type": "text",
+            "name": "units",
+            "required": false,
+            "title": {
+              "en": "Units",
+              "nl": "Eenheid",
+              "de": "Einheit",
+              "fr": "Unité",
+              "it": "Unità",
+              "sv": "Enhet",
+              "no": "Enhet",
+              "es": "Unidad",
+              "da": "Enhed",
+              "ru": "Единица",
+              "pl": "Jednostka",
+              "ko": "단위",
+              "ar": "الوحدة"
+            },
+            "placeholder": {
+              "en": "No units",
+              "nl": "Geen eenheid",
+              "de": "Keine Einheit",
+              "fr": "Sans unité",
+              "it": "Nessuna unità",
+              "sv": "Ingen enhet",
+              "no": "Ingen enhet",
+              "es": "Sin unidad",
+              "da": "Ingen enhed",
+              "ru": "Без единицы",
+              "pl": "Bez jednostki",
+              "ko": "단위 없음",
+              "ar": "بلا وحدة"
+            }
+          }
+        ]
+      },
+      {
+        "id": "custom_show",
+        "title": {
+          "en": "Show or hide a Widget Builder part",
+          "nl": "Een Widgetbouwer-onderdeel tonen of verbergen",
+          "de": "Ein Widget-Baukasten-Element zeigen oder ausblenden",
+          "fr": "Afficher ou masquer un élément du Créateur de widgets",
+          "it": "Mostra o nascondi un elemento del Costruttore di widget",
+          "sv": "Visa eller dölj en Widgetbyggare-del",
+          "no": "Vis eller skjul en Widgetbygger-del",
+          "es": "Mostrar u ocultar un elemento del Creador de widgets",
+          "da": "Vis eller skjul en Widgetbygger-del",
+          "ru": "Показать или скрыть элемент конструктора виджетов",
+          "pl": "Pokaż lub ukryj element Kreatora widżetów",
+          "ko": "위젯 빌더 요소 표시 또는 숨기기",
+          "ar": "إظهار أو إخفاء عنصر في منشئ الأدوات"
+        },
+        "titleFormatted": {
+          "en": "[[shown]] [[part]]",
+          "nl": "[[shown]] [[part]]",
+          "de": "[[shown]] [[part]]",
+          "fr": "[[shown]] [[part]]",
+          "it": "[[shown]] [[part]]",
+          "sv": "[[shown]] [[part]]",
+          "no": "[[shown]] [[part]]",
+          "es": "[[shown]] [[part]]",
+          "da": "[[shown]] [[part]]",
+          "ru": "[[shown]] [[part]]",
+          "pl": "[[shown]] [[part]]",
+          "ko": "[[part]] [[shown]]",
+          "ar": "[[shown]] [[part]]"
+        },
+        "hint": {
+          "en": "Only parts opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
+          "nl": "Alleen onderdelen die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+          "de": "Nur Elemente, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+          "fr": "Seuls les éléments ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+          "it": "Sono elencati solo gli elementi aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+          "sv": "Bara delar som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
+          "no": "Bare deler som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
+          "es": "Solo se listan los elementos abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+          "da": "Kun dele, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
+          "ru": "В списке только элементы, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+          "pl": "Na liście są tylko elementy otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+          "ko": "위젯 빌더의 Flow 탭에서 허용한 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+          "ar": "تظهر فقط العناصر المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+        },
+        "args": [
+          {
+            "type": "dropdown",
+            "name": "shown",
+            "title": {
+              "en": "Show or hide",
+              "nl": "Tonen of verbergen",
+              "de": "Zeigen oder ausblenden",
+              "fr": "Afficher ou masquer",
+              "it": "Mostra o nascondi",
+              "sv": "Visa eller dölj",
+              "no": "Vis eller skjul",
+              "es": "Mostrar u ocultar",
+              "da": "Vis eller skjul",
+              "ru": "Показать или скрыть",
+              "pl": "Pokaż lub ukryj",
+              "ko": "표시 또는 숨기기",
+              "ar": "إظهار أو إخفاء"
+            },
+            "values": [
+              {
+                "id": "show",
+                "title": {
+                  "en": "Show",
+                  "nl": "Toon",
+                  "de": "Zeige",
+                  "fr": "Afficher",
+                  "it": "Mostra",
+                  "sv": "Visa",
+                  "no": "Vis",
+                  "es": "Mostrar",
+                  "da": "Vis",
+                  "ru": "Показать",
+                  "pl": "Pokaż",
+                  "ko": "표시",
+                  "ar": "أظهر"
+                }
+              },
+              {
+                "id": "hide",
+                "title": {
+                  "en": "Hide",
+                  "nl": "Verberg",
+                  "de": "Verberge",
+                  "fr": "Masquer",
+                  "it": "Nascondi",
+                  "sv": "Dölj",
+                  "no": "Skjul",
+                  "es": "Ocultar",
+                  "da": "Skjul",
+                  "ru": "Скрыть",
+                  "pl": "Ukryj",
+                  "ko": "숨기기",
+                  "ar": "أخفِ"
+                }
+              }
+            ]
+          },
+          {
+            "type": "autocomplete",
+            "name": "part",
+            "title": {
+              "en": "Part",
+              "nl": "Onderdeel",
+              "de": "Element",
+              "fr": "Élément",
+              "it": "Elemento",
+              "sv": "Del",
+              "no": "Del",
+              "es": "Elemento",
+              "da": "Del",
+              "ru": "Элемент",
+              "pl": "Element",
+              "ko": "요소",
+              "ar": "العنصر"
+            },
+            "placeholder": {
+              "en": "Living room · Message",
+              "nl": "Woonkamer · Bericht",
+              "de": "Wohnzimmer · Nachricht",
+              "fr": "Salon · Message",
+              "it": "Soggiorno · Messaggio",
+              "sv": "Vardagsrum · Meddelande",
+              "no": "Stue · Melding",
+              "es": "Salón · Mensaje",
+              "da": "Stue · Besked",
+              "ru": "Гостиная · Сообщение",
+              "pl": "Salon · Wiadomość",
+              "ko": "거실 · 메시지",
+              "ar": "غرفة المعيشة · رسالة"
             }
           }
         ]

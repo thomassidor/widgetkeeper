@@ -66,6 +66,7 @@ export default class Diagnostics {
       timers: (this.homey.app as any)?.timers?.describe?.() ?? null,
       textLines: (this.homey.app as any)?.textLines?.describe?.() ?? null,
       flowTiles: (this.homey.app as any)?.flowTiles?.describe?.() ?? null,
+      custom: (this.homey.app as any)?.custom?.describe?.() ?? null,
       daysSince: (this.homey.app as any)?.daysSince?.describe?.() ?? null,
       thermostatPresets: (this.homey.app as any)?.thermostatPresets?.describe?.() ?? null,
       tileNames: (this.homey.app as any)?.tileNames?.describe?.() ?? null,

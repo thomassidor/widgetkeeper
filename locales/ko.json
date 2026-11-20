@@ -1308,7 +1308,8 @@
       "stack": "다른 대시보드의 위젯을 번갈아.",
       "shortcuts": "내 색상과 아이콘으로 다른 웹 대시보드로 이동.",
       "webpage": "위젯을 채우도록 맞춘 모든 웹 페이지.",
-      "popups": "Flow가 이 화면 이름으로 보내는 팝업을 여기에도 표시합니다."
+      "popups": "Flow가 이 화면 이름으로 보내는 팝업을 여기에도 표시합니다.",
+      "custom": "요소로 만드는 나만의 위젯: 값, 스위치, 슬라이더, 게이지 등, Flow 포함."
     },
     "sync": "동기화",
     "syncTitle": "Homey 대시보드와 동기화",
@@ -1379,5 +1380,38 @@
     "noDashboards": "아직 웹 대시보드 없음",
     "noLocks": "열기 버튼이 있는 잠금 장치 없음",
     "more": "__count__개 더: 계속 입력하세요"
+  },
+  "custom": {
+    "error": "디자인을 불러오지 못했습니다.",
+    "missing": "이 디자인은 삭제되었습니다.",
+    "pickDesign": "위젯 설정에서 디자인을 선택하세요.",
+    "empty": "이 디자인에는 아직 요소가 없습니다.",
+    "webOnly": "위젯 빌더 디자인은 현재 웹 대시보드에서만 표시됩니다.",
+    "unavailable": "사용할 수 없음",
+    "on": "켜짐",
+    "off": "꺼짐",
+    "setFailed": "__name__을(를) 변경하지 못했습니다.",
+    "noValue": "값이 선택되지 않음",
+    "noKey": "이를 위해 앱 설정에서 API 키를 추가하세요.",
+    "keyScope": "API 키에 이 권한이 없습니다(Flow 또는 변수).",
+    "keyInvalid": "API 키가 승인되지 않았습니다.",
+    "partCount": "요소 __count__개",
+    "kinds": {
+      "value": "값",
+      "chart": "미니 차트",
+      "gauge": "게이지",
+      "level": "레벨 바",
+      "status": "상태",
+      "flowvalue": "Flow 값",
+      "switch": "스위치",
+      "button": "버튼",
+      "slider": "슬라이더",
+      "stepper": "스테퍼",
+      "choice": "선택",
+      "variable": "변수",
+      "container": "컨테이너",
+      "text": "텍스트",
+      "icon": "아이콘"
+    }
   }
 }

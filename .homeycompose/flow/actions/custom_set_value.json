@@ -1,0 +1,153 @@
+{
+  "id": "custom_set_value",
+  "title": {
+    "en": "Set the value of a Widget Builder part",
+    "nl": "Waarde van een Widgetbouwer-onderdeel instellen",
+    "de": "Wert eines Widget-Baukasten-Elements setzen",
+    "fr": "Définir la valeur d'un élément du Créateur de widgets",
+    "it": "Imposta il valore di un elemento del Costruttore di widget",
+    "sv": "Ange värdet för en Widgetbyggare-del",
+    "no": "Angi verdien til en Widgetbygger-del",
+    "es": "Establecer el valor de un elemento del Creador de widgets",
+    "da": "Angiv værdien for en Widgetbygger-del",
+    "ru": "Задать значение элемента конструктора виджетов",
+    "pl": "Ustaw wartość elementu Kreatora widżetów",
+    "ko": "위젯 빌더 요소의 값 설정",
+    "ar": "تعيين قيمة عنصر في منشئ الأدوات"
+  },
+  "titleFormatted": {
+    "en": "Set the value of [[part]] to [[value]] [[units]]",
+    "nl": "Zet de waarde van [[part]] op [[value]] [[units]]",
+    "de": "Wert von [[part]] auf [[value]] [[units]] setzen",
+    "fr": "Définir la valeur de [[part]] sur [[value]] [[units]]",
+    "it": "Imposta il valore di [[part]] su [[value]] [[units]]",
+    "sv": "Sätt värdet för [[part]] till [[value]] [[units]]",
+    "no": "Sett verdien til [[part]] til [[value]] [[units]]",
+    "es": "Poner el valor de [[part]] en [[value]] [[units]]",
+    "da": "Sæt værdien for [[part]] til [[value]] [[units]]",
+    "ru": "Задать значение [[part]]: [[value]] [[units]]",
+    "pl": "Ustaw wartość [[part]] na [[value]] [[units]]",
+    "ko": "[[part]]의 값을 [[value]] [[units]](으)로 설정",
+    "ar": "تعيين قيمة [[part]] إلى [[value]] [[units]]"
+  },
+  "hint": {
+    "en": "A Flow value part shows only what Flows give it; another part shows this instead of its device value, if opened to it. A number is shown in the screen's locale.",
+    "nl": "Een Flow-waarde-onderdeel toont alleen wat Flows het geven; een ander onderdeel toont dit in plaats van de apparaatwaarde, als het hiervoor openstaat. Een getal wordt getoond in de taal van het scherm.",
+    "de": "Ein Flow-Wert-Element zeigt nur, was Flows ihm geben; ein anderes Element zeigt dies statt seines Gerätewerts, wenn es dafür freigegeben ist. Eine Zahl erscheint im Format des Bildschirms.",
+    "fr": "Un élément Valeur de Flow n'affiche que ce que les Flows lui donnent ; un autre élément l'affiche à la place de la valeur de l'appareil, s'il y est ouvert. Un nombre suit la langue de l'écran.",
+    "it": "Un elemento Valore Flow mostra solo ciò che i Flow gli danno; un altro elemento lo mostra al posto del valore del dispositivo, se aperto a questo. Un numero segue la lingua dello schermo.",
+    "sv": "En Flödesvärde-del visar bara vad Flows ger den; en annan del visar detta i stället för enhetens värde, om den är öppnad för det. Ett tal visas i skärmens språk.",
+    "no": "En Flytverdi-del viser bare det Flows gir den; en annen del viser dette i stedet for enhetsverdien, hvis den er åpnet for det. Et tall vises i skjermens språk.",
+    "es": "Un elemento Valor de Flow solo muestra lo que le dan los Flows; otro elemento lo muestra en vez del valor del dispositivo, si está abierto a ello. Un número sigue el idioma de la pantalla.",
+    "da": "En Flowværdi-del viser kun, hvad Flows giver den; en anden del viser dette i stedet for enhedens værdi, hvis den er åbnet for det. Et tal vises i skærmens sprog.",
+    "ru": "Элемент «Значение из Flow» показывает только то, что задают Flow; другой элемент показывает это вместо значения устройства, если открыт для этого. Число — в формате экрана.",
+    "pl": "Element Wartość z Flow pokazuje tylko to, co dadzą mu Flow; inny element pokazuje to zamiast wartości urządzenia, jeśli jest na to otwarty. Liczba w formacie ekranu.",
+    "ko": "Flow 값 요소는 Flow가 준 값만 표시하고, 다른 요소는 허용된 경우 기기 값 대신 이를 표시합니다. 숫자는 화면 언어 형식입니다.",
+    "ar": "عنصر قيمة Flow يعرض فقط ما تعطيه له Flows؛ وعنصر آخر يعرضه بدلًا من قيمة الجهاز إن كان مفتوحًا لذلك. يُعرض الرقم بلغة الشاشة."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "part",
+      "title": {
+        "en": "Part",
+        "nl": "Onderdeel",
+        "de": "Element",
+        "fr": "Élément",
+        "it": "Elemento",
+        "sv": "Del",
+        "no": "Del",
+        "es": "Elemento",
+        "da": "Del",
+        "ru": "Элемент",
+        "pl": "Element",
+        "ko": "요소",
+        "ar": "العنصر"
+      },
+      "placeholder": {
+        "en": "Living room · Message",
+        "nl": "Woonkamer · Bericht",
+        "de": "Wohnzimmer · Nachricht",
+        "fr": "Salon · Message",
+        "it": "Soggiorno · Messaggio",
+        "sv": "Vardagsrum · Meddelande",
+        "no": "Stue · Melding",
+        "es": "Salón · Mensaje",
+        "da": "Stue · Besked",
+        "ru": "Гостиная · Сообщение",
+        "pl": "Salon · Wiadomość",
+        "ko": "거실 · 메시지",
+        "ar": "غرفة المعيشة · رسالة"
+      }
+    },
+    {
+      "type": "text",
+      "name": "value",
+      "title": {
+        "en": "Value",
+        "nl": "Waarde",
+        "de": "Wert",
+        "fr": "Valeur",
+        "it": "Valore",
+        "sv": "Värde",
+        "no": "Verdi",
+        "es": "Valor",
+        "da": "Værdi",
+        "ru": "Значение",
+        "pl": "Wartość",
+        "ko": "값",
+        "ar": "القيمة"
+      },
+      "placeholder": {
+        "en": "42.5",
+        "nl": "42.5",
+        "de": "42.5",
+        "fr": "42.5",
+        "it": "42.5",
+        "sv": "42.5",
+        "no": "42.5",
+        "es": "42.5",
+        "da": "42.5",
+        "ru": "42.5",
+        "pl": "42.5",
+        "ko": "42.5",
+        "ar": "42.5"
+      }
+    },
+    {
+      "type": "text",
+      "name": "units",
+      "required": false,
+      "title": {
+        "en": "Units",
+        "nl": "Eenheid",
+        "de": "Einheit",
+        "fr": "Unité",
+        "it": "Unità",
+        "sv": "Enhet",
+        "no": "Enhet",
+        "es": "Unidad",
+        "da": "Enhed",
+        "ru": "Единица",
+        "pl": "Jednostka",
+        "ko": "단위",
+        "ar": "الوحدة"
+      },
+      "placeholder": {
+        "en": "No units",
+        "nl": "Geen eenheid",
+        "de": "Keine Einheit",
+        "fr": "Sans unité",
+        "it": "Nessuna unità",
+        "sv": "Ingen enhet",
+        "no": "Ingen enhet",
+        "es": "Sin unidad",
+        "da": "Ingen enhed",
+        "ru": "Без единицы",
+        "pl": "Bez jednostki",
+        "ko": "단위 없음",
+        "ar": "بلا وحدة"
+      }
+    }
+  ]
+}

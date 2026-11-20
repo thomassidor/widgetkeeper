@@ -23,7 +23,7 @@
  * keeps the widget's own focus ring.
  */
 html[data-wk-surface] :is(.ck-tile, .ct-tile, .cv-tile, .cv-list, .cw-tile, .fb-row, .lc-tile, .lc-panel, .lk-tile, .lr-room, .pb-tile,
-  .qa-tile, .rh-tile, .sa-tile, .sa-panel, .sc-row, .sd-tile, .sk-card, .sl-tile, .tl-tile, .tm-row, .tm-preset, .vb-tile, .vm-tile, .vr-row, .vt-tile):not(:focus-visible) {
+  .qa-tile, .rh-tile, .sa-tile, .sa-panel, .sc-row, .sd-tile, .sk-card, .sl-tile, .tl-tile, .tm-row, .tm-preset, .vb-tile, .vm-tile, .vr-row, .vt-tile, .wb-tile):not(:focus-visible) {
   outline: 1px solid var(--wk-surface-line, transparent); outline-offset: -1px;
 }
 /*
@@ -42,7 +42,7 @@ html[data-wk-surface] :is(.ck-tile, .ct-tile, .cv-tile, .cv-list, .cw-tile, .fb-
 html.wk-flat, html.wk-flat * { --wk-tile-shadow: none; --wk-shadow-room: 0px; }
 html.wk-tiles body { padding-bottom: var(--wk-shadow-room); }
 :where(.ck-tile, .ct-tile, .cv-tile, .cv-list, .cw-tile, .fb-row, .lc-tile, .lc-panel, .lk-tile, .lr-room, .pb-tile,
-  .qa-tile, .rh-tile, .sa-tile, .sa-panel, .sc-row, .sd-tile, .sk-card, .sl-tile, .tl-tile, .tm-row, .tm-preset, .vb-tile, .vm-tile, .vr-row, .vt-tile) {
+  .qa-tile, .rh-tile, .sa-tile, .sa-panel, .sc-row, .sd-tile, .sk-card, .sl-tile, .tl-tile, .tm-row, .tm-preset, .vb-tile, .vm-tile, .vr-row, .vt-tile, .wb-tile) {
   box-shadow: var(--wk-tile-shadow);
 }
 

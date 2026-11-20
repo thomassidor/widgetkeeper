@@ -1,0 +1,84 @@
+{
+  "id": "custom_is_shown",
+  "title": {
+    "en": "A Widget Builder part is shown",
+    "nl": "Een Widgetbouwer-onderdeel wordt getoond",
+    "de": "Ein Widget-Baukasten-Element wird gezeigt",
+    "fr": "Un élément du Créateur de widgets est affiché",
+    "it": "Un elemento del Costruttore di widget è mostrato",
+    "sv": "En Widgetbyggare-del visas",
+    "no": "En Widgetbygger-del vises",
+    "es": "Un elemento del Creador de widgets se muestra",
+    "da": "En Widgetbygger-del vises",
+    "ru": "Элемент конструктора виджетов показан",
+    "pl": "Element Kreatora widżetów jest widoczny",
+    "ko": "위젯 빌더 요소가 표시됨",
+    "ar": "عنصر في منشئ الأدوات ظاهر"
+  },
+  "titleFormatted": {
+    "en": "[[part]] !{{is|is not}} shown",
+    "nl": "[[part]] !{{wordt|wordt niet}} getoond",
+    "de": "[[part]] !{{wird|wird nicht}} gezeigt",
+    "fr": "[[part]] !{{est|n'est pas}} affiché",
+    "it": "[[part]] !{{è|non è}} mostrato",
+    "sv": "[[part]] !{{visas|visas inte}}",
+    "no": "[[part]] !{{vises|vises ikke}}",
+    "es": "[[part]] !{{se muestra|no se muestra}}",
+    "da": "[[part]] !{{vises|vises ikke}}",
+    "ru": "[[part]] !{{показан|не показан}}",
+    "pl": "[[part]] !{{jest|nie jest}} widoczny",
+    "ko": "[[part]]이(가) !{{표시됨|표시되지 않음}}",
+    "ar": "[[part]] !{{ظاهر|غير ظاهر}}"
+  },
+  "hint": {
+    "en": "Hidden by a Flow card, not by the part's own rules.",
+    "nl": "Verborgen door een Flow-kaart, niet door de eigen regels van het onderdeel.",
+    "de": "Von einer Flow-Karte ausgeblendet, nicht von den Regeln des Elements.",
+    "fr": "Masqué par une carte Flow, pas par les règles de l'élément.",
+    "it": "Nascosto da una scheda Flow, non dalle regole dell'elemento.",
+    "sv": "Dold av ett Flow-kort, inte av delens egna regler.",
+    "no": "Skjult av et Flow-kort, ikke av delens egne regler.",
+    "es": "Oculto por una tarjeta Flow, no por las reglas del elemento.",
+    "da": "Skjult af et Flow-kort, ikke af delens egne regler.",
+    "ru": "Скрыт картой Flow, а не правилами элемента.",
+    "pl": "Ukryty przez kartę Flow, nie przez reguły elementu.",
+    "ko": "요소 자체 규칙이 아니라 Flow 카드로 숨긴 경우입니다.",
+    "ar": "مخفي ببطاقة Flow، لا بقواعد العنصر نفسه."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "part",
+      "title": {
+        "en": "Part",
+        "nl": "Onderdeel",
+        "de": "Element",
+        "fr": "Élément",
+        "it": "Elemento",
+        "sv": "Del",
+        "no": "Del",
+        "es": "Elemento",
+        "da": "Del",
+        "ru": "Элемент",
+        "pl": "Element",
+        "ko": "요소",
+        "ar": "العنصر"
+      },
+      "placeholder": {
+        "en": "Living room · Message",
+        "nl": "Woonkamer · Bericht",
+        "de": "Wohnzimmer · Nachricht",
+        "fr": "Salon · Message",
+        "it": "Soggiorno · Messaggio",
+        "sv": "Vardagsrum · Meddelande",
+        "no": "Stue · Melding",
+        "es": "Salón · Mensaje",
+        "da": "Stue · Besked",
+        "ru": "Гостиная · Сообщение",
+        "pl": "Salon · Wiadomość",
+        "ko": "거실 · 메시지",
+        "ar": "غرفة المعيشة · رسالة"
+      }
+    }
+  ]
+}

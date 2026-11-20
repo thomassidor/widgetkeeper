@@ -123,6 +123,14 @@ describe('the app: Flow cards', () => {
     ['flowtiles_remove_fill', 'flowTiles', 'removeFill', { board: { id: 'Car' }, tile: { id: 'Range' } }, ['Car', 'Range']],
     ['flowtiles_remove', 'flowTiles', 'remove', { board: { id: 'Car' }, tile: { id: 'Range' } }, ['Car', 'Range']],
     ['flowtiles_clear', 'flowTiles', 'clear', { board: { id: 'Car' } }, ['Car']],
+    // The Widget Builder's cards: a part argument is `<design>/<part>`.
+    ['custom_set_text', 'custom', 'setText', { part: { id: 'd1/p1' }, text: 'Parcel' }, [{ id: 'd1/p1' }, 'Parcel']],
+    ['custom_set_value', 'custom', 'setNumber', { part: { id: 'd1/p1' }, value: '42.5', units: 'kr' }, [{ id: 'd1/p1' }, '42.5', 'kr']],
+    ['custom_set_color', 'custom', 'setColor', { part: { id: 'd1/p1' }, color: 'red' }, [{ id: 'd1/p1' }, 'red']],
+    ['custom_set_custom_color', 'custom', 'setColor', { part: { id: 'd1/p1' }, color: '#F00' }, [{ id: 'd1/p1' }, '#ff0000']],
+    ['custom_set_icon', 'custom', 'setIcon', { part: { id: 'd1/p1' }, icon: { id: 'bell' } }, [{ id: 'd1/p1' }, 'bell']],
+    ['custom_show', 'custom', 'setShown', { part: { id: 'd1/p1' }, shown: 'hide' }, [{ id: 'd1/p1' }, false]],
+    ['custom_reset', 'custom', 'reset', { part: { id: 'd1/p1' } }, [{ id: 'd1/p1' }]],
   ];
 
   it.each(RUNS)('%s calls %s.%s with its arguments', async (id, service, method, args, call) => {

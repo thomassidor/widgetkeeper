@@ -1308,7 +1308,8 @@
       "stack": "Widgets de otro panel, por turnos.",
       "shortcuts": "Salta a tus otros paneles web, con tus colores e iconos.",
       "webpage": "Cualquier página web, escalada para llenar el widget.",
-      "popups": "Muestra también aquí las ventanas emergentes que los Flows envían a su nombre de pantalla."
+      "popups": "Muestra también aquí las ventanas emergentes que los Flows envían a su nombre de pantalla.",
+      "custom": "Tu propio widget a partir de elementos: valores, interruptores, controles, indicadores y más, con Flows."
     },
     "sync": "Sincronizar",
     "syncTitle": "Sincronizar con un panel de Homey",
@@ -1379,5 +1380,38 @@
     "noDashboards": "Aún no hay paneles web",
     "noLocks": "No hay cerraduras con botón de apertura",
     "more": "__count__ más: sigue escribiendo"
+  },
+  "custom": {
+    "error": "No se pudo cargar el diseño.",
+    "missing": "Este diseño se eliminó.",
+    "pickDesign": "Elige un diseño en los ajustes del widget.",
+    "empty": "Este diseño aún no tiene elementos.",
+    "webOnly": "Por ahora los diseños del Creador de widgets solo se ven en paneles web.",
+    "unavailable": "No disponible",
+    "on": "Encendido",
+    "off": "Apagado",
+    "setFailed": "No se pudo cambiar __name__.",
+    "noValue": "Ningún valor elegido",
+    "noKey": "Para esto, añade una clave API en los ajustes de la app.",
+    "keyScope": "La clave API no puede hacer esto (Flows o Variables).",
+    "keyInvalid": "La clave API no fue aceptada.",
+    "partCount": "__count__ elementos",
+    "kinds": {
+      "value": "Valor",
+      "chart": "Minigráfico",
+      "gauge": "Indicador",
+      "level": "Barra de nivel",
+      "status": "Estado",
+      "flowvalue": "Valor de Flow",
+      "switch": "Interruptor",
+      "button": "Botón",
+      "slider": "Control deslizante",
+      "stepper": "Selector de pasos",
+      "choice": "Elección",
+      "variable": "Variable",
+      "container": "Contenedor",
+      "text": "Texto",
+      "icon": "Icono"
+    }
   }
 }

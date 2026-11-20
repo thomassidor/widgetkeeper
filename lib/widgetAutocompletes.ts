@@ -99,6 +99,9 @@ export function widgetAutocompletes(app: WidgetkeeperApp): Record<string, Record
     add('shortcuts', `icon${n}`, async query => app.flows.listIcons(query));
   }
 
+  // Widget Builder: a design from the builder page's library.
+  add('custom', 'design', async query => app.custom.designItems(query));
+
   // Notes: a text variable to show, and the tile's icon.
   add('textline', 'variable', query => app.variables.listVariables(query, { types: ['string'] }));
   add('textline', 'icon', async query => app.flows.listIcons(query, { none: true }));

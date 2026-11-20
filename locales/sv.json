@@ -1308,7 +1308,8 @@
       "stack": "Widgets från en annan instrumentpanel, turvis.",
       "shortcuts": "Hoppa till dina andra webbinstrumentpaneler, i dina färger och ikoner.",
       "webpage": "Vilken webbsida som helst, skalad för att fylla widgeten.",
-      "popups": "Visar även här popup-fönstren som Flows skickar till dess skärmnamn."
+      "popups": "Visar även här popup-fönstren som Flows skickar till dess skärmnamn.",
+      "custom": "Din egen widget av delar: värden, brytare, reglage, mätare och mer, med Flows."
     },
     "sync": "Synka",
     "syncTitle": "Synka med en Homey-instrumentpanel",
@@ -1379,5 +1380,38 @@
     "noDashboards": "Inga webbpaneler än",
     "noLocks": "Inga lås med en knapp för att öppna",
     "more": "__count__ till: skriv vidare"
+  },
+  "custom": {
+    "error": "Kunde inte läsa in designen.",
+    "missing": "Den här designen togs bort.",
+    "pickDesign": "Välj en design i widgetens inställningar.",
+    "empty": "Den här designen har inga delar än.",
+    "webOnly": "Widgetbyggarens designer visas bara på webbpaneler än så länge.",
+    "unavailable": "Inte tillgänglig",
+    "on": "På",
+    "off": "Av",
+    "setFailed": "Kunde inte ändra __name__.",
+    "noValue": "Inget värde valt",
+    "noKey": "Lägg till en API-nyckel i appinställningarna för detta.",
+    "keyScope": "API-nyckeln får inte göra detta (Flows eller Variabler).",
+    "keyInvalid": "API-nyckeln godtogs inte.",
+    "partCount": "__count__ delar",
+    "kinds": {
+      "value": "Värde",
+      "chart": "Minidiagram",
+      "gauge": "Mätare",
+      "level": "Nivåstapel",
+      "status": "Status",
+      "flowvalue": "Flödesvärde",
+      "switch": "Brytare",
+      "button": "Knapp",
+      "slider": "Reglage",
+      "stepper": "Stegväljare",
+      "choice": "Val",
+      "variable": "Variabel",
+      "container": "Behållare",
+      "text": "Text",
+      "icon": "Ikon"
+    }
   }
 }

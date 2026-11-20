@@ -1308,7 +1308,8 @@
       "stack": "Widgets from another dashboard, taking turns.",
       "shortcuts": "Jump to your other web dashboards, in your colours and icons.",
       "webpage": "Any web page, scaled to fill the widget.",
-      "popups": "Shows the popups that Flows send to its screen name here too."
+      "popups": "Shows the popups that Flows send to its screen name here too.",
+      "custom": "Your own widget from parts: values, switches, sliders, gauges and more, Flows included."
     },
     "sync": "Sync",
     "syncTitle": "Sync with a Homey dashboard",
@@ -1379,5 +1380,38 @@
     "noDashboards": "No web dashboards yet",
     "noLocks": "No locks with a button to open",
     "more": "__count__ more: keep typing"
+  },
+  "custom": {
+    "error": "Could not load the design.",
+    "missing": "This design was removed.",
+    "pickDesign": "Pick a design in the widget's settings.",
+    "empty": "This design has no parts yet.",
+    "webOnly": "Widget Builder designs show on web dashboards for now.",
+    "unavailable": "Unavailable",
+    "on": "On",
+    "off": "Off",
+    "setFailed": "Could not change __name__.",
+    "noValue": "No value picked",
+    "noKey": "For this, add an API key in the app settings.",
+    "keyScope": "The API key may not do this (Flows or Variables).",
+    "keyInvalid": "The API key was not accepted.",
+    "partCount": "__count__ parts",
+    "kinds": {
+      "value": "Value",
+      "chart": "Mini chart",
+      "gauge": "Gauge",
+      "level": "Level bar",
+      "status": "Status",
+      "flowvalue": "Flow value",
+      "switch": "Switch",
+      "button": "Button",
+      "slider": "Slider",
+      "stepper": "Stepper",
+      "choice": "Choice",
+      "variable": "Variable",
+      "container": "Container",
+      "text": "Text",
+      "icon": "Icon"
+    }
   }
 }

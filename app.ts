@@ -5,6 +5,10 @@ import { finishList } from './lib/autocomplete.js';
 import { logged } from './lib/widgetApi.js';
 import CameraService, { CAMERAS_REFRESH_CARD } from './lib/CameraService.js';
 import CurtainService from './lib/CurtainService.js';
+import CustomWidgetService, {
+  CUSTOM_CHOICE_CARD, CUSTOM_IS_SHOWN_CARD, CUSTOM_RESET_CARD, CUSTOM_SET_COLOR_CARD, CUSTOM_SET_CUSTOM_COLOR_CARD, CUSTOM_SET_ICON_CARD,
+  CUSTOM_SET_TEXT_CARD, CUSTOM_SET_VALUE_CARD, CUSTOM_SHOW_CARD, CUSTOM_TAPPED_CARD, type PartArg,
+} from './lib/CustomWidgetService.js';
 import DaysSinceService, {
   DAYS_SINCE_IS_OVERDUE_CARD, DAYS_SINCE_OVERDUE_CARD, DAYS_SINCE_RESET_CARD, DAYS_SINCE_SET_CARD, type CounterArg, type OverdueCounter,
 } from './lib/DaysSinceService.js';
@@ -89,6 +93,8 @@ export default class WidgetkeeperApp extends Homey.App {
   textLines!: TextLineService;
   /** The Flow Tiles widget's tiles, which Flow cards write on named boards. */
   flowTiles!: FlowTileService;
+  /** The Widget Builder's designs and what Flows set on their parts. */
+  custom!: CustomWidgetService;
   /** The Days Since widget's counters, shared by name. */
   daysSince!: DaysSinceService;
   /** The names typed on the device widgets' tiles (`renameTiles`). */
@@ -174,6 +180,11 @@ export default class WidgetkeeperApp extends Homey.App {
     this.flowTiles = new FlowTileService(this.homey, log, debug,
       (tokens, state) => this.homey.flow.getTriggerCard(FLOWTILES_TAPPED_CARD).trigger(tokens, state));
     this.registerFlowTileFlows();
+    this.custom = new CustomWidgetService(this.homey,
+      { values: this.values, variables: this.variables, flows: this.flows, sparklines: this.sparklines }, log, debug,
+      (card, tokens, state) => this.homey.flow.getTriggerCard(card).trigger(tokens, state));
+    this.registerCustomFlows();
+    this.custom.start();
     this.daysSince = new DaysSinceService(this.homey, log, debug, counter => this.daysSinceOverdue(counter));
     this.registerDaysSinceFlows();
     this.daysSince.start();
@@ -240,7 +251,7 @@ export default class WidgetkeeperApp extends Homey.App {
   async onUninit() {
     await this.stopAll({
       timers: this.timers, daysSince: this.daysSince, popups: this.popups, heatmap: this.heatmap, electricity: this.electricity,
-      webSync: this.webSync, flowTiles: this.flowTiles,
+      webSync: this.webSync, flowTiles: this.flowTiles, custom: this.custom,
     });
     await this.stopAll({
       thermostat: this.thermostat, quickActions: this.quickActions, sensorAlarms: this.sensorAlarms, roomHealth: this.roomHealth,
@@ -360,6 +371,35 @@ export default class WidgetkeeperApp extends Homey.App {
    * *… was tapped* (filtered to its board and tile, or any). The board and tile arguments list what's there, then what's
    * typed as a new one; a tile's list is its card's board's.
    */
+  /**
+   * The Widget Builder's cards: each names a part (`Design · Part`) that the user opened to that change in the builder's
+   * Flow tab (`CustomWidgetService.listParts()`); the triggers list the buttons without a Flow and the choices.
+   */
+  private registerCustomFlows() {
+    type Args = { part?: PartArg };
+    const parts = (prop: Parameters<CustomWidgetService['listParts']>[1]) => async (query: string) => finishList(this.homey, query, this.custom.listParts(query, prop));
+    const action = <A extends Args>(id: string, prop: Parameters<CustomWidgetService['listParts']>[1], fn: (args: A) => void) => this.homey.flow.getActionCard(id)
+      .registerArgumentAutocompleteListener('part', parts(prop))
+      .registerRunListener(async (args: A) => { fn(args); });
+    action<Args & { text?: string }>(CUSTOM_SET_TEXT_CARD, 'text', a => this.custom.setText(a.part, a.text));
+    action<Args & { value?: unknown, units?: string }>(CUSTOM_SET_VALUE_CARD, 'value', a => this.custom.setNumber(a.part, a.value, a.units));
+    action<Args & { color: string }>(CUSTOM_SET_COLOR_CARD, 'color', a => this.custom.setColor(a.part, a.color));
+    action<Args & { color?: string }>(CUSTOM_SET_CUSTOM_COLOR_CARD, 'color', a => this.custom.setColor(a.part, parseCustomColor(a.color)));
+    action<Args & { icon?: { id?: string } }>(CUSTOM_SET_ICON_CARD, 'icon', a => this.custom.setIcon(a.part, a.icon?.id));
+    action<Args & { shown: string }>(CUSTOM_SHOW_CARD, 'hidden', a => this.custom.setShown(a.part, a.shown !== 'hide'));
+    action(CUSTOM_RESET_CARD, 'any', a => this.custom.reset(a.part));
+    this.homey.flow.getActionCard(CUSTOM_SET_ICON_CARD)
+      .registerArgumentAutocompleteListener('icon', async query => finishList(this.homey, query, this.flows.listIcons(query, { none: true })));
+    this.homey.flow.getConditionCard(CUSTOM_IS_SHOWN_CARD)
+      .registerArgumentAutocompleteListener('part', parts('hidden'))
+      .registerRunListener(async (args: Args) => this.custom.isShown(args.part));
+    for (const [id, prop] of [[CUSTOM_TAPPED_CARD, 'tap'], [CUSTOM_CHOICE_CARD, 'choice']] as const) {
+      this.homey.flow.getTriggerCard(id)
+        .registerArgumentAutocompleteListener('part', parts(prop))
+        .registerRunListener(async (args: Args, state: { part?: string }) => CustomWidgetService.matches(args, state));
+    }
+  }
+
   private registerFlowTileFlows() {
     type Args = { board?: FlowTileArg, tile?: FlowTileArg };
     const name = FlowTileService.argName;

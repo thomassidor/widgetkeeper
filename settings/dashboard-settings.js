@@ -20,7 +20,7 @@
       ['groupCharts', ['charts', 'compare', 'dailyrange', 'gauge', 'heatmap', 'lines', 'scatter', 'stacked', 'timeline', 'totals', 'typicalday']],
       ['groupFlows', ['flows', 'flowtiles', 'popups', 'variables', 'varpresets']],
       ['groupTime', ['clock', 'dayssince', 'textline', 'timers']],
-      ['groupLayout', ['shortcuts', 'spacer', 'stack', 'webpage']],
+      ['groupLayout', ['custom', 'shortcuts', 'spacer', 'stack', 'webpage']],
     ];
 
     /**

@@ -1308,7 +1308,8 @@
       "stack": "Les widgets d'un autre tableau de bord, à tour de rôle.",
       "shortcuts": "Passez à vos autres tableaux de bord web, avec vos couleurs et icônes.",
       "webpage": "N'importe quelle page web, mise à l'échelle du widget.",
-      "popups": "Affiche aussi ici les pop-ups que les Flows envoient à son nom d'écran."
+      "popups": "Affiche aussi ici les pop-ups que les Flows envoient à son nom d'écran.",
+      "custom": "Votre propre widget à partir d'éléments : valeurs, interrupteurs, curseurs, jauges et plus, Flows compris."
     },
     "sync": "Synchro",
     "syncTitle": "Synchroniser avec un tableau de bord Homey",
@@ -1379,5 +1380,38 @@
     "noDashboards": "Pas encore de tableau de bord web",
     "noLocks": "Aucune serrure avec un bouton d’ouverture",
     "more": "__count__ de plus : continuez à taper"
+  },
+  "custom": {
+    "error": "Impossible de charger le modèle.",
+    "missing": "Ce modèle a été supprimé.",
+    "pickDesign": "Choisissez un modèle dans les réglages du widget.",
+    "empty": "Ce modèle n'a pas encore d'éléments.",
+    "webOnly": "Les modèles du Créateur de widgets s'affichent pour l'instant sur les tableaux de bord web.",
+    "unavailable": "Indisponible",
+    "on": "Allumé",
+    "off": "Éteint",
+    "setFailed": "Impossible de modifier __name__.",
+    "noValue": "Aucune valeur choisie",
+    "noKey": "Pour cela, ajoutez une clé API dans les réglages de l'app.",
+    "keyScope": "La clé API n'y est pas autorisée (Flows ou Variables).",
+    "keyInvalid": "La clé API n'a pas été acceptée.",
+    "partCount": "__count__ éléments",
+    "kinds": {
+      "value": "Valeur",
+      "chart": "Mini-graphique",
+      "gauge": "Jauge",
+      "level": "Barre de niveau",
+      "status": "État",
+      "flowvalue": "Valeur de Flow",
+      "switch": "Interrupteur",
+      "button": "Bouton",
+      "slider": "Curseur",
+      "stepper": "Pas à pas",
+      "choice": "Choix",
+      "variable": "Variable",
+      "container": "Conteneur",
+      "text": "Texte",
+      "icon": "Icône"
+    }
   }
 }

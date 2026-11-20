@@ -76,7 +76,11 @@ const SETTINGS = {
   name: 'Hall',
   showWeather: true,
   url: 'https://example.com/',
+  design: { id: 'design1', name: 'Living room' },
 };
+
+/** The widgets that only work on a web dashboard. */
+const WEB_ONLY = ['shortcuts', 'custom'];
 
 /** Widgets that make no request of their own here: the Spacer has no API, Web Page asks only for an address with a location in it. */
 const NO_REQUESTS = ['spacer', 'webpage'];
@@ -86,8 +90,8 @@ describe('widget mount.js: its requests reach its own routes', () => {
     const win = loadWidget(id);
     loadMount(id);
     const { frame, root } = frameElements();
-    // Dashboard Shortcuts only works on a web dashboard, whose widget instances are `web-<dashboard>-<widget>`.
-    const Homey = fakeFrame(SETTINGS, { deviceIds: ['d1'], instance: id === 'shortcuts' ? 'web-dash1-w1' : 'w1' });
+    // Dashboard Shortcuts and the Widget Builder only work on a web dashboard, whose widget instances are `web-<dashboard>-<widget>`.
+    const Homey = fakeFrame(SETTINGS, { deviceIds: ['d1'], instance: WEB_ONLY.includes(id) ? 'web-dash1-w1' : 'w1' });
     win[mountName(id)](Homey, { root, frame });
     await vi.advanceTimersByTimeAsync(2000);
     const requests = Homey.api.mock.calls as unknown as [string, string, unknown?][];
@@ -117,7 +121,7 @@ describe('widget mount.js: its requests reach its own routes', () => {
  */
 const DEVICE_NAMES: WidgetName[] = [
   'cameras', 'charts', 'curtains', 'flows', 'heatmap', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions', 'roomhealth',
-  'sensoralarms', 'sensordots', 'sparklines', 'thermostat', 'totals', 'scatter', 'typicalday', 'dailyrange', 'compare', 'timeline', 'stacked', 'lines', 'gauge', 'valuematrix', 'valueboard', 'values', 'combined',
+  'sensoralarms', 'sensordots', 'sparklines', 'thermostat', 'totals', 'scatter', 'typicalday', 'dailyrange', 'compare', 'timeline', 'stacked', 'lines', 'gauge', 'valuematrix', 'valueboard', 'values', 'combined', 'custom',
 ];
 
 describe('widget mount.js: the device names setting', () => {
@@ -125,7 +129,7 @@ describe('widget mount.js: the device names setting', () => {
     const win = loadWidget(id);
     loadMount(id);
     const { frame, root } = frameElements();
-    const Homey = fakeFrame(SETTINGS, { deviceIds: ['d1'], instance: id === 'shortcuts' ? 'web-dash1-w1' : 'w1' });
+    const Homey = fakeFrame(SETTINGS, { deviceIds: ['d1'], instance: WEB_ONLY.includes(id) ? 'web-dash1-w1' : 'w1' });
     win[mountName(id)](Homey, { root, frame });
     await vi.advanceTimersByTimeAsync(2000);
     const before = Homey.api.mock.calls.length;

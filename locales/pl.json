@@ -1308,7 +1308,8 @@
       "stack": "Widżety z innego pulpitu, na zmianę.",
       "shortcuts": "Przechodź do innych pulpitów webowych, w Twoich kolorach i ikonach.",
       "webpage": "Dowolna strona WWW, przeskalowana, by wypełnić widżet.",
-      "popups": "Pokazuje tu też okna wyskakujące, które Flow wysyłają na jego nazwę ekranu."
+      "popups": "Pokazuje tu też okna wyskakujące, które Flow wysyłają na jego nazwę ekranu.",
+      "custom": "Własny widżet z elementów: wartości, przełączniki, suwaki, wskaźniki i więcej, z Flow."
     },
     "sync": "Synchr.",
     "syncTitle": "Synchronizuj z pulpitem Homey",
@@ -1379,5 +1380,38 @@
     "noDashboards": "Nie ma jeszcze pulpitów web",
     "noLocks": "Brak zamków z przyciskiem otwierania",
     "more": "Jeszcze __count__: pisz dalej"
+  },
+  "custom": {
+    "error": "Nie udało się wczytać projektu.",
+    "missing": "Ten projekt został usunięty.",
+    "pickDesign": "Wybierz projekt w ustawieniach widżetu.",
+    "empty": "Ten projekt nie ma jeszcze elementów.",
+    "webOnly": "Projekty Kreatora widżetów są na razie widoczne tylko na pulpitach webowych.",
+    "unavailable": "Niedostępne",
+    "on": "Wł.",
+    "off": "Wył.",
+    "setFailed": "Nie udało się zmienić __name__.",
+    "noValue": "Nie wybrano wartości",
+    "noKey": "W tym celu dodaj klucz API w ustawieniach aplikacji.",
+    "keyScope": "Klucz API nie może tego zrobić (Flow lub zmienne).",
+    "keyInvalid": "Klucz API nie został zaakceptowany.",
+    "partCount": "Elementy: __count__",
+    "kinds": {
+      "value": "Wartość",
+      "chart": "Mini wykres",
+      "gauge": "Wskaźnik",
+      "level": "Pasek poziomu",
+      "status": "Stan",
+      "flowvalue": "Wartość z Flow",
+      "switch": "Przełącznik",
+      "button": "Przycisk",
+      "slider": "Suwak",
+      "stepper": "Licznik",
+      "choice": "Wybór",
+      "variable": "Zmienna",
+      "container": "Kontener",
+      "text": "Tekst",
+      "icon": "Ikona"
+    }
   }
 }

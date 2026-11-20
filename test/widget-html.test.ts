@@ -129,7 +129,7 @@ describe('the settings\' order', () => {
 describe('haptic feedback', () => {
   // A tap that starts, sets or switches something vibrates (the settings review, 2026-11-04: six widgets that act didn't).
   // The rest only show, open a panel or move between pages (the Smart Stack's own).
-  const ACTING = ['combined', 'curtains', 'dayssince', 'flows', 'flowtiles', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions',
+  const ACTING = ['combined', 'curtains', 'custom', 'dayssince', 'flows', 'flowtiles', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions',
     'shortcuts', 'stack', 'thermostat', 'timers', 'variables', 'varpresets'];
   it("every widget whose taps act uses the kit's wireHaptic(), and none calls Homey's haptic itself", () => {
     for (const id of WIDGETS) {
@@ -162,7 +162,7 @@ describe('shared files', () => {
     const html = readFileSync(`widgets/${id}/public/index.html`, 'utf8');
     const scripts = [...html.matchAll(/<script src="([^"]+)"/g)].map(m => m[1]);
     // The Smart Stack for its pages (Media, Days Since, Flow Tiles …), the rest for themselves.
-    const shows = ['flows', 'keypad', 'dayssince', 'media', 'shortcuts', 'textline', 'varpresets', 'flowtiles', 'stack'].includes(id);
+    const shows = ['flows', 'keypad', 'dayssince', 'media', 'shortcuts', 'textline', 'varpresets', 'flowtiles', 'stack', 'custom'].includes(id);
     if (shows) expect(scripts[1]).toBe('../spacer/icons.js');
     else expect(scripts).not.toContain('../spacer/icons.js');
   });

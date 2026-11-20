@@ -240,6 +240,11 @@ The next 36 hours, hour by hour, from MET Norway (yr.no)<br clear="left"></p>
 <a href="docs/widgets/webpage.md"><b>Web Page</b></a><br>
 Any web page, scaled to fill the widget, with buttons to switch between addresses<br clear="left"></p>
 
+<a name="widget-builder"></a>
+<p><a href="docs/widgets/custom.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/custom-dark.png"><img src="docs/previews/custom-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/custom.md"><b>Widget Builder</b></a><br>
+Your own widget from parts (values, switches, sliders, gauges and more), built on the web dashboards, with Flows where you choose<br clear="left"></p>
+
 ## Web dashboards
 <img src="docs/web/dashboard.png" alt="A web dashboard with Widgetkeeper widgets in a browser window, with Dashboard Shortcuts at the top as a menu" width="100%">
 

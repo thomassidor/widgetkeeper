@@ -173,6 +173,9 @@ const SCREENSHOTS = (function () {
   if (fed) fed.click();
   };
 
+  // Widget Builder (web dashboards only): the living room's design (dev/mock-custom.js), or another scene.
+  const custom = (el, { scene, ...o } = {}) => MOUNT.custom(el, { opts: o, state: window.mockCustomState(scene) });
+
   // Dashboard Shortcuts (web dashboards only): six of the showcase's dashboards as a menu, on Home.
   const menu = [['home', 'purple', 'home'], ['energy', 'green', 'bolt'], ['security', 'red', 'shield'],
     ['climate', 'blue', 'thermometer'], ['livingroom', 'orange', 'sofa'], ['kitchen', 'yellow', 'utensils']];
@@ -223,6 +226,6 @@ const SCREENSHOTS = (function () {
   return {
     electricity, thermostat, quickactions, sensoralarms, roomhealth, valuematrix, weather, heatmap, cameras, values, flowtiles, combined, variables, varpresets,
     keypad, flows: flowButtons, price, locks, sparklines, charts, totals, scatter, compare, timeline, stacked, lines, gauge, gaugedial,
-    dailyrange, typicalday, clock, textline, dayssince, shortcuts, lightrooms, pollen, webpage, popups,
+    dailyrange, typicalday, clock, textline, dayssince, shortcuts, custom, lightrooms, pollen, webpage, popups,
   };
 })();

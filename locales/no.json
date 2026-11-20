@@ -1308,7 +1308,8 @@
       "stack": "Widgeter fra et annet dashbord, etter tur.",
       "shortcuts": "Hopp til de andre nettdashbordene dine, i dine farger og ikoner.",
       "webpage": "Hvilken som helst nettside, skalert for å fylle widgeten.",
-      "popups": "Viser også her popup-vinduene som Flows sender til skjermnavnet."
+      "popups": "Viser også her popup-vinduene som Flows sender til skjermnavnet.",
+      "custom": "Din egen widget av deler: verdier, brytere, glidebrytere, målere og mer, med Flows."
     },
     "sync": "Synk",
     "syncTitle": "Synkroniser med et Homey-dashbord",
@@ -1379,5 +1380,38 @@
     "noDashboards": "Ingen nettdashbord ennå",
     "noLocks": "Ingen låser med en knapp for å åpne",
     "more": "__count__ til: skriv videre"
+  },
+  "custom": {
+    "error": "Kunne ikke laste designet.",
+    "missing": "Dette designet ble fjernet.",
+    "pickDesign": "Velg et design i widgetens innstillinger.",
+    "empty": "Dette designet har ingen deler ennå.",
+    "webOnly": "Widgetbyggerens design vises foreløpig bare på nettdashbord.",
+    "unavailable": "Utilgjengelig",
+    "on": "På",
+    "off": "Av",
+    "setFailed": "Kunne ikke endre __name__.",
+    "noValue": "Ingen verdi valgt",
+    "noKey": "Legg til en API-nøkkel i appinnstillingene for dette.",
+    "keyScope": "API-nøkkelen kan ikke gjøre dette (Flows eller Variabler).",
+    "keyInvalid": "API-nøkkelen ble ikke godtatt.",
+    "partCount": "__count__ deler",
+    "kinds": {
+      "value": "Verdi",
+      "chart": "Minidiagram",
+      "gauge": "Måler",
+      "level": "Nivålinje",
+      "status": "Status",
+      "flowvalue": "Flytverdi",
+      "switch": "Bryter",
+      "button": "Knapp",
+      "slider": "Glidebryter",
+      "stepper": "Trinnvelger",
+      "choice": "Valg",
+      "variable": "Variabel",
+      "container": "Beholder",
+      "text": "Tekst",
+      "icon": "Ikon"
+    }
   }
 }

@@ -1308,7 +1308,8 @@
       "stack": "Widget di un'altra dashboard, a turno.",
       "shortcuts": "Passa alle altre dashboard web, nei tuoi colori e icone.",
       "webpage": "Qualsiasi pagina web, scalata per riempire il widget.",
-      "popups": "Mostra anche qui i popup che i Flow inviano al suo nome di schermo."
+      "popups": "Mostra anche qui i popup che i Flow inviano al suo nome di schermo.",
+      "custom": "Il tuo widget fatto di elementi: valori, interruttori, cursori, indicatori e altro, Flow inclusi."
     },
     "sync": "Sincronizza",
     "syncTitle": "Sincronizza con una dashboard Homey",
@@ -1379,5 +1380,38 @@
     "noDashboards": "Ancora nessuna dashboard web",
     "noLocks": "Nessuna serratura con un pulsante di apertura",
     "more": "Altri __count__: continua a digitare"
+  },
+  "custom": {
+    "error": "Impossibile caricare il design.",
+    "missing": "Questo design è stato rimosso.",
+    "pickDesign": "Scegli un design nelle impostazioni del widget.",
+    "empty": "Questo design non ha ancora elementi.",
+    "webOnly": "Per ora i design del Costruttore di widget appaiono solo nelle dashboard web.",
+    "unavailable": "Non disponibile",
+    "on": "Acceso",
+    "off": "Spento",
+    "setFailed": "Impossibile modificare __name__.",
+    "noValue": "Nessun valore scelto",
+    "noKey": "Per questo, aggiungi una chiave API nelle impostazioni dell'app.",
+    "keyScope": "La chiave API non può farlo (Flow o Variabili).",
+    "keyInvalid": "La chiave API non è stata accettata.",
+    "partCount": "__count__ elementi",
+    "kinds": {
+      "value": "Valore",
+      "chart": "Mini grafico",
+      "gauge": "Indicatore",
+      "level": "Barra di livello",
+      "status": "Stato",
+      "flowvalue": "Valore Flow",
+      "switch": "Interruttore",
+      "button": "Pulsante",
+      "slider": "Cursore",
+      "stepper": "Regolatore",
+      "choice": "Scelta",
+      "variable": "Variabile",
+      "container": "Contenitore",
+      "text": "Testo",
+      "icon": "Icona"
+    }
   }
 }

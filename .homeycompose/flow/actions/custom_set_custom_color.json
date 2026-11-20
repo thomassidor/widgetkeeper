@@ -1,0 +1,118 @@
+{
+  "id": "custom_set_custom_color",
+  "title": {
+    "en": "Give a Widget Builder part a custom colour",
+    "nl": "Een Widgetbouwer-onderdeel een eigen kleur geven",
+    "de": "Einem Widget-Baukasten-Element eine eigene Farbe geben",
+    "fr": "Donner une couleur personnalisée à un élément du Créateur de widgets",
+    "it": "Dai un colore personalizzato a un elemento del Costruttore di widget",
+    "sv": "Ge en Widgetbyggare-del en egen färg",
+    "no": "Gi en Widgetbygger-del en egen farge",
+    "es": "Dar un color propio a un elemento del Creador de widgets",
+    "da": "Giv en Widgetbygger-del en egen farve",
+    "ru": "Задать свой цвет элементу конструктора виджетов",
+    "pl": "Nadaj elementowi Kreatora widżetów własny kolor",
+    "ko": "위젯 빌더 요소에 사용자 색상 지정",
+    "ar": "منح عنصر في منشئ الأدوات لونًا مخصصًا"
+  },
+  "titleFormatted": {
+    "en": "Give [[part]] the colour [[color]]",
+    "nl": "Geef [[part]] de kleur [[color]]",
+    "de": "[[part]] die Farbe [[color]] geben",
+    "fr": "Donner à [[part]] la couleur [[color]]",
+    "it": "Dai a [[part]] il colore [[color]]",
+    "sv": "Ge [[part]] färgen [[color]]",
+    "no": "Gi [[part]] fargen [[color]]",
+    "es": "Dar a [[part]] el color [[color]]",
+    "da": "Giv [[part]] farven [[color]]",
+    "ru": "Дать [[part]] цвет [[color]]",
+    "pl": "Nadaj [[part]] kolor [[color]]",
+    "ko": "[[part]]에 색상 [[color]] 지정",
+    "ar": "امنح [[part]] اللون [[color]]"
+  },
+  "hint": {
+    "en": "Only parts opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
+    "nl": "Alleen onderdelen die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+    "de": "Nur Elemente, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+    "fr": "Seuls les éléments ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+    "it": "Sono elencati solo gli elementi aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+    "sv": "Bara delar som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
+    "no": "Bare deler som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
+    "es": "Solo se listan los elementos abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+    "da": "Kun dele, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
+    "ru": "В списке только элементы, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+    "pl": "Na liście są tylko elementy otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+    "ko": "위젯 빌더의 Flow 탭에서 허용한 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+    "ar": "تظهر فقط العناصر المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "part",
+      "title": {
+        "en": "Part",
+        "nl": "Onderdeel",
+        "de": "Element",
+        "fr": "Élément",
+        "it": "Elemento",
+        "sv": "Del",
+        "no": "Del",
+        "es": "Elemento",
+        "da": "Del",
+        "ru": "Элемент",
+        "pl": "Element",
+        "ko": "요소",
+        "ar": "العنصر"
+      },
+      "placeholder": {
+        "en": "Living room · Message",
+        "nl": "Woonkamer · Bericht",
+        "de": "Wohnzimmer · Nachricht",
+        "fr": "Salon · Message",
+        "it": "Soggiorno · Messaggio",
+        "sv": "Vardagsrum · Meddelande",
+        "no": "Stue · Melding",
+        "es": "Salón · Mensaje",
+        "da": "Stue · Besked",
+        "ru": "Гостиная · Сообщение",
+        "pl": "Salon · Wiadomość",
+        "ko": "거실 · 메시지",
+        "ar": "غرفة المعيشة · رسالة"
+      }
+    },
+    {
+      "type": "text",
+      "name": "color",
+      "title": {
+        "en": "Colour",
+        "nl": "Kleur",
+        "de": "Farbe",
+        "fr": "Couleur",
+        "it": "Colore",
+        "sv": "Färg",
+        "no": "Farge",
+        "es": "Color",
+        "da": "Farve",
+        "ru": "Цвет",
+        "pl": "Kolor",
+        "ko": "색상",
+        "ar": "اللون"
+      },
+      "placeholder": {
+        "en": "#FF0000",
+        "nl": "#FF0000",
+        "de": "#FF0000",
+        "fr": "#FF0000",
+        "it": "#FF0000",
+        "sv": "#FF0000",
+        "no": "#FF0000",
+        "es": "#FF0000",
+        "da": "#FF0000",
+        "ru": "#FF0000",
+        "pl": "#FF0000",
+        "ko": "#FF0000",
+        "ar": "#FF0000"
+      }
+    }
+  ]
+}

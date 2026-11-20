@@ -69,6 +69,8 @@ const MOUNT = {
   // Days Since: `w.counters` are `{name, icon, amber, red, ago}` (ms since the reset, or null: not started), on the fixed
   // clock; a tap resets at once (so a page can show Undo), as the app would answer.
   // Dashboard Shortcuts (web dashboards only): `w.dashboards` the tiles' `{id, name}`, `w.current` the one it's on.
+  // The Widget Builder: `w.state` a `/state` answer (dev/mock-custom.js's `mockCustomState()`).
+  custom: (el, w) => createCustomWidget(el, w.opts || {}).setState(w.state),
   shortcuts: (el, w) => createShortcutsWidget(el, w.opts || {}).setState({ current: w.current || null, tiles: w.dashboards }),
   // Pollen and UV: `w.data` the widget's `/state` (`{days, uvNow, outside}`).
   pollen: (el, w) => createPollenWidget(el, { timeFormat: '24', ...w.opts }).setData({ language: 'en', ...w.data }),

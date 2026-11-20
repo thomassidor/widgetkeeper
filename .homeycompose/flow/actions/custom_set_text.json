@@ -1,0 +1,119 @@
+{
+  "id": "custom_set_text",
+  "title": {
+    "en": "Set the text of a Widget Builder part",
+    "nl": "Tekst van een Widgetbouwer-onderdeel instellen",
+    "de": "Text eines Widget-Baukasten-Elements setzen",
+    "fr": "Définir le texte d'un élément du Créateur de widgets",
+    "it": "Imposta il testo di un elemento del Costruttore di widget",
+    "sv": "Ange texten för en Widgetbyggare-del",
+    "no": "Angi teksten til en Widgetbygger-del",
+    "es": "Establecer el texto de un elemento del Creador de widgets",
+    "da": "Angiv teksten for en Widgetbygger-del",
+    "ru": "Задать текст элемента конструктора виджетов",
+    "pl": "Ustaw tekst elementu Kreatora widżetów",
+    "ko": "위젯 빌더 요소의 텍스트 설정",
+    "ar": "تعيين نص عنصر في منشئ الأدوات"
+  },
+  "titleFormatted": {
+    "en": "Set the text of [[part]] to [[text]]",
+    "nl": "Zet de tekst van [[part]] op [[text]]",
+    "de": "Text von [[part]] auf [[text]] setzen",
+    "fr": "Définir le texte de [[part]] sur [[text]]",
+    "it": "Imposta il testo di [[part]] su [[text]]",
+    "sv": "Sätt texten för [[part]] till [[text]]",
+    "no": "Sett teksten til [[part]] til [[text]]",
+    "es": "Poner el texto de [[part]] en [[text]]",
+    "da": "Sæt teksten for [[part]] til [[text]]",
+    "ru": "Задать текст [[part]]: [[text]]",
+    "pl": "Ustaw tekst [[part]] na [[text]]",
+    "ko": "[[part]]의 텍스트를 [[text]](으)로 설정",
+    "ar": "تعيين نص [[part]] إلى [[text]]"
+  },
+  "hint": {
+    "en": "Only parts opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
+    "nl": "Alleen onderdelen die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+    "de": "Nur Elemente, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+    "fr": "Seuls les éléments ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+    "it": "Sono elencati solo gli elementi aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+    "sv": "Bara delar som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
+    "no": "Bare deler som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
+    "es": "Solo se listan los elementos abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+    "da": "Kun dele, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
+    "ru": "В списке только элементы, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+    "pl": "Na liście są tylko elementy otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+    "ko": "위젯 빌더의 Flow 탭에서 허용한 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+    "ar": "تظهر فقط العناصر المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "part",
+      "title": {
+        "en": "Part",
+        "nl": "Onderdeel",
+        "de": "Element",
+        "fr": "Élément",
+        "it": "Elemento",
+        "sv": "Del",
+        "no": "Del",
+        "es": "Elemento",
+        "da": "Del",
+        "ru": "Элемент",
+        "pl": "Element",
+        "ko": "요소",
+        "ar": "العنصر"
+      },
+      "placeholder": {
+        "en": "Living room · Message",
+        "nl": "Woonkamer · Bericht",
+        "de": "Wohnzimmer · Nachricht",
+        "fr": "Salon · Message",
+        "it": "Soggiorno · Messaggio",
+        "sv": "Vardagsrum · Meddelande",
+        "no": "Stue · Melding",
+        "es": "Salón · Mensaje",
+        "da": "Stue · Besked",
+        "ru": "Гостиная · Сообщение",
+        "pl": "Salon · Wiadomość",
+        "ko": "거실 · 메시지",
+        "ar": "غرفة المعيشة · رسالة"
+      }
+    },
+    {
+      "type": "text",
+      "name": "text",
+      "required": false,
+      "title": {
+        "en": "Text",
+        "nl": "Tekst",
+        "de": "Text",
+        "fr": "Texte",
+        "it": "Testo",
+        "sv": "Text",
+        "no": "Tekst",
+        "es": "Texto",
+        "da": "Tekst",
+        "ru": "Текст",
+        "pl": "Tekst",
+        "ko": "텍스트",
+        "ar": "النص"
+      },
+      "placeholder": {
+        "en": "Parcel by the door",
+        "nl": "Pakket bij de deur",
+        "de": "Paket an der Tür",
+        "fr": "Colis devant la porte",
+        "it": "Pacco alla porta",
+        "sv": "Paket vid dörren",
+        "no": "Pakke ved døra",
+        "es": "Paquete en la puerta",
+        "da": "Pakke ved døren",
+        "ru": "Посылка у двери",
+        "pl": "Paczka pod drzwiami",
+        "ko": "문 앞에 택배",
+        "ar": "طرد عند الباب"
+      }
+    }
+  ]
+}

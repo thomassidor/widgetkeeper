@@ -1,0 +1,141 @@
+{
+  "id": "custom_show",
+  "title": {
+    "en": "Show or hide a Widget Builder part",
+    "nl": "Een Widgetbouwer-onderdeel tonen of verbergen",
+    "de": "Ein Widget-Baukasten-Element zeigen oder ausblenden",
+    "fr": "Afficher ou masquer un élément du Créateur de widgets",
+    "it": "Mostra o nascondi un elemento del Costruttore di widget",
+    "sv": "Visa eller dölj en Widgetbyggare-del",
+    "no": "Vis eller skjul en Widgetbygger-del",
+    "es": "Mostrar u ocultar un elemento del Creador de widgets",
+    "da": "Vis eller skjul en Widgetbygger-del",
+    "ru": "Показать или скрыть элемент конструктора виджетов",
+    "pl": "Pokaż lub ukryj element Kreatora widżetów",
+    "ko": "위젯 빌더 요소 표시 또는 숨기기",
+    "ar": "إظهار أو إخفاء عنصر في منشئ الأدوات"
+  },
+  "titleFormatted": {
+    "en": "[[shown]] [[part]]",
+    "nl": "[[shown]] [[part]]",
+    "de": "[[shown]] [[part]]",
+    "fr": "[[shown]] [[part]]",
+    "it": "[[shown]] [[part]]",
+    "sv": "[[shown]] [[part]]",
+    "no": "[[shown]] [[part]]",
+    "es": "[[shown]] [[part]]",
+    "da": "[[shown]] [[part]]",
+    "ru": "[[shown]] [[part]]",
+    "pl": "[[shown]] [[part]]",
+    "ko": "[[part]] [[shown]]",
+    "ar": "[[shown]] [[part]]"
+  },
+  "hint": {
+    "en": "Only parts opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
+    "nl": "Alleen onderdelen die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+    "de": "Nur Elemente, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+    "fr": "Seuls les éléments ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+    "it": "Sono elencati solo gli elementi aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+    "sv": "Bara delar som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
+    "no": "Bare deler som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
+    "es": "Solo se listan los elementos abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+    "da": "Kun dele, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
+    "ru": "В списке только элементы, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+    "pl": "Na liście są tylko elementy otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+    "ko": "위젯 빌더의 Flow 탭에서 허용한 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+    "ar": "تظهر فقط العناصر المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+  },
+  "args": [
+    {
+      "type": "dropdown",
+      "name": "shown",
+      "title": {
+        "en": "Show or hide",
+        "nl": "Tonen of verbergen",
+        "de": "Zeigen oder ausblenden",
+        "fr": "Afficher ou masquer",
+        "it": "Mostra o nascondi",
+        "sv": "Visa eller dölj",
+        "no": "Vis eller skjul",
+        "es": "Mostrar u ocultar",
+        "da": "Vis eller skjul",
+        "ru": "Показать или скрыть",
+        "pl": "Pokaż lub ukryj",
+        "ko": "표시 또는 숨기기",
+        "ar": "إظهار أو إخفاء"
+      },
+      "values": [
+        {
+          "id": "show",
+          "title": {
+            "en": "Show",
+            "nl": "Toon",
+            "de": "Zeige",
+            "fr": "Afficher",
+            "it": "Mostra",
+            "sv": "Visa",
+            "no": "Vis",
+            "es": "Mostrar",
+            "da": "Vis",
+            "ru": "Показать",
+            "pl": "Pokaż",
+            "ko": "표시",
+            "ar": "أظهر"
+          }
+        },
+        {
+          "id": "hide",
+          "title": {
+            "en": "Hide",
+            "nl": "Verberg",
+            "de": "Verberge",
+            "fr": "Masquer",
+            "it": "Nascondi",
+            "sv": "Dölj",
+            "no": "Skjul",
+            "es": "Ocultar",
+            "da": "Skjul",
+            "ru": "Скрыть",
+            "pl": "Ukryj",
+            "ko": "숨기기",
+            "ar": "أخفِ"
+          }
+        }
+      ]
+    },
+    {
+      "type": "autocomplete",
+      "name": "part",
+      "title": {
+        "en": "Part",
+        "nl": "Onderdeel",
+        "de": "Element",
+        "fr": "Élément",
+        "it": "Elemento",
+        "sv": "Del",
+        "no": "Del",
+        "es": "Elemento",
+        "da": "Del",
+        "ru": "Элемент",
+        "pl": "Element",
+        "ko": "요소",
+        "ar": "العنصر"
+      },
+      "placeholder": {
+        "en": "Living room · Message",
+        "nl": "Woonkamer · Bericht",
+        "de": "Wohnzimmer · Nachricht",
+        "fr": "Salon · Message",
+        "it": "Soggiorno · Messaggio",
+        "sv": "Vardagsrum · Meddelande",
+        "no": "Stue · Melding",
+        "es": "Salón · Mensaje",
+        "da": "Stue · Besked",
+        "ru": "Гостиная · Сообщение",
+        "pl": "Salon · Wiadomość",
+        "ko": "거실 · 메시지",
+        "ar": "غرفة المعيشة · رسالة"
+      }
+    }
+  ]
+}

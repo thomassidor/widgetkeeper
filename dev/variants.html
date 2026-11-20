@@ -20,7 +20,7 @@
   <script>
     // Every widget's files, in the order they depend on: the kit first, and the shared chart and presets before their users.
     const WIDGETS = ['electricity', 'thermostat', 'quickactions', 'sensoralarms', 'sensordots', 'roomhealth', 'valuematrix', 'weather', 'heatmap', 'cameras',
-      'values', 'combined', 'flowtiles', 'valueboard', 'variables', 'varpresets', 'keypad', 'flows', 'shortcuts', 'price', 'timers', 'locks', 'lights', 'lightrooms', 'curtains', 'media', 'sparklines',
+      'values', 'combined', 'flowtiles', 'valueboard', 'variables', 'varpresets', 'keypad', 'flows', 'shortcuts', 'custom', 'price', 'timers', 'locks', 'lights', 'lightrooms', 'curtains', 'media', 'sparklines',
       'charts', 'totals', 'scatter', 'compare', 'timeline', 'stacked', 'lines', 'gauge', 'dailyrange', 'typicalday', 'clock', 'textline', 'dayssince', 'pollen', 'webpage', 'stack'];
     const css = ['spacer/public/kit', 'electricity/public/chart', 'thermostat/public/presets', ...WIDGETS.map(w => `${w}/public/widget`)];
     const js = ['spacer/public/kit', 'electricity/public/chart', 'thermostat/public/presets', ...WIDGETS.map(w => `${w}/public/widget`)];
@@ -43,6 +43,7 @@
   <script src="mock-dailyrange.js"></script>
   <script src="mock-typicalday.js"></script>
   <script src="showcase-data.js"></script>
+  <script src="mock-custom.js"></script>
   <script src="showcase-mount.js"></script>
   <style>
     html.light-mode { --homey-background-color: #FFFFFF; --homey-text-color: #1F2029; --homey-text-color-light: #6B6C75; }

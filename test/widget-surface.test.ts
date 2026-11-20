@@ -129,6 +129,7 @@ describe("the kit: the app's Tile shadows (takeTileShadow, wireTileShadow)", () 
 const READING = {
   device: { id: 'd1' }, slot1: { id: 'd1:measure_temperature' }, capability: { id: 'measure_temperature' }, flow1: { id: 'flow:f1' },
   dashboard: { id: 'dash1' }, dashboard1: { id: 'dash1' }, col1: { id: 'measure_temperature' }, board: 'Kitchen', source: 'flow', minutes1: 5, counter1: { id: 'Filter' },
+  design: { id: 'design1' },
 };
 
 describe('every widget with tiles follows the Tile shadows with no request of its own', () => {
@@ -141,7 +142,7 @@ describe('every widget with tiles follows the Tile shadows with no request of it
     const { frame, root } = frameElements();
     // Every answer carries it, as the app's do: whichever the widget reads first brings it.
     const Homey = fakeFrame(READING, {
-      instance: id === 'shortcuts' ? 'web-dash1-w1' : 'w1',
+      instance: ['shortcuts', 'custom'].includes(id) ? 'web-dash1-w1' : 'w1',
       api: async () => ({ tileShadow: false, tileNames: {}, timeFormat: '24', ok: true, pages: [], requests: [] }),
     });
     win[mountName(id)](Homey, { root, frame });

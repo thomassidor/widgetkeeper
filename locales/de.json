@@ -1308,7 +1308,8 @@
       "stack": "Widgets von einem anderen Dashboard, abwechselnd.",
       "shortcuts": "Zu deinen anderen Web-Dashboards springen, in deinen Farben und Symbolen.",
       "webpage": "Jede Webseite, skaliert auf die Größe des Widgets.",
-      "popups": "Zeigt auch hier die Popups, die Flows an seinen Bildschirmnamen senden."
+      "popups": "Zeigt auch hier die Popups, die Flows an seinen Bildschirmnamen senden.",
+      "custom": "Dein eigenes Widget aus Elementen: Werte, Schalter, Regler, Anzeigen und mehr, mit Flows."
     },
     "sync": "Sync",
     "syncTitle": "Mit einem Homey-Dashboard synchronisieren",
@@ -1379,5 +1380,38 @@
     "noDashboards": "Noch keine Web-Dashboards",
     "noLocks": "Keine Schlösser mit einer Taste zum Öffnen",
     "more": "__count__ weitere: weiter tippen"
+  },
+  "custom": {
+    "error": "Entwurf konnte nicht geladen werden.",
+    "missing": "Dieser Entwurf wurde entfernt.",
+    "pickDesign": "Wähle einen Entwurf in den Einstellungen des Widgets.",
+    "empty": "Dieser Entwurf hat noch keine Elemente.",
+    "webOnly": "Entwürfe des Widget-Baukastens erscheinen vorerst nur auf Web-Dashboards.",
+    "unavailable": "Nicht verfügbar",
+    "on": "Ein",
+    "off": "Aus",
+    "setFailed": "__name__ konnte nicht geändert werden.",
+    "noValue": "Kein Wert gewählt",
+    "noKey": "Füge dafür einen API-Schlüssel in den App-Einstellungen hinzu.",
+    "keyScope": "Der API-Schlüssel darf das nicht (Flows oder Variablen).",
+    "keyInvalid": "Der API-Schlüssel wurde nicht akzeptiert.",
+    "partCount": "__count__ Elemente",
+    "kinds": {
+      "value": "Wert",
+      "chart": "Minidiagramm",
+      "gauge": "Anzeige",
+      "level": "Füllbalken",
+      "status": "Status",
+      "flowvalue": "Flow-Wert",
+      "switch": "Schalter",
+      "button": "Taste",
+      "slider": "Schieberegler",
+      "stepper": "Stufenregler",
+      "choice": "Auswahl",
+      "variable": "Variable",
+      "container": "Container",
+      "text": "Text",
+      "icon": "Symbol"
+    }
   }
 }

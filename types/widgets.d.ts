@@ -222,6 +222,10 @@ interface Window {
   keypadBooleanWords: Record<string, string[]>;
   createFlowsWidget:(root: HTMLElement, opts?: object) => any;
   createShortcutsWidget:(root: HTMLElement, opts?: object) => any;
+  createCustomWidget:(root: HTMLElement, opts?: object) => any;
+  /** The Widget Builder's rule check and look (lib/customDesigns.ts' twins), for the tests and the builder page. */
+  customRuleHolds: (rule: any, value: unknown) => boolean;
+  customLookOf: (part: any, value: unknown, flow: any) => { color: string | null, hidden: boolean };
   createPriceWidget: (root: HTMLElement, opts?: object) => any;
   electricityPriceLevel: (price: number | null, prices: (number | null)[]) => 'low' | 'medium' | 'high' | null;
   createTimersWidget: (root: HTMLElement, opts?: object) => any;
@@ -260,6 +264,7 @@ interface Window {
   mountElectricityWidget: MountWidget;
   mountFlowsWidget: MountWidget;
   mountShortcutsWidget: MountWidget;
+  mountCustomWidget: MountWidget;
   mountHeatmapWidget: MountWidget;
   mountLightsWidget: MountWidget;
   mountLightRoomsWidget: MountWidget;
