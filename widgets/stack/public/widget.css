@@ -66,3 +66,40 @@ html, body { background: transparent !important; }
   font-size: var(--sk-fs-small); line-height: var(--sk-lh-small); color: var(--sk-muted); text-align: left;
 }
 .sk-message.error { color: var(--sk-red); }
+
+/*
+ * Tabs instead of dots (the dotsStyle setting; a forum suggestion, 1.4.0): a segmented strip on the stack's tile
+ * colour, the page on screen a raised segment, each tab the page's icon and name (or one of them). Above or below the
+ * pages as the dots (dotsPosition); large is taller with Homey's default text size. More tabs than fit scroll sideways.
+ */
+.sk.sk-tabs {
+  --sk-tabs-bg: color-mix(in srgb, var(--sk-muted) 22%, transparent); --sk-tab-on: var(--homey-background-color, #FFFFFF); --sk-tab-on-text: var(--sk-text);
+  --sk-tab-h: 34px; --sk-tab-fs: var(--sk-fs-small); --sk-tab-icon: 16px;
+}
+/* In light mode the strip is a shade darker than the dashboard, so the white segment stands out; in dark mode it's a tile. */
+.homey-dark-mode .sk.sk-tabs, .sk.sk-tabs.homey-dark-mode { --sk-tabs-bg: var(--sk-tile); --sk-tab-on: #2E3039; }
+.sk.sk-tabs.dots-large { --sk-tab-h: 44px; --sk-tab-fs: var(--homey-font-size-default, 17px); --sk-tab-icon: 20px; }
+.sk-tabs .sk-dots {
+  position: relative; height: auto; padding: 3px; gap: 3px; justify-content: flex-start; margin-top: 8px;
+  background: var(--sk-tabs-bg); border-radius: 12px; overflow-x: auto; scrollbar-width: none;
+}
+.sk-tabs .sk-dots::-webkit-scrollbar { display: none; }
+.sk-tabs.dots-above .sk-dots { margin: 0 0 8px; }
+.sk-tabs .sk-dot {
+  flex: 1 0 auto; width: auto; max-width: 60%; height: var(--sk-tab-h); padding: 0 8px; gap: 5px; border-radius: 9px; position: relative;
+  color: var(--sk-muted); font-size: var(--sk-tab-fs); font-weight: var(--homey-font-weight-medium, 500); line-height: 1.2;
+  transition: background-color .2s ease, color .2s ease;
+}
+.sk-tabs .sk-dot::before { display: none; }
+.sk-tabs .sk-dot.on { background: var(--sk-tab-on); color: var(--sk-tab-on-text); box-shadow: 0 1px 3px rgb(0 0 0 / .18); }
+.sk-tabs.sk-tabs-icons .sk-dot { flex: 1 0 44px; }
+.sk-tab-icon {
+  width: var(--sk-tab-icon); height: var(--sk-tab-icon); flex: none;
+  fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.sk-tab-icon .filled { fill: currentColor; stroke: none; }
+.sk-tab-name { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: left; }
+/* A page that wants attention (or a Flow brought forward): a blue mark in the tab's corner, as the dot turns blue. */
+.sk-tabs .sk-dot.alert:not(.on)::after {
+  content: ''; position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--sk-accent);
+}

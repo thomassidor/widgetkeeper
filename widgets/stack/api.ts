@@ -50,6 +50,12 @@ export const PAGE_APIS: Record<StackType, WidgetApis[string]> = {
   lights, sparklines, charts, totals, scatter, typicalday, dailyrange, compare, timeline, stacked, lines, gauge, variables, varpresets, flows, price, timers, locks, curtains, media, clock, textline, dayssince,
 };
 
+/** A widget's name from the manifest, in `language` (English otherwise), or null. */
+export function widgetName(homey: Homey, type: string, language: string): string | null {
+  const name = (homey.manifest as any)?.widgets?.[type]?.name;
+  return (name && (name[language] || name.en)) || null;
+}
+
 export default {
   /**
    * `dashboardId`: that dashboard's pages (this app's widgets on it) and the Flow requests running. Without a
@@ -62,7 +68,10 @@ export default {
     const app = homey.app as WidgetkeeperApp;
     logPerf(app, 'Smart stack', query);
     const language = homey.i18n.getLanguage();
-    return { ...await keyResult(app, 'Smart stack pages failed', () => app.stack.getPages(query.dashboardId || '')), language, tileShadow: tileShadowOf(homey) };
+    const result = await keyResult(app, 'Smart stack pages failed', () => app.stack.getPages(query.dashboardId || ''));
+    // Each page's widget name in the Homey's language: a tab's name when the widget has no title on its dashboard.
+    const named = result.ok ? { ...result, pages: result.pages.map(page => ({ ...page, name: widgetName(homey, page.type, language) })) } : result;
+    return { ...named, language, tileShadow: tileShadowOf(homey) };
   },
 
   /**

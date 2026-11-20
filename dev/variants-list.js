@@ -179,6 +179,8 @@
       v('large-dots', 'Large dots', { dotsSize: 'large' }),
       v('dots-above', 'Light · Dots above', { dotsPosition: 'above' }, true),
       v('no-dots', 'Without the dots', { showDots: false }),
+      v('tabs', 'Tabs above, with icon and name', { dotsStyle: 'tabs', dotsPosition: 'above' }),
+      v('tabs-icons', 'Light · Tabs with icons only', { dotsStyle: 'tabsIcons' }, true),
       v('cameras', 'On its page of cameras', { first: 2 }),
       v('heatmap', 'Light · On its page with a heatmap', { first: 1 }, true)],
     stacked: [LIGHT, VIVID,

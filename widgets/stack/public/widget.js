@@ -20,6 +20,33 @@
     clock: 'mountClockWidget', textline: 'mountTextLineWidget', dayssince: 'mountDaysSinceWidget',
   };
 
+  /**
+   * The tabs' icons (the dotsStyle setting): the kit's icons by name, or one of the stack's own below, per widget
+   * type. A type missing here gets none.
+   */
+  const OWN_ICONS = {
+    chart: { d: 'M4 19h16M6 15l4-5 3 3 5-6' },
+    note: { d: 'M7 4h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM9 9h6M9 13h6M9 17h3' },
+    calendar: { d: 'M6 6h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM5 10h14M9 3.5V7M15 3.5V7' },
+  };
+  const TAB_ICONS = {
+    electricity: 'bolt', thermostat: 'flame', quickactions: 'power', sensoralarms: 'bell', sensordots: 'shield', roomhealth: 'fan',
+    valuematrix: 'dashboard', weather: 'umbrella', pollen: 'sun', heatmap: 'chart', cameras: 'camera', values: 'thermometer',
+    combined: 'thermometer', flowtiles: 'dashboard', lights: 'bulb', sparklines: 'chart', charts: 'chart', totals: 'chart',
+    scatter: 'chart', typicalday: 'chart', dailyrange: 'chart', compare: 'chart', timeline: 'chart', stacked: 'chart', lines: 'chart',
+    gauge: 'chart', variables: 'sparkles', varpresets: 'star', flows: 'play', price: 'plug', timers: 'clock', locks: 'lock',
+    curtains: 'blinds', media: 'music', clock: 'clock', textline: 'note', dayssince: 'calendar',
+  };
+  /** A page's tab icon as inline SVG, or null. */
+  function tabIcon(type) {
+    const kit = /** @type {any} */ (window).WidgetkeeperKit;
+    const name = TAB_ICONS[type];
+    const icon = OWN_ICONS[name] || (kit && kit.icons && kit.icons[name]);
+    return icon && kit && kit.svgIcon ? kit.svgIcon(icon, 'sk-tab-icon') : null;
+  }
+  /** The tab's name: the page's title on its dashboard, else the widget's name (`name`, from /pages), else its type. */
+  const tabName = (page) => (typeof page.title === 'string' && page.title.trim()) || page.name || page.type;
+
   /** A camera's detections that bring its page forward. */
   const CAMERA_DETECTIONS = ['alarm_person', 'alarm_vehicle', 'alarm_pet', 'alarm_motion'];
   /**
@@ -199,7 +226,8 @@
   /**
    * @param {HTMLElement} root
    * @param {{ t?: (key: string, tokens?: object) => string, intervalMs?: number, smart?: boolean, resumeAfterMs?: number,
-   *   showDots?: boolean, dotsPosition?: 'above' | 'below', dotsSize?: 'small' | 'large', now?: () => number, onHeight?: (h: number) => void, onHaptic?: () => void,
+   *   showDots?: boolean, dotsPosition?: 'above' | 'below', dotsSize?: 'small' | 'large',
+   *   dotsStyle?: 'dots' | 'tabs' | 'tabsNames' | 'tabsIcons', now?: () => number, onHeight?: (h: number) => void, onHaptic?: () => void,
    *   onVisible?: (page: any, visible: boolean) => void }} opts
    */
   function createStackWidget(root, opts = {}) {
@@ -217,6 +245,11 @@
     // The dots go above the pages or below them (the default), small or large (easier to tap).
     root.classList.toggle('dots-above', opts.dotsPosition === 'above');
     root.classList.toggle('dots-large', opts.dotsSize === 'large');
+    // Or tabs, each with the page's icon and name, only the name or only the icon (the dotsStyle setting).
+    const tabs = ['tabs', 'tabsNames', 'tabsIcons'].includes(opts.dotsStyle || '');
+    root.classList.toggle('sk-tabs', tabs);
+    root.classList.toggle('sk-tabs-names', opts.dotsStyle === 'tabsNames');
+    root.classList.toggle('sk-tabs-icons', opts.dotsStyle === 'tabsIcons');
     const track = document.createElement('div');
     track.className = 'sk-track';
     const dots = document.createElement('div');
@@ -261,7 +294,18 @@
         const dot = document.createElement('button');
         dot.type = 'button';
         dot.className = 'sk-dot';
-        dot.setAttribute('aria-label', page.title || page.type);
+        dot.setAttribute('aria-label', tabName(page));
+        if (tabs) {
+          const icon = opts.dotsStyle === 'tabsNames' ? null : tabIcon(page.type);
+          if (icon) dot.append(icon);
+          if (opts.dotsStyle !== 'tabsIcons' || !icon) {
+            const name = document.createElement('span');
+            name.className = 'sk-tab-name';
+            name.setAttribute('dir', 'auto');
+            name.textContent = tabName(page);
+            dot.append(name);
+          }
+        }
         onTap(dot, () => { userMoved(); go(i, true, true); });
         dots.append(dot);
         return { page, slide, root: pageRoot, dot };
@@ -374,7 +418,17 @@
           if (opts.onVisible) opts.onVisible(p.page, visible);
         }
       });
+      if (tabs) showTab();
       measure();
+    }
+
+    /** More tabs than fit scroll sideways: brings the current one into view (the strip only, never the dashboard). */
+    function showTab() {
+      const dot = pages[current] && pages[current].dot;
+      if (!dot || dots.scrollWidth <= dots.clientWidth) return;
+      const left = dot.offsetLeft; // the strip is positioned (widget.css), so this is within it
+      if (left < dots.scrollLeft) dots.scrollLeft = left - 3;
+      else if (left + dot.offsetWidth > dots.scrollLeft + dots.clientWidth) dots.scrollLeft = left + dot.offsetWidth - dots.clientWidth + 3;
     }
 
     // A swipe: the track scrolls natively (snapping to a page), and the page it settles on becomes the current one.

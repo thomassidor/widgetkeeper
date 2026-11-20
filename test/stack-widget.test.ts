@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { loadMount, loadWidget } from './helpers/loadWidget.js';
+import { STACK_TYPES } from '../lib/StackService.js';
 import { touch } from './helpers/touch.js';
 
 let win: any;
@@ -275,6 +276,47 @@ describe('rotation', () => {
     const plain = stack().root;
     expect(plain.classList.contains('dots-above')).toBe(false);
     expect(plain.classList.contains('dots-large')).toBe(false);
+  });
+
+  it("shows tabs with each page's icon and name when asked: its title, else the widget's name", () => {
+    const root = document.createElement('div');
+    document.body.append(root);
+    const w = win.createStackWidget(root, { dotsStyle: 'tabs', dotsPosition: 'above' });
+    w.setPages([page('a', 'timers', { title: 'Kitchen', name: 'Timers' }), page('b', 'locks', { title: '  ', name: 'Locks and Doors' }), page('c', 'media')]);
+    expect(root.classList.contains('sk-tabs')).toBe(true);
+    expect(root.classList.contains('dots-above')).toBe(true);
+    const tabs = [...root.querySelectorAll('.sk-dot')];
+    expect(tabs.map(t => t.querySelector('.sk-tab-name')?.textContent)).toEqual(['Kitchen', 'Locks and Doors', 'media']);
+    expect(tabs.every(t => t.querySelector('svg.sk-tab-icon'))).toBe(true);
+    expect(tabs[1].getAttribute('aria-label')).toBe('Locks and Doors');
+    tabs[2].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(w.current()?.id).toBe('c');
+    expect(root.querySelector('.sk-dot.on')).toBe(tabs[2]);
+  });
+
+  it('shows only the names or only the icons on tabs, and no tabs for dots', () => {
+    const tabsOf = (dotsStyle: string) => {
+      const root = document.createElement('div');
+      win.createStackWidget(root, { dotsStyle }).setPages([page('a', 'timers', { name: 'Timers' }), page('b', 'textline', { name: 'Notes' })]);
+      return { root, tabs: [...root.querySelectorAll('.sk-dot')] };
+    };
+    const names = tabsOf('tabsNames');
+    expect(names.root.classList.contains('sk-tabs-names')).toBe(true);
+    expect(names.tabs.map(t => [!!t.querySelector('svg'), t.textContent])).toEqual([[false, 'Timers'], [false, 'Notes']]);
+    const icons = tabsOf('tabsIcons');
+    expect(icons.root.classList.contains('sk-tabs-icons')).toBe(true);
+    expect(icons.tabs.map(t => [!!t.querySelector('svg'), t.textContent])).toEqual([[true, ''], [true, '']]);
+    const dots = tabsOf('dots');
+    expect(dots.root.classList.contains('sk-tabs')).toBe(false);
+    expect(dots.tabs.map(t => t.childNodes.length)).toEqual([0, 0]);
+  });
+
+  it('has a tab icon for every page type', () => {
+    for (const type of STACK_TYPES) {
+      const root = document.createElement('div');
+      win.createStackWidget(root, { dotsStyle: 'tabsIcons' }).setPages([page('a', type)]);
+      expect(root.querySelector('svg.sk-tab-icon'), type).not.toBeNull();
+    }
   });
 
   it('hides the dots for one page or when turned off', () => {

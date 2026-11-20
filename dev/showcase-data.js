@@ -349,13 +349,13 @@
   };
 
   // The garden's values, cameras and daylight: on the Garden dashboard, and the values also in its Smart Stack.
-  const gardenValues = { type: 'values', opts: { columns: '3', percentFill: true }, slots: [
+  const gardenValues = { type: 'values', tab: 'Garden', opts: { columns: '3', percentFill: true }, slots: [
     value('gv1', 'measure_humidity', 'Lawn soil', { units: '%', decimals: 0 }, 38),
     value('gv2', 'measure_humidity', 'Greenhouse', { units: '%', decimals: 0 }, 71),
     value('gv3', 'measure_battery', 'Mower', { units: '%', decimals: 0 }, 100),
   ] };
   const gardenCameras = { type: 'cameras', cameras: [cam('garden', 'Terrace'), cam('shed', 'Shed'), cam('side', 'Side path'), cam('drive', 'Driveway')] };
-  const gardenHeatmap = { type: 'heatmap', opts: { period: 'rolling', step: 2, color: 'yellow' }, data: heatLux() };
+  const gardenHeatmap = { type: 'heatmap', tab: 'Sunlight', opts: { period: 'rolling', step: 2, color: 'yellow' }, data: heatLux() };
 
   // Energy's heat pump and car charger, on its Sparklines and Chart · Stacked.
   const heatPumpPower = sparkSlot('w1', 'measure_power', 'Heat pump', { units: 'W', decimals: 0 }, spark((t, r) => Math.round(520 + 260 * Math.sin(t / (41 * MIN)) + 40 * r()), 13));

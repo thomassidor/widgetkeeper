@@ -88,7 +88,9 @@ const MOUNT = {
   // a dashboard's colour style reaches them through the stack's `opts`.
   stack: (el, w) => {
     const x = createStackWidget(el, w.opts || {});
-    const slides = x.setPages(w.pages.map((p, i) => ({ id: `p${i}`, type: p.type, title: null, settings: {}, deviceIds: [] })));
+    // A page's title on its dashboard (`tab`) and its widget's name, which the tabs show (the dotsStyle setting).
+    const names = { values: 'Device Values', heatmap: 'Insights Heatmap', cameras: 'Cameras' };
+    const slides = x.setPages(w.pages.map((p, i) => ({ id: `p${i}`, type: p.type, title: p.tab || null, name: names[p.type] || p.type, settings: {}, deviceIds: [] })));
     const style = w.opts && w.opts.colorStyle;
     w.pages.forEach((p, i) => MOUNT[p.type](slides[i].root, style ? { ...p, opts: { colorStyle: style, ...p.opts } } : p));
   },

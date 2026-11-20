@@ -34,6 +34,7 @@ window.mountStackWidget = function (Homey, { root, frame }) {
     showDots: settings.showDots !== false,
     dotsPosition: settings.dotsPosition === 'above' ? 'above' : 'below',
     dotsSize: settings.dotsSize === 'large' ? 'large' : 'small',
+    dotsStyle: ['tabs', 'tabsNames', 'tabsIcons'].includes(settings.dotsStyle) ? settings.dotsStyle : 'dots',
     onHaptic: haptic,
     onVisible: (page, visible) => {
       // A page brought on screen before the others were mounted (a Flow request) is mounted now.
@@ -149,7 +150,7 @@ window.mountStackWidget = function (Homey, { root, frame }) {
   }
 
   /** What the pages are built from; when it changes (a widget added, a setting changed) the stack is rebuilt. */
-  const signature = (pages) => JSON.stringify(pages.map(p => [p.id, p.type, p.settings, p.deviceIds]));
+  const signature = (pages) => JSON.stringify(pages.map(p => [p.id, p.type, p.title, p.settings, p.deviceIds]));
 
   /** Mounts a page's widget into its slide, once; a page that fails says so there. */
   function mountSlide(s) {

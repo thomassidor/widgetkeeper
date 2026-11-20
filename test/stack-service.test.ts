@@ -203,6 +203,15 @@ describe('stack widget API', () => {
     expect(getState).toHaveBeenCalledWith('w');
   });
 
+  it("sends each page's widget name in the Homey's language, for a tab without a title", async () => {
+    const pages = [{ id: 'w1', type: 'locks', title: null, settings: {}, deviceIds: [] }, { id: 'w2', type: 'timers', title: 'Kitchen', settings: {}, deviceIds: [] }];
+    const homey = homeyWith({ stack: { getPages: async () => ({ pages, requests: [], now: 1 }) } });
+    homey.i18n.getLanguage = () => 'da';
+    const res: any = await stackApi.getPages({ homey, query: { dashboardId: 'd' } });
+    expect(res.pages.map((p: any) => [p.title, p.name])).toEqual([[null, app.widgets.locks.name.da], ['Kitchen', app.widgets.timers.name.da]]);
+    expect(res.language).toBe('da');
+  });
+
   it('answers a key problem with its reason', async () => {
     const homey = homeyWith({ stack: { getPages: async () => { throw new KeyError('noKey'); } } });
     expect(await stackApi.getPages({ homey, query: { dashboardId: 'd' } })).toEqual({ ok: false, reason: 'noKey', language: 'en', tileShadow: true });

@@ -4,9 +4,9 @@
 
 <img src="../clips/stack.webp" width="382" alt="A Smart Stack on a Homey dashboard: it turns through four widgets, is swiped by hand, and brings the cameras forward when someone is at the door">
 
-Widgetkeeper widgets from another dashboard, one at a time in the space of one. It turns every 30 seconds, and swipes or the dots move it by hand. Smart rotate brings a widget forward while something happens on it: music plays, a timer runs, a camera sees someone, a door is open. A Flow card can bring one forward too. Needs an [API key](../../README.md#api-key) with the **Homey** permission to read the dashboard.
+Widgetkeeper widgets from another dashboard, one at a time in the space of one. It turns every 30 seconds, and swipes or the dots move it by hand. Or show tabs instead of dots, each with the widget's icon and its title on that dashboard (else the widget's name), to jump straight to it. Smart rotate brings a widget forward while something happens on it: music plays, a timer runs, a camera sees someone, a door is open. A Flow card can bring one forward too. Needs an [API key](../../README.md#api-key) with the **Homey** permission to read the dashboard.
 
-**Settings:** dashboard, interval, smart rotate, pause after a swipe, dots.
+**Settings:** dashboard, interval, smart rotate, pause after a swipe, dots or tabs (with icon and name, name only or icon only), above or below, small or large.
 
 ## Looks
 
@@ -16,6 +16,8 @@ Widgetkeeper widgets from another dashboard, one at a time in the space of one. 
 <img src="../variants/stack-large-dots.webp" alt="Smart Stack: Large dots" width="300" align="top">
 <img src="../variants/stack-dots-above.webp" alt="Smart Stack: Light · Dots above" width="300" align="top">
 <img src="../variants/stack-no-dots.webp" alt="Smart Stack: Without the dots" width="300" align="top">
+<img src="../variants/stack-tabs.webp" alt="Smart Stack: Tabs above, with icon and name" width="300" align="top">
+<img src="../variants/stack-tabs-icons.webp" alt="Smart Stack: Light · Tabs with icons only" width="300" align="top">
 <img src="../variants/stack-cameras.webp" alt="Smart Stack: On its page of cameras" width="300" align="top">
 <img src="../variants/stack-heatmap.webp" alt="Smart Stack: Light · On its page with a heatmap" width="300" align="top">
 </p>

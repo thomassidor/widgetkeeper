@@ -62,7 +62,7 @@ const SHOWN_SETTINGS: Record<string, string[]> = {
   sensordots: ['idleColor', 'activeColor'],
   shortcuts: ['columns'],
   sparklines: ['columns', 'smooth', 'color'],
-  stack: ['dotsSize', 'dotsPosition', 'showDots'],
+  stack: ['dotsSize', 'dotsPosition', 'showDots', 'dotsStyle'],
   stacked: ['style', 'plotHeight', 'legend', 'total', 'smooth', 'showHeader'],
   textline: ['size', 'align', 'overflow'],
   thermostat: ['layout'],

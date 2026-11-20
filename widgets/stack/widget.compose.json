@@ -332,21 +332,115 @@
       "id": "showDots",
       "type": "checkbox",
       "title": {
-        "en": "Show page dots",
-        "nl": "Paginapunten tonen",
-        "de": "Seitenpunkte zeigen",
-        "fr": "Afficher les points de page",
-        "it": "Mostra i punti pagina",
-        "sv": "Visa sidpunkter",
-        "no": "Vis sideprikker",
-        "es": "Mostrar puntos de página",
-        "da": "Vis sideprikker",
-        "ru": "Показывать точки страниц",
-        "pl": "Pokaż kropki stron",
-        "ko": "페이지 점 표시",
-        "ar": "إظهار نقاط الصفحات"
+        "en": "Show page dots or tabs",
+        "nl": "Paginapunten of tabbladen tonen",
+        "de": "Seitenpunkte oder Tabs zeigen",
+        "fr": "Afficher les points ou onglets de page",
+        "it": "Mostra punti o schede delle pagine",
+        "sv": "Visa sidpunkter eller flikar",
+        "no": "Vis sideprikker eller faner",
+        "es": "Mostrar puntos o pestañas de página",
+        "da": "Vis sideprikker eller faner",
+        "ru": "Показывать точки или вкладки страниц",
+        "pl": "Pokaż kropki lub karty stron",
+        "ko": "페이지 점 또는 탭 표시",
+        "ar": "إظهار نقاط الصفحات أو علاماتها"
       },
       "value": true
+    },
+    {
+      "id": "dotsStyle",
+      "type": "dropdown",
+      "title": {
+        "en": "  – Style",
+        "nl": "  – Stijl",
+        "de": "  – Stil",
+        "fr": "  – Style",
+        "it": "  – Stile",
+        "sv": "  – Stil",
+        "no": "  – Stil",
+        "es": "  – Estilo",
+        "da": "  – Stil",
+        "ru": "  – Вид",
+        "pl": "  – Styl",
+        "ko": "  – 스타일",
+        "ar": "  – النمط"
+      },
+      "value": "dots",
+      "values": [
+        {
+          "id": "dots",
+          "title": {
+            "en": "Dots",
+            "nl": "Punten",
+            "de": "Punkte",
+            "fr": "Points",
+            "it": "Punti",
+            "sv": "Punkter",
+            "no": "Prikker",
+            "es": "Puntos",
+            "da": "Prikker",
+            "ru": "Точки",
+            "pl": "Kropki",
+            "ko": "점",
+            "ar": "نقاط"
+          }
+        },
+        {
+          "id": "tabs",
+          "title": {
+            "en": "Tabs with icon and name",
+            "nl": "Tabbladen met pictogram en naam",
+            "de": "Tabs mit Symbol und Name",
+            "fr": "Onglets avec icône et nom",
+            "it": "Schede con icona e nome",
+            "sv": "Flikar med ikon och namn",
+            "no": "Faner med ikon og navn",
+            "es": "Pestañas con icono y nombre",
+            "da": "Faner med ikon og navn",
+            "ru": "Вкладки со значком и названием",
+            "pl": "Karty z ikoną i nazwą",
+            "ko": "아이콘과 이름이 있는 탭",
+            "ar": "علامات بأيقونة واسم"
+          }
+        },
+        {
+          "id": "tabsNames",
+          "title": {
+            "en": "Tabs with name",
+            "nl": "Tabbladen met naam",
+            "de": "Tabs mit Name",
+            "fr": "Onglets avec nom",
+            "it": "Schede con nome",
+            "sv": "Flikar med namn",
+            "no": "Faner med navn",
+            "es": "Pestañas con nombre",
+            "da": "Faner med navn",
+            "ru": "Вкладки с названием",
+            "pl": "Karty z nazwą",
+            "ko": "이름이 있는 탭",
+            "ar": "علامات باسم"
+          }
+        },
+        {
+          "id": "tabsIcons",
+          "title": {
+            "en": "Tabs with icon",
+            "nl": "Tabbladen met pictogram",
+            "de": "Tabs mit Symbol",
+            "fr": "Onglets avec icône",
+            "it": "Schede con icona",
+            "sv": "Flikar med ikon",
+            "no": "Faner med ikon",
+            "es": "Pestañas con icono",
+            "da": "Faner med ikon",
+            "ru": "Вкладки со значком",
+            "pl": "Karty z ikoną",
+            "ko": "아이콘이 있는 탭",
+            "ar": "علامات بأيقونة"
+          }
+        }
+      ]
     },
     {
       "id": "dotsPosition",

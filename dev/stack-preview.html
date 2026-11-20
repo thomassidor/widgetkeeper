@@ -48,6 +48,10 @@
   </div>
   <div class="col"><span>358 px · dark · every 10 s <b class="height" id="h1"></b></span><div class="dash homey-dark-mode" style="width:358px"><div id="w1"></div></div></div>
   <div class="col"><span>358 px · light · never rotates · large dots above <b class="height" id="h2"></b></span><div class="dash light" style="width:358px"><div id="w2"></div></div></div>
+  <div class="col"><span>358 px · dark · never rotates · tabs above</span><div class="dash homey-dark-mode" style="width:358px"><div id="w4"></div></div></div>
+  <div class="col"><span>358 px · light · never rotates · tabs below</span><div class="dash light" style="width:358px"><div id="w5"></div></div></div>
+  <div class="col"><span>300 px · dark · never rotates · large tabs, names only</span><div class="dash homey-dark-mode" style="width:300px"><div id="w6"></div></div></div>
+  <div class="col"><span>300 px · dark · never rotates · tabs, icons only</span><div class="dash homey-dark-mode" style="width:300px"><div id="w7"></div></div></div>
   <div class="col"><span>300 px · dark · no key</span><div class="dash homey-dark-mode" style="width:300px"><div id="w3"></div></div></div>
 
   <script>
@@ -58,10 +62,10 @@
     let timers = [];
 
     const PAGES = [
-      { id: 'w-values', type: 'values', title: null, deviceIds: [], settings: { columns: '3', slot1: { id: 'fridge:measure_temperature' }, slot2: { id: 'living:measure_temperature' }, slot3: { id: 'living:measure_humidity' } } },
-      { id: 'w-timers', type: 'timers', title: null, deviceIds: [], settings: { minutes1: 5, minutes2: 10, minutes3: 15, minutes4: 30, sound: false } },
-      { id: 'w-flows', type: 'flows', title: null, deviceIds: [], settings: { columns: '2', flow1: { id: 'flow:night' }, color1: 'purple', icon1: { id: 'moon' }, flow2: { id: 'flow:morning' }, color2: 'yellow', icon2: { id: 'sun' } } },
-      { id: 'w-locks', type: 'locks', title: null, deviceIds: ['front', 'back'], settings: { view: 'summary' } },
+      { id: 'w-values', type: 'values', title: 'Climate', name: 'Device Values', deviceIds: [], settings: { columns: '3', slot1: { id: 'fridge:measure_temperature' }, slot2: { id: 'living:measure_temperature' }, slot3: { id: 'living:measure_humidity' } } },
+      { id: 'w-timers', type: 'timers', title: null, name: 'Timers', deviceIds: [], settings: { minutes1: 5, minutes2: 10, minutes3: 15, minutes4: 30, sound: false } },
+      { id: 'w-flows', type: 'flows', title: 'Scenes', name: 'Flow Buttons', deviceIds: [], settings: { columns: '2', flow1: { id: 'flow:night' }, color1: 'purple', icon1: { id: 'moon' }, flow2: { id: 'flow:morning' }, color2: 'yellow', icon2: { id: 'sun' } } },
+      { id: 'w-locks', type: 'locks', title: 'Doors', name: 'Locks and Doors', deviceIds: ['front', 'back'], settings: { view: 'summary' } },
     ];
 
     const value = (deviceId, capabilityId, name, title, units, v) =>
@@ -115,6 +119,11 @@
     mountAt('w1', fakeHomey({ dashboard: { id: 'd' }, interval: '10', smart: true, resumeAfter: '30', showDots: true }, { heightEl: document.getElementById('h1') }));
     mountAt('w2', fakeHomey({ dashboard: { id: 'd' }, interval: 'never', smart: true, showDots: true, dotsPosition: 'above', dotsSize: 'large' }, { heightEl: document.getElementById('h2') }));
     mountAt('w3', fakeHomey({ dashboard: { id: 'd' } }, { noKey: true }));
+    const tabs = (style, more) => fakeHomey({ dashboard: { id: 'd' }, interval: 'never', smart: false, showDots: true, dotsStyle: style, ...more });
+    mountAt('w4', tabs('tabs', { dotsPosition: 'above' }));
+    mountAt('w5', tabs('tabs'));
+    mountAt('w6', tabs('tabsNames', { dotsPosition: 'above', dotsSize: 'large' }));
+    mountAt('w7', tabs('tabsIcons', { dotsPosition: 'above' }));
 
     document.getElementById('unlock').onclick = () => setBack(false);
     document.getElementById('lock').onclick = () => setBack(true);
