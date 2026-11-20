@@ -8,6 +8,7 @@ export const TEXTLINE_STATE_EVENT = 'textline:state';
 export const TEXT_LINES_SETTING = 'textLines';
 export const TEXTLINE_SET_CARD = 'textline_set';
 export const TEXTLINE_SET_COLOR_CARD = 'textline_set_color';
+export const TEXTLINE_SET_CUSTOM_COLOR_CARD = 'textline_set_custom_color';
 export const TEXTLINE_CLEAR_CARD = 'textline_clear';
 /** The board a widget shows unless its `board` setting names another. */
 const DEFAULT_BOARD = 'Note';

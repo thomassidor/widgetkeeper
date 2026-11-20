@@ -9,6 +9,7 @@ Device Values' tiles, written by your Flows instead of read from a device: the b
 - **Set Flow Tile … on … to …**: a text, or a number in your screen's number format with optional units (`°C`, `%`, `kWh`, `kr` …) and up to 2 or exactly 0–2 decimals.
 - **Set the second line of …**: small and muted after the name; empty removes it.
 - **Give Flow Tile … the icon … in …**: one of Flow Buttons' icons and a colour (*Default* for the widget's own).
+- **Give Flow Tile … the custom colour …**: only the colour, any colour you type, `#FF6347`, `#F63` or `rgb(255, 99, 71)`, or a tag (empty for the widget's own); the icon stays.
 - **Fill Flow Tile … to … %** and **Remove the fill**: from the left, like a battery level, in the tile's colour (blue without one).
 - **Remove Flow Tile …** and **Remove every Flow Tile from …**.
 

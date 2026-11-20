@@ -11,7 +11,7 @@ import DaysSinceService, {
 import ElectricityService from './lib/ElectricityService.js';
 import FlowService from './lib/FlowService.js';
 import FlowTileService, {
-  FLOWTILES_CLEAR_CARD, FLOWTILES_REMOVE_CARD, FLOWTILES_REMOVE_FILL_CARD, FLOWTILES_SET_FILL_CARD, FLOWTILES_SET_LOOK_CARD,
+  FLOWTILES_CLEAR_CARD, FLOWTILES_REMOVE_CARD, FLOWTILES_REMOVE_FILL_CARD, FLOWTILES_SET_FILL_CARD, FLOWTILES_SET_LOOK_CARD, FLOWTILES_SET_CUSTOM_COLOR_CARD,
   FLOWTILES_SET_NUMBER_CARD, FLOWTILES_SET_SECOND_CARD, FLOWTILES_SET_TEXT_CARD, FLOWTILES_TAPPED_CARD, FLOWTILES_TILE_CARDS,
   type FlowTileArg, type TapListener,
 } from './lib/FlowTileService.js';
@@ -34,7 +34,7 @@ import ValueMatrixService from './lib/ValueMatrixService.js';
 import SensorAlarmService from './lib/SensorAlarmService.js';
 import SparklineService from './lib/SparklineService.js';
 import StackService, { STACK_RESUME_CARD, STACK_SHOW_CARD } from './lib/StackService.js';
-import TextLineService, { TEXTLINE_CLEAR_CARD, TEXTLINE_SET_CARD, TEXTLINE_SET_COLOR_CARD } from './lib/TextLineService.js';
+import TextLineService, { TEXTLINE_CLEAR_CARD, TEXTLINE_SET_CARD, TEXTLINE_SET_COLOR_CARD, TEXTLINE_SET_CUSTOM_COLOR_CARD } from './lib/TextLineService.js';
 import ThermostatPresetService, {
   THERMOSTAT_ACTIVE_CARD, THERMOSTAT_RUN_CARD, THERMOSTAT_TAPPED_CARD, type ButtonArg,
 } from './lib/ThermostatPresetService.js';
@@ -53,6 +53,7 @@ import WebDim, { WEB_DIM_CARD } from './lib/WebDim.js';
 import WebPassword, { WEB_PASSWORD_REMOVE_CARD } from './lib/WebPassword.js';
 import WebScreens from './lib/WebScreens.js';
 import { widgetAutocompletes } from './lib/widgetAutocompletes.js';
+import { parseCustomColor } from './lib/tileColors.js';
 
 export default class WidgetkeeperApp extends Homey.App {
 
@@ -272,6 +273,11 @@ export default class WidgetkeeperApp extends Homey.App {
     card.registerRunListener(async (args: { slot?: { id?: string }, color: string }) => {
       this.values.setColor(args.slot?.id ?? '', args.color);
     });
+    const custom = this.homey.flow.getActionCard('values_set_custom_color');
+    custom.registerArgumentAutocompleteListener('slot', query => this.values.listColorSlots(query));
+    custom.registerRunListener(async (args: { slot?: { id?: string }, color?: string }) => {
+      this.values.setColor(args.slot?.id ?? '', parseCustomColor(args.color));
+    });
   }
 
   /** The Flow card that colours the Flow Buttons starting one flow. */
@@ -280,6 +286,11 @@ export default class WidgetkeeperApp extends Homey.App {
     card.registerArgumentAutocompleteListener('flow', query => this.flows.listColorFlows(query));
     card.registerRunListener(async (args: { flow?: { id?: string }, color: string }) => {
       this.flows.setColor(args.flow?.id ?? '', args.color);
+    });
+    const custom = this.homey.flow.getActionCard('flows_set_custom_color');
+    custom.registerArgumentAutocompleteListener('flow', query => this.flows.listColorFlows(query));
+    custom.registerRunListener(async (args: { flow?: { id?: string }, color?: string }) => {
+      this.flows.setColor(args.flow?.id ?? '', parseCustomColor(args.color));
     });
   }
 
@@ -331,13 +342,15 @@ export default class WidgetkeeperApp extends Homey.App {
   private registerTextLineFlows() {
     type BoardArg = { board?: { id?: string, name?: string } };
     const board = (args: BoardArg) => args.board?.id ?? args.board?.name;
-    for (const id of [TEXTLINE_SET_CARD, TEXTLINE_SET_COLOR_CARD, TEXTLINE_CLEAR_CARD]) {
+    for (const id of [TEXTLINE_SET_CARD, TEXTLINE_SET_COLOR_CARD, TEXTLINE_SET_CUSTOM_COLOR_CARD, TEXTLINE_CLEAR_CARD]) {
       this.homey.flow.getActionCard(id).registerArgumentAutocompleteListener('board', async query => this.textLines.listBoards(query));
     }
     this.homey.flow.getActionCard(TEXTLINE_SET_CARD)
       .registerRunListener(async (args: BoardArg & { text: string }) => this.textLines.set(board(args), args.text));
     this.homey.flow.getActionCard(TEXTLINE_SET_COLOR_CARD)
       .registerRunListener(async (args: BoardArg & { text: string, color: string }) => this.textLines.set(board(args), args.text, args.color));
+    this.homey.flow.getActionCard(TEXTLINE_SET_CUSTOM_COLOR_CARD)
+      .registerRunListener(async (args: BoardArg & { text: string, color?: string }) => this.textLines.set(board(args), args.text, parseCustomColor(args.color)));
     this.homey.flow.getActionCard(TEXTLINE_CLEAR_CARD)
       .registerRunListener(async (args: BoardArg) => this.textLines.clear(board(args)));
   }
@@ -364,6 +377,7 @@ export default class WidgetkeeperApp extends Homey.App {
       (a, b, t) => this.flowTiles.setNumber(b, t, a.number, a.units, a.decimals));
     run<Args & { text?: string }>(FLOWTILES_SET_SECOND_CARD, (a, b, t) => this.flowTiles.setSecond(b, t, a.text));
     run<Args & { icon?: { id?: string }, color: string }>(FLOWTILES_SET_LOOK_CARD, (a, b, t) => this.flowTiles.setLook(b, t, a.icon?.id, a.color));
+    run<Args & { color?: string }>(FLOWTILES_SET_CUSTOM_COLOR_CARD, (a, b, t) => this.flowTiles.setColor(b, t, parseCustomColor(a.color)));
     run<Args & { percent: number }>(FLOWTILES_SET_FILL_CARD, (a, b, t) => this.flowTiles.setFill(b, t, a.percent));
     run(FLOWTILES_REMOVE_FILL_CARD, (a, b, t) => this.flowTiles.removeFill(b, t));
     run(FLOWTILES_REMOVE_CARD, (a, b, t) => this.flowTiles.remove(b, t));

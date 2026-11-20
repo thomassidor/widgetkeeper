@@ -4,7 +4,7 @@
  * tapped*) can be tapped. Plain browser JS (served as-is).
  */
 (function () {
-  const { el, COLORS, icons, TIGHT_UNITS, formatSince, applyColors, messageLine, onTap, shake } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, paintColor, icons, TIGHT_UNITS, formatSince, applyColors, messageLine, onTap, shake } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -191,9 +191,7 @@
         tile.tile.classList.toggle('filled', fill != null);
         if (fill != null) tile.tile.style.setProperty('--vt-fill', `${fill}%`);
         else tile.tile.style.removeProperty('--vt-fill');
-        const color = COLORS.includes(data.color) ? data.color : null;
-        if (color) tile.tile.dataset.color = color;
-        else delete tile.tile.dataset.color;
+        paintColor(tile.tile, data.color); // a custom colour is `custom` (Device Values' CSS)
         const tappable = !!data.tappable && !!opts.onTap;
         tile.tile.classList.toggle('ft-tappable', tappable);
         if (tappable) {

@@ -4,7 +4,7 @@
  * Post-it note stuck on the dashboard, in handwriting, wrapping up to three lines. Plain browser JS (served as-is).
  */
 (function () {
-  const { el, COLORS, applyColors } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, COLORS, applyColors, isCustomColor, paintColor } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -134,11 +134,8 @@
         : textLineContent({ source, board, variable, variableChosen: opts.variableChosen !== false, message: opts.message }, t);
       if (textEl.textContent !== content.text) textEl.textContent = content.text;
       root.classList.toggle('muted', content.muted);
-      const flowColor = source === 'flow' && board && COLORS.includes(board.color) ? board.color : null;
-      const color = flowColor || ownColor;
-      if (color) box.dataset.color = color;
-      else if (postit) box.dataset.color = 'yellow';
-      else delete box.dataset.color;
+      const flowColor = source === 'flow' && board && (COLORS.includes(board.color) || isCustomColor(board.color)) ? board.color : null;
+      paintColor(box, flowColor || ownColor || (postit ? 'yellow' : null)); // a Flow's custom colour is `custom`
       layout();
     }
 

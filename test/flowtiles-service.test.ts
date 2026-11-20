@@ -79,6 +79,17 @@ describe('the Flow cards', () => {
     expect(() => service.setFill('B', 'A', Number.NaN)).toThrow(/Not a percentage/);
   });
 
+  it('sets the colour alone, keeping the icon, and makes the tile if needed', () => {
+    const { service } = setup();
+    service.setLook('B', 'A', 'car', 'green');
+    service.setColor('B', 'A', '#ff6347');
+    expect(service.get('B').tiles[0]).toMatchObject({ icon: 'car', color: '#ff6347' });
+    service.setColor('B', 'A', 'default');
+    expect(service.get('B').tiles[0]).toMatchObject({ icon: 'car', color: null });
+    service.setColor('B', 'New', '#000000');
+    expect(service.get('B').tiles.map(t => t.name)).toEqual(['A', 'New']);
+  });
+
   it('refuses an unknown colour and names that can\'t be keys', () => {
     const { service } = setup();
     expect(() => service.setLook('B', 'A', 'car', 'magenta')).toThrow(/Unknown colour/);

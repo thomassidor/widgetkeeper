@@ -134,12 +134,16 @@ html, body { background: transparent !important; }
 .tl-tile[data-color="pink"] { --tl-color: var(--tl-pink); }
 .tl-tile[data-color="brown"] { --tl-color: var(--tl-brown); }
 .tl-tile[data-color="grey"] { --tl-color: var(--tl-grey); }
+/* A custom colour from a Flow (1.4.0; the kit's paintColor() sets these inline): the same in Muted and Vivid, its text by contrast. */
+.tl-tile[data-color="custom"] { --tl-color: var(--wk-custom); }
 .tl-tile[data-color] { background: color-mix(in srgb, var(--tl-color) var(--tl-fill-mix), var(--tl-tile)); }
 /* Vivid (kit.css): the colour's darker shade, solid, with white text (dark on yellow). The Post-it keeps its paper. */
 .tl.wk-deep .tl-tile[data-color] { --tl-fill-mix: 100%; color: var(--wk-on-blue); }
 .tl.wk-deep .tl-tile[data-color="yellow"] { color: var(--wk-on-yellow); }
 .tl.wk-deep.muted .tl-tile[data-color] { color: var(--wk-on-muted); }
 .tl.wk-deep.muted .tl-tile[data-color="yellow"] { color: rgb(26 27 33 / .75); }
+.tl.wk-deep .tl-tile[data-color="custom"] { color: var(--wk-on-custom); }
+.tl.wk-deep.muted .tl-tile[data-color="custom"] { color: var(--wk-on-custom-muted); }
 
 /* ---------------------------------------------------------------- the Post-it note */
 
@@ -203,3 +207,8 @@ html, body { background: transparent !important; }
 .tl-note[data-color="pink"] { --tl-paper: #FFB8D9; --tl-paper-top: #FFD2E7; --tl-paper-low: #FBA0CA; }
 .tl-note[data-color="brown"] { --tl-paper: #DDC2A3; --tl-paper-top: #E9D5BE; --tl-paper-low: #D2B08C; }
 .tl-note[data-color="grey"] { --tl-paper: #D3D5DB; --tl-paper-top: #E2E3E8; --tl-paper-low: #C4C6CE; }
+/* A custom colour's paper: mixed into white, as light as the others, so the blue-black ink stays readable on any colour. */
+.tl-note[data-color="custom"] {
+  --tl-paper: color-mix(in srgb, var(--wk-custom) 45%, #FFFFFF); --tl-paper-top: color-mix(in srgb, var(--wk-custom) 30%, #FFFFFF);
+  --tl-paper-low: color-mix(in srgb, var(--wk-custom) 55%, #FFFFFF);
+}

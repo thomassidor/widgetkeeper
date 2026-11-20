@@ -4,7 +4,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, applyColors, KEY_PROBLEMS, onTap, messageLine, pressGuard } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, applyColors, isCustomColor, paintColor, KEY_PROBLEMS, onTap, messageLine, pressGuard } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const MIN_RUNNING_MS = 400; // the spinner shows at least this long, so a fast start still registers
@@ -25,8 +25,8 @@
   };
 
   const COLORS = ['blue', 'red', 'orange', 'yellow', 'green', 'purple', 'teal', 'cyan', 'indigo', 'pink', 'brown', 'grey'];
-  /** The colours the Flow card can set (Device Values' `TILE_COLORS`): all of them, grey too since 1.2.0. */
-  const FLOW_COLORS = COLORS;
+  /** The colours the Flow cards can set: Device Values' `TILE_COLORS` (grey too since 1.2.0), or a custom `#rrggbb` (1.4.0). */
+  const isFlowColor = c => COLORS.includes(c) || isCustomColor(c);
 
   /** The button icons (the kit's): the ids are the `icon` setting's. */
   const ICONS = window.WidgetkeeperKit.icons;
@@ -82,14 +82,14 @@
     function setState(list) {
       flows = (Array.isArray(list) ? list : []).map((f, i) => withName(f, buttons[i] && buttons[i].name));
       flowColors.clear();
-      for (const f of flows) if (f && FLOW_COLORS.includes(f.color)) flowColors.set(f.id, f.color);
+      for (const f of flows) if (f && isFlowColor(f.color)) flowColors.set(f.id, f.color);
       message.reset();
       render();
     }
 
     /** A Flow set (`color`) or reset (null) the colour of the buttons starting `id`. */
     function pushColor({ id, color }) {
-      if (FLOW_COLORS.includes(color)) flowColors.set(id, color);
+      if (isFlowColor(color)) flowColors.set(id, color);
       else flowColors.delete(id);
       render();
     }
@@ -189,7 +189,7 @@
           r.button.replaceChildren(window.WidgetkeeperKit.svgIcon(icon === 'check' ? CHECK : ICONS[icon], 'fb-glyph'));
         }
         const flowColor = f.missing ? null : flowColors.get(f.id) || null;
-        r.row.dataset.color = flowColor || look.color;
+        paintColor(r.row, flowColor || look.color);
         r.row.classList.toggle('flow-color', !!flowColor);
         r.row.classList.toggle('missing', !!f.missing);
         r.row.classList.toggle('unavailable', !f.missing && (!f.enabled || !f.triggerable));

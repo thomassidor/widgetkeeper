@@ -9,6 +9,7 @@ export const FLOWTILES_SET_TEXT_CARD = 'flowtiles_set_text';
 export const FLOWTILES_SET_NUMBER_CARD = 'flowtiles_set_number';
 export const FLOWTILES_SET_SECOND_CARD = 'flowtiles_set_second';
 export const FLOWTILES_SET_LOOK_CARD = 'flowtiles_set_look';
+export const FLOWTILES_SET_CUSTOM_COLOR_CARD = 'flowtiles_set_custom_color';
 export const FLOWTILES_SET_FILL_CARD = 'flowtiles_set_fill';
 export const FLOWTILES_REMOVE_FILL_CARD = 'flowtiles_remove_fill';
 export const FLOWTILES_REMOVE_CARD = 'flowtiles_remove';
@@ -16,7 +17,7 @@ export const FLOWTILES_CLEAR_CARD = 'flowtiles_clear';
 export const FLOWTILES_TAPPED_CARD = 'flowtiles_tapped';
 /** Every action card with a board and a tile argument (all of them but *Clear the board*). */
 export const FLOWTILES_TILE_CARDS = [
-  FLOWTILES_SET_TEXT_CARD, FLOWTILES_SET_NUMBER_CARD, FLOWTILES_SET_SECOND_CARD, FLOWTILES_SET_LOOK_CARD,
+  FLOWTILES_SET_TEXT_CARD, FLOWTILES_SET_NUMBER_CARD, FLOWTILES_SET_SECOND_CARD, FLOWTILES_SET_LOOK_CARD, FLOWTILES_SET_CUSTOM_COLOR_CARD,
   FLOWTILES_SET_FILL_CARD, FLOWTILES_REMOVE_FILL_CARD, FLOWTILES_REMOVE_CARD,
 ] as const;
 
@@ -269,6 +270,12 @@ export default class FlowTileService {
     const c = parseTileColor(color);
     const i = typeof icon === 'string' && icon && icon !== 'none' ? icon.slice(0, 40) : null;
     this.change(board, tile, { icon: i, color: c }, `look ${i ?? 'no icon'}, ${c ?? 'default'}`);
+  }
+
+  /** The colour alone (`default`: the widget's own), the icon kept: the custom colour card (`parseCustomColor()`). */
+  setColor(board: unknown, tile: unknown, color: string) {
+    const c = parseTileColor(color);
+    this.change(board, tile, { color: c }, `colour ${c ?? 'default'}`);
   }
 
   /** The fill, clamped to 0–100. */

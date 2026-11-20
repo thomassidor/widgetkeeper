@@ -1,0 +1,118 @@
+{
+  "id": "flows_set_custom_color",
+  "title": {
+    "en": "Give a Flow Button a custom colour",
+    "nl": "Een Flowknop een eigen kleur geven",
+    "de": "Einer Flow-Taste eine eigene Farbe geben",
+    "fr": "Donner une couleur personnalisée à un bouton de flow",
+    "it": "Dai un colore personalizzato a un pulsante del flow",
+    "sv": "Ge en flödesknapp en egen färg",
+    "no": "Gi en flytknapp en egen farge",
+    "es": "Dar un color personalizado a un botón de flujo",
+    "da": "Giv en flowknap en egen farve",
+    "ru": "Задать свой цвет кнопке потока",
+    "pl": "Nadaj przyciskowi Flow własny kolor",
+    "ko": "플로우 버튼에 사용자 지정 색상 설정",
+    "ar": "منح زر تدفق لونًا مخصصًا"
+  },
+  "titleFormatted": {
+    "en": "Set the button colour of [[flow]] to the custom colour [[color]]",
+    "nl": "Stel de knopkleur van [[flow]] in op de eigen kleur [[color]]",
+    "de": "Tastenfarbe von [[flow]] auf die eigene Farbe [[color]] setzen",
+    "fr": "Définir la couleur du bouton de [[flow]] sur la couleur personnalisée [[color]]",
+    "it": "Imposta il colore del pulsante di [[flow]] sul colore personalizzato [[color]]",
+    "sv": "Ange knappfärgen för [[flow]] till den egna färgen [[color]]",
+    "no": "Angi knappfargen for [[flow]] til den egne fargen [[color]]",
+    "es": "Establecer el color del botón de [[flow]] en el color personalizado [[color]]",
+    "da": "Angiv knapfarven for [[flow]] til den egne farve [[color]]",
+    "ru": "Задать цвет кнопки [[flow]]: свой цвет [[color]]",
+    "pl": "Ustaw kolor przycisku [[flow]] na własny kolor [[color]]",
+    "ko": "[[flow]]의 버튼 색상을 사용자 지정 색상 [[color]](으)로 설정",
+    "ar": "تعيين لون زر [[flow]] إلى اللون المخصص [[color]]"
+  },
+  "hint": {
+    "en": "Colours every Flow Button that starts this Flow, on every dashboard, in a colour of your own. Type #FF0000, #F00 or rgb(255, 0, 0), or use a tag. Empty gives back the normal look.",
+    "nl": "Kleurt elke Flowknop die deze Flow start, op elk dashboard, in een eigen kleur. Typ #FF0000, #F00 of rgb(255, 0, 0), of gebruik een tag. Leeg geeft het normale uiterlijk terug.",
+    "de": "Färbt jede Flow-Taste, die diesen Flow startet, auf jedem Dashboard in einer eigenen Farbe. #FF0000, #F00 oder rgb(255, 0, 0) eingeben oder einen Tag verwenden. Leer stellt das normale Aussehen wieder her.",
+    "fr": "Colore chaque bouton de flow qui lance ce flow, sur chaque tableau de bord, dans une couleur de votre choix. Saisissez #FF0000, #F00 ou rgb(255, 0, 0), ou utilisez un tag. Vide rétablit l'aspect normal.",
+    "it": "Colora ogni pulsante del flow che avvia questo flow, in ogni dashboard, con un colore a scelta. Scrivi #FF0000, #F00 o rgb(255, 0, 0), oppure usa un tag. Vuoto ripristina l'aspetto normale.",
+    "sv": "Färgar varje flödesknapp som startar flödet, på alla instrumentpaneler, i en egen färg. Skriv #FF0000, #F00 eller rgb(255, 0, 0), eller använd en tagg. Tomt ger det vanliga utseendet igen.",
+    "no": "Farger hver flytknapp som starter denne flyten, på alle dashbord, i en egen farge. Skriv #FF0000, #F00 eller rgb(255, 0, 0), eller bruk en tagg. Tomt gir vanlig utseende igjen.",
+    "es": "Colorea cada botón de flujo que inicia este flujo, en todos los paneles, con un color propio. Escribe #FF0000, #F00 o rgb(255, 0, 0), o usa una etiqueta. Vacío restaura el aspecto normal.",
+    "da": "Farver hver flowknap, der starter dette flow, på alle dashboards, i en egen farve. Skriv #FF0000, #F00 eller rgb(255, 0, 0), eller brug et tag. Tomt giver det normale udseende igen.",
+    "ru": "Окрашивает каждую кнопку, запускающую этот поток, на всех панелях в ваш цвет. Введите #FF0000, #F00 или rgb(255, 0, 0) либо используйте тег. Пустое значение возвращает обычный вид.",
+    "pl": "Koloruje każdy przycisk uruchamiający ten Flow na każdym pulpicie własnym kolorem. Wpisz #FF0000, #F00 lub rgb(255, 0, 0) albo użyj tagu. Puste przywraca zwykły wygląd.",
+    "ko": "모든 대시보드에서 이 플로우를 시작하는 플로우 버튼을 원하는 색상으로 바꿉니다. #FF0000, #F00 또는 rgb(255, 0, 0)을 입력하거나 태그를 사용하세요. 비워 두면 원래 모습으로 돌아갑니다.",
+    "ar": "يلوّن كل زر تدفق يشغّل هذا التدفق في كل لوحة بلون من اختيارك. اكتب ‎#FF0000‎ أو ‎#F00‎ أو ‎rgb(255, 0, 0)‎، أو استخدم وسمًا. الفراغ يعيد المظهر العادي."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "flow",
+      "title": {
+        "en": "Flow",
+        "nl": "Flow",
+        "de": "Flow",
+        "fr": "Flow",
+        "it": "Flow",
+        "sv": "Flöde",
+        "no": "Flyt",
+        "es": "Flujo",
+        "da": "Flow",
+        "ru": "Поток",
+        "pl": "Flow",
+        "ko": "플로우",
+        "ar": "التدفق"
+      },
+      "placeholder": {
+        "en": "Flow",
+        "nl": "Flow",
+        "de": "Flow",
+        "fr": "Flow",
+        "it": "Flow",
+        "sv": "Flöde",
+        "no": "Flyt",
+        "es": "Flujo",
+        "da": "Flow",
+        "ru": "Поток",
+        "pl": "Flow",
+        "ko": "플로우",
+        "ar": "التدفق"
+      }
+    },
+    {
+      "type": "text",
+      "name": "color",
+      "title": {
+        "en": "Colour",
+        "nl": "Kleur",
+        "de": "Farbe",
+        "fr": "Couleur",
+        "it": "Colore",
+        "sv": "Färg",
+        "no": "Farge",
+        "es": "Color",
+        "da": "Farve",
+        "ru": "Цвет",
+        "pl": "Kolor",
+        "ko": "색상",
+        "ar": "اللون"
+      },
+      "placeholder": {
+        "en": "#FF0000",
+        "nl": "#FF0000",
+        "de": "#FF0000",
+        "fr": "#FF0000",
+        "it": "#FF0000",
+        "sv": "#FF0000",
+        "no": "#FF0000",
+        "es": "#FF0000",
+        "da": "#FF0000",
+        "ru": "#FF0000",
+        "pl": "#FF0000",
+        "ko": "#FF0000",
+        "ar": "#FF0000"
+      }
+    }
+  ]
+}

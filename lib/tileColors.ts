@@ -6,13 +6,40 @@ import type Homey from 'homey';
  * `COLORS` are the same names.
  */
 export const TILE_COLORS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'teal', 'cyan', 'indigo', 'pink', 'brown', 'grey'] as const;
-export type TileColor = typeof TILE_COLORS[number];
+export type TileColor = typeof TILE_COLORS[number] | `#${string}`;
 
-/** A Flow card's `color` argument: a tile colour, or null for `default` (the widget's own). Anything else throws. */
+/** A custom colour as kept and sent: `#rrggbb`, lower case (the kit's `isCustomColor()` takes the same). */
+const CUSTOM = /^#[0-9a-f]{6}$/;
+
+/**
+ * A Flow card's `color` argument: a tile colour or a custom colour as `parseCustomColor()` gives it, or null for
+ * `default` (the widget's own). Anything else throws.
+ */
 export function parseTileColor(color: string): TileColor | null {
   if (color === 'default') return null;
-  if ((TILE_COLORS as readonly string[]).includes(color)) return color as TileColor;
+  if ((TILE_COLORS as readonly string[]).includes(color) || CUSTOM.test(color)) return color as TileColor;
   throw new Error(`Unknown colour: ${color}`);
+}
+
+/**
+ * The custom colour cards' text (1.4.0, a forum request): `#F00`, `#FF0000` (the `#` may be left out) or
+ * `rgb(255, 0, 0)` (commas or spaces), as `#ff0000`; an empty text is `default`, so an empty tag resets the colour.
+ * Colour names, alpha and hsl() aren't taken (the user's pick: hex and rgb only). Anything else throws.
+ */
+export function parseCustomColor(text: unknown): string {
+  const s = String(text ?? '').trim().toLowerCase();
+  if (!s) return 'default';
+  const hex = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/.exec(s);
+  if (hex) {
+    const h = hex[1].length === 3 ? [...hex[1]].map(c => c + c).join('') : hex[1];
+    return `#${h}`;
+  }
+  const rgb = /^rgb\(\s*(\d{1,3})\s*[,\s]\s*(\d{1,3})\s*[,\s]\s*(\d{1,3})\s*\)$/.exec(s);
+  if (rgb) {
+    const parts = rgb.slice(1).map(Number);
+    if (parts.every(n => n <= 255)) return `#${parts.map(n => n.toString(16).padStart(2, '0')).join('')}`;
+  }
+  throw new Error(`Unknown colour: ${String(text)}`);
 }
 
 /**

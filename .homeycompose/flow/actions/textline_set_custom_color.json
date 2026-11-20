@@ -1,0 +1,152 @@
+{
+  "id": "textline_set_custom_color",
+  "title": {
+    "en": "Write on a note in a custom colour",
+    "nl": "Op een notitie schrijven in een eigen kleur",
+    "de": "Auf eine Notiz in einer eigenen Farbe schreiben",
+    "fr": "Écrire sur une note dans une couleur personnalisée",
+    "it": "Scrivi su una nota con un colore personalizzato",
+    "sv": "Skriv på en anteckning i en egen färg",
+    "no": "Skriv på et notat i en egen farge",
+    "es": "Escribir en una nota en un color personalizado",
+    "da": "Skriv på en note i en egen farve",
+    "ru": "Написать в заметке своим цветом",
+    "pl": "Napisz na notatce we własnym kolorze",
+    "ko": "사용자 지정 색상으로 메모에 쓰기",
+    "ar": "الكتابة على ملاحظة بلون مخصص"
+  },
+  "titleFormatted": {
+    "en": "Write [[text]] on the note [[board]] in the custom colour [[color]]",
+    "nl": "Schrijf [[text]] op de notitie [[board]] in de eigen kleur [[color]]",
+    "de": "[[text]] auf die Notiz [[board]] in der eigenen Farbe [[color]] schreiben",
+    "fr": "Écrire [[text]] sur la note [[board]] dans la couleur personnalisée [[color]]",
+    "it": "Scrivi [[text]] sulla nota [[board]] nel colore personalizzato [[color]]",
+    "sv": "Skriv [[text]] på anteckningen [[board]] i den egna färgen [[color]]",
+    "no": "Skriv [[text]] på notatet [[board]] i den egne fargen [[color]]",
+    "es": "Escribir [[text]] en la nota [[board]] en el color personalizado [[color]]",
+    "da": "Skriv [[text]] på noten [[board]] i den egne farve [[color]]",
+    "ru": "Написать [[text]] в заметке [[board]], свой цвет [[color]]",
+    "pl": "Napisz [[text]] na notatce [[board]] we własnym kolorze [[color]]",
+    "ko": "메모 [[board]]에 사용자 지정 색상 [[color]](으)로 [[text]] 쓰기",
+    "ar": "اكتب [[text]] على الملاحظة [[board]] باللون المخصص [[color]]"
+  },
+  "hint": {
+    "en": "Like Write on a note in a colour, in a colour of your own: the tile is tinted, a Post-it gets a paper of that colour. Type #FF0000, #F00 or rgb(255, 0, 0), or use a tag. Empty gives back the normal look.",
+    "nl": "Zoals Op een notitie schrijven in een kleur, in een eigen kleur: de tegel krijgt een tint, een Post-it papier in die kleur. Typ #FF0000, #F00 of rgb(255, 0, 0), of gebruik een tag. Leeg geeft het normale uiterlijk terug.",
+    "de": "Wie Auf eine Notiz in einer Farbe schreiben, in einer eigenen Farbe: die Kachel wird getönt, ein Post-it bekommt Papier in dieser Farbe. #FF0000, #F00 oder rgb(255, 0, 0) eingeben oder einen Tag verwenden. Leer stellt das normale Aussehen wieder her.",
+    "fr": "Comme Écrire sur une note en couleur, dans une couleur de votre choix : la tuile est teintée, un Post-it prend un papier de cette couleur. Saisissez #FF0000, #F00 ou rgb(255, 0, 0), ou utilisez un tag. Vide rétablit l'aspect normal.",
+    "it": "Come Scrivi su una nota a colori, con un colore a scelta: il riquadro si tinge, un Post-it prende una carta di quel colore. Scrivi #FF0000, #F00 o rgb(255, 0, 0), oppure usa un tag. Vuoto ripristina l'aspetto normale.",
+    "sv": "Som Skriv på en anteckning i en färg, i en egen färg: rutan tonas, en Post-it får papper i den färgen. Skriv #FF0000, #F00 eller rgb(255, 0, 0), eller använd en tagg. Tomt ger det vanliga utseendet igen.",
+    "no": "Som Skriv på et notat i en farge, i en egen farge: flisen tones, en Post-it får papir i den fargen. Skriv #FF0000, #F00 eller rgb(255, 0, 0), eller bruk en tagg. Tomt gir vanlig utseende igjen.",
+    "es": "Como Escribir en una nota en un color, en un color propio: el mosaico se tiñe, un Post-it toma un papel de ese color. Escribe #FF0000, #F00 o rgb(255, 0, 0), o usa una etiqueta. Vacío restaura el aspecto normal.",
+    "da": "Som Skriv på en note i en farve, i en egen farve: feltet tones, en Post-it får papir i den farve. Skriv #FF0000, #F00 eller rgb(255, 0, 0), eller brug et tag. Tomt giver det normale udseende igen.",
+    "ru": "Как «Написать в заметке цветом», но своим цветом: плитка окрашивается, стикер получает бумагу этого цвета. Введите #FF0000, #F00 или rgb(255, 0, 0) либо используйте тег. Пустое значение возвращает обычный вид.",
+    "pl": "Jak Napisz na notatce w kolorze, ale własnym kolorem: kafelek dostaje odcień, karteczka Post-it papier w tym kolorze. Wpisz #FF0000, #F00 lub rgb(255, 0, 0) albo użyj tagu. Puste przywraca zwykły wygląd.",
+    "ko": "색상으로 메모에 쓰기와 같지만 원하는 색상으로: 타일에 색이 입혀지고, 포스트잇은 그 색의 종이가 됩니다. #FF0000, #F00 또는 rgb(255, 0, 0)을 입력하거나 태그를 사용하세요. 비워 두면 원래 모습으로 돌아갑니다.",
+    "ar": "مثل «الكتابة على ملاحظة بلون» ولكن بلون من اختيارك: تُلوَّن البلاطة، وتأخذ الورقة اللاصقة ورقًا بذلك اللون. اكتب ‎#FF0000‎ أو ‎#F00‎ أو ‎rgb(255, 0, 0)‎، أو استخدم وسمًا. الفراغ يعيد المظهر العادي."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "board",
+      "title": {
+        "en": "Note",
+        "nl": "Notitie",
+        "de": "Notiz",
+        "fr": "Note",
+        "it": "Nota",
+        "sv": "Anteckning",
+        "no": "Notat",
+        "es": "Nota",
+        "da": "Note",
+        "ru": "Заметка",
+        "pl": "Notatka",
+        "ko": "메모",
+        "ar": "الملاحظة"
+      },
+      "placeholder": {
+        "en": "Note",
+        "nl": "Notitie",
+        "de": "Notiz",
+        "fr": "Note",
+        "it": "Nota",
+        "sv": "Anteckning",
+        "no": "Notat",
+        "es": "Nota",
+        "da": "Note",
+        "ru": "Заметка",
+        "pl": "Notatka",
+        "ko": "메모",
+        "ar": "الملاحظة"
+      }
+    },
+    {
+      "type": "text",
+      "name": "text",
+      "title": {
+        "en": "Text",
+        "nl": "Tekst",
+        "de": "Text",
+        "fr": "Texte",
+        "it": "Testo",
+        "sv": "Text",
+        "no": "Tekst",
+        "es": "Texto",
+        "da": "Tekst",
+        "ru": "Текст",
+        "pl": "Tekst",
+        "ko": "텍스트",
+        "ar": "النص"
+      },
+      "placeholder": {
+        "en": "Dinner at 6",
+        "nl": "Eten om 6 uur",
+        "de": "Essen um 6",
+        "fr": "Dîner à 18 h",
+        "it": "Cena alle 6",
+        "sv": "Middag kl. 18",
+        "no": "Middag kl. 18",
+        "es": "Cena a las 6",
+        "da": "Aftensmad kl. 18",
+        "ru": "Ужин в 6",
+        "pl": "Obiad o 18",
+        "ko": "6시에 저녁",
+        "ar": "العشاء في 6"
+      }
+    },
+    {
+      "type": "text",
+      "name": "color",
+      "title": {
+        "en": "Colour",
+        "nl": "Kleur",
+        "de": "Farbe",
+        "fr": "Couleur",
+        "it": "Colore",
+        "sv": "Färg",
+        "no": "Farge",
+        "es": "Color",
+        "da": "Farve",
+        "ru": "Цвет",
+        "pl": "Kolor",
+        "ko": "색상",
+        "ar": "اللون"
+      },
+      "placeholder": {
+        "en": "#FF0000",
+        "nl": "#FF0000",
+        "de": "#FF0000",
+        "fr": "#FF0000",
+        "it": "#FF0000",
+        "sv": "#FF0000",
+        "no": "#FF0000",
+        "es": "#FF0000",
+        "da": "#FF0000",
+        "ru": "#FF0000",
+        "pl": "#FF0000",
+        "ko": "#FF0000",
+        "ar": "#FF0000"
+      }
+    }
+  ]
+}

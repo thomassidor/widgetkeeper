@@ -1,0 +1,152 @@
+{
+  "id": "flowtiles_set_custom_color",
+  "title": {
+    "en": "Give a Flow Tile a custom colour",
+    "nl": "Een Flowtegel een eigen kleur geven",
+    "de": "Einer Flow-Kachel eine eigene Farbe geben",
+    "fr": "Donner une couleur personnalisée à une Tuile de flow",
+    "it": "Dai un colore personalizzato a un Riquadro dei flow",
+    "sv": "Ge en Flödesruta en egen färg",
+    "no": "Gi en Flytflis en egen farge",
+    "es": "Dar un color personalizado a un Mosaico de flujo",
+    "da": "Giv et Flowfelt en egen farve",
+    "ru": "Задать свой цвет плитке потока",
+    "pl": "Nadaj Kafelkowi Flow własny kolor",
+    "ko": "플로우 타일에 사용자 지정 색상 설정",
+    "ar": "منح مربع تدفق لونًا مخصصًا"
+  },
+  "titleFormatted": {
+    "en": "Give Flow Tile [[tile]] on [[board]] the custom colour [[color]]",
+    "nl": "Geef Flowtegel [[tile]] op [[board]] de eigen kleur [[color]]",
+    "de": "Flow-Kachel [[tile]] auf [[board]] die eigene Farbe [[color]] geben",
+    "fr": "Donner à la Tuile de flow [[tile]] de [[board]] la couleur personnalisée [[color]]",
+    "it": "Dai al Riquadro dei flow [[tile]] su [[board]] il colore personalizzato [[color]]",
+    "sv": "Ge Flödesrutan [[tile]] på [[board]] den egna färgen [[color]]",
+    "no": "Gi Flytflisen [[tile]] på [[board]] den egne fargen [[color]]",
+    "es": "Dar al Mosaico de flujo [[tile]] de [[board]] el color personalizado [[color]]",
+    "da": "Giv Flowfeltet [[tile]] på [[board]] den egne farve [[color]]",
+    "ru": "Дать плитке потока [[tile]] на [[board]] свой цвет [[color]]",
+    "pl": "Nadaj Kafelkowi Flow [[tile]] na [[board]] własny kolor [[color]]",
+    "ko": "[[board]]의 플로우 타일 [[tile]]에 사용자 지정 색상 [[color]] 지정",
+    "ar": "امنح مربع التدفق [[tile]] في [[board]] اللون المخصص [[color]]"
+  },
+  "hint": {
+    "en": "Only the colour, in a colour of your own; the icon stays. Makes the tile if it isn't there yet. Type #FF0000, #F00 or rgb(255, 0, 0), or use a tag. Empty gives back the normal look.",
+    "nl": "Alleen de kleur, in een eigen kleur; het pictogram blijft. Maakt de tegel aan als die er nog niet is. Typ #FF0000, #F00 of rgb(255, 0, 0), of gebruik een tag. Leeg geeft het normale uiterlijk terug.",
+    "de": "Nur die Farbe, in einer eigenen Farbe; das Symbol bleibt. Legt die Kachel an, falls es sie noch nicht gibt. #FF0000, #F00 oder rgb(255, 0, 0) eingeben oder einen Tag verwenden. Leer stellt das normale Aussehen wieder her.",
+    "fr": "Seulement la couleur, une couleur de votre choix ; l'icône reste. Crée la tuile si elle n'existe pas encore. Saisissez #FF0000, #F00 ou rgb(255, 0, 0), ou utilisez un tag. Vide rétablit l'aspect normal.",
+    "it": "Solo il colore, a scelta; l'icona resta. Crea il riquadro se non c'è ancora. Scrivi #FF0000, #F00 o rgb(255, 0, 0), oppure usa un tag. Vuoto ripristina l'aspetto normale.",
+    "sv": "Bara färgen, i en egen färg; ikonen står kvar. Skapar rutan om den inte finns än. Skriv #FF0000, #F00 eller rgb(255, 0, 0), eller använd en tagg. Tomt ger det vanliga utseendet igen.",
+    "no": "Bare fargen, i en egen farge; ikonet blir. Lager flisen hvis den ikke finnes ennå. Skriv #FF0000, #F00 eller rgb(255, 0, 0), eller bruk en tagg. Tomt gir vanlig utseende igjen.",
+    "es": "Solo el color, uno propio; el icono se queda. Crea el mosaico si aún no existe. Escribe #FF0000, #F00 o rgb(255, 0, 0), o usa una etiqueta. Vacío restaura el aspecto normal.",
+    "da": "Kun farven, i en egen farve; ikonet bliver. Opretter feltet, hvis det ikke findes endnu. Skriv #FF0000, #F00 eller rgb(255, 0, 0), eller brug et tag. Tomt giver det normale udseende igen.",
+    "ru": "Только цвет, ваш собственный; значок остаётся. Создаёт плитку, если её ещё нет. Введите #FF0000, #F00 или rgb(255, 0, 0) либо используйте тег. Пустое значение возвращает обычный вид.",
+    "pl": "Tylko kolor, własny; ikona zostaje. Tworzy kafelek, jeśli jeszcze go nie ma. Wpisz #FF0000, #F00 lub rgb(255, 0, 0) albo użyj tagu. Puste przywraca zwykły wygląd.",
+    "ko": "색상만 원하는 색으로 바꾸고 아이콘은 그대로 둡니다. 타일이 없으면 만듭니다. #FF0000, #F00 또는 rgb(255, 0, 0)을 입력하거나 태그를 사용하세요. 비워 두면 원래 모습으로 돌아갑니다.",
+    "ar": "اللون فقط، بلون من اختيارك؛ تبقى الأيقونة. ينشئ المربع إن لم يكن موجودًا. اكتب ‎#FF0000‎ أو ‎#F00‎ أو ‎rgb(255, 0, 0)‎، أو استخدم وسمًا. الفراغ يعيد المظهر العادي."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "board",
+      "title": {
+        "en": "Board",
+        "nl": "Bord",
+        "de": "Tafel",
+        "fr": "Tableau",
+        "it": "Bacheca",
+        "sv": "Tavla",
+        "no": "Tavle",
+        "es": "Tablero",
+        "da": "Tavle",
+        "ru": "Доска",
+        "pl": "Tablica",
+        "ko": "보드",
+        "ar": "اللوحة"
+      },
+      "placeholder": {
+        "en": "Tiles",
+        "nl": "Tiles",
+        "de": "Tiles",
+        "fr": "Tiles",
+        "it": "Tiles",
+        "sv": "Tiles",
+        "no": "Tiles",
+        "es": "Tiles",
+        "da": "Tiles",
+        "ru": "Tiles",
+        "pl": "Tiles",
+        "ko": "Tiles",
+        "ar": "Tiles"
+      }
+    },
+    {
+      "type": "autocomplete",
+      "name": "tile",
+      "title": {
+        "en": "Tile",
+        "nl": "Tegel",
+        "de": "Kachel",
+        "fr": "Tuile",
+        "it": "Riquadro",
+        "sv": "Ruta",
+        "no": "Flis",
+        "es": "Mosaico",
+        "da": "Felt",
+        "ru": "Плитка",
+        "pl": "Kafelek",
+        "ko": "타일",
+        "ar": "المربع"
+      },
+      "placeholder": {
+        "en": "Car",
+        "nl": "Auto",
+        "de": "Auto",
+        "fr": "Voiture",
+        "it": "Auto",
+        "sv": "Bil",
+        "no": "Bil",
+        "es": "Coche",
+        "da": "Bil",
+        "ru": "Машина",
+        "pl": "Samochód",
+        "ko": "자동차",
+        "ar": "السيارة"
+      }
+    },
+    {
+      "type": "text",
+      "name": "color",
+      "title": {
+        "en": "Colour",
+        "nl": "Kleur",
+        "de": "Farbe",
+        "fr": "Couleur",
+        "it": "Colore",
+        "sv": "Färg",
+        "no": "Farge",
+        "es": "Color",
+        "da": "Farve",
+        "ru": "Цвет",
+        "pl": "Kolor",
+        "ko": "색상",
+        "ar": "اللون"
+      },
+      "placeholder": {
+        "en": "#FF0000",
+        "nl": "#FF0000",
+        "de": "#FF0000",
+        "fr": "#FF0000",
+        "it": "#FF0000",
+        "sv": "#FF0000",
+        "no": "#FF0000",
+        "es": "#FF0000",
+        "da": "#FF0000",
+        "ru": "#FF0000",
+        "pl": "#FF0000",
+        "ko": "#FF0000",
+        "ar": "#FF0000"
+      }
+    }
+  ]
+}

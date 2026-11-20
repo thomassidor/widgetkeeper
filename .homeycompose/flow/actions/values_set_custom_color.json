@@ -1,0 +1,118 @@
+{
+  "id": "values_set_custom_color",
+  "title": {
+    "en": "Give a Device Values tile a custom colour",
+    "nl": "Een Apparaatwaarden-tegel een eigen kleur geven",
+    "de": "Einer Gerätewerte-Kachel eine eigene Farbe geben",
+    "fr": "Donner une couleur personnalisée à une tuile Valeurs d'appareils",
+    "it": "Dai un colore personalizzato a un riquadro di Valori dispositivi",
+    "sv": "Ge en Enhetsvärden-ruta en egen färg",
+    "no": "Gi en Enhetsverdier-flis en egen farge",
+    "es": "Dar un color personalizado a un mosaico de Valores de dispositivos",
+    "da": "Giv et Enhedsværdier-felt en egen farve",
+    "ru": "Задать свой цвет плитке «Значения устройств»",
+    "pl": "Nadaj kafelkowi Wartości urządzeń własny kolor",
+    "ko": "기기 값 타일에 사용자 지정 색상 설정",
+    "ar": "منح بلاطة «قيم الأجهزة» لونًا مخصصًا"
+  },
+  "titleFormatted": {
+    "en": "Set the tile colour of [[slot]] to the custom colour [[color]]",
+    "nl": "Stel de tegelkleur van [[slot]] in op de eigen kleur [[color]]",
+    "de": "Kachelfarbe von [[slot]] auf die eigene Farbe [[color]] setzen",
+    "fr": "Définir la couleur de la tuile de [[slot]] sur la couleur personnalisée [[color]]",
+    "it": "Imposta il colore del riquadro di [[slot]] sul colore personalizzato [[color]]",
+    "sv": "Ange rutans färg för [[slot]] till den egna färgen [[color]]",
+    "no": "Angi flisens farge for [[slot]] til den egne fargen [[color]]",
+    "es": "Establecer el color del mosaico de [[slot]] en el color personalizado [[color]]",
+    "da": "Angiv feltets farve for [[slot]] til den egne farve [[color]]",
+    "ru": "Задать цвет плитки [[slot]]: свой цвет [[color]]",
+    "pl": "Ustaw kolor kafelka [[slot]] na własny kolor [[color]]",
+    "ko": "[[slot]]의 타일 색상을 사용자 지정 색상 [[color]](으)로 설정",
+    "ar": "تعيين لون بلاطة [[slot]] إلى اللون المخصص [[color]]"
+  },
+  "hint": {
+    "en": "Colours the Device Values tiles that show this value, on every dashboard, in a colour of your own. Type #FF0000, #F00 or rgb(255, 0, 0), or use a tag. Empty gives back the normal look.",
+    "nl": "Kleurt de Apparaatwaarden-tegels die deze waarde tonen, op elk dashboard, in een eigen kleur. Typ #FF0000, #F00 of rgb(255, 0, 0), of gebruik een tag. Leeg geeft het normale uiterlijk terug.",
+    "de": "Färbt die Gerätewerte-Kacheln, die diesen Wert zeigen, auf jedem Dashboard in einer eigenen Farbe. #FF0000, #F00 oder rgb(255, 0, 0) eingeben oder einen Tag verwenden. Leer stellt das normale Aussehen wieder her.",
+    "fr": "Colore les tuiles Valeurs d'appareils qui affichent cette valeur, sur chaque tableau de bord, dans une couleur de votre choix. Saisissez #FF0000, #F00 ou rgb(255, 0, 0), ou utilisez un tag. Vide rétablit l'aspect normal.",
+    "it": "Colora i riquadri Valori dispositivi che mostrano questo valore, in ogni dashboard, con un colore a scelta. Scrivi #FF0000, #F00 o rgb(255, 0, 0), oppure usa un tag. Vuoto ripristina l'aspetto normale.",
+    "sv": "Färgar de Enhetsvärden-rutor som visar värdet, på alla instrumentpaneler, i en egen färg. Skriv #FF0000, #F00 eller rgb(255, 0, 0), eller använd en tagg. Tomt ger det vanliga utseendet igen.",
+    "no": "Farger Enhetsverdier-flisene som viser denne verdien, på alle dashbord, i en egen farge. Skriv #FF0000, #F00 eller rgb(255, 0, 0), eller bruk en tagg. Tomt gir vanlig utseende igjen.",
+    "es": "Colorea los mosaicos de Valores de dispositivos que muestran este valor, en todos los paneles, con un color propio. Escribe #FF0000, #F00 o rgb(255, 0, 0), o usa una etiqueta. Vacío restaura el aspecto normal.",
+    "da": "Farver de Enhedsværdier-felter, der viser værdien, på alle dashboards, i en egen farve. Skriv #FF0000, #F00 eller rgb(255, 0, 0), eller brug et tag. Tomt giver det normale udseende igen.",
+    "ru": "Окрашивает плитки «Значения устройств» с этим значением на всех панелях в ваш цвет. Введите #FF0000, #F00 или rgb(255, 0, 0) либо используйте тег. Пустое значение возвращает обычный вид.",
+    "pl": "Koloruje kafelki Wartości urządzeń z tą wartością na każdym pulpicie własnym kolorem. Wpisz #FF0000, #F00 lub rgb(255, 0, 0) albo użyj tagu. Puste przywraca zwykły wygląd.",
+    "ko": "모든 대시보드에서 이 값을 표시하는 기기 값 타일을 원하는 색상으로 바꿉니다. #FF0000, #F00 또는 rgb(255, 0, 0)을 입력하거나 태그를 사용하세요. 비워 두면 원래 모습으로 돌아갑니다.",
+    "ar": "يلوّن بلاطات قيم الأجهزة التي تعرض هذه القيمة في كل لوحة بلون من اختيارك. اكتب ‎#FF0000‎ أو ‎#F00‎ أو ‎rgb(255, 0, 0)‎، أو استخدم وسمًا. الفراغ يعيد المظهر العادي."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "slot",
+      "title": {
+        "en": "Device value",
+        "nl": "Apparaatwaarde",
+        "de": "Gerätewert",
+        "fr": "Valeur d'appareil",
+        "it": "Valore del dispositivo",
+        "sv": "Enhetsvärde",
+        "no": "Enhetsverdi",
+        "es": "Valor del dispositivo",
+        "da": "Enhedsværdi",
+        "ru": "Значение устройства",
+        "pl": "Wartość urządzenia",
+        "ko": "기기 값",
+        "ar": "قيمة الجهاز"
+      },
+      "placeholder": {
+        "en": "Device value",
+        "nl": "Apparaatwaarde",
+        "de": "Gerätewert",
+        "fr": "Valeur d'appareil",
+        "it": "Valore del dispositivo",
+        "sv": "Enhetsvärde",
+        "no": "Enhetsverdi",
+        "es": "Valor del dispositivo",
+        "da": "Enhedsværdi",
+        "ru": "Значение устройства",
+        "pl": "Wartość urządzenia",
+        "ko": "기기 값",
+        "ar": "قيمة الجهاز"
+      }
+    },
+    {
+      "type": "text",
+      "name": "color",
+      "title": {
+        "en": "Colour",
+        "nl": "Kleur",
+        "de": "Farbe",
+        "fr": "Couleur",
+        "it": "Colore",
+        "sv": "Färg",
+        "no": "Farge",
+        "es": "Color",
+        "da": "Farve",
+        "ru": "Цвет",
+        "pl": "Kolor",
+        "ko": "색상",
+        "ar": "اللون"
+      },
+      "placeholder": {
+        "en": "#FF0000",
+        "nl": "#FF0000",
+        "de": "#FF0000",
+        "fr": "#FF0000",
+        "it": "#FF0000",
+        "sv": "#FF0000",
+        "no": "#FF0000",
+        "es": "#FF0000",
+        "da": "#FF0000",
+        "ru": "#FF0000",
+        "pl": "#FF0000",
+        "ko": "#FF0000",
+        "ar": "#FF0000"
+      }
+    }
+  ]
+}

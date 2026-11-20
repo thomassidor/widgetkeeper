@@ -1561,6 +1561,47 @@
     return scheme;
   }
 
+  /** A custom colour from a Flow card (`parseCustomColor()` in lib/tileColors.ts): `#rrggbb`, lower case. */
+  function isCustomColor(color) {
+    return typeof color === 'string' && /^#[0-9a-f]{6}$/.test(color);
+  }
+
+  /** The text on a custom colour: white or the palette's dark text, whichever contrasts more (WCAG's ratio). */
+  function customInk(hex) {
+    const lum = [1, 3, 5].map((i) => {
+      const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+      return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    });
+    const l = 0.2126 * lum[0] + 0.7152 * lum[1] + 0.0722 * lum[2];
+    const dark = 0.0105; // #1A1B21
+    return (1.05 / (l + 0.05)) >= ((l + 0.05) / (dark + 0.05)) ? '#FFFFFF' : '#1A1B21';
+  }
+
+  /**
+   * A Flow's colour on a node's `data-<attr>`: a palette name as it is, a custom colour as `custom` with
+   * `--wk-custom`, the text on it, `--wk-on-custom`, and its muted text, `--wk-on-custom-muted`, inline (each widget's CSS maps `custom` to them); anything
+   * else removes it. Returns what it set (the name, the hex) or null.
+   */
+  function paintColor(node, color, attr = 'color') {
+    const custom = isCustomColor(color);
+    const key = attr.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+    if (custom) {
+      node.dataset[key] = 'custom';
+      node.style.setProperty('--wk-custom', color);
+      const ink = customInk(color);
+      node.style.setProperty('--wk-on-custom', ink);
+      // Muted text on it, as on yellow: Vivid rows and tiles put it on --wk-on-muted.
+      node.style.setProperty('--wk-on-custom-muted', ink === '#FFFFFF' ? 'rgb(255 255 255 / .78)' : 'rgb(26 27 33 / .75)');
+    } else {
+      node.style.removeProperty('--wk-custom');
+      node.style.removeProperty('--wk-on-custom');
+      node.style.removeProperty('--wk-on-custom-muted');
+      if (COLORS.includes(color)) node.dataset[key] = color;
+      else delete node.dataset[key];
+    }
+    return custom || COLORS.includes(color) ? color : null;
+  }
+
   /**
    * Short sounds drawn with Web Audio, so no sound files ship: Timers' `beep` and the popups' (the Flow cards' `sound`,
    * `POPUP_SOUNDS` in lib/PopupService.ts). Each note is [frequency (Hz), start (s), length (s), wave, loudness].
@@ -1814,6 +1855,6 @@
     icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
     getTimeFormat, setTimeFormat, wireTimeFormat, setTileShadow, takeTileShadow, wireTileShadow, uses12Hours, clockTime, hourLabel, smoothValues,
     formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, wireRefresh, wireHaptic, pressGuard, markOffline, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
-    onDeviceNames, temperatureIn, colorStyle, applyColors, sound, optimistic, shake, translator, heightReporter, svgIcon, wireBar, roomTiles, knownValue, okRange, okLevel,
+    onDeviceNames, temperatureIn, colorStyle, applyColors, isCustomColor, customInk, paintColor, sound, optimistic, shake, translator, heightReporter, svgIcon, wireBar, roomTiles, knownValue, okRange, okLevel,
   };
 })();

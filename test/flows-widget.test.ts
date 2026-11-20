@@ -63,6 +63,17 @@ describe('colour from a Flow', () => {
     expect(rows().map(r => r.classList.contains('flow-color'))).toEqual([true, false, true]);
   });
 
+  it('takes a custom colour, inline', () => {
+    const { w, rows } = widget([flow('flow:1', 'A', { color: '#00ff00' })], { buttons: [{ id: 'flow:1', color: 'purple' }] });
+    expect(rows()[0].dataset.color).toBe('custom');
+    expect(rows()[0].style.getPropertyValue('--wk-on-custom')).toBe('#1A1B21');
+    w.pushColor({ id: 'flow:1', color: '#000080' });
+    expect(rows()[0].style.getPropertyValue('--wk-custom')).toBe('#000080');
+    w.pushColor({ id: 'flow:1', color: null });
+    expect(rows()[0].dataset.color).toBe('purple');
+    expect(rows()[0].style.getPropertyValue('--wk-custom')).toBe('');
+  });
+
   it("changes live, and null gives the buttons their own colour again", () => {
     const { w, rows } = widget([flow('flow:1', 'A'), flow('flow:2', 'B')], { buttons: [{ id: 'flow:1', color: 'purple' }, { id: 'flow:2' }] });
     w.pushColor({ id: 'flow:1', color: 'orange' });

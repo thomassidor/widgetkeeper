@@ -194,6 +194,15 @@ describe('setColor (the Flow card)', () => {
     expect(s).not.toHaveProperty('color');
   });
 
+  it('keeps a custom colour as it is', async () => {
+    const { service, homey } = setup();
+    service.setColor('ac:onoff', '#ff6347');
+    expect(homey.settings.get(VALUE_COLORS_SETTING)).toEqual({ 'ac:onoff': '#ff6347' });
+    const [s] = await service.getState(['ac:onoff']);
+    expect(s).toMatchObject({ color: '#ff6347' });
+    expect(() => service.setColor('ac:onoff', '#FF6347')).toThrow(); // parseCustomColor() lower-cases it first
+  });
+
   it('rejects an unknown colour or slot', () => {
     const { service } = setup();
     expect(() => service.setColor('ac:onoff', 'magenta')).toThrow();

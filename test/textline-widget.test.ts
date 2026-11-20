@@ -126,6 +126,13 @@ describe('Post-it', () => {
   it("takes a Flow's colour as its paper", () => {
     expect(widget({ style: 'postit' }, { board: board('Buy milk', 'green') }).box().dataset.color).toBe('green');
   });
+
+  it("takes a Flow's custom colour, inline, keeping the tilt", () => {
+    const box = widget({ style: 'postit', source: 'flow' }, { board: board('Buy milk', '#ff6347') }).box();
+    expect(box.dataset.color).toBe('custom');
+    expect(box.style.getPropertyValue('--wk-custom')).toBe('#ff6347');
+    expect(box.style.getPropertyValue('--tl-tilt')).not.toBe('');
+  });
 });
 
 it("finds a board by the service's key", () => {

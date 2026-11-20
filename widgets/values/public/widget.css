@@ -117,6 +117,8 @@ html, body { background: transparent !important; }
 .vt-tile[data-color="pink"] { --vt-color: var(--vt-pink); }
 .vt-tile[data-color="brown"] { --vt-color: var(--vt-brown); }
 .vt-tile[data-color="grey"] { --vt-color: var(--vt-grey); }
+/* A custom colour from a Flow (1.4.0; the kit's paintColor() sets both inline): the same in Muted and Vivid, its ink by contrast. */
+.vt-tile[data-color="custom"] { --vt-color: var(--wk-custom); --vt-ink: var(--wk-on-custom); --wk-on-muted: var(--wk-on-custom-muted); }
 .vt-tile[data-color] { background: color-mix(in srgb, var(--vt-color) var(--vt-fill-mix), var(--vt-tile)); }
 .vt-tile[data-color] .vt-icon { color: var(--vt-text); }
 .vt-tile.filled[data-color] { --vt-level: var(--vt-color);

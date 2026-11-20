@@ -120,6 +120,17 @@ describe('render', () => {
       w.setState([temp()]);
       expect(color(tiles()[0])).toBeNull();
     });
+
+    it('puts a custom colour inline with the text that contrasts most, and takes it off again', () => {
+      const { w, tiles } = widget([{ ...temp(), color: '#ff6347' }, { ...lamp(), color: '#123456' }, { ...temp(), color: '#FF6347' }]);
+      expect(tiles().map(color)).toEqual(['custom', 'custom', null]); // upper case isn't what the app sends
+      const ink = (t: HTMLElement) => [t.style.getPropertyValue('--wk-custom'), t.style.getPropertyValue('--wk-on-custom')];
+      expect(ink(tiles()[0])).toEqual(['#ff6347', '#1A1B21']);
+      expect(ink(tiles()[1])).toEqual(['#123456', '#FFFFFF']);
+      w.pushColor({ deviceId: 'b', capabilityId: 'onoff', color: 'red' });
+      expect(color(tiles()[1])).toBe('red');
+      expect(tiles()[1].style.getPropertyValue('--wk-custom')).toBe('');
+    });
   });
 
   describe('deep colours', () => {

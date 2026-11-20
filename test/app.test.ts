@@ -90,14 +90,19 @@ describe('the app: Flow cards', () => {
     ['web_dim', 'webDim', 'set', { screen: { id: 'name:hall' }, level: 40 }, ['name:hall', 40]],
     ['textline_set', 'textLines', 'set', { board: { id: 'b1' }, text: 'Hello' }, ['b1', 'Hello']],
     ['textline_set_color', 'textLines', 'set', { board: { name: 'Kitchen' }, text: 'Hi', color: 'red' }, ['Kitchen', 'Hi', 'red']],
+    // The custom colour cards: the typed text as `#rrggbb`, an empty one as `default`.
+    ['textline_set_custom_color', 'textLines', 'set', { board: { id: 'b1' }, text: 'Hi', color: 'rgb(255, 99, 71)' }, ['b1', 'Hi', '#ff6347']],
     ['textline_clear', 'textLines', 'clear', { board: { id: 'b1' } }, ['b1']],
     ['cameras_refresh', 'cameras', 'refreshPicture', { camera: { id: 'c1' } }, ['c1']],
     ['stack_show', 'stack', 'show', { widget: 'timers', minutes: 5 }, ['timers', 5]],
     ['stack_resume', 'stack', 'resume', {}, []],
     ['values_set_color', 'values', 'setColor', { slot: { id: 'd1:measure_temperature' }, color: 'red' }, ['d1:measure_temperature', 'red']],
     ['values_set_color', 'values', 'setColor', { color: 'red' }, ['', 'red']],
+    ['values_set_custom_color', 'values', 'setColor', { slot: { id: 'd1:measure_temperature' }, color: '#F00' }, ['d1:measure_temperature', '#ff0000']],
+    ['values_set_custom_color', 'values', 'setColor', { slot: { id: 'd1:measure_temperature' }, color: '' }, ['d1:measure_temperature', 'default']],
     ['thermostat_run_preset', 'thermostatPresets', 'run', { preset: { id: 'w1:2' } }, [{ id: 'w1:2' }]],
     ['flows_set_color', 'flows', 'setColor', { flow: { id: 'flow:f1' }, color: 'blue' }, ['flow:f1', 'blue']],
+    ['flows_set_custom_color', 'flows', 'setColor', { flow: { id: 'flow:f1' }, color: ' FF6347 ' }, ['flow:f1', '#ff6347']],
     // A counter argument is its id, or the name typed for a new one.
     ['dayssince_set', 'daysSince', 'setDaysAgo', { counter: { id: 'filter', name: 'Filter' }, days: 3 }, ['filter', 3]],
     ['dayssince_set', 'daysSince', 'setDaysAgo', { counter: { name: 'Boiler' }, days: 0 }, ['Boiler', 0]],
@@ -112,6 +117,8 @@ describe('the app: Flow cards', () => {
     ['flowtiles_set_second', 'flowTiles', 'setSecond', { board: { id: 'Car' }, tile: { id: 'Range' }, text: '82 %' }, ['Car', 'Range', '82 %']],
     ['flowtiles_set_look', 'flowTiles', 'setLook', { board: { id: 'Car' }, tile: { id: 'Range' }, icon: { id: 'car' }, color: 'green' },
       ['Car', 'Range', 'car', 'green']],
+    ['flowtiles_set_custom_color', 'flowTiles', 'setColor', { board: { id: 'Car' }, tile: { id: 'Range' }, color: 'rgb(0 128 255)' },
+      ['Car', 'Range', '#0080ff']],
     ['flowtiles_set_fill', 'flowTiles', 'setFill', { board: { id: 'Car' }, tile: { id: 'Range' }, percent: 82 }, ['Car', 'Range', 82]],
     ['flowtiles_remove_fill', 'flowTiles', 'removeFill', { board: { id: 'Car' }, tile: { id: 'Range' } }, ['Car', 'Range']],
     ['flowtiles_remove', 'flowTiles', 'remove', { board: { id: 'Car' }, tile: { id: 'Range' } }, ['Car', 'Range']],
@@ -129,6 +136,14 @@ describe('the app: Flow cards', () => {
   it('refuses a Cameras refresh without a camera', async () => {
     const { flow } = await bootApp();
     await expect(flow.cards.get('actions:cameras_refresh')!.run!({ camera: { id: 'none' } })).rejects.toThrow('No camera picked');
+  });
+
+  it('refuses a custom colour it can\'t read', async () => {
+    const { flow } = await bootApp();
+    for (const color of ['tomato', '#12345', 'rgb(256, 0, 0)', 'hsl(0, 100%, 50%)', 'rgba(1, 2, 3, 0.5)']) {
+      await expect(flow.cards.get('actions:values_set_custom_color')!.run!({ slot: { id: 'd1:measure_temperature' }, color }))
+        .rejects.toThrow('Unknown colour');
+    }
   });
 
   it('every action card is in the table above', () => {

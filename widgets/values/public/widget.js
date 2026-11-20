@@ -5,7 +5,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, COLORS, tileNames, formatValue, valueGlyph: glyph, applyColors, messageLine, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, formatValue, valueGlyph: glyph, applyColors, paintColor, messageLine, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -232,10 +232,8 @@
           tile.tile.style.removeProperty('--vt-fill');
           delete tile.tile.dataset.level;
         }
-        // A colour set by a Flow tints the tile (and colours a percentage fill instead of its level).
-        const color = !missing && COLORS.includes(s.color) ? s.color : null;
-        if (color) tile.tile.dataset.color = color;
-        else delete tile.tile.dataset.color;
+        // A colour set by a Flow tints the tile (and colours a percentage fill instead of its level); a custom one is `custom`.
+        paintColor(tile.tile, missing ? null : s.color);
         tile.tile.classList.toggle('missing', missing);
         tile.tile.dataset.capability = s.capabilityId;
         tile.tile.title = missing ? '' : second ? `${s.capability.title} · ${second.capability.title}` : s.capability.title;

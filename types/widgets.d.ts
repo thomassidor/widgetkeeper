@@ -198,6 +198,11 @@ interface Window {
     COLORS: string[],
     colorStyle: (value: unknown) => 'soft' | 'deep',
     applyColors: (root: HTMLElement, opts?: { style?: unknown, color?: unknown, fallback?: string | null }) => 'soft' | 'deep',
+    /** A Flow's custom colour, `#rrggbb` (1.4.0). */
+    isCustomColor: (color: unknown) => boolean,
+    customInk: (hex: string) => string,
+    /** A Flow's colour on `data-<attr>`: a palette name, or `custom` with `--wk-custom`, `--wk-on-custom` and `--wk-on-custom-muted` inline. */
+    paintColor: (node: HTMLElement, color: unknown, attr?: string) => string | null,
     /** Timers' beep and the popups' sounds, through one AudioContext per page. */
     applySurface: () => void,
     sound: { names: string[], unlock: () => void, play: (name: unknown) => boolean },
