@@ -3,7 +3,7 @@ import { getAppApi } from './appApi.js';
 import { byName, devicesAndZones, matches, type AutocompleteItem } from './autocomplete.js';
 import { deviceImage, fetchImageBase64 } from './deviceIcon.js';
 import {
-  MAX_DESIGNS, MAX_REPEAT_CANDIDATES, SERVER_ACTIONS, allParts, designCharts, designFlows, designSlots, designVariables, findPart, partLabel, readDesign,
+  MAX_DESIGNS, MAX_REPEAT_CANDIDATES, SERVER_ACTIONS, TAP_KINDS, allParts, designCharts, designFlows, designSlots, designVariables, findPart, partLabel, readDesign,
   type Design, type FlowProp, type FlowReset, type Part,
 } from './customDesigns.js';
 import { DebouncedSetting, isReservedKey } from './storedSetting.js';
@@ -399,12 +399,13 @@ export default class CustomWidgetService {
   }
 
   /**
-   * A button's action the app runs (`set`, `variable`, `flow`), the `index`th of the button's, which must be of the kind
+   * A button's (or a tapped component's) action the app runs (`set`, `variable`, `flow`), the `index`th of its, which must be of the kind
    * the request says (its API key use is read from that, `routeKeyUse()`). The widget runs them in order and does the
    * others (a dashboard, a widget state) itself.
    */
   async runAction(designId: unknown, partId: unknown, index: unknown, kind: unknown) {
-    const { part } = this.partFor(designId, partId, ['button']);
+    // A button's, or any component's tap (`TAP_KINDS`).
+    const { part } = this.partFor(designId, partId, ['button', ...TAP_KINDS]);
     const action = part.actions?.[Number(index)];
     if (!action || action.do !== kind || !SERVER_ACTIONS.includes(action.do)) throw new Error('No such action');
     if (action.do === 'flow') {

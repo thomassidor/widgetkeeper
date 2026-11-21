@@ -52,6 +52,14 @@
     const MAX_PAGES = 6;
     const MAX_RINGS = 3;
     const MAX_SEGMENTS = 6;
+    /** lib/customDesigns.ts' ELEMENTS and TAP_KINDS: the parts that can be turned off, and the kinds a tap can act on. */
+    const ELEMENTS = {
+      value: ['icon', 'name', 'value', 'graph'], chart: ['name', 'value'], gauge: ['name', 'value'], level: ['name', 'value'],
+      status: ['name', 'value'], switch: ['icon', 'name'], slider: ['icon', 'name', 'value'], stepper: ['name'], choice: ['name'],
+      variable: ['name'], flowvalue: ['icon', 'name'], calc: ['icon', 'name', 'value'], time: ['icon', 'name'], trend: ['icon', 'name', 'value'],
+      ring: ['name', 'value'], segments: ['name', 'value'], button: ['icon', 'name'], state: ['icon', 'name'],
+    };
+    const TAP_KINDS = ['value', 'chart', 'gauge', 'level', 'status', 'flowvalue', 'container', 'text', 'icon', 'shape', 'calc', 'time', 'image', 'ring', 'segments', 'trend'];
     /** What a Flow may change, per kind (lib/customDesigns.ts takes any; these are the ones that show on it). */
     const FLOW_PROPS = {
       text: ['text', 'color', 'hidden'], icon: ['icon', 'color', 'hidden'], container: ['hidden'],
@@ -937,7 +945,8 @@
       const set = (fn, opts) => change(fn, opts);
       if (p.kind === 'text') {
         body.append(row(t('builderText'), textInput(p.text, v => set(() => { p.text = v.slice(0, 200); }, { preview: false }), { multi: true })));
-        body.append(row(t('builderSize'), segs([['heading', t('builderHeading')], ['body', t('builderBody')], ['small', t('builderSmall')]], p.size, v => set(() => { p.size = v; }, { preview: false }))));
+        body.append(row(t('builderSize'), segs([['display', t('builderSizeDisplay')], ['heading', t('builderHeading')], ['body', t('builderBody')], ['small', t('builderSmall')]], p.size, v => set(() => { p.size = v; }, { preview: false }))));
+        body.append(row(t('builderWeight'), segs([['', t('builderAuto')], ['regular', t('builderWeight_regular')], ['medium', t('builderWeight_medium')], ['bold', t('builderWeight_bold')]], p.weight || '', v => set(() => { if (v) p.weight = v; else delete p.weight; }, { preview: false }))));
         body.append(row(t('builderAlign'), segs([['left', t('builderLeft')], ['center', t('builderCenter')], ['right', t('builderRight')]], p.align, v => set(() => { p.align = v; }, { preview: false }))));
       } else {
         body.append(row(t('builderPartName'), textInput(p.name, v => set(() => { p.name = v.trim().slice(0, 40); }, { preview: false }), { placeholder: ownName(p) || t('builderNameHint') })));
@@ -969,6 +978,13 @@
       if (p.kind === 'time') timeRows(body, p);
       if (p.kind === 'state') stateRows(body, p);
       if (p.kind === 'button') actionRows(body, p);
+      if (p.kind === 'icon') {
+        const follow = el('div', 'wd-row');
+        follow.append(slotButton(p.slot, item => change(() => { p.slot = item.id; p.icon = null; })));
+        if (p.slot) follow.append(button('wd-btn quiet small', t('clear'), () => change(() => { delete p.slot; p.icon = p.icon || 'star'; })));
+        body.append(row(t('builderFollows'), follow, t('builderFollowsHint')));
+      }
+      if (TAP_KINDS.includes(p.kind)) tapRows(body, p);
       if (p.kind === 'image') imageRows(body, p);
       if (p.kind === 'ring') ringRows(body, p);
       if (p.kind === 'repeat') repeatRows(body, p);
@@ -1337,10 +1353,16 @@
       body.append(el('p', 'wd-hint', t('builderStateHint')));
     }
 
-    /** A button's actions, in order, and how it's pressed. */
-    function actionRows(body, p) {
-      body.append(row(t('builderPress'), segs([['tap', t('builderPress_tap')], ['confirm', t('builderPress_confirm')], ['long', t('builderPress_long')]], p.press || 'tap', v => change(() => { p.press = v; }, { preview: false }))));
-      body.append(el('h4', 'wdb-h4', t('builderActions')));
+    /** Any other component's actions when tapped: as a button's, under a heading of their own. */
+    function tapRows(body, p) {
+      body.append(el('h4', 'wdb-h4', t('builderWhenTapped')));
+      actionRows(body, p, true);
+    }
+
+    /** A button's actions, in order, and how it's pressed (`tap`: a component's, its press only once it has some). */
+    function actionRows(body, p, tap = false) {
+      if (!tap || (p.actions || []).length) body.append(row(t('builderPress'), segs([['tap', t('builderPress_tap')], ['confirm', t('builderPress_confirm')], ['long', t('builderPress_long')]], p.press || 'tap', v => change(() => { p.press = v; }, { preview: false }))));
+      if (!tap) body.append(el('h4', 'wdb-h4', t('builderActions')));
       const actions = p.actions || [];
       const states = everyPart().filter(x => x.kind === 'state');
       actions.forEach((a, i) => {
@@ -1368,7 +1390,7 @@
       });
       const add = button('wd-btn quiet small', t('builderAddAction'), () => change(() => { p.actions = [...actions, { do: 'set', value: 'toggle' }]; }));
       add.disabled = actions.length >= MAX_ACTIONS;
-      body.append(add, el('p', 'wd-hint', t('builderActionsHint')));
+      body.append(add, el('p', 'wd-hint', t(tap ? 'builderWhenTappedHint' : 'builderActionsHint')));
     }
 
     function imageRows(body, p) {
@@ -1542,6 +1564,17 @@
       const colours = [{ id: 'none', title: t('builderNoColour') }, ...window.WidgetkeeperKit.COLORS.map(c => ({ id: c, title: colourName(c) }))];
       body.append(row(t('builderColour'), wd.choiceGroup({ id: 'colour' }, colours, p.color || 'none', v => change(() => { p.color = v === 'none' ? null : v; }, { preview: false }), true), t(p.kind === 'shape' ? 'builderShapeColourHint' : 'builderColourHint')));
       if (p.kind === 'shape') return;
+      if (ELEMENTS[p.kind]) {
+        body.append(el('h4', 'wdb-h4', t('builderShowParts')));
+        for (const e of ELEMENTS[p.kind]) {
+          body.append(checkRow(t(`builderEl_${e}`), !(p.hide || []).includes(e), v => change(() => {
+            const hide = new Set(p.hide || []);
+            if (v) hide.delete(e); else hide.add(e);
+            if (hide.size) p.hide = ELEMENTS[p.kind].filter(x => hide.has(x)); else delete p.hide;
+          }, { preview: false })));
+        }
+        body.append(el('p', 'wd-hint', t('builderShowPartsHint')));
+      }
       const iconRow = el('div', 'wd-row');
       const current = wd.iconNode(p.icon);
       const pick = button('wd-btn', '', () => wd.pickIcon({ value: p.icon, noneLabel: t('builderNoIcon'), picked: v => change(() => { p.icon = v && !wd.isIconPicture(v) ? v : null; }, { preview: false }) }));
@@ -1557,7 +1590,7 @@
       const colours = window.WidgetkeeperKit.COLORS;
       if ((p.rules || []).length) body.append(el('p', 'wdb-label', t('builderRulesLead')));
       // A clock or a date has no value either: like a shape, each rule names the one it checks.
-      const valueless = VALUELESS_KINDS.includes(p.kind) || (p.kind === 'time' && ['clock', 'date'].includes(p.timeMode || 'clock'));
+      const valueless = (VALUELESS_KINDS.includes(p.kind) && !(p.kind === 'icon' && p.slot)) || (p.kind === 'time' && ['clock', 'date'].includes(p.timeMode || 'clock'));
       (p.rules || []).forEach((r, i) => {
         const of = el('div', 'wdb-rule-of');
         if (!valueless) {
@@ -1573,12 +1606,20 @@
         op.addEventListener('change', () => change(() => { r.op = op.value; }, { preview: false }));
         const value = textInput(r.value, v => change(() => { r.value = v.slice(0, 60); }, { preview: false }), { placeholder: t('builderRuleValue') });
         const look = el('select', 'wd-input');
-        for (const o of [...colours, 'hide']) { const opt = el('option', null, o === 'hide' ? t('builderHide') : colourName(o)); opt.value = o; opt.selected = r.look === o; look.append(opt); }
+        for (const o of ['same', ...colours, 'hide']) { const opt = el('option', null, o === 'hide' ? t('builderHide') : o === 'same' ? t('builderKeepColour') : colourName(o)); opt.value = o; opt.selected = r.look === o; look.append(opt); }
         look.addEventListener('change', () => change(() => { r.look = look.value; }, { preview: false }));
         const drop = button('wd-icon small', '', () => change(() => { p.rules.splice(i, 1); }, { preview: false }), t('remove'));
         drop.append(icon('close'));
         line.append(op, value, look, drop);
         body.append(line);
+        // And the icon it shows meanwhile.
+        if (r.look !== 'hide') {
+          const pickIc = button('wd-btn quiet small wdb-rule-icon', '', () => wd.pickIcon({ value: r.icon || null, noneLabel: t('builderNoIcon'), picked: v => change(() => { if (v && !wd.isIconPicture(v)) r.icon = v; else delete r.icon; }, { preview: false }) }));
+          const node = r.icon && wd.iconNode(r.icon);
+          if (node) pickIc.append(node);
+          pickIc.append(el('span', null, r.icon ? t('builderRuleIcon') : t('builderRuleIconNone')));
+          body.append(pickIc);
+        }
       });
       if (!(p.rules || []).length) body.append(el('p', 'wd-muted', t('builderNoRules')));
       const add = button('wd-btn quiet small', t('builderAddRule'), () => change(() => {

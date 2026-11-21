@@ -512,3 +512,50 @@ describe('segmented bars, trends and typing a variable', () => {
     expect(at('x').querySelector('.wb-value')!.textContent).toBe('bye');
   });
 });
+
+describe('parts turned off, taps on any component, icons from values and rules, big text', () => {
+  const bool = (slot: string, v: boolean, c: object = {}) => ({ ...value(slot, v, { type: 'boolean', units: null, ...c }), name: 'Front door' });
+
+  it('turns off the parts a design hides', () => {
+    const { at } = widget(state([part('lv', 'level', { slot: 'a:t', hide: ['name', 'value'] })], [value('a:t', 50)]));
+    expect([at('lv').classList.contains('wb-no-name'), at('lv').classList.contains('wb-no-value'), at('lv').classList.contains('wb-no-icon')]).toEqual([true, true, false]);
+  });
+
+  it("runs a tapped component's actions, but a control inside a tappable container is the control's", async () => {
+    const calls: string[] = [];
+    const sets: unknown[] = [];
+    const s = state([
+      part('sh', 'shape', { actions: [{ do: 'flow', flowId: 'flow:a' }] }),
+      part('box', 'container', { mode: 'grid', actions: [{ do: 'flow', flowId: 'flow:b' }], parts: [part('sw', 'switch', { slot: 'a:onoff', at: { x: 0, y: 0, w: 6, h: 8 } })] }),
+    ], [bool('a:onoff', false)]);
+    const { at } = widget(s, { onAction: async (p: any, _i: number, a: any) => { calls.push(`${p.id}:${a.flowId}`); }, onSet: async (_p: unknown, v: unknown) => { sets.push(v); } });
+    expect(at('sh').getAttribute('role')).toBe('button');
+    at('sh').click();
+    await vi.waitFor(() => expect(calls).toEqual(['sh:flow:a']));
+    at('sw').click();
+    await vi.waitFor(() => expect(sets).toEqual([true]));
+    expect(calls).toEqual(['sh:flow:a']);
+    at('box').click();
+    await vi.waitFor(() => expect(calls).toEqual(['sh:flow:a', 'box:flow:b']));
+  });
+
+  it("draws an icon that follows a value with the value's glyph, and a rule's icon while it holds, under a Flow's", () => {
+    const s = state([
+      part('ic', 'icon', { slot: 'a:locked', icon: null }),
+      part('v', 'value', { slot: 'a:locked', icon: 'lock', rules: [{ op: 'is', value: 'off', look: 'same', icon: 'unlock' }] }),
+    ], [bool('a:locked', true)]);
+    const { w, at } = widget(s);
+    expect(at('ic').querySelector('.wb-icon')!.classList.contains('wb-glyph')).toBe(true);
+    const lockSvg = at('v').querySelector('.wb-icon')!.innerHTML;
+    w.pushValue({ deviceId: 'a', capabilityId: 'locked', value: false });
+    expect(at('v').querySelector('.wb-icon')!.innerHTML).not.toBe(lockSvg);
+    expect(at('v').classList.contains('wb-colored')).toBe(false); // `same` keeps the colour
+    w.pushFlow({ part: 'v', values: { icon: 'lock', at: 1 } });
+    expect(at('v').querySelector('.wb-icon')!.innerHTML).toBe(lockSvg);
+  });
+
+  it('draws a big, bold text', () => {
+    const { at } = widget(state([part('t', 'text', { text: '21°', size: 'display', weight: 'bold' })]));
+    expect([at('t').classList.contains('wb-size-display'), at('t').classList.contains('wb-weight-bold')]).toEqual([true, true]);
+  });
+});

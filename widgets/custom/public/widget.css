@@ -302,3 +302,31 @@ html, body { background: transparent !important; }
   min-width: 0; width: 100%; font: inherit; font-size: var(--wb-fs-default); line-height: var(--wb-lh-default); color: var(--wb-text);
   background: color-mix(in srgb, var(--wb-text) 8%, transparent); border: 0; border-radius: 6px; padding: 0 6px; outline: 2px solid var(--wk-c);
 }
+
+/* A built-in component's parts turned off (`hide`): a bare bar, line, arc or toggle where all its text is off. */
+.wb-no-icon .wb-icon { display: none !important; }
+.wb-no-name .wb-name, .wb-no-name:is(.wb-k-stepper, .wb-k-choice, .wb-k-state) > .wb-sub { display: none !important; }
+.wb-no-value .wb-value, .wb-no-value:is(.wb-k-status, .wb-k-trend) .wb-sub { display: none !important; }
+.wb-no-graph .wb-spark { display: none; }
+.wb-no-name.wb-no-value:is(.wb-k-level, .wb-k-chart) > .wb-top { display: none; }
+.wb-k-level.wb-no-name.wb-no-value { justify-content: center; }
+.wb-k-chart.wb-no-name.wb-no-value .wb-spark { height: 100%; }
+.wb-k-switch.wb-no-icon.wb-no-name { align-items: center; justify-content: center; }
+.wb-k-switch.wb-no-icon.wb-no-name .wb-top { justify-content: center; }
+.wb-k-status.wb-no-name.wb-no-value { align-items: center; justify-content: center; }
+
+/* Text: a big one, and its weight. */
+.wb-size-display .wb-text { font-size: var(--homey-font-size-xxlarge, 32px); line-height: var(--homey-line-height-xxlarge, 40px); font-weight: var(--wb-bold); }
+.wb-weight-regular .wb-text { font-weight: var(--homey-font-weight-regular, 400); }
+.wb-weight-medium .wb-text { font-weight: var(--wb-medium); }
+.wb-weight-bold .wb-text { font-weight: var(--wb-bold); }
+
+/* Any component with actions: pressed like a button; its Tap again or Hold as a badge. */
+.wb-tappable { cursor: pointer; user-select: none; -webkit-user-select: none; }
+.wb-tappable:active { transform: scale(.97); }
+.wb-tappable.wb-asking { outline: 2px solid var(--wk-c); outline-offset: 2px; }
+.wb-press-tip {
+  position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%); z-index: 3; padding: 2px 8px; border-radius: 999px;
+  background: var(--wk-c); color: var(--wk-on, #FFFFFF); font-size: 12px; line-height: 16px; white-space: nowrap; pointer-events: none;
+}
+.wb-press-tip[hidden] { display: none; }

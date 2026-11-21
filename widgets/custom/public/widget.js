@@ -136,15 +136,17 @@
     let color = part.color || null;
     let tint = false;
     let hidden = false;
+    let icon = null;
     for (const r of part.rules || []) {
       // A rule that names another value (`of`) checks that one.
       if (!ruleHolds(r, r.of ? (valueOf ? valueOf(r.of) : undefined) : value)) continue;
       if (r.look === 'hide') hidden = true;
-      else { color = r.look; tint = true; }
+      else if (r.look !== 'same') { color = r.look; tint = true; } // `same`: only its icon changes
+      icon = r.icon || null;
       break;
     }
     if (flow && flow.color) { color = flow.color; tint = true; }
-    return { color, tint, hidden };
+    return { color, tint, hidden, icon };
   }
   window.customLookOf = lookOf;
 
@@ -568,8 +570,16 @@
         if (style === 'pill') node.classList.add('wb-pill');
       }
       place(node, part, where);
+      for (const e of part.hide || []) node.classList.add(`wb-no-${e}`);
       const make = MAKERS[part.kind] || MAKERS.text;
       const updatePart = make(part, node, sizeOf(part, where));
+      // Any component that isn't a control can act when tapped, as a button does.
+      if (part.kind !== 'button' && (part.actions || []).length) {
+        node.setAttribute('role', 'button');
+        node.tabIndex = 0;
+        node.classList.add('wb-tappable');
+        wirePress(part, node, null);
+      }
       const view = { part, node, update: () => {
         const c = current(part);
         const flow = flowOf(part);
@@ -583,7 +593,9 @@
         applyColor(node, look.color);
         node.classList.toggle('wb-colored', look.tint);
         node.classList.toggle('wb-has-color', !!look.color);
-        updatePart(c || {}, flow, look);
+        // A rule's icon, under a Flow's.
+        const shownFlow = look.icon && !(flow && flow.icon) ? { ...(flow || {}), icon: look.icon } : flow;
+        updatePart(c || {}, shownFlow, look);
         K.markOffline(node, c && (c.offline || c.missing), c && (c.offline || c.missing) ? t('unavailable') : undefined);
       } };
       views.push(view);
@@ -634,6 +646,80 @@
       }
       if (!c || c.missing) return '–';
       return fmt(c.cap, c.value);
+    }
+
+    /**
+     * A button's or a tapped component's actions in order (the app runs device values, variables and Flows; the widget
+     * the rest), else a button's Flow or the tap trigger.
+     */
+    async function runActions(part) {
+      const actions = part.actions || [];
+      if (actions.length) {
+        for (const [i, a] of actions.entries()) {
+          if (a.do === 'state') { const st = states.get(a.part); if (st) setStateValue(st, a.value); continue; }
+          if (opts.preview) continue;
+          if (a.do === 'dashboard') { if (opts.onOpen) opts.onOpen(a.dashboard); continue; }
+          if (opts.onAction) await opts.onAction(part, i, a);
+        }
+        return;
+      }
+      if (opts.preview || !opts.onButton) return;
+      await opts.onButton(part);
+    }
+
+    /**
+     * Wires a press: a tap, a second tap to confirm (*Tap again* in `hint`, else a badge), or a hold. A tap on a control
+     * inside it (a container's switch) is that control's, not this one's.
+     */
+    function wirePress(part, node, hint) {
+      const actions = part.actions || [];
+      let asking = null;
+      let tip = hint;
+      const showHint = (text) => {
+        if (!tip) tip = el('div', { class: 'wb-press-tip', hidden: '' }, node);
+        tip.textContent = text || '';
+        tip.hidden = !text;
+        node.classList.toggle('wb-asking', !!text);
+      };
+      async function press() {
+        if (node.classList.contains('busy')) return;
+        if (opts.preview && !actions.some(a => a.do === 'state')) return;
+        node.classList.add('busy');
+        try {
+          await runActions(part);
+          if (opts.onHaptic) opts.onHaptic();
+          node.classList.add('done');
+          setTimeout(() => node.classList.remove('done'), 1200);
+        } catch (err) {
+          console.error(err);
+          K.shake(node);
+          msg.set(err && K.KEY_PROBLEMS.includes(err.reason) ? t(err.reason) : t('setFailed', { name: part.name || '' }), true);
+        } finally {
+          node.classList.remove('busy');
+        }
+      }
+      const inner = (e) => {
+        const target = e && e.target && e.target.closest ? e.target : null;
+        if (!target) return false;
+        const own = target.closest('.wb-part');
+        return (own && own !== node && own.matches('[role="button"], [role="switch"], [role="slider"]')) || !!target.closest('button, input');
+      };
+      K.onTap(node, (e) => {
+        if (inner(e)) return;
+        if (part.press === 'long') { showHint(t('hold')); setTimeout(() => showHint(''), 1500); return; }
+        if (part.press === 'confirm' && !asking) {
+          showHint(t('tapAgain'));
+          asking = setTimeout(() => { asking = null; showHint(''); }, 3000);
+          return;
+        }
+        clearTimeout(asking);
+        asking = null;
+        showHint('');
+        press();
+      }, {
+        guard, keys: true,
+        hold: part.press === 'long' ? { ms: 600, when: () => true, act: () => { showHint(''); press(); } } : null,
+      });
     }
 
     const MAKERS = {
@@ -752,59 +838,7 @@
         const hint = el('div', { class: 'wb-sub wb-press-hint', hidden: '' }, node);
         node.setAttribute('role', 'button');
         node.tabIndex = 0;
-        const actions = part.actions || [];
-        let asking = null; // a confirm's first tap, waiting for the second
-        /** Its actions in order (the app runs device values, variables and Flows; the widget the rest), else its Flow or the trigger. */
-        async function run() {
-          if (actions.length) {
-            for (const [i, a] of actions.entries()) {
-              if (a.do === 'state') { const st = states.get(a.part); if (st) setStateValue(st, a.value); continue; }
-              if (opts.preview) continue;
-              if (a.do === 'dashboard') { if (opts.onOpen) opts.onOpen(a.dashboard); continue; }
-              if (opts.onAction) await opts.onAction(part, i, a);
-            }
-            return;
-          }
-          if (opts.preview || !opts.onButton) return;
-          await opts.onButton(part);
-        }
-        async function press() {
-          if (node.classList.contains('busy')) return;
-          if (opts.preview && !actions.some(a => a.do === 'state')) return;
-          node.classList.add('busy');
-          try {
-            await run();
-            if (opts.onHaptic) opts.onHaptic();
-            node.classList.add('done');
-            setTimeout(() => node.classList.remove('done'), 1200);
-          } catch (err) {
-            console.error(err);
-            K.shake(node);
-            msg.set(err && K.KEY_PROBLEMS.includes(err.reason) ? t(err.reason) : t('setFailed', { name: part.name || '' }), true);
-          } finally {
-            node.classList.remove('busy');
-          }
-        }
-        const showHint = (text) => {
-          hint.textContent = text || '';
-          hint.hidden = !text;
-          node.classList.toggle('wb-asking', !!text);
-        };
-        K.onTap(node, () => {
-          if (part.press === 'long') { showHint(t('hold')); setTimeout(() => showHint(''), 1500); return; }
-          if (part.press === 'confirm' && !asking) {
-            showHint(t('tapAgain'));
-            asking = setTimeout(() => { asking = null; showHint(''); }, 3000);
-            return;
-          }
-          clearTimeout(asking);
-          asking = null;
-          showHint('');
-          press();
-        }, {
-          guard, keys: true,
-          hold: part.press === 'long' ? { ms: 600, when: () => true, act: () => { showHint(''); press(); } } : null,
-        });
+        wirePress(part, node, hint);
         return (c, flow) => {
           ic(part, null, flow);
           const f = part.flowId && state.flows && state.flows[part.flowId];
@@ -1147,6 +1181,7 @@
       },
       text(part, node) {
         node.classList.add(`wb-size-${part.size || 'body'}`);
+        if (part.weight) node.classList.add(`wb-weight-${part.weight}`);
         node.style.textAlign = part.align || 'left';
         const txt = el('div', { class: 'wb-text', dir: 'auto' }, node);
         // A Flow's text replaces the whole text, its {1} … left as typed.
@@ -1185,7 +1220,8 @@
       },
       icon(part, node) {
         const ic = iconSlot(node);
-        return (c, flow) => ic(part, null, flow);
+        // With a device value: its own glyph (a lock open or closed), unless an icon is picked or a rule or Flow sets one.
+        return (c, flow) => ic(part, part.slot ? c : null, flow);
       },
       container(part, node) {
         node.classList.add(`wb-box-${part.mode === 'free' ? 'free' : 'grid'}`);

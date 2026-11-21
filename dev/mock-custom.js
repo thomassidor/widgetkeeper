@@ -4,7 +4,8 @@
 // with a Flow's message), rules (colours and a hidden part by rules), controls (stepper, choice, variables), blocks
 // (a text with values, calculated values, a clock, the time since motion, and shapes coloured by another value), more
 // (a widget state picking a pages container's page, a ring and a picture on it, a repeater of open doors, a button's
-// actions and a yes/no state), split (a segmented bar and a donut of the power, trends over the day).
+// actions and a yes/no state), split (a segmented bar and a donut of the power, trends over the day), bare (built-in
+// components with their parts turned off, a big text, an icon following a lock, a tappable circle).
 (function () {
   const NOW = Date.now();
   const HOUR = 3600e3;
@@ -155,10 +156,22 @@
     part('tt', 'trend', at(2, 2, 2), { slot: 'lr:measure_temperature', span: '24h', name: 'Living room', flat: 0.2, color: 'orange' }),
     part('tp', 'trend', at(2, 3, 2), { slot: 'meter:measure_power', span: '24h', name: 'Power', percent: true, color: 'blue' }),
   ];
+  // Parts turned off and big text: a primitive look made from the built-in components.
+  DESIGNS.bare = [
+    part('big', 'text', at(0, 0, 3), { text: '{1}', refs: [{ slot: 'lr:measure_temperature' }], size: 'display', style: 'none' }),
+    part('lock', 'icon', at(3, 0), { slot: 'lock:locked', icon: null, color: 'green', style: 'none',
+      rules: [{ op: 'is', value: 'off', look: 'red', icon: 'unlock' }] }),
+    part('tank', 'level', at(0, 1, 4), { slot: 'tank:measure_water', min: 0, max: 100, color: 'teal', hide: ['name', 'value'], style: 'pill' }),
+    part('line', 'chart', at(0, 2, 4), { slot: 'meter:measure_power', span: '24h', color: 'orange', hide: ['name', 'value'], style: 'none' }),
+    part('arc', 'gauge', at(0, 3), { slot: 'lr:measure_humidity', min: 0, max: 100, color: 'blue', hide: ['name'] }),
+    part('dot', 'status', at(1, 3), { slot: 'hall:alarm_motion', hide: ['name', 'value'] }),
+    part('tog', 'switch', at(2, 3), { slot: 'lamp:onoff', color: 'yellow', hide: ['icon', 'name'] }),
+    part('tap', 'shape', at(3, 3), { shape: 'circle', color: 'purple', opacity: 60, style: 'none', actions: [{ do: 'flow', flowId: 'flow:movie' }] }),
+  ];
   // The repeaters' devices, as the app finds them (every device with the capability, by name).
   const REPEATS = { more: { doors: ['back:alarm_contact', 'window:alarm_contact', 'garage:alarm_contact', 'shed:alarm_contact'] } };
   REPEATS.more.open = REPEATS.more.doors;
-  const NAMES = { living: 'Living room', container: 'Living room card', free: 'Entrance', rules: 'Garage', controls: 'Bedroom', blocks: 'At a glance', more: 'Home', split: 'Energy' };
+  const NAMES = { living: 'Living room', container: 'Living room card', free: 'Entrance', rules: 'Garage', controls: 'Bedroom', blocks: 'At a glance', more: 'Home', split: 'Energy', bare: 'Bare parts' };
   // What Flows set: the entrance's message.
   const FLOW = { free: { msg: { value: 'Parcel by the door', color: 'orange', at: NOW - 13 * 60e3 } } };
 

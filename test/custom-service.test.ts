@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
-import { MAX_INPUTS, MAX_PARTS, allParts, designCharts, designSlots, designVariables, readDesign, readPart, ruleHolds } from '../lib/customDesigns.js';
+import { MAX_INPUTS, MAX_PARTS, allParts, designCharts, designFlows as designFlowsOf, designSlots, designVariables, readDesign, readPart, ruleHolds } from '../lib/customDesigns.js';
 import CustomWidgetService, {
   CUSTOM_CHOICE_CARD, CUSTOM_DESIGN_EVENT, CUSTOM_DESIGNS_SETTING, CUSTOM_FLOW_EVENT, CUSTOM_FLOW_SETTING, CUSTOM_TAPPED_CARD,
 } from '../lib/CustomWidgetService.js';
@@ -446,5 +446,34 @@ describe('readDesign: segmented bars and trends', () => {
     expect([t.span, t.flat, t.percent, u.span]).toEqual(['6h', 0, true, '1h']);
     expect(designCharts(d)).toEqual([{ slot: 'a:t', span: '6h' }, { slot: 'a:t', span: '1h' }]);
     expect(designSlots(d)).toEqual(['a:p', 'b:p', 'a:t']);
+  });
+});
+
+describe('readDesign: parts turned off, taps on any component, icons from values and rules, big text', () => {
+  it('keeps only the parts a kind can turn off, actions only on components that are no control, and icon-only rules with an icon', () => {
+    const d = readDesign({ parts: [
+      part('lv', 'level', { hide: ['name', 'value', 'icon', 'graph', 'x'] }),
+      part('sh', 'shape', { actions: [{ do: 'flow', flowId: 'flow:f' }], press: 'confirm' }),
+      part('sw', 'switch', { slot: 'a:onoff', actions: [{ do: 'flow', flowId: 'flow:f' }] }),
+      part('ic', 'icon', { slot: 'a:locked', rules: [{ op: 'is', value: 'off', look: 'same', icon: 'unlock' }, { op: 'is', value: 'on', look: 'same' }, { op: 'is', value: 'on', look: 'red', icon: 'Bad Icon' }] }),
+      part('ic2', 'icon', { rules: [{ op: 'is', value: 'on', look: 'red' }] }),
+      part('tx', 'text', { size: 'display', weight: 'bold' }),
+      part('tw', 'text', { weight: 'heavy' }),
+    ] })!;
+    const [lv, sh, sw, ic, ic2, tx, tw] = d.parts;
+    expect(lv.hide).toEqual(['name', 'value']);
+    expect([sh.actions, sh.press]).toEqual([[{ do: 'flow', flowId: 'flow:f' }], 'confirm']);
+    expect('actions' in sw).toBe(false);
+    expect(ic.slot).toBe('a:locked');
+    expect(ic.rules).toEqual([{ op: 'is', value: 'off', look: 'same', icon: 'unlock' }, { op: 'is', value: 'on', look: 'red' }]);
+    expect(ic2.rules).toEqual([]); // an icon without a value: its rules must name one
+    expect([tx.size, tx.weight, 'weight' in tw]).toEqual(['display', 'bold', false]);
+    expect(designFlowsOf(d)).toEqual(['flow:f']);
+  });
+
+  it("runs a tapped component's action as a button's", async () => {
+    const { service, deps } = setup([{ id: 'tp', name: 'T', parts: [part('sh', 'shape', { actions: [{ do: 'flow', flowId: 'flow:x' }] })] }]);
+    await service.runAction('tp', 'sh', 0, 'flow');
+    expect(deps.flows.trigger).toHaveBeenCalledWith('flow:x');
   });
 });

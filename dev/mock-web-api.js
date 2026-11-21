@@ -142,7 +142,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
   }
 
   /** The Widget Builder's library: the made-up designs, when mock-custom.js is loaded. */
-  const designs = window.mockCustomState ? ['living', 'container', 'free', 'controls', 'blocks', 'more', 'split'].map(s => window.mockCustomState(s).design) : [];
+  const designs = window.mockCustomState ? ['living', 'container', 'free', 'controls', 'blocks', 'more', 'split', 'bare'].map(s => window.mockCustomState(s).design) : [];
 
   /** A design's preview: mock-custom.js' readings, else the made-up house's (`readings`) for a value picked here. */
   function designPreview(design) {

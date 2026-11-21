@@ -106,7 +106,23 @@ export type RuleOp = typeof RULE_OPS[number];
  * A rule: while the part's value (or `of`'s, another value) holds `op value`, it takes the colour, or is hidden. The
  * first that holds wins.
  */
-export type Rule = { op: RuleOp, value: string, look: TileColor | 'hide', of?: Source };
+export type Rule = { op: RuleOp, value: string, look: TileColor | 'hide' | 'same', of?: Source, icon?: string };
+
+/**
+ * The parts of a built-in component that can be hidden, by kind (so a Level bar can be a bare bar, a Mini chart a bare
+ * line, a Gauge a bare arc, a Switch a bare toggle).
+ */
+export const ELEMENTS: Partial<Record<string, readonly ('icon' | 'name' | 'value' | 'graph')[]>> = {
+  value: ['icon', 'name', 'value', 'graph'], chart: ['name', 'value'], gauge: ['name', 'value'], level: ['name', 'value'],
+  status: ['name', 'value'], switch: ['icon', 'name'], slider: ['icon', 'name', 'value'], stepper: ['name'], choice: ['name'],
+  variable: ['name'], flowvalue: ['icon', 'name'], calc: ['icon', 'name', 'value'], time: ['icon', 'name'], trend: ['icon', 'name', 'value'],
+  ring: ['name', 'value'], segments: ['name', 'value'], button: ['icon', 'name'], state: ['icon', 'name'],
+};
+export type Element = 'icon' | 'name' | 'value' | 'graph';
+/** The kinds a tap can give actions to besides a button: everything that isn't a control of its own. */
+export const TAP_KINDS: readonly PartKind[] = [
+  'value', 'chart', 'gauge', 'level', 'status', 'flowvalue', 'container', 'text', 'icon', 'shape', 'calc', 'time', 'image', 'ring', 'segments', 'trend',
+];
 /** A calculated value's `count` test: the rule ops without a look. */
 export type Test = { op: RuleOp, value: string };
 
@@ -140,7 +156,10 @@ export type Part = {
   /** A button's Flow (`flow:<id>` or `advanced:<id>`); without one the button fires *A part was tapped*. */
   flowId?: string,
   text?: string,
-  size?: 'heading' | 'body' | 'small',
+  size?: 'display' | 'heading' | 'body' | 'small',
+  weight?: 'regular' | 'medium' | 'bold',
+  /** The built-in parts it leaves out (`ELEMENTS`). */
+  hide?: Element[],
   align?: 'left' | 'center' | 'right',
   units?: string,
   min?: number,
@@ -297,14 +316,19 @@ function rulesOf(v: unknown, valueless = false): Rule[] {
   const out: Rule[] = [];
   for (const r of v.slice(0, MAX_RULES)) {
     if (!r || typeof r !== 'object') continue;
-    const look = r.look === 'hide' ? 'hide' : color(r.look);
+    const look = r.look === 'hide' || r.look === 'same' ? r.look : color(r.look);
     if (!look || !RULE_OPS.includes(r.op)) continue;
     const of = sourceOf(r.of);
     if (valueless && !of) continue;
-    out.push({ op: r.op, value: str(String(r.value ?? ''), 60), look, ...(of ? { of } : {}) });
+    const icon = iconOf(r.icon);
+    // A rule that keeps the colour is only there for its icon.
+    if (look === 'same' && !icon) continue;
+    out.push({ op: r.op, value: str(String(r.value ?? ''), 60), look, ...(of ? { of } : {}), ...(icon ? { icon } : {}) });
   }
   return out;
 }
+
+const iconOf = (v: unknown) => (typeof v === 'string' && /^[a-z0-9-]{1,40}$/.test(v) ? v : undefined);
 
 function flowOf(v: unknown): Partial<Record<FlowProp, true>> {
   const out: Partial<Record<FlowProp, true>> = {};
@@ -434,14 +458,28 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     icon: typeof r.icon === 'string' && /^[a-z0-9-]{1,40}$/.test(r.icon) ? r.icon : null,
     // Saved before 1.4.0's release as `tile: false` (on a container's background).
     style: kind === 'shape' ? 'none' : oneOf(r.style, PART_STYLES, r.tile === false || kind === 'text' || kind === 'icon' ? 'none' : 'tile'),
-    rules: rulesOf(r.rules, VALUELESS_KINDS.includes(kind)),
+    // An icon that follows a device value has one of its own.
+    rules: rulesOf(r.rules, VALUELESS_KINDS.includes(kind) && !(kind === 'icon' && slotOf(r.slot))),
     flow: flowOf(r.flow),
     reset: oneOf(r.reset, FLOW_RESETS, 'never'),
   };
   if (Number.isInteger(r.page) && r.page >= 0 && r.page < MAX_PAGES) p.page = r.page;
-  if (SLOT_KINDS.includes(kind)) {
+  if (SLOT_KINDS.includes(kind) || kind === 'icon') {
     const slot = slotOf(r.slot);
     if (slot) p.slot = slot;
+  }
+  const elements = ELEMENTS[kind];
+  if (elements && Array.isArray(r.hide)) {
+    const hide = elements.filter(e => r.hide.includes(e));
+    if (hide.length) p.hide = hide;
+  }
+  // Any component that isn't a control may run actions when tapped, as a button does.
+  if (TAP_KINDS.includes(kind)) {
+    const actions = (Array.isArray(r.actions) ? r.actions.slice(0, MAX_ACTIONS) : []).map(actionOf).filter((a): a is Action => !!a);
+    if (actions.length) {
+      p.actions = actions;
+      p.press = oneOf(r.press, ['tap', 'confirm', 'long'] as const, 'tap');
+    }
   }
   if (VARIABLE_KINDS.includes(kind) && !p.slot) {
     const variable = idOf(r.variable, 100);
@@ -542,7 +580,8 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     }
     case 'text':
       p.text = typeof r.text === 'string' ? r.text.slice(0, MAX_TEXT) : '';
-      p.size = oneOf(r.size, ['heading', 'body', 'small'] as const, 'body');
+      p.size = oneOf(r.size, ['display', 'heading', 'body', 'small'] as const, 'body');
+      if (['regular', 'medium', 'bold'].includes(r.weight)) p.weight = r.weight;
       p.align = oneOf(r.align, ['left', 'center', 'right'] as const, 'left');
       if (Array.isArray(r.refs) && r.refs.length) p.refs = r.refs.slice(0, MAX_REFS).map(refOf);
       break;

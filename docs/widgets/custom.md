@@ -17,6 +17,8 @@ Changes are saved as you go, and Undo takes them back. **Add to dashboard** puts
 - **Controls:** Switch, Button (starts a Flow, or triggers *A Widget Builder button was tapped*), Slider, Stepper (− and +, for a setpoint or a number variable), Choice (one of a few options: a mode, a scene, a variable's value), Variable (a yes/no switches with a tap; a number or text is typed right in the tile), Widget state (an on/off or a choice that only the widget keeps, on that screen: for rules, texts, buttons, or to switch a container's pages).
 - **Buttons** can do several things in order: set a device value or a variable (on, off, toggle or a value), start a Flow, open another web dashboard, set a widget state. They can ask for a second tap, or to be held.
 
+**Make your own pieces from the built-in ones:** in a component's Style tab, turn off its icon, label, value or graph to keep only what you need: a bare bar, a bare line, a gauge's arc, a switch's toggle. A Text can be Big (32 px) and bold, so a text with a value in it is the big number. An Icon can follow a device value (a lock open or closed), and a rule can swap a component's icon as well as its colour. Any component that isn't a control can do things when tapped, like a button: a shape, a text, a picture or a whole container.
+
 A **container** is a background (a colour or a gradient) that holds components of its own, snapped to a finer grid (12 columns), placed freely, or on **pages** (up to six) switched with tabs, dots or a widget state.
 
 **Rules:** a component can change with its value, or with another one. When the value is above, below, is or is not something you type, it takes a colour or is hidden. The first rule that matches is used. Shapes, texts, icons, buttons and containers have no value of their own, so their rules check another: a dot that turns red while the front door is unlocked, a container that turns orange when the calculated power goes over 2,000 W. A Time's rules compare minutes (*no motion for 30 minutes*).
@@ -42,6 +44,7 @@ Starting a Flow or setting a variable needs the [API key](../../README.md#api-ke
 <img src="../variants/custom-blocks.webp" alt="Widget Builder: Text with values, sums, the time and shapes" width="300" align="top">
 <img src="../variants/custom-more.webp" alt="Widget Builder: Light · Pages by a state, ring, picture, repeater" width="300" align="top">
 <img src="../variants/custom-split.webp" alt="Widget Builder: Segmented bar, donut and trends" width="300" align="top">
+<img src="../variants/custom-bare.webp" alt="Widget Builder: Light · Parts turned off, big text, an icon" width="300" align="top">
 </p>
 
 ---
