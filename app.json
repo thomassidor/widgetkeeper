@@ -129,6 +129,10 @@
       "method": "POST",
       "path": "/web/designs/pick"
     },
+    "postWebDesignImage": {
+      "method": "POST",
+      "path": "/web/designs/image"
+    },
     "getWebDevices": {
       "method": "GET",
       "path": "/web/devices"
@@ -42954,6 +42958,14 @@
         "tap": {
           "method": "POST",
           "path": "/tap"
+        },
+        "action": {
+          "method": "POST",
+          "path": "/action"
+        },
+        "image": {
+          "method": "GET",
+          "path": "/image"
         }
       },
       "id": "custom"

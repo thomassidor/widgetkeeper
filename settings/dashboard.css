@@ -1106,6 +1106,8 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-ref { display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; gap: 6px; align-items: start; padding: 6px 0; border-bottom: 1px solid var(--wd-line); }
 .wdb-ref-key { font-weight: 600; padding-top: 8px; font-variant-numeric: tabular-nums; }
 .wdb-rule-of { display: grid; gap: 6px; margin-top: 10px; }
+.wdb-action { display: grid; gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--wd-line); }
+.wdb-action-head { display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; gap: 6px; align-items: center; }
 .wdb-colour { width: 100%; height: 36px; padding: 2px; border: 1px solid var(--wd-line); border-radius: 8px; background: var(--wd-tile); cursor: pointer; }
 .wdb-remove { margin-top: 12px; align-self: flex-start; }
 .wdb-dashpick { width: 100%; justify-content: flex-start; margin-bottom: 6px; }

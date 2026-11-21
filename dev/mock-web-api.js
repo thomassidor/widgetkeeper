@@ -142,7 +142,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
   }
 
   /** The Widget Builder's library: the made-up designs, when mock-custom.js is loaded. */
-  const designs = window.mockCustomState ? ['living', 'container', 'free', 'controls', 'blocks'].map(s => window.mockCustomState(s).design) : [];
+  const designs = window.mockCustomState ? ['living', 'container', 'free', 'controls', 'blocks', 'more'].map(s => window.mockCustomState(s).design) : [];
 
   /** A design's preview: mock-custom.js' readings, else the made-up house's (`readings`) for a value picked here. */
   function designPreview(design) {
@@ -150,7 +150,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
     const slots = [];
     // Every value a design reads, as lib/customDesigns.ts' designSlots(): its own, its rules' and texts' and inputs'.
     const walk = parts => (parts || []).forEach((x) => {
-      for (const src of [x, ...(x.rules || []).map(r => r.of), ...(x.refs || []), ...(x.inputs || [])]) if (src && src.slot) slots.push(src.slot);
+      for (const src of [x, ...(x.rules || []).map(r => r.of), ...(x.refs || []), ...(x.inputs || []), ...(x.rings || []).map(r => r.src), ...(x.actions || [])]) if (src && src.slot) slots.push(src.slot);
       walk(x.parts);
     });
     walk(design.parts);
@@ -164,10 +164,31 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
         ? { deviceId, capabilityId, name: d.name, capability: { icon: null, values: null, min: null, max: null, ...r }, value: typeof r.value === 'function' ? r.value(d, 0) : r.value }
         : { deviceId, capabilityId, missing: true };
     }
+    // A repeater's devices: every made-up device with its capability (mock-custom.js' own first), by name.
+    const repeats = {};
+    (function eachRepeat(parts) {
+      for (const x of parts || []) {
+        if (x.kind === 'repeat' && x.capability) {
+          const own = Object.keys(base.values).filter(k => k.endsWith(`:${x.capability}`));
+          const made = devices.filter(d => (d.capabilities || []).includes(x.capability)).map(d => `${d.id}:${x.capability}`);
+          repeats[x.id] = [...new Set([...own, ...made])].slice(0, 48);
+          slots.push(...repeats[x.id]);
+        }
+        eachRepeat(x.parts);
+      }
+    })(design.parts);
+    for (const slot of slots) {
+      if (values[slot]) continue;
+      if (base.values[slot]) { values[slot] = base.values[slot]; continue; }
+      const [deviceId, capabilityId] = slot.split(':');
+      const d = devices.find(x => x.id === deviceId);
+      const r = readings[capabilityId];
+      if (d && r) values[slot] = { deviceId, capabilityId, name: d.name, capability: { icon: null, values: null, min: null, max: null, ...r }, value: typeof r.value === 'function' ? r.value(d, 0) : r.value };
+    }
     const histories = { ...base.histories };
     for (const slot of slots) if (!Object.keys(histories).some(k => k.endsWith(`\n${slot}`))) histories[`24h\n${slot}`] = base.histories['24h\nlr:measure_temperature'];
     for (const span of ['1h', '6h', '7d', '30d', 'today', 'yesterday', 'thisWeek']) for (const slot of slots) histories[`${span}\n${slot}`] = histories[`24h\n${slot}`];
-    return { design, values, variables: base.variables, flows: { ...base.flows, 'flow:goodnight': { id: 'flow:goodnight', name: 'Good night' }, 'advanced:away': { id: 'advanced:away', name: 'Leaving home' } }, histories, flow: {}, now: Date.now() };
+    return { design, values, repeats, language: 'en', timeFormat: '24', variables: base.variables, flows: { ...base.flows, 'flow:goodnight': { id: 'flow:goodnight', name: 'Good night' }, 'advanced:away': { id: 'advanced:away', name: 'Leaving home' } }, histories, flow: {}, now: Date.now() };
   }
 
   async function answer(method, path, body) {
@@ -292,7 +313,16 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
       return { design: copy, designs };
     }
     if (p === '/web/designs/preview') return designPreview(body.design);
+    // A device's picture: the made-up hallway camera's.
+    if (p === '/web/designs/image') {
+      const res = await fetch('../dev/cameras/door.webp');
+      const bytes = new Uint8Array(await res.arrayBuffer());
+      let bin = '';
+      for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+      return { type: 'image/webp', data: btoa(bin) };
+    }
     if (p === '/web/designs/pick') {
+      if (body.what === 'image') return [{ id: 'cam-door', name: 'Front door camera', description: 'Hallway' }, { id: 'cam-garden', name: 'Garden camera', description: 'Garden' }];
       const items = body.what === 'flow'
         ? [['flow:movie', 'Movie night', 'Flow'], ['flow:goodnight', 'Good night', 'Flow'], ['advanced:away', 'Leaving home', 'Advanced Flow']]
         : [['v1', 'House mode', 'Text'], ['v2', 'Vacation', 'Yes/No'], ['v3', 'Guests tonight', 'Number']];

@@ -33,8 +33,15 @@ window.mountCustomWidget = function (Homey, { root, frame }) {
     colorStyle: settings.colorStyle,
     onHeight: link.setHeight,
     onHaptic: haptic,
-    onSet: (part, value) => call('POST', part.variable ? '/variable' : '/set', { design, part: part.id, value }),
+    onSet: (part, value, slot) => call('POST', part.variable ? '/variable' : '/set', { design, part: part.id, value, ...(slot ? { slot } : {}) }),
     onButton: part => call('POST', part.flowId ? '/flow' : '/tap', { design, part: part.id, instance }),
+    // A button's actions the app runs, one at a time and in order; `do` says which kind (its API key use).
+    onAction: (part, index, action) => call('POST', '/action', { design, part: part.id, index, do: action.do }),
+    // A web dashboard's page opens one (as Dashboard Shortcuts does).
+    onOpen: (id) => { try { Homey.popup(`#/d/${encodeURIComponent(id)}`); } catch (e) { console.error(e); } },
+    onImage: part => Homey.api('GET', `/image?design=${encodeURIComponent(design)}&part=${encodeURIComponent(part.id)}`),
+    // Widget states are kept on this screen, per design.
+    storeKey: design,
   });
 
   const ready = () => link.ready({ fonts: true });

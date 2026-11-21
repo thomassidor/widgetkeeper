@@ -12,11 +12,12 @@ For [web dashboards](../../README.md#web-dashboards) only, for now: a widget you
 Changes are saved as you go, and Undo takes them back. **Add to dashboard** puts the design on a web dashboard, or add it there yourself with Add widget → Widget Builder and pick it in the widget's settings. A change to a design shows on every dashboard that has it.
 
 **Components:**
-- **Layout:** Container, Text (with values in it: *Inside {1} · humidity {2}*, each a device value, a variable, a calculated value, the time, the date or the weekday), Icon, Shape (a rectangle, circle or line, in a colour or a gradient).
-- **Display:** Value (large over two rows, with a graph if you like), Mini chart, Gauge, Level bar, Status (a dot that lights up), Flow value (only Flows fill it), Calculated value (up to 12 values summed, averaged, the lowest or highest and which one it is, a difference, a count such as *3 open*, or a formula like `(a + b) / 2`; it can stay hidden and only feed texts and rules), Time (a clock, the date, how long since a value changed, or the time left until a time of day).
-- **Controls:** Switch, Button (starts a Flow, or triggers *A Widget Builder button was tapped*), Slider, Stepper (− and +, for a setpoint or a number variable), Choice (one of a few options: a mode, a scene, a variable's value), Variable.
+- **Layout:** Container, Text (with values in it: *Inside {1} · humidity {2}*, each a device value, a variable, a calculated value, the time, the date or the weekday), Icon, Shape (a rectangle, circle or line, in a colour or a gradient), Image (a picture from the web, or a device's own: a camera's snapshot, album art, read again every few minutes).
+- **Display:** Value (large over two rows, with a graph if you like), Mini chart, Gauge, Level bar, Status (a dot that lights up), Flow value (only Flows fill it), Calculated value (up to 12 values summed, averaged, the lowest or highest and which one it is, a difference, a count such as *3 open*, or a formula like `(a + b) / 2`; it can stay hidden and only feed texts and rules), Time (a clock, the date, how long since a value changed, or the time left until a time of day), Ring (up to three rings, each a value between its minimum and maximum, the first value in the middle), Repeater (every device with a value, in a room or everywhere, listed by name; only those that are on or open if you like, as rows or tiles; a tap can switch one, and other components can use how many it shows: *{1} open*).
+- **Controls:** Switch, Button (starts a Flow, or triggers *A Widget Builder button was tapped*), Slider, Stepper (− and +, for a setpoint or a number variable), Choice (one of a few options: a mode, a scene, a variable's value), Variable, Widget state (an on/off or a choice that only the widget keeps, on that screen: for rules, texts, buttons, or to switch a container's pages).
+- **Buttons** can do several things in order: set a device value or a variable (on, off, toggle or a value), start a Flow, open another web dashboard, set a widget state. They can ask for a second tap, or to be held.
 
-A **container** is a background (a colour or a gradient) that holds components of its own, snapped to a finer grid (12 columns) or placed freely.
+A **container** is a background (a colour or a gradient) that holds components of its own, snapped to a finer grid (12 columns), placed freely, or on **pages** (up to six) switched with tabs, dots or a widget state.
 
 **Rules:** a component can change with its value, or with another one. When the value is above, below, is or is not something you type, it takes a colour or is hidden. The first rule that matches is used. Shapes, texts, icons, buttons and containers have no value of their own, so their rules check another: a dot that turns red while the front door is unlocked, a container that turns orange when the calculated power goes over 2,000 W. A Time's rules compare minutes (*no motion for 30 minutes*).
 
@@ -39,6 +40,7 @@ Starting a Flow or setting a variable needs the [API key](../../README.md#api-ke
 <img src="../variants/custom-rules.webp" alt="Widget Builder: Rules: a door in red, a charger hidden" width="300" align="top">
 <img src="../variants/custom-controls.webp" alt="Widget Builder: Light · Stepper, choice, variables, gauge" width="300" align="top">
 <img src="../variants/custom-blocks.webp" alt="Widget Builder: Text with values, sums, the time and shapes" width="300" align="top">
+<img src="../variants/custom-more.webp" alt="Widget Builder: Light · Pages by a state, ring, picture, repeater" width="300" align="top">
 </p>
 
 ---

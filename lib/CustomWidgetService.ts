@@ -1,8 +1,9 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
-import { byName, matches, type AutocompleteItem } from './autocomplete.js';
+import { byName, devicesAndZones, matches, type AutocompleteItem } from './autocomplete.js';
+import { deviceImage, fetchImageBase64 } from './deviceIcon.js';
 import {
-  MAX_DESIGNS, allParts, designCharts, designFlows, designSlots, designVariables, findPart, partLabel, readDesign,
+  MAX_DESIGNS, MAX_REPEAT_CANDIDATES, SERVER_ACTIONS, allParts, designCharts, designFlows, designSlots, designVariables, findPart, partLabel, readDesign,
   type Design, type FlowProp, type FlowReset, type Part,
 } from './customDesigns.js';
 import { DebouncedSetting, isReservedKey } from './storedSetting.js';
@@ -227,8 +228,31 @@ export default class CustomWidgetService {
     return this.stateOf(design, this.get(design.id) ? this.flowState(design.id) : {});
   }
 
+  /**
+   * A repeater's devices: every device with its capability, in its room and the rooms inside it, by name, at most
+   * `MAX_REPEAT_CANDIDATES`, as slots. Its test is the widget's, on the live values, so a door that opens shows at once.
+   */
+  private async repeatSlots(part: Part): Promise<string[]> {
+    if (!part.capability) return [];
+    const [devices, zones] = await devicesAndZones(this.homey);
+    const inZone = (zoneId: string | undefined): boolean => {
+      for (let z = zoneId, depth = 0; z && depth < 20; z = zones[z]?.parent, depth++) if (z === part.zone) return true;
+      return false;
+    };
+    return devices
+      .filter(d => d?.capabilitiesObj?.[part.capability!] && d.capabilitiesObj[part.capability!].getable !== false && (!part.zone || inZone(d.zone)))
+      .sort(byName(this.homey))
+      .slice(0, MAX_REPEAT_CANDIDATES)
+      .map(d => `${d.id}:${part.capability}`);
+  }
+
   private async stateOf(design: Design, flow: Record<string, FlowValues & { expires?: number }>) {
-    const slots = designSlots(design);
+    const repeaters = allParts(design).filter(p => p.kind === 'repeat');
+    const repeats = Object.fromEntries(await Promise.all(repeaters.map(async p => [p.id, await this.repeatSlots(p).catch((err) => {
+      this.log('Widget Builder: a repeater\'s devices failed:', err);
+      return [] as string[];
+    })] as const)));
+    const slots = [...new Set([...designSlots(design), ...Object.values(repeats).flat()])];
     const variables = designVariables(design);
     const flows = designFlows(design);
     const charts = designCharts(design);
@@ -248,6 +272,7 @@ export default class CustomWidgetService {
       variables: Object.fromEntries((vars as any[]).map(v => [v.id, v])),
       flows: Object.fromEntries((flowList as any[]).map(f => [f.id, f])),
       histories: Object.fromEntries(histories.flat()),
+      repeats,
       flow,
       // For its Time components and texts with the time: the weekday's and date's language, and the app's time format.
       language: this.homey.i18n.getLanguage(),
@@ -292,11 +317,22 @@ export default class CustomWidgetService {
    * A switch, slider, stepper or choice changes its device value. Only the part's own capability is set, with a value
    * of its type: a switch's boolean, a number within the capability's (and the part's) range, or one of a choice's values.
    */
-  async setValue(designId: unknown, partId: unknown, value: unknown) {
-    const { part } = this.partFor(designId, partId, ['switch', 'slider', 'stepper', 'choice']);
+  async setValue(designId: unknown, partId: unknown, value: unknown, slot?: unknown) {
+    const { part } = this.partFor(designId, partId, ['switch', 'slider', 'stepper', 'choice', 'repeat']);
+    if (part.kind === 'repeat') {
+      // A repeater switches one of its own devices' yes/no, and only with Tap to switch on.
+      if (!part.control || typeof value !== 'boolean') throw new Error('The repeater can\'t switch this');
+      if (!(await this.repeatSlots(part)).includes(String(slot ?? ''))) throw new Error('Not one of the repeater\'s devices');
+      return this.writeCapability(part, String(slot), value);
+    }
     if (!part.slot) throw new Error('The part has no device value');
-    const i = part.slot.indexOf(':');
-    const [deviceId, capabilityId] = [part.slot.slice(0, i), part.slot.slice(i + 1)];
+    return this.writeCapability(part, part.slot, value);
+  }
+
+  /** Sets a slot's capability for a part: a value of its type, within the capability's and the part's range. */
+  private async writeCapability(part: Part, slot: string, value: unknown) {
+    const i = slot.indexOf(':');
+    const [deviceId, capabilityId] = [slot.slice(0, i), slot.slice(i + 1)];
     const api = await getAppApi(this.homey);
     const device = await api.devices.getDevice({ id: deviceId });
     const cap = device.capabilitiesObj?.[capabilityId];
@@ -327,8 +363,94 @@ export default class CustomWidgetService {
     }
     await device.setCapabilityValue({ capabilityId, value: v });
     this.debug(`Widget Builder: ${device.name} ${capabilityId}=${JSON.stringify(v)}`);
-    if (part.kind === 'choice') void this.fireChoice(designId, part, String(value));
+    if (part.kind === 'choice') void this.fireChoice(this.designOf(part), part, String(value));
     return { ok: true as const };
+  }
+
+  private designOf(part: Part): string {
+    return this.designs.find(d => allParts(d).includes(part))?.id ?? '';
+  }
+
+  /**
+   * A typed value read as a capability's or variable's type: a yes/no from on/off/yes/no/true/false/1/0/open/closed,
+   * or `toggle` the opposite of `current`; a number (a decimal comma read); an enum's id or title; else the text.
+   */
+  static typedValue(type: string, text: string, current: unknown, values?: { id: string, title?: string }[]): unknown {
+    const s = text.trim();
+    if (type === 'boolean') {
+      const l = s.toLowerCase();
+      if (l === 'toggle') return current !== true;
+      if (['on', 'yes', 'true', '1', 'open'].includes(l)) return true;
+      if (['off', 'no', 'false', '0', 'closed'].includes(l)) return false;
+      throw new Error(`Not a yes/no: ${s}`);
+    }
+    if (type === 'number') {
+      const n = Number(s.replace(',', '.'));
+      if (!s || !Number.isFinite(n)) throw new Error(`Not a number: ${s}`);
+      return n;
+    }
+    if (type === 'enum') {
+      const l = s.toLowerCase();
+      const e = (values ?? []).find(x => x.id === s) ?? (values ?? []).find(x => x.id.toLowerCase() === l || String(x.title ?? '').toLowerCase() === l);
+      if (!e) throw new Error(`Not one of its values: ${s}`);
+      return e.id;
+    }
+    return s;
+  }
+
+  /**
+   * A button's action the app runs (`set`, `variable`, `flow`), the `index`th of the button's, which must be of the kind
+   * the request says (its API key use is read from that, `routeKeyUse()`). The widget runs them in order and does the
+   * others (a dashboard, a widget state) itself.
+   */
+  async runAction(designId: unknown, partId: unknown, index: unknown, kind: unknown) {
+    const { part } = this.partFor(designId, partId, ['button']);
+    const action = part.actions?.[Number(index)];
+    if (!action || action.do !== kind || !SERVER_ACTIONS.includes(action.do)) throw new Error('No such action');
+    if (action.do === 'flow') {
+      await this.deps.flows.trigger(action.flowId);
+    } else if (action.do === 'variable') {
+      const current = (await this.deps.variables.getState([action.variable]))[0] as any;
+      if (!current || current.missing) throw new Error(`No variable ${action.variable}`);
+      await this.deps.variables.set(action.variable, CustomWidgetService.typedValue(current.type, action.value, current.value));
+    } else if (action.do === 'set') {
+      const i = action.slot.indexOf(':');
+      const api = await getAppApi(this.homey);
+      const device = await api.devices.getDevice({ id: action.slot.slice(0, i) });
+      const cap = device.capabilitiesObj?.[action.slot.slice(i + 1)];
+      if (!cap) throw new Error(`${device.name} has no ${action.slot.slice(i + 1)}`);
+      const typed = CustomWidgetService.typedValue(cap.type, action.value, cap.value, cap.values);
+      await this.writeCapability({ ...part, kind: 'slider', min: undefined, max: undefined }, action.slot, typed);
+    }
+    return { ok: true as const };
+  }
+
+  /**
+   * An image's picture from a device (a camera's snapshot, else its first image), fetched by the app (the widget can't
+   * reach Homey's web server), as `{type, data}` base64.
+   */
+  async image(designId: unknown, partId: unknown) {
+    const { part } = this.partFor(designId, partId, ['image']);
+    if (part.image?.kind !== 'device') throw new Error('Not a device\'s image');
+    return this.deviceImage(part.image.device);
+  }
+
+  /** A device's picture (the builder's preview too). */
+  async deviceImage(deviceId: string) {
+    const api = await getAppApi(this.homey);
+    const device = await api.devices.getDevice({ id: deviceId });
+    const img = deviceImage(device, 'camera', { anyType: true });
+    if (!img) throw new Error(`${device.name} has no image`);
+    return fetchImageBase64(api, img.url, 'Image');
+  }
+
+  /** The builder's image picker: every device with an image, by name. */
+  async imageDevices(query: string): Promise<AutocompleteItem[]> {
+    const [devices, zones] = await devicesAndZones(this.homey);
+    return devices
+      .filter(d => deviceImage(d, 'camera', { anyType: true }) && matches(query, d.name))
+      .map(d => ({ id: d.id, name: d.name, description: zones[d.zone]?.name ?? '' }))
+      .sort(byName(this.homey));
   }
 
   /** A variable, stepper or choice on a Homey variable sets it (through the personal API key, as Variables does). */

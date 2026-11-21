@@ -328,3 +328,120 @@ describe('calculated values, shapes, times and texts with values', () => {
     expect(at('since').dataset.wkColor).toBeUndefined();
   });
 });
+
+describe('widget states, pages, actions, images, rings and repeaters', () => {
+  const num = (slot: string, v: unknown, o: object = {}, c: object = {}) => ({ ...value(slot, v, c), ...o });
+  const bool = (slot: string, v: boolean, name: string) => num(slot, v, { name }, { type: 'boolean', units: null });
+  afterEach(() => { localStorage.clear(); });
+
+  it("keeps a widget state on this screen, and rules, texts and a pages container follow it", () => {
+    const s = () => state([
+      part('st', 'state', { stateType: 'choice', initial: 'a', choices: [{ label: 'Alpha', value: 'a' }, { label: 'Beta', value: 'b' }] }),
+      part('tg', 'state', { stateType: 'toggle', initial: 'false', name: 'Guests' }),
+      part('t', 'text', { text: 'Now {1}', refs: [{ part: 'st' }], rules: [{ op: 'is', value: 'on', look: 'hide', of: { part: 'tg' } }] }),
+      part('box', 'container', { mode: 'pages', nav: 'state', pageBy: { part: 'st' }, pages: [{ name: 'A' }, { name: 'B' }], parts: [
+        part('p0', 'text', { text: 'zero', page: 0 }), part('p1', 'text', { text: 'one', page: 1 }),
+      ] }),
+    ]);
+    const { at, root } = widget(s(), { storeKey: 'd' });
+    expect(at('t').textContent).toBe('Now Alpha');
+    expect([at('p0').classList.contains('wb-off-page'), at('p1').classList.contains('wb-off-page')]).toEqual([false, true]);
+    root.querySelectorAll<HTMLElement>('[data-part="st"] .wb-choice')[1].click();
+    expect(at('t').textContent).toBe('Now Beta');
+    expect([at('p0').classList.contains('wb-off-page'), at('p1').classList.contains('wb-off-page')]).toEqual([true, false]);
+    at('tg').click();
+    expect(at('tg').getAttribute('aria-checked')).toBe('true');
+    expect(at('t').classList.contains('wb-hidden')).toBe(true);
+    expect([localStorage.getItem('widgetkeeper.custom.d.st'), localStorage.getItem('widgetkeeper.custom.d.tg')]).toEqual(['b', 'true']);
+    // Another load on this screen starts where it was left.
+    const again = widget(s(), { storeKey: 'd' });
+    expect(again.at('t').textContent).toBe('Now Beta');
+  });
+
+  it('pages with tabs or dots, and shows the page the builder is editing', () => {
+    const s = state([part('box', 'container', { mode: 'pages', nav: 'tabs', pages: [{ name: 'One' }, { name: '' }], parts: [
+      part('p0', 'text', { text: 'zero', page: 0 }), part('p1', 'text', { text: 'one', page: 1 }),
+    ] })]);
+    const { w, at } = widget(s);
+    const tabs = at('box').querySelectorAll<HTMLElement>('.wb-pagebtn');
+    expect([...tabs].map(b => b.textContent)).toEqual(['One', '2']);
+    tabs[1].click();
+    expect(at('p0').classList.contains('wb-off-page')).toBe(true);
+    expect(tabs[1].classList.contains('on')).toBe(true);
+    w.showPage('box', 0);
+    expect(at('p0').classList.contains('wb-off-page')).toBe(false);
+  });
+
+  it("runs a button's actions in order: the app's one at a time, a dashboard and a widget state itself; a confirm asks first", async () => {
+    const calls: string[] = [];
+    const s = state([
+      part('st', 'state', { stateType: 'toggle', initial: 'false' }),
+      part('b', 'button', { name: 'Night', press: 'confirm', actions: [
+        { do: 'set', slot: 'a:onoff', value: 'off' }, { do: 'flow', flowId: 'flow:f' }, { do: 'dashboard', dashboard: 'home' }, { do: 'state', part: 'st', value: 'toggle' },
+      ] }),
+    ]);
+    const { at } = widget(s, {
+      onAction: async (_p: unknown, i: number, a: any) => { calls.push(`${i}:${a.do}`); },
+      onOpen: (id: string) => calls.push(`open:${id}`),
+    });
+    at('b').click();
+    expect(at('b').classList.contains('wb-asking')).toBe(true);
+    expect(calls).toEqual([]);
+    at('b').click();
+    await vi.waitFor(() => expect(calls).toEqual(['0:set', '1:flow', 'open:home']));
+    expect(at('st').getAttribute('aria-checked')).toBe('true');
+  });
+
+  it("stops a button's actions at the first that fails, with the key's reason", async () => {
+    const calls: number[] = [];
+    const s = state([part('b', 'button', { actions: [{ do: 'flow', flowId: 'flow:a' }, { do: 'flow', flowId: 'flow:b' }] })]);
+    const { root } = widget(s, { onAction: async (_p: unknown, i: number) => { calls.push(i); throw Object.assign(new Error('x'), { reason: 'noKey' }); } });
+    root.querySelector<HTMLElement>('[data-part="b"]')!.click();
+    await vi.waitFor(() => expect(root.querySelector('.wb-message')!.textContent).toBe('For this, add an API key in the app settings.'));
+    expect(calls).toEqual([0]);
+  });
+
+  it('fills each ring between its range, the first one\'s value in the middle', () => {
+    const s = state([part('r', 'ring', { name: 'Room', rings: [{ src: { slot: 'a:t' }, min: 10, max: 30 }, { src: { slot: 'a:h' }, color: 'teal' }] })],
+      [num('a:t', 20), num('a:h', 50, {}, { units: '%', decimals: 0 })]);
+    const { at } = widget(s);
+    const arcs = at('r').querySelectorAll('.wb-ring-fill');
+    const frac = (i: number, r: number) => Number(arcs[i].getAttribute('stroke-dasharray')!.split(' ')[0]) / (2 * Math.PI * r);
+    expect(frac(0, 44)).toBeCloseTo(0.5, 2);
+    expect(frac(1, 32)).toBeCloseTo(0.5, 2);
+    expect((arcs[1] as SVGElement).style.stroke).toBe('var(--wk-teal, var(--wk-c))');
+    expect(at('r').querySelector('.wb-value')!.textContent).toBe('20°C');
+  });
+
+  it("lists a repeater's devices whose value holds its test, counts them for others, and switches one with Tap to switch", async () => {
+    const sent: unknown[] = [];
+    const s = state([
+      part('rp', 'repeat', { capability: 'alarm_contact', test: { op: 'is', value: 'on' }, control: true, text: 'All closed' }),
+      part('n', 'text', { text: '{1} open', refs: [{ part: 'rp' }] }),
+    ], [bool('a:alarm_contact', true, 'Back door'), bool('b:alarm_contact', false, 'Shed'), bool('c:alarm_contact', true, 'Garage')],
+    { repeats: { rp: ['a:alarm_contact', 'b:alarm_contact', 'c:alarm_contact'] } });
+    const { w, at } = widget(s, { onSet: async (...args: unknown[]) => { sent.push(args.slice(1)); } });
+    const names = () => [...at('rp').querySelectorAll('.wb-rep-name')].map(n => n.textContent);
+    expect(names()).toEqual(['Back door', 'Garage']);
+    expect(at('n').textContent).toBe('2 open');
+    w.pushValue({ deviceId: 'b', capabilityId: 'alarm_contact', value: true });
+    expect(names()).toEqual(['Back door', 'Shed', 'Garage']);
+    at('rp').querySelector<HTMLElement>('[data-slot="c:alarm_contact"]')!.click();
+    await vi.waitFor(() => expect(sent).toEqual([[false, 'c:alarm_contact']]));
+    for (const id of ['a', 'b', 'c']) w.pushValue({ deviceId: id, capabilityId: 'alarm_contact', value: false });
+    expect(names()).toEqual([]);
+    expect(at('rp').querySelector('.wb-rep-empty')!.textContent).toBe('All closed');
+  });
+
+  it("shows a picture from the web as it is, and a device's through the app", async () => {
+    const { at } = widget(state([
+      part('u', 'image', { image: { kind: 'url', url: 'https://x.test/a.jpg' }, fit: 'contain' }),
+      part('d', 'image', { image: { kind: 'device', device: 'cam' } }),
+      part('n', 'image', {}),
+    ]), { onImage: async () => ({ type: 'image/png', data: 'AAAA' }) });
+    const img = (id: string) => at(id).querySelector<HTMLImageElement>('.wb-img')!;
+    expect([img('u').getAttribute('src'), img('u').style.objectFit]).toEqual(['https://x.test/a.jpg', 'contain']);
+    await vi.waitFor(() => expect(img('d').getAttribute('src')).toBe('data:image/png;base64,AAAA'));
+    expect(at('n').classList.contains('wb-img-empty')).toBe(true);
+  });
+});

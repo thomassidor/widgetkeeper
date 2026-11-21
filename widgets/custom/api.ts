@@ -4,7 +4,7 @@ import { keyResult, logged, logPerf, requireId } from '../../lib/widgetApi.js';
 import { tileShadowOf } from '../../lib/tileShadow.js';
 
 type Homey = App['homey'];
-type Body = { design?: unknown, part?: unknown, value?: unknown, instance?: unknown };
+type Body = { design?: unknown, part?: unknown, value?: unknown, instance?: unknown, slot?: unknown, index?: unknown, do?: unknown };
 
 export default {
   /**
@@ -21,7 +21,7 @@ export default {
   /** `{design, part, value}`: a switch, slider, stepper or choice sets its own device value (the app's token). */
   async set({ homey, body }: { homey: Homey, body: Body }) {
     const app = homey.app as WidgetkeeperApp;
-    return logged(app, 'Widget Builder set failed:', () => app.custom.setValue(requireId(body?.design, 'design'), requireId(body?.part, 'part'), body?.value));
+    return logged(app, 'Widget Builder set failed:', () => app.custom.setValue(requireId(body?.design, 'design'), requireId(body?.part, 'part'), body?.value, body?.slot));
   },
 
   /** `{design, part, value}`: a variable, stepper or choice sets its Homey variable (the personal API key). */
@@ -43,5 +43,21 @@ export default {
     const app = homey.app as WidgetkeeperApp;
     const instance = typeof body?.instance === 'string' ? body.instance : undefined;
     return logged(app, 'Widget Builder tap failed:', () => app.custom.tap(requireId(body?.design, 'design'), requireId(body?.part, 'part'), instance));
+  },
+
+  /**
+   * `{design, part, index, do}`: one of a button's actions the app runs: set a device value (the app's token), set a
+   * variable or start a Flow (the personal API key; `do` says which, and must be the action's).
+   */
+  async action({ homey, body }: { homey: Homey, body: Body }) {
+    const app = homey.app as WidgetkeeperApp;
+    const [design, part] = [requireId(body?.design, 'design'), requireId(body?.part, 'part')];
+    return keyResult(app, 'Widget Builder action failed', async () => { await app.custom.runAction(design, part, body?.index, body?.do); });
+  },
+
+  /** `design`, `part`: an image's picture from its device, `{type, data}` base64. */
+  async image({ homey, query }: { homey: Homey, query: Record<string, string> }) {
+    const app = homey.app as WidgetkeeperApp;
+    return logged(app, 'Widget Builder image failed:', () => app.custom.image(query.design || '', query.part || ''));
   },
 };

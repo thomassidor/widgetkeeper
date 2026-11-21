@@ -155,9 +155,9 @@ const thermostat = () => fakeDevice({
   },
 });
 
-function setup(designs: unknown[] = []) {
-  const devices = [thermostat()];
-  const homey = fakeHomey(fakeApi({ devices }));
+function setup(designs: unknown[] = [], extra: ReturnType<typeof fakeDevice>[] = [], zones: Record<string, { name: string, parent?: string }> = {}) {
+  const devices = [thermostat(), ...extra];
+  const homey = fakeHomey(fakeApi({ devices, zones }));
   if (designs.length) homey.settings.set(CUSTOM_DESIGNS_SETTING, designs);
   const deps = {
     values: { getState: vi.fn(async (slots: string[]) => slots.map(s => ({ deviceId: s.split(':')[0], capabilityId: s.split(':')[1], name: 'X', capability: {}, value: 1 }))) },
@@ -307,5 +307,124 @@ describe('CustomWidgetService: Flow cards', () => {
     service.setText({ id: 'bed/msg' }, 'Two');
     service.save({ ...DESIGN, parts: DESIGN.parts.map(p => (p.id === 'msg' ? { ...p, flow: {} } : p)) });
     expect(((await service.getState('bed')) as any).flow).toEqual({});
+  });
+});
+
+describe('readDesign: widget states, pages, actions, images, rings and repeaters', () => {
+  it("keeps a widget state's kind, choices and start, and a pages container's pages and its parts' pages", () => {
+    const d = readDesign({ parts: [
+      part('st', 'state', { stateType: 'choice', choices: [{ label: 'A', value: 'a' }, { label: 'B', value: 'b' }], initial: 'zz' }),
+      part('on', 'state', { initial: true }),
+      part('box', 'container', { mode: 'pages', nav: 'state', pageBy: { part: 'st' }, pages: [{ name: 'One' }, { name: 'Two' }, ...Array(9).fill({})], parts: [
+        part('k1', 'text', { page: 1 }), part('k2', 'text', { page: 30 }), part('k3', 'text'),
+      ] }),
+      part('grid', 'container', { mode: 'grid', pages: [{ name: 'x' }], parts: [part('k4', 'text', { page: 1 })] }),
+      part('bad', 'container', { mode: 'pages', nav: 'state', pageBy: { part: 'box' } }),
+      part('top', 'text', { page: 2 }),
+    ] })!;
+    const [st, on, box, grid, bad, top] = d.parts;
+    expect([st.stateType, st.initial, on.stateType, on.initial]).toEqual(['choice', 'a', 'toggle', 'true']);
+    expect(box.pages!.length).toBe(6);
+    expect([box.nav, box.pageBy]).toEqual(['state', { part: 'st' }]);
+    expect(box.parts!.map(k => k.page)).toEqual([1, 0, 0]);
+    expect(['pages' in grid, 'page' in grid.parts![0], 'page' in top]).toEqual([false, false, false]);
+    expect([bad.nav, 'pageBy' in bad]).toEqual(['tabs', false]); // a container isn't a widget state
+  });
+
+  it("keeps a button's actions (a state only of the design's own) and how it's pressed", () => {
+    const d = readDesign({ parts: [
+      part('st', 'state', {}),
+      part('b', 'button', { press: 'long', actions: [
+        { do: 'set', slot: 'd1:onoff', value: ' toggle ' }, { do: 'variable', variable: 'v1', value: 3 }, { do: 'flow', flowId: 'flow:f' },
+        { do: 'dashboard', dashboard: 'home' }, { do: 'state', part: 'st', value: 'on' }, { do: 'state', part: 'b', value: 'on' },
+        { do: 'flow', flowId: 'nope' }, { do: 'explode' },
+      ] }),
+    ] })!;
+    expect(d.parts[1].press).toBe('long');
+    expect(d.parts[1].actions).toEqual([
+      { do: 'set', slot: 'd1:onoff', value: 'toggle' }, { do: 'variable', variable: 'v1', value: '3' }, { do: 'flow', flowId: 'flow:f' },
+      { do: 'dashboard', dashboard: 'home' }, { do: 'state', part: 'st', value: 'on' },
+    ]);
+    expect(designSlots(d)).toEqual(['d1:onoff']);
+    expect(designVariables(d)).toEqual(['v1']);
+  });
+
+  it('keeps an image from http(s) or a device, a ring\'s rings, and a repeater\'s filter', () => {
+    expect(readPart(part('i', 'image', { image: { kind: 'url', url: 'javascript:alert(1)' }, refresh: 7 }))).toMatchObject({ fit: 'cover', refresh: 5 });
+    expect(readPart(part('i', 'image', { image: { kind: 'url', url: ' https://x.test/a.jpg ' }, fit: 'contain', refresh: 0 }))).toMatchObject({ image: { kind: 'url', url: 'https://x.test/a.jpg' }, fit: 'contain', refresh: 0 });
+    expect(readPart(part('i', 'image', { image: { kind: 'device', device: 'cam' } }))!.image).toEqual({ kind: 'device', device: 'cam' });
+    const ring = readPart(part('r', 'ring', { rings: [{ src: { slot: 'd:a' }, min: 9, max: 1, color: 'teal' }, { src: {} }, { src: { variable: 'v' } }, { src: { slot: 'd:b' } }, { src: { slot: 'd:c' } }] }))!;
+    expect(ring.rings).toEqual([{ src: { slot: 'd:a' }, min: 1, max: 9, color: 'teal' }, { src: { variable: 'v' }, color: null }]);
+    expect(readPart(part('p', 'repeat', { capability: 'alarm_contact', zone: 'z1', test: { op: 'is', value: 'on' }, columns: 9, itemStyle: 'tile', control: true }))).toMatchObject({
+      capability: 'alarm_contact', zone: 'z1', test: { op: 'is', value: 'on' }, columns: 4, itemStyle: 'tile', control: true,
+    });
+    expect(readPart(part('p', 'repeat', { capability: 'bad id!' }))!.capability).toBeUndefined();
+  });
+
+  it('lets texts, rules and rings read a widget state or a repeater, as calculated values', () => {
+    const d = readDesign({ parts: [
+      part('st', 'state', {}), part('rp', 'repeat', { capability: 'onoff' }), part('sh', 'shape', {}),
+      part('t', 'text', { text: '{1} {2} {3}', refs: [{ part: 'st' }, { part: 'rp' }, { part: 'sh' }] }),
+      part('r', 'ring', { rings: [{ src: { part: 'rp' } }, { src: { part: 'sh' } }] }),
+    ] })!;
+    expect(d.parts[3].refs).toEqual([{ part: 'st' }, { part: 'rp' }, null]);
+    expect(d.parts[4].rings).toEqual([{ src: { part: 'rp' }, color: null }]);
+  });
+});
+
+describe('CustomWidgetService: actions, repeaters and images', () => {
+  const lamp = (id: string, name: string, zone: string, on: boolean) => fakeDevice({ id, name, zone, caps: { onoff: { type: 'boolean', value: on, title: 'On' } } });
+  const BUTTONS = { id: 'act', name: 'Night', parts: [
+    part('b', 'button', { actions: [
+      { do: 'set', slot: 'heat:onoff', value: 'toggle' }, { do: 'variable', variable: 'v1', value: '4,5' }, { do: 'flow', flowId: 'flow:f1' },
+      { do: 'set', slot: 'heat:target_temperature', value: '99' }, { do: 'set', slot: 'heat:thermostat_mode', value: 'Heat' },
+    ] }),
+    part('rp', 'repeat', { capability: 'onoff', zone: 'up', control: true }),
+    part('ro', 'repeat', { capability: 'onoff' }),
+    part('cam', 'image', { image: { kind: 'device', device: 'nope' } }),
+  ] };
+
+  it('runs each action the app runs, of the kind the request names, with the value read as its type', async () => {
+    const { service, deps, device } = setup([BUTTONS]);
+    await service.runAction('act', 'b', 0, 'set');
+    expect(device.sent.at(-1)).toBe('onoff=true'); // toggled from off
+    await service.runAction('act', 'b', 1, 'variable');
+    expect(deps.variables.set).toHaveBeenCalledWith('v1', 4.5);
+    await service.runAction('act', 'b', 2, 'flow');
+    expect(deps.flows.trigger).toHaveBeenCalledWith('flow:f1');
+    await service.runAction('act', 'b', 3, 'set');
+    expect(device.sent.at(-1)).toBe('target_temperature=30'); // within the capability's range
+    await service.runAction('act', 'b', 4, 'set');
+    expect(device.sent.at(-1)).toBe('thermostat_mode="heat"'); // its id, whatever the case
+    await expect(service.runAction('act', 'b', 2, 'set')).rejects.toThrow('No such action'); // not the kind said
+    await expect(service.runAction('act', 'b', 9, 'flow')).rejects.toThrow('No such action');
+    await expect(service.runAction('act', 'rp', 0, 'set')).rejects.toThrow('No such part');
+  });
+
+  it('reads typed values as their type', () => {
+    const typed = CustomWidgetService.typedValue;
+    expect([typed('boolean', 'Open', false), typed('boolean', 'toggle', true), typed('number', ' 21,5 ', 0), typed('string', ' hi ', '')]).toEqual([true, false, 21.5, 'hi']);
+    expect(() => typed('boolean', 'maybe', false)).toThrow();
+    expect(() => typed('number', '', 0)).toThrow();
+    expect(() => typed('enum', 'x', '', [{ id: 'a', title: 'A' }])).toThrow();
+  });
+
+  it("finds a repeater's devices in its room and the rooms in it, by name, and switches only those, with Tap to switch on", async () => {
+    const zones = { home: { name: 'Home' }, up: { name: 'Upstairs', parent: 'home' }, bed: { name: 'Bedroom', parent: 'up' }, down: { name: 'Down', parent: 'home' } };
+    const { service, deps } = setup([BUTTONS], [lamp('l1', 'Reading lamp', 'bed', true), lamp('l2', 'Attic lamp', 'up', false), lamp('l3', 'Kitchen', 'down', true)], zones);
+    const state: any = await service.getState('act');
+    expect(state.repeats.rp).toEqual(['l2:onoff', 'l1:onoff']);
+    expect(state.repeats.ro).toEqual(['l2:onoff', 'heat:onoff', 'l3:onoff', 'l1:onoff']);
+    expect(deps.values.getState.mock.calls.at(-1)![0]).toEqual(expect.arrayContaining(['l1:onoff', 'l2:onoff', 'l3:onoff']));
+    await service.setValue('act', 'rp', false, 'l1:onoff');
+    await expect(service.setValue('act', 'rp', true, 'l3:onoff')).rejects.toThrow("Not one of the repeater's devices");
+    await expect(service.setValue('act', 'ro', true, 'l3:onoff')).rejects.toThrow("can't switch");
+    await expect(service.setValue('act', 'rp', 'on', 'l1:onoff')).rejects.toThrow("can't switch");
+  });
+
+  it("reads only an image part's own device", async () => {
+    const { service } = setup([BUTTONS]);
+    await expect(service.image('act', 'b')).rejects.toThrow('No such part');
+    await expect(service.image('act', 'cam')).rejects.toThrow();
   });
 });

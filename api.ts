@@ -4,7 +4,7 @@ import { deviceNamesState, setDeviceNames } from './lib/deviceNames.js';
 import { KeyError, scopesAllow, type KeyUse } from './lib/PersonalApiKey.js';
 import { setTimeFormat, timeFormatOf } from './lib/timeFormat.js';
 import { homeyTemperatureScale, setTemperatureUnit, shownTemperatureScale, temperatureUnitOf } from './lib/temperatureUnit.js';
-import { idList } from './lib/widgetApi.js';
+import { idList, requireId } from './lib/widgetApi.js';
 import { MAX_DASHBOARDS, MAX_SECTIONS, MAX_WIDGETS } from './lib/WebDashboardService.js';
 import { autocompleteKeyUse, callWidgetRoute, pageKeyUse, type WidgetApis } from './lib/widgetRoutes.js';
 import dayssince from './widgets/dayssince/api.js';
@@ -188,7 +188,15 @@ const api = {
     const q = String(body?.query ?? '');
     if (body?.what === 'flow') return finishList(homey, q, await app.flows.listFlows(q));
     if (body?.what === 'variable') return finishList(homey, q, await app.variables.listVariables(q));
+    if (body?.what === 'image') return finishList(homey, q, await app.custom.imageDevices(q));
     throw new Error('Nothing to pick');
+  },
+
+  /** The builder's preview of a Widget Builder image: a device's picture (`{device}`), `{type, data}` base64. */
+  async postWebDesignImage({ homey, query, body }: { homey: Homey, query?: Record<string, string>, body: { device?: unknown } }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    return app.custom.deviceImage(requireId(body?.device, 'device'));
   },
 
   async getWebIcons({ homey, query }: { homey: Homey, query?: Record<string, string> }) {

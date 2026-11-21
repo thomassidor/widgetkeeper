@@ -2,7 +2,9 @@
 // `mockCustomState(scene)` is a `/state` answer as lib/CustomWidgetService.ts gives it. Scenes: living (the default, the
 // README screenshot), container (a gradient container on the fine grid), free (free-form over a picture-like gradient,
 // with a Flow's message), rules (colours and a hidden part by rules), controls (stepper, choice, variables), blocks
-// (a text with values, calculated values, a clock, the time since motion, and shapes coloured by another value).
+// (a text with values, calculated values, a clock, the time since motion, and shapes coloured by another value), more
+// (a widget state picking a pages container's page, a ring and a picture on it, a repeater of open doors, a button's
+// actions and a yes/no state).
 (function () {
   const NOW = Date.now();
   const HOUR = 3600e3;
@@ -28,6 +30,8 @@
     slot('porch:onoff', 'Porch light', cap('Turned on', 'boolean', null, null), true),
     slot('lock:locked', 'Front door', cap('Locked', 'boolean', null, null), true),
     slot('window:alarm_contact', 'Bedroom window', cap('Contact alarm', 'boolean', null, null), false),
+    slot('back:alarm_contact', 'Back door', cap('Contact alarm', 'boolean', null, null), false),
+    slot('shed:alarm_contact', 'Shed door', cap('Contact alarm', 'boolean', null, null), true),
     slot('heat:target_temperature', 'Bedroom thermostat', cap('Target temperature', 'number', '°C', 1, { min: 5, max: 30 }), 19.5),
     slot('heat:thermostat_mode', 'Bedroom thermostat', cap('Mode', 'enum', null, null,
       { values: [{ id: 'auto', title: 'Auto' }, { id: 'heat', title: 'Heat' }, { id: 'off', title: 'Off' }] }), 'heat'),
@@ -117,8 +121,30 @@
         part('lbl', 'text', at(13, 28, 84, 44), { text: 'Front door locked', size: 'body', style: 'none' }),
       ] }),
     ],
+    more: [
+      part('view', 'state', at(0, 0, 4), { stateType: 'choice', initial: 'climate', style: 'none', name: '',
+        choices: [{ label: 'Climate', value: 'climate' }, { label: 'Doors', value: 'doors' }] }),
+      part('box', 'container', at(0, 1, 4, 2), { mode: 'pages', nav: 'state', pageBy: { part: 'view' }, background: { kind: 'none' },
+        pages: [{ name: 'Climate' }, { name: 'Doors' }], parts: [
+          part('ring', 'ring', at(0, 0, 6, 14), { name: 'Living room', center: 'value', page: 0, rings: [
+            { src: { slot: 'lr:measure_temperature' }, min: 15, max: 30, color: 'orange' },
+            { src: { slot: 'lr:measure_humidity' }, min: 0, max: 100, color: 'teal' },
+            { src: { slot: 'air:measure_co2' }, min: 400, max: 1500, color: 'green' },
+          ] }),
+          part('img', 'image', at(6, 0, 6, 14), { image: { kind: 'url', url: 'cameras/garden.webp' }, fit: 'cover', page: 0 }),
+          part('doors', 'repeat', at(0, 0, 12, 14), { capability: 'alarm_contact', page: 1 }),
+        ] }),
+      part('open', 'repeat', at(0, 3, 2, 2), { name: 'Open now', capability: 'alarm_contact', test: { op: 'is', value: 'on' }, text: 'All closed' }),
+      part('night', 'button', at(2, 3, 2), { name: 'Good night', icon: 'moon', color: 'indigo', press: 'confirm', actions: [
+        { do: 'set', slot: 'lamp:onoff', value: 'off' }, { do: 'state', part: 'view', value: 'doors' },
+      ] }),
+      part('guests', 'state', at(2, 4, 2), { stateType: 'toggle', initial: 'true', name: 'Guests', icon: 'users', color: 'purple' }),
+    ],
   };
-  const NAMES = { living: 'Living room', container: 'Living room card', free: 'Entrance', rules: 'Garage', controls: 'Bedroom', blocks: 'At a glance' };
+  // The repeaters' devices, as the app finds them (every device with the capability, by name).
+  const REPEATS = { more: { doors: ['back:alarm_contact', 'window:alarm_contact', 'garage:alarm_contact', 'shed:alarm_contact'] } };
+  REPEATS.more.open = REPEATS.more.doors;
+  const NAMES = { living: 'Living room', container: 'Living room card', free: 'Entrance', rules: 'Garage', controls: 'Bedroom', blocks: 'At a glance', more: 'Home' };
   // What Flows set: the entrance's message.
   const FLOW = { free: { msg: { value: 'Parcel by the door', color: 'orange', at: NOW - 13 * 60e3 } } };
 
@@ -126,7 +152,7 @@
     const parts = DESIGNS[scene] || DESIGNS.living;
     return JSON.parse(JSON.stringify({
       design: { id: `d-${scene}`, name: NAMES[scene] || scene, updatedAt: 1, parts },
-      values: VALUES, variables: VARIABLES, flows: FLOWS, histories: HISTORIES, flow: FLOW[scene] || {}, language: 'en', timeFormat: '24', now: NOW,
+      values: VALUES, variables: VARIABLES, flows: FLOWS, histories: HISTORIES, flow: FLOW[scene] || {}, repeats: REPEATS[scene] || {}, language: 'en', timeFormat: '24', now: NOW,
     }));
   };
 })();

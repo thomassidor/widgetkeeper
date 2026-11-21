@@ -146,6 +146,14 @@
     "tap": {
       "method": "POST",
       "path": "/tap"
+    },
+    "action": {
+      "method": "POST",
+      "path": "/action"
+    },
+    "image": {
+      "method": "GET",
+      "path": "/image"
     }
   }
 }

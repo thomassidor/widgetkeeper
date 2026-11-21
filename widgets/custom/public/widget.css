@@ -206,3 +206,67 @@ html, body { background: transparent !important; }
 /* Time: a one-row time without a name centres its value. */
 .wb-k-time.wb-noname:not(.wb-big) { justify-content: center; }
 .wb-k-time.wb-noname .wb-name { display: none; }
+
+/* Widget state: a switch or a choice that only the widget keeps (as Switch and Choice look). */
+.wb-k-state.wb-on { background: color-mix(in srgb, var(--wk-c) 22%, var(--wb-tile)); }
+.wb.wk-deep .wb-k-state.wb-on { background: var(--wk-c); --wb-text: var(--wk-on); color: var(--wb-text); }
+.wb-k-state[role="switch"] { cursor: pointer; user-select: none; -webkit-user-select: none; }
+.wb-pill.wb-k-state[role="switch"] { flex-direction: row; align-items: center; gap: 10px; }
+.wb-pill.wb-k-state .wb-name { order: 1; flex: 1 1 auto; }
+.wb-pill.wb-k-state .wb-toggle { order: 3; }
+
+/* Pages: tabs over the page, or dots under it; a part on another page is left out. */
+.wb-box-pages { display: flex; flex-direction: column; }
+.wb-box-pages > .wb-inner { flex: 1; min-height: 0; height: auto; }
+.wb-off-page { display: none !important; }
+.wb-pagenav { display: flex; gap: 4px; flex: none; }
+.wb-nav-tabs > .wb-pagenav { padding: 3px; margin-bottom: 6px; border-radius: 9px; background: var(--wb-track); }
+.wb-nav-tabs .wb-pagebtn {
+  flex: 1; min-width: 0; border: 0; border-radius: 6px; padding: 4px 6px; background: none; color: var(--wb-text); font: inherit;
+  font-size: 12px; line-height: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;
+}
+.wb-nav-tabs .wb-pagebtn.on { background: var(--wk-c); color: var(--wk-on, #FFFFFF); font-weight: var(--wb-medium); }
+.wb-nav-dots > .wb-pagenav { justify-content: center; padding-top: 6px; }
+.wb-nav-dots .wb-pagebtn { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: var(--wb-muted); opacity: .45; cursor: pointer; }
+.wb-nav-dots .wb-pagebtn.on { background: var(--wb-text); opacity: 1; }
+
+/* A button that asks for a second tap, or to be held. */
+.wb-press-hint { text-align: center; }
+.wb-k-button.wb-asking { outline: 2px solid var(--wk-c); outline-offset: -2px; }
+.wb-k-button.holding { transform: scale(.95); transition: transform .6s; }
+
+/* Image: the whole box, cut to its background's corners. */
+.wb-k-image { padding: 0; overflow: hidden; }
+.wb-k-image.wb-bare { border-radius: 0; }
+.wb-img { width: 100%; height: 100%; display: block; }
+.wb-img-empty { background: var(--wb-track); }
+.wb-img-empty .wb-img { visibility: hidden; }
+
+/* Ring: up to three rings, outside in, the first's value in the middle. */
+.wb-k-ring { padding: 6px 8px; }
+.wb-ring-box { position: relative; flex: 1; min-height: 0; display: flex; justify-content: center; }
+.wb-ring { height: 100%; max-width: 100%; }
+.wb-ring-track, .wb-ring-fill { fill: none; stroke-width: 9; }
+.wb-ring-track { stroke: var(--wb-track); }
+.wb-ring-fill { stroke-linecap: round; transition: stroke-dasharray .3s; }
+.wb-tile.wb-colored .wb-ring-track { stroke: color-mix(in srgb, var(--wb-text) 14%, transparent); }
+.wb-ring-mid { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.wb-ring-mid .wb-value { font-size: var(--wb-fs-small); font-weight: var(--wb-bold); }
+.wb-rings-2 .wb-ring-mid .wb-value { font-size: 12px; }
+.wb-rings-3 .wb-ring-mid .wb-value { font-size: 10px; letter-spacing: -.01em; }
+.wb-k-ring .wb-name { text-align: center; font-weight: var(--homey-font-weight-regular, 400); font-size: 12px; line-height: 16px; color: var(--wb-muted); }
+.wb-k-ring .wb-name[hidden] { display: none; }
+
+/* Repeater: a row or a small tile per device, as many as fit. */
+.wb-k-repeat { justify-content: flex-start; gap: 4px; overflow: hidden; }
+.wb-rep-head[hidden], .wb-rep-empty[hidden] { display: none; }
+.wb-rep-list { display: grid; gap: 4px 10px; min-height: 0; overflow: hidden; }
+.wb-rep-item { position: relative; display: flex; align-items: center; gap: 8px; min-width: 0; min-height: 24px; font-size: var(--wb-fs-small); line-height: var(--wb-lh-small); }
+.wb-rep-item .wb-icon { width: 16px; height: 16px; }
+.wb-rep-item.wb-on .wb-icon { color: var(--wk-c); }
+.wb-rep-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wb-rep-value { flex: none; color: var(--wb-muted); white-space: nowrap; }
+.wb-rep-item[role="switch"] { cursor: pointer; }
+.wb-rep-tiles .wb-rep-item { flex-direction: column; align-items: flex-start; gap: 2px; padding: 6px 8px; border-radius: 8px; background: color-mix(in srgb, var(--wb-text) 6%, transparent); }
+.wb-rep-tiles .wb-rep-item.wb-on { background: color-mix(in srgb, var(--wk-c) 22%, transparent); }
+.wb-rep-tiles .wb-rep-name { width: 100%; font-weight: var(--wb-medium); }

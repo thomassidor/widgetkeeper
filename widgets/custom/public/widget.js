@@ -25,6 +25,10 @@
     noKey: 'For this, add an API key in the app settings.',
     keyScope: 'The API key may not do this (Flows or Variables).',
     keyInvalid: 'The API key was not accepted.',
+    tapAgain: 'Tap again',
+    hold: 'Hold',
+    nothing: 'Nothing to show',
+    page: 'Page __n__',
   };
 
   /** lib/customDesigns.ts' `ruleHolds()` (a test checks they agree). */
@@ -206,6 +210,15 @@
     let message = null;
     /** The design's calculated values by id (`{part}` sources), and its formulas once parsed. */
     let calcs = new Map();
+    /** The design's widget states, repeaters (for `{part}` sources), and each state's value now. */
+    let states = new Map();
+    let repeaters = new Map();
+    const stateValues = new Map();
+    /** A pages container's page now (by id), and the builder's pick of the page it's editing. */
+    const pageNow = new Map();
+    const forcedPage = new Map();
+    /** Images' refresh timers, stopped when the parts are built again. */
+    let imageTimers = [];
     const formulas = new Map();
     let ticker = null;
 
@@ -246,7 +259,12 @@
       }
       if (src.part) {
         const c = calcs.get(src.part);
-        return c ? calcValue(c) : null;
+        if (c) return calcValue(c);
+        const st = states.get(src.part);
+        if (st) return stateEntry(st);
+        const rp = repeaters.get(src.part);
+        if (rp) return { value: repeatItems(rp).length, cap: { type: 'number', units: null, decimals: 0 }, name: rp.name };
+        return null;
       }
       return null;
     }
@@ -327,10 +345,65 @@
       return { value: undefined, at: now };
     }
 
+    // ------------------------------------------------------------ widget states
+
+    const stateKey = part => (opts.storeKey ? `widgetkeeper.custom.${opts.storeKey}.${part.id}` : '');
+    /** A widget state's value: set on this screen (kept for its next load), else what it starts as. */
+    function stateValue(part) {
+      if (stateValues.has(part.id)) return stateValues.get(part.id);
+      let v = part.initial;
+      try {
+        const key = stateKey(part);
+        const kept = key && window.localStorage ? window.localStorage.getItem(key) : null;
+        if (kept !== null && kept !== undefined) v = kept;
+      } catch (e) { /* this page only */ }
+      if (part.stateType === 'choice' && !(part.choices || []).some(c => c.value === v)) v = part.choices && part.choices[0] ? part.choices[0].value : '';
+      const value = part.stateType === 'choice' ? v : v === 'true';
+      stateValues.set(part.id, value);
+      return value;
+    }
+    function stateEntry(part) {
+      const values = (part.choices || []).map(c => ({ id: c.value, title: c.label }));
+      return { value: stateValue(part), cap: part.stateType === 'choice' ? { type: 'enum', values } : { type: 'boolean' }, name: part.name };
+    }
+    /** Sets a widget state (a typed `toggle`, on/off or a choice's value), keeps it, and draws everything again. */
+    function setStateValue(part, text) {
+      let v = text;
+      if (part.stateType !== 'choice') {
+        const l = String(text).trim().toLowerCase();
+        v = l === 'toggle' ? stateValue(part) !== true : ['on', 'yes', 'true', '1', 'open'].includes(l) || text === true;
+      } else if (!(part.choices || []).some(c => c.value === v)) return;
+      stateValues.set(part.id, v);
+      try {
+        const key = stateKey(part);
+        if (key && window.localStorage) window.localStorage.setItem(key, String(v));
+      } catch (e) { /* this page only */ }
+      update();
+    }
+
+    // ------------------------------------------------------------ repeaters
+
+    /** A repeater's devices now: its candidates whose value holds its test (all without one), by name, at most 24. */
+    function repeatItems(part) {
+      const slots = (state && state.repeats && state.repeats[part.id]) || [];
+      const out = [];
+      for (const slot of slots) {
+        const e = sourceEntry({ slot });
+        if (!e || e.missing) continue;
+        if (part.test && !ruleHolds(part.test, e.value)) continue;
+        out.push({ slot, ...e });
+        if (out.length >= 24) break;
+      }
+      return out;
+    }
+
     /** The part's value: hoped for, else reported; `cap` describes it (a variable's is made up). */
     function current(part) {
       if (part.kind === 'calc') return calcValue(part);
       if (part.kind === 'time') return timeValue(part);
+      if (part.kind === 'state') return stateEntry(part);
+      if (part.kind === 'ring') return (part.rings && part.rings[0] && sourceEntry(part.rings[0].src)) || null;
+      if (part.kind === 'repeat') return { value: repeatItems(part).length, cap: { type: 'number', decimals: 0 } };
       const h = hoped.get(part.id);
       const p = pending.get(part.id);
       const s = slotEntry(part);
@@ -402,12 +475,12 @@
 
     // ------------------------------------------------------------ acting
 
-    async function act(part, node, value) {
+    async function act(part, node, value, slot) {
       if (!opts.onSet) return;
       const before = hoped.get(part.id);
-      if (value !== undefined) { hope(part, value); update(); }
+      if (value !== undefined && !slot) { hope(part, value); update(); }
       try {
-        await opts.onSet(part, value);
+        await (slot ? opts.onSet(part, value, slot) : opts.onSet(part, value)); // a repeater names its device
         if (opts.onHaptic) opts.onHaptic();
       } catch (err) {
         console.error(err);
@@ -637,13 +710,31 @@
       button(part, node) {
         const ic = iconSlot(node);
         const name = el('div', { class: 'wb-name' }, node);
+        const hint = el('div', { class: 'wb-sub wb-press-hint', hidden: '' }, node);
         node.setAttribute('role', 'button');
         node.tabIndex = 0;
-        K.onTap(node, async () => {
-          if (opts.preview || node.classList.contains('busy') || !opts.onButton) return;
+        const actions = part.actions || [];
+        let asking = null; // a confirm's first tap, waiting for the second
+        /** Its actions in order (the app runs device values, variables and Flows; the widget the rest), else its Flow or the trigger. */
+        async function run() {
+          if (actions.length) {
+            for (const [i, a] of actions.entries()) {
+              if (a.do === 'state') { const st = states.get(a.part); if (st) setStateValue(st, a.value); continue; }
+              if (opts.preview) continue;
+              if (a.do === 'dashboard') { if (opts.onOpen) opts.onOpen(a.dashboard); continue; }
+              if (opts.onAction) await opts.onAction(part, i, a);
+            }
+            return;
+          }
+          if (opts.preview || !opts.onButton) return;
+          await opts.onButton(part);
+        }
+        async function press() {
+          if (node.classList.contains('busy')) return;
+          if (opts.preview && !actions.some(a => a.do === 'state')) return;
           node.classList.add('busy');
           try {
-            await opts.onButton(part);
+            await run();
             if (opts.onHaptic) opts.onHaptic();
             node.classList.add('done');
             setTimeout(() => node.classList.remove('done'), 1200);
@@ -654,11 +745,152 @@
           } finally {
             node.classList.remove('busy');
           }
-        }, { guard, keys: true });
+        }
+        const showHint = (text) => {
+          hint.textContent = text || '';
+          hint.hidden = !text;
+          node.classList.toggle('wb-asking', !!text);
+        };
+        K.onTap(node, () => {
+          if (part.press === 'long') { showHint(t('hold')); setTimeout(() => showHint(''), 1500); return; }
+          if (part.press === 'confirm' && !asking) {
+            showHint(t('tapAgain'));
+            asking = setTimeout(() => { asking = null; showHint(''); }, 3000);
+            return;
+          }
+          clearTimeout(asking);
+          asking = null;
+          showHint('');
+          press();
+        }, {
+          guard, keys: true,
+          hold: part.press === 'long' ? { ms: 600, when: () => true, act: () => { showHint(''); press(); } } : null,
+        });
         return (c, flow) => {
           ic(part, null, flow);
           const f = part.flowId && state.flows && state.flows[part.flowId];
           name.textContent = (flow && flow.text) || part.name || (f && !f.missing ? f.name : '');
+        };
+      },
+      state(part, node, size) {
+        if (part.stateType === 'choice') {
+          const name = el('div', { class: 'wb-sub' }, node);
+          const row = el('div', { class: 'wb-choices', role: 'radiogroup' }, node);
+          const buttons = (part.choices || []).map((ch) => {
+            const b = el('button', { type: 'button', class: 'wb-choice', role: 'radio', text: ch.label }, row);
+            K.onTap(b, () => { setStateValue(part, ch.value); if (opts.onHaptic) opts.onHaptic(); }, { guard, keys: false, stop: true });
+            return { b, ch };
+          });
+          return (c, flow) => {
+            for (const { b, ch } of buttons) {
+              b.classList.toggle('on', ch.value === c.value);
+              b.setAttribute('aria-checked', ch.value === c.value ? 'true' : 'false');
+            }
+            name.textContent = (flow && flow.text) || part.name || '';
+            name.hidden = !name.textContent;
+          };
+        }
+        const top = el('div', { class: 'wb-top' }, node);
+        const ic = iconSlot(top);
+        const tog = el('span', { class: 'wb-toggle', 'aria-hidden': 'true' }, top);
+        const name = el('div', { class: 'wb-name' }, node);
+        node.setAttribute('role', 'switch');
+        node.tabIndex = 0;
+        K.onTap(node, () => { setStateValue(part, 'toggle'); if (opts.onHaptic) opts.onHaptic(); }, { guard });
+        return (c, flow) => {
+          const on = c.value === true;
+          ic(part, null, flow);
+          node.classList.toggle('wb-on', on);
+          node.setAttribute('aria-checked', on ? 'true' : 'false');
+          tog.classList.toggle('on', on);
+          name.textContent = (flow && flow.text) || part.name || '';
+        };
+      },
+      image(part, node) {
+        const img = el('img', { class: 'wb-img', alt: part.name || '', draggable: 'false' }, node);
+        img.style.objectFit = part.fit === 'contain' ? 'contain' : 'cover';
+        const src = part.image || null;
+        const empty = () => { node.classList.add('wb-img-empty'); img.removeAttribute('src'); };
+        img.addEventListener('error', empty);
+        img.addEventListener('load', () => node.classList.remove('wb-img-empty'));
+        if (!src) empty();
+        else if (src.kind === 'url') img.src = src.url;
+        else if (opts.onImage) {
+          const read = () => Promise.resolve(opts.onImage(part)).then((r) => {
+            if (r && r.data) img.src = `data:${r.type || 'image/jpeg'};base64,${r.data}`;
+            else empty();
+          }, (err) => { console.error(err); empty(); });
+          read();
+          if (part.refresh > 0 && !opts.preview) imageTimers.push(setInterval(() => { if (typeof document === 'undefined' || !document.hidden) read(); }, part.refresh * 60e3));
+        } else empty();
+        return () => {};
+      },
+      ring(part, node) {
+        const box = el('div', { class: `wb-ring-box wb-rings-${(part.rings || []).length}` }, node);
+        const svg = el('svg', { class: 'wb-ring', viewBox: '0 0 100 100', 'aria-hidden': 'true' }, box, SVG_NS);
+        const DEFAULTS = ['blue', 'green', 'orange'];
+        const arcs = (part.rings || []).map((ring, i) => {
+          const r = 44 - i * 12;
+          const len = 2 * Math.PI * r;
+          el('circle', { class: 'wb-ring-track', cx: 50, cy: 50, r }, svg, SVG_NS);
+          const arc = el('circle', { class: 'wb-ring-fill', cx: 50, cy: 50, r, 'stroke-dasharray': `0 ${len}`, transform: 'rotate(-90 50 50)' }, svg, SVG_NS);
+          const c = ring.color || (i === 0 && part.color) || DEFAULTS[i];
+          arc.style.stroke = K.isCustomColor(c) ? c : `var(--wk-${c}, var(--wk-c))`;
+          return { ring, arc, len };
+        });
+        const mid = el('div', { class: 'wb-ring-mid' }, box);
+        const ic = part.center === 'icon' ? iconSlot(mid) : null;
+        const val = part.center === 'value' || !part.center ? el('div', { class: 'wb-value' }, mid) : null;
+        const name = el('div', { class: 'wb-name' }, node);
+        return (c, flow) => {
+          for (const { ring, arc, len } of arcs) {
+            const e = sourceEntry(ring.src);
+            const cap = (e && e.cap) || {};
+            const lo = ring.min != null ? ring.min : cap.min != null ? cap.min : 0;
+            const hi = ring.max != null ? ring.max : cap.max != null ? cap.max : 100;
+            const v = e && !e.missing ? Number(K.scaled(cap, e.value)) : NaN;
+            const f = Number.isFinite(v) && hi > lo ? Math.min(1, Math.max(0, (v - lo) / (hi - lo))) : 0;
+            arc.setAttribute('stroke-dasharray', `${(f * len).toFixed(2)} ${len.toFixed(2)}`);
+          }
+          if (ic) ic(part, null, flow);
+          if (val) val.textContent = textOf(part, c, flow);
+          name.textContent = (flow && flow.text) || part.name || (c && c.name) || '';
+          name.hidden = !name.textContent;
+        };
+      },
+      repeat(part, node) {
+        node.classList.add(`wb-rep-${part.itemStyle === 'tile' ? 'tiles' : 'rows'}`);
+        const head = el('div', { class: 'wb-name wb-rep-head' }, node);
+        const list = el('div', { class: 'wb-rep-list' }, node);
+        list.style.gridTemplateColumns = `repeat(${part.columns || 1}, minmax(0, 1fr))`;
+        const empty = el('div', { class: 'wb-sub wb-rep-empty', hidden: '' }, node);
+        let shown = '';
+        return (c, flow) => {
+          head.textContent = (flow && flow.text) || part.name || '';
+          head.hidden = !head.textContent;
+          const items = repeatItems(part);
+          empty.hidden = items.length > 0;
+          empty.textContent = part.text || t('nothing');
+          // Rebuilt only when the devices shown or their values change.
+          const key = JSON.stringify(items.map(i => [i.slot, i.value, i.name, i.offline]));
+          if (key === shown) return;
+          shown = key;
+          list.textContent = '';
+          for (const item of items) {
+            const row = el('div', { class: 'wb-rep-item', 'data-slot': item.slot }, list);
+            const glyph = el('span', { class: 'wb-icon wb-glyph', 'aria-hidden': 'true' }, row);
+            K.setMask(glyph, (item.cap && item.cap.icon) || K.valueGlyph(item.slot.slice(item.slot.indexOf(':') + 1), item.value), '--wb-mask');
+            el('span', { class: 'wb-rep-name', dir: 'auto', text: item.name || '' }, row);
+            el('span', { class: 'wb-rep-value', text: fmt(item.cap, item.value) }, row);
+            row.classList.toggle('wb-on', item.value === true);
+            K.markOffline(row, item.offline, item.offline ? t('unavailable') : undefined);
+            if (part.control && typeof item.value === 'boolean') {
+              row.setAttribute('role', 'switch');
+              row.setAttribute('aria-checked', item.value ? 'true' : 'false');
+              row.tabIndex = 0;
+              K.onTap(row, () => { if (!opts.preview) act(part, row, !item.value, item.slot); }, { guard });
+            }
+          }
         };
       },
       slider(part, node) {
@@ -812,16 +1044,50 @@
       },
       container(part, node) {
         node.classList.add(`wb-box-${part.mode === 'free' ? 'free' : 'grid'}`);
+        const paged = part.mode === 'pages';
+        let nav = null;
+        if (paged) {
+          node.classList.add('wb-box-pages', `wb-nav-${part.nav || 'tabs'}`);
+          if (part.nav !== 'state') {
+            nav = el('div', { class: 'wb-pagenav', role: 'tablist' }, node);
+            (part.pages || []).forEach((pg, i) => {
+              const b = el('button', { type: 'button', class: 'wb-pagebtn', role: 'tab', text: part.nav === 'dots' ? '' : pg.name || String(i + 1) }, nav);
+              b.setAttribute('aria-label', pg.name || t('page', { n: i + 1 }));
+              K.onTap(b, () => { pageNow.set(part.id, i); forcedPage.delete(part.id); update(); }, { guard, keys: false, stop: true });
+            });
+          }
+        }
         const bg = part.background || { kind: 'none' };
         if (bg.kind === 'color') node.style.background = bg.from;
         else if (bg.kind === 'gradient') node.style.background = `linear-gradient(${bg.angle}deg, ${bg.from}, ${bg.to})`;
         node.classList.toggle('wb-box-plain', bg.kind === 'none');
         if (bg.kind !== 'none') node.classList.add('wb-box-dark');
         const inner = el('div', { class: 'wb-inner' }, node);
-        for (const kid of part.parts || []) inner.appendChild(build(kid, part.mode === 'free' ? 'free' : 'grid'));
-        return () => {};
+        const kids = (part.parts || []).map(kid => [kid, inner.appendChild(build(kid, part.mode === 'free' ? 'free' : 'grid'))]);
+        if (paged && nav && part.nav === 'dots') node.appendChild(nav); // dots under the page
+        return () => {
+          if (!paged) return;
+          const page = pageOf(part);
+          for (const [kid, n] of kids) n.classList.toggle('wb-off-page', (kid.page || 0) !== page);
+          if (nav) [...nav.children].forEach((b, i) => { b.classList.toggle('on', i === page); b.setAttribute('aria-selected', i === page ? 'true' : 'false'); });
+        };
       },
     };
+
+    /** A pages container's page now: the builder's, its widget state's, else the one tapped (from 0). */
+    function pageOf(part) {
+      const n = (part.pages || []).length || 1;
+      let page = pageNow.get(part.id) || 0;
+      if (part.nav === 'state' && part.pageBy && part.pageBy.part) {
+        const st = states.get(part.pageBy.part);
+        if (st) {
+          const v = stateValue(st);
+          page = st.stateType === 'choice' ? Math.max(0, (st.choices || []).findIndex(c => c.value === v)) : v === true ? 1 : 0;
+        }
+      }
+      if (forcedPage.has(part.id)) page = forcedPage.get(part.id);
+      return Math.min(n - 1, Math.max(0, page));
+    }
 
     // ------------------------------------------------------------ drawing
 
@@ -830,9 +1096,17 @@
       views = [];
       builtFor = state && state.design;
       calcs = new Map();
+      states = new Map();
+      repeaters = new Map();
+      for (const timer of imageTimers) clearInterval(timer);
+      imageTimers = [];
       if (!builtFor) { tick(); return; }
       for (const part of builtFor.parts) {
-        for (const p of [part, ...(part.parts || [])]) if (p.kind === 'calc') calcs.set(p.id, p);
+        for (const p of [part, ...(part.parts || [])]) {
+          if (p.kind === 'calc') calcs.set(p.id, p);
+          if (p.kind === 'state') states.set(p.id, p);
+          if (p.kind === 'repeat') repeaters.set(p.id, p);
+        }
       }
       for (const part of builtFor.parts) grid.appendChild(build(part, 'top'));
       tick();
@@ -921,6 +1195,11 @@
       setMessage,
       /** The parts' ids that need a history (for the dev pages). */
       update,
+      /** The builder: shows a pages container's page (null: back to its own). */
+      showPage(id, page) {
+        if (page === null || page === undefined) forcedPage.delete(id); else forcedPage.set(id, page);
+        update();
+      },
     };
   };
 })();

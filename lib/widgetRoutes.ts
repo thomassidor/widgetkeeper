@@ -56,6 +56,9 @@ export function routeKeyUse(type: string, method: string, path: string, body: un
     case 'stack GET /pages': return 'dashboards';
     case 'custom POST /variable': return 'variables';
     case 'custom POST /flow': return 'flows';
+    // A button's action: a variable or a Flow through the key, a device value with the app's token (`DEVICE_WRITES`).
+    // The service refuses an action whose kind isn't `do`, so anything but `set` is checked as the stricter Start Flows.
+    case 'custom POST /action': return b.do === 'set' ? null : b.do === 'variable' ? 'variables' : 'flows';
     case 'lights POST /mood': return 'moods';
     case 'lightrooms POST /mood': return 'moods';
     case 'stack POST /call': return routeKeyUse(String(b.type ?? ''), String(b.method ?? ''), String(b.path ?? ''), b.body);
@@ -78,6 +81,7 @@ export const DEVICE_WRITES: readonly string[] = [
   'media POST /set',
   'keypad POST /press',
   'custom POST /set',
+  'custom POST /action',
 ];
 
 /**

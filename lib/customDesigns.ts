@@ -24,6 +24,12 @@ const MAX_UNITS = 12;
 /** A calculated value's inputs, and a text's values in `{1}` … `{6}`. */
 export const MAX_INPUTS = 12;
 export const MAX_REFS = 6;
+export const MAX_ACTIONS = 6;
+export const MAX_PAGES = 6;
+export const MAX_RINGS = 3;
+/** A repeater's devices the app sends (its test then picks the ones shown), and the most it shows. */
+export const MAX_REPEAT_CANDIDATES = 48;
+export const MAX_REPEAT_ITEMS = 24;
 const MAX_FORMULA = 120;
 
 export const PART_KINDS = [
@@ -31,6 +37,7 @@ export const PART_KINDS = [
   'switch', 'button', 'slider', 'stepper', 'choice', 'variable',
   'container', 'text', 'icon',
   'shape', 'calc', 'time',
+  'state', 'image', 'ring', 'repeat',
 ] as const;
 export type PartKind = typeof PART_KINDS[number];
 
@@ -49,7 +56,9 @@ export const FLOW_RESETS = ['never', 'hour', 'midnight'] as const;
 export type FlowReset = typeof FLOW_RESETS[number];
 
 /** The kinds without a value of their own: each of their rules names the value it checks (`of`). */
-export const VALUELESS_KINDS: readonly PartKind[] = ['shape', 'text', 'icon', 'button', 'container'];
+export const VALUELESS_KINDS: readonly PartKind[] = ['shape', 'text', 'icon', 'button', 'container', 'image'];
+/** The kinds a `{part}` source may name: a calculated value, a widget state, a repeater (how many it shows). */
+export const SOURCE_KINDS: readonly PartKind[] = ['calc', 'state', 'repeat'];
 
 /**
  * Where a value comes from: a device value, a Homey variable, or a calculated value of the same design (`part`, only a
@@ -65,6 +74,26 @@ export type CalcOp = typeof CALC_OPS[number];
 export const TIME_MODES = ['clock', 'date', 'since', 'until'] as const;
 export type TimeMode = typeof TIME_MODES[number];
 export const SHAPES = ['rect', 'circle', 'line'] as const;
+
+/**
+ * What a button does, in order: set a device value or a variable (a typed value, read as its type; `toggle` flips a
+ * yes/no), start a Flow, open a web dashboard, or set a widget state of the design.
+ */
+export type Action =
+  | { do: 'set', slot: string, value: string }
+  | { do: 'variable', variable: string, value: string }
+  | { do: 'flow', flowId: string }
+  | { do: 'dashboard', dashboard: string }
+  | { do: 'state', part: string, value: string };
+export const ACTION_KINDS = ['set', 'variable', 'flow', 'dashboard', 'state'] as const;
+/** The actions the app runs (`POST /action`); the others the widget does itself. */
+export const SERVER_ACTIONS: readonly string[] = ['set', 'variable', 'flow'];
+
+/** A ring of a Ring: its value and range, and its colour. */
+export type RingSpec = { src: Source, min?: number, max?: number, color: TileColor | null };
+
+/** An image: a picture on the web (http or https), or a device's own (a camera's snapshot, album art). */
+export type ImageSource = { kind: 'url', url: string } | { kind: 'device', device: string };
 
 export const RULE_OPS = ['above', 'below', 'is', 'isNot'] as const;
 export type RuleOp = typeof RULE_OPS[number];
@@ -118,7 +147,7 @@ export type Part = {
   /** A value part's line under it: the history (`chart`) or nothing. */
   show?: 'value' | 'chart',
   /** A container's (and a shape's `background`, its fill): */
-  mode?: 'grid' | 'free',
+  mode?: 'grid' | 'free' | 'pages',
   background?: Background,
   parts?: Part[],
   /** A shape's: its form, corner radius (px, a rectangle), opacity (%), a line's thickness (px) and direction. */
@@ -140,6 +169,34 @@ export type Part = {
   sourceOnly?: boolean,
   /** A text's values, shown where `{1}` … `{6}` is (null: one that's gone, shown as `–`). */
   refs?: (Ref | null)[],
+  /** A pages container's pages, how it's paged (tabs, dots, or by a widget state), and that state. */
+  pages?: { name: string }[],
+  nav?: 'tabs' | 'dots' | 'state',
+  pageBy?: Source,
+  /** A part in a pages container: which page (from 0). */
+  page?: number,
+  /** A widget state's: a yes/no or a choice, and what it starts as (`true`/`false`, or a choice's value). */
+  stateType?: 'toggle' | 'choice',
+  initial?: string,
+  /** A button's actions (in place of its one Flow), and how it's pressed: a tap, a tap to confirm, or a long press. */
+  actions?: Action[],
+  press?: 'tap' | 'confirm' | 'long',
+  /** An image's: where from, how it fits, and how often a device's is read again (minutes, 0 never). */
+  image?: ImageSource,
+  fit?: 'cover' | 'contain',
+  refresh?: number,
+  /** A ring's rings, and what its middle shows. */
+  rings?: RingSpec[],
+  center?: 'value' | 'icon' | 'none',
+  /**
+   * A repeater's: every device with `capability` (in `zone` and the rooms in it), those whose value holds `test` shown,
+   * as rows or tiles in `columns`; with `control` a tap switches a yes/no that can be set; `text` where none holds.
+   */
+  capability?: string,
+  zone?: string,
+  itemStyle?: 'row' | 'tile',
+  columns?: number,
+  control?: boolean,
   /** A time's: a clock, a date, how long since `slot` changed, or until `until` (`HH:mm`). */
   timeMode?: TimeMode,
   seconds?: boolean,
@@ -267,10 +324,18 @@ export function readDesign(v: unknown, fallbackId = newId()): Design | null {
       if (count >= MAX_PARTS) break;
       const p = readPart(raw, where);
       if (!p || (p.kind === 'container' && where !== 'top')) continue;
+      if (where === 'top') delete p.page;
       while (seen.has(p.id)) p.id = newId();
       seen.add(p.id);
       count++;
-      if (p.kind === 'container') p.parts = partsOf((raw as any).parts, p.mode === 'free' ? 'free' : 'grid');
+      if (p.kind === 'container') {
+        p.parts = partsOf((raw as any).parts, p.mode === 'free' ? 'free' : 'grid');
+        // In a pages container each part is on a page (the first where it isn't one of them); elsewhere on none.
+        for (const k of p.parts) {
+          if (p.mode === 'pages') k.page = k.page !== undefined && k.page < (p.pages?.length ?? 1) ? k.page : 0;
+          else delete k.page;
+        }
+      }
       out.push(p);
     }
     return out;
@@ -290,12 +355,51 @@ export function readDesign(v: unknown, fallbackId = newId()): Design | null {
  * out, a text's value is emptied (so `{2}` stays `{2}`'s).
  */
 function checkPartSources(design: Design) {
-  const calcs = new Set(allParts(design).filter(p => p.kind === 'calc').map(p => p.id));
-  const ok = (src: Source | undefined, self: string) => !src || !('part' in src) || (src.part !== self && calcs.has(src.part));
-  for (const p of allParts(design)) {
+  const all = allParts(design);
+  const kindOf = new Map(all.map(p => [p.id, p.kind]));
+  const sources = new Set(all.filter(p => SOURCE_KINDS.includes(p.kind)).map(p => p.id));
+  const ok = (src: Source | undefined, self: string) => !src || !('part' in src) || (src.part !== self && sources.has(src.part));
+  for (const p of all) {
     p.rules = p.rules.filter(r => ok(r.of, p.id));
     if (p.refs) p.refs = p.refs.map(r => (r && !ok(r as Source, p.id) ? null : r));
+    if (p.rings) p.rings = p.rings.filter(r => ok(r.src, p.id));
+    // A page is picked by a widget state only.
+    if (p.pageBy && !('part' in p.pageBy && kindOf.get(p.pageBy.part) === 'state')) delete p.pageBy;
+    if (p.nav === 'state' && !p.pageBy) p.nav = 'tabs';
+    if (p.actions) p.actions = p.actions.filter(a => a.do !== 'state' || kindOf.get(a.part) === 'state');
   }
+}
+
+function actionOf(v: unknown): Action | null {
+  if (!v || typeof v !== 'object') return null;
+  const a = v as Record<string, unknown>;
+  const value = str(String(a.value ?? ''), 60);
+  switch (a.do) {
+    case 'set': { const slot = slotOf(a.slot); return slot ? { do: 'set', slot, value } : null; }
+    case 'variable': { const variable = idOf(a.variable, 100); return variable ? { do: 'variable', variable, value } : null; }
+    case 'flow': { const flowId = idOf(a.flowId); return flowId && /^(flow|advanced):/.test(flowId) ? { do: 'flow', flowId } : null; }
+    case 'dashboard': { const dashboard = idOf(a.dashboard, 100); return dashboard ? { do: 'dashboard', dashboard } : null; }
+    case 'state': return typeof a.part === 'string' && ID.test(a.part) && !isReservedKey(a.part) ? { do: 'state', part: a.part, value } : null;
+    default: return null;
+  }
+}
+
+function imageOf(v: unknown): ImageSource | undefined {
+  if (!v || typeof v !== 'object') return undefined;
+  const r = v as Record<string, unknown>;
+  if (r.kind === 'url' && typeof r.url === 'string' && /^https?:\/\/\S+$/i.test(r.url.trim()) && r.url.length <= 500) return { kind: 'url', url: r.url.trim() };
+  const device = idOf(r.device, 100);
+  return r.kind === 'device' && device ? { kind: 'device', device } : undefined;
+}
+
+function choicesOf(v: unknown): Choice[] {
+  const choices: Choice[] = [];
+  for (const c of Array.isArray(v) ? v.slice(0, MAX_CHOICES) : []) {
+    const value = str(String(c?.value ?? ''), 60);
+    if (!value || choices.some(x => x.value === value)) continue;
+    choices.push({ label: str(c?.label, 24) || value, value });
+  }
+  return choices;
 }
 
 /** One part, or null when its kind isn't known. Only the fields its kind uses are kept. */
@@ -317,6 +421,7 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     flow: flowOf(r.flow),
     reset: oneOf(r.reset, FLOW_RESETS, 'never'),
   };
+  if (Number.isInteger(r.page) && r.page >= 0 && r.page < MAX_PAGES) p.page = r.page;
   if (SLOT_KINDS.includes(kind)) {
     const slot = slotOf(r.slot);
     if (slot) p.slot = slot;
@@ -345,16 +450,54 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     case 'button': {
       const flowId = idOf(r.flowId);
       if (flowId && /^(flow|advanced):/.test(flowId)) p.flowId = flowId;
+      const actions = (Array.isArray(r.actions) ? r.actions.slice(0, MAX_ACTIONS) : []).map(actionOf).filter((a): a is Action => !!a);
+      if (actions.length) p.actions = actions;
+      p.press = oneOf(r.press, ['tap', 'confirm', 'long'] as const, 'tap');
       break;
     }
-    case 'choice': {
-      const choices: Choice[] = [];
-      for (const c of Array.isArray(r.choices) ? r.choices.slice(0, MAX_CHOICES) : []) {
-        const value = str(String(c?.value ?? ''), 60);
-        if (!value || choices.some(x => x.value === value)) continue;
-        choices.push({ label: str(c?.label, 24) || value, value });
+    case 'choice':
+      p.choices = choicesOf(r.choices);
+      break;
+    case 'state':
+      p.stateType = r.stateType === 'choice' ? 'choice' : 'toggle';
+      if (p.stateType === 'choice') {
+        p.choices = choicesOf(r.choices);
+        p.initial = p.choices.some(c => c.value === r.initial) ? r.initial : p.choices[0]?.value ?? '';
+      } else {
+        p.initial = r.initial === 'true' || r.initial === true ? 'true' : 'false';
       }
-      p.choices = choices;
+      break;
+    case 'image':
+      if (imageOf(r.image)) p.image = imageOf(r.image);
+      p.fit = r.fit === 'contain' ? 'contain' : 'cover';
+      p.refresh = [0, 1, 5, 15, 60].includes(Number(r.refresh)) ? Number(r.refresh) : 5;
+      break;
+    case 'ring': {
+      const rings: RingSpec[] = [];
+      for (const x of Array.isArray(r.rings) ? r.rings.slice(0, MAX_RINGS) : []) {
+        const src = sourceOf(x?.src);
+        if (!src) continue;
+        const ring: RingSpec = { src, color: color(x?.color) };
+        const [min, max] = [optNum(x?.min), optNum(x?.max)];
+        if (min !== undefined) ring.min = min;
+        if (max !== undefined) ring.max = max;
+        if (ring.min !== undefined && ring.max !== undefined && ring.min > ring.max) [ring.min, ring.max] = [ring.max, ring.min];
+        rings.push(ring);
+      }
+      p.rings = rings;
+      p.center = oneOf(r.center, ['value', 'icon', 'none'] as const, 'value');
+      break;
+    }
+    case 'repeat': {
+      const cap = typeof r.capability === 'string' && /^[A-Za-z0-9_.-]{1,80}$/.test(r.capability) ? r.capability : '';
+      if (cap) p.capability = cap;
+      const zone = idOf(r.zone, 100);
+      if (zone) p.zone = zone;
+      if (r.test && typeof r.test === 'object' && RULE_OPS.includes(r.test.op)) p.test = { op: r.test.op, value: str(String(r.test.value ?? ''), 60) };
+      p.itemStyle = r.itemStyle === 'tile' ? 'tile' : 'row';
+      p.columns = num(r.columns, 1, 4, 1);
+      if (r.control === true) p.control = true;
+      p.text = str(r.text, MAX_TEXT);
       break;
     }
     case 'text':
@@ -397,9 +540,16 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
       p.units = str(r.units, MAX_UNITS);
       break;
     case 'container':
-      p.mode = r.mode === 'free' ? 'free' : 'grid';
+      p.mode = r.mode === 'free' ? 'free' : r.mode === 'pages' ? 'pages' : 'grid';
       p.background = backgroundOf(r.background);
       p.parts = [];
+      if (p.mode === 'pages') {
+        const pages = (Array.isArray(r.pages) ? r.pages.slice(0, MAX_PAGES) : []).map((x: any) => ({ name: str(x?.name, 24) }));
+        p.pages = pages.length ? pages : [{ name: '' }];
+        p.nav = oneOf(r.nav, ['tabs', 'dots', 'state'] as const, 'tabs');
+        const by = sourceOf(r.pageBy);
+        if (by && 'part' in by) p.pageBy = by;
+      }
       break;
     default:
       break;
@@ -425,6 +575,8 @@ function designSources(design: Design): Source[] {
     for (const r of p.rules) if (r.of) out.push(r.of);
     for (const r of p.refs ?? []) if (r && !('time' in r)) out.push(r);
     out.push(...(p.inputs ?? []));
+    for (const r of p.rings ?? []) out.push(r.src);
+    for (const a of p.actions ?? []) if (a.do === 'set') out.push({ slot: a.slot }); else if (a.do === 'variable') out.push({ variable: a.variable });
   }
   return out;
 }
@@ -439,7 +591,8 @@ export function designVariables(design: Design): string[] {
 }
 
 export function designFlows(design: Design): string[] {
-  return [...new Set(allParts(design).map(p => p.flowId).filter((s): s is string => !!s))];
+  const ids = allParts(design).flatMap(p => [p.flowId, ...(p.actions ?? []).map(a => (a.do === 'flow' ? a.flowId : undefined))]);
+  return [...new Set(ids.filter((s): s is string => !!s))];
 }
 
 /** The Mini charts' and value charts' histories, as `{slot, span}` once each. */
