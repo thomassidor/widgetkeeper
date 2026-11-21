@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
-import { MAX_PARTS, allParts, designCharts, designSlots, readDesign, readPart, ruleHolds } from '../lib/customDesigns.js';
+import { MAX_INPUTS, MAX_PARTS, allParts, designCharts, designSlots, designVariables, readDesign, readPart, ruleHolds } from '../lib/customDesigns.js';
 import CustomWidgetService, {
   CUSTOM_CHOICE_CARD, CUSTOM_DESIGN_EVENT, CUSTOM_DESIGNS_SETTING, CUSTOM_FLOW_EVENT, CUSTOM_FLOW_SETTING, CUSTOM_TAPPED_CARD,
 } from '../lib/CustomWidgetService.js';
@@ -80,6 +80,57 @@ describe('readDesign: a design as kept', () => {
     ] })!;
     expect(designSlots(d)).toEqual(['d1:measure_power', 'd2:measure_humidity']);
     expect(designCharts(d)).toEqual([{ slot: 'd1:measure_power', span: '24h' }]);
+  });
+});
+
+describe('readDesign: shapes, calculated values, times, texts with values and rules on other values', () => {
+  it('keeps a shape\'s form and fill, always without a background', () => {
+    expect(readPart(part('s', 'shape', { shape: 'line', thickness: 20, dir: 'vertical', opacity: 5, style: 'tile', background: { kind: 'color', from: '#112233' } }))).toMatchObject({
+      shape: 'line', thickness: 8, dir: 'vertical', opacity: 10, style: 'none', background: { kind: 'color', from: '#112233' },
+    });
+    const rect = readPart(part('r', 'shape', { shape: 'nope', radius: 99 }))!;
+    expect([rect.shape, rect.radius, rect.opacity, rect.thickness]).toEqual(['rect', 32, 100, undefined]);
+  });
+
+  it("keeps a calculated value's inputs (devices or variables, never parts), its op and only that op's fields", () => {
+    const inputs = [{ slot: 'd1:measure_temperature' }, { variable: 'v1' }, { part: 'x' }, { slot: 'bad' }, 'nope', ...Array(20).fill({ slot: 'd2:onoff' })];
+    const c = readPart(part('c', 'calc', { inputs, op: 'count', test: { op: 'isNot', value: 'off' }, formula: 'a+b', winner: true, decimals: 7, sourceOnly: true }))!;
+    expect(c.inputs!.length).toBe(MAX_INPUTS);
+    expect(c.inputs!.slice(0, 3)).toEqual([{ slot: 'd1:measure_temperature' }, { variable: 'v1' }, { slot: 'd2:onoff' }]);
+    expect([c.op, c.test, c.formula, c.winner, c.decimals, c.sourceOnly]).toEqual(['count', { op: 'isNot', value: 'off' }, undefined, undefined, 3, true]);
+    expect(readPart(part('f', 'calc', { op: 'formula', formula: ' (a + b)  / 2 ' }))).toMatchObject({ op: 'formula', formula: '(a + b) / 2' });
+    expect(readPart(part('m', 'calc', { op: 'max', winner: true }))).toMatchObject({ op: 'max', winner: true });
+    expect(readPart(part('u', 'calc', { op: 'what' }))!.op).toBe('sum');
+  });
+
+  it("keeps a time's mode and only that mode's fields", () => {
+    const since = readPart(part('t', 'time', { timeMode: 'since', slot: 'd1:alarm_motion', seconds: true }))!;
+    expect([since.timeMode, since.slot, 'seconds' in since]).toEqual(['since', 'd1:alarm_motion', false]);
+    expect(readPart(part('t', 'time', { timeMode: 'until', until: '25:00' }))!.until).toBe('22:00');
+    expect(readPart(part('t', 'time', { timeMode: 'until', until: '06:30' }))!.until).toBe('06:30');
+    expect(readPart(part('t', 'time', { timeMode: 'date', dateStyle: 'short' }))!.dateStyle).toBe('short');
+    const clock = readPart(part('t', 'time', { slot: 'd1:onoff' }))!;
+    expect([clock.timeMode, clock.seconds, 'slot' in clock]).toEqual(['clock', false, false]);
+  });
+
+  it("checks every {part} source against the design's calculated values, and gathers every value a design reads", () => {
+    const d = readDesign({ parts: [
+      part('c', 'calc', { inputs: [{ slot: 'd1:measure_power' }, { variable: 'v1' }], rules: [{ op: 'above', value: '1', look: 'red', of: { part: 'c' } }] }),
+      part('t', 'text', { text: '{1} {2} {3} {4}', refs: [{ part: 'c' }, { part: 'gone' }, { time: 'clock' }, { slot: 'd2:measure_humidity' }, { variable: 'v2' }, {}, { slot: 'd9:x' }] }),
+      part('s', 'shape', { rules: [
+        { op: 'is', value: 'on', look: 'hide' }, // a shape's rule without `of` checks nothing: left out
+        { op: 'is', value: 'on', look: 'green', of: { slot: 'd3:onoff' } },
+        { op: 'above', value: '2', look: 'red', of: { part: 't' } }, // not a calculated value
+      ] }),
+      part('box', 'container', { rules: [{ op: 'above', value: '3', look: 'orange', of: { part: 'c' } }], parts: [] }),
+    ] })!;
+    const [c, t, s, box] = d.parts;
+    expect(c.rules).toEqual([]); // itself
+    expect(t.refs).toEqual([{ part: 'c' }, null, { time: 'clock' }, { slot: 'd2:measure_humidity' }, { variable: 'v2' }, null]);
+    expect(s.rules).toEqual([{ op: 'is', value: 'on', look: 'green', of: { slot: 'd3:onoff' } }]);
+    expect(box.rules).toEqual([{ op: 'above', value: '3', look: 'orange', of: { part: 'c' } }]);
+    expect(designSlots(d)).toEqual(['d1:measure_power', 'd2:measure_humidity', 'd3:onoff']);
+    expect(designVariables(d)).toEqual(['v1', 'v2']);
   });
 });
 
@@ -166,6 +217,8 @@ describe('CustomWidgetService: the widget', () => {
     expect(state.variables.v1).toMatchObject({ value: 2 });
     expect(state.flows['flow:f1']).toMatchObject({ name: 'F' });
     expect(state.histories['24h\nheat:target_temperature']).toEqual([[1, 2]]);
+    // For its times: Homey's language and the app's time format ride along.
+    expect([state.language, state.timeFormat]).toEqual(['en', 'auto']);
     expect(await service.getState('nope')).toMatchObject({ missing: true });
   });
 

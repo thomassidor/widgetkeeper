@@ -9,6 +9,7 @@ import { deviceNamer } from './deviceNames.js';
 import { temperatureShower, type TemperatureShower } from './temperatureUnit.js';
 import { FlowColors, parseTileColor, type TileColor } from './tileColors.js';
 import Timings from './Timings.js';
+import { lastUpdatedMs } from './appApi.js';
 
 export const VALUES_STATE_EVENT = 'values:state';
 export const VALUES_COLOR_EVENT = 'values:color';
@@ -26,7 +27,7 @@ export type ValueCapability = CapabilityDescription & {
 export type ValueSecond = { capabilityId: string, capability: ValueCapability, value: unknown };
 
 export type ValueSlot =
-  | { deviceId: string, capabilityId: string, name: string, capability: ValueCapability, value: unknown, color?: TileColor, second?: ValueSecond, offline?: true }
+  | { deviceId: string, capabilityId: string, name: string, capability: ValueCapability, value: unknown, color?: TileColor, second?: ValueSecond, offline?: true, updatedAt?: number }
   | { deviceId: string, capabilityId: string, missing: true };
 
 type Tracked = TrackedEntry & {
@@ -34,6 +35,8 @@ type Tracked = TrackedEntry & {
   capabilityId: string,
   capability: ValueCapability,
   value: unknown,
+  /** When the value last changed (Homey's `lastUpdated`, then each realtime value's arrival): the Widget Builder's Time. */
+  updatedAt: number | null,
 };
 
 /** A slot setting's id: `<deviceId>:<capabilityId>`. */
@@ -107,6 +110,7 @@ export default class ValueService {
           capabilityId,
           capability: { ...describeCapability(cap, capabilityId), icon },
           value: cap.value ?? null,
+          updatedAt: lastUpdatedMs(cap.lastUpdated),
         };
       },
       listen: (t, device) => {
@@ -114,6 +118,7 @@ export default class ValueService {
         this.debug(`Tracking value ${capabilityId} of ${device.name} (${deviceId}) = ${JSON.stringify(t.value)}`);
         return [device.makeCapabilityInstance(capabilityId, (value: unknown) => {
           t.value = value;
+          t.updatedAt = Date.now();
           // In the app's temperature unit, as `/state` sends it; `raw` Homey's own where it differs (the Keypad's).
           const shown = temperatureShower(this.homey).value(t.capability.units, value);
           this.homey.api.realtime(VALUES_STATE_EVENT, { deviceId, capabilityId, value: shown, ...(shown !== value ? { raw: value } : {}) });
@@ -124,6 +129,7 @@ export default class ValueService {
         if (!cap) throw new Error(`${device.name} has no capability ${t.capabilityId}`);
         t.capability = { ...describeCapability(cap, t.capabilityId), icon: t.capability.icon };
         t.value = cap.value ?? null;
+        t.updatedAt = lastUpdatedMs(cap.lastUpdated) ?? t.updatedAt;
       },
       label: t => `${t.capabilityId} of ${t.name}`,
     });
@@ -206,7 +212,7 @@ export default class ValueService {
         const second = await this.second(s.deviceId, seconds[i], s.capabilityId, tm);
         return {
           deviceId: t.deviceId, capabilityId: t.capabilityId, name: show(t.name, t.zone), capability: { ...t.capability }, value: t.value,
-          ...(color ? { color } : {}), ...(second ? { second } : {}), ...offlineFlag(t),
+          ...(color ? { color } : {}), ...(second ? { second } : {}), ...offlineFlag(t), ...(t.updatedAt ? { updatedAt: t.updatedAt } : {}),
         };
       } catch (err) {
         this.log(`Value ${slot} unavailable:`, err);

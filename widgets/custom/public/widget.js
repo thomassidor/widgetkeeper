@@ -49,17 +49,92 @@
   }
   window.customRuleHolds = ruleHolds;
 
+  const FUNCTIONS = {
+    min: Math.min, max: Math.max, abs: Math.abs, floor: Math.floor, ceil: Math.ceil, sqrt: Math.sqrt,
+    round: (x, d = 0) => Math.round(x * 10 ** d) / 10 ** d,
+  };
+  const INPUT_NAMES = 'abcdefghijkl';
+
+  /**
+   * A calculated value's formula: numbers, the inputs `a` … `l`, `+ - * / % ^`, brackets and `min max abs round floor
+   * ceil sqrt`, as a function of the inputs (`{a: 21.5, b: …}`), or null when it can't be read. A small parser, no `eval`
+   * (lib/priceCosts.ts' grammar, with names). An input that's missing makes the result NaN.
+   */
+  function parseFormula(src) {
+    if (typeof src !== 'string' || !src.trim()) return null;
+    const tokens = src.replace(/−/g, '-').replace(/×/g, '*').replace(/÷/g, '/')
+      .match(/\d+(?:\.\d+)?|\.\d+|[a-z]+|[-+*/%^(),;]|\S/gi) || [];
+    let i = 0;
+    const peek = () => tokens[i];
+    const next = () => tokens[i++];
+    const fail = () => { throw new Error('formula'); };
+    const expect = (t) => { if (next() !== t) fail(); };
+    const isSep = t => t === ';' || t === ',';
+    const expr = () => {
+      let left = term();
+      while (peek() === '+' || peek() === '-') {
+        const op = next(); const a = left; const b = term();
+        left = op === '+' ? v => a(v) + b(v) : v => a(v) - b(v);
+      }
+      return left;
+    };
+    const term = () => {
+      let left = unary();
+      while (peek() === '*' || peek() === '/' || peek() === '%') {
+        const op = next(); const a = left; const b = unary();
+        left = op === '*' ? v => a(v) * b(v) : op === '/' ? v => a(v) / b(v) : v => a(v) % b(v);
+      }
+      return left;
+    };
+    const unary = () => {
+      if (peek() === '-') { next(); const a = unary(); return v => -a(v); }
+      if (peek() === '+') { next(); return unary(); }
+      const base = atom();
+      if (peek() !== '^') return base;
+      next();
+      const e = unary();
+      return v => base(v) ** e(v);
+    };
+    const atom = () => {
+      const t = next();
+      if (t == null) fail();
+      if (/^[\d.]/.test(t)) { const n = Number(t); if (!Number.isFinite(n)) fail(); return () => n; }
+      if (t === '(') { const a = expr(); expect(')'); return a; }
+      const name = t.toLowerCase();
+      if (name.length === 1 && INPUT_NAMES.includes(name)) {
+        return v => (v && typeof v[name] === 'number' ? v[name] : NaN);
+      }
+      const fn = Object.prototype.hasOwnProperty.call(FUNCTIONS, name) ? FUNCTIONS[name] : null;
+      if (!fn) fail();
+      expect('(');
+      const args = [expr()];
+      while (isSep(peek())) { next(); args.push(expr()); }
+      expect(')');
+      return v => fn(...args.map(a => a(v)));
+    };
+    try {
+      // A comma (or `;`) separates a function's arguments; decimals take a point.
+      const fn = expr();
+      if (i < tokens.length) fail();
+      return fn;
+    } catch (e) {
+      return null;
+    }
+  }
+  window.customFormula = parseFormula;
+
   /**
    * A part's look now: its colour (a palette name or `#rrggbb`), whether that tints the whole tile (a rule's or a Flow's
    * colour: something to notice; the part's own colour only accents its icon, toggle, bar or line) and whether it's hidden.
    */
-  function lookOf(part, value, flow) {
+  function lookOf(part, value, flow, valueOf) {
     if (flow && flow.hidden === true) return { color: null, tint: false, hidden: true };
     let color = part.color || null;
     let tint = false;
     let hidden = false;
     for (const r of part.rules || []) {
-      if (!ruleHolds(r, value)) continue;
+      // A rule that names another value (`of`) checks that one.
+      if (!ruleHolds(r, r.of ? (valueOf ? valueOf(r.of) : undefined) : value)) continue;
       if (r.look === 'hide') hidden = true;
       else { color = r.look; tint = true; }
       break;
@@ -71,6 +146,7 @@
 
   /** A part's background: its `style`, or as kept before it had one (`tile: false`; text and icons none). */
   function styleOf(part) {
+    if (part.kind === 'shape') return 'none';
     if (['tile', 'pill', 'none'].includes(part.style)) return part.style;
     return part.tile === false || part.kind === 'text' || part.kind === 'icon' ? 'none' : 'tile';
   }
@@ -116,6 +192,7 @@
     const t = K.translator('custom', DEFAULT_STRINGS, opts);
     K.applyColors(root, { style: opts.colorStyle });
     root.classList.add('wb');
+    root.classList.toggle('wb-preview', !!opts.preview);
     const guard = K.touchGuard();
     const report = K.heightReporter(root, opts);
     const drags = new Map();
@@ -127,6 +204,10 @@
     let builtFor = null; // the design object the parts were built from
     let views = []; // {part, node, update}
     let message = null;
+    /** The design's calculated values by id (`{part}` sources), and its formulas once parsed. */
+    let calcs = new Map();
+    const formulas = new Map();
+    let ticker = null;
 
     const grid = el('div', { class: 'wb-grid' }, root);
     const note = el('div', { class: 'wb-message', role: 'status', hidden: '' }, root);
@@ -148,8 +229,108 @@
       const f = state && state.flow && state.flow[part.id];
       return f && (!f.expires || f.expires > Date.now()) ? f : null;
     }
+    /** A source's value now (`{value, cap, name, offline, missing, updatedAt}`), or null when it isn't read. */
+    function sourceEntry(src) {
+      if (!src || !state) return null;
+      if (src.slot) {
+        const s = state.values && state.values[src.slot];
+        if (!s) return null;
+        if (s.missing) return { missing: true };
+        return { value: s.value, cap: s.capability || {}, name: s.name, offline: !!s.offline, updatedAt: s.updatedAt };
+      }
+      if (src.variable) {
+        const v = state.variables && state.variables[src.variable];
+        if (!v) return null;
+        if (v.missing) return { missing: true };
+        return { value: v.value, cap: { type: v.type, units: null, decimals: 2 }, name: v.name };
+      }
+      if (src.part) {
+        const c = calcs.get(src.part);
+        return c ? calcValue(c) : null;
+      }
+      return null;
+    }
+    const valueOf = (src) => { const e = sourceEntry(src); return e && !e.missing ? e.value : undefined; };
+
+    /** A number for a calculation: a boolean as 1/0, a number, else null; an unavailable device's is null too. */
+    function inputNumber(e) {
+      if (!e || e.missing || e.offline) return null;
+      if (typeof e.value === 'boolean') return e.value ? 1 : 0;
+      const n = typeof e.value === 'number' ? e.value : typeof e.value === 'string' && e.value.trim() ? Number(e.value) : NaN;
+      return Number.isFinite(n) ? n : null;
+    }
+
+    /**
+     * A calculated value: its inputs summed, averaged, the lowest or highest (with the winner's name), the first less
+     * the second, counted by a test, or put through a formula. Units are the part's, else its first input's (none for a
+     * count). Unknown (`value: null`) when nothing can be counted in, or for a difference or formula, when an input is.
+     */
+    function calcValue(part) {
+      const entries = (part.inputs || []).map(sourceEntry);
+      const nums = entries.map(inputNumber);
+      const known = nums.filter(n => n !== null);
+      const first = entries.find(e => e && !e.missing && e.cap);
+      const op = part.op || 'sum';
+      let value = null;
+      let winner = '';
+      if (op === 'count') {
+        value = entries.filter(e => e && !e.missing && !e.offline && ruleHolds(part.test || { op: 'is', value: 'on' }, e.value)).length;
+      } else if (op === 'sum') {
+        value = known.length ? known.reduce((a, n) => a + n, 0) : null;
+      } else if (op === 'avg') {
+        value = known.length ? known.reduce((a, n) => a + n, 0) / known.length : null;
+      } else if (op === 'min' || op === 'max') {
+        let at = -1;
+        nums.forEach((n, i) => { if (n !== null && (at < 0 || (op === 'min' ? n < nums[at] : n > nums[at]))) at = i; });
+        if (at >= 0) { value = nums[at]; winner = (entries[at] && entries[at].name) || ''; }
+      } else if (op === 'diff') {
+        value = nums[0] != null && nums[1] != null ? nums[0] - nums[1] : null;
+      } else if (op === 'formula') {
+        if (!formulas.has(part.formula)) formulas.set(part.formula, parseFormula(part.formula));
+        const fn = formulas.get(part.formula);
+        const vars = {};
+        nums.forEach((n, i) => { if (n !== null) vars['abcdefghijkl'[i]] = n; });
+        const r = fn ? fn(vars) : NaN;
+        value = Number.isFinite(r) ? r : null;
+      }
+      const units = part.units || (op === 'count' || !first || !first.cap ? null : first.cap.units || null);
+      const decimals = part.decimals != null ? part.decimals : op === 'count' ? 0 : first && first.cap && first.cap.decimals != null ? first.cap.decimals : 1;
+      const label = part.winner && winner ? [part.name, winner].filter(Boolean).join(' · ') : null;
+      return { value, cap: { type: 'number', units, decimals }, name: winner, label };
+    }
+
+    /** The next `HH:mm` from now, today or tomorrow. */
+    function nextAt(hhmm, now) {
+      const [h, m] = String(hhmm || '').split(':').map(Number);
+      const d = new Date(now);
+      d.setHours(h || 0, m || 0, 0, 0);
+      if (d.getTime() <= now) d.setDate(d.getDate() + 1);
+      return d.getTime();
+    }
+
+    /**
+     * A time part's value for its rules: minutes since its device value changed, or until its time of day; a clock or a
+     * date has none.
+     */
+    function timeValue(part) {
+      const now = Date.now();
+      if (part.timeMode === 'since') {
+        const e = sourceEntry({ slot: part.slot });
+        if (!e) return null;
+        if (e.missing) return { missing: true };
+        return { value: e.updatedAt ? Math.max(0, Math.floor((now - e.updatedAt) / 60e3)) : null, at: e.updatedAt || null, cap: e.cap, name: e.name, offline: e.offline };
+      }
+      if (part.timeMode === 'until') {
+        const at = nextAt(part.until, now);
+        return { value: Math.ceil((at - now) / 60e3), at };
+      }
+      return { value: undefined, at: now };
+    }
+
     /** The part's value: hoped for, else reported; `cap` describes it (a variable's is made up). */
     function current(part) {
+      if (part.kind === 'calc') return calcValue(part);
+      if (part.kind === 'time') return timeValue(part);
       const h = hoped.get(part.id);
       const p = pending.get(part.id);
       const s = slotEntry(part);
@@ -167,6 +348,47 @@
       return null;
     }
     const fmt = (cap, value) => K.formatValue(cap || {}, value, k => t(k));
+    const language = () => (state && state.language) || (typeof navigator !== 'undefined' && navigator.language) || 'en';
+
+    /** `4 min ago`, `in 2 hr.`, `now` in Homey's language (Intl's own words: no strings of ours). */
+    function relative(at, now) {
+      const diff = at - now;
+      const abs = Math.abs(diff);
+      let rtf;
+      try { rtf = new Intl.RelativeTimeFormat(language(), { numeric: 'auto', style: 'short' }); } catch (e) { rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }); }
+      const whole = x => (diff < 0 ? -Math.floor(x) : Math.ceil(x));
+      if (abs < 60e3) return rtf.format(0, 'second');
+      if (abs < 120 * 60e3) return rtf.format(whole(abs / 60e3), 'minute');
+      if (abs < 48 * 3600e3) return rtf.format(whole(abs / 3600e3), 'hour');
+      return rtf.format(whole(abs / 86400e3), 'day');
+    }
+    function dateText(ms, style) {
+      /** @type {Intl.DateTimeFormatOptions} */
+      const o = style === 'weekday' ? { weekday: 'long' } : style === 'short' ? { day: 'numeric', month: 'short' } : { weekday: 'long', day: 'numeric', month: 'long' };
+      try { return new Date(ms).toLocaleDateString(language(), o); } catch (e) { return new Date(ms).toLocaleDateString('en', o); }
+    }
+    /** What a time part shows now. */
+    function timeText(part, c) {
+      const now = Date.now();
+      if (part.timeMode === 'clock') return K.clockTime(now, { seconds: !!part.seconds });
+      if (part.timeMode === 'date') return dateText(now, part.dateStyle);
+      if (!c || c.missing || !c.at) return '–';
+      return relative(c.at, now);
+    }
+    /** A text's `{n}`: its value as Device Values would show it, or the time, date or weekday; `–` when there's none. */
+    function refText(ref) {
+      if (!ref) return '–';
+      if (ref.time === 'clock') return K.clockTime(Date.now());
+      if (ref.time === 'date') return dateText(Date.now(), 'long');
+      if (ref.time === 'weekday') return dateText(Date.now(), 'weekday');
+      const e = sourceEntry(ref);
+      if (!e || e.missing || e.value === null || e.value === undefined) return '–';
+      return fmt(e.cap, e.value);
+    }
+    function fillText(text, refs) {
+      if (!refs || !refs.length) return text;
+      return String(text).replace(/\{([1-6])\}/g, (m, n) => (Number(n) <= refs.length ? refText(refs[Number(n) - 1]) : m));
+    }
     /** The part's range: its own min/max, else the capability's, else 0–100. */
     function range(part, cap) {
       const lo = part.min != null ? part.min : cap && cap.min != null ? cap.min : 0;
@@ -240,13 +462,16 @@
         const c = current(part);
         const flow = flowOf(part);
         const value = flow && flow.value !== undefined ? flow.value : c ? c.value : undefined;
-        const look = lookOf(part, value, flow);
+        const look = lookOf(part, value, flow, valueOf);
+        // A calculated value only for text and rules: not drawn on a dashboard, faint in the builder.
+        if (part.sourceOnly && !opts.preview) look.hidden = true;
+        node.classList.toggle('wb-source-only', !!part.sourceOnly);
         node.classList.toggle('wb-hidden', look.hidden);
         node.setAttribute('aria-hidden', look.hidden ? 'true' : 'false');
         applyColor(node, look.color);
         node.classList.toggle('wb-colored', look.tint);
         node.classList.toggle('wb-has-color', !!look.color);
-        updatePart(c || {}, flow);
+        updatePart(c || {}, flow, look);
         K.markOffline(node, c && (c.offline || c.missing), c && (c.offline || c.missing) ? t('unavailable') : undefined);
       } };
       views.push(view);
@@ -315,7 +540,7 @@
         return (c, flow) => {
           ic(part, c, flow);
           val.textContent = textOf(part, c, flow);
-          name.textContent = (flow && flow.text) || part.name || c.name || '';
+          name.textContent = (flow && flow.text) || (c.label != null ? c.label : part.name || (part.kind === 'calc' ? '' : c.name) || '');
           node.title = narrow ? name.textContent : '';
           if (part.show === 'chart') {
             const pts = state.histories && state.histories[`${part.span}\n${part.slot}`];
@@ -547,7 +772,39 @@
         node.classList.add(`wb-size-${part.size || 'body'}`);
         node.style.textAlign = part.align || 'left';
         const txt = el('div', { class: 'wb-text', dir: 'auto' }, node);
-        return (c, flow) => { txt.textContent = (flow && flow.text) || part.text || ''; };
+        // A Flow's text replaces the whole text, its {1} … left as typed.
+        return (c, flow) => { txt.textContent = (flow && flow.text) || fillText(part.text || '', part.refs); };
+      },
+      calc(part, node, size) {
+        return MAKERS.value(part, node, size);
+      },
+      time(part, node, size) {
+        const big = size.big;
+        node.classList.toggle('wb-big', big);
+        const top = el('div', { class: 'wb-top' }, node);
+        const ic = iconSlot(top);
+        const val = el('span', { class: 'wb-value' }, big ? null : top);
+        const name = el('div', { class: 'wb-name' }, node);
+        if (big) node.insertBefore(val, name);
+        return (c, flow) => {
+          ic(part, null, flow);
+          val.textContent = timeText(part, c);
+          name.textContent = (flow && flow.text) || part.name || (part.timeMode === 'since' && c.name) || '';
+          node.classList.toggle('wb-noname', !name.textContent);
+        };
+      },
+      shape(part, node) {
+        const form = part.shape || 'rect';
+        node.classList.add(`wb-shape-${form}`);
+        if (form === 'line') node.classList.add(part.dir === 'vertical' ? 'wb-line-v' : 'wb-line-h');
+        const fill = el('i', { class: 'wb-shape-fill', 'aria-hidden': 'true' }, node);
+        fill.style.opacity = String((part.opacity != null ? part.opacity : 100) / 100);
+        if (form === 'rect') fill.style.borderRadius = `${part.radius != null ? part.radius : 10}px`;
+        if (form === 'line') fill.style.setProperty('--wb-thick', `${part.thickness || 2}px`);
+        const bg = part.background || { kind: 'none' };
+        const own = bg.kind === 'color' ? bg.from : bg.kind === 'gradient' ? `linear-gradient(${bg.angle}deg, ${bg.from}, ${bg.to})` : '';
+        // Its fill: a rule's or a Flow's colour, else its own background, else its colour from Style (CSS).
+        return (c, flow, look) => { fill.style.background = look && look.tint ? 'var(--wk-c)' : own; };
       },
       icon(part, node) {
         const ic = iconSlot(node);
@@ -572,9 +829,37 @@
       grid.textContent = '';
       views = [];
       builtFor = state && state.design;
-      if (!builtFor) return;
+      calcs = new Map();
+      if (!builtFor) { tick(); return; }
+      for (const part of builtFor.parts) {
+        for (const p of [part, ...(part.parts || [])]) if (p.kind === 'calc') calcs.set(p.id, p);
+      }
       for (const part of builtFor.parts) grid.appendChild(build(part, 'top'));
+      tick();
     }
+
+    /** What changes with the clock: a Time component, or a text with the time in it. Every second with seconds shown. */
+    function timed() {
+      let any = false;
+      let seconds = false;
+      for (const v of views) {
+        if (v.part.kind === 'time') { any = true; if (v.part.timeMode === 'clock' && v.part.seconds) seconds = true; }
+        if ((v.part.refs || []).some(r => r && r.time)) any = true;
+      }
+      return any ? (seconds ? 1000 : 60e3) : 0;
+    }
+    /** Draws the times again on the second or minute, while the page shows. */
+    function tick() {
+      clearTimeout(ticker);
+      ticker = null;
+      const every = timed();
+      if (!every) return;
+      ticker = setTimeout(() => {
+        if (typeof document === 'undefined' || !document.hidden) update();
+        else tick();
+      }, every - (Date.now() % every) + 20);
+    }
+    if (typeof document !== 'undefined') document.addEventListener('visibilitychange', () => { if (!document.hidden && timed()) update(); });
 
     function update() {
       if (!state || !state.design) { report(); return; }
@@ -582,6 +867,7 @@
       for (const v of views) v.update();
       grid.hidden = !!message;
       report();
+      if (timed()) tick();
     }
 
     function setMessage(text, transient) {
@@ -600,6 +886,7 @@
         if (!next || !next.design || !Array.isArray(next.design.parts)) { setMessage(t('error')); return; }
         const sameDesign = state && next && state.design && next.design && state.design.updatedAt === next.design.updatedAt && state.design.id === next.design.id;
         state = next;
+        if (state.timeFormat) K.setTimeFormat(state.timeFormat); // the app's, riding along
         if (sameDesign) state.design = builtFor; // keep the built parts (and a drag on a slider)
         message = null;
         msg.reset();
@@ -612,6 +899,7 @@
         const key = `${deviceId}:${capabilityId}`;
         const s = state.values[key];
         if (!s || s.missing) return;
+        if (s.value !== value) s.updatedAt = Date.now();
         s.value = value;
         for (const v of views) if (v.part.slot === key) { const h = hoped.get(v.part.id); if (h && h.value === value) hoped.delete(v.part.id); }
         update();

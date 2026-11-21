@@ -21,11 +21,16 @@ export const MAX_CHOICES = 6;
 const MAX_NAME = 40;
 const MAX_TEXT = 200;
 const MAX_UNITS = 12;
+/** A calculated value's inputs, and a text's values in `{1}` … `{6}`. */
+export const MAX_INPUTS = 12;
+export const MAX_REFS = 6;
+const MAX_FORMULA = 120;
 
 export const PART_KINDS = [
   'value', 'chart', 'gauge', 'level', 'status', 'flowvalue',
   'switch', 'button', 'slider', 'stepper', 'choice', 'variable',
   'container', 'text', 'icon',
+  'shape', 'calc', 'time',
 ] as const;
 export type PartKind = typeof PART_KINDS[number];
 
@@ -43,10 +48,33 @@ export type FlowProp = typeof FLOW_PROPS[number];
 export const FLOW_RESETS = ['never', 'hour', 'midnight'] as const;
 export type FlowReset = typeof FLOW_RESETS[number];
 
+/** The kinds without a value of their own: each of their rules names the value it checks (`of`). */
+export const VALUELESS_KINDS: readonly PartKind[] = ['shape', 'text', 'icon', 'button', 'container'];
+
+/**
+ * Where a value comes from: a device value, a Homey variable, or a calculated value of the same design (`part`, only a
+ * `calc`; its own inputs are never parts, so nothing loops).
+ */
+export type Source = { slot: string } | { variable: string } | { part: string };
+/** A text's value: a source, or the time, date or weekday now. */
+export type Ref = Source | { time: 'clock' | 'date' | 'weekday' };
+export const REF_TIMES = ['clock', 'date', 'weekday'] as const;
+
+export const CALC_OPS = ['sum', 'avg', 'min', 'max', 'diff', 'count', 'formula'] as const;
+export type CalcOp = typeof CALC_OPS[number];
+export const TIME_MODES = ['clock', 'date', 'since', 'until'] as const;
+export type TimeMode = typeof TIME_MODES[number];
+export const SHAPES = ['rect', 'circle', 'line'] as const;
+
 export const RULE_OPS = ['above', 'below', 'is', 'isNot'] as const;
 export type RuleOp = typeof RULE_OPS[number];
-/** A rule: while the part's value holds `op value`, it takes the colour, or is hidden. The first that holds wins. */
-export type Rule = { op: RuleOp, value: string, look: TileColor | 'hide' };
+/**
+ * A rule: while the part's value (or `of`'s, another value) holds `op value`, it takes the colour, or is hidden. The
+ * first that holds wins.
+ */
+export type Rule = { op: RuleOp, value: string, look: TileColor | 'hide', of?: Source };
+/** A calculated value's `count` test: the rule ops without a look. */
+export type Test = { op: RuleOp, value: string };
 
 /** Top level: cells of the 4-column grid. In a container: fine-grid cells, or per cent of its inner box (free-form). */
 export const PART_STYLES = ['tile', 'pill', 'none'] as const;
@@ -89,10 +117,34 @@ export type Part = {
   span?: string,
   /** A value part's line under it: the history (`chart`) or nothing. */
   show?: 'value' | 'chart',
-  /** A container's: */
+  /** A container's (and a shape's `background`, its fill): */
   mode?: 'grid' | 'free',
   background?: Background,
   parts?: Part[],
+  /** A shape's: its form, corner radius (px, a rectangle), opacity (%), a line's thickness (px) and direction. */
+  shape?: typeof SHAPES[number],
+  radius?: number,
+  opacity?: number,
+  thickness?: number,
+  dir?: 'horizontal' | 'vertical',
+  /** A calculated value's: its inputs (devices or variables), what it does with them, and how it shows. */
+  inputs?: Source[],
+  op?: CalcOp,
+  test?: Test,
+  /** `formula`: the inputs as `a` … `l`. */
+  formula?: string,
+  decimals?: number,
+  /** `min`/`max`: the winning input's name beside the part's. */
+  winner?: boolean,
+  /** Not drawn on a dashboard: only text and rules use it. */
+  sourceOnly?: boolean,
+  /** A text's values, shown where `{1}` … `{6}` is (null: one that's gone, shown as `–`). */
+  refs?: (Ref | null)[],
+  /** A time's: a clock, a date, how long since `slot` changed, or until `until` (`HH:mm`). */
+  timeMode?: TimeMode,
+  seconds?: boolean,
+  dateStyle?: 'short' | 'long' | 'weekday',
+  until?: string,
 };
 
 export type Background =
@@ -149,14 +201,34 @@ function placeOf(v: any, where: 'top' | 'grid' | 'free'): Place {
   return { x, y, w: num(v?.w, 1, cols - x, 1), h: num(v?.h, 1, where === 'top' ? 8 : rows, where === 'top' ? 1 : 8) };
 }
 
-function rulesOf(v: unknown): Rule[] {
+/** A source as kept, or undefined. `parts`: whether a calculated value may be one (checked against the design later). */
+export function sourceOf(v: unknown, parts = true): Source | undefined {
+  if (!v || typeof v !== 'object') return undefined;
+  const r = v as Record<string, unknown>;
+  const slot = slotOf(r.slot);
+  if (slot) return { slot };
+  const variable = idOf(r.variable, 100);
+  if (variable) return { variable };
+  const part = typeof r.part === 'string' && ID.test(r.part) && !isReservedKey(r.part) ? r.part : undefined;
+  return parts && part ? { part } : undefined;
+}
+
+function refOf(v: unknown): Ref | null {
+  if (v && typeof v === 'object' && REF_TIMES.includes((v as any).time)) return { time: (v as any).time };
+  return sourceOf(v) ?? null;
+}
+
+/** `valueless`: a kind without a value of its own keeps only the rules that name theirs. */
+function rulesOf(v: unknown, valueless = false): Rule[] {
   if (!Array.isArray(v)) return [];
   const out: Rule[] = [];
   for (const r of v.slice(0, MAX_RULES)) {
     if (!r || typeof r !== 'object') continue;
     const look = r.look === 'hide' ? 'hide' : color(r.look);
     if (!look || !RULE_OPS.includes(r.op)) continue;
-    out.push({ op: r.op, value: str(String(r.value ?? ''), 60), look });
+    const of = sourceOf(r.of);
+    if (valueless && !of) continue;
+    out.push({ op: r.op, value: str(String(r.value ?? ''), 60), look, ...(of ? { of } : {}) });
   }
   return out;
 }
@@ -203,12 +275,27 @@ export function readDesign(v: unknown, fallbackId = newId()): Design | null {
     }
     return out;
   };
-  return {
+  const design: Design = {
     id,
     name: str(d.name, MAX_NAME) || 'Widget',
     updatedAt: Number.isFinite(d.updatedAt) ? Number(d.updatedAt) : 0,
     parts: partsOf(d.parts, 'top'),
   };
+  checkPartSources(design);
+  return design;
+}
+
+/**
+ * A `{part}` source must be a calculated value of the design, and not the part itself: a rule naming another is left
+ * out, a text's value is emptied (so `{2}` stays `{2}`'s).
+ */
+function checkPartSources(design: Design) {
+  const calcs = new Set(allParts(design).filter(p => p.kind === 'calc').map(p => p.id));
+  const ok = (src: Source | undefined, self: string) => !src || !('part' in src) || (src.part !== self && calcs.has(src.part));
+  for (const p of allParts(design)) {
+    p.rules = p.rules.filter(r => ok(r.of, p.id));
+    if (p.refs) p.refs = p.refs.map(r => (r && !ok(r as Source, p.id) ? null : r));
+  }
 }
 
 /** One part, or null when its kind isn't known. Only the fields its kind uses are kept. */
@@ -225,8 +312,8 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     color: color(r.color),
     icon: typeof r.icon === 'string' && /^[a-z0-9-]{1,40}$/.test(r.icon) ? r.icon : null,
     // Saved before 1.4.0's release as `tile: false` (on a container's background).
-    style: oneOf(r.style, PART_STYLES, r.tile === false || kind === 'text' || kind === 'icon' ? 'none' : 'tile'),
-    rules: kind === 'container' ? [] : rulesOf(r.rules),
+    style: kind === 'shape' ? 'none' : oneOf(r.style, PART_STYLES, r.tile === false || kind === 'text' || kind === 'icon' ? 'none' : 'tile'),
+    rules: rulesOf(r.rules, VALUELESS_KINDS.includes(kind)),
     flow: flowOf(r.flow),
     reset: oneOf(r.reset, FLOW_RESETS, 'never'),
   };
@@ -274,6 +361,36 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
       p.text = typeof r.text === 'string' ? r.text.slice(0, MAX_TEXT) : '';
       p.size = oneOf(r.size, ['heading', 'body', 'small'] as const, 'body');
       p.align = oneOf(r.align, ['left', 'center', 'right'] as const, 'left');
+      if (Array.isArray(r.refs) && r.refs.length) p.refs = r.refs.slice(0, MAX_REFS).map(refOf);
+      break;
+    case 'shape':
+      p.shape = oneOf(r.shape, SHAPES, 'rect');
+      p.background = backgroundOf(r.background);
+      p.opacity = num(r.opacity, 10, 100, 100);
+      if (p.shape === 'rect') p.radius = num(r.radius, 0, 32, 10);
+      if (p.shape === 'line') {
+        p.thickness = num(r.thickness, 1, 8, 2);
+        p.dir = r.dir === 'vertical' ? 'vertical' : 'horizontal';
+      }
+      break;
+    case 'calc': {
+      p.inputs = (Array.isArray(r.inputs) ? r.inputs : []).map(x => sourceOf(x, false)).filter((x): x is Source => !!x).slice(0, MAX_INPUTS);
+      p.op = oneOf(r.op, CALC_OPS, 'sum');
+      if (p.op === 'count') p.test = { op: oneOf(r.test?.op, RULE_OPS, 'is'), value: str(String(r.test?.value ?? 'on'), 60) };
+      if (p.op === 'formula') p.formula = str(r.formula, MAX_FORMULA);
+      if (p.op === 'min' || p.op === 'max') p.winner = r.winner === true;
+      const decimals = optNum(r.decimals);
+      if (decimals !== undefined) p.decimals = num(decimals, 0, 3, 1);
+      p.units = str(r.units, MAX_UNITS);
+      if (r.sourceOnly === true) p.sourceOnly = true;
+      break;
+    }
+    case 'time':
+      p.timeMode = oneOf(r.timeMode, TIME_MODES, 'clock');
+      if (p.timeMode === 'clock') p.seconds = r.seconds === true;
+      if (p.timeMode === 'date') p.dateStyle = oneOf(r.dateStyle, ['short', 'long', 'weekday'] as const, 'long');
+      if (p.timeMode === 'since') { const slot = slotOf(r.slot); if (slot) p.slot = slot; }
+      if (p.timeMode === 'until') p.until = typeof r.until === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(r.until) ? r.until : '22:00';
       break;
     case 'flowvalue':
       p.text = str(r.text, MAX_TEXT);
@@ -299,13 +416,26 @@ export function findPart(design: Design, partId: string): Part | undefined {
   return allParts(design).find(p => p.id === partId);
 }
 
+/** Every source a design reads: the parts' own, their rules' `of`, texts' values and calculated values' inputs. */
+function designSources(design: Design): Source[] {
+  const out: Source[] = [];
+  for (const p of allParts(design)) {
+    if (p.slot) out.push({ slot: p.slot });
+    if (p.variable) out.push({ variable: p.variable });
+    for (const r of p.rules) if (r.of) out.push(r.of);
+    for (const r of p.refs ?? []) if (r && !('time' in r)) out.push(r);
+    out.push(...(p.inputs ?? []));
+  }
+  return out;
+}
+
 /** The device values a design shows, each once. */
 export function designSlots(design: Design): string[] {
-  return [...new Set(allParts(design).map(p => p.slot).filter((s): s is string => !!s))];
+  return [...new Set(designSources(design).map(s => ('slot' in s ? s.slot : '')).filter(Boolean))];
 }
 
 export function designVariables(design: Design): string[] {
-  return [...new Set(allParts(design).map(p => p.variable).filter((s): s is string => !!s))];
+  return [...new Set(designSources(design).map(s => ('variable' in s ? s.variable : '')).filter(Boolean))];
 }
 
 export function designFlows(design: Design): string[] {

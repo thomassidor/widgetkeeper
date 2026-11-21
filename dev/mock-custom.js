@@ -1,7 +1,8 @@
 // The Widget Builder's made-up designs (the house Solbakken) for the dev pages, screenshots and Looks:
 // `mockCustomState(scene)` is a `/state` answer as lib/CustomWidgetService.ts gives it. Scenes: living (the default, the
 // README screenshot), container (a gradient container on the fine grid), free (free-form over a picture-like gradient,
-// with a Flow's message), rules (colours and a hidden part by rules), controls (stepper, choice, variables).
+// with a Flow's message), rules (colours and a hidden part by rules), controls (stepper, choice, variables), blocks
+// (a text with values, calculated values, a clock, the time since motion, and shapes coloured by another value).
 (function () {
   const NOW = Date.now();
   const HOUR = 3600e3;
@@ -16,7 +17,7 @@
     slot('air:measure_co2', 'Air monitor', cap('CO₂', 'number', 'ppm', 0), 640),
     slot('lamp:onoff', 'Floor lamp', cap('Turned on', 'boolean', null, null), true),
     slot('ceiling:dim', 'Ceiling light', cap('Dim level', 'number', '%', 0, { min: 0, max: 1 }), 0.65),
-    slot('hall:alarm_motion', 'Hall sensor', cap('Motion alarm', 'boolean', null, null), true),
+    { ...slot('hall:alarm_motion', 'Hall sensor', cap('Motion alarm', 'boolean', null, null), true), updatedAt: NOW - 8 * 60e3 },
     slot('meter:measure_power', 'Electricity meter', cap('Power', 'number', 'W', 0), 2410),
     slot('solar:measure_power', 'Solar inverter', cap('Power', 'number', 'W', 0), 1120),
     slot('garage:alarm_contact', 'Garage door', cap('Contact alarm', 'boolean', null, null), true),
@@ -26,6 +27,7 @@
     slot('tank:measure_water', 'Rain tank', cap('Level', 'number', '%', 0), 68),
     slot('porch:onoff', 'Porch light', cap('Turned on', 'boolean', null, null), true),
     slot('lock:locked', 'Front door', cap('Locked', 'boolean', null, null), true),
+    slot('window:alarm_contact', 'Bedroom window', cap('Contact alarm', 'boolean', null, null), false),
     slot('heat:target_temperature', 'Bedroom thermostat', cap('Target temperature', 'number', '°C', 1, { min: 5, max: 30 }), 19.5),
     slot('heat:thermostat_mode', 'Bedroom thermostat', cap('Mode', 'enum', null, null,
       { values: [{ id: 'auto', title: 'Auto' }, { id: 'heat', title: 'Heat' }, { id: 'off', title: 'Off' }] }), 'heat'),
@@ -98,8 +100,25 @@
       part('power', 'gauge', at(2, 1, 2, 2), { slot: 'meter:measure_power', name: 'Using now', min: 0, max: 5000, color: 'orange' }),
       part('chart', 'chart', at(0, 2, 2), { slot: 'meter:measure_power', name: 'Today', span: '24h', color: 'orange' }),
     ],
+    blocks: [
+      part('txt', 'text', at(0, 0, 4), { text: 'Inside {1} · humidity {2}', size: 'body', style: 'none',
+        refs: [{ slot: 'lr:measure_temperature' }, { slot: 'lr:measure_humidity' }] }),
+      part('net', 'calc', at(0, 1, 2, 2), { name: 'From the grid', op: 'formula', formula: 'a - b', units: 'W', decimals: 0, icon: 'plugzap', color: 'orange',
+        inputs: [{ slot: 'meter:measure_power' }, { slot: 'solar:measure_power' }], rules: [{ op: 'above', value: '2000', look: 'orange' }] }),
+      part('open', 'calc', at(2, 1), { name: 'Open', op: 'count', test: { op: 'is', value: 'on' }, icon: 'dooropen',
+        inputs: [{ slot: 'garage:alarm_contact' }, { slot: 'window:alarm_contact' }], rules: [{ op: 'above', value: '0', look: 'red' }] }),
+      part('clock', 'time', at(3, 1), { timeMode: 'clock' }),
+      part('motion', 'time', at(2, 2, 2), { timeMode: 'since', slot: 'hall:alarm_motion', name: 'Hall motion', icon: 'footprints' }),
+      part('door', 'container', at(0, 3, 4, 1), { mode: 'free', background: { kind: 'none' }, parts: [
+        part('bg', 'shape', at(0, 0, 100, 100), { shape: 'rect', radius: 14, opacity: 25, color: 'green', style: 'none',
+          rules: [{ op: 'is', value: 'off', look: 'red', of: { slot: 'lock:locked' } }] }),
+        part('dot', 'shape', at(5, 37, 4, 26), { shape: 'circle', color: 'green', style: 'none',
+          rules: [{ op: 'is', value: 'off', look: 'red', of: { slot: 'lock:locked' } }] }),
+        part('lbl', 'text', at(13, 28, 84, 44), { text: 'Front door locked', size: 'body', style: 'none' }),
+      ] }),
+    ],
   };
-  const NAMES = { living: 'Living room', container: 'Living room card', free: 'Entrance', rules: 'Garage', controls: 'Bedroom' };
+  const NAMES = { living: 'Living room', container: 'Living room card', free: 'Entrance', rules: 'Garage', controls: 'Bedroom', blocks: 'At a glance' };
   // What Flows set: the entrance's message.
   const FLOW = { free: { msg: { value: 'Parcel by the door', color: 'orange', at: NOW - 13 * 60e3 } } };
 
@@ -107,7 +126,7 @@
     const parts = DESIGNS[scene] || DESIGNS.living;
     return JSON.parse(JSON.stringify({
       design: { id: `d-${scene}`, name: NAMES[scene] || scene, updatedAt: 1, parts },
-      values: VALUES, variables: VARIABLES, flows: FLOWS, histories: HISTORIES, flow: FLOW[scene] || {}, now: NOW,
+      values: VALUES, variables: VARIABLES, flows: FLOWS, histories: HISTORIES, flow: FLOW[scene] || {}, language: 'en', timeFormat: '24', now: NOW,
     }));
   };
 })();

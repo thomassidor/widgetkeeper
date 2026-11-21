@@ -199,3 +199,132 @@ describe('mount', () => {
     }
   });
 });
+
+describe('calculated values, shapes, times and texts with values', () => {
+  const num = (slot: string, v: unknown, o: object = {}, c: object = {}) => ({ ...value(slot, v, c), ...o });
+
+  it("reads formulas with a small parser of its own: the inputs a … l, + - * / % ^, brackets and a few functions", () => {
+    const f = (src: string, v: object = {}) => { const fn = win.customFormula(src); return fn ? fn(v) : null; };
+    expect(f('(a + b) / 2', { a: 20, b: 23 })).toBe(21.5);
+    expect(f('max(a, b) − c', { a: 1, b: 4, c: 1.5 })).toBe(2.5);
+    expect(f('round(a / 3; 2)', { a: 10 })).toBe(3.33);
+    expect(f('-a ^ 2 + 10 % 4', { a: 3 })).toBe(-7); // −(a²), as written in maths
+    expect(f('a × 2 ÷ 4', { a: 6 })).toBe(3);
+    expect(f('a + b', { a: 1 })).toBeNaN(); // b isn't known
+    for (const bad of ['', 'a +', '(a', 'a b', 'm', 'constructor(a)', 'toString(a)', 'a.b', 'alert(1)', '1,5']) expect([bad, win.customFormula(bad)]).toEqual([bad, null]);
+  });
+
+  it('sums, averages, picks the lowest or highest (and names it), subtracts, counts and calculates, leaving out unavailable devices', () => {
+    const inputs = [{ slot: 'a:t' }, { slot: 'b:t' }, { slot: 'c:t' }];
+    const values = [num('a:t', 20, { name: 'Kitchen' }), num('b:t', 23.5, { name: 'Office' }), num('c:t', 30, { name: 'Attic', offline: true })];
+    const shown = (o: object) => {
+      const { at } = widget(state([part('x', 'calc', { inputs, name: 'Rooms', ...o })], values));
+      return [at('x').querySelector('.wb-value')!.textContent, at('x').querySelector('.wb-name')!.textContent];
+    };
+    expect(shown({ op: 'sum' })).toEqual(['43.5°C', 'Rooms']);
+    expect(shown({ op: 'avg', decimals: 2 })).toEqual(['21.75°C', 'Rooms']);
+    expect(shown({ op: 'max', winner: true })).toEqual(['23.5°C', 'Rooms · Office']);
+    expect(shown({ op: 'min', winner: true, name: '' })).toEqual(['20°C', 'Kitchen']);
+    expect(shown({ op: 'diff', units: 'K' })).toEqual(['-3.5 K', 'Rooms']);
+    expect(shown({ op: 'formula', formula: 'a * 2 + c' })[0]).toBe('–'); // c is unavailable
+    expect(shown({ op: 'formula', formula: 'a * 2 + b' })[0]).toBe('63.5°C');
+    expect(shown({ op: 'count', test: { op: 'above', value: '21' } })[0]).toBe('1');
+  });
+
+  it('counts the switches that are on as they change', () => {
+    const inputs = [{ slot: 'a:onoff' }, { slot: 'b:onoff' }];
+    const values = [num('a:onoff', true, {}, { type: 'boolean', units: null }), num('b:onoff', false, {}, { type: 'boolean', units: null })];
+    const { w, at } = widget(state([part('x', 'calc', { inputs, op: 'count', test: { op: 'is', value: 'on' } })], values));
+    expect(at('x').querySelector('.wb-value')!.textContent).toBe('1');
+    w.pushValue({ deviceId: 'b', capabilityId: 'onoff', value: true });
+    expect(at('x').querySelector('.wb-value')!.textContent).toBe('2');
+  });
+
+  it("leaves a calculated value that's only a source out on a dashboard, and shows it faint in the builder", () => {
+    const s = () => state([part('x', 'calc', { inputs: [{ slot: 'a:t' }], sourceOnly: true })], [num('a:t', 1)]);
+    const dash = widget(s());
+    expect(dash.at('x').classList.contains('wb-source-only')).toBe(true);
+    expect(dash.at('x').classList.contains('wb-hidden')).toBe(true);
+    expect(dash.root.classList.contains('wb-preview')).toBe(false);
+    const builder = widget(s(), { preview: true });
+    expect(builder.at('x').classList.contains('wb-hidden')).toBe(false);
+    expect(builder.root.classList.contains('wb-preview')).toBe(true);
+  });
+
+  it('colours or hides a shape, a text or a container by rules on other values, a calculated one too', () => {
+    const calc = part('sum', 'calc', { inputs: [{ slot: 'a:p' }, { slot: 'b:p' }], op: 'sum' });
+    const s = state([
+      calc,
+      part('s', 'shape', { shape: 'circle', rules: [{ op: 'is', value: 'on', look: 'green', of: { slot: 'a:on' } }, { op: 'is', value: 'off', look: 'hide', of: { slot: 'a:on' } }] }),
+      part('box', 'container', { mode: 'grid', parts: [], rules: [{ op: 'above', value: '1000', look: 'red', of: { part: 'sum' } }] }),
+      part('v', 'value', { slot: 'a:p', rules: [{ op: 'above', value: '1000', look: 'orange', of: { part: 'sum' } }] }),
+    ], [num('a:p', 600, {}, { units: 'W' }), num('b:p', 300, {}, { units: 'W' }), num('a:on', true, {}, { type: 'boolean', units: null })]);
+    const { w, at } = widget(s);
+    expect(at('s').classList.contains('wb-shape-circle')).toBe(true);
+    expect(at('s').dataset.wkColor).toBe('green');
+    expect(at('s').querySelector<HTMLElement>('.wb-shape-fill')!.style.background).toBe('var(--wk-c)');
+    expect(at('box').classList.contains('wb-colored')).toBe(false);
+    w.pushValue({ deviceId: 'b', capabilityId: 'p', value: 500 });
+    expect(at('box').classList.contains('wb-colored')).toBe(true);
+    expect(at('box').dataset.wkColor).toBe('red');
+    expect(at('v').dataset.wkColor).toBe('orange');
+    w.pushValue({ deviceId: 'a', capabilityId: 'on', value: false });
+    expect(at('s').classList.contains('wb-hidden')).toBe(true);
+  });
+
+  it("fills a shape with its own background, else its Style colour, and draws a line's thickness", () => {
+    const { at } = widget(state([
+      part('g', 'shape', { shape: 'rect', radius: 4, opacity: 50, background: { kind: 'gradient', from: '#112233', to: '#445566', angle: 90 } }),
+      part('l', 'shape', { shape: 'line', dir: 'vertical', thickness: 3, color: 'blue', background: { kind: 'none' } }),
+    ]));
+    const g = at('g').querySelector<HTMLElement>('.wb-shape-fill')!;
+    expect(g.style.background).toContain('linear-gradient');
+    expect([g.style.borderRadius, g.style.opacity]).toEqual(['4px', '0.5']);
+    expect(at('g').classList.contains('wb-tile')).toBe(false);
+    const l = at('l');
+    expect(l.classList.contains('wb-line-v')).toBe(true);
+    expect(l.querySelector<HTMLElement>('.wb-shape-fill')!.style.getPropertyValue('--wb-thick')).toBe('3px');
+    expect(l.querySelector<HTMLElement>('.wb-shape-fill')!.style.background).toBe('');
+    expect(l.dataset.wkColor).toBe('blue');
+  });
+
+  it('fills a text\'s {1} … with its values, the time and calculated ones, – for a missing one; a Flow\'s text replaces it', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 10, 21, 14, 5));
+    const s = state([
+      part('c', 'calc', { inputs: [{ slot: 'a:t' }, { slot: 'b:t' }], op: 'avg', sourceOnly: true }),
+      part('x', 'text', { text: 'Inside {1}, average {2} at {3}. {4} {5} {9}', refs: [{ slot: 'a:t' }, { part: 'c' }, { time: 'clock' }, null, { variable: 'v' }] }),
+    ], [num('a:t', 21), num('b:t', 23)], { variables: { v: { id: 'v', name: 'Mode', type: 'string', value: 'Away' } } });
+    const { w, at } = widget(s);
+    expect(at('x').textContent).toBe('Inside 21°C, average 22°C at 14:05. – Away {9}');
+    vi.advanceTimersByTime(61e3);
+    expect(at('x').textContent).toContain('at 14:06');
+    w.pushFlow({ part: 'x', values: { text: 'Gone {1}', at: 1 } });
+    expect(at('x').textContent).toBe('Gone {1}');
+  });
+
+  it("shows a clock, a date, how long since a value changed and the time until a time of day; its rules compare minutes", () => {
+    vi.useFakeTimers();
+    const now = new Date(2026, 10, 21, 21, 30).getTime();
+    vi.setSystemTime(now);
+    const s = state([
+      part('clock', 'time', { timeMode: 'clock', seconds: true }),
+      part('date', 'time', { timeMode: 'date', dateStyle: 'weekday' }),
+      part('since', 'time', { timeMode: 'since', slot: 'a:alarm_motion', rules: [{ op: 'above', value: '30', look: 'orange' }] }),
+      part('until', 'time', { timeMode: 'until', until: '23:00', name: 'Bedtime' }),
+    ], [num('a:alarm_motion', false, { name: 'Hall', updatedAt: now - 45 * 60e3 }, { type: 'boolean', units: null })], { language: 'en' });
+    const { w, at } = widget(s);
+    const val = (id: string) => at(id).querySelector('.wb-value')!.textContent;
+    expect(val('clock')).toBe('21:30:00');
+    expect(val('date')).toBe('Saturday');
+    expect(val('since')).toBe('45 min. ago');
+    expect(at('since').querySelector('.wb-name')!.textContent).toBe('Hall');
+    expect(at('since').dataset.wkColor).toBe('orange');
+    expect(val('until')).toBe('in 90 min.');
+    vi.advanceTimersByTime(1100);
+    expect(val('clock')).toBe('21:30:01');
+    w.pushValue({ deviceId: 'a', capabilityId: 'alarm_motion', value: true });
+    expect(val('since')).toBe('now');
+    expect(at('since').dataset.wkColor).toBeUndefined();
+  });
+});

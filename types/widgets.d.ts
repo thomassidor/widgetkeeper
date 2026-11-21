@@ -225,7 +225,8 @@ interface Window {
   createCustomWidget:(root: HTMLElement, opts?: object) => any;
   /** The Widget Builder's rule check and look (lib/customDesigns.ts' twins), for the tests and the builder page. */
   customRuleHolds: (rule: any, value: unknown) => boolean;
-  customLookOf: (part: any, value: unknown, flow: any) => { color: string | null, hidden: boolean };
+  customLookOf: (part: any, value: unknown, flow: any, valueOf?: (source: any) => unknown) => { color: string | null, tint: boolean, hidden: boolean };
+  customFormula: (src: string) => ((inputs: Record<string, number>) => number) | null;
   createPriceWidget: (root: HTMLElement, opts?: object) => any;
   electricityPriceLevel: (price: number | null, prices: (number | null)[]) => 'low' | 'medium' | 'high' | null;
   createTimersWidget: (root: HTMLElement, opts?: object) => any;

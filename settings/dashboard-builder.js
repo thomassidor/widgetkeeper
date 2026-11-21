@@ -28,6 +28,7 @@
       ['switch', 'control', 'power', 2, 1], ['button', 'control', 'play', 1, 1], ['slider', 'control', 'sun', 4, 1],
       ['stepper', 'control', 'up', 2, 1], ['choice', 'control', 'list', 2, 1], ['variable', 'control', 'pencil', 1, 1],
       ['container', 'layout', 'dashboard', 4, 3], ['text', 'layout', 'book', 4, 1], ['icon', 'layout', 'star', 1, 1],
+      ['shape', 'layout', 'paintbrush', 4, 1], ['calc', 'show', 'settings', 2, 1], ['time', 'show', 'clock', 2, 1],
     ].map(([kind, group, glyph, w, h]) => ({ kind, group, glyph, w, h }));
     const GROUPS = ['layout', 'show', 'control'];
     const SLOT_KINDS = ['value', 'chart', 'gauge', 'level', 'status', 'switch', 'slider', 'stepper', 'choice'];
@@ -35,10 +36,18 @@
     const RANGE_KINDS = ['gauge', 'level', 'slider', 'stepper'];
     const SPANS = ['1h', '6h', '24h', '7d', '30d', 'today', 'yesterday', 'thisWeek'];
     const RULE_OPS = ['above', 'below', 'is', 'isNot'];
+    const CALC_OPS = ['sum', 'avg', 'min', 'max', 'diff', 'count', 'formula'];
+    const TIME_MODES = ['clock', 'date', 'since', 'until'];
+    const MAX_INPUTS = 12;
+    const MAX_REFS = 6;
+    const INPUT_NAMES = 'abcdefghijkl';
+    /** Kinds without a value of their own: each rule names the value it checks (lib/customDesigns.ts' VALUELESS_KINDS). */
+    const VALUELESS_KINDS = ['shape', 'text', 'icon', 'button', 'container'];
     /** What a Flow may change, per kind (lib/customDesigns.ts takes any; these are the ones that show on it). */
     const FLOW_PROPS = {
       text: ['text', 'color', 'hidden'], icon: ['icon', 'color', 'hidden'], container: ['hidden'],
-      flowvalue: ['text', 'color', 'icon', 'hidden'],
+      flowvalue: ['text', 'color', 'icon', 'hidden'], shape: ['color', 'hidden'],
+      calc: ['text', 'color', 'icon', 'hidden'], time: ['text', 'color', 'icon', 'hidden'],
     };
     const flowPropsOf = kind => FLOW_PROPS[kind] || ['text', 'value', 'color', 'icon', 'hidden'];
 
@@ -783,6 +792,9 @@
       if (kind === 'chart') p.span = '24h';
       if (kind === 'value') p.show = 'value';
       if (kind === 'icon') p.icon = 'star';
+      if (kind === 'shape') { p.style = 'none'; p.shape = 'rect'; p.background = { kind: 'none' }; p.opacity = 100; p.radius = 10; }
+      if (kind === 'calc') { p.inputs = []; p.op = 'sum'; p.units = ''; }
+      if (kind === 'time') { p.timeMode = 'clock'; p.icon = 'clock'; }
       change(() => {
         const w = Number(def.w);
         const h = Number(def.h);
@@ -852,7 +864,7 @@
       const parent = parentOf(p.id);
       const tabs = el('div', 'wdb-tabs');
       tabs.setAttribute('role', 'tablist');
-      const ids = p.kind === 'container' ? ['part', 'flow'] : ['part', 'look', 'rules', 'flow'];
+      const ids = p.kind === 'container' ? ['part', 'rules', 'flow'] : ['part', 'look', 'rules', 'flow'];
       if (!ids.includes(b.tab)) b.tab = 'part';
       for (const id of ids) {
         const label = t(`builderTab_${id}`);
@@ -927,6 +939,10 @@
         body.append(two, el('p', 'wd-hint', t('builderFlowValueHint')));
       }
       if (p.kind === 'container') containerRows(body, p);
+      if (p.kind === 'text') refRows(body, p);
+      if (p.kind === 'shape') shapeRows(body, p);
+      if (p.kind === 'calc') calcRows(body, p);
+      if (p.kind === 'time') timeRows(body, p);
       placeRows(body, p, parent);
       body.append(confirmButton('wd-btn danger wdb-remove', t('builderRemove'), () => removePart(p.id), t('tapAgain')));
     }
@@ -971,22 +987,27 @@
 
     /** A device value: the device over the value and its reading (as the value picker's row), a tap to change it. */
     function valueButton(p) {
+      return slotButton(p.slot, (item, devices) => change(() => {
+        p.slot = item.id;
+        // A choice on a list of values starts with that list.
+        if (p.kind === 'choice' && !(p.choices || []).length) {
+          const [devId, capId] = item.id.split(':');
+          const dev = devices.find(x => x.id === devId);
+          const cap = dev && dev.caps.find(c => c.id === capId);
+          if (cap && Array.isArray(cap.values)) p.choices = cap.values.slice(0, MAX_CHOICES).map(x => ({ label: String(x.title || x.id).slice(0, 24), value: String(x.id) }));
+          else if (cap && cap.type === 'boolean') p.choices = [{ label: t('valueOn'), value: 'true' }, { label: t('valueOff'), value: 'false' }];
+        }
+      }));
+    }
+
+    /** A device value's button: the picked one's device over its value and reading; `picked(item, devices)` on a pick. */
+    function slotButton(slot, picked) {
       const wrap = el('div', 'wd-row');
-      const info = slotInfo(p.slot);
+      const info = slotInfo(slot);
       const pick = button('wd-btn wd-choice wdb-valuepick', '', async () => {
         try {
           const devices = await wd.valueDevices('values');
-          wd.chooseValue(devices, p.slot || null, item => change(() => {
-            p.slot = item.id;
-            // A choice on a list of values starts with that list.
-            if (p.kind === 'choice' && !(p.choices || []).length) {
-              const [devId, capId] = item.id.split(':');
-              const dev = devices.find(x => x.id === devId);
-              const cap = dev && dev.caps.find(c => c.id === capId);
-              if (cap && Array.isArray(cap.values)) p.choices = cap.values.slice(0, MAX_CHOICES).map(x => ({ label: String(x.title || x.id).slice(0, 24), value: String(x.id) }));
-              else if (cap && cap.type === 'boolean') p.choices = [{ label: t('valueOn'), value: 'true' }, { label: t('valueOff'), value: 'false' }];
-            }
-          }));
+          wd.chooseValue(devices, slot || null, item => picked(item, devices));
         } catch (err) { failed(err); }
       });
       if (!info) pick.append(el('span', null, t('chooseValue')));
@@ -1083,8 +1104,13 @@
         }
         p.mode = v;
       }, { preview: false }))));
+      backgroundRows(body, p, t('builderBackground'), t('builderNone'));
+    }
+
+    /** A container's background, or a shape's fill: none (a shape: its colour from Style), a colour, or a gradient. */
+    function backgroundRows(body, p, label, noneLabel) {
       const bg = p.background || { kind: 'none' };
-      body.append(row(t('builderBackground'), segs([['none', t('builderNone')], ['color', t('builderColour')], ['gradient', t('builderGradient')]], bg.kind, v => change(() => {
+      body.append(row(label, segs([['none', noneLabel], ['color', t('builderColour')], ['gradient', t('builderGradient')]], bg.kind, v => change(() => {
         p.background = v === 'none' ? { kind: 'none' } : v === 'color' ? { kind: 'color', from: bg.from || '#2d4c7a' } : { kind: 'gradient', from: bg.from || '#2d4c7a', to: bg.to || '#2a1958', angle: bg.angle || 135 };
       }, { preview: false }))));
       const colour = (key) => {
@@ -1128,9 +1154,161 @@
       body.append(el('h4', 'wdb-h4', parent ? t(free ? 'builderPlaceFree' : 'builderPlaceFine') : t('builderPlace')), box);
     }
 
+    /** Every calculated value of the design: what a `{part}` source may name. */
+    const allCalcs = () => b.design.parts.flatMap(p => [p, ...(p.parts || [])]).filter(p => p.kind === 'calc');
+    const sourceKind = src => (!src || 'slot' in src ? 'device' : 'time' in src ? 'time' : 'part' in src ? 'calc' : 'variable');
+
+    /**
+     * Where a value comes from: a device value, a variable, a calculated value (`o.calc`, not `o.self`) or the time
+     * (`o.time`, a text's). `set(source)` on a change; a new kind starts empty until one is picked.
+     */
+    function sourcePicker(src, set, o = {}) {
+      const wrap = el('div', 'wdb-source');
+      const calcs = o.calc === false ? [] : allCalcs().filter(c => c.id !== o.self);
+      const kinds = [['device', t('builderDevice')], ['variable', t('builderVariable')]];
+      if (calcs.length) kinds.push(['calc', t('builderCalcValue')]);
+      if (o.time) kinds.push(['time', t('builderTimeNow')]);
+      const kind = sourceKind(src);
+      wrap.append(segs(kinds, kind, (v) => {
+        if (v === kind) return;
+        set(v === 'device' ? { slot: '' } : v === 'variable' ? { variable: '' } : v === 'calc' ? { part: calcs[0].id } : { time: 'clock' });
+      }));
+      if (kind === 'device') wrap.append(slotButton(src && src.slot, item => set({ slot: item.id })));
+      else if (kind === 'variable') wrap.append(listPicker('variable', src.variable || '', item => set({ variable: item ? item.id : '' })));
+      else {
+        const items = kind === 'calc'
+          ? calcs.map(c => [c.id, partTitle(c)])
+          : [['clock', t('builderRef_clock')], ['date', t('builderRef_date')], ['weekday', t('builderRef_weekday')]];
+        const sel = el('select', 'wd-input');
+        for (const [id, label] of items) {
+          const opt = el('option', null, label);
+          opt.value = id;
+          opt.selected = id === (kind === 'calc' ? src.part : src.time);
+          sel.append(opt);
+        }
+        sel.addEventListener('change', () => set(kind === 'calc' ? { part: sel.value } : { time: sel.value }));
+        wrap.append(sel);
+      }
+      return wrap;
+    }
+
+    function checkRow(label, on, set, hint) {
+      const r = el('label', 'wdb-flowrow');
+      const sw = el('input', 'wd-switch');
+      sw.type = 'checkbox';
+      sw.checked = !!on;
+      sw.addEventListener('change', () => set(sw.checked));
+      r.append(el('span', 'wdb-label', label), sw);
+      if (hint) r.append(el('span', 'wd-hint', hint));
+      return r;
+    }
+
+    function selectOf(items, value, set) {
+      const sel = el('select', 'wd-input');
+      for (const [id, label] of items) {
+        const opt = el('option', null, label);
+        opt.value = id;
+        opt.selected = id === value;
+        sel.append(opt);
+      }
+      sel.addEventListener('change', () => set(sel.value));
+      return sel;
+    }
+
+    /** A text's values: `{1}` … `{6}`, each a device value, variable, calculated value or the time. */
+    function refRows(body, p) {
+      const refs = p.refs || [];
+      body.append(el('h4', 'wdb-h4', t('builderRefs')));
+      refs.forEach((r, i) => {
+        const line = el('div', 'wdb-ref');
+        const drop = button('wd-icon small', '', () => change(() => {
+          // The later values move up one, and the text with them.
+          p.refs.splice(i, 1);
+          p.text = String(p.text || '').replace(/\{([1-6])\}/g, (m, n) => (Number(n) === i + 1 ? '' : Number(n) > i + 1 ? `{${Number(n) - 1}}` : m)).replace(/\s{2,}/g, ' ').trim();
+        }), t('remove'));
+        drop.append(icon('close'));
+        line.append(el('span', 'wdb-ref-key', `{${i + 1}}`), sourcePicker(r, src => change(() => { p.refs[i] = src; }), { time: true, self: p.id }), drop);
+        body.append(line);
+      });
+      const add = button('wd-btn quiet small', t('builderInsert'), () => change(() => {
+        p.refs = [...refs, { slot: '' }];
+        p.text = `${String(p.text || '').trimEnd()} {${p.refs.length}}`.trim();
+      }));
+      add.disabled = refs.length >= MAX_REFS;
+      body.append(add, el('p', 'wd-hint', t('builderRefsHint')));
+    }
+
+    function shapeRows(body, p) {
+      body.append(row(t('builderShape'), segs([['rect', t('builderShape_rect')], ['circle', t('builderShape_circle')], ['line', t('builderShape_line')]], p.shape || 'rect', v => change(() => {
+        p.shape = v;
+        if (v === 'rect' && p.radius == null) p.radius = 10;
+        if (v === 'line') { if (!p.thickness) p.thickness = 2; if (!p.dir) p.dir = 'horizontal'; }
+      }, { preview: false }))));
+      backgroundRows(body, p, t('builderFill'), t('builderFillStyle'));
+      const two = el('div', 'wdb-two');
+      const clampTo = (v, lo, hi, d) => { const n = Math.round(Number(v)); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
+      two.append(row(t('builderOpacity'), textInput(p.opacity != null ? p.opacity : 100, v => change(() => { p.opacity = clampTo(v, 10, 100, 100); }, { preview: false }), { type: 'number' })));
+      if ((p.shape || 'rect') === 'rect') two.append(row(t('builderRadius'), textInput(p.radius != null ? p.radius : 10, v => change(() => { p.radius = clampTo(v, 0, 32, 10); }, { preview: false }), { type: 'number' })));
+      if (p.shape === 'line') two.append(row(t('builderThickness'), textInput(p.thickness || 2, v => change(() => { p.thickness = clampTo(v, 1, 8, 2); }, { preview: false }), { type: 'number' })));
+      body.append(two);
+      if (p.shape === 'line') body.append(row(t('builderDirection'), segs([['horizontal', t('builderHorizontal')], ['vertical', t('builderVertical')]], p.dir || 'horizontal', v => change(() => { p.dir = v; }, { preview: false }))));
+    }
+
+    function calcRows(body, p) {
+      body.append(row(t('builderCalc'), selectOf(CALC_OPS.map(o => [o, t(`builderCalc_${o}`)]), p.op || 'sum', v => change(() => {
+        p.op = v;
+        if (v === 'count' && !p.test) p.test = { op: 'is', value: 'on' };
+        if (v === 'formula' && p.formula == null) p.formula = '';
+      }, { preview: false }))));
+      body.append(el('h4', 'wdb-h4', t('builderInputs')));
+      const inputs = p.inputs || [];
+      inputs.forEach((src, i) => {
+        const line = el('div', 'wdb-ref');
+        const drop = button('wd-icon small', '', () => change(() => { p.inputs.splice(i, 1); }), t('remove'));
+        drop.append(icon('close'));
+        line.append(el('span', 'wdb-ref-key', p.op === 'formula' ? INPUT_NAMES[i] : String(i + 1)), sourcePicker(src, next => change(() => { p.inputs[i] = next; }), { calc: false }), drop);
+        body.append(line);
+      });
+      const add = button('wd-btn quiet small', t('builderAddInput'), () => change(() => { p.inputs = [...inputs, { slot: '' }]; }));
+      add.disabled = inputs.length >= MAX_INPUTS;
+      body.append(add);
+      if (p.op === 'count') {
+        const test = p.test || { op: 'is', value: 'on' };
+        const line = el('div', 'wdb-two');
+        line.append(selectOf(RULE_OPS.map(o => [o, t(`builderOp_${o}`)]), test.op, v => change(() => { p.test = { ...test, op: v }; }, { preview: false })),
+          textInput(test.value, v => change(() => { p.test = { ...test, value: v.slice(0, 60) }; }, { preview: false }), { placeholder: t('builderRuleValue') }));
+        body.append(row(t('builderCountWhen'), line));
+      }
+      if (p.op === 'formula') {
+        const win = b.frame && b.frame.contentWindow;
+        const bad = !!(p.formula && win && win.customFormula && !win.customFormula(p.formula));
+        body.append(row(t('builderFormula'), textInput(p.formula, v => change(() => { p.formula = v.slice(0, 120); }, { preview: false }), { placeholder: '(a + b) / 2' }), bad ? t('builderFormulaBad') : t('builderFormulaHint')));
+      }
+      const two = el('div', 'wdb-two');
+      two.append(row(t('builderUnits'), textInput(p.units, v => change(() => { p.units = v.trim().slice(0, 12); }, { preview: false }), { placeholder: t('builderAuto') })),
+        row(t('builderDecimals'), selectOf([['', t('builderAuto')], ['0', '0'], ['1', '1'], ['2', '2'], ['3', '3']], p.decimals == null ? '' : String(p.decimals), v => change(() => { if (v === '') delete p.decimals; else p.decimals = Number(v); }, { preview: false }))));
+      body.append(two);
+      if (p.op === 'min' || p.op === 'max') body.append(checkRow(t('builderShowWinner'), p.winner, v => change(() => { p.winner = v; }, { preview: false })));
+      body.append(checkRow(t('builderSourceOnly'), p.sourceOnly, v => change(() => { if (v) p.sourceOnly = true; else delete p.sourceOnly; }, { preview: false }), t('builderSourceOnlyHint')));
+    }
+
+    function timeRows(body, p) {
+      body.append(row(t('builderTimeShow'), selectOf(TIME_MODES.map(m => [m, t(`builderTime_${m}`)]), p.timeMode || 'clock', v => change(() => {
+        p.timeMode = v;
+        if (v === 'until' && !p.until) p.until = '22:00';
+        if (v === 'date' && !p.dateStyle) p.dateStyle = 'long';
+      }))));
+      const mode = p.timeMode || 'clock';
+      if (mode === 'clock') body.append(checkRow(t('builderSeconds'), p.seconds, v => change(() => { p.seconds = v; }, { preview: false })));
+      if (mode === 'date') body.append(row(t('builderDateStyle'), segs([['short', t('builderDate_short')], ['long', t('builderDate_long')], ['weekday', t('builderDate_weekday')]], p.dateStyle || 'long', v => change(() => { p.dateStyle = v; }, { preview: false }))));
+      if (mode === 'since') body.append(row(t('builderValue'), slotButton(p.slot, item => change(() => { p.slot = item.id; })), t('builderSinceHint')));
+      if (mode === 'until') body.append(row(t('builderUntilTime'), textInput(p.until || '22:00', v => change(() => { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(v)) p.until = v; }, { preview: false }), { type: 'time' }), t('builderUntilHint')));
+    }
+
     function lookTab(body, p) {
       const colours = [{ id: 'none', title: t('builderNoColour') }, ...window.WidgetkeeperKit.COLORS.map(c => ({ id: c, title: colourName(c) }))];
-      body.append(row(t('builderColour'), wd.choiceGroup({ id: 'colour' }, colours, p.color || 'none', v => change(() => { p.color = v === 'none' ? null : v; }, { preview: false }), true), t('builderColourHint')));
+      body.append(row(t('builderColour'), wd.choiceGroup({ id: 'colour' }, colours, p.color || 'none', v => change(() => { p.color = v === 'none' ? null : v; }, { preview: false }), true), t(p.kind === 'shape' ? 'builderShapeColourHint' : 'builderColourHint')));
+      if (p.kind === 'shape') return;
       const iconRow = el('div', 'wd-row');
       const current = wd.iconNode(p.icon);
       const pick = button('wd-btn', '', () => wd.pickIcon({ value: p.icon, noneLabel: t('builderNoIcon'), picked: v => change(() => { p.icon = v && !wd.isIconPicture(v) ? v : null; }, { preview: false }) }));
@@ -1145,7 +1323,17 @@
     function rulesTab(body, p) {
       const colours = window.WidgetkeeperKit.COLORS;
       if ((p.rules || []).length) body.append(el('p', 'wdb-label', t('builderRulesLead')));
+      // A clock or a date has no value either: like a shape, each rule names the one it checks.
+      const valueless = VALUELESS_KINDS.includes(p.kind) || (p.kind === 'time' && ['clock', 'date'].includes(p.timeMode || 'clock'));
       (p.rules || []).forEach((r, i) => {
+        const of = el('div', 'wdb-rule-of');
+        if (!valueless) {
+          of.append(segs([['self', t('builderRuleOfSelf')], ['other', t('builderRuleOfOther')]], r.of ? 'other' : 'self', v => change(() => {
+            if (v === 'self') delete r.of; else r.of = { slot: '' };
+          })));
+        }
+        if (r.of || valueless) of.append(sourcePicker(r.of, src => change(() => { r.of = src; }), { self: p.id }));
+        body.append(of);
         const line = el('div', 'wdb-rule');
         const op = el('select', 'wd-input');
         for (const o of RULE_OPS) { const opt = el('option', null, t(`builderOp_${o}`)); opt.value = o; opt.selected = r.op === o; op.append(opt); }
@@ -1160,9 +1348,11 @@
         body.append(line);
       });
       if (!(p.rules || []).length) body.append(el('p', 'wd-muted', t('builderNoRules')));
-      const add = button('wd-btn quiet small', t('builderAddRule'), () => change(() => { p.rules = [...(p.rules || []), { op: 'above', value: '', look: 'red' }]; }, { preview: false }));
+      const add = button('wd-btn quiet small', t('builderAddRule'), () => change(() => {
+        p.rules = [...(p.rules || []), { op: 'above', value: '', look: 'red', ...(valueless ? { of: { slot: '' } } : {}) }];
+      }, { preview: false }));
       add.disabled = (p.rules || []).length >= MAX_RULES;
-      body.append(add, el('p', 'wd-hint', t('builderRulesHint')));
+      body.append(add, el('p', 'wd-hint', t(valueless ? 'builderRulesOtherHint' : 'builderRulesHint')));
     }
 
     function flowTab(body, p) {

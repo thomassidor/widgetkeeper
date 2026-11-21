@@ -9,6 +9,7 @@ import { DebouncedSetting, isReservedKey } from './storedSetting.js';
 import { parseTileColor, type TileColor } from './tileColors.js';
 import { convertTemperature, shownTemperatureScale, temperatureScaleOf } from './temperatureUnit.js';
 import { nextLocalTime } from './WebSyncService.js';
+import { timeFormatOf } from './timeFormat.js';
 import type FlowService from './FlowService.js';
 import type SparklineService from './SparklineService.js';
 import type ValueService from './ValueService.js';
@@ -248,6 +249,9 @@ export default class CustomWidgetService {
       flows: Object.fromEntries((flowList as any[]).map(f => [f.id, f])),
       histories: Object.fromEntries(histories.flat()),
       flow,
+      // For its Time components and texts with the time: the weekday's and date's language, and the app's time format.
+      language: this.homey.i18n.getLanguage(),
+      timeFormat: timeFormatOf(this.homey),
       now: Date.now(),
     };
   }

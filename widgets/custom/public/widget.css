@@ -71,7 +71,7 @@ html, body { background: transparent !important; }
 
 /* Pill: fully rounded; a one-row component lays out in a row, the icon, the name, then the value or switch. */
 .wb-pill { border-radius: 999px; padding: 6px 16px; }
-.wb-pill:is(.wb-k-value:not(.wb-big):not(.wb-narrow), .wb-k-flowvalue, .wb-k-switch, .wb-k-status, .wb-k-variable, .wb-k-button) {
+.wb-pill:is(.wb-k-value:not(.wb-big):not(.wb-narrow), .wb-k-calc:not(.wb-big):not(.wb-narrow), .wb-k-time:not(.wb-big), .wb-k-flowvalue, .wb-k-switch, .wb-k-status, .wb-k-variable, .wb-k-button) {
   flex-direction: row; align-items: center; justify-content: flex-start; gap: 10px;
 }
 .wb-pill .wb-top { display: contents; }
@@ -186,3 +186,23 @@ html, body { background: transparent !important; }
 .wb-box-grid .wb-inner { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 8px; column-gap: 6px; }
 .wb-box-free .wb-part { position: absolute; }
 .wb-k-container .wb-tile:not(.wb-pill) { border-radius: 8px; }
+
+/* Shape: a rectangle, an ellipse or a line, filled with its background, a rule's or Flow's colour, or its own. */
+.wb-k-shape { padding: 0; --wb-shape: color-mix(in srgb, var(--wb-muted) 35%, transparent); }
+.wb-shape-fill { position: absolute; inset: 0; background: var(--wb-shape); }
+.wb-k-shape.wb-has-color { --wb-shape: var(--wk-c); }
+.wb-shape-circle .wb-shape-fill { border-radius: 50%; }
+.wb-line-h .wb-shape-fill { inset: auto 0; top: calc(50% - var(--wb-thick, 2px) / 2); height: var(--wb-thick, 2px); border-radius: var(--wb-thick, 2px); }
+.wb-line-v .wb-shape-fill { inset: 0 auto; left: calc(50% - var(--wb-thick, 2px) / 2); width: var(--wb-thick, 2px); border-radius: var(--wb-thick, 2px); }
+
+/* A container a rule colours: tinted over its own background (solid in Vivid). */
+.wb-k-container.wb-colored { background: color-mix(in srgb, var(--wk-c) 30%, var(--wb-tile)) !important; }
+.wb.wk-deep .wb-k-container.wb-colored { background: var(--wk-c) !important; }
+
+/* A calculated value only for text and rules: left out on a dashboard, faint in the builder. */
+.wb:not(.wb-preview) .wb-source-only { display: none; }
+.wb-preview .wb-source-only { opacity: .5; }
+
+/* Time: a one-row time without a name centres its value. */
+.wb-k-time.wb-noname:not(.wb-big) { justify-content: center; }
+.wb-k-time.wb-noname .wb-name { display: none; }

@@ -110,6 +110,19 @@ describe('getState', () => {
     ]);
   });
 
+  it("sends when a value last changed: Homey's lastUpdated, then when a new one came in (the Widget Builder's Time)", async () => {
+    vi.setSystemTime(new Date('2026-11-21T12:00:00Z'));
+    const devices = [sensor(), aircon()];
+    devices[0].capabilitiesObj.measure_temperature.lastUpdated = '2026-11-21T11:15:00.000Z';
+    const { service } = setup(devices);
+    const [first] = await service.getState(['sensor:measure_temperature']);
+    expect((first as any).updatedAt).toBe(Date.parse('2026-11-21T11:15:00Z'));
+    vi.setSystemTime(new Date('2026-11-21T12:05:00Z'));
+    devices[0].report('measure_temperature', 22);
+    const [next] = await service.getState(['sensor:measure_temperature']);
+    expect((next as any).updatedAt).toBe(Date.parse('2026-11-21T12:05:00Z'));
+  });
+
   it('adds each slot its second value, tracked and kept live like a slot', async () => {
     const { service, devices } = setup();
     const state = await service.getState(['sensor:measure_temperature', 'ac:onoff', 'sensor:measure_humidity'], ['measure_humidity', '', 'measure_humidity']);
