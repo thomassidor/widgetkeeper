@@ -1623,7 +1623,22 @@
     "builderRepeatControlHint": "Toucher un élément l'allume ou l'éteint, si l'appareil le permet.",
     "builderRepeatEmpty": "Si aucun",
     "builderRepeatEmptyHint": "Rien à afficher",
-    "builderRepeatHint": "Sa valeur dans d'autres composants est le nombre affiché."
+    "builderRepeatHint": "Sa valeur dans d'autres composants est le nombre affiché.",
+    "builderSegments": "Segments",
+    "builderAddSegment": "Ajouter un segment",
+    "builderSegmentsHint": "La part de chaque valeur, dans sa couleur. Sous 0 compte pour 0. Les règles vérifient la somme.",
+    "builderBarStyle": "Forme",
+    "builderBarStyle_bar": "Barre",
+    "builderBarStyle_donut": "Anneau",
+    "builderScale": "Part de",
+    "builderScale_sum": "Leur somme",
+    "builderScale_max": "Un maximum",
+    "builderLegend": "Afficher les valeurs",
+    "builderTrendSpan": "Comparé à",
+    "builderFlat": "Stable à moins de",
+    "builderFlatHint": "Un changement aussi faible s'affiche comme stable (→).",
+    "builderPercent": "En pourcentage",
+    "builderTrendHint": "Le changement depuis le début de la période. Les règles vérifient le changement."
   },
   "autocomplete": {
     "pickThermostat": "Choisissez d’abord un thermostat",
@@ -1678,7 +1693,9 @@
       "state": "État du widget",
       "image": "Image",
       "ring": "Anneau",
-      "repeat": "Répéteur"
+      "repeat": "Répéteur",
+      "segments": "Barre segmentée",
+      "trend": "Tendance"
     },
     "tapAgain": "Touchez encore",
     "hold": "Maintenir",

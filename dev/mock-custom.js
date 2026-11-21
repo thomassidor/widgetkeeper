@@ -4,7 +4,7 @@
 // with a Flow's message), rules (colours and a hidden part by rules), controls (stepper, choice, variables), blocks
 // (a text with values, calculated values, a clock, the time since motion, and shapes coloured by another value), more
 // (a widget state picking a pages container's page, a ring and a picture on it, a repeater of open doors, a button's
-// actions and a yes/no state).
+// actions and a yes/no state), split (a segmented bar and a donut of the power, trends over the day).
 (function () {
   const NOW = Date.now();
   const HOUR = 3600e3;
@@ -22,6 +22,9 @@
     { ...slot('hall:alarm_motion', 'Hall sensor', cap('Motion alarm', 'boolean', null, null), true), updatedAt: NOW - 8 * 60e3 },
     slot('meter:measure_power', 'Electricity meter', cap('Power', 'number', 'W', 0), 2410),
     slot('solar:measure_power', 'Solar inverter', cap('Power', 'number', 'W', 0), 1120),
+    slot('heatpump:measure_power', 'Heat pump', cap('Power', 'number', 'W', 0), 1180),
+    slot('oven:measure_power', 'Oven', cap('Power', 'number', 'W', 0), 640),
+    slot('washer:measure_power', 'Washing machine', cap('Power', 'number', 'W', 0), 310),
     slot('garage:alarm_contact', 'Garage door', cap('Contact alarm', 'boolean', null, null), true),
     slot('garagelight:onoff', 'Garage light', cap('Turned on', 'boolean', null, null), false),
     slot('charger:measure_power', 'Car charger', cap('Power', 'number', 'kW', 1), 0),
@@ -141,10 +144,21 @@
       part('guests', 'state', at(2, 4, 2), { stateType: 'toggle', initial: 'true', name: 'Guests', icon: 'users', color: 'purple' }),
     ],
   };
+  DESIGNS.split = [
+    part('bar', 'segments', at(0, 0, 4, 2), { name: 'Using now', units: 'W', segments: [
+      { src: { slot: 'heatpump:measure_power' }, color: 'orange', label: '' }, { src: { slot: 'oven:measure_power' }, color: 'red', label: '' },
+      { src: { slot: 'washer:measure_power' }, color: 'blue', label: 'Laundry' },
+    ] }),
+    part('donut', 'segments', at(0, 2, 2, 2), { name: 'Of 3 kW', barStyle: 'donut', scale: 'max', max: 3000, segments: [
+      { src: { slot: 'heatpump:measure_power' }, color: 'orange', label: 'Heat' }, { src: { slot: 'oven:measure_power' }, color: 'red', label: 'Oven' },
+    ] }),
+    part('tt', 'trend', at(2, 2, 2), { slot: 'lr:measure_temperature', span: '24h', name: 'Living room', flat: 0.2, color: 'orange' }),
+    part('tp', 'trend', at(2, 3, 2), { slot: 'meter:measure_power', span: '24h', name: 'Power', percent: true, color: 'blue' }),
+  ];
   // The repeaters' devices, as the app finds them (every device with the capability, by name).
   const REPEATS = { more: { doors: ['back:alarm_contact', 'window:alarm_contact', 'garage:alarm_contact', 'shed:alarm_contact'] } };
   REPEATS.more.open = REPEATS.more.doors;
-  const NAMES = { living: 'Living room', container: 'Living room card', free: 'Entrance', rules: 'Garage', controls: 'Bedroom', blocks: 'At a glance', more: 'Home' };
+  const NAMES = { living: 'Living room', container: 'Living room card', free: 'Entrance', rules: 'Garage', controls: 'Bedroom', blocks: 'At a glance', more: 'Home', split: 'Energy' };
   // What Flows set: the entrance's message.
   const FLOW = { free: { msg: { value: 'Parcel by the door', color: 'orange', at: NOW - 13 * 60e3 } } };
 

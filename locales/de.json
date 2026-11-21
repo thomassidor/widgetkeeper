@@ -1623,7 +1623,22 @@
     "builderRepeatControlHint": "Ein Tipp schaltet ein Element an oder aus, wo das Gerät es erlaubt.",
     "builderRepeatEmpty": "Wenn keins",
     "builderRepeatEmptyHint": "Nichts anzuzeigen",
-    "builderRepeatHint": "Sein Wert in anderen Komponenten ist, wie viele es zeigt."
+    "builderRepeatHint": "Sein Wert in anderen Komponenten ist, wie viele es zeigt.",
+    "builderSegments": "Segmente",
+    "builderAddSegment": "Segment hinzufügen",
+    "builderSegmentsHint": "Der Anteil jedes Werts in seiner Farbe. Unter 0 zählt als 0. Regeln prüfen die Summe.",
+    "builderBarStyle": "Form",
+    "builderBarStyle_bar": "Balken",
+    "builderBarStyle_donut": "Ring",
+    "builderScale": "Anteil an",
+    "builderScale_sum": "Ihrer Summe",
+    "builderScale_max": "Einem Maximum",
+    "builderLegend": "Werte zeigen",
+    "builderTrendSpan": "Verglichen mit",
+    "builderFlat": "Gleich innerhalb",
+    "builderFlatHint": "So kleine Änderungen gelten als gleichbleibend (→).",
+    "builderPercent": "Als Prozent",
+    "builderTrendHint": "Die Änderung seit Beginn des Zeitraums. Regeln prüfen die Änderung."
   },
   "autocomplete": {
     "pickThermostat": "Wähle zuerst ein Thermostat",
@@ -1678,7 +1693,9 @@
       "state": "Widget-Zustand",
       "image": "Bild",
       "ring": "Ring",
-      "repeat": "Wiederholer"
+      "repeat": "Wiederholer",
+      "segments": "Segmentbalken",
+      "trend": "Trend"
     },
     "tapAgain": "Nochmal tippen",
     "hold": "Halten",

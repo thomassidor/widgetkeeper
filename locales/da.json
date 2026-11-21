@@ -1623,7 +1623,22 @@
     "builderRepeatControlHint": "Et tryk tænder eller slukker, hvor enheden tillader det.",
     "builderRepeatEmpty": "Når der ingen er",
     "builderRepeatEmptyHint": "Intet at vise",
-    "builderRepeatHint": "Dens værdi i andre komponenter er, hvor mange den viser."
+    "builderRepeatHint": "Dens værdi i andre komponenter er, hvor mange den viser.",
+    "builderSegments": "Segmenter",
+    "builderAddSegment": "Tilføj segment",
+    "builderSegmentsHint": "Hver værdis andel, i sin farve. Under 0 tæller som 0. Regler tjekker summen.",
+    "builderBarStyle": "Form",
+    "builderBarStyle_bar": "Bjælke",
+    "builderBarStyle_donut": "Ring",
+    "builderScale": "Andel af",
+    "builderScale_sum": "Deres sum",
+    "builderScale_max": "Et maksimum",
+    "builderLegend": "Vis værdierne",
+    "builderTrendSpan": "Sammenlignet med",
+    "builderFlat": "Stabil inden for",
+    "builderFlatHint": "En så lille ændring vises som stabil (→).",
+    "builderPercent": "I procent",
+    "builderTrendHint": "Ændringen siden periodens start. Regler tjekker ændringen."
   },
   "autocomplete": {
     "pickThermostat": "Vælg en termostat først",
@@ -1678,7 +1693,9 @@
       "state": "Widgettilstand",
       "image": "Billede",
       "ring": "Ring",
-      "repeat": "Gentager"
+      "repeat": "Gentager",
+      "segments": "Segmenteret bjælke",
+      "trend": "Tendens"
     },
     "tapAgain": "Tryk igen",
     "hold": "Hold",

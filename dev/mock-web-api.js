@@ -142,7 +142,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
   }
 
   /** The Widget Builder's library: the made-up designs, when mock-custom.js is loaded. */
-  const designs = window.mockCustomState ? ['living', 'container', 'free', 'controls', 'blocks', 'more'].map(s => window.mockCustomState(s).design) : [];
+  const designs = window.mockCustomState ? ['living', 'container', 'free', 'controls', 'blocks', 'more', 'split'].map(s => window.mockCustomState(s).design) : [];
 
   /** A design's preview: mock-custom.js' readings, else the made-up house's (`readings`) for a value picked here. */
   function designPreview(design) {
@@ -150,7 +150,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
     const slots = [];
     // Every value a design reads, as lib/customDesigns.ts' designSlots(): its own, its rules' and texts' and inputs'.
     const walk = parts => (parts || []).forEach((x) => {
-      for (const src of [x, ...(x.rules || []).map(r => r.of), ...(x.refs || []), ...(x.inputs || []), ...(x.rings || []).map(r => r.src), ...(x.actions || [])]) if (src && src.slot) slots.push(src.slot);
+      for (const src of [x, ...(x.rules || []).map(r => r.of), ...(x.refs || []), ...(x.inputs || []), ...(x.rings || []).map(r => r.src), ...(x.segments || []).map(r => r.src), ...(x.actions || [])]) if (src && src.slot) slots.push(src.slot);
       walk(x.parts);
     });
     walk(design.parts);

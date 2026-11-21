@@ -1623,7 +1623,22 @@
     "builderRepeatControlHint": "Нажатие включает или выключает элемент, если устройство позволяет.",
     "builderRepeatEmpty": "Если пусто",
     "builderRepeatEmptyHint": "Нечего показать",
-    "builderRepeatHint": "Его значение в других компонентах — сколько он показывает."
+    "builderRepeatHint": "Его значение в других компонентах — сколько он показывает.",
+    "builderSegments": "Сегменты",
+    "builderAddSegment": "Добавить сегмент",
+    "builderSegmentsHint": "Доля каждого значения своим цветом. Меньше 0 считается как 0. Правила проверяют сумму.",
+    "builderBarStyle": "Форма",
+    "builderBarStyle_bar": "Полоса",
+    "builderBarStyle_donut": "Кольцо",
+    "builderScale": "Доля от",
+    "builderScale_sum": "Их суммы",
+    "builderScale_max": "Максимума",
+    "builderLegend": "Показывать значения",
+    "builderTrendSpan": "Сравнить с",
+    "builderFlat": "Без изменений в пределах",
+    "builderFlatHint": "Такое малое изменение считается стабильным (→).",
+    "builderPercent": "В процентах",
+    "builderTrendHint": "Изменение с начала периода. Правила проверяют изменение."
   },
   "autocomplete": {
     "pickThermostat": "Сначала выберите термостат",
@@ -1678,7 +1693,9 @@
       "state": "Состояние виджета",
       "image": "Изображение",
       "ring": "Кольцо",
-      "repeat": "Повторитель"
+      "repeat": "Повторитель",
+      "segments": "Сегментная шкала",
+      "trend": "Тренд"
     },
     "tapAgain": "Нажмите ещё раз",
     "hold": "Удерживайте",

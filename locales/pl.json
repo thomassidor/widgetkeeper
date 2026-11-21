@@ -1623,7 +1623,22 @@
     "builderRepeatControlHint": "Dotknięcie włącza lub wyłącza element, jeśli urządzenie na to pozwala.",
     "builderRepeatEmpty": "Gdy brak",
     "builderRepeatEmptyHint": "Nic do pokazania",
-    "builderRepeatHint": "Jego wartość w innych komponentach to liczba pokazanych."
+    "builderRepeatHint": "Jego wartość w innych komponentach to liczba pokazanych.",
+    "builderSegments": "Segmenty",
+    "builderAddSegment": "Dodaj segment",
+    "builderSegmentsHint": "Udział każdej wartości w jej kolorze. Poniżej 0 liczy się jako 0. Reguły sprawdzają sumę.",
+    "builderBarStyle": "Kształt",
+    "builderBarStyle_bar": "Pasek",
+    "builderBarStyle_donut": "Pierścień",
+    "builderScale": "Udział w",
+    "builderScale_sum": "Ich sumie",
+    "builderScale_max": "Maksimum",
+    "builderLegend": "Pokaż wartości",
+    "builderTrendSpan": "W porównaniu z",
+    "builderFlat": "Stała w granicach",
+    "builderFlatHint": "Tak mała zmiana jest pokazana jako stała (→).",
+    "builderPercent": "W procentach",
+    "builderTrendHint": "Zmiana od początku okresu. Reguły sprawdzają zmianę."
   },
   "autocomplete": {
     "pickThermostat": "Najpierw wybierz termostat",
@@ -1678,7 +1693,9 @@
       "state": "Stan widżetu",
       "image": "Obraz",
       "ring": "Pierścień",
-      "repeat": "Powtarzacz"
+      "repeat": "Powtarzacz",
+      "segments": "Pasek segmentowy",
+      "trend": "Trend"
     },
     "tapAgain": "Dotknij ponownie",
     "hold": "Przytrzymaj",

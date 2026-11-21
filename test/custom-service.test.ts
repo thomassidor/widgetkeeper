@@ -428,3 +428,23 @@ describe('CustomWidgetService: actions, repeaters and images', () => {
     await expect(service.image('act', 'cam')).rejects.toThrow();
   });
 });
+
+describe('readDesign: segmented bars and trends', () => {
+  it("keeps a segmented bar's segments and scale, and a trend's history among the design's charts", () => {
+    const d = readDesign({ parts: [
+      part('c', 'calc', {}),
+      part('s', 'segments', { barStyle: 'donut', scale: 'max', max: -3, legend: false, segments: [
+        { src: { slot: 'a:p' }, color: 'teal', label: ' Heat pump ' }, { src: { part: 'c' } }, { src: { part: 's' } }, { src: {} }, ...Array(9).fill({ src: { slot: 'b:p' } }),
+      ] }),
+      part('t', 'trend', { slot: 'a:t', span: '6h', flat: -1, percent: true }),
+      part('u', 'trend', { slot: 'a:t', span: 'nope' }),
+    ] })!;
+    const [, s, t, u] = d.parts;
+    expect(s.segments!.length).toBe(4); // the first six: itself and an empty one left out
+    expect(s.segments!.slice(0, 2)).toEqual([{ src: { slot: 'a:p' }, color: 'teal', label: 'Heat pump' }, { src: { part: 'c' }, color: null, label: '' }]);
+    expect([s.barStyle, s.scale, s.max, s.legend]).toEqual(['donut', 'max', 100, false]);
+    expect([t.span, t.flat, t.percent, u.span]).toEqual(['6h', 0, true, '1h']);
+    expect(designCharts(d)).toEqual([{ slot: 'a:t', span: '6h' }, { slot: 'a:t', span: '1h' }]);
+    expect(designSlots(d)).toEqual(['a:p', 'b:p', 'a:t']);
+  });
+});

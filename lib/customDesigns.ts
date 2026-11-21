@@ -27,6 +27,7 @@ export const MAX_REFS = 6;
 export const MAX_ACTIONS = 6;
 export const MAX_PAGES = 6;
 export const MAX_RINGS = 3;
+export const MAX_SEGMENTS = 6;
 /** A repeater's devices the app sends (its test then picks the ones shown), and the most it shows. */
 export const MAX_REPEAT_CANDIDATES = 48;
 export const MAX_REPEAT_ITEMS = 24;
@@ -38,6 +39,7 @@ export const PART_KINDS = [
   'container', 'text', 'icon',
   'shape', 'calc', 'time',
   'state', 'image', 'ring', 'repeat',
+  'segments', 'trend',
 ] as const;
 export type PartKind = typeof PART_KINDS[number];
 
@@ -91,6 +93,9 @@ export const SERVER_ACTIONS: readonly string[] = ['set', 'variable', 'flow'];
 
 /** A ring of a Ring: its value and range, and its colour. */
 export type RingSpec = { src: Source, min?: number, max?: number, color: TileColor | null };
+
+/** A segmented bar's segment: its value, colour and label (else the value's name). */
+export type Segment = { src: Source, color: TileColor | null, label: string };
 
 /** An image: a picture on the web (http or https), or a device's own (a camera's snapshot, album art). */
 export type ImageSource = { kind: 'url', url: string } | { kind: 'device', device: string };
@@ -185,6 +190,17 @@ export type Part = {
   image?: ImageSource,
   fit?: 'cover' | 'contain',
   refresh?: number,
+  /**
+   * A segmented bar's segments, drawn as a bar or a donut, each its share of their sum (`scale: sum`) or of `max`;
+   * `legend` lists them under it.
+   */
+  segments?: Segment[],
+  barStyle?: 'bar' | 'donut',
+  scale?: 'sum' | 'max',
+  legend?: boolean,
+  /** A trend's: the change of `slot` over `span` (its history); below `flat` it's steady; `percent` as a share. */
+  flat?: number,
+  percent?: boolean,
   /** A ring's rings, and what its middle shows. */
   rings?: RingSpec[],
   center?: 'value' | 'icon' | 'none',
@@ -363,6 +379,7 @@ function checkPartSources(design: Design) {
     p.rules = p.rules.filter(r => ok(r.of, p.id));
     if (p.refs) p.refs = p.refs.map(r => (r && !ok(r as Source, p.id) ? null : r));
     if (p.rings) p.rings = p.rings.filter(r => ok(r.src, p.id));
+    if (p.segments) p.segments = p.segments.filter(x => ok(x.src, p.id));
     // A page is picked by a widget state only.
     if (p.pageBy && !('part' in p.pageBy && kindOf.get(p.pageBy.part) === 'state')) delete p.pageBy;
     if (p.nav === 'state' && !p.pageBy) p.nav = 'tabs';
@@ -488,6 +505,29 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
       p.center = oneOf(r.center, ['value', 'icon', 'none'] as const, 'value');
       break;
     }
+    case 'segments': {
+      const segments: Segment[] = [];
+      for (const x of Array.isArray(r.segments) ? r.segments.slice(0, MAX_SEGMENTS) : []) {
+        const src = sourceOf(x?.src);
+        if (src) segments.push({ src, color: color(x?.color), label: str(x?.label, 24) });
+      }
+      p.segments = segments;
+      p.barStyle = r.barStyle === 'donut' ? 'donut' : 'bar';
+      p.scale = r.scale === 'max' ? 'max' : 'sum';
+      if (p.scale === 'max') { const max = optNum(r.max); p.max = max !== undefined && max > 0 ? max : 100; }
+      p.legend = r.legend !== false;
+      p.units = str(r.units, MAX_UNITS);
+      break;
+    }
+    case 'trend': {
+      const slot = slotOf(r.slot);
+      if (slot) p.slot = slot;
+      p.span = SPANS.has(r.span) ? r.span : '1h';
+      const flat = optNum(r.flat);
+      p.flat = flat !== undefined && flat >= 0 ? flat : 0;
+      if (r.percent === true) p.percent = true;
+      break;
+    }
     case 'repeat': {
       const cap = typeof r.capability === 'string' && /^[A-Za-z0-9_.-]{1,80}$/.test(r.capability) ? r.capability : '';
       if (cap) p.capability = cap;
@@ -576,6 +616,7 @@ function designSources(design: Design): Source[] {
     for (const r of p.refs ?? []) if (r && !('time' in r)) out.push(r);
     out.push(...(p.inputs ?? []));
     for (const r of p.rings ?? []) out.push(r.src);
+    for (const x of p.segments ?? []) out.push(x.src);
     for (const a of p.actions ?? []) if (a.do === 'set') out.push({ slot: a.slot }); else if (a.do === 'variable') out.push({ variable: a.variable });
   }
   return out;
@@ -599,7 +640,7 @@ export function designFlows(design: Design): string[] {
 export function designCharts(design: Design): { slot: string, span: string }[] {
   const seen = new Map<string, { slot: string, span: string }>();
   for (const p of allParts(design)) {
-    if (!p.slot || !p.span || (p.kind !== 'chart' && p.show !== 'chart')) continue;
+    if (!p.slot || !p.span || (p.kind !== 'chart' && p.kind !== 'trend' && p.show !== 'chart')) continue;
     seen.set(`${p.span}\n${p.slot}`, { slot: p.slot, span: p.span });
   }
   return [...seen.values()];

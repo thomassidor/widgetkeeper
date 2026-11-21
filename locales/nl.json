@@ -1623,7 +1623,22 @@
     "builderRepeatControlHint": "Tikken zet een item aan of uit, waar het apparaat dat toestaat.",
     "builderRepeatEmpty": "Als er geen zijn",
     "builderRepeatEmptyHint": "Niets te tonen",
-    "builderRepeatHint": "Zijn waarde in andere onderdelen is hoeveel hij toont."
+    "builderRepeatHint": "Zijn waarde in andere onderdelen is hoeveel hij toont.",
+    "builderSegments": "Segmenten",
+    "builderAddSegment": "Segment toevoegen",
+    "builderSegmentsHint": "Het aandeel van elke waarde, in zijn kleur. Onder 0 telt als 0. Regels controleren de som.",
+    "builderBarStyle": "Vorm",
+    "builderBarStyle_bar": "Balk",
+    "builderBarStyle_donut": "Donut",
+    "builderScale": "Aandeel van",
+    "builderScale_sum": "De som",
+    "builderScale_max": "Een maximum",
+    "builderLegend": "Waarden tonen",
+    "builderTrendSpan": "Vergeleken met",
+    "builderFlat": "Stabiel binnen",
+    "builderFlatHint": "Zo'n kleine verandering geldt als stabiel (→).",
+    "builderPercent": "Als percentage",
+    "builderTrendHint": "De verandering sinds het begin van de periode. Regels controleren de verandering."
   },
   "autocomplete": {
     "pickThermostat": "Kies eerst een thermostaat",
@@ -1678,7 +1693,9 @@
       "state": "Widgetstatus",
       "image": "Afbeelding",
       "ring": "Ring",
-      "repeat": "Herhaler"
+      "repeat": "Herhaler",
+      "segments": "Gesegmenteerde balk",
+      "trend": "Trend"
     },
     "tapAgain": "Tik nogmaals",
     "hold": "Vasthouden",

@@ -30,7 +30,7 @@
       ['container', 'layout', 'dashboard', 4, 3], ['text', 'layout', 'book', 4, 1], ['icon', 'layout', 'star', 1, 1],
       ['shape', 'layout', 'paintbrush', 4, 1], ['calc', 'show', 'settings', 2, 1], ['time', 'show', 'clock', 2, 1],
       ['image', 'layout', 'camera', 2, 2], ['ring', 'show', 'refresh', 2, 2], ['repeat', 'show', 'users', 4, 2],
-      ['state', 'control', 'bookmark', 2, 1],
+      ['state', 'control', 'bookmark', 2, 1], ['segments', 'show', 'plugzap', 4, 2], ['trend', 'show', 'navigation', 2, 1],
     ].map(([kind, group, glyph, w, h]) => ({ kind, group, glyph, w, h }));
     const GROUPS = ['layout', 'show', 'control'];
     const SLOT_KINDS = ['value', 'chart', 'gauge', 'level', 'status', 'switch', 'slider', 'stepper', 'choice'];
@@ -51,12 +51,14 @@
     const MAX_ACTIONS = 6;
     const MAX_PAGES = 6;
     const MAX_RINGS = 3;
+    const MAX_SEGMENTS = 6;
     /** What a Flow may change, per kind (lib/customDesigns.ts takes any; these are the ones that show on it). */
     const FLOW_PROPS = {
       text: ['text', 'color', 'hidden'], icon: ['icon', 'color', 'hidden'], container: ['hidden'],
       flowvalue: ['text', 'color', 'icon', 'hidden'], shape: ['color', 'hidden'],
       calc: ['text', 'color', 'icon', 'hidden'], time: ['text', 'color', 'icon', 'hidden'],
       state: ['text', 'color', 'hidden'], image: ['hidden'], ring: ['text', 'color', 'icon', 'hidden'], repeat: ['text', 'color', 'hidden'],
+      segments: ['text', 'color', 'hidden'], trend: ['text', 'color', 'hidden'],
     };
     const flowPropsOf = kind => FLOW_PROPS[kind] || ['text', 'value', 'color', 'icon', 'hidden'];
 
@@ -814,6 +816,8 @@
       if (kind === 'image') { p.fit = 'cover'; p.refresh = 5; }
       if (kind === 'ring') { p.rings = []; p.center = 'value'; }
       if (kind === 'repeat') { p.itemStyle = 'row'; p.columns = 1; p.text = ''; }
+      if (kind === 'segments') { p.segments = []; p.barStyle = 'bar'; p.scale = 'sum'; p.legend = true; p.units = ''; }
+      if (kind === 'trend') { p.span = '1h'; p.flat = 0; }
       if (into && into.mode === 'pages') p.page = (b.editPage && b.editPage[into.id]) || 0;
       change(() => {
         const w = Number(def.w);
@@ -968,6 +972,8 @@
       if (p.kind === 'image') imageRows(body, p);
       if (p.kind === 'ring') ringRows(body, p);
       if (p.kind === 'repeat') repeatRows(body, p);
+      if (p.kind === 'segments') segmentRows(body, p);
+      if (p.kind === 'trend') trendRows(body, p);
       if (parent && parent.mode === 'pages') {
         body.append(row(t('builderOnPage'), selectOf((parent.pages || []).map((pg, i) => [String(i), pg.name || t('builderPageN', { n: i + 1 })]), String(p.page || 0), v => change(() => {
           p.page = Number(v);
@@ -1429,6 +1435,40 @@
       body.append(checkRow(t('builderRepeatControl'), p.control, v => change(() => { if (v) p.control = true; else delete p.control; }, { preview: false }), t('builderRepeatControlHint')));
       body.append(row(t('builderRepeatEmpty'), textInput(p.text, v => change(() => { p.text = v.slice(0, 200); }, { preview: false }), { placeholder: t('builderRepeatEmptyHint') })));
       body.append(el('p', 'wd-hint', t('builderRepeatHint')));
+    }
+
+    function segmentRows(body, p) {
+      const list = p.segments || [];
+      body.append(el('h4', 'wdb-h4', t('builderSegments')));
+      const colours = [['', t('builderAuto')], ...window.WidgetkeeperKit.COLORS.map(c => [c, colourName(c)])];
+      list.forEach((x, i) => {
+        const box = el('div', 'wdb-action');
+        const head = el('div', 'wdb-action-head');
+        const drop = button('wd-icon small', '', () => change(() => { p.segments.splice(i, 1); }), t('remove'));
+        drop.append(icon('close'));
+        const two = el('div', 'wdb-two');
+        two.append(textInput(x.label, v => change(() => { x.label = v.trim().slice(0, 24); }, { preview: false }), { placeholder: t('builderLabel') }),
+          selectOf(colours, x.color || '', v => change(() => { x.color = v || null; }, { preview: false })));
+        head.append(el('span', 'wdb-ref-key', String(i + 1)), two, drop);
+        box.append(head, sourcePicker(x.src, src => change(() => { p.segments[i] = { ...x, src }; }), { self: p.id }));
+        body.append(box);
+      });
+      const add = button('wd-btn quiet small', t('builderAddSegment'), () => change(() => { p.segments = [...list, { src: { slot: '' }, color: null, label: '' }]; }));
+      add.disabled = list.length >= MAX_SEGMENTS;
+      body.append(add, el('p', 'wd-hint', t('builderSegmentsHint')));
+      body.append(row(t('builderBarStyle'), segs([['bar', t('builderBarStyle_bar')], ['donut', t('builderBarStyle_donut')]], p.barStyle || 'bar', v => change(() => { p.barStyle = v; }, { preview: false }))));
+      body.append(row(t('builderScale'), segs([['sum', t('builderScale_sum')], ['max', t('builderScale_max')]], p.scale || 'sum', v => change(() => { p.scale = v; if (v === 'max' && !p.max) p.max = 100; }, { preview: false }))));
+      if (p.scale === 'max') body.append(row(t('builderMax'), textInput(p.max, v => change(() => { const n = numOrNull(v); p.max = n && n > 0 ? n : 100; }, { preview: false }), { type: 'number' })));
+      body.append(row(t('builderUnits'), textInput(p.units, v => change(() => { p.units = v.trim().slice(0, 12); }, { preview: false }), { placeholder: t('builderAuto') })));
+      body.append(checkRow(t('builderLegend'), p.legend !== false, v => change(() => { p.legend = v; }, { preview: false })));
+    }
+
+    function trendRows(body, p) {
+      body.append(row(t('builderValue'), slotButton(p.slot, item => change(() => { p.slot = item.id; }))));
+      body.append(row(t('builderTrendSpan'), spanSelect(p)));
+      body.append(row(t('builderFlat'), textInput(p.flat || 0, v => change(() => { const n = numOrNull(v); p.flat = n && n > 0 ? n : 0; }, { preview: false }), { type: 'number', step: 'any' }), t('builderFlatHint')));
+      body.append(checkRow(t('builderPercent'), p.percent, v => change(() => { if (v) p.percent = true; else delete p.percent; }, { preview: false })));
+      body.append(el('p', 'wd-hint', t('builderTrendHint')));
     }
 
     function shapeRows(body, p) {

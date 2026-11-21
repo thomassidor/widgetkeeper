@@ -1623,7 +1623,22 @@
     "builderRepeatControlHint": "Toccare un elemento lo accende o spegne, se il dispositivo lo consente.",
     "builderRepeatEmpty": "Se nessuno",
     "builderRepeatEmptyHint": "Niente da mostrare",
-    "builderRepeatHint": "Il suo valore in altri componenti è quanti ne mostra."
+    "builderRepeatHint": "Il suo valore in altri componenti è quanti ne mostra.",
+    "builderSegments": "Segmenti",
+    "builderAddSegment": "Aggiungi segmento",
+    "builderSegmentsHint": "La quota di ogni valore, nel suo colore. Sotto 0 conta come 0. Le regole controllano la somma.",
+    "builderBarStyle": "Forma",
+    "builderBarStyle_bar": "Barra",
+    "builderBarStyle_donut": "Ciambella",
+    "builderScale": "Quota di",
+    "builderScale_sum": "La loro somma",
+    "builderScale_max": "Un massimo",
+    "builderLegend": "Mostra i valori",
+    "builderTrendSpan": "Confrontato con",
+    "builderFlat": "Stabile entro",
+    "builderFlatHint": "Un cambiamento così piccolo appare stabile (→).",
+    "builderPercent": "In percentuale",
+    "builderTrendHint": "Il cambiamento dall'inizio del periodo. Le regole controllano il cambiamento."
   },
   "autocomplete": {
     "pickThermostat": "Scegli prima un termostato",
@@ -1678,7 +1693,9 @@
       "state": "Stato del widget",
       "image": "Immagine",
       "ring": "Anello",
-      "repeat": "Ripetitore"
+      "repeat": "Ripetitore",
+      "segments": "Barra segmentata",
+      "trend": "Tendenza"
     },
     "tapAgain": "Tocca di nuovo",
     "hold": "Tieni premuto",

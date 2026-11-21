@@ -1623,7 +1623,22 @@
     "builderRepeatControlHint": "النقر على عنصر يشغّله أو يوقفه إن سمح الجهاز.",
     "builderRepeatEmpty": "عند عدم الوجود",
     "builderRepeatEmptyHint": "لا شيء لعرضه",
-    "builderRepeatHint": "قيمته في المكونات الأخرى هي عدد ما يعرضه."
+    "builderRepeatHint": "قيمته في المكونات الأخرى هي عدد ما يعرضه.",
+    "builderSegments": "الأجزاء",
+    "builderAddSegment": "إضافة جزء",
+    "builderSegmentsHint": "حصة كل قيمة بلونها. ما دون 0 يُحسب 0. تفحص القواعد مجموعها.",
+    "builderBarStyle": "الشكل",
+    "builderBarStyle_bar": "شريط",
+    "builderBarStyle_donut": "حلقة",
+    "builderScale": "حصة من",
+    "builderScale_sum": "مجموعها",
+    "builderScale_max": "حدّ أقصى",
+    "builderLegend": "إظهار القيم",
+    "builderTrendSpan": "مقارنة بـ",
+    "builderFlat": "ثابت ضمن",
+    "builderFlatHint": "تغيّر بهذا الصغر يظهر ثابتًا (→).",
+    "builderPercent": "كنسبة مئوية",
+    "builderTrendHint": "التغيّر منذ بداية الفترة. تفحص القواعد التغيّر."
   },
   "autocomplete": {
     "pickThermostat": "اختر منظم حرارة أولاً",
@@ -1678,7 +1693,9 @@
       "state": "حالة الأداة",
       "image": "صورة",
       "ring": "حلقة",
-      "repeat": "مكرِّر"
+      "repeat": "مكرِّر",
+      "segments": "شريط مقسّم",
+      "trend": "الاتجاه"
     },
     "tapAgain": "انقر مجددًا",
     "hold": "اضغط مطولًا",

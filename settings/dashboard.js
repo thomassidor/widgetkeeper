@@ -623,6 +623,21 @@
     builderRepeatEmpty: "When none",
     builderRepeatEmptyHint: "Nothing to show",
     builderRepeatHint: "Its value in other components is how many it shows.",
+    builderSegments: "Segments",
+    builderAddSegment: "Add segment",
+    builderSegmentsHint: "Each value's share, in its colour. A value below 0 counts as 0. Rules check their sum.",
+    builderBarStyle: "Shape",
+    builderBarStyle_bar: "Bar",
+    builderBarStyle_donut: "Donut",
+    builderScale: "Shares of",
+    builderScale_sum: "Their sum",
+    builderScale_max: "A maximum",
+    builderLegend: "Show the values",
+    builderTrendSpan: "Compared with",
+    builderFlat: "Steady within",
+    builderFlatHint: "A change this small shows as steady (→).",
+    builderPercent: "As a percentage",
+    builderTrendHint: "The change since the start of the period. Rules check the change.",
   };
 
   const KEY_STORAGE = 'widgetkeeper.web.key';

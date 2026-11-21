@@ -445,3 +445,70 @@ describe('widget states, pages, actions, images, rings and repeaters', () => {
     expect(at('n').classList.contains('wb-img-empty')).toBe(true);
   });
 });
+
+describe('segmented bars, trends and typing a variable', () => {
+  const num = (slot: string, v: unknown, o: object = {}, c: object = {}) => ({ ...value(slot, v, c), ...o });
+
+  it("draws each value's share of their sum, or of a maximum, as a bar or a donut, listed under it", () => {
+    const values = [num('a:p', 300, { name: 'Heat pump' }, { units: 'W', decimals: 0 }), num('b:p', 100, { name: 'Oven' }, { units: 'W', decimals: 0 }), num('c:p', -50, { name: 'Solar' }, { units: 'W', decimals: 0 })];
+    const segments = [{ src: { slot: 'a:p' }, color: 'orange', label: '' }, { src: { slot: 'b:p' }, color: null, label: 'Cooking' }, { src: { slot: 'c:p' }, color: null, label: '' }];
+    const { w, at } = widget(state([
+      part('bar', 'segments', { name: 'Power', segments, rules: [{ op: 'above', value: '500', look: 'red' }] }),
+      part('max', 'segments', { segments, scale: 'max', max: 800, barStyle: 'donut', legend: false }),
+    ], values));
+    const widths = [...at('bar').querySelectorAll<HTMLElement>('.wb-seg')].map(x => x.style.width);
+    expect(widths).toEqual(['75%', '25%']); // a value below 0 counts as nothing
+    expect(at('bar').querySelector('.wb-value')!.textContent).toBe('400 W');
+    expect([...at('bar').querySelectorAll('.wb-seg-label')].map(x => x.textContent)).toEqual(['Heat pump', 'Cooking', 'Solar']);
+    expect(at('bar').querySelector<HTMLElement>('.wb-seg')!.style.background).toBe('var(--wk-orange, var(--wk-c))');
+    const arcs = at('max').querySelectorAll('.wb-seg-arc');
+    const len = 2 * Math.PI * 38;
+    expect(Number(arcs[0].getAttribute('stroke-dasharray')!.split(' ')[0]) / len).toBeCloseTo(300 / 800, 3);
+    expect(Number(arcs[1].getAttribute('stroke-dashoffset')) / len).toBeCloseTo(-300 / 800, 3);
+    expect(at('max').querySelector('.wb-seg-legend')).toBeNull();
+    w.pushValue({ deviceId: 'b', capabilityId: 'p', value: 300 });
+    expect(at('bar').dataset.wkColor).toBe('red');
+  });
+
+  it('shows the change since its period began, steady within its margin, or as a percentage; its rules check the change', () => {
+    const hist = { '1h\na:t': [[1, 20], [2, 20.5]], '6h\na:t': [[1, 25], [2, 22]] };
+    const s = state([
+      part('up', 'trend', { slot: 'a:t', span: '1h', name: 'Inside', rules: [{ op: 'above', value: '1', look: 'red' }] }),
+      part('down', 'trend', { slot: 'a:t', span: '6h', percent: true }),
+      part('flat', 'trend', { slot: 'a:t', span: '1h', flat: 2 }),
+      part('none', 'trend', { slot: 'a:t', span: '24h' }),
+    ], [num('a:t', 21.5)], { histories: hist });
+    const { w, at } = widget(s);
+    const val = (id: string) => at(id).querySelector('.wb-value')!.textContent;
+    expect([val('up'), at('up').dataset.trend, at('up').querySelector('.wb-sub')!.textContent]).toEqual(['+1.5°C', 'up', '21.5°C']);
+    expect(at('up').dataset.wkColor).toBe('red');
+    expect([val('down'), at('down').dataset.trend]).toEqual(['−14%', 'down']);
+    expect(at('flat').dataset.trend).toBe('flat');
+    expect(val('none')).toBe('–');
+    w.pushValue({ deviceId: 'a', capabilityId: 't', value: 20 });
+    expect([val('up'), at('up').dataset.trend]).toEqual(['0°C', 'flat']);
+  });
+
+  it('types a text or number variable in its tile: Enter sets it, Escape leaves it, a number that is not one shakes', async () => {
+    const sent: unknown[] = [];
+    const s = state([part('n', 'variable', { variable: 'v1' }), part('x', 'variable', { variable: 'v2' })], [], {
+      variables: { v1: { id: 'v1', name: 'Guests', type: 'number', value: 4 }, v2: { id: 'v2', name: 'Note', type: 'string', value: 'hi' } },
+    });
+    const { at } = widget(s, { onSet: async (_p: unknown, v: unknown) => { sent.push(v); } });
+    const type = (id: string, text: string, key: string) => {
+      at(id).click();
+      const input = at(id).querySelector<HTMLInputElement>('.wb-input')!;
+      expect(input).toBeTruthy();
+      input.value = text;
+      input.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+    };
+    type('n', '5,5', 'Enter');
+    await vi.waitFor(() => expect(sent).toEqual([5.5]));
+    expect(at('n').querySelector('.wb-input')).toBeNull();
+    type('x', 'changed', 'Escape');
+    type('n', 'lots', 'Enter');
+    type('x', 'bye', 'Enter');
+    await vi.waitFor(() => expect(sent).toEqual([5.5, 'bye']));
+    expect(at('x').querySelector('.wb-value')!.textContent).toBe('bye');
+  });
+});

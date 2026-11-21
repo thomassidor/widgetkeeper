@@ -1623,7 +1623,22 @@
     "builderRepeatControlHint": "Ett tryck slår på eller av, där enheten tillåter det.",
     "builderRepeatEmpty": "När inga finns",
     "builderRepeatEmptyHint": "Inget att visa",
-    "builderRepeatHint": "Dess värde i andra komponenter är hur många den visar."
+    "builderRepeatHint": "Dess värde i andra komponenter är hur många den visar.",
+    "builderSegments": "Segment",
+    "builderAddSegment": "Lägg till segment",
+    "builderSegmentsHint": "Varje värdes andel, i sin färg. Under 0 räknas som 0. Regler kontrollerar summan.",
+    "builderBarStyle": "Form",
+    "builderBarStyle_bar": "Stapel",
+    "builderBarStyle_donut": "Ring",
+    "builderScale": "Andel av",
+    "builderScale_sum": "Deras summa",
+    "builderScale_max": "Ett maximum",
+    "builderLegend": "Visa värdena",
+    "builderTrendSpan": "Jämfört med",
+    "builderFlat": "Stabilt inom",
+    "builderFlatHint": "En så liten ändring visas som stabil (→).",
+    "builderPercent": "I procent",
+    "builderTrendHint": "Ändringen sedan periodens början. Regler kontrollerar ändringen."
   },
   "autocomplete": {
     "pickThermostat": "Välj en termostat först",
@@ -1678,7 +1693,9 @@
       "state": "Widgetläge",
       "image": "Bild",
       "ring": "Ring",
-      "repeat": "Upprepare"
+      "repeat": "Upprepare",
+      "segments": "Segmenterad stapel",
+      "trend": "Trend"
     },
     "tapAgain": "Tryck igen",
     "hold": "Håll",

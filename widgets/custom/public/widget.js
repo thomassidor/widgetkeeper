@@ -397,6 +397,42 @@
       return out;
     }
 
+    // ------------------------------------------------------------ segments and trends
+
+    const SEGMENT_COLORS = ['blue', 'green', 'orange', 'purple', 'teal', 'pink'];
+    /** A segmented bar's segments now (a negative or unknown value counts as 0) and their sum, its value. */
+    function segmentsValue(part) {
+      const segs = (part.segments || []).map((x, i) => {
+        const e = sourceEntry(x.src);
+        const n = inputNumber(e);
+        return { ...x, entry: e, n: n !== null && n > 0 ? n : 0, color: x.color || SEGMENT_COLORS[i % SEGMENT_COLORS.length] };
+      });
+      const sum = segs.reduce((a, x) => a + x.n, 0);
+      const first = segs.find(x => x.entry && x.entry.cap && x.entry.cap.units);
+      const units = part.units || (first ? first.entry.cap.units : null);
+      const decimals = first && first.entry.cap.decimals != null ? first.entry.cap.decimals : 0;
+      return { value: segs.length ? sum : null, cap: { type: 'number', units, decimals }, segs };
+    }
+
+    /**
+     * A trend: its value now less the first of its history (`span`), or that as a percentage of it; `dir` up, down or
+     * steady (within `flat`). Unknown without a value or a history.
+     */
+    function trendValue(part) {
+      const e = part.slot ? sourceEntry({ slot: part.slot }) : null;
+      if (!e) return null;
+      if (e.missing) return { missing: true };
+      const pts = (state && state.histories && state.histories[`${part.span}\n${part.slot}`]) || [];
+      const start = pts.find(p => Array.isArray(p) && Number.isFinite(p[1]));
+      const now = inputNumber({ ...e, offline: false });
+      if (!start || now === null) return { value: null, cap: e.cap, name: e.name, offline: e.offline };
+      const delta = now - start[1];
+      const value = part.percent ? (start[1] ? (delta / Math.abs(start[1])) * 100 : null) : delta;
+      const dir = value === null || Math.abs(value) <= (part.flat || 0) ? 'flat' : value > 0 ? 'up' : 'down';
+      const cap = part.percent ? { type: 'number', units: '%', decimals: 0 } : e.cap;
+      return { value, cap, name: e.name, offline: e.offline, dir, now, nowCap: e.cap };
+    }
+
     /** The part's value: hoped for, else reported; `cap` describes it (a variable's is made up). */
     function current(part) {
       if (part.kind === 'calc') return calcValue(part);
@@ -404,6 +440,8 @@
       if (part.kind === 'state') return stateEntry(part);
       if (part.kind === 'ring') return (part.rings && part.rings[0] && sourceEntry(part.rings[0].src)) || null;
       if (part.kind === 'repeat') return { value: repeatItems(part).length, cap: { type: 'number', decimals: 0 } };
+      if (part.kind === 'segments') return segmentsValue(part);
+      if (part.kind === 'trend') return trendValue(part);
       const h = hoped.get(part.id);
       const p = pending.get(part.id);
       const s = slotEntry(part);
@@ -515,9 +553,10 @@
      */
     function sizeOf(part, where) {
       const a = part.at || { w: 1, h: 1 };
-      if (where === 'free') return { big: a.h >= 40, narrow: a.w <= 25 };
-      if (where === 'grid') return { big: a.h >= 10, narrow: a.w <= 3 };
-      return { big: a.h >= 2, narrow: a.w === 1 };
+      // `wide`: room for a list beside a donut (three columns, 8 of 12, 60 %).
+      if (where === 'free') return { big: a.h >= 40, narrow: a.w <= 25, wide: a.w >= 60 };
+      if (where === 'grid') return { big: a.h >= 10, narrow: a.w <= 3, wide: a.w >= 8 };
+      return { big: a.h >= 2, narrow: a.w === 1, wide: a.w >= 3 };
     }
 
     function build(part, where) {
@@ -858,6 +897,82 @@
           name.hidden = !name.textContent;
         };
       },
+      segments(part, node, size) {
+        const head = el('div', { class: 'wb-top' }, node);
+        const name = el('span', { class: 'wb-name' }, head);
+        const total = el('span', { class: 'wb-value' }, head);
+        const donut = part.barStyle === 'donut';
+        node.classList.add(donut ? 'wb-seg-donut' : 'wb-seg-barstyle');
+        const body = el('div', { class: 'wb-seg-body' }, node);
+        const bar = donut ? el('svg', { class: 'wb-seg-ring', viewBox: '0 0 100 100', 'aria-hidden': 'true' }, body, SVG_NS) : el('div', { class: 'wb-seg-bar', 'aria-hidden': 'true' }, body);
+        // A donut lists its values beside it only where there's room.
+        const legend = part.legend !== false && (!donut || size.wide) ? el('div', { class: 'wb-seg-legend' }, body) : null;
+        const paint = (n, c) => { const v = K.isCustomColor(c) ? c : `var(--wk-${c}, var(--wk-c))`; if (n.namespaceURI === SVG_NS) n.style.stroke = v; else n.style.background = v; };
+        return (c, flow) => {
+          name.textContent = (flow && flow.text) || part.name || '';
+          total.textContent = textOf(part, c, flow);
+          const segs = c.segs || [];
+          const whole = part.scale === 'max' ? (part.max || 100) : c.value || 0;
+          bar.textContent = '';
+          if (donut) {
+            const r = 38;
+            const len = 2 * Math.PI * r;
+            el('circle', { class: 'wb-seg-track', cx: 50, cy: 50, r }, bar, SVG_NS);
+            let at = 0;
+            for (const x of segs) {
+              const f = whole > 0 ? Math.min(1 - at, x.n / whole) : 0;
+              if (f <= 0) continue;
+              const arc = el('circle', { class: 'wb-seg-arc', cx: 50, cy: 50, r, 'stroke-dasharray': `${(f * len).toFixed(2)} ${len.toFixed(2)}`, 'stroke-dashoffset': (-at * len).toFixed(2), transform: 'rotate(-90 50 50)' }, bar, SVG_NS);
+              paint(arc, x.color);
+              at += f;
+            }
+          } else {
+            for (const x of segs) {
+              const f = whole > 0 ? Math.min(100, (x.n / whole) * 100) : 0;
+              if (f <= 0) continue;
+              const seg = el('span', { class: 'wb-seg' }, bar);
+              seg.style.width = `${f}%`;
+              paint(seg, x.color);
+            }
+          }
+          if (legend) {
+            legend.textContent = '';
+            for (const x of segs) {
+              const row = el('div', { class: 'wb-seg-key' }, legend);
+              paint(el('i', { class: 'wb-seg-dot' }, row), x.color);
+              el('span', { class: 'wb-seg-label', dir: 'auto', text: x.label || (x.entry && x.entry.name) || '' }, row);
+              el('span', { class: 'wb-seg-num', text: x.entry && !x.entry.missing ? fmt(x.entry.cap, x.entry.value) : '–' }, row);
+            }
+          }
+        };
+      },
+      trend(part, node, size) {
+        node.classList.toggle('wb-big', size.big);
+        const top = el('div', { class: 'wb-top' }, node);
+        const arrow = el('span', { class: 'wb-icon wb-trend-arrow', 'aria-hidden': 'true' }, top);
+        const val = el('span', { class: 'wb-value' }, size.big ? null : top);
+        // The name, and the value now beside it.
+        const foot = el('div', { class: 'wb-trend-foot' }, node);
+        const name = el('span', { class: 'wb-name' }, foot);
+        const sub = el('span', { class: 'wb-sub' }, foot);
+        if (size.big) node.insertBefore(val, foot);
+        let shownDir = '';
+        return (c, flow) => {
+          const dir = c.dir || 'flat';
+          if (dir !== shownDir) {
+            shownDir = dir;
+            arrow.textContent = '';
+            const ic = K.icons[dir === 'up' ? 'up' : dir === 'down' ? 'down' : 'right'];
+            if (ic) arrow.appendChild(K.svgIcon(ic, 'wb-svg'));
+          }
+          node.dataset.trend = dir;
+          const v = c.value;
+          val.textContent = v === null || v === undefined ? '–' : `${v > 0 ? '+' : v < 0 ? '−' : ''}${fmt(c.cap, Math.abs(v))}`;
+          name.textContent = (flow && flow.text) || part.name || c.name || '';
+          sub.textContent = c.now != null ? fmt(c.nowCap, c.now) : '';
+          sub.hidden = !sub.textContent;
+        };
+      },
       repeat(part, node) {
         node.classList.add(`wb-rep-${part.itemStyle === 'tile' ? 'tiles' : 'rows'}`);
         const head = el('div', { class: 'wb-name wb-rep-head' }, node);
@@ -978,15 +1093,45 @@
         const tog = el('span', { class: 'wb-toggle', 'aria-hidden': 'true' }, top);
         const name = el('div', { class: 'wb-name' }, node);
         let c = {};
+        let input = null;
+        /** A text or number variable is typed in the tile: Enter or leaving it sets it, Escape leaves it as it was. */
+        function edit() {
+          if (input) return;
+          input = el('input', { class: 'wb-input', type: 'text', inputmode: c.cap.type === 'number' ? 'decimal' : 'text', 'aria-label': part.name || c.name || '' });
+          input.value = c.value == null ? '' : String(c.value);
+          val.replaceWith(input);
+          node.classList.add('wb-editing');
+          input.focus();
+          input.select();
+          let done = false;
+          const finish = (save) => {
+            if (done) return;
+            done = true;
+            const typed = input.value;
+            input.replaceWith(val);
+            input = null;
+            node.classList.remove('wb-editing');
+            if (!save || typed === (c.value == null ? '' : String(c.value))) return;
+            const v = c.cap.type === 'number' ? Number(typed.replace(',', '.')) : typed;
+            if (c.cap.type === 'number' && (!typed.trim() || !Number.isFinite(v))) { K.shake(node); return; }
+            act(part, node, v);
+          };
+          input.addEventListener('keydown', (e) => {
+            e.stopPropagation();
+            if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+            if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+          });
+          input.addEventListener('blur', () => finish(true));
+          ['click', 'touchend', 'touchstart'].forEach(ev => input.addEventListener(ev, e => e.stopPropagation()));
+        }
         K.onTap(node, () => {
-          if (opts.preview || !c.cap) return;
+          if (opts.preview || !c.cap || input) return;
           if (c.cap.type === 'boolean') { act(part, node, c.value !== true); return; }
-          const typed = window.prompt(part.name || c.name || '', c.value == null ? '' : String(c.value));
-          if (typed === null) return;
-          const v = c.cap.type === 'number' ? Number(typed.replace(',', '.')) : typed;
-          if (c.cap.type === 'number' && !Number.isFinite(v)) { K.shake(node); return; }
-          act(part, node, v);
-        }, { guard });
+          edit();
+        }, { guard, keys: false });
+        node.addEventListener('keydown', (e) => {
+          if (e.target === node && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); if (!opts.preview && c.cap) { if (c.cap.type === 'boolean') act(part, node, c.value !== true); else edit(); } }
+        });
         node.setAttribute('role', 'button');
         node.tabIndex = 0;
         return (cur, flow) => {
@@ -996,7 +1141,7 @@
           tog.classList.toggle('on', cur.value === true);
           node.classList.toggle('wb-on', bool && cur.value === true);
           val.hidden = bool;
-          val.textContent = textOf(part, cur, flow);
+          if (!input) val.textContent = textOf(part, cur, flow);
           name.textContent = (flow && flow.text) || part.name || cur.name || '';
         };
       },
