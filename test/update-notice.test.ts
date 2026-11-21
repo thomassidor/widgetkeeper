@@ -100,8 +100,8 @@ describe('the update notice on the Timeline', () => {
   });
 
   it("reads the release notes it ships", async () => {
-    const homey = homeyAt('1.3.0', '1.2.1');
+    const homey = homeyAt('1.4.0', '1.3.2');
     await postUpdateNotice(homey, () => {}, { ranBefore: true });
-    expect(excerpts(homey)[0]).toBe('**Widgetkeeper 1.3.0**: Three new widgets, one time format for the whole app, 155 more icons and web dashboards with a side pane.');
+    expect(excerpts(homey)[0]).toBe('**Widgetkeeper 1.4.0**: Widget Builder: design your own widgets for web dashboards, plus custom colours from Flows and tabs in the Smart Stack.');
   });
 });
