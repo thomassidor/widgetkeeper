@@ -15,7 +15,7 @@
     error: 'Could not load the design.',
     missing: 'This design was removed.',
     pickDesign: 'Pick a design in the widget\'s settings.',
-    empty: 'This design has no parts yet.',
+    empty: 'This design has no components yet.',
     webOnly: 'Widget Builder designs show on web dashboards for now.',
     unavailable: 'Unavailable',
     on: 'On',
@@ -68,6 +68,12 @@
     return { color, tint, hidden };
   }
   window.customLookOf = lookOf;
+
+  /** A part's background: its `style`, or as kept before it had one (`tile: false`; text and icons none). */
+  function styleOf(part) {
+    if (['tile', 'pill', 'none'].includes(part.style)) return part.style;
+    return part.tile === false || part.kind === 'text' || part.kind === 'icon' ? 'none' : 'tile';
+  }
 
   function icon(id, cls) {
     const ic = id && K.icons[id];
@@ -221,9 +227,12 @@
 
     function build(part, where) {
       const node = el('div', { class: `wb-part wb-k-${part.kind}`, 'data-part': part.id });
-      if (part.tile !== false && part.kind !== 'container' && part.kind !== 'text' && part.kind !== 'icon') node.classList.add('wb-tile');
-      if (part.kind === 'text' || part.kind === 'icon') node.classList.add('wb-bare');
-      if (part.tile === false) node.classList.add('wb-bare');
+      // Its background (lib/customDesigns.ts' `style`): the native tile, a pill, or none.
+      if (part.kind !== 'container') {
+        const style = styleOf(part);
+        node.classList.add(style === 'none' ? 'wb-bare' : 'wb-tile');
+        if (style === 'pill') node.classList.add('wb-pill');
+      }
       place(node, part, where);
       const make = MAKERS[part.kind] || MAKERS.text;
       const updatePart = make(part, node, sizeOf(part, where));

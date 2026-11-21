@@ -4,22 +4,23 @@
 
 For [web dashboards](../../README.md#web-dashboards) only, for now: a widget you design yourself. On the web dashboards' front page, under **Widget Builder**, tap **New design**. The builder shows your design at its real size, with its live values:
 
-- Tap a part on the left to add it. It goes at the bottom, or into the container you've selected.
-- Drag a part to move it and its corner to resize it; the parts below make room.
-- On the right, the selected part's settings: **Part** (what it shows or changes, its size and place), **Look** (colour, icon), **Rules** and **Flow**.
+- Tap a component on the left to add it at the bottom (or into the selected container), or drag it to where you want it.
+- Drag a component to move it, or drag its corner to resize it. The components below move down to make room.
+- On the right, the selected component's **Settings** (what it shows or changes, its position and size), **Style** (colour, icon, and a tile, pill or no background), **Rules** and **Flows**.
+- The moon or sun in the bar switches the editor and the preview between dark and light.
 
 Changes are saved as you go, and Undo takes them back. **Add to dashboard** puts the design on a web dashboard, or add it there yourself with Add widget → Widget Builder and pick it in the widget's settings. A change to a design shows on every dashboard that has it.
 
-**Parts:**
-- **Show:** Value (big on two rows, with its line over a span if you like), Mini chart, Gauge, Level bar, Status (a dot that lights up), Flow value (only Flows fill it).
-- **Control:** Switch, Button (starts a Flow, or fires *A Widget Builder button was tapped*), Slider, Stepper (− and +, for a setpoint or a number variable), Choice (one of a few: a mode, a scene, a variable's value), Variable.
+**Components:**
 - **Layout:** Container, Text, Icon.
+- **Display:** Value (large over two rows, with a graph if you like), Mini chart, Gauge, Level bar, Status (a dot that lights up), Flow value (only Flows fill it).
+- **Controls:** Switch, Button (starts a Flow, or triggers *A Widget Builder button was tapped*), Slider, Stepper (− and +, for a setpoint or a number variable), Choice (one of a few options: a mode, a scene, a variable's value), Variable.
 
-A **container** is a background (a colour or a gradient) that holds parts of its own, on a finer grid (12 columns, 8 px rows) or placed freely.
+A **container** is a background (a colour or a gradient) that holds components of its own, snapped to a finer grid (12 columns) or placed freely.
 
-**Rules:** a part can change with its value: above, below, is or is not a value turns it a colour, or hides it. The first rule that holds wins.
+**Rules:** a component can change with its value. When the value is above, below, is or is not something you type, it takes a colour or is hidden. The first rule that matches is used.
 
-**Flow cards:** nothing is open to Flows until you say so. In a part's Flow tab you choose what a Flow may change: its text, value, colour, icon, or whether it's shown. Only those parts appear in the cards, named *Design · Part*. You also choose when a Flow's change goes back: never, after an hour, or at midnight.
+**Flow cards:** Flows can't change anything until you allow it. In a component's Flows tab you choose what Flows may change: its text, value, colour, icon, or whether it's shown. Only those components appear in the cards, named *Design · Component*. You also choose when those changes are reset: never, after 1 hour, or at midnight.
 - *Set the text of …*, *Set the value of …*, *Colour …*, *Give … a custom colour*, *Give … the icon …*, *Show or hide …*, *Put … back as designed*
 - *… is shown* (a condition)
 - *A Widget Builder button was tapped* and *A Widget Builder choice was made* (triggers)

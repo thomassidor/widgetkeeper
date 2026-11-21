@@ -57,10 +57,10 @@
     container: [
       part('box', 'container', at(0, 0, 4, 3), {
         mode: 'grid', background: { kind: 'gradient', from: '#2d4c7a', to: '#2a1958', angle: 135 }, parts: [
-          part('h', 'text', at(0, 0, 7, 4), { text: 'Living room', size: 'heading', tile: false }),
-          part('m', 'status', at(7, 0, 5, 4), { slot: 'hall:alarm_motion', name: 'Motion', tile: false }),
-          part('t', 'value', at(0, 4, 7, 11), { slot: 'lr:measure_temperature', name: 'Temperature', tile: false }),
-          part('g', 'gauge', at(7, 4, 5, 11), { slot: 'lr:measure_humidity', name: 'Humidity', min: 0, max: 100, color: 'teal', tile: false }),
+          part('h', 'text', at(0, 0, 7, 4), { text: 'Living room', size: 'heading', style: 'none' }),
+          part('m', 'status', at(7, 0, 5, 4), { slot: 'hall:alarm_motion', name: 'Motion', style: 'none' }),
+          part('t', 'value', at(0, 4, 7, 11), { slot: 'lr:measure_temperature', name: 'Temperature', style: 'none' }),
+          part('g', 'gauge', at(7, 4, 5, 11), { slot: 'lr:measure_humidity', name: 'Humidity', min: 0, max: 100, color: 'teal', style: 'none' }),
           part('l', 'switch', at(0, 15, 6, 8), { slot: 'lamp:onoff', name: 'Floor lamp', icon: 'bulb', color: 'yellow' }),
           part('s', 'choice', at(6, 15, 6, 8), { variable: 'v1', name: 'House mode', color: 'purple',
             choices: [{ label: 'Home', value: 'home' }, { label: 'Away', value: 'away' }, { label: 'Night', value: 'night' }] }),
@@ -72,7 +72,7 @@
     free: [
       part('box', 'container', at(0, 0, 4, 4), {
         mode: 'free', background: { kind: 'gradient', from: '#3a4a5e', to: '#2c3a2e', angle: 160 }, parts: [
-          part('clock', 'text', at(62, 4, 36, 14), { text: 'Front door', size: 'heading', align: 'right', tile: false }),
+          part('clock', 'text', at(62, 4, 36, 14), { text: 'Front door', size: 'heading', align: 'right', style: 'none' }),
           part('msg', 'flowvalue', at(4, 36, 58, 24), { name: 'Message', text: '', color: 'orange', flow: { value: true, color: true } }),
           part('lock', 'status', at(4, 72, 40, 24), { slot: 'lock:locked', name: 'Locked', color: 'green' }),
           part('ring', 'button', at(68, 66, 28, 30), { name: 'Ring', icon: 'bell', color: 'yellow' }),

@@ -1116,3 +1116,12 @@ textarea.wd-input { width: 100%; resize: vertical; }
 }
 .wdb .wd-icon.small { width: 28px; height: 28px; }
 .wdb-lib .wd-input { width: 100%; box-sizing: border-box; min-width: 0; }
+.wdb-ghost {
+  position: fixed; z-index: 1000; pointer-events: none; display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 10px;
+  background: var(--wd-tile); color: var(--wd-text); font-size: 13px; box-shadow: 0 6px 20px rgba(0, 0, 0, .25); border: 1px solid var(--wd-accent);
+}
+.wdb-canvas.dropping { outline: 2px dashed var(--wd-accent); outline-offset: 6px; border-radius: 12px; }
+.wdb-comp { touch-action: none; }
+.wdb-valuepick { flex-direction: column; align-items: flex-start; gap: 0; height: auto; min-height: 44px; padding: 6px 12px; text-align: left; width: 100%; }
+.wdb-valuepick-device { font-weight: 500; }
+.wdb-valuepick-value { font-size: 13px; font-weight: 400; }

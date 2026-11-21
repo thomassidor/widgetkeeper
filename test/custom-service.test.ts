@@ -58,6 +58,13 @@ describe('readDesign: a design as kept', () => {
     expect(many.parts).toHaveLength(MAX_PARTS);
   });
 
+  it("keeps a part's background, and reads one saved as tile: false as none", () => {
+    expect(readPart({ kind: 'value', style: 'pill' })!.style).toBe('pill');
+    expect(readPart({ kind: 'value', style: 'round' })!.style).toBe('tile');
+    expect(readPart({ kind: 'value', tile: false })!.style).toBe('none');
+    expect(readPart({ kind: 'text' })!.style).toBe('none');
+  });
+
   it('refuses what is not a design, and a reserved id', () => {
     expect(readDesign(null)).toBeNull();
     expect(readDesign('x')).toBeNull();

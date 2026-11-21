@@ -118,7 +118,7 @@ export default class CustomWidgetService {
   designItems(query: string): AutocompleteItem[] {
     return this.designs
       .filter(d => matches(query, d.name))
-      .map(d => ({ id: d.id, name: d.name, description: this.homey.__('custom.partCount', { count: allParts(d).length }) || `${allParts(d).length} parts` }));
+      .map(d => ({ id: d.id, name: d.name, description: this.homey.__('custom.partCount', { count: allParts(d).length }) || `${allParts(d).length} components` }));
   }
 
   /** Every design, whole: the builder page's library. */

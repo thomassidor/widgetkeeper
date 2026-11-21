@@ -74,6 +74,15 @@ describe('drawing', () => {
     expect(at('k').style.height).toBe('40%');
   });
 
+  it('draws each component on a tile, a pill or no background, and reads an older tile: false as none', () => {
+    const { at } = widget(state([
+      part('a', 'text', { text: 'Hi', style: undefined }), part('b', 'switch', { style: 'pill' }), part('c', 'value', { style: 'none' }),
+      part('d', 'value', { tile: false, style: undefined }), part('e', 'value', { style: undefined }),
+    ]));
+    expect(['a', 'b', 'c', 'd', 'e'].map(id => [at(id).classList.contains('wb-tile'), at(id).classList.contains('wb-pill')]))
+      .toEqual([[false, false], [true, true], [false, false], [false, false], [true, false]]);
+  });
+
   it('shows values as the tiles do, with a Flow value or text over them, and a gone device marked', () => {
     const { at, w } = widget(state([
       part('t', 'value', { slot: 'a:t', name: 'Room' }),
@@ -92,7 +101,7 @@ describe('drawing', () => {
     const { w, root } = widget({ missing: true });
     expect(root.querySelector('.wb-message')!.textContent).toBe('This design was removed.');
     w.setState(state([]));
-    expect(root.querySelector('.wb-message')!.textContent).toBe('This design has no parts yet.');
+    expect(root.querySelector('.wb-message')!.textContent).toBe('This design has no components yet.');
     w.setState({});
     expect(root.querySelector('.wb-message')!.textContent).toBe('Could not load the design.');
   });

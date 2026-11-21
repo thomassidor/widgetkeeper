@@ -69,6 +69,21 @@ html, body { background: transparent !important; }
 .wb-svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .wb-svg .filled { fill: currentColor; stroke: none; }
 
+/* Pill: fully rounded; a one-row component lays out in a row, the icon, the name, then the value or switch. */
+.wb-pill { border-radius: 999px; padding: 6px 16px; }
+.wb-pill:is(.wb-k-value:not(.wb-big):not(.wb-narrow), .wb-k-flowvalue, .wb-k-switch, .wb-k-status, .wb-k-variable, .wb-k-button) {
+  flex-direction: row; align-items: center; justify-content: flex-start; gap: 10px;
+}
+.wb-pill .wb-top { display: contents; }
+.wb-pill .wb-icon, .wb-pill .wb-dot { order: 0; }
+.wb-pill:not(.wb-k-button) .wb-name { order: 1; flex: 1 1 auto; }
+.wb-pill .wb-value, .wb-pill .wb-sub { order: 2; }
+.wb-pill .wb-toggle { order: 3; }
+.wb-pill.wb-k-button { justify-content: center; }
+.wb-pill.wb-k-button .wb-icon { width: 20px; height: 20px; }
+.wb-pill.wb-k-slider { padding: 0; }
+.wb-pill.wb-k-slider .wb-row { padding: 0 18px; }
+
 /* Value: a big one (two rows or more) puts the number large under the icon row. */
 .wb-big { justify-content: flex-start; }
 .wb-big .wb-value { font-size: var(--homey-font-size-xxlarge, 32px); line-height: var(--homey-line-height-xxlarge, 40px); font-weight: var(--wb-bold); position: relative; z-index: 1; }
@@ -170,4 +185,4 @@ html, body { background: transparent !important; }
 .wb-inner { position: relative; height: 100%; }
 .wb-box-grid .wb-inner { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 8px; column-gap: 6px; }
 .wb-box-free .wb-part { position: absolute; }
-.wb-k-container .wb-tile { border-radius: 8px; }
+.wb-k-container .wb-tile:not(.wb-pill) { border-radius: 8px; }

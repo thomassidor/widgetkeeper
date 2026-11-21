@@ -49,6 +49,9 @@ export type RuleOp = typeof RULE_OPS[number];
 export type Rule = { op: RuleOp, value: string, look: TileColor | 'hide' };
 
 /** Top level: cells of the 4-column grid. In a container: fine-grid cells, or per cent of its inner box (free-form). */
+export const PART_STYLES = ['tile', 'pill', 'none'] as const;
+export type PartStyle = typeof PART_STYLES[number];
+
 export type Place = { x: number, y: number, w: number, h: number };
 
 export type Choice = { label: string, value: string };
@@ -61,8 +64,11 @@ export type Part = {
   at: Place,
   color: TileColor | null,
   icon: string | null,
-  /** Inside a container: drawn on a tile of its own (true), or right on the background. */
-  tile: boolean,
+  /**
+   * Its background: the native `tile` (10 px corners), a rounded `pill`, or `none` (right on the widget's or a
+   * container's background). Text and icons default to none.
+   */
+  style: PartStyle,
   rules: Rule[],
   /** What Flows may change (only these show in the cards' lists), and when a Flow's value goes back. */
   flow: Partial<Record<FlowProp, true>>,
@@ -218,7 +224,8 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     at: placeOf(r.at, where),
     color: color(r.color),
     icon: typeof r.icon === 'string' && /^[a-z0-9-]{1,40}$/.test(r.icon) ? r.icon : null,
-    tile: where === 'top' ? true : r.tile !== false,
+    // Saved before 1.4.0's release as `tile: false` (on a container's background).
+    style: oneOf(r.style, PART_STYLES, r.tile === false || kind === 'text' || kind === 'icon' ? 'none' : 'tile'),
     rules: kind === 'container' ? [] : rulesOf(r.rules),
     flow: flowOf(r.flow),
     reset: oneOf(r.reset, FLOW_RESETS, 'never'),

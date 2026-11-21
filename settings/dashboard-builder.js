@@ -10,7 +10,7 @@
   'use strict';
 
   window.WidgetkeeperWeb.part('builder', (wd) => {
-    const { button, confirmButton, el, failed, icon, request, root, t, toast } = wd;
+    const { button, confirmButton, el, failed, icon, request, root, storageSet, t, THEME_STORAGE, toast } = wd;
 
     const GRID = { cols: 4, row: 64, gap: 8 };
     const FINE = { cols: 12, row: 8, gap: 6 };
@@ -29,7 +29,7 @@
       ['stepper', 'control', 'up', 2, 1], ['choice', 'control', 'list', 2, 1], ['variable', 'control', 'pencil', 1, 1],
       ['container', 'layout', 'dashboard', 4, 3], ['text', 'layout', 'book', 4, 1], ['icon', 'layout', 'star', 1, 1],
     ].map(([kind, group, glyph, w, h]) => ({ kind, group, glyph, w, h }));
-    const GROUPS = ['show', 'control', 'layout'];
+    const GROUPS = ['layout', 'show', 'control'];
     const SLOT_KINDS = ['value', 'chart', 'gauge', 'level', 'status', 'switch', 'slider', 'stepper', 'choice'];
     const VARIABLE_KINDS = ['stepper', 'choice', 'variable'];
     const RANGE_KINDS = ['gauge', 'level', 'slider', 'stepper'];
@@ -128,7 +128,7 @@
       const keep = b && b.design.id === id ? b : null;
       b = {
         design: clone(found), selected: keep ? keep.selected : null, libTab: keep ? keep.libTab : 'parts', tab: keep ? keep.tab : 'part',
-        width: keep ? keep.width : 440, dark: keep ? keep.dark : wd.isDark(), vivid: keep ? keep.vivid : false,
+        width: keep ? keep.width : 440, dark: wd.isDark(), vivid: keep ? keep.vivid : false,
         query: '', undo: [], state: null, rev: 1, saveTimer: null, previewTimer: null, status: 'saved', node: null,
       };
       const page = el('div', 'wdb');
@@ -136,6 +136,8 @@
       root.append(builderBar(), page);
       b.node = page;
       loadPreview(true);
+      // The device values, for the picked ones' names and readings (shared with the value picker for 30 s).
+      wd.valueDevices('values').then((list) => { if (b && b.design.id === id) { b.devices = list; redrawInspector(); } }, () => {});
     }
 
     function builderBar() {
@@ -173,7 +175,18 @@
       done.href = '#/';
       done.addEventListener('click', async (e) => { e.preventDefault(); await flush(); wd.leaveEditor('#/'); });
       const end = el('span', 'wd-bar-end');
-      end.append(status, undo, copy, remove, place, done);
+      // Dark or light: this browser's own choice (as Settings' Dark or light), the page and the preview alike.
+      const mode = button('wd-icon', '', () => {
+        b.dark = !b.dark;
+        storageSet(THEME_STORAGE, b.dark ? 'dark' : 'light');
+        wd.applyTheme('auto');
+        mode.replaceChildren(icon(b.dark ? 'sun' : 'moon'));
+        mode.title = t(b.dark ? 'builderLightMode' : 'builderDarkMode');
+        mode.setAttribute('aria-label', mode.title);
+        mountPreview();
+      }, t(b.dark ? 'builderLightMode' : 'builderDarkMode'));
+      mode.append(icon(b.dark ? 'sun' : 'moon'));
+      end.append(status, mode, undo, copy, remove, place, done);
       const node = wd.bar(back, name, pick, el('span', 'wd-spacer'), end);
       node.classList.add('wdb-bar');
       return node;
@@ -219,8 +232,9 @@
           list.append(el('h3', 'wdb-h3', t(`builderGroup_${group}`)));
           const grid = el('div', 'wdb-comps');
           for (const k of items) {
-            const c = button('wdb-comp', '', () => addPart(k.kind), t('builderAdd', { name: kindName(k.kind) }));
+            const c = button('wdb-comp', '', () => { if (!c.dataset.dragged) addPart(k.kind); delete c.dataset.dragged; }, t('builderAdd', { name: kindName(k.kind) }));
             c.append(kitIcon(k.glyph, 'wdb-comp-icon'), el('span', null, kindName(k.kind)));
+            dragToAdd(c, k);
             grid.append(c);
           }
           list.append(grid);
@@ -233,6 +247,70 @@
       const target = targetContainer();
       where.textContent = target ? t('builderAddsInto', { name: target.name || kindName('container') }) : t('builderAddsTop');
       body.append(search, where, list);
+    }
+
+    /**
+     * Drag a component from the library onto the design: a ghost follows the pointer and the drop puts it there, at the
+     * cell under the pointer, or inside the container under it. A tap (no drag) still adds it.
+     */
+    function dragToAdd(node, k) {
+      node.addEventListener('pointerdown', (e) => {
+        if (e.button) return;
+        const start = { x: e.clientX, y: e.clientY };
+        let ghost = null;
+        node.setPointerCapture(e.pointerId);
+        const move = (ev) => {
+          if (!ghost && Math.abs(ev.clientX - start.x) + Math.abs(ev.clientY - start.y) < 6) return;
+          if (!ghost) {
+            ghost = el('div', 'wdb-ghost');
+            ghost.append(kitIcon(k.glyph, 'wdb-comp-icon'), el('span', null, kindName(k.kind)));
+            document.body.append(ghost);
+            node.dataset.dragged = '1';
+          }
+          ghost.style.left = `${ev.clientX + 8}px`;
+          ghost.style.top = `${ev.clientY + 8}px`;
+          b.canvas.classList.toggle('dropping', overCanvas(ev.clientX, ev.clientY));
+        };
+        const up = (ev) => {
+          node.removeEventListener('pointermove', move);
+          node.removeEventListener('pointerup', up);
+          node.removeEventListener('pointercancel', up);
+          if (!ghost) return;
+          ghost.remove();
+          b.canvas.classList.remove('dropping');
+          if (ev.type === 'pointerup' && overCanvas(ev.clientX, ev.clientY)) addPart(k.kind, dropTarget(k.kind, ev.clientX, ev.clientY));
+          // The click that follows a drag isn't a tap.
+          setTimeout(() => { delete node.dataset.dragged; }, 0);
+        };
+        node.addEventListener('pointermove', move);
+        node.addEventListener('pointerup', up);
+        node.addEventListener('pointercancel', up);
+      });
+    }
+
+    function overCanvas(x, y) {
+      const r = b.canvas.getBoundingClientRect();
+      return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom + GRID.row;
+    }
+
+    /** Where a drop at a point goes: the container under it (not for a container) and the cell or per cent there. */
+    function dropTarget(kind, x, y) {
+      const c = b.canvas.getBoundingClientRect();
+      const fx = x - c.left;
+      const fy = y - c.top;
+      if (kind !== 'container') {
+        for (const box of b.design.parts.filter(p => p.kind === 'container')) {
+          const inner = nodeOf(box.id) && nodeOf(box.id).querySelector('.wb-inner');
+          if (!inner) continue;
+          const r = inner.getBoundingClientRect();
+          if (fx < r.left || fx > r.right || fy < r.top || fy > r.bottom) continue;
+          if (box.mode === 'free') return { into: box, x: ((fx - r.left) / r.width) * 100, y: ((fy - r.top) / r.height) * 100 };
+          const g = gridOf(box);
+          return { into: box, x: Math.floor((fx - r.left) / g.colW), y: Math.floor((fy - r.top) / g.rowH) };
+        }
+      }
+      const g = gridOf(null);
+      return { into: null, x: Math.floor(fx / g.colW), y: Math.floor(fy / g.rowH) };
     }
 
     function drawLayers(body) {
@@ -276,7 +354,6 @@
       };
       tools.append(
         seg(WIDTHS.map(w => [w, `${w} px`]), b.width, (w) => { b.width = w; sizeCanvas(); }),
-        seg([[true, t('themeDark')], [false, t('themeLight')]], b.dark, (v) => { b.dark = v; mountPreview(); }),
         seg([[false, t('builderMuted')], [true, t('builderVivid')]], b.vivid, (v) => { b.vivid = v; mountPreview(); }),
       );
       const canvas = el('div', 'wdb-canvas');
@@ -395,6 +472,7 @@
         const r = n.getBoundingClientRect();
         const node = el('div', `wdb-box${p.kind === 'container' ? ' container' : ''}${b.selected === p.id ? ' on' : ''}${n.classList.contains('wb-hidden') ? ' hidden' : ''}`);
         Object.assign(node.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
+        node.style.borderRadius = n.ownerDocument.defaultView.getComputedStyle(n).borderRadius; // a pill's outline is round too
         node.title = partTitle(p);
         node.addEventListener('pointerdown', e => startDrag(e, p, parent, 'move'));
         if (b.selected === p.id) {
@@ -692,11 +770,11 @@
       return parentOf(b.selected);
     }
 
-    function addPart(kind) {
+    function addPart(kind, drop) {
       const def = KINDS.find(k => k.kind === kind);
-      const into = kind === 'container' ? null : targetContainer();
+      const into = drop ? drop.into : kind === 'container' ? null : targetContainer();
       const p = {
-        id: partId(), kind, name: '', color: null, icon: null, tile: !['text', 'icon'].includes(kind), rules: [], flow: {}, reset: 'never',
+        id: partId(), kind, name: '', color: null, icon: null, style: ['text', 'icon'].includes(kind) ? 'none' : 'tile', rules: [], flow: {}, reset: 'never',
       };
       if (kind === 'text') { p.text = t('builderTextDefault'); p.size = 'heading'; p.align = 'left'; }
       if (kind === 'container') { p.mode = 'grid'; p.background = { kind: 'gradient', from: '#2d4c7a', to: '#2a1958', angle: 135 }; p.parts = []; }
@@ -706,17 +784,26 @@
       if (kind === 'value') p.show = 'value';
       if (kind === 'icon') p.icon = 'star';
       change(() => {
+        const w = Number(def.w);
+        const h = Number(def.h);
         if (!into) {
-          p.at = { x: 0, y: b.design.parts.reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0), w: def.w, h: def.h };
+          const y = drop ? Math.max(0, drop.y) : b.design.parts.reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0);
+          p.at = { x: drop ? clamp(drop.x, 0, GRID.cols - w) : 0, y, w, h };
           b.design.parts.push(p);
+          makeRoom(b.design.parts, p);
         } else if (into.mode === 'free') {
           const n = (into.parts || []).length;
-          p.at = { x: 4 + (n % 3) * 4, y: 4 + (n % 3) * 6, w: Math.min(48, Number(def.w) * 24), h: 30 };
+          const pw = Math.min(48, w * 24);
+          p.at = drop
+            ? { x: Math.round(clamp(drop.x, 0, 100 - pw) * 10) / 10, y: Math.round(clamp(drop.y, 0, 70) * 10) / 10, w: pw, h: 30 }
+            : { x: 4 + (n % 3) * 4, y: 4 + (n % 3) * 6, w: pw, h: 30 };
           into.parts.push(p);
         } else {
           const bottom = (into.parts || []).reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0);
-          p.at = { x: 0, y: bottom, w: Math.min(FINE.cols, Number(def.w) * 3), h: Number(def.h) * 8 };
+          const pw = Math.min(FINE.cols, w * 3);
+          p.at = drop ? { x: clamp(drop.x, 0, FINE.cols - pw), y: Math.max(0, drop.y), w: pw, h: h * 8 } : { x: 0, y: bottom, w: pw, h: h * 8 };
           into.parts.push(p);
+          makeRoom(into.parts, p);
         }
         b.selected = p.id;
         b.tab = 'part';
@@ -778,7 +865,7 @@
       const body = el('div', 'wdb-form');
       node.append(body);
       if (b.tab === 'part') partTab(body, p, parent);
-      else if (b.tab === 'look') lookTab(body, p, parent);
+      else if (b.tab === 'look') lookTab(body, p);
       else if (b.tab === 'rules') rulesTab(body, p);
       else flowTab(body, p);
     }
@@ -817,7 +904,7 @@
         body.append(row(t('builderSize'), segs([['heading', t('builderHeading')], ['body', t('builderBody')], ['small', t('builderSmall')]], p.size, v => set(() => { p.size = v; }, { preview: false }))));
         body.append(row(t('builderAlign'), segs([['left', t('builderLeft')], ['center', t('builderCenter')], ['right', t('builderRight')]], p.align, v => set(() => { p.align = v; }, { preview: false }))));
       } else {
-        body.append(row(t('builderPartName'), textInput(p.name, v => set(() => { p.name = v.trim().slice(0, 40); }, { preview: false }), { placeholder: t('builderNameHint') })));
+        body.append(row(t('builderPartName'), textInput(p.name, v => set(() => { p.name = v.trim().slice(0, 40); }, { preview: false }), { placeholder: ownName(p) || t('builderNameHint') })));
       }
       if (SLOT_KINDS.includes(p.kind) || VARIABLE_KINDS.includes(p.kind)) sourceRows(body, p);
       if (p.kind === 'button') body.append(row(t('builderStarts'), listPicker('flow', p.flowId, item => set(() => { if (item) p.flowId = item.id; else delete p.flowId; }), t('builderTapTrigger')), t('builderStartsHint')));
@@ -860,12 +947,33 @@
       }
     }
 
-    /** A device value: the picked one's name (from the preview's answer), and the page's value picker. */
+    /** The picked value's device and capability, from the device list (or the preview's answer while that's on its way). */
+    function slotInfo(slot) {
+      if (!slot) return null;
+      const i = slot.indexOf(':');
+      const dev = (b.devices || []).find(d => d.id === slot.slice(0, i));
+      const cap = dev && dev.caps.find(c => c.id === slot.slice(i + 1));
+      if (dev && cap) return { device: dev.name, room: dev.zone && dev.zone.name, title: cap.title, reading: window.WidgetkeeperKit.formatValue(cap, cap.value, k => t(k === 'on' ? 'valueOn' : 'valueOff')) };
+      const v = b.state && b.state.values && b.state.values[slot];
+      if (v && !v.missing) return { device: v.name, title: v.capability.title, reading: window.WidgetkeeperKit.formatValue(v.capability, v.value, k => t(k === 'on' ? 'valueOn' : 'valueOff')) };
+      return b.devices ? { gone: true } : { loading: true };
+    }
+
+    /** The name a part shows when none is typed: its device's, its variable's or its Flow's. */
+    function ownName(p) {
+      const info = slotInfo(p.slot);
+      if (info && info.device) return info.device;
+      const v = p.variable && b.state && b.state.variables && b.state.variables[p.variable];
+      if (v && v.name) return v.name;
+      const f = p.flowId && b.state && b.state.flows && b.state.flows[p.flowId];
+      return f && f.name ? f.name : '';
+    }
+
+    /** A device value: the device over the value and its reading (as the value picker's row), a tap to change it. */
     function valueButton(p) {
       const wrap = el('div', 'wd-row');
-      const v = p.slot && b.state && b.state.values && b.state.values[p.slot];
-      const label = !p.slot ? t('chooseValue') : v && !v.missing ? `${v.name} · ${v.capability.title}` : p.slot;
-      const pick = button('wd-btn wd-choice', label, async () => {
+      const info = slotInfo(p.slot);
+      const pick = button('wd-btn wd-choice wdb-valuepick', '', async () => {
         try {
           const devices = await wd.valueDevices('values');
           wd.chooseValue(devices, p.slot || null, item => change(() => {
@@ -881,6 +989,13 @@
           }));
         } catch (err) { failed(err); }
       });
+      if (!info) pick.append(el('span', null, t('chooseValue')));
+      else if (info.loading) pick.append(el('span', 'wd-muted', t('builderLoading')));
+      else if (info.gone) pick.append(el('span', null, t('builderValueGone')));
+      else {
+        pick.append(el('span', 'wdb-valuepick-device', info.device));
+        pick.append(el('span', 'wd-muted wdb-valuepick-value', [info.title, info.reading].filter(Boolean).join(' · ')));
+      }
       wrap.append(pick);
       return wrap;
     }
@@ -1013,7 +1128,7 @@
       body.append(el('h4', 'wdb-h4', parent ? t(free ? 'builderPlaceFree' : 'builderPlaceFine') : t('builderPlace')), box);
     }
 
-    function lookTab(body, p, parent) {
+    function lookTab(body, p) {
       const colours = [{ id: 'none', title: t('builderNoColour') }, ...window.WidgetkeeperKit.COLORS.map(c => ({ id: c, title: colourName(c) }))];
       body.append(row(t('builderColour'), wd.choiceGroup({ id: 'colour' }, colours, p.color || 'none', v => change(() => { p.color = v === 'none' ? null : v; }, { preview: false }), true), t('builderColourHint')));
       const iconRow = el('div', 'wd-row');
@@ -1023,13 +1138,13 @@
       pick.append(el('span', null, p.icon ? t('builderChange') : t('builderNoIcon')));
       iconRow.append(pick);
       body.append(row(t('builderIcon'), iconRow, t('builderIconHint')));
-      if (parent) {
-        body.append(row(t('builderTile'), segs([['tile', t('builderOwnTile')], ['bare', t('builderOnBackground')]], p.tile === false ? 'bare' : 'tile', v => change(() => { p.tile = v === 'tile'; }, { preview: false }))));
-      }
+      const style = ['tile', 'pill', 'none'].includes(p.style) ? p.style : (p.tile === false || ['text', 'icon'].includes(p.kind) ? 'none' : 'tile');
+      body.append(row(t('builderStyle'), segs([['tile', t('builderStyleTile')], ['pill', t('builderStylePill')], ['none', t('builderStyleNone')]], style, v => change(() => { p.style = v; delete p.tile; }, { preview: false })), t('builderStyleHint')));
     }
 
     function rulesTab(body, p) {
       const colours = window.WidgetkeeperKit.COLORS;
+      if ((p.rules || []).length) body.append(el('p', 'wdb-label', t('builderRulesLead')));
       (p.rules || []).forEach((r, i) => {
         const line = el('div', 'wdb-rule');
         const op = el('select', 'wd-input');
