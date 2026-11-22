@@ -454,9 +454,12 @@ export default class CustomWidgetService {
       .sort(byName(this.homey));
   }
 
-  /** A variable, stepper or choice on a Homey variable sets it (through the personal API key, as Variables does). */
+  /**
+   * A variable, slider, stepper or choice on a Homey variable sets it (through the personal API key, as Variables
+   * does); a number within the part's own range.
+   */
   async setVariable(designId: unknown, partId: unknown, value: unknown) {
-    const { part } = this.partFor(designId, partId, ['variable', 'stepper', 'choice']);
+    const { part } = this.partFor(designId, partId, ['variable', 'slider', 'stepper', 'choice']);
     if (!part.variable) throw new Error('The part has no variable');
     let v = value;
     if (part.kind === 'choice') {
@@ -464,7 +467,7 @@ export default class CustomWidgetService {
       if (!choice) throw new Error('Not one of the choices');
       const current = (await this.deps.variables.getState([part.variable]))[0] as any;
       v = current?.type === 'number' ? Number(choice.value) : current?.type === 'boolean' ? choice.value === 'true' : choice.value;
-    } else if (part.kind === 'stepper' && typeof v === 'number') {
+    } else if (typeof v === 'number') {
       v = Math.min(part.max ?? Infinity, Math.max(part.min ?? -Infinity, v));
     }
     await this.deps.variables.set(part.variable, v);

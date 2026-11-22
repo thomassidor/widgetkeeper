@@ -34,9 +34,18 @@
   /** lib/customDesigns.ts' `ruleHolds()` (a test checks they agree). */
   function ruleHolds(rule, value) {
     if (value === null || value === undefined) return false;
+    const n = x => Number(String(x == null ? '' : x).replace(',', '.'));
+    if (rule.op === 'between') {
+      // From one end to the other, both included, whichever is typed first; an empty end is open.
+      const v = Number(value);
+      const a = String(rule.value == null ? '' : rule.value).trim() ? n(rule.value) : -Infinity;
+      const b = String(rule.to == null ? '' : rule.to).trim() ? n(rule.to) : Infinity;
+      if (!Number.isFinite(v) || Number.isNaN(a) || Number.isNaN(b)) return false;
+      return v >= Math.min(a, b) && v <= Math.max(a, b);
+    }
     if (rule.op === 'above' || rule.op === 'below') {
       const v = Number(value);
-      const r = Number(String(rule.value).replace(',', '.'));
+      const r = n(rule.value);
       if (!Number.isFinite(v) || !Number.isFinite(r)) return false;
       return rule.op === 'above' ? v > r : v < r;
     }
@@ -162,15 +171,17 @@
     return ic ? K.svgIcon(ic, cls) : null;
   }
 
-  /** A line through the points (`[t, v]`), filled under it, scaled to the box. */
-  function sparkline(points, parent) {
+  /** A line through the points (`[t, v]`), filled under it, scaled to the box (between `lo` and `hi` where given). */
+  function sparkline(points, parent, min, max) {
     const svg = el('svg', { class: 'wb-spark', viewBox: '0 0 100 40', preserveAspectRatio: 'none', 'aria-hidden': 'true' }, parent, SVG_NS);
     const pts = (points || []).filter(p => Array.isArray(p) && Number.isFinite(p[1]));
     if (pts.length < 2) return svg;
     const [t0, t1] = [pts[0][0], pts[pts.length - 1][0]];
     const vs = pts.map(p => p[1]);
-    const [lo, hi] = [Math.min(...vs), Math.max(...vs)];
-    const xy = pts.map(([t, v]) => [((t - t0) / ((t1 - t0) || 1)) * 100, 37 - ((v - lo) / ((hi - lo) || 1)) * 30]);
+    let [lo, hi] = [min != null ? min : Math.min(...vs), max != null ? max : Math.max(...vs)];
+    if (hi < lo) [lo, hi] = [hi, lo];
+    const y = v => 37 - (Math.min(1, Math.max(0, (v - lo) / ((hi - lo) || 1)))) * 30;
+    const xy = pts.map(([t, v]) => [((t - t0) / ((t1 - t0) || 1)) * 100, y(v)]);
     const d = `M${xy.map(p => p.map(n => n.toFixed(2)).join(',')).join(' L')}`;
     el('path', { class: 'wb-spark-area', d: `${d} L100,40 L0,40 Z` }, svg, SVG_NS);
     el('path', { class: 'wb-spark-line', d, 'vector-effect': 'non-scaling-stroke' }, svg, SVG_NS);
@@ -282,7 +293,7 @@
     }
 
     /**
-     * A calculated value: its inputs summed, averaged, the lowest or highest (with the winner's name), the first less
+     * A calculated value: its inputs summed, averaged, the lowest or highest (with that input's name), the first less
      * the second, counted by a test, or put through a formula. Units are the part's, else its first input's (none for a
      * count). Unknown (`value: null`) when nothing can be counted in, or for a difference or formula, when an input is.
      */
@@ -330,8 +341,8 @@
       const own = op === 'count' || op === 'since';
       const units = part.units || (op === 'change' && part.percent ? '%' : own || !first || !first.cap ? null : first.cap.units || null);
       const decimals = part.decimals != null ? part.decimals : own || (op === 'change' && part.percent) ? 0 : first && first.cap && first.cap.decimals != null ? first.cap.decimals : 1;
-      const label = part.winner && winner ? [part.name, winner].filter(Boolean).join(' · ') : null;
-      return { value, cap: { type: 'number', units, decimals }, name: winner, label };
+      // `name`: a min's or max's input, for a text's name of it.
+      return { value, cap: { type: 'number', units, decimals }, name: winner };
     }
 
     /** The next `HH:mm` from now, today or tomorrow. */
@@ -381,18 +392,27 @@
 
     // ------------------------------------------------------------ repeaters
 
-    /** A repeater's devices now: its candidates whose value holds its test (all without one), by name, at most 24. */
+    /**
+     * A repeater's devices now: its candidates whose value holds its test (all without one), by name (as the app sends
+     * them) or by value, lowest or highest first (a yes/no as 1/0; one without a number last), at most its limit or 24.
+     */
     function repeatItems(part) {
       const slots = (state && state.repeats && state.repeats[part.id]) || [];
-      const out = [];
+      let out = [];
       for (const slot of slots) {
         const e = sourceEntry({ slot });
         if (!e || e.missing) continue;
         if (part.test && !ruleHolds(part.test, e.value)) continue;
         out.push({ slot, ...e });
-        if (out.length >= 24) break;
       }
-      return out;
+      if (part.sort === 'up' || part.sort === 'down') {
+        const key = (x) => { const n = inputNumber({ value: x.value }); return n === null ? null : n; };
+        out = out.map((x, i) => ({ x, i, k: key(x) })).sort((a, b) => {
+          if (a.k === null || b.k === null) return Number(a.k === null) - Number(b.k === null) || a.i - b.i;
+          return (part.sort === 'up' ? a.k - b.k : b.k - a.k) || a.i - b.i;
+        }).map(y => y.x);
+      }
+      return out.slice(0, Math.min(24, part.limit || 24));
     }
 
     // ------------------------------------------------------------ segments and trends
@@ -433,7 +453,8 @@
       if (v) {
         if (v.missing) return { missing: true };
         const value = p ? p.value : h && Date.now() < h.until ? h.value : v.value;
-        return { value, cap: { type: v.type, units: null, decimals: 2 }, name: v.name };
+        // A variable has no units or decimals of its own: the part's, else two decimals.
+        return { value, cap: { type: v.type, units: part.units || null, decimals: part.decimals != null ? part.decimals : 2 }, name: v.name };
       }
       return null;
     }
@@ -473,9 +494,11 @@
       if (ref.show === 'name') return (e && e.name) || '–';
       if (!e || e.missing || e.value === null || e.value === undefined) return '–';
       // A change (Trend's) shows its sign.
+      // Its own decimals, and without its units where it says so.
+      const cap = ref.decimals != null || ref.plain ? { ...(e.cap || {}), ...(ref.decimals != null ? { decimals: ref.decimals } : {}), ...(ref.plain ? { units: null } : {}) } : e.cap;
       const calc = ref.part && calcs.get(ref.part);
-      if (calc && calc.op === 'change' && typeof e.value === 'number' && e.value > 0) return `+${fmt(e.cap, e.value)}`;
-      return fmt(e.cap, e.value);
+      if (calc && calc.op === 'change' && typeof e.value === 'number' && e.value > 0) return `+${fmt(cap, e.value)}`;
+      return fmt(cap, e.value);
     }
     function fillText(text, refs) {
       if (!refs || !refs.length) return text;
@@ -651,7 +674,7 @@
      * Wires a press: a tap, a second tap to confirm (*Tap again* in `hint`, else a badge), or a hold. A tap on a control
      * inside it (a container's switch) is that control's, not this one's.
      */
-    function wirePress(part, node, hint) {
+    function wirePress(part, node, hint, run) {
       const actions = part.actions || [];
       let asking = null;
       let tip = hint;
@@ -662,6 +685,8 @@
         node.classList.toggle('wb-asking', !!text);
       };
       async function press() {
+        // A switch's own press: it sends, shakes and vibrates itself.
+        if (run) { if (!opts.preview) run(); return; }
         if (node.classList.contains('busy')) return;
         if (opts.preview && !actions.some(a => a.do === 'state')) return;
         node.classList.add('busy');
@@ -711,7 +736,9 @@
         node.setAttribute('role', 'switch');
         node.tabIndex = 0;
         let on = false;
-        K.onTap(node, () => { if (!opts.preview) act(part, node, !on); }, { guard });
+        // A second tap to confirm, or a hold, as a button's (a garage door, an alarm).
+        if (part.press === 'confirm' || part.press === 'long') wirePress(part, node, null, () => act(part, node, !on));
+        else K.onTap(node, () => { if (!opts.preview) act(part, node, !on); }, { guard });
         return (c, flow) => {
           on = c.value === true;
           ic(part, c, flow);
@@ -776,7 +803,12 @@
         img.addEventListener('error', empty);
         img.addEventListener('load', () => node.classList.remove('wb-img-empty'));
         if (!src) empty();
-        else if (src.kind === 'url') img.src = src.url;
+        else if (src.kind === 'url') {
+          img.src = src.url;
+          // A web address read again (a camera's still): asked past the browser's cache.
+          const again = () => { img.src = `${src.url}${src.url.includes('?') ? '&' : '?'}wk=${Date.now()}`; };
+          if (part.refresh > 0 && !opts.preview) imageTimers.push(setInterval(() => { if (typeof document === 'undefined' || !document.hidden) again(); }, part.refresh * 60e3));
+        }
         else if (opts.onImage) {
           const read = () => Promise.resolve(opts.onImage(part)).then((r) => {
             if (r && r.data) img.src = `data:${r.type || 'image/jpeg'};base64,${r.data}`;
@@ -915,7 +947,7 @@
             id: part.id, drags, guard, render: update,
             commit: (id, x) => {
               const [lo, hi] = range(part, last.cap);
-              const step = last.cap && last.cap.step ? last.cap.step : (hi - lo) <= 1 ? 0.01 : 1;
+              const step = part.step || (last.cap && last.cap.step) || ((hi - lo) <= 1 ? 0.01 : 1);
               const v = Math.round((lo + x * (hi - lo)) / step) * step;
               act(part, node, Number(v.toFixed(4)));
             },
@@ -936,7 +968,7 @@
         let svg = null;
         return () => {
           if (svg) svg.remove();
-          svg = sparkline(state.histories && state.histories[`${part.span}\n${part.slot}`], node);
+          svg = sparkline(state.histories && state.histories[`${part.span}\n${part.slot}`], node, part.min, part.max);
         };
       },
       arc(part, node) {
@@ -951,13 +983,16 @@
       },
       bar(part, node) {
         // A level bar of its value between its range, as thick as set, centred in its box.
-        const bar = el('div', { class: 'wb-level', 'aria-hidden': 'true' }, node);
+        // Vertical: from the bottom up, as a tank or a battery.
+        const up = part.dir === 'vertical';
+        node.classList.toggle('wb-bar-v', up);
+        const bar = el('div', { class: `wb-level${up ? ' wb-level-v' : ''}`, 'aria-hidden': 'true' }, node);
         const fill = el('i', null, bar);
-        bar.style.height = `${part.thickness || 8}px`;
+        bar.style[up ? 'width' : 'height'] = `${part.thickness || 8}px`;
         return (c) => {
           const [lo, hi] = range(part, c.cap);
           const v = Number(K.scaled(c.cap || {}, c.value));
-          fill.style.width = `${Number.isFinite(v) ? Math.min(100, Math.max(0, ((v - lo) / (hi - lo)) * 100)) : 0}%`;
+          fill.style[up ? 'height' : 'width'] = `${Number.isFinite(v) ? Math.min(100, Math.max(0, ((v - lo) / (hi - lo)) * 100)) : 0}%`;
         };
       },
       stepper(part, node) {
@@ -1032,8 +1067,10 @@
             input = null;
             node.classList.remove('wb-editing');
             if (!save || typed === (c.value == null ? '' : String(c.value))) return;
-            const v = c.cap.type === 'number' ? Number(typed.replace(',', '.')) : typed;
+            let v = c.cap.type === 'number' ? Number(typed.replace(',', '.')) : typed;
             if (c.cap.type === 'number' && (!typed.trim() || !Number.isFinite(v))) { K.shake(node); return; }
+            // Within its own range, as the app keeps it.
+            if (typeof v === 'number') v = Math.min(part.max != null ? part.max : Infinity, Math.max(part.min != null ? part.min : -Infinity, v));
             act(part, node, v);
           };
           input.addEventListener('keydown', (e) => {
@@ -1095,6 +1132,7 @@
         return (c, flow, look) => { fill.style.background = look && look.tint ? 'var(--wk-c)' : own; };
       },
       icon(part, node) {
+        if (part.grow) node.classList.add('wb-icon-grow');
         const ic = iconSlot(node);
         // With a device value: its own glyph (a lock open or closed), unless an icon is picked or a rule or Flow sets one.
         return (c, flow) => ic(part, part.slot ? c : null, flow);

@@ -17,7 +17,7 @@ describe('readDesign: a design as kept', () => {
   it('keeps what it knows and drops the rest, each kind with its own fields', () => {
     const d = readDesign({
       id: 'living', name: '  Living   room ', parts: [
-        part('t', 'sparkline', { slot: 'd1:measure_temperature', span: 'nope', min: 3, flowId: 'flow:x', at: { x: 9, y: -2, w: 9, h: 2 } }),
+        part('t', 'sparkline', { slot: 'd1:measure_temperature', span: 'nope', step: 3, flowId: 'flow:x', at: { x: 9, y: -2, w: 9, h: 2 } }),
         part('s', 'stepper', { variable: 'v1', step: '0.25', min: 30, max: 10 }),
         part('b', 'button', { flowId: 'advanced:a1', color: 'PURPLE', icon: 'tv' }),
         part('x', 'nonsense'),
@@ -30,7 +30,7 @@ describe('readDesign: a design as kept', () => {
     const [t, s, b, c, r] = d.parts;
     // A sparkline's span falls back to 24 hours; what it doesn't use is left out; it stays on the 4-column grid.
     expect(t).toMatchObject({ slot: 'd1:measure_temperature', span: '24h', at: { x: 3, y: 0, w: 1, h: 2 }, style: 'none' });
-    expect(t).not.toHaveProperty('min');
+    expect(t).not.toHaveProperty('step');
     expect(t).not.toHaveProperty('flowId');
     // A range typed the wrong way round is swapped.
     expect(s).toMatchObject({ variable: 'v1', step: 0.25, min: 10, max: 30 });
@@ -102,9 +102,12 @@ describe('readDesign: shapes, calculated values, times, texts with values and ru
     const c = readPart(part('c', 'calc', { inputs, op: 'count', test: { op: 'isNot', value: 'off' }, formula: 'a+b', winner: true, decimals: 7, sourceOnly: true }))!;
     expect(c.inputs!.length).toBe(MAX_INPUTS);
     expect(c.inputs!.slice(0, 3)).toEqual([{ slot: 'd1:measure_temperature' }, { variable: 'v1' }, { slot: 'd2:onoff' }]);
-    expect([c.op, c.test, c.formula, c.winner, c.decimals, c.sourceOnly]).toEqual(['count', { op: 'isNot', value: 'off' }, undefined, undefined, 3, true]);
+    expect([c.op, c.test, c.formula, c.decimals]).toEqual(['count', { op: 'isNot', value: 'off' }, undefined, 3]);
+    // Never drawn: what a drawn component has (its winner's name and source-only, gone) isn't kept.
+    expect(c).not.toHaveProperty('winner');
+    expect(c).not.toHaveProperty('sourceOnly');
     expect(readPart(part('f', 'calc', { op: 'formula', formula: ' (a + b)  / 2 ' }))).toMatchObject({ op: 'formula', formula: '(a + b) / 2' });
-    expect(readPart(part('m', 'calc', { op: 'max', winner: true }))).toMatchObject({ op: 'max', winner: true });
+    expect(readPart(part('m', 'calc', { op: 'max', winner: true }))).not.toHaveProperty('winner');
     expect(readPart(part('u', 'calc', { op: 'what' }))!.op).toBe('sum');
   });
 
@@ -147,6 +150,59 @@ describe('ruleHolds', () => {
     expect(ruleHolds({ op: 'isNot', value: 'heat', look: 'red' }, 'auto')).toBe(true);
     expect(ruleHolds({ op: 'is', value: '21', look: 'red' }, 21)).toBe(true);
     expect(ruleHolds({ op: 'above', value: '1', look: 'red' }, null)).toBe(false);
+  });
+
+  it('holds between two ends, both included, in either order, an empty end open', () => {
+    const between = (value: string, to: string) => ({ op: 'between' as const, value, to, look: 'red' as const });
+    expect([19.9, 20, 22, 25, 25.1].map(v => ruleHolds(between('20', '25'), v))).toEqual([false, true, true, true, false]);
+    expect(ruleHolds(between('25', '20,5'), 21)).toBe(true);
+    expect([ruleHolds(between('', '10'), -40), ruleHolds(between('10', ''), 1e6), ruleHolds(between('10', ''), 9)]).toEqual([true, true, false]);
+    expect([ruleHolds(between('0', '1'), true), ruleHolds(between('0', '1'), 'open'), ruleHolds(between('a', '1'), 0)]).toEqual([true, false, false]);
+  });
+});
+
+describe('readDesign: the settings closing the review\'s gaps (2026-11-22)', () => {
+  it('keeps an icon, a rule\'s icon and a Flow\'s icon only on the kinds that draw one', () => {
+    const rules = [{ op: 'above', value: 1, look: 'red', icon: 'bell' }, { op: 'is', value: 'x', look: 'same', icon: 'bell' }];
+    const text = readPart(part('t', 'text', { icon: 'star', rules: rules.map(r => ({ ...r, of: { slot: 'a:b' } })), flow: { icon: true, text: true } }))!;
+    expect([text.icon, text.rules, text.flow]).toEqual([null, [{ op: 'above', value: '1', look: 'red', of: { slot: 'a:b' } }], { text: true }]);
+    const sw = readPart(part('s', 'switch', { slot: 'a:onoff', icon: 'star', rules, flow: { icon: true } }))!;
+    expect([sw.icon, sw.rules.map(r => r.icon), sw.flow]).toEqual(['star', ['bell', 'bell'], { icon: true }]);
+  });
+
+  it('gives a calculated value no colour, rules or Flow changes, as it\'s never drawn', () => {
+    const c = readPart(part('c', 'calc', { color: 'red', icon: 'star', rules: [{ op: 'above', value: 1, look: 'red' }], flow: { text: true } }))!;
+    expect([c.color, c.icon, c.rules, c.flow]).toEqual([null, null, [], {}]);
+  });
+
+  it('reads a switch\'s press, a slider\'s variable and step, a variable\'s range and format, a bar\'s direction, a growing icon and a sparkline\'s range', () => {
+    expect(readPart(part('s', 'switch', { slot: 'a:onoff', press: 'confirm' }))).toMatchObject({ press: 'confirm' });
+    expect(readPart(part('s', 'switch', { slot: 'a:onoff', press: 'tap' }))).not.toHaveProperty('press');
+    expect(readPart(part('s', 'switch', { slot: 'a:onoff', press: 'twice' }))).not.toHaveProperty('press');
+    expect(readPart(part('sl', 'slider', { variable: 'v1', step: '0.5', min: 30, max: 10 }))).toMatchObject({ variable: 'v1', step: 0.5, min: 10, max: 30 });
+    expect(readPart(part('sl', 'slider', { slot: 'a:dim', step: 0 }))).not.toHaveProperty('step');
+    expect(readPart(part('v', 'variable', { variable: 'v1', min: 0, max: 10, decimals: 9, units: ' kWh ' }))).toMatchObject({ min: 0, max: 10, decimals: 3, units: 'kWh' });
+    expect(readPart(part('b', 'bar', { dir: 'vertical' }))).toMatchObject({ dir: 'vertical' });
+    expect(readPart(part('b', 'bar', { dir: 'sideways' }))).not.toHaveProperty('dir');
+    expect(readPart(part('i', 'icon', { grow: true }))).toMatchObject({ grow: true });
+    expect(readPart(part('sp', 'sparkline', { slot: 'a:t', min: 25, max: 15 }))).toMatchObject({ min: 15, max: 25 });
+  });
+
+  it('refreshes a web picture only when asked, a device\'s every 5 minutes as before', () => {
+    expect(readPart(part('i', 'image', { image: { kind: 'url', url: 'https://x.test/a.jpg' } }))!.refresh).toBe(0);
+    expect(readPart(part('i', 'image', { image: { kind: 'url', url: 'https://x.test/a.jpg' }, refresh: 15 }))!.refresh).toBe(15);
+    expect(readPart(part('i', 'image', { image: { kind: 'device', device: 'cam' } }))!.refresh).toBe(5);
+  });
+
+  it('reads between\'s upper end in rules and tests, a repeater\'s order and limit, and a text value\'s format', () => {
+    const r = readPart(part('b', 'bar', { rules: [{ op: 'between', value: 1, to: 5, look: 'red' }, { op: 'above', value: 1, to: 5, look: 'red' }] }))!;
+    expect(r.rules).toEqual([{ op: 'between', value: '1', to: '5', look: 'red' }, { op: 'above', value: '1', look: 'red' }]);
+    expect(readPart(part('c', 'calc', { op: 'count', test: { op: 'between', value: '1', to: '2' } }))!.test).toEqual({ op: 'between', value: '1', to: '2' });
+    const rep = readPart(part('r', 'repeat', { capability: 'measure_battery', test: { op: 'between', value: 0, to: 20 }, sort: 'up', limit: 99 }))!;
+    expect([rep.test, rep.sort, rep.limit]).toEqual([{ op: 'between', value: '0', to: '20' }, 'up', 24]);
+    expect(readPart(part('r', 'repeat', { sort: 'random' }))).toMatchObject({ sort: 'name' });
+    const t = readPart(part('t', 'text', { text: '{1} {2} {3}', refs: [{ slot: 'a:t', decimals: 7, plain: true }, { variable: 'v', decimals: 'x' }, { slot: 'a:t', show: 'name', decimals: 1 }] }))!;
+    expect(t.refs).toEqual([{ slot: 'a:t', decimals: 3, plain: true }, { variable: 'v' }, { slot: 'a:t', show: 'name' }]);
   });
 });
 
@@ -258,6 +314,11 @@ describe('CustomWidgetService: the widget', () => {
     const { service, deps, trigger } = setup([DESIGN]);
     await service.setVariable('bed', 'guests', 5);
     expect(deps.variables.set).toHaveBeenCalledWith('v1', 5);
+    // A slider or a variable on a number variable sets it within its own range.
+    service.save({ ...DESIGN, parts: [...DESIGN.parts, part('vs', 'slider', { variable: 'v1', min: 0, max: 10 }), part('vv', 'variable', { variable: 'v1', min: 2 })] });
+    await service.setVariable('bed', 'vs', 14);
+    await service.setVariable('bed', 'vv', -1);
+    expect(deps.variables.set.mock.calls.slice(-2)).toEqual([['v1', 10], ['v1', 2]]);
     await service.startFlow('bed', 'movie');
     expect(deps.flows.trigger).toHaveBeenCalledWith('flow:f1');
     await service.tap('bed', 'ring', 'web-home-w1');

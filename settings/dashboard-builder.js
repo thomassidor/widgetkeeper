@@ -89,10 +89,10 @@
       }
     }
     const SLOT_KINDS = ['switch', 'slider', 'stepper', 'choice', 'sparkline'];
-    const VARIABLE_KINDS = ['stepper', 'choice', 'variable'];
-    const RANGE_KINDS = ['arc', 'bar', 'slider', 'stepper'];
+    const VARIABLE_KINDS = ['slider', 'stepper', 'choice', 'variable'];
+    const RANGE_KINDS = ['arc', 'bar', 'sparkline', 'slider', 'stepper', 'variable'];
     const SPANS = ['1h', '6h', '24h', '7d', '30d', 'today', 'yesterday', 'thisWeek'];
-    const RULE_OPS = ['above', 'below', 'is', 'isNot'];
+    const RULE_OPS = ['above', 'below', 'between', 'is', 'isNot'];
     const CALC_OPS = ['sum', 'avg', 'min', 'max', 'diff', 'count', 'formula', 'change', 'since'];
     const MAX_INPUTS = 12;
     const MAX_REFS = 6;
@@ -112,11 +112,14 @@
       ring: ['name', 'value'], segments: ['name', 'value'], button: ['icon', 'name'], state: ['icon', 'name'],
     };
     const TAP_KINDS = ['container', 'text', 'icon', 'shape', 'image', 'ring', 'segments', 'sparkline', 'arc', 'bar'];
+    /** lib/customDesigns.ts' ICON_KINDS: the kinds that draw an icon (a Ring only with one in its middle). */
+    const ICON_KINDS = ['switch', 'button', 'state', 'ring', 'icon'];
+    const drawsIcon = p => ICON_KINDS.includes(p.kind) && (p.kind !== 'ring' || p.center === 'icon');
     /** What a Flow may change, per kind (lib/customDesigns.ts takes any; these are the ones that show on it). */
     const FLOW_PROPS = {
       text: ['text', 'value', 'color', 'hidden'], icon: ['icon', 'color', 'hidden'], container: ['hidden'],
       shape: ['color', 'hidden'], sparkline: ['color', 'hidden'], arc: ['color', 'hidden'], bar: ['color', 'hidden'], slider: ['color', 'hidden'],
-      calc: [],
+      calc: [], stepper: ['text', 'value', 'color', 'hidden'], choice: ['text', 'value', 'color', 'hidden'], variable: ['text', 'value', 'color', 'hidden'],
       state: ['text', 'color', 'hidden'], image: ['hidden'], ring: ['text', 'color', 'icon', 'hidden'], repeat: ['text', 'color', 'hidden'],
       segments: ['text', 'color', 'hidden'],
     };
@@ -1006,7 +1009,8 @@
       const parent = parentOf(p.id);
       const tabs = el('div', 'wdb-tabs');
       tabs.setAttribute('role', 'tablist');
-      const ids = p.kind === 'container' ? ['part', 'rules', 'flow'] : ['part', 'look', 'rules', 'flow'];
+      // A calculated value is never drawn: only what it calculates.
+      const ids = p.kind === 'calc' ? ['part'] : p.kind === 'container' ? ['part', 'rules', 'flow'] : ['part', 'look', 'rules', 'flow'];
       if (!ids.includes(b.tab)) b.tab = 'part';
       for (const id of ids) {
         const label = t(`builderTab_${id}`);
@@ -1063,17 +1067,28 @@
       }
       if (SLOT_KINDS.includes(p.kind) || VARIABLE_KINDS.includes(p.kind)) sourceRows(body, p);
       if (p.kind === 'button' && !(p.actions || []).length) body.append(row(t('builderStarts'), listPicker('flow', p.flowId, item => set(() => { if (item) p.flowId = item.id; else delete p.flowId; }), t('builderTapTrigger')), t('builderStartsHint')));
+      if (p.kind === 'switch') body.append(row(t('builderPress'), segs([['tap', t('builderPress_tap')], ['confirm', t('builderPress_confirm')], ['long', t('builderPress_long')]], p.press || 'tap', v => set(() => { if (v === 'tap') delete p.press; else p.press = v; }, { preview: false }))));
       if (p.kind === 'sparkline') body.append(row(t('builderSpan'), spanSelect(p)));
       if (p.kind === 'arc' || p.kind === 'bar') {
         body.append(row(t('builderValue'), sourcePicker(p.src, src => change(() => { p.src = src; }), { self: p.id })));
         body.append(row(t('builderThickness'), textInput(p.thickness || 8, v => change(() => { const n = Math.round(Number(v)); p.thickness = Number.isFinite(n) ? Math.min(24, Math.max(2, n)) : 8; }, { preview: false }), { type: 'number' })));
+        if (p.kind === 'bar') body.append(row(t('builderDirection'), segs([['horizontal', t('builderHorizontal')], ['vertical', t('builderVertical')]], p.dir || 'horizontal', v => change(() => { if (v === 'vertical') p.dir = v; else delete p.dir; }, { preview: false }))));
       }
-      if (RANGE_KINDS.includes(p.kind)) {
+      // A variable's range only where it's a number (or not read yet).
+      const varType = p.kind === 'variable' && p.variable && b.state && b.state.variables && b.state.variables[p.variable] ? b.state.variables[p.variable].type : null;
+      if (RANGE_KINDS.includes(p.kind) && !(p.kind === 'variable' && (!p.variable || (varType && varType !== 'number')))) {
         const two = el('div', 'wdb-two');
         two.append(row(t('builderMin'), textInput(p.min, v => set(() => { const n = numOrNull(v); if (n === undefined) delete p.min; else p.min = n; }, { preview: false }), { type: 'number', placeholder: t('builderAuto') })),
           row(t('builderMax'), textInput(p.max, v => set(() => { const n = numOrNull(v); if (n === undefined) delete p.max; else p.max = n; }, { preview: false }), { type: 'number', placeholder: t('builderAuto') })));
         body.append(two);
         if (p.kind === 'stepper') body.append(row(t('builderStep'), textInput(p.step, v => set(() => { p.step = numOrNull(v) || 0.5; }, { preview: false }), { type: 'number', step: 'any' })));
+        if (p.kind === 'slider') body.append(row(t('builderStep'), textInput(p.step, v => set(() => { const n = numOrNull(v); if (n && n > 0) p.step = n; else delete p.step; }, { preview: false }), { type: 'number', step: 'any', placeholder: t('builderAuto') })));
+        if (p.kind === 'variable') {
+          const two2 = el('div', 'wdb-two');
+          two2.append(row(t('builderUnits'), textInput(p.units, v => set(() => { const u = v.trim().slice(0, 12); if (u) p.units = u; else delete p.units; }, { preview: false }))),
+            row(t('builderDecimals'), selectOf([['', t('builderAuto')], ['0', '0'], ['1', '1'], ['2', '2'], ['3', '3']], p.decimals == null ? '' : String(p.decimals), v => set(() => { if (v === '') delete p.decimals; else p.decimals = Number(v); }, { preview: false }))));
+          body.append(two2);
+        }
       }
       if (p.kind === 'choice') choicesRows(body, p);
       if (p.kind === 'container') containerRows(body, p);
@@ -1087,6 +1102,7 @@
         follow.append(slotButton(p.slot, item => change(() => { p.slot = item.id; p.icon = null; })));
         if (p.slot) follow.append(button('wd-btn quiet small', t('clear'), () => change(() => { delete p.slot; p.icon = p.icon || 'star'; })));
         body.append(row(t('builderFollows'), follow, t('builderFollowsHint')));
+        body.append(checkRow(t('builderIconGrow'), p.grow, v => change(() => { if (v) p.grow = true; else delete p.grow; }, { preview: false })));
       }
       if (TAP_KINDS.includes(p.kind)) tapRows(body, p);
       if (p.kind === 'image') imageRows(body, p);
@@ -1405,6 +1421,21 @@
         drop.append(icon('close'));
         line.append(el('span', 'wdb-ref-key', `{${i + 1}}`), sourcePicker(r, src => change(() => { p.refs[i] = src; }), { time: true, self: p.id }), drop);
         body.append(line);
+        // How a value's number shows: its decimals, and with or without its unit.
+        if (r && sourceKind(r) !== 'time' && r.show !== 'name') {
+          const fmt = el('div', 'wdb-two wdb-ref-format');
+          const put = next => change(() => { p.refs[i] = next; }, { preview: false });
+          fmt.append(row(t('builderDecimals'), selectOf([['', t('builderAuto')], ['0', '0'], ['1', '1'], ['2', '2'], ['3', '3']], r.decimals == null ? '' : String(r.decimals), (v) => {
+            const next = { ...r };
+            if (v === '') delete next.decimals; else next.decimals = Number(v);
+            put(next);
+          })), checkRow(t('builderRefUnits'), !r.plain, (v) => {
+            const next = { ...r };
+            if (v) delete next.plain; else next.plain = true;
+            put(next);
+          }));
+          body.append(fmt);
+        }
       });
       const add = button('wd-btn quiet small', t('builderInsert'), () => change(() => {
         p.refs = [...refs, { slot: '' }];
@@ -1512,6 +1543,7 @@
       const src = p.image || { kind: 'url', url: '' };
       body.append(row(t('builderImageFrom'), segs([['url', t('builderImage_url')], ['device', t('builderImage_device')]], src.kind, v => change(() => {
         p.image = v === 'url' ? { kind: 'url', url: '' } : { kind: 'device', device: '' };
+        p.refresh = v === 'url' ? 0 : 5;
       }))));
       if (src.kind === 'url') {
         body.append(row(t('builderImageUrl'), textInput(src.url, v => change(() => { p.image = { kind: 'url', url: v.trim().slice(0, 500) }; }), { type: 'url', placeholder: 'https://…' }), t('builderImageUrlHint')));
@@ -1520,8 +1552,9 @@
           if (item) (b.imageNames || (b.imageNames = {}))[item.id] = item.name;
           p.image = { kind: 'device', device: item ? item.id : '' };
         }))));
-        body.append(row(t('builderRefresh'), selectOf([['0', t('builderRefreshNever')], ...[1, 5, 15, 60].map(m => [String(m), t('builderEveryMin', { n: m })])], String(p.refresh != null ? p.refresh : 5), v => change(() => { p.refresh = Number(v); }, { preview: false }))));
       }
+      // A device's picture, or a web address's (a camera's still) read again.
+      body.append(row(t('builderRefresh'), selectOf([['0', t('builderRefreshNever')], ...[1, 5, 15, 60].map(m => [String(m), t('builderEveryMin', { n: m })])], String(p.refresh != null ? p.refresh : src.kind === 'url' ? 0 : 5), v => change(() => { p.refresh = Number(v); }, { preview: false }))));
       body.append(row(t('builderFit'), segs([['cover', t('builderFit_cover')], ['contain', t('builderFit_contain')]], p.fit || 'cover', v => change(() => { p.fit = v; }, { preview: false }))));
     }
 
@@ -1563,10 +1596,12 @@
       body.append(checkRow(t('builderRepeatOnly'), !!p.test, v => change(() => { if (v) p.test = { op: 'is', value: 'on' }; else delete p.test; }, { preview: false })));
       if (p.test) {
         const two = el('div', 'wdb-two');
-        two.append(selectOf(RULE_OPS.map(o => [o, t(`builderOp_${o}`)]), p.test.op, v => change(() => { p.test = { ...p.test, op: v }; }, { preview: false })),
-          textInput(p.test.value, v => change(() => { p.test = { ...p.test, value: v.slice(0, 60) }; }, { preview: false }), { placeholder: t('builderRuleValue') }));
+        two.append(selectOf(RULE_OPS.map(o => [o, t(`builderOp_${o}`)]), p.test.op, v => change(() => { p.test = { ...p.test, op: v }; if (v !== 'between') delete p.test.to; })),
+          ...testValues(p.test, next => change(() => { p.test = next; }, { preview: false })));
         body.append(two);
       }
+      body.append(row(t('builderRepeatSort'), segs([['name', t('builderSort_name')], ['up', t('builderSort_up')], ['down', t('builderSort_down')]], p.sort || 'name', v => change(() => { p.sort = v; }, { preview: false }))));
+      body.append(row(t('builderRepeatLimit'), textInput(p.limit, v => change(() => { const n = Math.round(Number(v)); if (String(v).trim() && Number.isFinite(n) && n >= 1) p.limit = Math.min(24, n); else delete p.limit; }, { preview: false }), { type: 'number', placeholder: t('builderAuto') })));
       body.append(row(t('builderItemStyle'), segs([['row', t('builderItem_row')], ['tile', t('builderItem_tile')]], p.itemStyle || 'row', v => change(() => { p.itemStyle = v; }, { preview: false }))));
       body.append(row(t('builderColumns'), segs([1, 2, 3, 4].map(n => [n, String(n)]), p.columns || 1, v => change(() => { p.columns = v; }, { preview: false }))));
       body.append(checkRow(t('builderRepeatControl'), p.control, v => change(() => { if (v) p.control = true; else delete p.control; }, { preview: false }), t('builderRepeatControlHint')));
@@ -1617,6 +1652,13 @@
       if (p.shape === 'line') body.append(row(t('builderDirection'), segs([['horizontal', t('builderHorizontal')], ['vertical', t('builderVertical')]], p.dir || 'horizontal', v => change(() => { p.dir = v; }, { preview: false }))));
     }
 
+    /** A test's or a rule's value: one field, or for `between` two (from, to). */
+    function testValues(test, put) {
+      const from = textInput(test.value, v => put({ ...test, value: v.slice(0, 60) }), { placeholder: t(test.op === 'between' ? 'builderMin' : 'builderRuleValue') });
+      if (test.op !== 'between') return [from];
+      return [from, textInput(test.to, v => put({ ...test, to: v.slice(0, 60) }), { placeholder: t('builderMax') })];
+    }
+
     function calcRows(body, p) {
       body.append(row(t('builderCalc'), selectOf(CALC_OPS.map(o => [o, t(`builderCalc_${o}`)]), p.op || 'sum', v => change(() => {
         p.op = v;
@@ -1646,8 +1688,8 @@
       if (p.op === 'count') {
         const test = p.test || { op: 'is', value: 'on' };
         const line = el('div', 'wdb-two');
-        line.append(selectOf(RULE_OPS.map(o => [o, t(`builderOp_${o}`)]), test.op, v => change(() => { p.test = { ...test, op: v }; }, { preview: false })),
-          textInput(test.value, v => change(() => { p.test = { ...test, value: v.slice(0, 60) }; }, { preview: false }), { placeholder: t('builderRuleValue') }));
+        line.append(selectOf(RULE_OPS.map(o => [o, t(`builderOp_${o}`)]), test.op, v => change(() => { p.test = { ...test, op: v }; if (v !== 'between') delete p.test.to; })),
+          ...testValues(test, next => change(() => { p.test = next; }, { preview: false })));
         body.append(row(t('builderCountWhen'), line));
       }
       if (p.op === 'formula') {
@@ -1659,7 +1701,6 @@
       two.append(row(t('builderUnits'), textInput(p.units, v => change(() => { p.units = v.trim().slice(0, 12); }, { preview: false }), { placeholder: t('builderAuto') })),
         row(t('builderDecimals'), selectOf([['', t('builderAuto')], ['0', '0'], ['1', '1'], ['2', '2'], ['3', '3']], p.decimals == null ? '' : String(p.decimals), v => change(() => { if (v === '') delete p.decimals; else p.decimals = Number(v); }, { preview: false }))));
       body.append(two);
-      if (p.op === 'min' || p.op === 'max') body.append(checkRow(t('builderShowWinner'), p.winner, v => change(() => { p.winner = v; }, { preview: false })));
       body.append(el('p', 'wd-hint', t('builderSourceOnlyHint')));
     }
 
@@ -1679,6 +1720,13 @@
         }
         body.append(el('p', 'wd-hint', t('builderShowPartsHint')));
       }
+      if (drawsIcon(p)) lookIcon(body, p);
+      const style = ['tile', 'pill', 'none'].includes(p.style) ? p.style : (p.tile === false || ['text', 'icon'].includes(p.kind) ? 'none' : 'tile');
+      body.append(row(t('builderStyle'), segs([['tile', t('builderStyleTile')], ['pill', t('builderStylePill')], ['none', t('builderStyleNone')]], style, v => change(() => { p.style = v; delete p.tile; }, { preview: false })), t('builderStyleHint')));
+    }
+
+    /** The Style tab's icon, for a component that draws one. */
+    function lookIcon(body, p) {
       const iconRow = el('div', 'wd-row');
       const current = wd.iconNode(p.icon);
       const pick = button('wd-btn', '', () => wd.pickIcon({ value: p.icon, noneLabel: t('builderNoIcon'), picked: v => change(() => { p.icon = v && !wd.isIconPicture(v) ? v : null; }, { preview: false }) }));
@@ -1686,8 +1734,6 @@
       pick.append(el('span', null, p.icon ? t('builderChange') : t('builderNoIcon')));
       iconRow.append(pick);
       body.append(row(t('builderIcon'), iconRow, t('builderIconHint')));
-      const style = ['tile', 'pill', 'none'].includes(p.style) ? p.style : (p.tile === false || ['text', 'icon'].includes(p.kind) ? 'none' : 'tile');
-      body.append(row(t('builderStyle'), segs([['tile', t('builderStyleTile')], ['pill', t('builderStylePill')], ['none', t('builderStyleNone')]], style, v => change(() => { p.style = v; delete p.tile; }, { preview: false })), t('builderStyleHint')));
     }
 
     function rulesTab(body, p) {
@@ -1707,17 +1753,18 @@
         const line = el('div', 'wdb-rule');
         const op = el('select', 'wd-input');
         for (const o of RULE_OPS) { const opt = el('option', null, t(`builderOp_${o}`)); opt.value = o; opt.selected = r.op === o; op.append(opt); }
-        op.addEventListener('change', () => change(() => { r.op = op.value; }, { preview: false }));
-        const value = textInput(r.value, v => change(() => { r.value = v.slice(0, 60); }, { preview: false }), { placeholder: t('builderRuleValue') });
+        // Between shows a second field: redrawn.
+        op.addEventListener('change', () => change(() => { r.op = op.value; if (r.op === 'between') r.to = r.to || ''; else delete r.to; }));
+        const values = testValues(r, next => change(() => { r.value = next.value; if (r.op === 'between') r.to = next.to || ''; }, { preview: false }));
         const look = el('select', 'wd-input');
-        for (const o of ['same', ...colours, 'hide']) { const opt = el('option', null, o === 'hide' ? t('builderHide') : o === 'same' ? t('builderKeepColour') : colourName(o)); opt.value = o; opt.selected = r.look === o; look.append(opt); }
+        for (const o of [...(drawsIcon(p) ? ['same'] : []), ...colours, 'hide']) { const opt = el('option', null, o === 'hide' ? t('builderHide') : o === 'same' ? t('builderKeepColour') : colourName(o)); opt.value = o; opt.selected = r.look === o; look.append(opt); }
         look.addEventListener('change', () => change(() => { r.look = look.value; }, { preview: false }));
         const drop = button('wd-icon small', '', () => change(() => { p.rules.splice(i, 1); }, { preview: false }), t('remove'));
         drop.append(icon('close'));
-        line.append(op, value, look, drop);
+        line.append(op, ...values, look, drop);
         body.append(line);
-        // And the icon it shows meanwhile.
-        if (r.look !== 'hide') {
+        // And the icon it shows meanwhile, where the component draws one.
+        if (r.look !== 'hide' && drawsIcon(p)) {
           const pickIc = button('wd-btn quiet small wdb-rule-icon', '', () => wd.pickIcon({ value: r.icon || null, noneLabel: t('builderNoIcon'), picked: v => change(() => { if (v && !wd.isIconPicture(v)) r.icon = v; else delete r.icon; }, { preview: false }) }));
           const node = r.icon && wd.iconNode(r.icon);
           if (node) pickIc.append(node);
@@ -1736,7 +1783,8 @@
     function flowTab(body, p) {
       const name = `${b.design.name} · ${partTitle(p)}`;
       body.append(el('p', 'wd-hint', t('builderFlowHint', { name })));
-      for (const prop of flowPropsOf(p.kind)) {
+      // An icon only where it's drawn (a Ring's with one in its middle).
+      for (const prop of flowPropsOf(p.kind).filter(x => x !== 'icon' || drawsIcon(p))) {
         const on = p.flow && p.flow[prop] === true;
         const sw = el('input', 'wd-switch');
         sw.type = 'checkbox';

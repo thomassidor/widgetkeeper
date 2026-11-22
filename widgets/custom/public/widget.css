@@ -354,3 +354,11 @@ html, body { background: transparent !important; }
 .wb:not(.wb-preview) .wb-k-calc { display: none; }
 /* A text or icon that does nothing when tapped lets the tap through (a ready-made slider's label over its bar). */
 .wb-k-text:not(.wb-tappable), .wb-k-icon:not(.wb-tappable) { pointer-events: none; }
+/* A vertical bar: as tall as its box, filled from the bottom. */
+.wb-k-bar .wb-level-v { height: 100%; align-self: center; display: flex; flex-direction: column; justify-content: flex-end; }
+.wb-k-bar .wb-level-v i { width: 100%; flex: none; }
+.wb-tile.wb-k-bar.wb-bar-v { padding: 12px 0; }
+/* An icon that fills its box. */
+.wb-k-icon.wb-icon-grow .wb-icon { width: min(100cqw, 100cqh); height: min(100cqw, 100cqh); }
+/* A text's own colour (a rule's or a Flow's tints it as before). */
+.wb-k-text.wb-has-color:not(.wb-colored) .wb-text { color: var(--wk-c); }

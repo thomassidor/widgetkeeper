@@ -36,7 +36,9 @@ describe("the widget's rules", () => {
     const ruleValues = ['25', '25,5', 'open', 'off', 'heat', '0', 'true', 'x'];
     for (const op of RULE_OPS) {
       for (const rv of ruleValues) {
-        for (const v of values) expect([op, rv, v, win.customRuleHolds({ op, value: rv }, v)]).toEqual([op, rv, v, ruleHolds({ op, value: rv, look: 'red' }, v)]);
+        for (const to of op === 'between' ? ['', '26', '-5', 'x'] : [undefined]) {
+          for (const v of values) expect([op, rv, to, v, win.customRuleHolds({ op, value: rv, to }, v)]).toEqual([op, rv, to, v, ruleHolds({ op, value: rv, to, look: 'red' }, v)]);
+        }
       }
     }
   });
@@ -574,5 +576,81 @@ describe('the bare data primitives', () => {
     expect(at('br').querySelector<HTMLElement>('.wb-level')!.style.height).toBe('6px');
     expect(at('sl').querySelector<HTMLElement>('.wb-fill')!.style.width).toBe('25%');
     expect([at('sl').querySelector('.wb-name'), at('sl').querySelector('.wb-icon'), at('sl').getAttribute('aria-label')]).toEqual([null, null, 'Ceiling']);
+  });
+});
+
+describe('the settings closing the review\'s gaps (2026-11-22)', () => {
+  it("colours a text in its own colour, and a rule's tint as before", () => {
+    const { at } = widget(state([
+      part('a', 'text', { text: 'Hi', color: 'red', style: 'none' }),
+      part('b', 'text', { text: 'Hi', style: 'none', rules: [{ op: 'is', value: 'on', look: 'blue', of: { slot: 'a:onoff' } }] }),
+    ], [value('a:onoff', true, { type: 'boolean', units: null })]));
+    expect([at('a').classList.contains('wb-has-color'), at('a').classList.contains('wb-colored'), at('a').dataset.wkColor]).toEqual([true, false, 'red']);
+    expect(at('b').classList.contains('wb-colored')).toBe(true);
+    const css = readFileSync('widgets/custom/public/widget.css', 'utf8');
+    expect(css).toContain('.wb-k-text.wb-has-color:not(.wb-colored) .wb-text { color: var(--wk-c); }');
+  });
+
+  it('switches a switch with Tap twice only on the second tap', async () => {
+    const onSet = vi.fn(async () => {});
+    const { at } = widget(state([part('s', 'switch', { slot: 'a:onoff', press: 'confirm' })], [value('a:onoff', false, { type: 'boolean', units: null })]), { onSet });
+    at('s').click();
+    expect(onSet).not.toHaveBeenCalled();
+    expect(at('s').querySelector('.wb-press-tip')!.textContent).toBe('Tap again');
+    at('s').click();
+    expect(onSet).toHaveBeenCalledWith(expect.objectContaining({ id: 's' }), true);
+  });
+
+  it("shows a number variable with its own decimals and unit, a slider on one, and keeps a typed number in the range", async () => {
+    const sent: unknown[] = [];
+    const s = state([
+      part('v', 'variable', { variable: 'v1', decimals: 0, units: 'kWh', max: 10 }),
+      part('sl', 'slider', { variable: 'v1', min: 0, max: 20 }),
+    ], [], { variables: { v1: { id: 'v1', name: 'Use', type: 'number', value: 4.4 } } });
+    const { at } = widget(s, { onSet: async (_p: unknown, v: unknown) => { sent.push(v); } });
+    expect(at('v').querySelector('.wb-value')!.textContent).toBe('4 kWh');
+    expect(Number.parseFloat(at('sl').querySelector<HTMLElement>('.wb-fill')!.style.width)).toBeCloseTo(22);
+    at('v').click();
+    const input = at('v').querySelector<HTMLInputElement>('.wb-input')!;
+    input.value = '50';
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await vi.waitFor(() => expect(sent).toEqual([10]));
+  });
+
+  it('fills a vertical bar from the bottom, grows an icon to its box, and draws a sparkline within its own range', () => {
+    const s = state([
+      part('b', 'bar', { src: { slot: 'a:t' }, min: 0, max: 40, dir: 'vertical', thickness: 10 }),
+      part('i', 'icon', { icon: 'star', grow: true }),
+      part('sp', 'sparkline', { slot: 'a:t', span: '24h', min: 0, max: 40 }),
+    ], [value('a:t', 20)], { histories: { '24h\na:t': [[1, 20], [2, 20]] } });
+    const { at } = widget(s);
+    const bar = at('b').querySelector<HTMLElement>('.wb-level')!;
+    expect([bar.classList.contains('wb-level-v'), bar.style.width, bar.querySelector('i')!.style.height]).toEqual([true, '10px', '50%']);
+    expect(at('i').classList.contains('wb-icon-grow')).toBe(true);
+    // A flat 20 between 0 and 40 sits in the middle (y 22 of 40), not at an edge.
+    expect(at('sp').querySelector('.wb-spark-line')!.getAttribute('d')).toBe('M0.00,22.00 L100.00,22.00');
+  });
+
+  it('reads a web picture again past the cache when it refreshes', () => {
+    vi.useFakeTimers();
+    const { at } = widget(state([part('u', 'image', { image: { kind: 'url', url: 'https://x.test/a.jpg?s=1' }, refresh: 1 })]));
+    const img = at('u').querySelector<HTMLImageElement>('.wb-img')!;
+    expect(img.getAttribute('src')).toBe('https://x.test/a.jpg?s=1');
+    vi.advanceTimersByTime(60e3);
+    expect(img.getAttribute('src')).toMatch(/^https:\/\/x\.test\/a\.jpg\?s=1&wk=\d+$/);
+  });
+
+  it('orders a repeater by value and shows at most its limit', () => {
+    const bat = (slot: string, v: unknown, name: string) => ({ ...value(slot, v, { units: '%', decimals: 0 }), name });
+    const s = state([part('rp', 'repeat', { capability: 'measure_battery', sort: 'up', limit: 2, test: { op: 'between', value: '0', to: '50' } })],
+      [bat('a:measure_battery', 40, 'Hall'), bat('b:measure_battery', 9, 'Door'), bat('c:measure_battery', 80, 'Roof'), bat('d:measure_battery', 25, 'Shed')],
+      { repeats: { rp: ['a:measure_battery', 'b:measure_battery', 'c:measure_battery', 'd:measure_battery'] } });
+    const { at } = widget(s);
+    expect([...at('rp').querySelectorAll('.wb-rep-name')].map(n => n.textContent)).toEqual(['Door', 'Shed']);
+  });
+
+  it("shows a text's value with its own decimals, with or without its unit", () => {
+    const { at } = widget(state([part('t', 'text', { text: '{1} | {2}', refs: [{ slot: 'a:t', decimals: 0 }, { slot: 'a:t', decimals: 2, plain: true }] })], [value('a:t', 21.456)]));
+    expect(at('t').textContent).toBe('21°C | 21.46');
   });
 });

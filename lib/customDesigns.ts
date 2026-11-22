@@ -50,7 +50,7 @@ export type PartKind = typeof PART_KINDS[number];
 /** The kinds that show a device value (`slot`, `<deviceId>:<capabilityId>`). */
 export const SLOT_KINDS: readonly PartKind[] = ['switch', 'slider', 'stepper', 'choice', 'sparkline', 'icon'];
 /** The kinds that may show or change a Homey variable instead of a device value. */
-export const VARIABLE_KINDS: readonly PartKind[] = ['stepper', 'choice', 'variable'];
+export const VARIABLE_KINDS: readonly PartKind[] = ['slider', 'stepper', 'choice', 'variable'];
 /** The kinds that change something when used: a device (`slot`), a variable, a Flow or the tap trigger. */
 export const CONTROL_KINDS: readonly PartKind[] = ['switch', 'button', 'slider', 'stepper', 'choice', 'variable'];
 
@@ -72,10 +72,11 @@ export const SOURCE_KINDS: readonly PartKind[] = ['calc', 'state', 'repeat'];
  */
 export type Source = { slot: string } | { variable: string } | { part: string };
 /**
- * A text's value: a source (`show: 'name'` its name: a device's, a variable's), the time (with seconds), date or
+ * A text's value: a source (`show: 'name'` its name: a device's, a variable's; `decimals` and `plain`, without its
+ * units, how its number shows), the time (with seconds), date or
  * weekday now, how long since a device value changed (`since`), or until a time of day (`until`, `HH:mm`).
  */
-export type Ref = (Source & { show?: 'name' }) | { time: 'clock' | 'seconds' | 'date' | 'weekday' } | { since: string } | { until: string };
+export type Ref = (Source & { show?: 'name', decimals?: number, plain?: true }) | { time: 'clock' | 'seconds' | 'date' | 'weekday' } | { since: string } | { until: string };
 export const REF_TIMES = ['clock', 'seconds', 'date', 'weekday'] as const;
 const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
 
@@ -110,20 +111,20 @@ export type Segment = { src: Source, color: TileColor | null, label: string };
 /** An image: a picture on the web (http or https), or a device's own (a camera's snapshot, album art). */
 export type ImageSource = { kind: 'url', url: string } | { kind: 'device', device: string };
 
-export const RULE_OPS = ['above', 'below', 'is', 'isNot'] as const;
+export const RULE_OPS = ['above', 'below', 'between', 'is', 'isNot'] as const;
 export type RuleOp = typeof RULE_OPS[number];
 /**
- * A rule: while the part's value (or `of`'s, another value) holds `op value`, it takes the colour, or is hidden. The
- * first that holds wins.
+ * A rule: while the part's value (or `of`'s, another value) holds `op value` (`between`: from `value` to `to`, both
+ * included), it takes the colour, or is hidden. The first that holds wins.
  */
-export type Rule = { op: RuleOp, value: string, look: TileColor | 'hide' | 'same', of?: Source, icon?: string };
+export type Rule = { op: RuleOp, value: string, to?: string, look: TileColor | 'hide' | 'same', of?: Source, icon?: string };
 
 /**
  * The parts of a built-in component that can be hidden, by kind (so a Level bar can be a bare bar, a Mini chart a bare
  * line, a Gauge a bare arc, a Switch a bare toggle).
  */
 export const ELEMENTS: Partial<Record<string, readonly ('icon' | 'name' | 'value' | 'graph')[]>> = {
-  switch: ['icon', 'name'], stepper: ['name'], choice: ['name'], variable: ['name'], calc: ['icon', 'name', 'value'],
+  switch: ['icon', 'name'], stepper: ['name'], choice: ['name'], variable: ['name'],
   ring: ['name', 'value'], segments: ['name', 'value'], button: ['icon', 'name'], state: ['icon', 'name'],
 };
 export type Element = 'icon' | 'name' | 'value' | 'graph';
@@ -132,7 +133,16 @@ export const TAP_KINDS: readonly PartKind[] = [
   'container', 'text', 'icon', 'shape', 'calc', 'image', 'ring', 'segments', 'sparkline', 'arc', 'bar',
 ];
 /** A calculated value's `count` test: the rule ops without a look. */
-export type Test = { op: RuleOp, value: string };
+export type Test = { op: RuleOp, value: string, to?: string };
+/**
+ * The kinds that draw an icon (their own, a rule's or a Flow's): the others keep none, so the builder doesn't offer
+ * one that never shows.
+ */
+export const ICON_KINDS: readonly PartKind[] = ['switch', 'button', 'state', 'ring', 'icon'];
+/** The kinds with a press setting (a tap, a second tap to confirm, a hold): a button, a switch, any tapped component. */
+export const PRESS_KINDS: readonly PartKind[] = ['button', 'switch'];
+/** A repeater's order: by name, or by value, lowest or highest first. */
+export const REPEAT_SORTS = ['name', 'up', 'down'] as const;
 
 /** The kinds without a background unless they're given one. */
 export const BARE_KINDS: readonly PartKind[] = ['text', 'icon', 'sparkline', 'arc', 'bar', 'calc'];
@@ -185,7 +195,12 @@ export type Part = {
   mode?: 'grid' | 'free' | 'pages',
   background?: Background,
   parts?: Part[],
-  /** A shape's: its form, corner radius (px, a rectangle), opacity (%), a line's thickness (px) and direction. */
+  /** An Icon as large as its box (else at most 34 px). */
+  grow?: boolean,
+  /**
+   * A shape's: its form, corner radius (px, a rectangle), opacity (%), a line's thickness (px) and direction (a line's,
+   * and a Bar's).
+   */
   shape?: typeof SHAPES[number],
   radius?: number,
   opacity?: number,
@@ -198,10 +213,6 @@ export type Part = {
   /** `formula`: the inputs as `a` … `l`. */
   formula?: string,
   decimals?: number,
-  /** `min`/`max`: the winning input's name beside the part's. */
-  winner?: boolean,
-  /** Not drawn on a dashboard: only text and rules use it. */
-  sourceOnly?: boolean,
   /** A text's values, shown where `{1}` … `{6}` is (null: one that's gone, shown as `–`). */
   refs?: (Ref | null)[],
   /** A pages container's pages, how it's paged (tabs, dots, or by a widget state), and that state. */
@@ -242,6 +253,9 @@ export type Part = {
   itemStyle?: 'row' | 'tile',
   columns?: number,
   control?: boolean,
+  /** A repeater's order (`REPEAT_SORTS`) and the most it shows (else as many as fit, up to `MAX_REPEAT_ITEMS`). */
+  sort?: typeof REPEAT_SORTS[number],
+  limit?: number,
 };
 
 export type Background =
@@ -317,11 +331,23 @@ function refOf(v: unknown): Ref | null {
   if (slotOf(r.since)) return { since: slotOf(r.since)! };
   if (typeof r.until === 'string' && HHMM.test(r.until)) return { until: r.until };
   const src = sourceOf(v);
-  return src ? (r.show === 'name' ? { ...src, show: 'name' } : src) : null;
+  if (!src) return null;
+  if (r.show === 'name') return { ...src, show: 'name' };
+  const out: Ref = { ...src };
+  const decimals = optNum(r.decimals);
+  if (decimals !== undefined) out.decimals = num(decimals, 0, 3, 1);
+  if (r.plain === true) out.plain = true;
+  return out;
 }
 
-/** `valueless`: a kind without a value of its own keeps only the rules that name theirs. */
-function rulesOf(v: unknown, valueless = false): Rule[] {
+/** `between`'s upper end, or undefined for the other ops. */
+const toOf = (op: RuleOp, v: unknown) => (op === 'between' ? { to: str(String(v ?? ''), 60) } : {});
+
+/**
+ * `valueless`: a kind without a value of its own keeps only the rules that name theirs; `icons`: whether it draws a
+ * rule's icon.
+ */
+function rulesOf(v: unknown, valueless = false, icons = true): Rule[] {
   if (!Array.isArray(v)) return [];
   const out: Rule[] = [];
   for (const r of v.slice(0, MAX_RULES)) {
@@ -330,19 +356,20 @@ function rulesOf(v: unknown, valueless = false): Rule[] {
     if (!look || !RULE_OPS.includes(r.op)) continue;
     const of = sourceOf(r.of);
     if (valueless && !of) continue;
-    const icon = iconOf(r.icon);
+    const icon = icons ? iconOf(r.icon) : undefined;
     // A rule that keeps the colour is only there for its icon.
     if (look === 'same' && !icon) continue;
-    out.push({ op: r.op, value: str(String(r.value ?? ''), 60), look, ...(of ? { of } : {}), ...(icon ? { icon } : {}) });
+    out.push({ op: r.op, value: str(String(r.value ?? ''), 60), ...toOf(r.op, r.to), look, ...(of ? { of } : {}), ...(icon ? { icon } : {}) });
   }
   return out;
 }
 
 const iconOf = (v: unknown) => (typeof v === 'string' && /^[a-z0-9-]{1,40}$/.test(v) ? v : undefined);
 
-function flowOf(v: unknown): Partial<Record<FlowProp, true>> {
+/** `icons`: whether the kind draws an icon, so a Flow may change it. */
+function flowOf(v: unknown, icons = true): Partial<Record<FlowProp, true>> {
   const out: Partial<Record<FlowProp, true>> = {};
-  if (v && typeof v === 'object') for (const p of FLOW_PROPS) if ((v as any)[p] === true) out[p] = true;
+  if (v && typeof v === 'object') for (const p of FLOW_PROPS) if ((v as any)[p] === true && (icons || p !== 'icon')) out[p] = true;
   return out;
 }
 
@@ -454,6 +481,14 @@ function choicesOf(v: unknown): Choice[] {
   return choices;
 }
 
+/** A part's own `min`/`max` (either may be missing: the capability's then), the lower first. */
+function readRange(p: Part, r: Record<string, any>) {
+  const [min, max] = [optNum(r.min), optNum(r.max)];
+  if (min !== undefined) p.min = min;
+  if (max !== undefined) p.max = max;
+  if (p.min !== undefined && p.max !== undefined && p.min > p.max) [p.min, p.max] = [p.max, p.min];
+}
+
 /** One part, or null when its kind isn't known. Only the fields its kind uses are kept. */
 export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Part | null {
   if (!v || typeof v !== 'object') return null;
@@ -465,14 +500,15 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     kind,
     name: str(r.name, MAX_NAME),
     at: placeOf(r.at, where),
-    color: color(r.color),
-    icon: typeof r.icon === 'string' && /^[a-z0-9-]{1,40}$/.test(r.icon) ? r.icon : null,
+    // A calculated value is never drawn: no colour, icon, rules or Flow changes of its own.
+    color: kind === 'calc' ? null : color(r.color),
+    icon: ICON_KINDS.includes(kind) && typeof r.icon === 'string' && /^[a-z0-9-]{1,40}$/.test(r.icon) ? r.icon : null,
     // Saved before 1.4.0's release as `tile: false` (on a container's background).
     // Text, icons and the bare data primitives sit right on their background unless given one.
     style: kind === 'shape' ? 'none' : oneOf(r.style, PART_STYLES, r.tile === false || BARE_KINDS.includes(kind) ? 'none' : 'tile'),
     // An icon that follows a device value has one of its own.
-    rules: rulesOf(r.rules, VALUELESS_KINDS.includes(kind) && !(kind === 'icon' && slotOf(r.slot))),
-    flow: flowOf(r.flow),
+    rules: kind === 'calc' ? [] : rulesOf(r.rules, VALUELESS_KINDS.includes(kind) && !(kind === 'icon' && slotOf(r.slot)), ICON_KINDS.includes(kind)),
+    flow: kind === 'calc' ? {} : flowOf(r.flow, ICON_KINDS.includes(kind)),
     reset: oneOf(r.reset, FLOW_RESETS, 'never'),
   };
   if (Number.isInteger(r.page) && r.page >= 0 && r.page < MAX_PAGES) p.page = r.page;
@@ -493,31 +529,44 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
       p.press = oneOf(r.press, ['tap', 'confirm', 'long'] as const, 'tap');
     }
   }
+  if (kind === 'switch') {
+    const press = oneOf(r.press, ['tap', 'confirm', 'long'] as const, 'tap');
+    if (press !== 'tap') p.press = press;
+  }
   if (VARIABLE_KINDS.includes(kind) && !p.slot) {
     const variable = idOf(r.variable, 100);
     if (variable) p.variable = variable;
   }
   switch (kind) {
-    case 'sparkline':
+    case 'sparkline': {
       p.span = SPANS.has(r.span) ? r.span : '24h';
+      readRange(p, r);
       break;
+    }
+    case 'icon':
+      if (r.grow === true) p.grow = true;
+      break;
+    case 'variable': {
+      readRange(p, r);
+      const decimals = optNum(r.decimals);
+      if (decimals !== undefined) p.decimals = num(decimals, 0, 3, 2);
+      const units = str(r.units, MAX_UNITS);
+      if (units) p.units = units;
+      break;
+    }
     case 'arc': case 'bar': {
       const src = sourceOf(r.src);
       if (src) p.src = src;
-      const [min, max] = [optNum(r.min), optNum(r.max)];
-      if (min !== undefined) p.min = min;
-      if (max !== undefined) p.max = max;
-      if (p.min !== undefined && p.max !== undefined && p.min > p.max) [p.min, p.max] = [p.max, p.min];
-      p.thickness = num(r.thickness, 2, 24, kind === 'arc' ? 8 : 8);
+      readRange(p, r);
+      p.thickness = num(r.thickness, 2, 24, 8);
+      if (kind === 'bar' && r.dir === 'vertical') p.dir = 'vertical';
       break;
     }
     case 'slider': case 'stepper': {
-      const min = optNum(r.min);
-      const max = optNum(r.max);
-      if (min !== undefined) p.min = min;
-      if (max !== undefined) p.max = max;
-      if (p.min !== undefined && p.max !== undefined && p.min > p.max) [p.min, p.max] = [p.max, p.min];
+      readRange(p, r);
       if (kind === 'stepper') p.step = num(r.step, 0.01, 1000, 0.5, 0.01);
+      // A slider's own step; without one, the capability's (else 1, or 0.01 over a range of 1).
+      else if (optNum(r.step) !== undefined && Number(r.step) > 0) p.step = num(r.step, 0.01, 1000, 1, 0.01);
       break;
     }
     case 'button': {
@@ -543,7 +592,8 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     case 'image':
       if (imageOf(r.image)) p.image = imageOf(r.image);
       p.fit = r.fit === 'contain' ? 'contain' : 'cover';
-      p.refresh = [0, 1, 5, 15, 60].includes(Number(r.refresh)) ? Number(r.refresh) : 5;
+      // A device's picture was read again every 5 minutes before it was a choice; a web address's never.
+      p.refresh = r.refresh != null && [0, 1, 5, 15, 60].includes(Number(r.refresh)) ? Number(r.refresh) : p.image?.kind === 'url' ? 0 : 5;
       break;
     case 'ring': {
       const rings: RingSpec[] = [];
@@ -580,10 +630,12 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
       if (cap) p.capability = cap;
       const zone = idOf(r.zone, 100);
       if (zone) p.zone = zone;
-      if (r.test && typeof r.test === 'object' && RULE_OPS.includes(r.test.op)) p.test = { op: r.test.op, value: str(String(r.test.value ?? ''), 60) };
+      if (r.test && typeof r.test === 'object' && RULE_OPS.includes(r.test.op)) p.test = { op: r.test.op, value: str(String(r.test.value ?? ''), 60), ...toOf(r.test.op, r.test.to) };
       p.itemStyle = r.itemStyle === 'tile' ? 'tile' : 'row';
       p.columns = num(r.columns, 1, 4, 1);
       if (r.control === true) p.control = true;
+      p.sort = oneOf(r.sort, REPEAT_SORTS, 'name');
+      if (optNum(r.limit) !== undefined) p.limit = num(r.limit, 1, MAX_REPEAT_ITEMS, MAX_REPEAT_ITEMS);
       p.text = str(r.text, MAX_TEXT);
       break;
     }
@@ -607,9 +659,11 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     case 'calc': {
       p.inputs = (Array.isArray(r.inputs) ? r.inputs : []).map(x => sourceOf(x, false)).filter((x): x is Source => !!x).slice(0, MAX_INPUTS);
       p.op = oneOf(r.op, CALC_OPS, 'sum');
-      if (p.op === 'count') p.test = { op: oneOf(r.test?.op, RULE_OPS, 'is'), value: str(String(r.test?.value ?? 'on'), 60) };
+      if (p.op === 'count') {
+        const op = oneOf(r.test?.op, RULE_OPS, 'is');
+        p.test = { op, value: str(String(r.test?.value ?? 'on'), 60), ...toOf(op, r.test?.to) };
+      }
       if (p.op === 'formula') p.formula = str(r.formula, MAX_FORMULA);
-      if (p.op === 'min' || p.op === 'max') p.winner = r.winner === true;
       if (p.op === 'change') {
         p.span = SPANS.has(r.span) ? r.span : '1h';
         if (r.percent === true) p.percent = true;
@@ -617,7 +671,6 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
       const decimals = optNum(r.decimals);
       if (decimals !== undefined) p.decimals = num(decimals, 0, 3, 1);
       p.units = str(r.units, MAX_UNITS);
-      if (r.sourceOnly === true) p.sourceOnly = true;
       break;
     }
     case 'container':
@@ -701,14 +754,22 @@ export function partLabel(design: Design, part: Part): string {
 
 /**
  * Whether a rule holds for a value (the widget's copy, `ruleHolds()`, is checked equal in the tests): `above`/`below`
- * compare numbers (a boolean as 1/0), `is`/`isNot` compare as text, case and spaces aside, with `on`/`yes`/`true`
+ * compare numbers (a boolean as 1/0), `between` too (from `value` to `to`, both included), `is`/`isNot` compare as text, case and spaces aside, with `on`/`yes`/`true`
  * and `off`/`no`/`false` meaning a boolean's.
  */
-export function ruleHolds(rule: Rule, value: unknown): boolean {
+export function ruleHolds(rule: Rule | Test, value: unknown): boolean {
   if (value === null || value === undefined) return false;
+  const n = (x: unknown) => Number(String(x ?? '').replace(',', '.'));
+  if (rule.op === 'between') {
+    // From one end to the other, both included, whichever is typed first; an empty end is open.
+    const v = Number(value);
+    const [a, b] = [String(rule.value ?? '').trim() ? n(rule.value) : -Infinity, String(rule.to ?? '').trim() ? n(rule.to) : Infinity];
+    if (!Number.isFinite(v) || Number.isNaN(a) || Number.isNaN(b)) return false;
+    return v >= Math.min(a, b) && v <= Math.max(a, b);
+  }
   if (rule.op === 'above' || rule.op === 'below') {
     const v = typeof value === 'boolean' ? Number(value) : Number(value);
-    const r = Number(String(rule.value).replace(',', '.'));
+    const r = n(rule.value);
     if (!Number.isFinite(v) || !Number.isFinite(r)) return false;
     return rule.op === 'above' ? v > r : v < r;
   }
