@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { fakeFrame, frameElements } from './helpers/fakeFrame.js';
 import { loadMount, loadWidget } from './helpers/loadWidget.js';
-import { RULE_OPS, ruleHolds } from '../lib/customDesigns.js';
+import { PART_KINDS, RULE_OPS, ruleHolds } from '../lib/customDesigns.js';
 
 let win: any;
 beforeAll(() => { win = loadWidget('custom'); loadMount('custom'); });
@@ -43,7 +43,7 @@ describe("the widget's rules", () => {
 
   it('tint a part by the first that holds, or hide it; a Flow wins over both', () => {
     const rules = [{ op: 'above', value: '25', look: 'red' }, { op: 'below', value: '10', look: 'hide' }];
-    const s = state([part('t', 'value', { slot: 'a:t', rules })], [value('a:t', 27)]);
+    const s = state([part('t', 'bar', { src: { slot: 'a:t' }, rules })], [value('a:t', 27)]);
     const { w, at } = widget(s);
     expect(at('t').classList.contains('wb-colored')).toBe(true);
     expect(at('t').dataset.wkColor).toBe('red');
@@ -76,24 +76,25 @@ describe('drawing', () => {
 
   it('draws each component on a tile, a pill or no background, and reads an older tile: false as none', () => {
     const { at } = widget(state([
-      part('a', 'text', { text: 'Hi', style: undefined }), part('b', 'switch', { style: 'pill' }), part('c', 'value', { style: 'none' }),
-      part('d', 'value', { tile: false, style: undefined }), part('e', 'value', { style: undefined }),
+      part('a', 'text', { text: 'Hi', style: undefined }), part('b', 'switch', { style: 'pill' }), part('c', 'switch', { style: 'none' }),
+      part('d', 'switch', { tile: false, style: undefined }), part('e', 'switch', { style: undefined }),
     ]));
     expect(['a', 'b', 'c', 'd', 'e'].map(id => [at(id).classList.contains('wb-tile'), at(id).classList.contains('wb-pill')]))
       .toEqual([[false, false], [true, true], [false, false], [false, false], [true, false]]);
   });
 
-  it('shows values as the tiles do, with a Flow value or text over them, and a gone device marked', () => {
+  it("shows a value and its device's name in texts, a Flow's value or text over them, and a gone device marked", () => {
     const { at, w } = widget(state([
-      part('t', 'value', { slot: 'a:t', name: 'Room' }),
-      part('f', 'flowvalue', { name: 'Cost', units: 'kr' }),
-      part('g', 'value', { slot: 'gone:t' }),
+      part('t', 'text', { text: '{1} in {2}', refs: [{ slot: 'a:t' }, { slot: 'a:t', show: 'name' }] }),
+      part('f', 'text', { text: '–', units: 'kr' }),
+      part('g', 'bar', { src: { slot: 'gone:t' } }),
     ], [value('a:t', 21.25), { deviceId: 'gone', capabilityId: 't', missing: true }]));
-    expect(at('t').querySelector('.wb-value')!.textContent).toBe(`${(21.3).toLocaleString()}°C`);
-    expect(at('t').querySelector('.wb-name')!.textContent).toBe('Room');
-    expect(at('f').querySelector('.wb-value')!.textContent).toBe('–');
+    expect(at('t').textContent).toBe(`${(21.3).toLocaleString()}°C in Sensor`);
+    expect(at('f').textContent).toBe('–');
     w.pushFlow({ part: 'f', values: { value: 42.5, at: 1 } });
-    expect(at('f').querySelector('.wb-value')!.textContent).toBe(`${(42.5).toLocaleString()} kr`);
+    expect(at('f').textContent).toBe(`${(42.5).toLocaleString()} kr`);
+    w.pushFlow({ part: 'f', values: { text: 'Paid', at: 1 } });
+    expect(at('f').textContent).toBe('Paid');
     expect(at('g').classList.contains('wk-offline')).toBe(true);
   });
 
@@ -194,9 +195,11 @@ describe('mount', () => {
 
   it('keeps the README in step with the parts', () => {
     const page = readFileSync('docs/widgets/custom.md', 'utf8');
-    for (const name of ['Value', 'Mini chart', 'Gauge', 'Level bar', 'Status', 'Flow value', 'Switch', 'Button', 'Slider', 'Stepper', 'Choice', 'Variable', 'Container', 'Text', 'Icon']) {
-      expect(page).toContain(name);
-    }
+    // Every kind, by its English name, and every ready-made tile.
+    const en = JSON.parse(readFileSync('locales/en.json', 'utf8'));
+    expect(Object.keys(en.custom.kinds).sort()).toEqual([...PART_KINDS].sort());
+    for (const name of Object.values<string>(en.custom.kinds)) expect([name, page.includes(name)]).toEqual([name, true]);
+    for (const [key, name] of Object.entries<string>(en.web)) if (key.startsWith('builderReady_')) expect([name, page.includes(name)]).toEqual([name, true]);
   });
 });
 
@@ -217,15 +220,16 @@ describe('calculated values, shapes, times and texts with values', () => {
   it('sums, averages, picks the lowest or highest (and names it), subtracts, counts and calculates, leaving out unavailable devices', () => {
     const inputs = [{ slot: 'a:t' }, { slot: 'b:t' }, { slot: 'c:t' }];
     const values = [num('a:t', 20, { name: 'Kitchen' }), num('b:t', 23.5, { name: 'Office' }), num('c:t', 30, { name: 'Attic', offline: true })];
+    // Read through a text: `{1}` its value, `{2}` its name (the lowest's or highest's input).
     const shown = (o: object) => {
-      const { at } = widget(state([part('x', 'calc', { inputs, name: 'Rooms', ...o })], values));
-      return [at('x').querySelector('.wb-value')!.textContent, at('x').querySelector('.wb-name')!.textContent];
+      const { at } = widget(state([part('x', 'calc', { inputs, name: 'Rooms', ...o }), part('t', 'text', { text: '{1}|{2}', refs: [{ part: 'x' }, { part: 'x', show: 'name' }] })], values));
+      return at('t').textContent!.split('|');
     };
-    expect(shown({ op: 'sum' })).toEqual(['43.5°C', 'Rooms']);
-    expect(shown({ op: 'avg', decimals: 2 })).toEqual(['21.75°C', 'Rooms']);
-    expect(shown({ op: 'max', winner: true })).toEqual(['23.5°C', 'Rooms · Office']);
-    expect(shown({ op: 'min', winner: true, name: '' })).toEqual(['20°C', 'Kitchen']);
-    expect(shown({ op: 'diff', units: 'K' })).toEqual(['-3.5 K', 'Rooms']);
+    expect(shown({ op: 'sum' })[0]).toBe('43.5°C');
+    expect(shown({ op: 'avg', decimals: 2 })[0]).toBe('21.75°C');
+    expect(shown({ op: 'max' })).toEqual(['23.5°C', 'Office']);
+    expect(shown({ op: 'min' })).toEqual(['20°C', 'Kitchen']);
+    expect(shown({ op: 'diff', units: 'K' })[0]).toBe('-3.5 K');
     expect(shown({ op: 'formula', formula: 'a * 2 + c' })[0]).toBe('–'); // c is unavailable
     expect(shown({ op: 'formula', formula: 'a * 2 + b' })[0]).toBe('63.5°C');
     expect(shown({ op: 'count', test: { op: 'above', value: '21' } })[0]).toBe('1');
@@ -234,14 +238,14 @@ describe('calculated values, shapes, times and texts with values', () => {
   it('counts the switches that are on as they change', () => {
     const inputs = [{ slot: 'a:onoff' }, { slot: 'b:onoff' }];
     const values = [num('a:onoff', true, {}, { type: 'boolean', units: null }), num('b:onoff', false, {}, { type: 'boolean', units: null })];
-    const { w, at } = widget(state([part('x', 'calc', { inputs, op: 'count', test: { op: 'is', value: 'on' } })], values));
-    expect(at('x').querySelector('.wb-value')!.textContent).toBe('1');
+    const { w, at } = widget(state([part('x', 'calc', { inputs, op: 'count', test: { op: 'is', value: 'on' } }), part('t', 'text', { text: '{1} on', refs: [{ part: 'x' }] })], values));
+    expect(at('t').textContent).toBe('1 on');
     w.pushValue({ deviceId: 'b', capabilityId: 'onoff', value: true });
-    expect(at('x').querySelector('.wb-value')!.textContent).toBe('2');
+    expect(at('t').textContent).toBe('2 on');
   });
 
-  it("leaves a calculated value that's only a source out on a dashboard, and shows it faint in the builder", () => {
-    const s = () => state([part('x', 'calc', { inputs: [{ slot: 'a:t' }], sourceOnly: true })], [num('a:t', 1)]);
+  it('leaves a calculated value out on a dashboard (it only feeds others), and shows it faint in the builder', () => {
+    const s = () => state([part('x', 'calc', { inputs: [{ slot: 'a:t' }] })], [num('a:t', 1)]);
     const dash = widget(s());
     expect(dash.at('x').classList.contains('wb-source-only')).toBe(true);
     expect(dash.at('x').classList.contains('wb-hidden')).toBe(true);
@@ -257,7 +261,7 @@ describe('calculated values, shapes, times and texts with values', () => {
       calc,
       part('s', 'shape', { shape: 'circle', rules: [{ op: 'is', value: 'on', look: 'green', of: { slot: 'a:on' } }, { op: 'is', value: 'off', look: 'hide', of: { slot: 'a:on' } }] }),
       part('box', 'container', { mode: 'grid', parts: [], rules: [{ op: 'above', value: '1000', look: 'red', of: { part: 'sum' } }] }),
-      part('v', 'value', { slot: 'a:p', rules: [{ op: 'above', value: '1000', look: 'orange', of: { part: 'sum' } }] }),
+      part('v', 'bar', { src: { slot: 'a:p' }, rules: [{ op: 'above', value: '1000', look: 'orange', of: { part: 'sum' } }] }),
     ], [num('a:p', 600, {}, { units: 'W' }), num('b:p', 300, {}, { units: 'W' }), num('a:on', true, {}, { type: 'boolean', units: null })]);
     const { w, at } = widget(s);
     expect(at('s').classList.contains('wb-shape-circle')).toBe(true);
@@ -303,29 +307,24 @@ describe('calculated values, shapes, times and texts with values', () => {
     expect(at('x').textContent).toBe('Gone {1}');
   });
 
-  it("shows a clock, a date, how long since a value changed and the time until a time of day; its rules compare minutes", () => {
+  it('puts the time (with seconds), the weekday, how long since a value changed and the time until a time of day in a text; minutes since a change is a value for rules', () => {
     vi.useFakeTimers();
     const now = new Date(2026, 10, 21, 21, 30).getTime();
     vi.setSystemTime(now);
     const s = state([
-      part('clock', 'time', { timeMode: 'clock', seconds: true }),
-      part('date', 'time', { timeMode: 'date', dateStyle: 'weekday' }),
-      part('since', 'time', { timeMode: 'since', slot: 'a:alarm_motion', rules: [{ op: 'above', value: '30', look: 'orange' }] }),
-      part('until', 'time', { timeMode: 'until', until: '23:00', name: 'Bedtime' }),
+      part('t', 'text', { text: '{1}|{2}|{3}|{4}', refs: [{ time: 'seconds' }, { time: 'weekday' }, { since: 'a:alarm_motion' }, { until: '23:00' }] }),
+      part('m', 'calc', { op: 'since', inputs: [{ slot: 'a:alarm_motion' }] }),
+      part('dot', 'shape', { rules: [{ op: 'above', value: '30', look: 'orange', of: { part: 'm' } }] }),
     ], [num('a:alarm_motion', false, { name: 'Hall', updatedAt: now - 45 * 60e3 }, { type: 'boolean', units: null })], { language: 'en' });
     const { w, at } = widget(s);
-    const val = (id: string) => at(id).querySelector('.wb-value')!.textContent;
-    expect(val('clock')).toBe('21:30:00');
-    expect(val('date')).toBe('Saturday');
-    expect(val('since')).toBe('45 min. ago');
-    expect(at('since').querySelector('.wb-name')!.textContent).toBe('Hall');
-    expect(at('since').dataset.wkColor).toBe('orange');
-    expect(val('until')).toBe('in 90 min.');
+    const parts = () => at('t').textContent!.split('|');
+    expect(parts()).toEqual(['21:30:00', 'Saturday', '45 min. ago', 'in 90 min.']);
+    expect(at('dot').dataset.wkColor).toBe('orange');
     vi.advanceTimersByTime(1100);
-    expect(val('clock')).toBe('21:30:01');
+    expect(parts()[0]).toBe('21:30:01');
     w.pushValue({ deviceId: 'a', capabilityId: 'alarm_motion', value: true });
-    expect(val('since')).toBe('now');
-    expect(at('since').dataset.wkColor).toBeUndefined();
+    expect(parts()[2]).toBe('now');
+    expect(at('dot').dataset.wkColor).toBeUndefined();
   });
 });
 
@@ -470,23 +469,21 @@ describe('segmented bars, trends and typing a variable', () => {
     expect(at('bar').dataset.wkColor).toBe('red');
   });
 
-  it('shows the change since its period began, steady within its margin, or as a percentage; its rules check the change', () => {
+  it("calculates a value's change over its history (Trend's), or as a percentage; an icon's rules swap its arrow", () => {
     const hist = { '1h\na:t': [[1, 20], [2, 20.5]], '6h\na:t': [[1, 25], [2, 22]] };
     const s = state([
-      part('up', 'trend', { slot: 'a:t', span: '1h', name: 'Inside', rules: [{ op: 'above', value: '1', look: 'red' }] }),
-      part('down', 'trend', { slot: 'a:t', span: '6h', percent: true }),
-      part('flat', 'trend', { slot: 'a:t', span: '1h', flat: 2 }),
-      part('none', 'trend', { slot: 'a:t', span: '24h' }),
+      part('up', 'calc', { op: 'change', inputs: [{ slot: 'a:t' }], span: '1h' }),
+      part('down', 'calc', { op: 'change', inputs: [{ slot: 'a:t' }], span: '6h', percent: true }),
+      part('none', 'calc', { op: 'change', inputs: [{ slot: 'a:t' }], span: '24h' }),
+      part('t', 'text', { text: '{1}|{2}|{3}', refs: [{ part: 'up' }, { part: 'down' }, { part: 'none' }] }),
+      part('arrow', 'icon', { icon: 'moon', rules: [{ op: 'above', value: '0', look: 'same', icon: 'sun', of: { part: 'up' } }] }),
     ], [num('a:t', 21.5)], { histories: hist });
     const { w, at } = widget(s);
-    const val = (id: string) => at(id).querySelector('.wb-value')!.textContent;
-    expect([val('up'), at('up').dataset.trend, at('up').querySelector('.wb-sub')!.textContent]).toEqual(['+1.5°C', 'up', '21.5°C']);
-    expect(at('up').dataset.wkColor).toBe('red');
-    expect([val('down'), at('down').dataset.trend]).toEqual(['−14%', 'down']);
-    expect(at('flat').dataset.trend).toBe('flat');
-    expect(val('none')).toBe('–');
+    expect(at('t').textContent).toBe('+1.5°C|-14%|–');
+    const up = at('arrow').querySelector('.wb-icon')!.innerHTML;
     w.pushValue({ deviceId: 'a', capabilityId: 't', value: 20 });
-    expect([val('up'), at('up').dataset.trend]).toEqual(['0°C', 'flat']);
+    expect(at('t').textContent!.split('|')[0]).toBe('0°C');
+    expect(at('arrow').querySelector('.wb-icon')!.innerHTML).not.toBe(up);
   });
 
   it('types a text or number variable in its tile: Enter sets it, Escape leaves it, a number that is not one shakes', async () => {
@@ -517,7 +514,7 @@ describe('parts turned off, taps on any component, icons from values and rules, 
   const bool = (slot: string, v: boolean, c: object = {}) => ({ ...value(slot, v, { type: 'boolean', units: null, ...c }), name: 'Front door' });
 
   it('turns off the parts a design hides', () => {
-    const { at } = widget(state([part('lv', 'level', { slot: 'a:t', hide: ['name', 'value'] })], [value('a:t', 50)]));
+    const { at } = widget(state([part('lv', 'ring', { rings: [{ src: { slot: 'a:t' } }], hide: ['name', 'value'] })], [value('a:t', 50)]));
     expect([at('lv').classList.contains('wb-no-name'), at('lv').classList.contains('wb-no-value'), at('lv').classList.contains('wb-no-icon')]).toEqual([true, true, false]);
   });
 
@@ -542,7 +539,7 @@ describe('parts turned off, taps on any component, icons from values and rules, 
   it("draws an icon that follows a value with the value's glyph, and a rule's icon while it holds, under a Flow's", () => {
     const s = state([
       part('ic', 'icon', { slot: 'a:locked', icon: null }),
-      part('v', 'value', { slot: 'a:locked', icon: 'lock', rules: [{ op: 'is', value: 'off', look: 'same', icon: 'unlock' }] }),
+      part('v', 'switch', { slot: 'a:locked', icon: 'lock', rules: [{ op: 'is', value: 'off', look: 'same', icon: 'unlock' }] }),
     ], [bool('a:locked', true)]);
     const { w, at } = widget(s);
     expect(at('ic').querySelector('.wb-icon')!.classList.contains('wb-glyph')).toBe(true);
@@ -557,5 +554,25 @@ describe('parts turned off, taps on any component, icons from values and rules, 
   it('draws a big, bold text', () => {
     const { at } = widget(state([part('t', 'text', { text: '21°', size: 'display', weight: 'bold' })]));
     expect([at('t').classList.contains('wb-size-display'), at('t').classList.contains('wb-weight-bold')]).toEqual([true, true]);
+  });
+});
+
+describe('the bare data primitives', () => {
+  it('draws a sparkline of a history, an arc and a bar of a value within their range, and a slider with nothing but its bar', () => {
+    const s = state([
+      part('sp', 'sparkline', { slot: 'a:t', span: '24h' }),
+      part('ar', 'arc', { src: { slot: 'a:t' }, min: 0, max: 40, thickness: 12 }),
+      part('br', 'bar', { src: { slot: 'a:t' }, min: 10, max: 30, thickness: 6 }),
+      part('sl', 'slider', { slot: 'a:dim', name: 'Ceiling' }),
+    ], [value('a:t', 20), value('a:dim', 0.25, { units: '%', min: 0, max: 1 })], { histories: { '24h\na:t': [[1, 18], [2, 22], [3, 20]] } });
+    const { at } = widget(s);
+    expect(at('sp').querySelector('.wb-spark-line')!.getAttribute('d')).toMatch(/^M0\.00,/);
+    expect([at('sp').classList.contains('wb-tile'), at('ar').classList.contains('wb-tile')]).toEqual([false, false]);
+    expect(at('ar').querySelector('.wb-arc-fill')).toBeTruthy();
+    expect(at('ar').querySelector<SVGElement>('.wb-arc')!.style.getPropertyValue('--wb-arc-w')).toBe('12');
+    expect(at('br').querySelector<HTMLElement>('.wb-level i')!.style.width).toBe('50%');
+    expect(at('br').querySelector<HTMLElement>('.wb-level')!.style.height).toBe('6px');
+    expect(at('sl').querySelector<HTMLElement>('.wb-fill')!.style.width).toBe('25%');
+    expect([at('sl').querySelector('.wb-name'), at('sl').querySelector('.wb-icon'), at('sl').getAttribute('aria-label')]).toEqual([null, null, 'Ceiling']);
   });
 });

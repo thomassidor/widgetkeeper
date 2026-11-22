@@ -17,19 +17,19 @@ describe('readDesign: a design as kept', () => {
   it('keeps what it knows and drops the rest, each kind with its own fields', () => {
     const d = readDesign({
       id: 'living', name: '  Living   room ', parts: [
-        part('t', 'value', { slot: 'd1:measure_temperature', show: 'chart', span: 'nope', min: 3, flowId: 'flow:x', at: { x: 9, y: -2, w: 9, h: 2 } }),
+        part('t', 'sparkline', { slot: 'd1:measure_temperature', span: 'nope', min: 3, flowId: 'flow:x', at: { x: 9, y: -2, w: 9, h: 2 } }),
         part('s', 'stepper', { variable: 'v1', step: '0.25', min: 30, max: 10 }),
         part('b', 'button', { flowId: 'advanced:a1', color: 'PURPLE', icon: 'tv' }),
         part('x', 'nonsense'),
         part('c', 'choice', { slot: 'd1:thermostat_mode', choices: [{ label: 'Heat', value: 'heat' }, { value: 'heat' }, { value: '' }, { value: 'off' }] }),
-        part('r', 'value', { rules: [{ op: 'above', value: 25, look: 'red' }, { op: 'sideways', value: 1, look: 'red' }, { op: 'is', value: 'x', look: 'hide' }, { op: 'is', value: 'x', look: 'mauve' }] }),
+        part('r', 'bar', { src: { slot: 'd1:measure_temperature' }, rules: [{ op: 'above', value: 25, look: 'red' }, { op: 'sideways', value: 1, look: 'red' }, { op: 'is', value: 'x', look: 'hide' }, { op: 'is', value: 'x', look: 'mauve' }] }),
       ],
     })!;
     expect(d.name).toBe('Living room');
-    expect(d.parts.map(p => p.kind)).toEqual(['value', 'stepper', 'button', 'choice', 'value']);
+    expect(d.parts.map(p => p.kind)).toEqual(['sparkline', 'stepper', 'button', 'choice', 'bar']);
     const [t, s, b, c, r] = d.parts;
-    // A value's chart span falls back to 24 hours; what a value doesn't use is left out; it stays on the 4-column grid.
-    expect(t).toMatchObject({ slot: 'd1:measure_temperature', show: 'chart', span: '24h', at: { x: 3, y: 0, w: 1, h: 2 } });
+    // A sparkline's span falls back to 24 hours; what it doesn't use is left out; it stays on the 4-column grid.
+    expect(t).toMatchObject({ slot: 'd1:measure_temperature', span: '24h', at: { x: 3, y: 0, w: 1, h: 2 }, style: 'none' });
     expect(t).not.toHaveProperty('min');
     expect(t).not.toHaveProperty('flowId');
     // A range typed the wrong way round is swapped.
@@ -44,7 +44,7 @@ describe('readDesign: a design as kept', () => {
       parts: [
         part('a', 'text'), part('a', 'text'),
         part('box', 'container', { mode: 'free', background: { kind: 'gradient', from: '#112233', to: '#445566' }, parts: [
-          part('k', 'value', { at: { x: 90, y: 10, w: 50, h: 20 } }),
+          part('k', 'bar', { at: { x: 90, y: 10, w: 50, h: 20 } }),
           part('inner', 'container'),
         ] }),
       ],
@@ -53,33 +53,38 @@ describe('readDesign: a design as kept', () => {
     const box = d.parts[2];
     expect(box.background).toEqual({ kind: 'gradient', from: '#112233', to: '#445566', angle: 135 });
     // Free-form places are per cent, kept inside the box.
-    expect(box.parts!.map(p => [p.kind, p.at])).toEqual([['value', { x: 90, y: 10, w: 10, h: 20 }]]);
+    expect(box.parts!.map(p => [p.kind, p.at])).toEqual([['bar', { x: 90, y: 10, w: 10, h: 20 }]]);
     const many = readDesign({ parts: Array.from({ length: MAX_PARTS + 5 }, (_, i) => part(`p${i}`, 'text')) })!;
     expect(many.parts).toHaveLength(MAX_PARTS);
   });
 
   it("keeps a part's background, and reads one saved as tile: false as none", () => {
-    expect(readPart({ kind: 'value', style: 'pill' })!.style).toBe('pill');
-    expect(readPart({ kind: 'value', style: 'round' })!.style).toBe('tile');
-    expect(readPart({ kind: 'value', tile: false })!.style).toBe('none');
-    expect(readPart({ kind: 'text' })!.style).toBe('none');
+    expect(readPart({ kind: 'switch', style: 'pill' })!.style).toBe('pill');
+    expect(readPart({ kind: 'switch', style: 'round' })!.style).toBe('tile');
+    expect(readPart({ kind: 'switch', tile: false })!.style).toBe('none');
+    for (const kind of ['text', 'icon', 'sparkline', 'arc', 'bar']) expect([kind, readPart({ kind })!.style]).toEqual([kind, 'none']);
+    // The tiles that bundled a value, a label and a graph are gone: their kinds aren't read.
+    for (const kind of ['value', 'chart', 'gauge', 'level', 'status', 'flowvalue', 'time', 'trend']) expect(readPart({ kind })).toBeNull();
   });
 
   it('refuses what is not a design, and a reserved id', () => {
     expect(readDesign(null)).toBeNull();
     expect(readDesign('x')).toBeNull();
     expect(readDesign({ id: '__proto__' }, 'fresh')!.id).toBe('fresh');
-    expect(readPart({ kind: 'value', id: 'constructor' })!.id).not.toBe('constructor');
+    expect(readPart({ kind: 'text', id: 'constructor' })!.id).not.toBe('constructor');
   });
 
   it("lists a design's values and histories once each", () => {
     const d = readDesign({ parts: [
-      part('a', 'value', { slot: 'd1:measure_power', show: 'chart' }),
-      part('b', 'chart', { slot: 'd1:measure_power', span: '24h' }),
-      part('c', 'gauge', { slot: 'd2:measure_humidity' }),
+      part('a', 'sparkline', { slot: 'd1:measure_power' }),
+      part('b', 'sparkline', { slot: 'd1:measure_power', span: '24h' }),
+      part('c', 'arc', { src: { slot: 'd2:measure_humidity' } }),
+      part('t', 'text', { text: '{1} {2} {3}', refs: [{ since: 'd3:alarm_motion' }, { until: '22:30' }, { slot: 'd2:measure_humidity', show: 'name' }] }),
+      part('k', 'calc', { op: 'change', span: '6h', inputs: [{ slot: 'd1:measure_power' }] }),
     ] })!;
-    expect(designSlots(d)).toEqual(['d1:measure_power', 'd2:measure_humidity']);
-    expect(designCharts(d)).toEqual([{ slot: 'd1:measure_power', span: '24h' }]);
+    expect(designSlots(d)).toEqual(['d1:measure_power', 'd2:measure_humidity', 'd3:alarm_motion']);
+    expect(designCharts(d)).toEqual([{ slot: 'd1:measure_power', span: '24h' }, { slot: 'd1:measure_power', span: '6h' }]);
+    expect(d.parts[3].refs).toEqual([{ since: 'd3:alarm_motion' }, { until: '22:30' }, { slot: 'd2:measure_humidity', show: 'name' }]);
   });
 });
 
@@ -103,14 +108,12 @@ describe('readDesign: shapes, calculated values, times, texts with values and ru
     expect(readPart(part('u', 'calc', { op: 'what' }))!.op).toBe('sum');
   });
 
-  it("keeps a time's mode and only that mode's fields", () => {
-    const since = readPart(part('t', 'time', { timeMode: 'since', slot: 'd1:alarm_motion', seconds: true }))!;
-    expect([since.timeMode, since.slot, 'seconds' in since]).toEqual(['since', 'd1:alarm_motion', false]);
-    expect(readPart(part('t', 'time', { timeMode: 'until', until: '25:00' }))!.until).toBe('22:00');
-    expect(readPart(part('t', 'time', { timeMode: 'until', until: '06:30' }))!.until).toBe('06:30');
-    expect(readPart(part('t', 'time', { timeMode: 'date', dateStyle: 'short' }))!.dateStyle).toBe('short');
-    const clock = readPart(part('t', 'time', { slot: 'd1:onoff' }))!;
-    expect([clock.timeMode, clock.seconds, 'slot' in clock]).toEqual(['clock', false, false]);
+  it("keeps a text's times, a calculated change's period, and a bar's or an arc's value and range", () => {
+    const t = readPart(part('t', 'text', { refs: [{ time: 'seconds' }, { until: '25:00' }, { since: 'bad' }, { time: 'nope' }] }))!;
+    expect(t.refs).toEqual([{ time: 'seconds' }, null, null, null]);
+    expect(readPart(part('c', 'calc', { op: 'change', span: 'x', percent: true }))).toMatchObject({ op: 'change', span: '1h', percent: true });
+    expect('span' in readPart(part('c', 'calc', { op: 'since', span: '6h' }))!).toBe(false);
+    expect(readPart(part('b', 'bar', { src: { variable: 'v' }, min: 9, max: 1, thickness: 99 }))).toMatchObject({ src: { variable: 'v' }, min: 1, max: 9, thickness: 24 });
   });
 
   it("checks every {part} source against the design's calculated values, and gathers every value a design reads", () => {
@@ -180,8 +183,8 @@ const DESIGN = {
     part('movie', 'button', { flowId: 'flow:f1' }),
     part('ring', 'button', { name: 'Ring' }),
     part('msg', 'text', { text: 'Hi', flow: { text: true, color: true, hidden: true }, reset: 'hour' }),
-    part('cost', 'flowvalue', {}),
-    part('t', 'value', { slot: 'heat:target_temperature', show: 'chart', span: '24h' }),
+    part('cost', 'text', { text: '–', flow: { value: true } }),
+    part('t', 'sparkline', { slot: 'heat:target_temperature', span: '24h' }),
   ],
 };
 
@@ -436,14 +439,14 @@ describe('readDesign: segmented bars and trends', () => {
       part('s', 'segments', { barStyle: 'donut', scale: 'max', max: -3, legend: false, segments: [
         { src: { slot: 'a:p' }, color: 'teal', label: ' Heat pump ' }, { src: { part: 'c' } }, { src: { part: 's' } }, { src: {} }, ...Array(9).fill({ src: { slot: 'b:p' } }),
       ] }),
-      part('t', 'trend', { slot: 'a:t', span: '6h', flat: -1, percent: true }),
-      part('u', 'trend', { slot: 'a:t', span: 'nope' }),
+      part('t', 'calc', { op: 'change', inputs: [{ slot: 'a:t' }], span: '6h', percent: true }),
+      part('u', 'calc', { op: 'change', inputs: [{ slot: 'a:t' }], span: 'nope' }),
     ] })!;
     const [, s, t, u] = d.parts;
     expect(s.segments!.length).toBe(4); // the first six: itself and an empty one left out
     expect(s.segments!.slice(0, 2)).toEqual([{ src: { slot: 'a:p' }, color: 'teal', label: 'Heat pump' }, { src: { part: 'c' }, color: null, label: '' }]);
     expect([s.barStyle, s.scale, s.max, s.legend]).toEqual(['donut', 'max', 100, false]);
-    expect([t.span, t.flat, t.percent, u.span]).toEqual(['6h', 0, true, '1h']);
+    expect([t.span, t.percent, u.span]).toEqual(['6h', true, '1h']);
     expect(designCharts(d)).toEqual([{ slot: 'a:t', span: '6h' }, { slot: 'a:t', span: '1h' }]);
     expect(designSlots(d)).toEqual(['a:p', 'b:p', 'a:t']);
   });
@@ -452,7 +455,7 @@ describe('readDesign: segmented bars and trends', () => {
 describe('readDesign: parts turned off, taps on any component, icons from values and rules, big text', () => {
   it('keeps only the parts a kind can turn off, actions only on components that are no control, and icon-only rules with an icon', () => {
     const d = readDesign({ parts: [
-      part('lv', 'level', { hide: ['name', 'value', 'icon', 'graph', 'x'] }),
+      part('lv', 'ring', { hide: ['name', 'value', 'icon', 'graph', 'x'] }),
       part('sh', 'shape', { actions: [{ do: 'flow', flowId: 'flow:f' }], press: 'confirm' }),
       part('sw', 'switch', { slot: 'a:onoff', actions: [{ do: 'flow', flowId: 'flow:f' }] }),
       part('ic', 'icon', { slot: 'a:locked', rules: [{ op: 'is', value: 'off', look: 'same', icon: 'unlock' }, { op: 'is', value: 'on', look: 'same' }, { op: 'is', value: 'on', look: 'red', icon: 'Bad Icon' }] }),

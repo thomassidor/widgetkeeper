@@ -197,7 +197,7 @@ export default class CustomWidgetService {
     const out: FlowValues = { at: v.at };
     const has = (p: FlowProp) => part.flow[p] === true;
     if (v.text !== undefined && has('text')) out.text = v.text;
-    if (v.value !== undefined && (has('value') || part.kind === 'flowvalue')) { out.value = v.value; if (v.units !== undefined) out.units = v.units; }
+    if (v.value !== undefined && has('value')) { out.value = v.value; if (v.units !== undefined) out.units = v.units; }
     if (v.color !== undefined && has('color')) out.color = v.color;
     if (v.icon !== undefined && has('icon')) out.icon = v.icon;
     if (v.hidden !== undefined && has('hidden')) out.hidden = v.hidden;
@@ -525,10 +525,10 @@ export default class CustomWidgetService {
     const items: AutocompleteItem[] = [];
     for (const d of this.designs) {
       for (const p of allParts(d)) {
-        const ok = prop === 'any' ? Object.keys(p.flow).length > 0 || p.kind === 'flowvalue'
+        const ok = prop === 'any' ? Object.keys(p.flow).length > 0
           : prop === 'tap' ? (p.kind === 'button' && !p.flowId)
             : prop === 'choice' ? p.kind === 'choice'
-              : prop === 'value' ? p.kind === 'flowvalue' || p.flow.value === true
+              : prop === 'value' ? p.flow.value === true
                 : p.flow[prop] === true;
         if (!ok) continue;
         const name = partLabel(d, p);
@@ -545,7 +545,7 @@ export default class CustomWidgetService {
     const design = this.get(designId);
     const part = design && findPart(design, partId);
     if (!design || !part) throw new Error(`No such Widget Builder part: ${arg?.name ?? arg?.id ?? ''}`);
-    if (part.flow[prop] !== true && !(prop === 'value' && part.kind === 'flowvalue')) {
+    if (part.flow[prop] !== true) {
       throw new Error(`${partLabel(design, part)} isn't open to Flows for this`);
     }
     return { design, part };

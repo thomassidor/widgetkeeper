@@ -55,49 +55,105 @@
   const at = (x, y, w = 1, h = 1) => ({ x, y, w, h });
   const part = (id, kind, place, o = {}) => ({ id, kind, name: '', at: place, color: null, icon: null, tile: true, rules: [], flow: {}, reset: 'never', ...o });
 
+  // A ready-made tile as the builder puts it together (settings/dashboard-builder.js' readyParts()): a free-form
+  // container of primitives, per cent of its box, bound to one device value.
+  const kid = (id, kind, place, o = {}) => part(id, kind, place, { style: 'none', ...o });
+  const value = (id, place, slot, o = {}) => kid(id, 'text', place, { text: '{1}', refs: [{ slot }], size: 'heading', align: 'right', ...o });
+  const label = (id, place, slot, o = {}) => kid(id, 'text', place, { text: '{1}', refs: [{ slot, show: 'name' }], size: 'body', weight: 'bold', ...o });
+  const box = (id, place, parts, o = {}) => part(id, 'container', place, { mode: 'free', background: { kind: 'none' }, style: 'tile', parts, ...o });
+  const READY = {
+    value: (id, place, slot, o = {}) => box(id, place, place.w === 1 ? [
+      // One column: the icon over the value, as the old Value tile did.
+      kid(`${id}i`, 'icon', at(0, 0, 40, 45), { slot, icon: o.icon || null, color: o.color || null }),
+      value(`${id}v`, at(0, 45, 100, 55), slot, { size: 'body', weight: 'bold', align: 'left' }),
+    ] : [
+      kid(`${id}i`, 'icon', at(0, 0, 18, 50), { slot, icon: o.icon || null, color: o.color || null }), value(`${id}v`, at(20, 0, 80, 50), slot),
+      label(`${id}n`, at(0, 55, 100, 45), slot, o.name ? { text: o.name, refs: [] } : {}),
+    ], { rules: o.rules || [] }),
+    chart: (id, place, slot, o = {}) => box(id, place, [
+      label(`${id}n`, at(0, 0, 60, 40), slot, o.name ? { text: o.name, refs: [] } : {}), value(`${id}v`, at(60, 0, 40, 40), slot, { size: 'body' }),
+      kid(`${id}s`, 'sparkline', at(0, 45, 100, 55), { slot, span: '24h', color: o.color || null }),
+    ]),
+    gauge: (id, place, slot, o = {}) => box(id, place, [
+      kid(`${id}a`, 'arc', at(5, 0, 90, 80), { src: { slot }, min: o.min, max: o.max, color: o.color || null }),
+      value(`${id}v`, at(10, 32, 80, 25), slot, { align: 'center' }),
+      label(`${id}n`, at(0, 80, 100, 20), slot, { align: 'center', size: 'small', weight: undefined, ...(o.name ? { text: o.name, refs: [] } : {}) }),
+    ]),
+    level: (id, place, slot, o = {}) => box(id, place, [
+      label(`${id}n`, at(0, 0, 60, 50), slot, o.name ? { text: o.name, refs: [] } : {}), value(`${id}v`, at(60, 0, 40, 50), slot, { size: 'body' }),
+      kid(`${id}b`, 'bar', at(0, 60, 100, 40), { src: { slot }, min: 0, max: 100, color: o.color || null }),
+    ], { rules: o.rules || [] }),
+    status: (id, place, slot, o = {}) => box(id, place, [
+      kid(`${id}d`, 'shape', at(0, 15, 10, 30), { shape: 'circle', background: { kind: 'none' }, opacity: 100, rules: [{ op: 'is', value: 'on', look: o.on || 'green', of: { slot } }] }),
+      label(`${id}n`, at(14, 0, 86, 60), slot, o.name ? { text: o.name, refs: [] } : {}),
+    ], { rules: o.rules || [] }),
+    slider: (id, place, slot, o = {}) => box(id, place, [
+      kid(`${id}s`, 'slider', at(0, 0, 100, 100), { slot, color: o.color || null }), kid(`${id}i`, 'icon', at(3, 25, 7, 50), { icon: o.icon || null, slot: o.icon ? undefined : slot }),
+      label(`${id}n`, at(12, 0, 55, 100), slot, o.name ? { text: o.name, refs: [] } : {}), value(`${id}v`, at(67, 0, 30, 100), slot, { size: 'body' }),
+    ]),
+    trend: (id, place, slot, o = {}) => {
+      const of = { part: `${id}c` };
+      return box(id, place, [
+        kid(`${id}c`, 'calc', at(86, 0, 14, 25), { inputs: [{ slot }], op: 'change', span: '24h', percent: !!o.percent, units: '' }),
+        kid(`${id}i`, 'icon', at(0, 0, 18, 50), { icon: 'right', color: o.color || null, rules: [{ op: 'above', value: '0', look: 'same', icon: 'up', of }, { op: 'below', value: '0', look: 'same', icon: 'down', of }] }),
+        kid(`${id}v`, 'text', at(20, 0, 64, 50), { text: '{1}', refs: [of], size: 'heading', align: 'right' }),
+        kid(`${id}n`, 'text', at(0, 55, 100, 45), { text: `${o.name || '{1}'} · {2}`, refs: [{ slot, show: 'name' }, { slot }], size: 'small' }),
+      ]);
+    },
+  };
+
   const DESIGNS = {
     living: [
-      part('t', 'value', at(0, 0, 2, 2), { slot: 'lr:measure_temperature', name: 'Living room', show: 'chart', span: '24h' }),
-      part('h', 'value', at(2, 0), { slot: 'lr:measure_humidity', name: 'Humidity' }),
-      part('c', 'value', at(3, 0), { slot: 'air:measure_co2', name: 'CO₂', rules: [{ op: 'above', value: '1000', look: 'orange' }] }),
+      box('t', at(0, 0, 2, 2), [
+        kid('ti', 'icon', at(0, 0, 20, 25), { slot: 'lr:measure_temperature' }),
+        kid('tv', 'text', at(0, 22, 100, 30), { text: '{1}', refs: [{ slot: 'lr:measure_temperature' }], size: 'display' }),
+        kid('tn', 'text', at(0, 50, 100, 18), { text: 'Living room', weight: 'bold' }),
+        kid('ts', 'sparkline', at(0, 68, 100, 32), { slot: 'lr:measure_temperature', span: '24h' }),
+      ]),
+      READY.value('h', at(2, 0), 'lr:measure_humidity', { name: 'Humidity' }),
+      READY.value('c', at(3, 0), 'air:measure_co2', { name: 'CO₂', rules: [{ op: 'above', value: '1000', look: 'orange', of: { slot: 'air:measure_co2' } }] }),
       part('l', 'switch', at(2, 1, 2), { slot: 'lamp:onoff', name: 'Floor lamp', icon: 'bulb', color: 'yellow' }),
-      part('d', 'slider', at(0, 2, 3), { slot: 'ceiling:dim', name: 'Ceiling', icon: 'sun' }),
+      READY.slider('d', at(0, 2, 3), 'ceiling:dim', { name: 'Ceiling', icon: 'sun' }),
       part('m', 'button', at(3, 2), { flowId: 'flow:movie', name: 'Movie', icon: 'tv', color: 'purple' }),
     ],
     container: [
       part('box', 'container', at(0, 0, 4, 3), {
         mode: 'grid', background: { kind: 'gradient', from: '#2d4c7a', to: '#2a1958', angle: 135 }, parts: [
-          part('h', 'text', at(0, 0, 7, 4), { text: 'Living room', size: 'heading', style: 'none' }),
-          part('m', 'status', at(7, 0, 5, 4), { slot: 'hall:alarm_motion', name: 'Motion', style: 'none' }),
-          part('t', 'value', at(0, 4, 7, 11), { slot: 'lr:measure_temperature', name: 'Temperature', style: 'none' }),
-          part('g', 'gauge', at(7, 4, 5, 11), { slot: 'lr:measure_humidity', name: 'Humidity', min: 0, max: 100, color: 'teal', style: 'none' }),
+          kid('h', 'text', at(0, 0, 7, 4), { text: 'Living room', size: 'heading' }),
+          kid('md', 'shape', at(7, 1, 1, 2), { shape: 'circle', background: { kind: 'none' }, rules: [{ op: 'is', value: 'on', look: 'green', of: { slot: 'hall:alarm_motion' } }] }),
+          kid('mt', 'text', at(8, 0, 4, 4), { text: 'Motion', size: 'small' }),
+          kid('tv', 'text', at(0, 4, 7, 6), { text: '{1}', refs: [{ slot: 'lr:measure_temperature' }], size: 'display' }),
+          kid('tn', 'text', at(0, 10, 7, 3), { text: 'Temperature', size: 'small' }),
+          kid('ga', 'arc', at(7, 4, 5, 9), { src: { slot: 'lr:measure_humidity' }, min: 0, max: 100, color: 'teal' }),
+          kid('gv', 'text', at(7, 7, 5, 3), { text: '{1}', refs: [{ slot: 'lr:measure_humidity' }], align: 'center', weight: 'bold' }),
           part('l', 'switch', at(0, 15, 6, 8), { slot: 'lamp:onoff', name: 'Floor lamp', icon: 'bulb', color: 'yellow' }),
           part('s', 'choice', at(6, 15, 6, 8), { variable: 'v1', name: 'House mode', color: 'purple',
             choices: [{ label: 'Home', value: 'home' }, { label: 'Away', value: 'away' }, { label: 'Night', value: 'night' }] }),
         ],
       }),
-      part('p', 'value', at(0, 3, 2), { slot: 'meter:measure_power', name: 'Using now', icon: 'bolt', color: 'orange' }),
-      part('s', 'value', at(2, 3, 2), { slot: 'solar:measure_power', name: 'Solar', icon: 'sun' }),
+      READY.value('p', at(0, 3, 2), 'meter:measure_power', { name: 'Using now', icon: 'bolt', color: 'orange' }),
+      READY.value('s', at(2, 3, 2), 'solar:measure_power', { name: 'Solar', icon: 'sun' }),
     ],
     free: [
       part('box', 'container', at(0, 0, 4, 4), {
         mode: 'free', background: { kind: 'gradient', from: '#3a4a5e', to: '#2c3a2e', angle: 160 }, parts: [
-          part('clock', 'text', at(62, 4, 36, 14), { text: 'Front door', size: 'heading', align: 'right', style: 'none' }),
-          part('msg', 'flowvalue', at(4, 36, 58, 24), { name: 'Message', text: '', color: 'orange', flow: { value: true, color: true } }),
-          part('lock', 'status', at(4, 72, 40, 24), { slot: 'lock:locked', name: 'Locked', color: 'green' }),
+          kid('clock', 'text', at(62, 4, 36, 14), { text: 'Front door', size: 'heading', align: 'right' }),
+          part('msgbg', 'shape', at(4, 36, 58, 24), { shape: 'rect', radius: 10, background: { kind: 'none' }, color: 'orange', opacity: 30, style: 'none' }),
+          kid('msg', 'text', at(8, 36, 52, 24), { text: '', name: 'Message', size: 'body', weight: 'bold', flow: { value: true, text: true, color: true } }),
+          kid('lockd', 'shape', at(6, 80, 4, 8), { shape: 'circle', background: { kind: 'none' }, rules: [{ op: 'is', value: 'on', look: 'green', of: { slot: 'lock:locked' } }] }),
+          kid('lockt', 'text', at(12, 72, 40, 24), { text: 'Locked', weight: 'bold' }),
           part('ring', 'button', at(68, 66, 28, 30), { name: 'Ring', icon: 'bell', color: 'yellow' }),
         ],
       }),
       part('porch', 'switch', at(0, 4, 2), { slot: 'porch:onoff', name: 'Porch light', icon: 'bulb', color: 'yellow' }),
-      part('bat', 'level', at(2, 4, 2), { slot: 'bell:measure_battery', name: 'Doorbell', min: 0, max: 100,
-        rules: [{ op: 'below', value: '20', look: 'red' }] }),
+      READY.level('bat', at(2, 4, 2), 'bell:measure_battery', { name: 'Doorbell', rules: [{ op: 'below', value: '20', look: 'red', of: { slot: 'bell:measure_battery' } }] }),
     ],
     rules: [
-      part('h', 'text', at(0, 0, 4), { text: 'Garage', size: 'heading' }),
-      part('door', 'status', at(0, 1, 2), { slot: 'garage:alarm_contact', name: 'Garage door', rules: [{ op: 'is', value: 'open', look: 'red' }] }),
+      kid('h', 'text', at(0, 0, 4), { text: 'Garage', size: 'heading' }),
+      READY.status('door', at(0, 1, 2), 'garage:alarm_contact', { name: 'Garage door', on: 'red', rules: [{ op: 'is', value: 'open', look: 'red', of: { slot: 'garage:alarm_contact' } }] }),
       part('light', 'switch', at(2, 1, 2), { slot: 'garagelight:onoff', name: 'Garage light', icon: 'bulb' }),
-      part('car', 'value', at(0, 2, 2), { slot: 'charger:measure_power', name: 'Car charging', icon: 'car', rules: [{ op: 'below', value: '0.1', look: 'hide' }] }),
-      part('tank', 'level', at(2, 2, 2), { slot: 'tank:measure_water', name: 'Rain tank', min: 0, max: 100 }),
+      READY.value('car', at(0, 2, 2), 'charger:measure_power', { name: 'Car charging', icon: 'car', rules: [{ op: 'below', value: '0.1', look: 'hide', of: { slot: 'charger:measure_power' } }] }),
+      READY.level('tank', at(2, 2, 2), 'tank:measure_water', { name: 'Rain tank' }),
     ],
     controls: [
       part('set', 'stepper', at(0, 0, 2), { slot: 'heat:target_temperature', name: 'Bedroom', step: 0.5, min: 15, max: 25 }),
@@ -105,18 +161,31 @@
         choices: [{ label: 'Auto', value: 'auto' }, { label: 'Heat', value: 'heat' }, { label: 'Off', value: 'off' }] }),
       part('guests', 'variable', at(0, 1), { variable: 'v3', name: 'Guests' }),
       part('away', 'variable', at(1, 1), { variable: 'v2', name: 'Vacation', color: 'purple' }),
-      part('power', 'gauge', at(2, 1, 2, 2), { slot: 'meter:measure_power', name: 'Using now', min: 0, max: 5000, color: 'orange' }),
-      part('chart', 'chart', at(0, 2, 2), { slot: 'meter:measure_power', name: 'Today', span: '24h', color: 'orange' }),
+      READY.gauge('power', at(2, 1, 2, 2), 'meter:measure_power', { name: 'Using now', min: 0, max: 5000, color: 'orange' }),
+      READY.chart('chart', at(0, 2, 2), 'meter:measure_power', { name: 'Today', color: 'orange' }),
     ],
     blocks: [
-      part('txt', 'text', at(0, 0, 4), { text: 'Inside {1} · humidity {2}', size: 'body', style: 'none',
+      kid('txt', 'text', at(0, 0, 4), { text: 'Inside {1} · humidity {2}', size: 'body',
         refs: [{ slot: 'lr:measure_temperature' }, { slot: 'lr:measure_humidity' }] }),
-      part('net', 'calc', at(0, 1, 2, 2), { name: 'From the grid', op: 'formula', formula: 'a - b', units: 'W', decimals: 0, icon: 'plugzap', color: 'orange',
-        inputs: [{ slot: 'meter:measure_power' }, { slot: 'solar:measure_power' }], rules: [{ op: 'above', value: '2000', look: 'orange' }] }),
-      part('open', 'calc', at(2, 1), { name: 'Open', op: 'count', test: { op: 'is', value: 'on' }, icon: 'dooropen',
-        inputs: [{ slot: 'garage:alarm_contact' }, { slot: 'window:alarm_contact' }], rules: [{ op: 'above', value: '0', look: 'red' }] }),
-      part('clock', 'time', at(3, 1), { timeMode: 'clock' }),
-      part('motion', 'time', at(2, 2, 2), { timeMode: 'since', slot: 'hall:alarm_motion', name: 'Hall motion', icon: 'footprints' }),
+      part('netc', 'calc', at(3, 0), { name: 'From the grid', op: 'formula', formula: 'a - b', units: 'W', decimals: 0,
+        inputs: [{ slot: 'meter:measure_power' }, { slot: 'solar:measure_power' }] }),
+      part('openc', 'calc', at(3, 0), { name: 'Open', op: 'count', test: { op: 'is', value: 'on' },
+        inputs: [{ slot: 'garage:alarm_contact' }, { slot: 'window:alarm_contact' }] }),
+      box('net', at(0, 1, 2, 2), [
+        kid('ni', 'icon', at(0, 0, 18, 22), { icon: 'plugzap', color: 'orange' }),
+        kid('nv', 'text', at(0, 22, 100, 34), { text: '{1}', refs: [{ part: 'netc' }], size: 'display' }),
+        kid('nn', 'text', at(0, 56, 100, 20), { text: 'From the grid', weight: 'bold' }),
+      ], { rules: [{ op: 'above', value: '2000', look: 'orange', of: { part: 'netc' } }] }),
+      box('open', at(2, 1), [
+        kid('oi', 'icon', at(0, 0, 40, 50), { icon: 'dooropen' }),
+        kid('ov', 'text', at(0, 50, 100, 50), { text: '{1} open', refs: [{ part: 'openc' }], weight: 'bold' }),
+      ], { rules: [{ op: 'above', value: '0', look: 'red', of: { part: 'openc' } }] }),
+      box('clock', at(3, 1), [kid('ck', 'text', at(0, 0, 100, 100), { text: '{1}', refs: [{ time: 'clock' }], size: 'heading', align: 'center' })]),
+      box('motion', at(2, 2, 2), [
+        kid('mi', 'icon', at(0, 0, 18, 50), { icon: 'footprints' }),
+        kid('mv', 'text', at(20, 0, 80, 50), { text: '{1}', refs: [{ since: 'hall:alarm_motion' }], size: 'heading', align: 'right' }),
+        kid('mn', 'text', at(0, 55, 100, 45), { text: 'Hall motion', weight: 'bold' }),
+      ]),
       part('door', 'container', at(0, 3, 4, 1), { mode: 'free', background: { kind: 'none' }, parts: [
         part('bg', 'shape', at(0, 0, 100, 100), { shape: 'rect', radius: 14, opacity: 25, color: 'green', style: 'none',
           rules: [{ op: 'is', value: 'off', look: 'red', of: { slot: 'lock:locked' } }] }),
@@ -153,18 +222,17 @@
     part('donut', 'segments', at(0, 2, 2, 2), { name: 'Of 3 kW', barStyle: 'donut', scale: 'max', max: 3000, segments: [
       { src: { slot: 'heatpump:measure_power' }, color: 'orange', label: 'Heat' }, { src: { slot: 'oven:measure_power' }, color: 'red', label: 'Oven' },
     ] }),
-    part('tt', 'trend', at(2, 2, 2), { slot: 'lr:measure_temperature', span: '24h', name: 'Living room', flat: 0.2, color: 'orange' }),
-    part('tp', 'trend', at(2, 3, 2), { slot: 'meter:measure_power', span: '24h', name: 'Power', percent: true, color: 'blue' }),
+    READY.trend('tt', at(2, 2, 2), 'lr:measure_temperature', { name: 'Living room', color: 'orange' }),
+    READY.trend('tp', at(2, 3, 2), 'meter:measure_power', { name: 'Power', percent: true, color: 'blue' }),
   ];
-  // Parts turned off and big text: a primitive look made from the built-in components.
+  // The primitives on their own: a big text, an icon following a lock, a bar, a line, an arc, a dot, a toggle, a circle.
   DESIGNS.bare = [
-    part('big', 'text', at(0, 0, 3), { text: '{1}', refs: [{ slot: 'lr:measure_temperature' }], size: 'display', style: 'none' }),
-    part('lock', 'icon', at(3, 0), { slot: 'lock:locked', icon: null, color: 'green', style: 'none',
-      rules: [{ op: 'is', value: 'off', look: 'red', icon: 'unlock' }] }),
-    part('tank', 'level', at(0, 1, 4), { slot: 'tank:measure_water', min: 0, max: 100, color: 'teal', hide: ['name', 'value'], style: 'pill' }),
-    part('line', 'chart', at(0, 2, 4), { slot: 'meter:measure_power', span: '24h', color: 'orange', hide: ['name', 'value'], style: 'none' }),
-    part('arc', 'gauge', at(0, 3), { slot: 'lr:measure_humidity', min: 0, max: 100, color: 'blue', hide: ['name'] }),
-    part('dot', 'status', at(1, 3), { slot: 'hall:alarm_motion', hide: ['name', 'value'] }),
+    kid('big', 'text', at(0, 0, 3), { text: '{1}', refs: [{ slot: 'lr:measure_temperature' }], size: 'display' }),
+    kid('lock', 'icon', at(3, 0), { slot: 'lock:locked', icon: null, color: 'green', rules: [{ op: 'is', value: 'off', look: 'red', icon: 'unlock' }] }),
+    part('tank', 'bar', at(0, 1, 4), { src: { slot: 'tank:measure_water' }, min: 0, max: 100, color: 'teal', style: 'pill', thickness: 10 }),
+    kid('line', 'sparkline', at(0, 2, 4), { slot: 'meter:measure_power', span: '24h', color: 'orange' }),
+    part('arc', 'arc', at(0, 3), { src: { slot: 'lr:measure_humidity' }, min: 0, max: 100, color: 'blue', style: 'tile' }),
+    part('dot', 'shape', at(1, 3), { shape: 'circle', background: { kind: 'none' }, color: 'green', opacity: 100, style: 'none', rules: [{ op: 'is', value: 'off', look: 'grey', of: { slot: 'hall:alarm_motion' } }] }),
     part('tog', 'switch', at(2, 3), { slot: 'lamp:onoff', color: 'yellow', hide: ['icon', 'name'] }),
     part('tap', 'shape', at(3, 3), { shape: 'circle', color: 'purple', opacity: 60, style: 'none', actions: [{ do: 'flow', flowId: 'flow:movie' }] }),
   ];

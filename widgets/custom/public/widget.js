@@ -154,7 +154,7 @@
   function styleOf(part) {
     if (part.kind === 'shape') return 'none';
     if (['tile', 'pill', 'none'].includes(part.style)) return part.style;
-    return part.tile === false || part.kind === 'text' || part.kind === 'icon' ? 'none' : 'tile';
+    return part.tile === false || ['text', 'icon', 'sparkline', 'arc', 'bar', 'calc'].includes(part.kind) ? 'none' : 'tile';
   }
 
   function icon(id, cls) {
@@ -178,8 +178,9 @@
   }
 
   /** The gauge's arc, 270° from the bottom left, filled to `frac`. */
-  function arc(frac, parent) {
+  function arc(frac, parent, width = 8) {
     const svg = el('svg', { class: 'wb-arc', viewBox: '0 0 100 84', 'aria-hidden': 'true' }, parent, SVG_NS);
+    svg.style.setProperty('--wb-arc-w', String(width));
     const r = 40; const cx = 50; const cy = 48;
     const a0 = Math.PI * 0.75; const a1 = Math.PI * 2.25;
     const pt = a => `${(cx + r * Math.cos(a)).toFixed(2)},${(cy + r * Math.sin(a)).toFixed(2)}`;
@@ -305,6 +306,19 @@
         if (at >= 0) { value = nums[at]; winner = (entries[at] && entries[at].name) || ''; }
       } else if (op === 'diff') {
         value = nums[0] != null && nums[1] != null ? nums[0] - nums[1] : null;
+      } else if (op === 'change') {
+        // Trend's: now less where its history over `span` began, or that as a percentage of it.
+        const slot = part.inputs && part.inputs[0] && part.inputs[0].slot;
+        const pts = (slot && state && state.histories && state.histories[`${part.span}\n${slot}`]) || [];
+        const start = pts.find(p => Array.isArray(p) && Number.isFinite(p[1]));
+        if (start && nums[0] !== null) {
+          const d = nums[0] - start[1];
+          value = part.percent ? (start[1] ? (d / Math.abs(start[1])) * 100 : null) : d;
+        }
+      } else if (op === 'since') {
+        // Minutes since its first input last changed.
+        const at = entries[0] && !entries[0].missing ? entries[0].updatedAt : null;
+        value = at ? Math.max(0, Math.floor((Date.now() - at) / 60e3)) : null;
       } else if (op === 'formula') {
         if (!formulas.has(part.formula)) formulas.set(part.formula, parseFormula(part.formula));
         const fn = formulas.get(part.formula);
@@ -313,8 +327,9 @@
         const r = fn ? fn(vars) : NaN;
         value = Number.isFinite(r) ? r : null;
       }
-      const units = part.units || (op === 'count' || !first || !first.cap ? null : first.cap.units || null);
-      const decimals = part.decimals != null ? part.decimals : op === 'count' ? 0 : first && first.cap && first.cap.decimals != null ? first.cap.decimals : 1;
+      const own = op === 'count' || op === 'since';
+      const units = part.units || (op === 'change' && part.percent ? '%' : own || !first || !first.cap ? null : first.cap.units || null);
+      const decimals = part.decimals != null ? part.decimals : own || (op === 'change' && part.percent) ? 0 : first && first.cap && first.cap.decimals != null ? first.cap.decimals : 1;
       const label = part.winner && winner ? [part.name, winner].filter(Boolean).join(' · ') : null;
       return { value, cap: { type: 'number', units, decimals }, name: winner, label };
     }
@@ -326,25 +341,6 @@
       d.setHours(h || 0, m || 0, 0, 0);
       if (d.getTime() <= now) d.setDate(d.getDate() + 1);
       return d.getTime();
-    }
-
-    /**
-     * A time part's value for its rules: minutes since its device value changed, or until its time of day; a clock or a
-     * date has none.
-     */
-    function timeValue(part) {
-      const now = Date.now();
-      if (part.timeMode === 'since') {
-        const e = sourceEntry({ slot: part.slot });
-        if (!e) return null;
-        if (e.missing) return { missing: true };
-        return { value: e.updatedAt ? Math.max(0, Math.floor((now - e.updatedAt) / 60e3)) : null, at: e.updatedAt || null, cap: e.cap, name: e.name, offline: e.offline };
-      }
-      if (part.timeMode === 'until') {
-        const at = nextAt(part.until, now);
-        return { value: Math.ceil((at - now) / 60e3), at };
-      }
-      return { value: undefined, at: now };
     }
 
     // ------------------------------------------------------------ widget states
@@ -416,34 +412,15 @@
       return { value: segs.length ? sum : null, cap: { type: 'number', units, decimals }, segs };
     }
 
-    /**
-     * A trend: its value now less the first of its history (`span`), or that as a percentage of it; `dir` up, down or
-     * steady (within `flat`). Unknown without a value or a history.
-     */
-    function trendValue(part) {
-      const e = part.slot ? sourceEntry({ slot: part.slot }) : null;
-      if (!e) return null;
-      if (e.missing) return { missing: true };
-      const pts = (state && state.histories && state.histories[`${part.span}\n${part.slot}`]) || [];
-      const start = pts.find(p => Array.isArray(p) && Number.isFinite(p[1]));
-      const now = inputNumber({ ...e, offline: false });
-      if (!start || now === null) return { value: null, cap: e.cap, name: e.name, offline: e.offline };
-      const delta = now - start[1];
-      const value = part.percent ? (start[1] ? (delta / Math.abs(start[1])) * 100 : null) : delta;
-      const dir = value === null || Math.abs(value) <= (part.flat || 0) ? 'flat' : value > 0 ? 'up' : 'down';
-      const cap = part.percent ? { type: 'number', units: '%', decimals: 0 } : e.cap;
-      return { value, cap, name: e.name, offline: e.offline, dir, now, nowCap: e.cap };
-    }
-
     /** The part's value: hoped for, else reported; `cap` describes it (a variable's is made up). */
     function current(part) {
       if (part.kind === 'calc') return calcValue(part);
-      if (part.kind === 'time') return timeValue(part);
+      if ((part.kind === 'arc' || part.kind === 'bar') && part.src) return sourceEntry(part.src);
       if (part.kind === 'state') return stateEntry(part);
       if (part.kind === 'ring') return (part.rings && part.rings[0] && sourceEntry(part.rings[0].src)) || null;
       if (part.kind === 'repeat') return { value: repeatItems(part).length, cap: { type: 'number', decimals: 0 } };
       if (part.kind === 'segments') return segmentsValue(part);
-      if (part.kind === 'trend') return trendValue(part);
+
       const h = hoped.get(part.id);
       const p = pending.get(part.id);
       const s = slotEntry(part);
@@ -480,22 +457,24 @@
       const o = style === 'weekday' ? { weekday: 'long' } : style === 'short' ? { day: 'numeric', month: 'short' } : { weekday: 'long', day: 'numeric', month: 'long' };
       try { return new Date(ms).toLocaleDateString(language(), o); } catch (e) { return new Date(ms).toLocaleDateString('en', o); }
     }
-    /** What a time part shows now. */
-    function timeText(part, c) {
-      const now = Date.now();
-      if (part.timeMode === 'clock') return K.clockTime(now, { seconds: !!part.seconds });
-      if (part.timeMode === 'date') return dateText(now, part.dateStyle);
-      if (!c || c.missing || !c.at) return '–';
-      return relative(c.at, now);
-    }
     /** A text's `{n}`: its value as Device Values would show it, or the time, date or weekday; `–` when there's none. */
     function refText(ref) {
       if (!ref) return '–';
       if (ref.time === 'clock') return K.clockTime(Date.now());
+      if (ref.time === 'seconds') return K.clockTime(Date.now(), { seconds: true });
+      if (ref.until) return relative(nextAt(ref.until, Date.now()), Date.now());
+      if (ref.since) {
+        const s = sourceEntry({ slot: ref.since });
+        return s && !s.missing && s.updatedAt ? relative(s.updatedAt, Date.now()) : '–';
+      }
       if (ref.time === 'date') return dateText(Date.now(), 'long');
       if (ref.time === 'weekday') return dateText(Date.now(), 'weekday');
       const e = sourceEntry(ref);
+      if (ref.show === 'name') return (e && e.name) || '–';
       if (!e || e.missing || e.value === null || e.value === undefined) return '–';
+      // A change (Trend's) shows its sign.
+      const calc = ref.part && calcs.get(ref.part);
+      if (calc && calc.op === 'change' && typeof e.value === 'number' && e.value > 0) return `+${fmt(e.cap, e.value)}`;
       return fmt(e.cap, e.value);
     }
     function fillText(text, refs) {
@@ -586,8 +565,9 @@
         const value = flow && flow.value !== undefined ? flow.value : c ? c.value : undefined;
         const look = lookOf(part, value, flow, valueOf);
         // A calculated value only for text and rules: not drawn on a dashboard, faint in the builder.
-        if (part.sourceOnly && !opts.preview) look.hidden = true;
-        node.classList.toggle('wb-source-only', !!part.sourceOnly);
+        const sourceOnly = part.kind === 'calc';
+        if (sourceOnly && !opts.preview) look.hidden = true;
+        node.classList.toggle('wb-source-only', sourceOnly);
         node.classList.toggle('wb-hidden', look.hidden);
         node.setAttribute('aria-hidden', look.hidden ? 'true' : 'false');
         applyColor(node, look.color);
@@ -723,97 +703,6 @@
     }
 
     const MAKERS = {
-      value(part, node, size) {
-        const big = size.big;
-        node.classList.toggle('wb-big', big);
-        // One column: the icon over the value, the name left out (it's the tooltip).
-        const narrow = !big && size.narrow;
-        node.classList.toggle('wb-narrow', narrow);
-        const top = el('div', { class: 'wb-top' }, node);
-        const ic = iconSlot(top);
-        const val = el('span', { class: 'wb-value' }, big || narrow ? null : top);
-        const name = el('div', { class: 'wb-name' }, node);
-        if (big || narrow) node.insertBefore(val, name);
-        let spark = null;
-        return (c, flow) => {
-          ic(part, c, flow);
-          val.textContent = textOf(part, c, flow);
-          name.textContent = (flow && flow.text) || (c.label != null ? c.label : part.name || (part.kind === 'calc' ? '' : c.name) || '');
-          node.title = narrow ? name.textContent : '';
-          if (part.show === 'chart') {
-            const pts = state.histories && state.histories[`${part.span}\n${part.slot}`];
-            if (spark) spark.remove();
-            spark = sparkline(pts, node);
-          }
-        };
-      },
-      flowvalue(part, node) {
-        const top = el('div', { class: 'wb-top' }, node);
-        const ic = iconSlot(top);
-        const val = el('span', { class: 'wb-value' }, top);
-        const name = el('div', { class: 'wb-name' }, node);
-        return (c, flow) => {
-          ic(part, null, flow);
-          val.textContent = flow && flow.value !== undefined ? textOf(part, null, flow) : part.text || '–';
-          name.textContent = (flow && flow.text) || part.name || '';
-        };
-      },
-      chart(part, node) {
-        const top = el('div', { class: 'wb-top' }, node);
-        const name = el('span', { class: 'wb-name' }, top);
-        const val = el('span', { class: 'wb-value' }, top);
-        let spark = null;
-        return (c, flow) => {
-          name.textContent = (flow && flow.text) || part.name || c.name || '';
-          val.textContent = textOf(part, c, flow);
-          if (spark) spark.remove();
-          spark = sparkline(state.histories && state.histories[`${part.span}\n${part.slot}`], node);
-        };
-      },
-      gauge(part, node) {
-        const box = el('div', { class: 'wb-gauge-box' }, node);
-        let svg = null;
-        const mid = el('div', { class: 'wb-gauge-mid' }, box);
-        const val = el('div', { class: 'wb-value' }, mid);
-        const name = el('div', { class: 'wb-name' }, mid);
-        return (c, flow) => {
-          const [lo, hi] = range(part, c.cap);
-          const v = Number(c.value);
-          if (svg) svg.remove();
-          svg = arc(Number.isFinite(v) ? (v - lo) / (hi - lo) : 0, null);
-          box.insertBefore(svg, mid);
-          val.textContent = textOf(part, c, flow);
-          name.textContent = (flow && flow.text) || part.name || c.name || '';
-        };
-      },
-      level(part, node) {
-        const top = el('div', { class: 'wb-top' }, node);
-        const name = el('span', { class: 'wb-name' }, top);
-        const val = el('span', { class: 'wb-value' }, top);
-        const bar = el('div', { class: 'wb-level' }, node);
-        const fill = el('i', null, bar);
-        return (c, flow) => {
-          const [lo, hi] = range(part, c.cap);
-          const v = Number(K.scaled(c.cap || {}, c.value));
-          fill.style.width = `${Number.isFinite(v) ? Math.min(100, Math.max(0, ((v - lo) / (hi - lo)) * 100)) : 0}%`;
-          name.textContent = (flow && flow.text) || part.name || c.name || '';
-          val.textContent = textOf(part, c, flow);
-        };
-      },
-      status(part, node) {
-        const top = el('div', { class: 'wb-top' }, node);
-        const dot = el('span', { class: 'wb-dot', 'aria-hidden': 'true' }, top);
-        const val = el('span', { class: 'wb-sub' }, top);
-        const name = el('div', { class: 'wb-name' }, node);
-        return (c, flow) => {
-          const on = c.value === true || (typeof c.value === 'number' && c.value > 0);
-          dot.classList.toggle('on', on);
-          node.classList.toggle('wb-on', on);
-          // The dot says yes or no; a number or a text is written beside it.
-          val.textContent = typeof c.value === 'boolean' && !(flow && flow.value !== undefined) ? '' : textOf(part, c, flow);
-          name.textContent = (flow && flow.text) || part.name || c.name || '';
-        };
-      },
       switch(part, node) {
         const top = el('div', { class: 'wb-top' }, node);
         const ic = iconSlot(top);
@@ -980,33 +869,6 @@
           }
         };
       },
-      trend(part, node, size) {
-        node.classList.toggle('wb-big', size.big);
-        const top = el('div', { class: 'wb-top' }, node);
-        const arrow = el('span', { class: 'wb-icon wb-trend-arrow', 'aria-hidden': 'true' }, top);
-        const val = el('span', { class: 'wb-value' }, size.big ? null : top);
-        // The name, and the value now beside it.
-        const foot = el('div', { class: 'wb-trend-foot' }, node);
-        const name = el('span', { class: 'wb-name' }, foot);
-        const sub = el('span', { class: 'wb-sub' }, foot);
-        if (size.big) node.insertBefore(val, foot);
-        let shownDir = '';
-        return (c, flow) => {
-          const dir = c.dir || 'flat';
-          if (dir !== shownDir) {
-            shownDir = dir;
-            arrow.textContent = '';
-            const ic = K.icons[dir === 'up' ? 'up' : dir === 'down' ? 'down' : 'right'];
-            if (ic) arrow.appendChild(K.svgIcon(ic, 'wb-svg'));
-          }
-          node.dataset.trend = dir;
-          const v = c.value;
-          val.textContent = v === null || v === undefined ? '–' : `${v > 0 ? '+' : v < 0 ? '−' : ''}${fmt(c.cap, Math.abs(v))}`;
-          name.textContent = (flow && flow.text) || part.name || c.name || '';
-          sub.textContent = c.now != null ? fmt(c.nowCap, c.now) : '';
-          sub.hidden = !sub.textContent;
-        };
-      },
       repeat(part, node) {
         node.classList.add(`wb-rep-${part.itemStyle === 'tile' ? 'tiles' : 'rows'}`);
         const head = el('div', { class: 'wb-name wb-rep-head' }, node);
@@ -1043,12 +905,10 @@
         };
       },
       slider(part, node) {
+        // A bare bar to drag; its icon, name and value are components of their own beside it.
         const fill = el('span', { class: 'wb-fill', 'aria-hidden': 'true' }, node);
-        const row = el('div', { class: 'wb-row' }, node);
-        const ic = iconSlot(row);
-        const name = el('span', { class: 'wb-name' }, row);
-        const val = el('span', { class: 'wb-value' }, row);
         node.setAttribute('role', 'slider');
+        node.tabIndex = 0;
         let last = { cap: {} };
         if (!opts.preview) {
           K.wireBar(node, {
@@ -1061,17 +921,43 @@
             },
           });
         }
-        return (c, flow) => {
+        return (c) => {
           last = c;
           const [lo, hi] = range(part, c.cap);
           const v = Number(c.value);
           const x = drags.has(part.id) ? drags.get(part.id) : Number.isFinite(v) ? (v - lo) / (hi - lo) : 0;
-          const frac = Math.min(1, Math.max(0, x));
-          fill.style.width = `${frac * 100}%`;
-          ic(part, c, flow);
-          name.textContent = (flow && flow.text) || part.name || c.name || '';
-          val.textContent = drags.has(part.id) ? fmt(c.cap, lo + frac * (hi - lo)) : textOf(part, c, flow);
+          fill.style.width = `${Math.min(1, Math.max(0, x)) * 100}%`;
           node.setAttribute('aria-valuenow', String(v));
+          node.setAttribute('aria-label', part.name || c.name || '');
+        };
+      },
+      sparkline(part, node) {
+        // A line of a device value's history over its span, filling the box.
+        let svg = null;
+        return () => {
+          if (svg) svg.remove();
+          svg = sparkline(state.histories && state.histories[`${part.span}\n${part.slot}`], node);
+        };
+      },
+      arc(part, node) {
+        // A gauge's 270° arc of its value between its range.
+        let svg = null;
+        return (c) => {
+          const [lo, hi] = range(part, c.cap);
+          const v = Number(K.scaled(c.cap || {}, c.value));
+          if (svg) svg.remove();
+          svg = arc(Number.isFinite(v) ? (v - lo) / (hi - lo) : 0, node, part.thickness || 8);
+        };
+      },
+      bar(part, node) {
+        // A level bar of its value between its range, as thick as set, centred in its box.
+        const bar = el('div', { class: 'wb-level', 'aria-hidden': 'true' }, node);
+        const fill = el('i', null, bar);
+        bar.style.height = `${part.thickness || 8}px`;
+        return (c) => {
+          const [lo, hi] = range(part, c.cap);
+          const v = Number(K.scaled(c.cap || {}, c.value));
+          fill.style.width = `${Number.isFinite(v) ? Math.min(100, Math.max(0, ((v - lo) / (hi - lo)) * 100)) : 0}%`;
         };
       },
       stepper(part, node) {
@@ -1185,25 +1071,15 @@
         node.style.textAlign = part.align || 'left';
         const txt = el('div', { class: 'wb-text', dir: 'auto' }, node);
         // A Flow's text replaces the whole text, its {1} … left as typed.
-        return (c, flow) => { txt.textContent = (flow && flow.text) || fillText(part.text || '', part.refs); };
-      },
-      calc(part, node, size) {
-        return MAKERS.value(part, node, size);
-      },
-      time(part, node, size) {
-        const big = size.big;
-        node.classList.toggle('wb-big', big);
-        const top = el('div', { class: 'wb-top' }, node);
-        const ic = iconSlot(top);
-        const val = el('span', { class: 'wb-value' }, big ? null : top);
-        const name = el('div', { class: 'wb-name' }, node);
-        if (big) node.insertBefore(val, name);
+        // A Flow's text replaces it, a Flow's value (with its units) too.
         return (c, flow) => {
-          ic(part, null, flow);
-          val.textContent = timeText(part, c);
-          name.textContent = (flow && flow.text) || part.name || (part.timeMode === 'since' && c.name) || '';
-          node.classList.toggle('wb-noname', !name.textContent);
+          txt.textContent = (flow && flow.text) || (flow && flow.value !== undefined ? textOf(part, null, flow) : fillText(part.text || '', part.refs));
         };
+      },
+      calc(part, node) {
+        // Only a value for others: left out on a dashboard; in the builder a faint chip of its name and value.
+        const chip = el('div', { class: 'wb-calc-chip' }, node);
+        return (c) => { chip.textContent = `${part.name || 'Σ'} = ${textOf(part, c, null)}`; };
       },
       shape(part, node) {
         const form = part.shape || 'rect';
@@ -1298,8 +1174,11 @@
       let any = false;
       let seconds = false;
       for (const v of views) {
-        if (v.part.kind === 'time') { any = true; if (v.part.timeMode === 'clock' && v.part.seconds) seconds = true; }
-        if ((v.part.refs || []).some(r => r && r.time)) any = true;
+        for (const r of v.part.refs || []) {
+          if (r && (r.time || r.since || r.until)) any = true;
+          if (r && r.time === 'seconds') seconds = true;
+        }
+        if (v.part.kind === 'calc' && v.part.op === 'since') any = true;
       }
       return any ? (seconds ? 1000 : 60e3) : 0;
     }

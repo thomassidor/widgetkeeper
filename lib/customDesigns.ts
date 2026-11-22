@@ -33,18 +33,22 @@ export const MAX_REPEAT_CANDIDATES = 48;
 export const MAX_REPEAT_ITEMS = 24;
 const MAX_FORMULA = 120;
 
+/**
+ * Primitives only (2026-11-22, the user's ask): the tiles that bundled an icon, a value, a label and a graph (Value,
+ * Mini chart, Gauge, Level bar, Status, Flow value, Time, Trend) became Text (with the values in it), Icon, Shape and
+ * the bare Sparkline, Arc and Bar; Slider lost its icon and label. The builder's Ready-made group puts the old tiles
+ * together from these.
+ */
 export const PART_KINDS = [
-  'value', 'chart', 'gauge', 'level', 'status', 'flowvalue',
   'switch', 'button', 'slider', 'stepper', 'choice', 'variable',
-  'container', 'text', 'icon',
-  'shape', 'calc', 'time',
-  'state', 'image', 'ring', 'repeat',
-  'segments', 'trend',
+  'container', 'text', 'icon', 'shape', 'image',
+  'sparkline', 'arc', 'bar', 'ring', 'segments', 'repeat',
+  'calc', 'state',
 ] as const;
 export type PartKind = typeof PART_KINDS[number];
 
 /** The kinds that show a device value (`slot`, `<deviceId>:<capabilityId>`). */
-export const SLOT_KINDS: readonly PartKind[] = ['value', 'chart', 'gauge', 'level', 'status', 'switch', 'slider', 'stepper', 'choice'];
+export const SLOT_KINDS: readonly PartKind[] = ['switch', 'slider', 'stepper', 'choice', 'sparkline', 'icon'];
 /** The kinds that may show or change a Homey variable instead of a device value. */
 export const VARIABLE_KINDS: readonly PartKind[] = ['stepper', 'choice', 'variable'];
 /** The kinds that change something when used: a device (`slot`), a variable, a Flow or the tap trigger. */
@@ -67,14 +71,20 @@ export const SOURCE_KINDS: readonly PartKind[] = ['calc', 'state', 'repeat'];
  * `calc`; its own inputs are never parts, so nothing loops).
  */
 export type Source = { slot: string } | { variable: string } | { part: string };
-/** A text's value: a source, or the time, date or weekday now. */
-export type Ref = Source | { time: 'clock' | 'date' | 'weekday' };
-export const REF_TIMES = ['clock', 'date', 'weekday'] as const;
+/**
+ * A text's value: a source (`show: 'name'` its name: a device's, a variable's), the time (with seconds), date or
+ * weekday now, how long since a device value changed (`since`), or until a time of day (`until`, `HH:mm`).
+ */
+export type Ref = (Source & { show?: 'name' }) | { time: 'clock' | 'seconds' | 'date' | 'weekday' } | { since: string } | { until: string };
+export const REF_TIMES = ['clock', 'seconds', 'date', 'weekday'] as const;
+const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
 
-export const CALC_OPS = ['sum', 'avg', 'min', 'max', 'diff', 'count', 'formula'] as const;
+/**
+ * A calculated value's: … and, of its first input, `change` (now less the first point of its history over `span`, or
+ * as a `percent`: Trend's) and `since` (minutes since it last changed).
+ */
+export const CALC_OPS = ['sum', 'avg', 'min', 'max', 'diff', 'count', 'formula', 'change', 'since'] as const;
 export type CalcOp = typeof CALC_OPS[number];
-export const TIME_MODES = ['clock', 'date', 'since', 'until'] as const;
-export type TimeMode = typeof TIME_MODES[number];
 export const SHAPES = ['rect', 'circle', 'line'] as const;
 
 /**
@@ -113,18 +123,19 @@ export type Rule = { op: RuleOp, value: string, look: TileColor | 'hide' | 'same
  * line, a Gauge a bare arc, a Switch a bare toggle).
  */
 export const ELEMENTS: Partial<Record<string, readonly ('icon' | 'name' | 'value' | 'graph')[]>> = {
-  value: ['icon', 'name', 'value', 'graph'], chart: ['name', 'value'], gauge: ['name', 'value'], level: ['name', 'value'],
-  status: ['name', 'value'], switch: ['icon', 'name'], slider: ['icon', 'name', 'value'], stepper: ['name'], choice: ['name'],
-  variable: ['name'], flowvalue: ['icon', 'name'], calc: ['icon', 'name', 'value'], time: ['icon', 'name'], trend: ['icon', 'name', 'value'],
+  switch: ['icon', 'name'], stepper: ['name'], choice: ['name'], variable: ['name'], calc: ['icon', 'name', 'value'],
   ring: ['name', 'value'], segments: ['name', 'value'], button: ['icon', 'name'], state: ['icon', 'name'],
 };
 export type Element = 'icon' | 'name' | 'value' | 'graph';
 /** The kinds a tap can give actions to besides a button: everything that isn't a control of its own. */
 export const TAP_KINDS: readonly PartKind[] = [
-  'value', 'chart', 'gauge', 'level', 'status', 'flowvalue', 'container', 'text', 'icon', 'shape', 'calc', 'time', 'image', 'ring', 'segments', 'trend',
+  'container', 'text', 'icon', 'shape', 'calc', 'image', 'ring', 'segments', 'sparkline', 'arc', 'bar',
 ];
 /** A calculated value's `count` test: the rule ops without a look. */
 export type Test = { op: RuleOp, value: string };
+
+/** The kinds without a background unless they're given one. */
+export const BARE_KINDS: readonly PartKind[] = ['text', 'icon', 'sparkline', 'arc', 'bar', 'calc'];
 
 /** Top level: cells of the 4-column grid. In a container: fine-grid cells, or per cent of its inner box (free-form). */
 export const PART_STYLES = ['tile', 'pill', 'none'] as const;
@@ -166,10 +177,10 @@ export type Part = {
   max?: number,
   step?: number,
   choices?: Choice[],
-  /** A Mini chart's time span (the kit's `timeSpan()` ids). */
+  /** A Sparkline's time span (the kit's `timeSpan()` ids), and a calculated value's `change`. */
   span?: string,
-  /** A value part's line under it: the history (`chart`) or nothing. */
-  show?: 'value' | 'chart',
+  /** An Arc's or a Bar's value (between `min` and `max`, else the capability's range, else 0–100). */
+  src?: Source,
   /** A container's (and a shape's `background`, its fill): */
   mode?: 'grid' | 'free' | 'pages',
   background?: Background,
@@ -217,8 +228,7 @@ export type Part = {
   barStyle?: 'bar' | 'donut',
   scale?: 'sum' | 'max',
   legend?: boolean,
-  /** A trend's: the change of `slot` over `span` (its history); below `flat` it's steady; `percent` as a share. */
-  flat?: number,
+  /** A calculated value's `change` as a share of where it started. */
   percent?: boolean,
   /** A ring's rings, and what its middle shows. */
   rings?: RingSpec[],
@@ -232,11 +242,6 @@ export type Part = {
   itemStyle?: 'row' | 'tile',
   columns?: number,
   control?: boolean,
-  /** A time's: a clock, a date, how long since `slot` changed, or until `until` (`HH:mm`). */
-  timeMode?: TimeMode,
-  seconds?: boolean,
-  dateStyle?: 'short' | 'long' | 'weekday',
-  until?: string,
 };
 
 export type Background =
@@ -306,8 +311,13 @@ export function sourceOf(v: unknown, parts = true): Source | undefined {
 }
 
 function refOf(v: unknown): Ref | null {
-  if (v && typeof v === 'object' && REF_TIMES.includes((v as any).time)) return { time: (v as any).time };
-  return sourceOf(v) ?? null;
+  if (!v || typeof v !== 'object') return null;
+  const r = v as Record<string, any>;
+  if (REF_TIMES.includes(r.time)) return { time: r.time };
+  if (slotOf(r.since)) return { since: slotOf(r.since)! };
+  if (typeof r.until === 'string' && HHMM.test(r.until)) return { until: r.until };
+  const src = sourceOf(v);
+  return src ? (r.show === 'name' ? { ...src, show: 'name' } : src) : null;
 }
 
 /** `valueless`: a kind without a value of its own keeps only the rules that name theirs. */
@@ -401,9 +411,10 @@ function checkPartSources(design: Design) {
   const ok = (src: Source | undefined, self: string) => !src || !('part' in src) || (src.part !== self && sources.has(src.part));
   for (const p of all) {
     p.rules = p.rules.filter(r => ok(r.of, p.id));
-    if (p.refs) p.refs = p.refs.map(r => (r && !ok(r as Source, p.id) ? null : r));
+    if (p.refs) p.refs = p.refs.map(r => (r && 'part' in r && !ok(r, p.id) ? null : r));
     if (p.rings) p.rings = p.rings.filter(r => ok(r.src, p.id));
     if (p.segments) p.segments = p.segments.filter(x => ok(x.src, p.id));
+    if (p.src && !ok(p.src, p.id)) delete p.src;
     // A page is picked by a widget state only.
     if (p.pageBy && !('part' in p.pageBy && kindOf.get(p.pageBy.part) === 'state')) delete p.pageBy;
     if (p.nav === 'state' && !p.pageBy) p.nav = 'tabs';
@@ -457,7 +468,8 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     color: color(r.color),
     icon: typeof r.icon === 'string' && /^[a-z0-9-]{1,40}$/.test(r.icon) ? r.icon : null,
     // Saved before 1.4.0's release as `tile: false` (on a container's background).
-    style: kind === 'shape' ? 'none' : oneOf(r.style, PART_STYLES, r.tile === false || kind === 'text' || kind === 'icon' ? 'none' : 'tile'),
+    // Text, icons and the bare data primitives sit right on their background unless given one.
+    style: kind === 'shape' ? 'none' : oneOf(r.style, PART_STYLES, r.tile === false || BARE_KINDS.includes(kind) ? 'none' : 'tile'),
     // An icon that follows a device value has one of its own.
     rules: rulesOf(r.rules, VALUELESS_KINDS.includes(kind) && !(kind === 'icon' && slotOf(r.slot))),
     flow: flowOf(r.flow),
@@ -486,14 +498,20 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     if (variable) p.variable = variable;
   }
   switch (kind) {
-    case 'value':
-      p.show = r.show === 'chart' ? 'chart' : 'value';
-      if (p.show === 'chart') p.span = SPANS.has(r.span) ? r.span : '24h';
-      break;
-    case 'chart':
+    case 'sparkline':
       p.span = SPANS.has(r.span) ? r.span : '24h';
       break;
-    case 'gauge': case 'level': case 'slider': case 'stepper': {
+    case 'arc': case 'bar': {
+      const src = sourceOf(r.src);
+      if (src) p.src = src;
+      const [min, max] = [optNum(r.min), optNum(r.max)];
+      if (min !== undefined) p.min = min;
+      if (max !== undefined) p.max = max;
+      if (p.min !== undefined && p.max !== undefined && p.min > p.max) [p.min, p.max] = [p.max, p.min];
+      p.thickness = num(r.thickness, 2, 24, kind === 'arc' ? 8 : 8);
+      break;
+    }
+    case 'slider': case 'stepper': {
       const min = optNum(r.min);
       const max = optNum(r.max);
       if (min !== undefined) p.min = min;
@@ -557,15 +575,6 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
       p.units = str(r.units, MAX_UNITS);
       break;
     }
-    case 'trend': {
-      const slot = slotOf(r.slot);
-      if (slot) p.slot = slot;
-      p.span = SPANS.has(r.span) ? r.span : '1h';
-      const flat = optNum(r.flat);
-      p.flat = flat !== undefined && flat >= 0 ? flat : 0;
-      if (r.percent === true) p.percent = true;
-      break;
-    }
     case 'repeat': {
       const cap = typeof r.capability === 'string' && /^[A-Za-z0-9_.-]{1,80}$/.test(r.capability) ? r.capability : '';
       if (cap) p.capability = cap;
@@ -601,23 +610,16 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
       if (p.op === 'count') p.test = { op: oneOf(r.test?.op, RULE_OPS, 'is'), value: str(String(r.test?.value ?? 'on'), 60) };
       if (p.op === 'formula') p.formula = str(r.formula, MAX_FORMULA);
       if (p.op === 'min' || p.op === 'max') p.winner = r.winner === true;
+      if (p.op === 'change') {
+        p.span = SPANS.has(r.span) ? r.span : '1h';
+        if (r.percent === true) p.percent = true;
+      }
       const decimals = optNum(r.decimals);
       if (decimals !== undefined) p.decimals = num(decimals, 0, 3, 1);
       p.units = str(r.units, MAX_UNITS);
       if (r.sourceOnly === true) p.sourceOnly = true;
       break;
     }
-    case 'time':
-      p.timeMode = oneOf(r.timeMode, TIME_MODES, 'clock');
-      if (p.timeMode === 'clock') p.seconds = r.seconds === true;
-      if (p.timeMode === 'date') p.dateStyle = oneOf(r.dateStyle, ['short', 'long', 'weekday'] as const, 'long');
-      if (p.timeMode === 'since') { const slot = slotOf(r.slot); if (slot) p.slot = slot; }
-      if (p.timeMode === 'until') p.until = typeof r.until === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(r.until) ? r.until : '22:00';
-      break;
-    case 'flowvalue':
-      p.text = str(r.text, MAX_TEXT);
-      p.units = str(r.units, MAX_UNITS);
-      break;
     case 'container':
       p.mode = r.mode === 'free' ? 'free' : r.mode === 'pages' ? 'pages' : 'grid';
       p.background = backgroundOf(r.background);
@@ -650,9 +652,13 @@ function designSources(design: Design): Source[] {
   const out: Source[] = [];
   for (const p of allParts(design)) {
     if (p.slot) out.push({ slot: p.slot });
+    if (p.src) out.push(p.src);
     if (p.variable) out.push({ variable: p.variable });
     for (const r of p.rules) if (r.of) out.push(r.of);
-    for (const r of p.refs ?? []) if (r && !('time' in r)) out.push(r);
+    for (const r of p.refs ?? []) {
+      if (!r || 'time' in r || 'until' in r) continue;
+      out.push('since' in r ? { slot: r.since } : r);
+    }
     out.push(...(p.inputs ?? []));
     for (const r of p.rings ?? []) out.push(r.src);
     for (const x of p.segments ?? []) out.push(x.src);
@@ -675,12 +681,15 @@ export function designFlows(design: Design): string[] {
   return [...new Set(ids.filter((s): s is string => !!s))];
 }
 
-/** The Mini charts' and value charts' histories, as `{slot, span}` once each. */
+/** The histories a design draws or reads: sparklines', calculated changes', as `{slot, span}` once each. */
 export function designCharts(design: Design): { slot: string, span: string }[] {
   const seen = new Map<string, { slot: string, span: string }>();
   for (const p of allParts(design)) {
-    if (!p.slot || !p.span || (p.kind !== 'chart' && p.kind !== 'trend' && p.show !== 'chart')) continue;
-    seen.set(`${p.span}\n${p.slot}`, { slot: p.slot, span: p.span });
+    // A sparkline's, and a calculated value's change (of its first input, a device value).
+    const first = p.inputs?.[0];
+    const slot = p.kind === 'sparkline' ? p.slot : p.kind === 'calc' && p.op === 'change' && first && 'slot' in first ? first.slot : undefined;
+    if (!slot || !p.span) continue;
+    seen.set(`${p.span}\n${slot}`, { slot, span: p.span });
   }
   return [...seen.values()];
 }

@@ -165,7 +165,7 @@ html, body { background: transparent !important; }
 .wb-choice.on { background: var(--wk-c); color: var(--wk-on, #FFFFFF); font-weight: var(--wb-medium); }
 
 /* Text */
-.wb-text { white-space: pre-wrap; overflow: hidden; }
+.wb-text { white-space: pre-wrap; overflow-wrap: anywhere; }
 .wb-size-heading .wb-text { font-size: var(--homey-font-size-large, 20px); line-height: var(--homey-line-height-large, 28px); font-weight: var(--wb-medium); }
 .wb-size-body .wb-text { font-size: var(--wb-fs-small); line-height: var(--wb-lh-small); }
 .wb-size-small .wb-text { font-size: 12px; line-height: 16px; color: var(--wb-muted); }
@@ -173,8 +173,10 @@ html, body { background: transparent !important; }
 .wb-part.wb-k-text { justify-content: center; }
 
 /* Icon on its own */
-.wb-k-icon { align-items: center; justify-content: center; }
-.wb-k-icon .wb-icon { width: 34px; height: 34px; color: var(--wk-c); }
+.wb-k-icon { align-items: center; justify-content: center; container-type: size; }
+/* As large as its box allows, at most 34 px. */
+.wb-k-icon .wb-icon { width: min(100cqw, 100cqh, 34px); height: min(100cqw, 100cqh, 34px); color: var(--wk-c); }
+.wb-k-icon.wb-align-start { align-items: flex-start; }
 
 /* Container: a background holding parts, on a fine grid or free-form. Light text on a colour or gradient. */
 .wb-k-container { border-radius: 14px; padding: 10px; overflow: hidden; }
@@ -191,7 +193,9 @@ html, body { background: transparent !important; }
 .wb-k-shape { padding: 0; --wb-shape: color-mix(in srgb, var(--wb-muted) 35%, transparent); }
 .wb-shape-fill { position: absolute; inset: 0; background: var(--wb-shape); }
 .wb-k-shape.wb-has-color { --wb-shape: var(--wk-c); }
-.wb-shape-circle .wb-shape-fill { border-radius: 50%; }
+.wb-shape-circle { container-type: size; }
+/* A circle stays round in a box that isn't square. */
+.wb-shape-circle .wb-shape-fill { border-radius: 50%; inset: auto; left: 50%; top: 50%; width: min(100cqw, 100cqh); height: min(100cqw, 100cqh); transform: translate(-50%, -50%); }
 .wb-line-h .wb-shape-fill { inset: auto 0; top: calc(50% - var(--wb-thick, 2px) / 2); height: var(--wb-thick, 2px); border-radius: var(--wb-thick, 2px); }
 .wb-line-v .wb-shape-fill { inset: 0 auto; left: calc(50% - var(--wb-thick, 2px) / 2); width: var(--wb-thick, 2px); border-radius: var(--wb-thick, 2px); }
 
@@ -330,3 +334,23 @@ html, body { background: transparent !important; }
   background: var(--wk-c); color: var(--wk-on, #FFFFFF); font-size: 12px; line-height: 16px; white-space: nowrap; pointer-events: none;
 }
 .wb-press-tip[hidden] { display: none; }
+
+/* The bare data primitives: a sparkline, a gauge's arc and a level bar fill their box. */
+.wb-k-sparkline { padding: 0; overflow: hidden; }
+.wb-k-sparkline .wb-spark { position: absolute; inset: 0; height: 100%; }
+.wb-k-sparkline.wb-tile .wb-spark { inset: 8px 0 0; height: calc(100% - 8px); }
+.wb-k-arc { align-items: center; justify-content: center; padding: 2px; }
+.wb-k-arc .wb-arc { height: 100%; width: 100%; }
+.wb-k-arc .wb-arc-track, .wb-k-arc .wb-arc-fill { stroke-width: var(--wb-arc-w, 8); }
+.wb-k-bar { justify-content: center; }
+.wb-k-bar .wb-level { height: 8px; border-radius: 999px; }
+.wb-k-bar .wb-level i { border-radius: 999px; }
+.wb-tile.wb-k-bar { padding: 0 12px; }
+/* A bare slider: the whole box is the bar. */
+.wb-k-slider { isolation: isolate; overflow: hidden; }
+.wb-k-slider.wb-bare { border-radius: var(--wb-radius); background: var(--wb-track); }
+/* A calculated value, in the builder only. */
+.wb-calc-chip { font-size: 11px; line-height: 14px; color: var(--wb-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: 1px dashed var(--wb-muted); border-radius: 6px; padding: 2px 6px; align-self: flex-start; }
+.wb:not(.wb-preview) .wb-k-calc { display: none; }
+/* A text or icon that does nothing when tapped lets the tap through (a ready-made slider's label over its bar). */
+.wb-k-text:not(.wb-tappable), .wb-k-icon:not(.wb-tappable) { pointer-events: none; }

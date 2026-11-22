@@ -38,7 +38,7 @@ describe('web dashboards: the Widget Builder', () => {
 
   it("previews a design that isn't saved, reading only what it shows", async () => {
     const { homey, deps, custom } = setup();
-    const state: any = await api.postWebDesignPreview({ homey, body: { design: { name: 'Draft', parts: [{ kind: 'value', slot: 'd1:measure_temperature', at: { x: 0, y: 0, w: 2, h: 1 } }] } } });
+    const state: any = await api.postWebDesignPreview({ homey, body: { design: { name: 'Draft', parts: [{ kind: 'text', text: '{1}', refs: [{ slot: 'd1:measure_temperature' }], at: { x: 0, y: 0, w: 2, h: 1 } }] } } });
     expect(deps.values.getState).toHaveBeenCalledWith(['d1:measure_temperature']);
     expect(state.values['d1:measure_temperature']).toMatchObject({ value: 21 });
     expect(custom.list()).toEqual([]);

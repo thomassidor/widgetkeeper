@@ -177,7 +177,7 @@
       v('blocks', 'Text with values, sums, the time and shapes', { scene: 'blocks' }),
       v('more', 'Light · Pages by a state, ring, picture, repeater', { scene: 'more' }, true),
       v('split', 'Segmented bar, donut and trends', { scene: 'split' }),
-      v('bare', 'Light · Parts turned off, big text, an icon', { scene: 'bare' }, true)],
+      v('bare', 'Light · The primitives on their own', { scene: 'bare' }, true)],
     sparklines: [LIGHT, VIVID, lightVivid,
       v('one', 'One column', { columns: '1' }),
       v('six', 'Six tiles, in green', { scene: 'six', color: 'green' }),
