@@ -1662,6 +1662,11 @@
     "builderSaveReady": "Zapisz jako gotowy",
     "builderSaveReadyHint": "Zachowuje kopię komponentu do ponownego dodania, w tym lub innym projekcie, albo do powtarzania dla każdego urządzenia w Powielaczu.",
     "builderSavedReady": "Zapisano __name__ jako gotowy",
+    "builderLinkedHint": "Podąża za gotowym „__name__”: jego zmiany widać też tutaj. Odłącz, aby zmieniać ten osobno.",
+    "builderLinkedGone": "Gotowy, za którym podążał, został usunięty.",
+    "builderEditReady": "Edytuj gotowy",
+    "builderDetach": "Odłącz",
+    "builderDeleteReady": "Usuń __name__",
     "builderAnyDevice": "Urządzenie widżetu",
     "builderAnyDeviceHint": "Dla dowolnego urządzenia: wypełniane urządzeniem wybranym tam, gdzie stoi widżet, albo każdym z urządzeń Powielacza.",
     "builderAnyDeviceOf": "Urządzenie widżetu (tu __name__)",
@@ -1794,7 +1799,8 @@
       "arc": "Łuk",
       "bar": "Pasek",
       "chart": "Wykres",
-      "each": "Powielacz"
+      "each": "Powielacz",
+      "use": "Połączony gotowy"
     },
     "tapAgain": "Dotknij ponownie",
     "hold": "Przytrzymaj",

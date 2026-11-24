@@ -1662,6 +1662,11 @@
     "builderSaveReady": "Save as ready-made",
     "builderSaveReadyHint": "Keeps a copy of this component to add again, in this design or another, or to repeat per device in a Repeater.",
     "builderSavedReady": "Saved __name__ as a ready-made",
+    "builderLinkedHint": "Follows the ready-made “__name__”: a change to it shows here too. Detach it to change this one on its own.",
+    "builderLinkedGone": "The ready-made it followed is gone.",
+    "builderEditReady": "Edit the ready-made",
+    "builderDetach": "Detach",
+    "builderDeleteReady": "Delete __name__",
     "builderAnyDevice": "The widget's device",
     "builderAnyDeviceHint": "Works with any device: filled in with the device picked where the widget is placed, or with each of a Repeater's.",
     "builderAnyDeviceOf": "Widget's device (here __name__)",
@@ -1794,7 +1799,8 @@
       "arc": "Arc",
       "bar": "Bar",
       "chart": "Chart",
-      "each": "Repeater"
+      "each": "Repeater",
+      "use": "Linked ready-made"
     },
     "tapAgain": "Tap again",
     "hold": "Hold",

@@ -43,7 +43,7 @@ export const PART_KINDS = [
   'switch', 'button', 'slider', 'stepper', 'choice', 'variable',
   'container', 'text', 'icon', 'shape', 'image',
   'sparkline', 'arc', 'bar', 'ring', 'segments', 'repeat',
-  'calc', 'state', 'chart', 'each',
+  'calc', 'state', 'chart', 'each', 'use',
 ] as const;
 export type PartKind = typeof PART_KINDS[number];
 
@@ -149,7 +149,7 @@ export const PRESS_KINDS: readonly PartKind[] = ['button', 'switch'];
 export const REPEAT_SORTS = ['name', 'up', 'down'] as const;
 
 /** The kinds without a background unless they're given one. */
-export const BARE_KINDS: readonly PartKind[] = ['text', 'icon', 'sparkline', 'arc', 'bar', 'calc', 'each'];
+export const BARE_KINDS: readonly PartKind[] = ['text', 'icon', 'sparkline', 'arc', 'bar', 'calc', 'each', 'use'];
 /** The kinds that draw text, so they have a text colour (`textColor`). */
 export const TEXT_KINDS: readonly PartKind[] = [
   'text', 'switch', 'button', 'state', 'stepper', 'choice', 'variable', 'ring', 'segments', 'repeat', 'chart', 'container',
@@ -816,6 +816,12 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', spa
       readRange(p, r);
       break;
     }
+    case 'use': {
+      // A linked ready-made: its source's component as it is now, in this box (`renewIds()` turns it into a copy).
+      const ready = typeof r.ready === 'string' && ID.test(r.ready) && !isReservedKey(r.ready) ? r.ready : '';
+      if (ready) p.ready = ready;
+      break;
+    }
     case 'each': {
       const ready = typeof r.ready === 'string' && ID.test(r.ready) && !isReservedKey(r.ready) ? r.ready : '';
       if (ready) p.ready = ready;
@@ -942,6 +948,44 @@ export function bindDevice<T>(v: T, deviceId: string | undefined | null): T {
     return x;
   };
   return walk(v) as T;
+}
+
+/**
+ * A copy of a component with new ids throughout, its `{part}` references to its own parts following them (a
+ * calculated value's inputs, a text's values, rules, a pages container's state).
+ */
+export function renewIds(part: Part): Part {
+  const ids = new Map<string, string>();
+  const collect = (p: Part): void => { ids.set(p.id, newId()); for (const k of p.parts ?? []) collect(k); };
+  collect(part);
+  const walk = (x: unknown, key = ''): unknown => {
+    if (typeof x === 'string') return (key === 'id' || key === 'part') && ids.has(x) ? ids.get(x) : x;
+    if (Array.isArray(x)) return x.map(y => walk(y));
+    if (x && typeof x === 'object') return Object.fromEntries(Object.entries(x).map(([k, y]) => [k, walk(y, k)]));
+    return x;
+  };
+  return walk(structuredClone(part)) as Part;
+}
+
+/**
+ * Turns a design's linked instances of a ready-made (`use` parts naming `readyId`) into copies of `source`, each in its
+ * instance's box. A container can't go inside another, so such an instance is left out. Whether anything changed.
+ */
+export function detachUses(design: Design, readyId: string, source: Part): boolean {
+  let changed = false;
+  const swap = (list: Part[], inside: boolean): Part[] => list.flatMap((p) => {
+    if (p.kind === 'container' && p.parts) p.parts = swap(p.parts, true);
+    if (p.kind !== 'use' || p.ready !== readyId) return [p];
+    changed = true;
+    if (inside && source.kind === 'container') return [];
+    const copy = renewIds(source);
+    copy.at = { ...p.at };
+    if (p.page !== undefined) copy.page = p.page;
+    else delete copy.page;
+    return [copy];
+  });
+  design.parts = swap(design.parts, false);
+  return changed;
 }
 
 /** A part's name in Flow cards and lists: `Design · Part`, the part's kind where it has no name. */

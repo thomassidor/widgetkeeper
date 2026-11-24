@@ -1662,6 +1662,11 @@
     "builderSaveReady": "Guardar como prediseñado",
     "builderSaveReadyHint": "Guarda una copia de este componente para añadirla de nuevo, en este diseño u otro, o repetirla por dispositivo en un Repetidor.",
     "builderSavedReady": "__name__ guardado como prediseñado",
+    "builderLinkedHint": "Sigue el prediseñado «__name__»: sus cambios también se ven aquí. Desvincúlalo para cambiar este por separado.",
+    "builderLinkedGone": "El prediseñado que seguía ya no existe.",
+    "builderEditReady": "Editar el prediseñado",
+    "builderDetach": "Desvincular",
+    "builderDeleteReady": "Eliminar __name__",
     "builderAnyDevice": "Dispositivo del widget",
     "builderAnyDeviceHint": "Sirve para cualquier dispositivo: se rellena con el que se elija donde se coloque el widget, o con cada uno de un Repetidor.",
     "builderAnyDeviceOf": "Dispositivo del widget (aquí __name__)",
@@ -1794,7 +1799,8 @@
       "arc": "Arco",
       "bar": "Barra",
       "chart": "Gráfico",
-      "each": "Repetidor"
+      "each": "Repetidor",
+      "use": "Prediseñado vinculado"
     },
     "tapAgain": "Toca otra vez",
     "hold": "Mantén",

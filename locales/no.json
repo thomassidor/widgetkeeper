@@ -1662,6 +1662,11 @@
     "builderSaveReady": "Lagre som ferdig",
     "builderSaveReadyHint": "Lagrer en kopi av komponenten for å legge den til igjen, i dette designet eller et annet, eller for å gjenta per enhet i en Gjentaker.",
     "builderSavedReady": "__name__ lagret som ferdig",
+    "builderLinkedHint": "Følger den ferdige «__name__»: endringer i den vises her også. Koble fra for å endre denne alene.",
+    "builderLinkedGone": "Den ferdige den fulgte er borte.",
+    "builderEditReady": "Rediger den ferdige",
+    "builderDetach": "Koble fra",
+    "builderDeleteReady": "Slett __name__",
     "builderAnyDevice": "Widgetens enhet",
     "builderAnyDeviceHint": "Virker med alle enheter: fylles ut med enheten som velges der widgeten plasseres, eller med hver av en Gjentakers.",
     "builderAnyDeviceOf": "Widgetens enhet (her __name__)",
@@ -1794,7 +1799,8 @@
       "arc": "Bue",
       "bar": "Stolpe",
       "chart": "Diagram",
-      "each": "Gjentaker"
+      "each": "Gjentaker",
+      "use": "Koblet ferdig"
     },
     "tapAgain": "Trykk igjen",
     "hold": "Hold",

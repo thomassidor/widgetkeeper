@@ -1662,6 +1662,11 @@
     "builderSaveReady": "حفظ كجاهز",
     "builderSaveReadyHint": "يحتفظ بنسخة من هذا المكون لإضافتها مجددًا في هذا التصميم أو غيره، أو لتكرارها لكل جهاز في مكرِّر.",
     "builderSavedReady": "حُفظ __name__ كجاهز",
+    "builderLinkedHint": "يتبع الجاهز “__name__”: يظهر أي تغيير فيه هنا أيضًا. افصله لتغيير هذا وحده.",
+    "builderLinkedGone": "الجاهز الذي كان يتبعه لم يعد موجودًا.",
+    "builderEditReady": "تعديل الجاهز",
+    "builderDetach": "فصل",
+    "builderDeleteReady": "حذف __name__",
     "builderAnyDevice": "جهاز الأداة",
     "builderAnyDeviceHint": "يعمل مع أي جهاز: يُملأ بالجهاز المختار حيث توضع الأداة، أو بكل جهاز من أجهزة المكرِّر.",
     "builderAnyDeviceOf": "جهاز الأداة (هنا __name__)",
@@ -1794,7 +1799,8 @@
       "arc": "قوس",
       "bar": "شريط",
       "chart": "رسم بياني",
-      "each": "مكرِّر"
+      "each": "مكرِّر",
+      "use": "جاهز مرتبط"
     },
     "tapAgain": "انقر مجددًا",
     "hold": "اضغط مطولًا",

@@ -173,7 +173,7 @@
     if (part.kind === 'container' && !['tile', 'pill', 'none'].includes(part.style)) return part.background && part.background.kind !== 'none' ? 'none' : 'tile';
     if (part.style === 'postit') return part.kind === 'text' ? 'postit' : 'tile';
     if (['tile', 'pill', 'none'].includes(part.style)) return part.style;
-    return part.tile === false || ['text', 'icon', 'sparkline', 'arc', 'bar', 'calc', 'each'].includes(part.kind) ? 'none' : 'tile';
+    return part.tile === false || ['text', 'icon', 'sparkline', 'arc', 'bar', 'calc', 'each', 'use'].includes(part.kind) ? 'none' : 'tile';
   }
 
   /** A colour as CSS: a palette name follows Muted or Vivid (the kit's `--wk-<name>`), `#rrggbb` as it is. */
@@ -1580,10 +1580,16 @@
           el('span', { text: long ? dateText(t1, 'short') : K.clockTime(t1) }, xAxis);
         };
       },
+      use(part, node) {
+        // A linked ready-made: its source's component as it is now, filling this box (the app sends it as a Repeater's).
+        node.classList.add('wb-use');
+        return MAKERS.each(part, node);
+      },
       each(part, node) {
         // A ready-made component once per device, each filled in with it, in rows of `columns`.
+        const single = part.kind === 'use';
         const list = el('div', { class: 'wb-each-list' }, node);
-        list.style.gridTemplateColumns = `repeat(${part.columns || 1}, minmax(0, 1fr))`;
+        list.style.gridTemplateColumns = `repeat(${single ? 1 : part.columns || 1}, minmax(0, 1fr))`;
         const empty = el('div', { class: 'wb-sub wb-each-empty', hidden: '' }, node);
         let shown = '';
         return () => {
@@ -1598,7 +1604,7 @@
           views = views.filter(v => !list.contains(v.node));
           list.textContent = '';
           const h = e && e.part && e.part.at ? Math.max(1, e.part.at.h) : 1;
-          list.style.gridAutoRows = `${h * 64 + (h - 1) * 8}px`;
+          list.style.gridAutoRows = single ? '1fr' : `${h * 64 + (h - 1) * 8}px`;
           const fresh = [];
           for (const dev of devices) {
             const cell = el('div', { class: 'wb-each-item' }, list);

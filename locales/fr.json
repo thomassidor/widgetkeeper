@@ -1662,6 +1662,11 @@
     "builderSaveReady": "Enregistrer comme composant prêt",
     "builderSaveReadyHint": "Garde une copie de ce composant à ajouter de nouveau, dans ce modèle ou un autre, ou à répéter par appareil dans un Répéteur.",
     "builderSavedReady": "__name__ enregistré comme composant prêt",
+    "builderLinkedHint": "Suit le composant prêt « __name__ » : ses changements s’affichent aussi ici. Détachez-le pour le modifier seul.",
+    "builderLinkedGone": "Le composant prêt qu’il suivait n’existe plus.",
+    "builderEditReady": "Modifier le composant prêt",
+    "builderDetach": "Détacher",
+    "builderDeleteReady": "Supprimer __name__",
     "builderAnyDevice": "Appareil du widget",
     "builderAnyDeviceHint": "Pour n'importe quel appareil : rempli avec l'appareil choisi là où le widget est placé, ou avec chacun de ceux d'un Répéteur.",
     "builderAnyDeviceOf": "Appareil du widget (ici __name__)",
@@ -1794,7 +1799,8 @@
       "arc": "Arc",
       "bar": "Barre",
       "chart": "Graphique",
-      "each": "Répéteur"
+      "each": "Répéteur",
+      "use": "Composant prêt lié"
     },
     "tapAgain": "Touchez encore",
     "hold": "Maintenir",

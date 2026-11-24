@@ -3,7 +3,7 @@ import { getAppApi } from './appApi.js';
 import { byName, devicesAndZones, matches, type AutocompleteItem } from './autocomplete.js';
 import { deviceImage, fetchImageBase64 } from './deviceIcon.js';
 import {
-  MAX_DESIGNS, MAX_EACH, MAX_REPEAT_CANDIDATES, SERVER_ACTIONS, TAP_KINDS, allParts, bindDevice, designCharts, designFlows, designSlots, designVariables, findPart, partLabel, readDesign,
+  MAX_DESIGNS, MAX_EACH, MAX_REPEAT_CANDIDATES, SERVER_ACTIONS, TAP_KINDS, allParts, bindDevice, designCharts, detachUses, designFlows, designSlots, designVariables, findPart, partLabel, readDesign,
   type Design, type FlowProp, type FlowReset, type Part,
 } from './customDesigns.js';
 import { DebouncedSetting, isReservedKey } from './storedSetting.js';
@@ -61,6 +61,11 @@ export type PartArg = { id?: string, name?: string } | undefined;
  * (Device Values', Variables', Flow Buttons', Sparklines'), and its controls act through a design's own parts only, so a
  * request can't reach a device, variable or Flow the design doesn't use.
  */
+/** The device a linked ready-made's `@` values take: the widget's, or `@` (left as they are) without one. */
+function usable(device: string | undefined): string {
+  return device && !/[\s:]/.test(device) ? device : '@';
+}
+
 export default class CustomWidgetService {
 
   private designs: Design[];
@@ -149,13 +154,18 @@ export default class CustomWidgetService {
   remove(id: string): { removed: boolean } {
     const i = this.designs.findIndex(d => d.id === id);
     if (i < 0) return { removed: false };
-    this.designs.splice(i, 1);
+    const [gone] = this.designs.splice(i, 1);
+    // A ready-made's linked instances become copies of it, so no design loses them.
+    const source = gone.ready ? gone.parts[0] : undefined;
+    const detached = source ? this.designs.filter(d => detachUses(d, id, source)) : [];
+    for (const d of detached) this.dropStaleFlowValues(d);
     if (this.flowValues[id]) {
       delete this.flowValues[id];
       this.savedFlow.schedule();
     }
     this.write();
     this.homey.api.realtime(CUSTOM_DESIGN_EVENT, { id });
+    for (const d of detached) this.homey.api.realtime(CUSTOM_DESIGN_EVENT, { id: d.id });
     return { removed: true };
   }
 
@@ -218,7 +228,7 @@ export default class CustomWidgetService {
     const design = this.get(id);
     if (!design) return { missing: true as const, now: Date.now() };
     // A design that works with any device: the one picked where it's placed fills in its `@` values.
-    return this.stateOf(bindDevice(design, device), this.flowState(design.id));
+    return this.stateOf(bindDevice(design, device), this.flowState(design.id), device);
   }
 
   /**
@@ -228,7 +238,7 @@ export default class CustomWidgetService {
   async previewState(body: unknown) {
     const design = readDesign(body);
     if (!design) throw new Error('Not a design');
-    return this.stateOf(bindDevice(design, design.sample), this.get(design.id) ? this.flowState(design.id) : {});
+    return this.stateOf(bindDevice(design, design.sample), this.get(design.id) ? this.flowState(design.id) : {}, design.sample);
   }
 
   /**
@@ -254,7 +264,7 @@ export default class CustomWidgetService {
       .map(d => d.id as string);
   }
 
-  /** A Repeater's devices: those picked, or every one with its capability (in its room). */
+    /** A Repeater's devices: those picked, or every one with its capability (in its room). */
   private async eachDevices(part: Part): Promise<string[]> {
     const ids = part.capability ? await this.devicesWith(part, MAX_EACH) : part.devices ?? [];
     return ids.slice(0, part.limit ?? MAX_EACH);
@@ -277,7 +287,7 @@ export default class CustomWidgetService {
     return this.deps.sparklines.getWindows(slots.map(slot => ({ slot, from: w.from, end: w.end, unit: w.unit, span })));
   }
 
-  private async stateOf(design: Design, flow: Record<string, FlowValues & { expires?: number }>) {
+  private async stateOf(design: Design, flow: Record<string, FlowValues & { expires?: number }>, device?: string) {
     const repeaters = allParts(design).filter(p => p.kind === 'repeat');
     const repeats = Object.fromEntries(await Promise.all(repeaters.map(async p => [p.id, await this.repeatSlots(p).catch((err) => {
       this.log('Widget Builder: a list\'s devices failed:', err);
@@ -290,6 +300,11 @@ export default class CustomWidgetService {
       const devices = part ? await this.eachDevices(p).catch((err) => { this.log('Widget Builder: a repeater\'s devices failed:', err); return [] as string[]; }) : [];
       return [p.id, { part, devices }] as const;
     })));
+    // A linked ready-made: its source once, filled in with the widget's device (`@` where there's none).
+    for (const p of allParts(design).filter(x => x.kind === 'use')) {
+      const part = this.readyPart(p);
+      each[p.id] = { part, devices: part ? [usable(device)] : [] };
+    }
     const reads: Design = {
       ...design,
       parts: [...design.parts, ...Object.values(each).flatMap(e => (e.part ? e.devices.map(id => bindDevice(e.part!, id)) : []))],
@@ -359,8 +374,9 @@ export default class CustomWidgetService {
     const [outer, inner] = String(partId ?? '').split('/');
     let part = findPart(design, outer);
     if (inner !== undefined) {
-      const ready = part?.kind === 'each' ? this.readyPart(part) : null;
-      if (!part || !ready || !dev || !(await this.eachDevices(part)).includes(dev)) throw new Error('No such part');
+      const ready = part?.kind === 'each' || part?.kind === 'use' ? this.readyPart(part) : null;
+      // A Repeater's copy acts for one of its devices; a linked ready-made for the widget's, as the design's own parts.
+      if (!part || !ready || !dev || (part.kind === 'each' && !(await this.eachDevices(part)).includes(dev))) throw new Error('No such part');
       const copy = bindDevice({ id: '', name: '', updatedAt: 0, parts: [ready] } as Design, dev);
       part = findPart(copy, inner);
     }

@@ -1662,6 +1662,11 @@
     "builderSaveReady": "Als Fertigteil speichern",
     "builderSaveReadyHint": "Speichert eine Kopie dieses Bausteins zum erneuten Hinzufügen, in diesem oder einem anderen Entwurf, oder zum Wiederholen je Gerät in einem Wiederholer.",
     "builderSavedReady": "__name__ als Fertigteil gespeichert",
+    "builderLinkedHint": "Folgt dem Fertigteil „__name__“: Änderungen daran erscheinen auch hier. Trennen, um dieses allein zu ändern.",
+    "builderLinkedGone": "Das Fertigteil, dem es folgte, ist weg.",
+    "builderEditReady": "Fertigteil bearbeiten",
+    "builderDetach": "Trennen",
+    "builderDeleteReady": "__name__ löschen",
     "builderAnyDevice": "Gerät des Widgets",
     "builderAnyDeviceHint": "Für jedes Gerät: gefüllt mit dem Gerät, das beim Platzieren des Widgets gewählt wird, oder mit jedem eines Wiederholers.",
     "builderAnyDeviceOf": "Gerät des Widgets (hier __name__)",
@@ -1794,7 +1799,8 @@
       "arc": "Bogen",
       "bar": "Balken",
       "chart": "Diagramm",
-      "each": "Wiederholer"
+      "each": "Wiederholer",
+      "use": "Verknüpftes Fertigteil"
     },
     "tapAgain": "Nochmal tippen",
     "hold": "Halten",

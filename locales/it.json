@@ -1662,6 +1662,11 @@
     "builderSaveReady": "Salva come pronto",
     "builderSaveReadyHint": "Tiene una copia di questo componente da aggiungere di nuovo, in questo design o in un altro, o da ripetere per dispositivo in un Ripetitore.",
     "builderSavedReady": "__name__ salvato come pronto",
+    "builderLinkedHint": "Segue il pronto “__name__”: le sue modifiche appaiono anche qui. Scollegalo per cambiarlo da solo.",
+    "builderLinkedGone": "Il pronto che seguiva non c’è più.",
+    "builderEditReady": "Modifica il pronto",
+    "builderDetach": "Scollega",
+    "builderDeleteReady": "Elimina __name__",
     "builderAnyDevice": "Dispositivo del widget",
     "builderAnyDeviceHint": "Per qualsiasi dispositivo: riempito con il dispositivo scelto dove si mette il widget, o con ciascuno di un Ripetitore.",
     "builderAnyDeviceOf": "Dispositivo del widget (qui __name__)",
@@ -1794,7 +1799,8 @@
       "arc": "Arco",
       "bar": "Barra",
       "chart": "Grafico",
-      "each": "Ripetitore"
+      "each": "Ripetitore",
+      "use": "Pronto collegato"
     },
     "tapAgain": "Tocca di nuovo",
     "hold": "Tieni premuto",

@@ -745,6 +745,16 @@ describe('styles, colours, width, charts and Repeaters (2026-11-24)', () => {
     const none = widget(state([part('e', 'each', { at: { x: 0, y: 0, w: 4, h: 1 } })], [], { each: { e: { part: null, devices: [] } } }));
     expect(none.root.textContent).toContain('ready-made');
   });
+
+  it('draws a linked ready-made once, filling its box, with its device (2026-11-24)', () => {
+    const ready = part('sw', 'switch', { slot: '@:onoff', at: { x: 0, y: 0, w: 2, h: 1 } });
+    const { root } = widget(state([part('u', 'use', { ready: 'r', at: { x: 0, y: 0, w: 4, h: 2 } })],
+      [{ ...value('l1:onoff', true, { type: 'boolean' }), name: 'Lamp one' }],
+      { each: { u: { part: ready, devices: ['l1'] } } }));
+    expect(root.querySelector('.wb-use .wb-each-list')!.getAttribute('style')).toContain('grid-auto-rows: 1fr');
+    expect(root.querySelectorAll('.wb-each-item')).toHaveLength(1);
+    expect(root.querySelector('[data-part="u/sw"]')!.getAttribute('aria-checked')).toBe('true');
+  });
 });
 
 describe("the normal widgets' looks and options (2026-11-24, the user's review of the styles and options)", () => {

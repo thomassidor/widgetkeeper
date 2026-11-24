@@ -1662,6 +1662,11 @@
     "builderSaveReady": "기성 구성 요소로 저장",
     "builderSaveReadyHint": "이 구성 요소의 사본을 저장해 이 디자인이나 다른 디자인에 다시 넣거나, 반복기에서 기기마다 반복합니다.",
     "builderSavedReady": "__name__을(를) 기성 구성 요소로 저장함",
+    "builderLinkedHint": "기성 구성 요소 “__name__”을(를) 따릅니다: 그 변경 사항이 여기에도 표시됩니다. 이것만 바꾸려면 연결을 해제하세요.",
+    "builderLinkedGone": "따르던 기성 구성 요소가 없어졌습니다.",
+    "builderEditReady": "기성 구성 요소 편집",
+    "builderDetach": "연결 해제",
+    "builderDeleteReady": "__name__ 삭제",
     "builderAnyDevice": "위젯의 기기",
     "builderAnyDeviceHint": "어떤 기기에도 쓸 수 있습니다: 위젯을 놓을 때 고른 기기, 또는 반복기의 각 기기로 채워집니다.",
     "builderAnyDeviceOf": "위젯의 기기 (여기서는 __name__)",
@@ -1794,7 +1799,8 @@
       "arc": "호",
       "bar": "막대",
       "chart": "차트",
-      "each": "반복기"
+      "each": "반복기",
+      "use": "연결된 기성 구성 요소"
     },
     "tapAgain": "한 번 더 탭",
     "hold": "길게 누르기",

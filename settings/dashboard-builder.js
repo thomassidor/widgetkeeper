@@ -404,7 +404,10 @@
                 const glyph = (KINDS.find(k => k.kind === d.parts[0].kind) || {}).glyph || 'star';
                 c.append(kitIcon(glyph, 'wdb-comp-icon'), el('span', null, d.name || t('untitled')));
                 dragToAdd(c, { glyph, label: d.name, size: sizeOfPart(d.parts[0]), container: d.parts[0].kind === 'container', drop: target => addMine(d, target) });
-                grid.append(c);
+                const line = el('div', 'wdb-mine-line');
+                const del = confirmButton('wd-icon wdb-mine-delete', icon('trash'), () => deleteReady(d), t('tapAgain'), t('builderDeleteReady', { name: d.name || t('untitled') }));
+                line.append(c, del);
+                grid.append(line);
               }
               list.append(grid);
             }
@@ -580,7 +583,8 @@
     }
 
     function partTitle(p) {
-      return p.name || (p.kind === 'text' && p.text ? p.text.slice(0, 30) : '') || kindName(p.kind);
+      const source = p.kind === 'use' && !p.name ? sourceOf(p) : null;
+      return p.name || (p.kind === 'text' && p.text ? p.text.slice(0, 30) : '') || (source && source.name) || kindName(p.kind);
     }
 
     // ---- The stage: the design at its size --------------------------------------------------------------------
@@ -1068,6 +1072,27 @@
       } catch (err) { failed(err); }
     }
 
+    /**
+     * Deletes a ready-made of your own from the library. The app turns its linked instances into copies first, in
+     * every design, so this one is read again from the answer.
+     */
+    async function deleteReady(d) {
+      await flush();
+      try {
+        const res = await request('DELETE', `/web/designs/${encodeURIComponent(d.id)}`);
+        wd.designs = res.designs;
+        const fresh = res.designs.find(x => x.id === b.design.id);
+        if (fresh && JSON.stringify(fresh.parts) !== JSON.stringify(b.design.parts)) {
+          b.design = clone(fresh);
+          if (b.selected && !findPart(b.selected)) b.selected = null;
+          showPreview();
+          loadPreview();
+          redrawInspector();
+        }
+        redrawLibrary();
+      } catch (err) { failed(err); }
+    }
+
     async function deleteDesign() {
       clearTimeout(b.saveTimer);
       b.saveTimer = null;
@@ -1150,10 +1175,39 @@
 
     /** A copy of a part with new ids (a container's parts too). */
     function freshCopy(part) {
-      const copy = clone(part);
-      const renew = (x) => { x.id = partId(); for (const k of x.parts || []) renew(k); };
-      renew(copy);
-      return copy;
+      // New ids throughout, its `{part}` references to its own parts following them (lib/customDesigns.ts' renewIds()).
+      const ids = new Map();
+      const collect = (x) => { ids.set(x.id, partId()); for (const k of x.parts || []) collect(k); };
+      collect(part);
+      const walk = (x, key) => {
+        if (typeof x === 'string') return (key === 'id' || key === 'part') && ids.has(x) ? ids.get(x) : x;
+        if (Array.isArray(x)) return x.map(y => walk(y, ''));
+        if (x && typeof x === 'object') return Object.fromEntries(Object.entries(x).map(([k, y]) => [k, walk(y, k)]));
+        return x;
+      };
+      return walk(clone(part), '');
+    }
+
+    /** The ready-made of your own a linked instance follows, or null when it's gone. */
+    function sourceOf(p) {
+      const d = p.kind === 'use' && designs().find(x => x.id === p.ready && x.ready);
+      return d && d.parts[0] ? d : null;
+    }
+
+    /** A linked instance becomes a copy of its ready-made as it is now, in the same box, to change on its own. */
+    function detach(p) {
+      const d = sourceOf(p);
+      if (!d) return;
+      change(() => {
+        const copy = freshCopy(d.parts[0]);
+        copy.at = { ...p.at };
+        if (p.page !== undefined) copy.page = p.page;
+        else delete copy.page;
+        const parent = parentOf(p.id);
+        const list = parent ? parent.parts : b.design.parts;
+        list.splice(list.indexOf(p), 1, copy);
+        b.selected = copy.id;
+      });
     }
 
     /**
@@ -1161,7 +1215,13 @@
      * bottom; into a container, a container's parts go in a region of it (nesting is one level), anything else as itself.
      */
     function addMine(d, drop) {
-      const part = freshCopy(d.parts[0]);
+      const into0 = drop ? drop.into : targetContainer();
+      // Linked to its source, so a change to the ready-made shows here too; a copy inside a ready-made (they don't
+      // nest) and for a container dropped into a container (containers are one level deep).
+      const linked = !b.design.ready && !(into0 && d.parts[0].kind === 'container');
+      const part = linked
+        ? { id: partId(), kind: 'use', name: '', ready: d.id, color: null, icon: null, style: 'none', rules: [], flow: {}, reset: 'never', at: { ...d.parts[0].at } }
+        : freshCopy(d.parts[0]);
       // Its `@` values stay the widget's device; this design then shows them with the same preview device.
       if (!b.design.sample && d.sample) b.design.sample = d.sample;
       const into = drop ? drop.into : targetContainer();
@@ -1185,7 +1245,7 @@
         return;
       }
       change(() => {
-        const size = sizeIn(sizeOfPart(part), into);
+        const size = sizeIn(sizeOfPart(linked ? d.parts[0] : part), into);
         part.at = { x: drop ? drop.x : 0, y: drop ? drop.y : (into.parts || []).reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0), ...size };
         if (into.mode === 'pages') part.page = (b.editPage && b.editPage[into.id]) || 0;
         into.parts.push(part);
@@ -1361,7 +1421,7 @@
       const tabs = el('div', 'wdb-tabs');
       tabs.setAttribute('role', 'tablist');
       // A calculated value is never drawn: only what it calculates.
-      const ids = p.kind === 'calc' ? ['part'] : p.kind === 'each' ? ['part', 'look', 'flow'] : ['part', 'look', 'rules', 'flow'];
+      const ids = p.kind === 'calc' || p.kind === 'use' ? ['part'] : p.kind === 'each' ? ['part', 'look', 'flow'] : ['part', 'look', 'rules', 'flow'];
       if (!ids.includes(b.tab)) b.tab = 'part';
       for (const id of ids) {
         const label = t(`builderTab_${id}`);
@@ -1406,11 +1466,24 @@
     }
     const numOrNull = v => (String(v).trim() === '' ? undefined : (Number.isFinite(Number(String(v).replace(',', '.'))) ? Number(String(v).replace(',', '.')) : undefined));
 
+    /** A linked ready-made's settings: what it follows, a way there, and Detach. */
+    function useRows(body, p) {
+      const d = sourceOf(p);
+      body.append(el('p', 'wd-hint', d ? t('builderLinkedHint', { name: d.name || t('untitled') }) : t('builderLinkedGone')));
+      if (!d) return;
+      const actions = el('div', 'wd-row');
+      const open = el('a', 'wd-btn quiet small', t('builderEditReady'));
+      open.href = `#/builder/${d.id}`;
+      open.addEventListener('click', async (e) => { e.preventDefault(); await flush(); location.hash = open.getAttribute('href'); });
+      actions.append(button('wd-btn small', t('builderDetach'), () => detach(p)), open);
+      body.append(actions);
+    }
+
     function partTab(body, p, parent) {
       const set = (fn, opts) => change(fn, opts);
       if (p.kind === 'text') {
         body.append(row(t('builderText'), textInput(p.text, v => set(() => { p.text = v.slice(0, 200); }, { preview: false }), { multi: true })));
-      } else {
+      } else if (p.kind !== 'use') {
         body.append(row(t('builderPartName'), textInput(p.name, v => set(() => { p.name = v.trim().slice(0, 40); }, { preview: false }), { placeholder: ownName(p) || t('builderNameHint') })));
       }
       if (SLOT_KINDS.includes(p.kind) || VARIABLE_KINDS.includes(p.kind)) sourceRows(body, p);
@@ -1446,6 +1519,7 @@
       if (p.kind === 'choice') choicesRows(body, p);
       if (p.kind === 'chart') chartRows(body, p);
       if (p.kind === 'each') eachRows(body, p);
+      if (p.kind === 'use') useRows(body, p);
       if (p.kind === 'container') containerRows(body, p);
       if (p.kind === 'text') refRows(body, p);
       if (p.kind === 'shape') shapeRows(body, p);
@@ -1473,7 +1547,7 @@
       placeRows(body, p, parent);
       const end = el('div', 'wd-row wdb-end');
       // A top-level component (a ready-made's container and all) can be kept as a ready-made of your own.
-      if (!parent && p.kind !== 'calc' && !b.design.ready) end.append(button('wd-btn quiet small', t('builderSaveReady'), () => saveAsReady(p)));
+      if (!parent && p.kind !== 'calc' && p.kind !== 'use' && !b.design.ready) end.append(button('wd-btn quiet small', t('builderSaveReady'), () => saveAsReady(p)));
       end.append(confirmButton('wd-btn danger wdb-remove', t('builderRemove'), () => removePart(p.id), t('tapAgain')));
       body.append(end);
     }

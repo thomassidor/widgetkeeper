@@ -1662,6 +1662,11 @@
     "builderSaveReady": "Gem som færdig",
     "builderSaveReadyHint": "Gemmer en kopi af komponenten til at tilføje igen, i dette design eller et andet, eller til at gentage pr. enhed i en Gentager.",
     "builderSavedReady": "__name__ gemt som færdig",
+    "builderLinkedHint": "Følger den færdige “__name__”: ændringer i den vises også her. Frakobl for at ændre denne for sig.",
+    "builderLinkedGone": "Den færdige, den fulgte, er væk.",
+    "builderEditReady": "Rediger den færdige",
+    "builderDetach": "Frakobl",
+    "builderDeleteReady": "Slet __name__",
     "builderAnyDevice": "Widgettens enhed",
     "builderAnyDeviceHint": "Virker med alle enheder: udfyldes med den enhed, der vælges, hvor widgetten placeres, eller med hver af en Gentagers.",
     "builderAnyDeviceOf": "Widgettens enhed (her __name__)",
@@ -1794,7 +1799,8 @@
       "arc": "Bue",
       "bar": "Bjælke",
       "chart": "Diagram",
-      "each": "Gentager"
+      "each": "Gentager",
+      "use": "Koblet færdig"
     },
     "tapAgain": "Tryk igen",
     "hold": "Hold",

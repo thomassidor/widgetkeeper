@@ -1662,6 +1662,11 @@
     "builderSaveReady": "Bewaren als kant-en-klaar",
     "builderSaveReadyHint": "Bewaart een kopie van dit onderdeel om opnieuw toe te voegen, in dit of een ander ontwerp, of om per apparaat te herhalen in een Herhaler.",
     "builderSavedReady": "__name__ bewaard als kant-en-klaar",
+    "builderLinkedHint": "Volgt de kant-en-klare “__name__”: een wijziging daarin zie je hier ook. Ontkoppel om deze los te wijzigen.",
+    "builderLinkedGone": "De kant-en-klare die het volgde is weg.",
+    "builderEditReady": "Kant-en-klare bewerken",
+    "builderDetach": "Ontkoppelen",
+    "builderDeleteReady": "__name__ verwijderen",
     "builderAnyDevice": "Apparaat van de widget",
     "builderAnyDeviceHint": "Werkt met elk apparaat: ingevuld met het apparaat dat je kiest waar de widget staat, of met elk apparaat van een Herhaler.",
     "builderAnyDeviceOf": "Apparaat van de widget (hier __name__)",
@@ -1794,7 +1799,8 @@
       "arc": "Boog",
       "bar": "Balk",
       "chart": "Grafiek",
-      "each": "Herhaler"
+      "each": "Herhaler",
+      "use": "Gekoppelde kant-en-klare"
     },
     "tapAgain": "Tik nogmaals",
     "hold": "Vasthouden",

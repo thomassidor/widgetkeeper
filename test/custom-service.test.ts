@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
-import { MAX_INPUTS, MAX_PARTS, allParts, bindDevice, designCharts, designFlows as designFlowsOf, designSlots, designVariables, readDesign, readPart, ruleHolds, usesDevice } from '../lib/customDesigns.js';
+import { MAX_INPUTS, MAX_PARTS, allParts, bindDevice, designCharts, detachUses, renewIds, designFlows as designFlowsOf, designSlots, designVariables, readDesign, readPart, ruleHolds, usesDevice } from '../lib/customDesigns.js';
 import CustomWidgetService, {
   CUSTOM_CHOICE_CARD, CUSTOM_DESIGN_EVENT, CUSTOM_DESIGNS_SETTING, CUSTOM_FLOW_EVENT, CUSTOM_FLOW_SETTING, CUSTOM_TAPPED_CARD, spanWindow,
 } from '../lib/CustomWidgetService.js';
@@ -643,6 +643,56 @@ describe('CustomWidgetService: any device, Repeaters and ready-mades (2026-11-24
     const state: any = await service.previewState({ ...ANY, sample: 'l1' });
     expect(state.design.parts[0].slot).toBe('l1:onoff');
     expect(Object.keys(state.values)).toContain('l1:onoff');
+  });
+});
+
+describe('linked ready-mades (2026-11-24, the user: delete your own, and detach an instance from its source)', () => {
+  const lamp = (id: string, name: string, on: boolean) => fakeDevice({ id, name, zone: 'z', caps: { onoff: { type: 'boolean', value: on, title: 'On' } } });
+  const TILE = part('box', 'container', { mode: 'free', at: { x: 0, y: 0, w: 2, h: 1 }, parts: [
+    part('c', 'calc', { op: 'sum', inputs: [{ slot: '@:onoff' }], at: { x: 0, y: 0, w: 50, h: 50 } }),
+    part('sw', 'switch', { slot: '@:onoff', rules: [{ of: { part: 'c' }, op: 'above', value: '0', look: 'red' }], at: { x: 50, y: 0, w: 50, h: 50 } }),
+  ] });
+  const READY = { id: 'tile', name: 'Lamp tile', ready: true, parts: [TILE] };
+  const HOST = { id: 'host', name: 'Hall', parts: [
+    part('u', 'use', { ready: 'tile', at: { x: 1, y: 2, w: 2, h: 1 } }),
+    part('box2', 'container', { mode: 'grid', parts: [part('u2', 'use', { ready: 'tile' })] }),
+  ] };
+
+  it('reads a linked instance: only its ready-made', () => {
+    expect(readPart({ kind: 'use', ready: 'tile', slot: 'a:onoff', color: 'red' })).toMatchObject({ kind: 'use', ready: 'tile', style: 'none' });
+    expect(readPart({ kind: 'use', ready: '__proto__' })).not.toHaveProperty('ready');
+  });
+
+  it('copies a component with new ids, its references to its own parts following them', () => {
+    const copy = renewIds(readDesign({ parts: [TILE] })!.parts[0]) as any;
+    const [c, sw] = copy.parts;
+    expect(new Set([copy.id, c.id, sw.id, 'box', 'c', 'sw']).size).toBe(6);
+    expect(sw.rules[0].of).toEqual({ part: c.id });
+    expect(sw.slot).toBe('@:onoff');
+  });
+
+  it("shows a linked instance as its ready-made now, with the widget's device, and acts on it", async () => {
+    const devices = [lamp('l1', 'Lamp', true)];
+    const { service } = setup([READY, HOST], devices);
+    const state: any = await service.getState('host', 'l1');
+    expect(state.each.u).toEqual({ part: expect.objectContaining({ id: 'box' }), devices: ['l1'] });
+    expect(Object.keys(state.values)).toContain('l1:onoff');
+    await service.setValue('host', 'u/sw', false, undefined, 'l1');
+    expect((devices[0] as any).sent).toEqual(['onoff=false']);
+    // Without a device its values stay the widget's device's, read as nothing.
+    expect((await service.getState('host') as any).each.u.devices).toEqual(['@']);
+  });
+
+  it("turns a deleted ready-made's linked instances into copies of their own, except a container inside a container", () => {
+    const { service } = setup([READY, HOST]);
+    expect(service.remove('tile')).toEqual({ removed: true });
+    const host = service.get('host')!;
+    expect(host.parts.map(p => p.kind)).toEqual(['container', 'container']);
+    expect(host.parts[0]).toMatchObject({ at: { x: 1, y: 2, w: 2, h: 1 } });
+    expect(host.parts[0].parts!.map(p => p.kind)).toEqual(['calc', 'switch']);
+    expect(host.parts[1].parts).toEqual([]);
+    const d = readDesign(HOST)!;
+    expect(detachUses(d, 'other', readDesign({ parts: [TILE] })!.parts[0])).toBe(false);
   });
 });
 

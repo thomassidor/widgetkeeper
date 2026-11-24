@@ -558,6 +558,8 @@ html, body { background: transparent !important; }
 .wb-each-item { position: relative; min-width: 0; min-height: 0; display: flex; }
 .wb-each-item > .wb-part { flex: 1; min-width: 0; }
 .wb-each-empty[hidden] { display: none; }
+/* A linked ready-made: its one copy fills the box. */
+.wb-use > .wb-each-list { flex: 1; grid-template-rows: minmax(0, 1fr); }
 
 /*
  * Device Values' *Fill percentages by level*: a container filled from the left as far as its value goes, green, yellow

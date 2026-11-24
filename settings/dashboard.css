@@ -1059,6 +1059,11 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-h4 { margin: 16px 0 6px; font-size: 13px; font-weight: 500; color: var(--wd-muted); }
 .wdb-where { margin: 8px 2px 0; }
 .wdb-comps { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+/* Your own ready-mades: the chip and a delete button beside it. */
+.wdb-mine-line { display: flex; gap: 4px; align-items: stretch; min-width: 0; }
+.wdb-mine-line > .wdb-comp { flex: 1; min-width: 0; }
+.wdb-mine-delete { flex: none; align-self: center; color: var(--wd-muted); }
+.wdb-mine-delete:hover { color: var(--wd-red); }
 .wdb-comp {
   -webkit-appearance: none; appearance: none; border: 1px solid var(--wd-line); display: flex; align-items: center; gap: 8px;
   min-height: 36px; padding: 6px 10px; border-radius: 9px; background: var(--wd-tile); color: var(--wd-text); cursor: grab;

@@ -162,6 +162,13 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
           each[x.id] = { part, devices: part ? ids.slice(0, x.limit || 12) : [] };
           if (part) for (const id of each[x.id].devices) copies.push(bind(part, id));
         }
+        if (x.kind === 'use') {
+          // A linked ready-made: its source once, with the preview's device.
+          const ready = designs.find(d => d.id === x.ready && d.ready);
+          const part = ready && ready.parts[0] ? ready.parts[0] : null;
+          each[x.id] = { part, devices: part ? [saved.sample || '@'] : [] };
+          if (part) copies.push(bind(part, saved.sample));
+        }
         eachPart(x.parts);
       }
     })(design.parts);
@@ -321,7 +328,15 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
     }
     if (/^\/web\/designs\/[^/]+$/.test(p) && method === 'DELETE') {
       const i = designs.findIndex(d => d.id === p.split('/')[3]);
-      if (i >= 0) designs.splice(i, 1);
+      const gone = i >= 0 ? designs.splice(i, 1)[0] : null;
+      // A ready-made's linked instances become copies of it, as lib/customDesigns.ts' detachUses().
+      const source = gone && gone.ready ? gone.parts[0] : null;
+      const fresh = x => ({ ...x, id: Math.random().toString(36).slice(2, 10), ...(x.parts ? { parts: x.parts.map(fresh) } : {}) });
+      const swap = list => list.flatMap((x) => {
+        if (x.parts) x.parts = swap(x.parts);
+        return source && x.kind === 'use' && x.ready === gone.id ? [{ ...fresh(JSON.parse(JSON.stringify(source))), at: x.at }] : [x];
+      });
+      if (source) for (const d of designs) d.parts = swap(d.parts);
       return { removed: i >= 0, designs };
     }
     if (/^\/web\/designs\/[^/]+\/copy$/.test(p)) {
