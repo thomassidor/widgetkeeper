@@ -3,7 +3,7 @@ import { getAppApi } from './appApi.js';
 import { byName, devicesAndZones, matches, type AutocompleteItem } from './autocomplete.js';
 import { deviceImage, fetchImageBase64 } from './deviceIcon.js';
 import {
-  MAX_DESIGNS, MAX_REPEAT_CANDIDATES, SERVER_ACTIONS, TAP_KINDS, allParts, designCharts, designFlows, designSlots, designVariables, findPart, partLabel, readDesign,
+  MAX_DESIGNS, MAX_EACH, MAX_REPEAT_CANDIDATES, SERVER_ACTIONS, TAP_KINDS, allParts, bindDevice, designCharts, designFlows, designSlots, designVariables, findPart, partLabel, readDesign,
   type Design, type FlowProp, type FlowReset, type Part,
 } from './customDesigns.js';
 import { DebouncedSetting, isReservedKey } from './storedSetting.js';
@@ -116,10 +116,10 @@ export default class CustomWidgetService {
     return this.designs.find(d => d.id === id);
   }
 
-  /** The widget's Design setting: every design by name, its part count as the description. */
+  /** The widget's Design setting: every design by name (not the ready-made components), its part count as the description. */
   designItems(query: string): AutocompleteItem[] {
     return this.designs
-      .filter(d => matches(query, d.name))
+      .filter(d => !d.ready && matches(query, d.name))
       .map(d => ({ id: d.id, name: d.name, description: this.homey.__('custom.partCount', { count: allParts(d).length }) || `${allParts(d).length} components` }));
   }
 
@@ -212,10 +212,11 @@ export default class CustomWidgetService {
    * A design and what it shows: device values by slot (`ValueService`), variables, Flows, histories by `<span>\n<slot>`,
    * and what Flows set on its parts (`flow`, with `expires` where it goes back). `{missing: true}` for a design that's gone.
    */
-  async getState(id: string) {
+  async getState(id: string, device?: string) {
     const design = this.get(id);
     if (!design) return { missing: true as const, now: Date.now() };
-    return this.stateOf(design, this.flowState(design.id));
+    // A design that works with any device: the one picked where it's placed fills in its `@` values.
+    return this.stateOf(bindDevice(design, device), this.flowState(design.id));
   }
 
   /**
@@ -225,7 +226,7 @@ export default class CustomWidgetService {
   async previewState(body: unknown) {
     const design = readDesign(body);
     if (!design) throw new Error('Not a design');
-    return this.stateOf(design, this.get(design.id) ? this.flowState(design.id) : {});
+    return this.stateOf(bindDevice(design, design.sample), this.get(design.id) ? this.flowState(design.id) : {});
   }
 
   /**
@@ -233,6 +234,11 @@ export default class CustomWidgetService {
    * `MAX_REPEAT_CANDIDATES`, as slots. Its test is the widget's, on the live values, so a door that opens shows at once.
    */
   private async repeatSlots(part: Part): Promise<string[]> {
+    return (await this.devicesWith(part, MAX_REPEAT_CANDIDATES)).map(id => `${id}:${part.capability}`);
+  }
+
+  /** Every device with a part's capability, in its room and the rooms inside it, by name: ids, at most `max`. */
+  private async devicesWith(part: Part, max: number): Promise<string[]> {
     if (!part.capability) return [];
     const [devices, zones] = await devicesAndZones(this.homey);
     const inZone = (zoneId: string | undefined): boolean => {
@@ -242,20 +248,43 @@ export default class CustomWidgetService {
     return devices
       .filter(d => d?.capabilitiesObj?.[part.capability!] && d.capabilitiesObj[part.capability!].getable !== false && (!part.zone || inZone(d.zone)))
       .sort(byName(this.homey))
-      .slice(0, MAX_REPEAT_CANDIDATES)
-      .map(d => `${d.id}:${part.capability}`);
+      .slice(0, max)
+      .map(d => d.id as string);
+  }
+
+  /** A Repeater's devices: those picked, or every one with its capability (in its room). */
+  private async eachDevices(part: Part): Promise<string[]> {
+    const ids = part.capability ? await this.devicesWith(part, MAX_EACH) : part.devices ?? [];
+    return ids.slice(0, part.limit ?? MAX_EACH);
+  }
+
+  /** The ready-made component a Repeater repeats: the first part of a design saved as one. */
+  private readyPart(part: Part): Part | null {
+    const d = part.ready ? this.get(part.ready) : undefined;
+    return d?.ready && d.parts[0] ? d.parts[0] : null;
   }
 
   private async stateOf(design: Design, flow: Record<string, FlowValues & { expires?: number }>) {
     const repeaters = allParts(design).filter(p => p.kind === 'repeat');
     const repeats = Object.fromEntries(await Promise.all(repeaters.map(async p => [p.id, await this.repeatSlots(p).catch((err) => {
-      this.log('Widget Builder: a repeater\'s devices failed:', err);
+      this.log('Widget Builder: a list\'s devices failed:', err);
       return [] as string[];
     })] as const)));
-    const slots = [...new Set([...designSlots(design), ...Object.values(repeats).flat()])];
-    const variables = designVariables(design);
-    const flows = designFlows(design);
-    const charts = designCharts(design);
+    // A Repeater's component and devices; what each copy reads is read with the design's own.
+    const eaches = allParts(design).filter(p => p.kind === 'each');
+    const each = Object.fromEntries(await Promise.all(eaches.map(async (p) => {
+      const part = this.readyPart(p);
+      const devices = part ? await this.eachDevices(p).catch((err) => { this.log('Widget Builder: a repeater\'s devices failed:', err); return [] as string[]; }) : [];
+      return [p.id, { part, devices }] as const;
+    })));
+    const reads: Design = {
+      ...design,
+      parts: [...design.parts, ...Object.values(each).flatMap(e => (e.part ? e.devices.map(id => bindDevice(e.part!, id)) : []))],
+    };
+    const slots = [...new Set([...designSlots(reads), ...Object.values(repeats).flat()])];
+    const variables = designVariables(reads);
+    const flows = designFlows(reads);
+    const charts = designCharts(reads);
     const quiet = <T>(what: string, p: Promise<T>, empty: T) => p.catch(err => { this.log(`Widget Builder: ${what} failed:`, err); return empty; });
     const bySpan = new Map<string, string[]>();
     for (const c of charts) bySpan.set(c.span, [...(bySpan.get(c.span) ?? []), c.slot]);
@@ -273,6 +302,7 @@ export default class CustomWidgetService {
       flows: Object.fromEntries((flowList as any[]).map(f => [f.id, f])),
       histories: Object.fromEntries(histories.flat()),
       repeats,
+      each,
       flow,
       // For its Time components and texts with the time: the weekday's and date's language, and the app's time format.
       language: this.homey.i18n.getLanguage(),
@@ -304,11 +334,23 @@ export default class CustomWidgetService {
     return null;
   }
 
-  /** The part a widget's request acts on, which must be one of `kinds`; anything else throws. */
-  private partFor(designId: unknown, partId: unknown, kinds: readonly string[]): { design: Design, part: Part } {
-    const design = this.get(String(designId ?? ''));
-    if (!design) throw new Error('No such design');
-    const part = findPart(design, String(partId ?? ''));
+  /**
+   * The part a widget's request acts on, which must be one of `kinds`; anything else throws. `device`: the widget's
+   * device, filling in the design's `@` values. A Repeater's copy is `<repeater>/<part>`, `device` one of its devices.
+   */
+  private async partFor(designId: unknown, partId: unknown, kinds: readonly string[], device?: unknown): Promise<{ design: Design, part: Part }> {
+    const saved = this.get(String(designId ?? ''));
+    if (!saved) throw new Error('No such design');
+    const dev = typeof device === 'string' && device ? device : undefined;
+    const design = bindDevice(saved, dev);
+    const [outer, inner] = String(partId ?? '').split('/');
+    let part = findPart(design, outer);
+    if (inner !== undefined) {
+      const ready = part?.kind === 'each' ? this.readyPart(part) : null;
+      if (!part || !ready || !dev || !(await this.eachDevices(part)).includes(dev)) throw new Error('No such part');
+      const copy = bindDevice({ id: '', name: '', updatedAt: 0, parts: [ready] } as Design, dev);
+      part = findPart(copy, inner);
+    }
     if (!part || !kinds.includes(part.kind)) throw new Error('No such part');
     return { design, part };
   }
@@ -317,20 +359,20 @@ export default class CustomWidgetService {
    * A switch, slider, stepper or choice changes its device value. Only the part's own capability is set, with a value
    * of its type: a switch's boolean, a number within the capability's (and the part's) range, or one of a choice's values.
    */
-  async setValue(designId: unknown, partId: unknown, value: unknown, slot?: unknown) {
-    const { part } = this.partFor(designId, partId, ['switch', 'slider', 'stepper', 'choice', 'repeat']);
+  async setValue(designId: unknown, partId: unknown, value: unknown, slot?: unknown, device?: unknown) {
+    const { design, part } = await this.partFor(designId, partId, ['switch', 'slider', 'stepper', 'choice', 'repeat'], device);
     if (part.kind === 'repeat') {
       // A repeater switches one of its own devices' yes/no, and only with Tap to switch on.
       if (!part.control || typeof value !== 'boolean') throw new Error('The repeater can\'t switch this');
       if (!(await this.repeatSlots(part)).includes(String(slot ?? ''))) throw new Error('Not one of the repeater\'s devices');
-      return this.writeCapability(part, String(slot), value);
+      return this.writeCapability(design.id, part, String(slot), value);
     }
     if (!part.slot) throw new Error('The part has no device value');
-    return this.writeCapability(part, part.slot, value);
+    return this.writeCapability(design.id, part, part.slot, value);
   }
 
   /** Sets a slot's capability for a part: a value of its type, within the capability's and the part's range. */
-  private async writeCapability(part: Part, slot: string, value: unknown) {
+  private async writeCapability(designId: string, part: Part, slot: string, value: unknown) {
     const i = slot.indexOf(':');
     const [deviceId, capabilityId] = [slot.slice(0, i), slot.slice(i + 1)];
     const api = await getAppApi(this.homey);
@@ -363,12 +405,8 @@ export default class CustomWidgetService {
     }
     await device.setCapabilityValue({ capabilityId, value: v });
     this.debug(`Widget Builder: ${device.name} ${capabilityId}=${JSON.stringify(v)}`);
-    if (part.kind === 'choice') void this.fireChoice(this.designOf(part), part, String(value));
+    if (part.kind === 'choice') void this.fireChoice(designId, part, String(value));
     return { ok: true as const };
-  }
-
-  private designOf(part: Part): string {
-    return this.designs.find(d => allParts(d).includes(part))?.id ?? '';
   }
 
   /**
@@ -403,9 +441,9 @@ export default class CustomWidgetService {
    * the request says (its API key use is read from that, `routeKeyUse()`). The widget runs them in order and does the
    * others (a dashboard, a widget state) itself.
    */
-  async runAction(designId: unknown, partId: unknown, index: unknown, kind: unknown) {
+  async runAction(designId: unknown, partId: unknown, index: unknown, kind: unknown, device?: unknown) {
     // A button's, or any component's tap (`TAP_KINDS`).
-    const { part } = this.partFor(designId, partId, ['button', ...TAP_KINDS]);
+    const { design, part } = await this.partFor(designId, partId, ['button', ...TAP_KINDS], device);
     const action = part.actions?.[Number(index)];
     if (!action || action.do !== kind || !SERVER_ACTIONS.includes(action.do)) throw new Error('No such action');
     if (action.do === 'flow') {
@@ -421,7 +459,7 @@ export default class CustomWidgetService {
       const cap = device.capabilitiesObj?.[action.slot.slice(i + 1)];
       if (!cap) throw new Error(`${device.name} has no ${action.slot.slice(i + 1)}`);
       const typed = CustomWidgetService.typedValue(cap.type, action.value, cap.value, cap.values);
-      await this.writeCapability({ ...part, kind: 'slider', min: undefined, max: undefined }, action.slot, typed);
+      await this.writeCapability(design.id, { ...part, kind: 'slider', min: undefined, max: undefined }, action.slot, typed);
     }
     return { ok: true as const };
   }
@@ -430,8 +468,8 @@ export default class CustomWidgetService {
    * An image's picture from a device (a camera's snapshot, else its first image), fetched by the app (the widget can't
    * reach Homey's web server), as `{type, data}` base64.
    */
-  async image(designId: unknown, partId: unknown) {
-    const { part } = this.partFor(designId, partId, ['image']);
+  async image(designId: unknown, partId: unknown, device?: unknown) {
+    const { part } = await this.partFor(designId, partId, ['image'], device);
     if (part.image?.kind !== 'device') throw new Error('Not a device\'s image');
     return this.deviceImage(part.image.device);
   }
@@ -458,8 +496,8 @@ export default class CustomWidgetService {
    * A variable, slider, stepper or choice on a Homey variable sets it (through the personal API key, as Variables
    * does); a number within the part's own range.
    */
-  async setVariable(designId: unknown, partId: unknown, value: unknown) {
-    const { part } = this.partFor(designId, partId, ['variable', 'slider', 'stepper', 'choice']);
+  async setVariable(designId: unknown, partId: unknown, value: unknown, device?: unknown) {
+    const { part } = await this.partFor(designId, partId, ['variable', 'slider', 'stepper', 'choice'], device);
     if (!part.variable) throw new Error('The part has no variable');
     let v = value;
     if (part.kind === 'choice') {
@@ -476,8 +514,8 @@ export default class CustomWidgetService {
   }
 
   /** A button with a Flow starts it (through the personal API key, as Flow Buttons does). */
-  async startFlow(designId: unknown, partId: unknown) {
-    const { part } = this.partFor(designId, partId, ['button']);
+  async startFlow(designId: unknown, partId: unknown, device?: unknown) {
+    const { part } = await this.partFor(designId, partId, ['button'], device);
     if (!part.flowId) throw new Error('The button has no Flow');
     await this.deps.flows.trigger(part.flowId);
     return { ok: true as const };
@@ -486,8 +524,8 @@ export default class CustomWidgetService {
   /**
    * A button without a Flow fires *A Widget Builder button was tapped*: no API key, the app fires its own card.
    */
-  async tap(designId: unknown, partId: unknown, instance?: string) {
-    const { design, part } = this.partFor(designId, partId, ['button']);
+  async tap(designId: unknown, partId: unknown, instance?: string, device?: unknown) {
+    const { design, part } = await this.partFor(designId, partId, ['button'], device);
     if (part.flowId) throw new Error('The button starts a Flow');
     await this.trigger(CUSTOM_TAPPED_CARD,
       { part: part.name || part.kind, design: design.name, dashboard: CustomWidgetService.dashboardOf(instance) },

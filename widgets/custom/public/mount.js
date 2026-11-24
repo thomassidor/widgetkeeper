@@ -13,6 +13,11 @@ window.mountCustomWidget = function (Homey, { root, frame }) {
 
   const settings = Homey.getSettings() || {};
   const design = settings.design && typeof settings.design.id === 'string' && settings.design.id !== 'none' ? settings.design.id : '';
+  // The widget's device: a design that works with any device shows this one's values.
+  let device = '';
+  const devices = window.WidgetkeeperKit.getDeviceIds(Homey).then((ids) => { device = ids[0] || ''; });
+  /** A request's device: a Repeater's copy names its own, else the widget's. */
+  const deviceOf = part => (part && part.device) || device || undefined;
   let instance = '';
   try { instance = typeof Homey.getWidgetInstanceId === 'function' ? Homey.getWidgetInstanceId() : ''; } catch (e) { /* not on the web */ }
   const web = Promise.resolve(instance).then(id => { instance = id; return typeof id === 'string' && id.startsWith('web-'); }, () => false);
@@ -33,13 +38,13 @@ window.mountCustomWidget = function (Homey, { root, frame }) {
     colorStyle: settings.colorStyle,
     onHeight: link.setHeight,
     onHaptic: haptic,
-    onSet: (part, value, slot) => call('POST', part.variable ? '/variable' : '/set', { design, part: part.id, value, ...(slot ? { slot } : {}) }),
-    onButton: part => call('POST', part.flowId ? '/flow' : '/tap', { design, part: part.id, instance }),
+    onSet: (part, value, slot) => call('POST', part.variable ? '/variable' : '/set', { design, part: part.id, value, ...(slot ? { slot } : {}), device: deviceOf(part) }),
+    onButton: part => call('POST', part.flowId ? '/flow' : '/tap', { design, part: part.id, instance, device: deviceOf(part) }),
     // A button's actions the app runs, one at a time and in order; `do` says which kind (its API key use).
-    onAction: (part, index, action) => call('POST', '/action', { design, part: part.id, index, do: action.do }),
+    onAction: (part, index, action) => call('POST', '/action', { design, part: part.id, index, do: action.do, device: deviceOf(part) }),
     // A web dashboard's page opens one (as Dashboard Shortcuts does).
     onOpen: (id) => { try { Homey.popup(`#/d/${encodeURIComponent(id)}`); } catch (e) { console.error(e); } },
-    onImage: part => Homey.api('GET', `/image?design=${encodeURIComponent(design)}&part=${encodeURIComponent(part.id)}`),
+    onImage: part => Homey.api('GET', `/image?design=${encodeURIComponent(design)}&part=${encodeURIComponent(part.id)}${deviceOf(part) ? `&device=${encodeURIComponent(deviceOf(part))}` : ''}`),
     // Widget states are kept on this screen, per design.
     storeKey: design,
   });
@@ -49,9 +54,10 @@ window.mountCustomWidget = function (Homey, { root, frame }) {
   async function load() {
     if (!await web) { widget.setMessage(widget.t('webOnly')); ready(); return; }
     if (!design) { widget.setMessage(widget.t('pickDesign')); ready(); return; }
+    await devices;
     const mine = ++reading;
     try {
-      const state = await Homey.api('GET', `/state?design=${encodeURIComponent(design)}${link.perfParam()}`);
+      const state = await Homey.api('GET', `/state?design=${encodeURIComponent(design)}${device ? `&device=${encodeURIComponent(device)}` : ''}${link.perfParam()}`);
       if (mine !== reading) return; // a newer read is on its way
       window.WidgetkeeperKit.takeTileShadow(state); // the app's Tile shadows ride along
       widget.setState(state);

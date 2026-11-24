@@ -569,7 +569,8 @@ describe('the foot', () => {
     toggle.click();
     const fold = () => pane.querySelector('.wd-nav-foot-fold') as HTMLElement;
     expect(fold().getAttribute('aria-expanded')).toBe('true');
-    expect(rows(pane)).toBe(3);
+    // Customize, Keep open, Widget Builder and Settings (Keep open hidden at this width).
+    expect(rows(pane)).toBe(3 + 1);
     fold().click();
     expect(fold().getAttribute('aria-expanded')).toBe('false');
     expect(fold().getAttribute('aria-label')).toBe('navFootShow');
@@ -580,7 +581,7 @@ describe('the foot', () => {
     const again = mount();
     expect(rows(again.pane)).toBe(0);
     (again.pane.querySelector('.wd-nav-foot-fold') as HTMLElement).click();
-    expect(rows(again.pane)).toBe(3);
+    expect(rows(again.pane)).toBe(3 + 1);
     expect(again.stored().footFolded).toBe(false);
   });
 

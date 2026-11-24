@@ -43,11 +43,15 @@ export const PART_KINDS = [
   'switch', 'button', 'slider', 'stepper', 'choice', 'variable',
   'container', 'text', 'icon', 'shape', 'image',
   'sparkline', 'arc', 'bar', 'ring', 'segments', 'repeat',
-  'calc', 'state',
+  'calc', 'state', 'chart', 'each',
 ] as const;
 export type PartKind = typeof PART_KINDS[number];
 
-/** The kinds that show a device value (`slot`, `<deviceId>:<capabilityId>`). */
+/**
+ * The kinds that show a device value (`slot`, `<deviceId>:<capabilityId>`). A slot of `@:<capabilityId>` is *the
+ * widget's device*: a design that works with any device, filled in with the device picked where it's placed
+ * (`bindDevice()`), or for a Repeater with each of its devices.
+ */
 export const SLOT_KINDS: readonly PartKind[] = ['switch', 'slider', 'stepper', 'choice', 'sparkline', 'icon'];
 /** The kinds that may show or change a Homey variable instead of a device value. */
 export const VARIABLE_KINDS: readonly PartKind[] = ['slider', 'stepper', 'choice', 'variable'];
@@ -145,7 +149,17 @@ export const PRESS_KINDS: readonly PartKind[] = ['button', 'switch'];
 export const REPEAT_SORTS = ['name', 'up', 'down'] as const;
 
 /** The kinds without a background unless they're given one. */
-export const BARE_KINDS: readonly PartKind[] = ['text', 'icon', 'sparkline', 'arc', 'bar', 'calc'];
+export const BARE_KINDS: readonly PartKind[] = ['text', 'icon', 'sparkline', 'arc', 'bar', 'calc', 'each'];
+/** The kinds that draw text, so they have a text colour (`textColor`). */
+export const TEXT_KINDS: readonly PartKind[] = [
+  'text', 'switch', 'button', 'state', 'stepper', 'choice', 'variable', 'ring', 'segments', 'repeat', 'chart', 'container',
+];
+/** A Chart's series (each a device value's history over its span, in its colour). */
+export const MAX_SERIES = 3;
+/** A Repeater's devices (each a ready-made component filled in with one). */
+export const MAX_EACH = 12;
+/** How many of a dashboard's columns a design spans: its grid has 4 columns per dashboard column. */
+export const MAX_SPAN = 3;
 
 /** Top level: cells of the 4-column grid. In a container: fine-grid cells, or per cent of its inner box (free-form). */
 export const PART_STYLES = ['tile', 'pill', 'none'] as const;
@@ -256,6 +270,18 @@ export type Part = {
   /** A repeater's order (`REPEAT_SORTS`) and the most it shows (else as many as fit, up to `MAX_REPEAT_ITEMS`). */
   sort?: typeof REPEAT_SORTS[number],
   limit?: number,
+  /** The colour of its text (a palette name or `#rrggbb`), on any kind that draws text (`TEXT_KINDS`). */
+  textColor?: TileColor,
+  /** A Chart's series, drawn as lines or bars, with its scale and times along its edges (`axis`). */
+  series?: { slot: string, color: TileColor | null }[],
+  chartStyle?: 'line' | 'bars',
+  axis?: boolean,
+  /**
+   * A Repeater's: the ready-made component it repeats (a design saved as one, `ready`), once per device: the devices
+   * picked (`devices`), or every device with `capability` (in `zone`), each filling in the component's `@` values.
+   */
+  ready?: string,
+  devices?: string[],
 };
 
 export type Background =
@@ -263,7 +289,12 @@ export type Background =
   | { kind: 'color', from: string }
   | { kind: 'gradient', from: string, to: string, angle: number };
 
-export type Design = { id: string, name: string, updatedAt: number, parts: Part[] };
+/**
+ * A design. `span`: the dashboard columns it's made for (1–3; its grid has 4 columns per column). `ready`: saved as a
+ * ready-made component (the builder's library, a Repeater's item), not a widget of its own: its first part is the
+ * component. `sample`: the device the builder shows the widget's device (`@`) with.
+ */
+export type Design = { id: string, name: string, updatedAt: number, parts: Part[], span?: number, ready?: true, sample?: string };
 
 const HEX = /^#[0-9a-f]{6}$/;
 const ID = /^[A-Za-z0-9_-]{1,24}$/;
@@ -299,13 +330,13 @@ export function newId(): string {
  * Where a part goes, kept on its grid: top level in the 4 × 64 px cells, in a container on its fine grid (12 columns,
  * any row) or, free-form, in per cent of the container (one decimal).
  */
-function placeOf(v: any, where: 'top' | 'grid' | 'free'): Place {
+function placeOf(v: any, where: 'top' | 'grid' | 'free', span = 1): Place {
   if (where === 'free') {
     const x = num(v?.x, 0, 99, 0, 0.1);
     const y = num(v?.y, 0, 99, 0, 0.1);
     return { x, y, w: num(v?.w, 1, 100 - x, Math.min(25, 100 - x), 0.1), h: num(v?.h, 1, 100 - y, Math.min(25, 100 - y), 0.1) };
   }
-  const cols = where === 'top' ? GRID_COLUMNS : FINE_COLUMNS;
+  const cols = where === 'top' ? GRID_COLUMNS * span : FINE_COLUMNS;
   const rows = where === 'top' ? MAX_GRID_ROWS : MAX_GRID_ROWS * 9;
   const x = num(v?.x, 0, cols - 1, 0);
   const y = num(v?.y, 0, rows - 1, 0);
@@ -373,11 +404,12 @@ function flowOf(v: unknown, icons = true): Partial<Record<FlowProp, true>> {
   return out;
 }
 
+/** A background: none, a colour or a gradient, each colour a palette name (Muted or Vivid's) or `#rrggbb`. */
 function backgroundOf(v: any): Background {
   const from = color(v?.from);
-  if (v?.kind === 'color' && from && HEX.test(from)) return { kind: 'color', from };
+  if (v?.kind === 'color' && from) return { kind: 'color', from };
   const to = color(v?.to);
-  if (v?.kind === 'gradient' && from && to && HEX.test(from) && HEX.test(to)) {
+  if (v?.kind === 'gradient' && from && to) {
     return { kind: 'gradient', from, to, angle: num(v.angle, 0, 359, 135) };
   }
   return { kind: 'none' };
@@ -392,6 +424,7 @@ export function readDesign(v: unknown, fallbackId = newId()): Design | null {
   if (!v || typeof v !== 'object') return null;
   const d = v as Record<string, unknown>;
   const id = typeof d.id === 'string' && ID.test(d.id) && !isReservedKey(d.id) ? d.id : fallbackId;
+  const span = num(d.span, 1, MAX_SPAN, 1);
   const seen = new Set<string>();
   let count = 0;
   const partsOf = (list: unknown, where: 'top' | 'grid' | 'free'): Part[] => {
@@ -399,7 +432,7 @@ export function readDesign(v: unknown, fallbackId = newId()): Design | null {
     const out: Part[] = [];
     for (const raw of list) {
       if (count >= MAX_PARTS) break;
-      const p = readPart(raw, where);
+      const p = readPart(raw, where, span);
       if (!p || (p.kind === 'container' && where !== 'top')) continue;
       if (where === 'top') delete p.page;
       while (seen.has(p.id)) p.id = newId();
@@ -423,6 +456,10 @@ export function readDesign(v: unknown, fallbackId = newId()): Design | null {
     updatedAt: Number.isFinite(d.updatedAt) ? Number(d.updatedAt) : 0,
     parts: partsOf(d.parts, 'top'),
   };
+  if (span > 1) design.span = span;
+  if (d.ready === true) design.ready = true;
+  const sample = idOf(d.sample, 100);
+  if (sample && sample !== '@') design.sample = sample;
   checkPartSources(design);
   return design;
 }
@@ -490,7 +527,7 @@ function readRange(p: Part, r: Record<string, any>) {
 }
 
 /** One part, or null when its kind isn't known. Only the fields its kind uses are kept. */
-export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Part | null {
+export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', span = 1): Part | null {
   if (!v || typeof v !== 'object') return null;
   const r = v as Record<string, any>;
   if (!PART_KINDS.includes(r.kind)) return null;
@@ -499,7 +536,7 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     id: typeof r.id === 'string' && ID.test(r.id) && !isReservedKey(r.id) ? r.id : newId(),
     kind,
     name: str(r.name, MAX_NAME),
-    at: placeOf(r.at, where),
+    at: placeOf(r.at, where, span),
     // A calculated value is never drawn: no colour, icon, rules or Flow changes of its own.
     color: kind === 'calc' ? null : color(r.color),
     icon: ICON_KINDS.includes(kind) && typeof r.icon === 'string' && /^[a-z0-9-]{1,40}$/.test(r.icon) ? r.icon : null,
@@ -512,6 +549,12 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     reset: oneOf(r.reset, FLOW_RESETS, 'never'),
   };
   if (Number.isInteger(r.page) && r.page >= 0 && r.page < MAX_PAGES) p.page = r.page;
+  if (TEXT_KINDS.includes(kind)) {
+    // A Text's own colour was its text's before it had a text colour.
+    const ink = color(r.textColor) ?? (kind === 'text' ? color(r.color) : null);
+    if (ink) p.textColor = ink;
+    if (kind === 'text') p.color = null;
+  }
   if (SLOT_KINDS.includes(kind) || kind === 'icon') {
     const slot = slotOf(r.slot);
     if (slot) p.slot = slot;
@@ -673,9 +716,40 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
       p.units = str(r.units, MAX_UNITS);
       break;
     }
+    case 'chart': {
+      const series: { slot: string, color: TileColor | null }[] = [];
+      // A Mini chart (before 1.4.0's release, the same id) kept its value as `slot`.
+      for (const x of Array.isArray(r.series) ? r.series : slotOf(r.slot) ? [{ slot: r.slot }] : []) {
+        const slot = slotOf(x?.slot);
+        if (slot && !series.some(s => s.slot === slot) && series.length < MAX_SERIES) series.push({ slot, color: color(x?.color) });
+      }
+      p.series = series;
+      p.span = SPANS.has(r.span) ? r.span : '24h';
+      p.chartStyle = r.chartStyle === 'bars' ? 'bars' : 'line';
+      p.axis = r.axis !== false;
+      readRange(p, r);
+      break;
+    }
+    case 'each': {
+      const ready = typeof r.ready === 'string' && ID.test(r.ready) && !isReservedKey(r.ready) ? r.ready : '';
+      if (ready) p.ready = ready;
+      const cap = typeof r.capability === 'string' && /^[A-Za-z0-9_.-]{1,80}$/.test(r.capability) ? r.capability : '';
+      if (cap) p.capability = cap;
+      else {
+        const devices = (Array.isArray(r.devices) ? r.devices : []).map((x: unknown) => idOf(x, 100)).filter((x: string | undefined): x is string => !!x && x !== '@');
+        p.devices = [...new Set(devices)].slice(0, MAX_EACH) as string[];
+      }
+      const zone = idOf(r.zone, 100);
+      if (cap && zone) p.zone = zone;
+      p.columns = num(r.columns, 1, 4, 1);
+      if (optNum(r.limit) !== undefined) p.limit = num(r.limit, 1, MAX_EACH, MAX_EACH);
+      break;
+    }
     case 'container':
       p.mode = r.mode === 'free' ? 'free' : r.mode === 'pages' ? 'pages' : 'grid';
       p.background = backgroundOf(r.background);
+      // Before containers had a style: drawn on the tile's colour without a background of their own, else on it.
+      if (!PART_STYLES.includes(r.style)) p.style = p.background.kind === 'none' ? 'tile' : 'none';
       p.parts = [];
       if (p.mode === 'pages') {
         const pages = (Array.isArray(r.pages) ? r.pages.slice(0, MAX_PAGES) : []).map((x: any) => ({ name: str(x?.name, 24) }));
@@ -715,6 +789,7 @@ function designSources(design: Design): Source[] {
     out.push(...(p.inputs ?? []));
     for (const r of p.rings ?? []) out.push(r.src);
     for (const x of p.segments ?? []) out.push(x.src);
+    for (const x of p.series ?? []) out.push({ slot: x.slot });
     for (const a of p.actions ?? []) if (a.do === 'set') out.push({ slot: a.slot }); else if (a.do === 'variable') out.push({ variable: a.variable });
   }
   return out;
@@ -741,10 +816,35 @@ export function designCharts(design: Design): { slot: string, span: string }[] {
     // A sparkline's, and a calculated value's change (of its first input, a device value).
     const first = p.inputs?.[0];
     const slot = p.kind === 'sparkline' ? p.slot : p.kind === 'calc' && p.op === 'change' && first && 'slot' in first ? first.slot : undefined;
+    for (const x of p.kind === 'chart' && p.span ? p.series ?? [] : []) seen.set(`${p.span}\n${x.slot}`, { slot: x.slot, span: p.span! });
     if (!slot || !p.span) continue;
     seen.set(`${p.span}\n${slot}`, { slot, span: p.span });
   }
   return [...seen.values()];
+}
+
+/** The widget's device in a slot: `@:<capabilityId>`. */
+export const DEVICE_SLOT = /^@:/;
+
+/** Whether a design (or a part) reads the widget's device anywhere (`@`): it then works with any device. */
+export function usesDevice(v: Design | Part): boolean {
+  return JSON.stringify(v).includes('"@:') || /"device":"@"/.test(JSON.stringify(v));
+}
+
+/**
+ * A design or part with the widget's device filled in: every `@:<capabilityId>` slot (the parts', their rules', texts',
+ * actions', a chart's) becomes `<deviceId>:<capabilityId>`, and an image of the device (`@`) that device's. A copy;
+ * without a device, the same object.
+ */
+export function bindDevice<T>(v: T, deviceId: string | undefined | null): T {
+  if (!deviceId || /[\s:]/.test(deviceId)) return v;
+  const walk = (x: unknown, key = ''): unknown => {
+    if (typeof x === 'string') return DEVICE_SLOT.test(x) ? `${deviceId}${x.slice(1)}` : key === 'device' && x === '@' ? deviceId : x;
+    if (Array.isArray(x)) return x.map(y => walk(y));
+    if (x && typeof x === 'object') return Object.fromEntries(Object.entries(x).map(([k, y]) => [k, walk(y, k)]));
+    return x;
+  };
+  return walk(v) as T;
 }
 
 /** A part's name in Flow cards and lists: `Design · Part`, the part's kind where it has no name. */

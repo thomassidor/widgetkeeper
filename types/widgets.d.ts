@@ -227,6 +227,7 @@ interface Window {
   customRuleHolds: (rule: any, value: unknown) => boolean;
   customLookOf: (part: any, value: unknown, flow: any, valueOf?: (source: any) => unknown) => { color: string | null, tint: boolean, hidden: boolean };
   customFormula: (src: string) => ((inputs: Record<string, number>) => number) | null;
+  customBindPart: (part: any, deviceId: string, prefix: string) => any;
   createPriceWidget: (root: HTMLElement, opts?: object) => any;
   electricityPriceLevel: (price: number | null, prices: (number | null)[]) => 'low' | 'medium' | 'high' | null;
   createTimersWidget: (root: HTMLElement, opts?: object) => any;

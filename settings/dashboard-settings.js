@@ -20,7 +20,9 @@
       ['groupCharts', ['charts', 'compare', 'dailyrange', 'gauge', 'heatmap', 'lines', 'scatter', 'stacked', 'timeline', 'totals', 'typicalday']],
       ['groupFlows', ['flows', 'flowtiles', 'popups', 'variables', 'varpresets']],
       ['groupTime', ['clock', 'dayssince', 'textline', 'timers']],
-      ['groupLayout', ['custom', 'shortcuts', 'spacer', 'stack', 'webpage']],
+      ['groupLayout', ['shortcuts', 'spacer', 'stack', 'webpage']],
+      // The Widget Builder's designs, each its own entry (`designItems()` below), not the bare widget.
+      ['groupBuilder', ['custom']],
     ];
 
     /**
@@ -79,11 +81,18 @@
       // Each group's widgets by name; a widget in no group (a test forbids it) still shows, in the last. Then other
       // apps' widgets, by app (only what Homey still offers: not a deprecated one).
       const types = [...wd.types.values()].sort((a, b) => a.name.localeCompare(b.name));
+      /** @type {{key: any, label: any, defs: any[], designs?: any[]}[]} */
       const groups = WIDGET_GROUPS.map(([key, ids], i) => ({
         key,
         label: t(key),
-        defs: types.filter(def => ids.includes(def.type) || (i === WIDGET_GROUPS.length - 1 && !WIDGET_GROUPS.some(g => g[1].includes(def.type)))),
+        defs: key === 'groupBuilder' ? [] : types.filter(def => ids.includes(def.type) || (i === WIDGET_GROUPS.length - 2 && !WIDGET_GROUPS.some(g => g[1].includes(def.type)))),
       }));
+      // The Widget Builder's group: every design (not the ready-made components), then New design.
+      const custom = types.find(def => def.type === 'custom');
+      const designs = custom ? (wd.designs || (wd.setup && wd.setup.designs) || []).filter(x => !x.ready) : [];
+      const builder = groups.find(g => g.key === 'groupBuilder');
+      if (builder) builder.designs = designs;
+      const countOf = g => (g.designs ? g.designs.length : g.defs.length);
       const others = [...wd.foreign.values()].filter(f => !f.deprecated)
         .sort((a, b) => a.ownerName.localeCompare(b.ownerName) || a.name.localeCompare(b.name));
       if (others.length || wd.foreignState !== 'ok') groups.push({ key: 'otherApps', label: t('otherApps'), defs: others });
@@ -97,8 +106,8 @@
           b.setAttribute('aria-pressed', String(group === id));
           chips.append(b);
         };
-        chip('all', t('allWidgets'), groups.reduce((n, g) => n + g.defs.length, 0));
-        for (const g of groups) chip(g.key, g.label, g.defs.length);
+        chip('all', t('allWidgets'), groups.reduce((n, g) => n + countOf(g), 0));
+        for (const g of groups) if (g.designs || g.defs.length || g.key === 'otherApps') chip(g.key, g.label, countOf(g));
       }
 
       function draw() {
@@ -107,6 +116,29 @@
         let shown = 0;
         for (const g of groups) {
           if (group !== 'all' && group !== g.key) continue;
+          if (g.designs) {
+            if (!custom) continue;
+            const found = g.designs.filter(x => matchesWords(query, `${x.name} ${g.label} ${custom.name}`));
+            if (!found.length && query.trim()) continue;
+            shown += found.length;
+            const section = el('section', 'wd-type-group');
+            const head = el('div', 'wd-types-head');
+            head.append(el('h3', 'wd-h2', g.label), el('p', 'wd-muted', t('builderGroupHint')));
+            const list = el('div', 'wd-types');
+            for (const x of found) list.append(designButton(x));
+            const fresh = el('a', 'wd-type wdb-type-new');
+            fresh.href = '#/builder';
+            fresh.addEventListener('click', () => d.close());
+            const plus = el('span', 'wd-type-preview wdb-type-plus');
+            plus.append(icon('plus'));
+            const text = el('span', 'wd-type-text');
+            text.append(el('span', 'wd-type-name', t('builderNew')), el('span', 'wd-type-about', t('builderNewAbout')));
+            fresh.append(plus, text);
+            list.append(fresh);
+            section.append(head, list);
+            groupsBox.append(section);
+            continue;
+          }
           const defs = g.defs.filter(def => matchesWords(query, `${def.name} ${wd.about(def.type)} ${g.label}`));
           // Other apps' list says so when it couldn't be read, with or without a search.
           const problem = g.key === 'otherApps' && !query.trim() && wd.foreignState !== 'ok' && wd.foreignState !== null;
@@ -133,6 +165,28 @@
       d.showModal();
       // Not where the keyboard would slide up over the list on a tablet.
       if (window.matchMedia && window.matchMedia('(hover: hover)').matches) search.focus();
+
+      /** A design as Add widget's entry: a sketch of it, its name; adds a Widget Builder widget showing it. */
+      function designButton(x) {
+        const b = button('wd-type', '', () => {
+          d.close();
+          const settings = {};
+          for (const st of custom.settings) settings[st.id] = clone(st.value);
+          settings.design = { id: x.id, name: x.name };
+          const anyDevice = JSON.stringify(x.parts).includes('"@:');
+          const w = { id: newId(), type: 'custom', title: '', settings, deviceIds: anyDevice && x.sample ? [x.sample] : [] };
+          // As wide as it's made for, where the columns to the right allow.
+          if (x.span > 1) w.span = x.span;
+          wd.current.dashboard.columns[column].push(w);
+          wd.syncGrid();
+          editWidget(w.id, { pickDevices: anyDevice, isNew: true });
+        });
+        const count = x.parts.reduce((n, p) => n + 1 + (p.parts ? p.parts.length : 0), 0);
+        const text = el('span', 'wd-type-text');
+        text.append(el('span', 'wd-type-name', x.name || t('untitled')), el('span', 'wd-type-about', t('builderPartCount', { count })));
+        b.append(wd.designArt(x, 'wd-type-preview wdb-art wdb-type-art'), text);
+        return b;
+      }
 
       function typeButton(def) {
         const b = button('wd-type', '', () => {
@@ -178,7 +232,20 @@
       const card = (className) => el('section', `wd-set-card${className ? ` ${className}` : ''}`);
       const rows = (ids, label, hints = true) => ids.map(sid => settingRow(def, byId.get(sid), draft, changed, uid(), label ? label(byId.get(sid)) : undefined, hints));
 
-      if (def.devices) body.append(wd.devicePicker(def, draft, pickDevices, () => changed()));
+      if (def.devices) {
+        const picker = wd.devicePicker(def, draft, pickDevices, () => changed());
+        body.append(picker);
+        // A Widget Builder widget has a device only for a design that works with any device.
+        if (w.type === 'custom') {
+          const shows = () => {
+            const id = draft.settings.design && draft.settings.design.id;
+            const x = (wd.designs || (wd.setup && wd.setup.designs) || []).find(y => y.id === id);
+            picker.hidden = !(x && JSON.stringify(x.parts).includes('"@:'));
+          };
+          shows();
+          updates.push(shows);
+        }
+      }
 
       const title = el('input', 'wd-input');
       title.id = uid();

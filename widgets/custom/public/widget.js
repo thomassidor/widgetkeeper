@@ -22,6 +22,7 @@
     off: 'Off',
     setFailed: 'Could not change __name__.',
     noValue: 'No value picked',
+    noReady: 'Pick a ready-made component for the repeater.',
     noKey: 'For this, add an API key in the app settings.',
     keyScope: 'The API key may not do this (Flows or Variables).',
     keyInvalid: 'The API key was not accepted.',
@@ -162,9 +163,41 @@
   /** A part's background: its `style`, or as kept before it had one (`tile: false`; text and icons none). */
   function styleOf(part) {
     if (part.kind === 'shape') return 'none';
+    // A container from before it had a style: on the tile's colour without a background of its own.
+    if (part.kind === 'container' && !['tile', 'pill', 'none'].includes(part.style)) return part.background && part.background.kind !== 'none' ? 'none' : 'tile';
     if (['tile', 'pill', 'none'].includes(part.style)) return part.style;
-    return part.tile === false || ['text', 'icon', 'sparkline', 'arc', 'bar', 'calc'].includes(part.kind) ? 'none' : 'tile';
+    return part.tile === false || ['text', 'icon', 'sparkline', 'arc', 'bar', 'calc', 'each'].includes(part.kind) ? 'none' : 'tile';
   }
+
+  /** A colour as CSS: a palette name follows Muted or Vivid (the kit's `--wk-<name>`), `#rrggbb` as it is. */
+  function cssColor(c) {
+    if (!c) return '';
+    if (K.isCustomColor(c)) return c;
+    return K.COLORS.includes(c) ? `var(--wk-${c})` : '';
+  }
+  /** A container's or a shape's background as CSS: none, a colour or a gradient (each colour a palette name or hex). */
+  function backgroundCss(bg) {
+    if (!bg || bg.kind === 'none') return '';
+    if (bg.kind === 'color') return cssColor(bg.from);
+    return `linear-gradient(${bg.angle}deg, ${cssColor(bg.from)}, ${cssColor(bg.to)})`;
+  }
+  /**
+   * A copy of a ready-made component for one device (a Repeater's): its `@` values that device's, its ids and its
+   * kids' `<repeater>/<id>` (so a request names the copy), and the device kept for its requests.
+   */
+  function bindPart(part, deviceId, prefix) {
+    const walk = (x, key) => {
+      if (typeof x === 'string') return /^@:/.test(x) ? `${deviceId}${x.slice(1)}` : key === 'device' && x === '@' ? deviceId : x;
+      if (Array.isArray(x)) return x.map(y => walk(y, ''));
+      if (x && typeof x === 'object') return Object.fromEntries(Object.entries(x).map(([k, y]) => [k, walk(y, k)]));
+      return x;
+    };
+    const copy = walk(part, '');
+    const rename = (p) => { p.id = `${prefix}/${p.id}`; p.device = deviceId; for (const k of p.parts || []) rename(k); };
+    rename(copy);
+    return copy;
+  }
+  window.customBindPart = bindPart;
 
   function icon(id, cls) {
     const ic = id && K.icons[id];
@@ -199,6 +232,51 @@
     el('path', { class: 'wb-arc-track', d: path(a0, a1) }, svg, SVG_NS);
     const f = Math.min(1, Math.max(0, frac));
     if (f > 0.002) el('path', { class: 'wb-arc-fill', d: path(a0, a0 + (a1 - a0) * f) }, svg, SVG_NS);
+    return svg;
+  }
+
+  const SERIES_COLORS = ['blue', 'green', 'orange'];
+  /**
+   * A Chart's plot: each series' points (`[t, v]`) as a line (filled under it with one series) or as bars (up to 24
+   * per series, each the average of its time), between `lo` and `hi`, over `t0` … `t1`. In a 100 × 100 box drawn to its
+   * size (`preserveAspectRatio: none`), the lines kept 2 px.
+   */
+  function chartPlot(list, parent, { lo, hi, t0, t1, bars }) {
+    const svg = el('svg', { class: 'wb-chart-svg', viewBox: '0 0 100 100', preserveAspectRatio: 'none', 'aria-hidden': 'true' }, parent, SVG_NS);
+    for (const f of [0, 0.5, 1]) el('path', { class: 'wb-chart-grid', d: `M0,${(f * 100).toFixed(2)} L100,${(f * 100).toFixed(2)}`, 'vector-effect': 'non-scaling-stroke' }, svg, SVG_NS);
+    const y = v => 100 - Math.min(1, Math.max(0, (v - lo) / ((hi - lo) || 1))) * 100;
+    const x = t => ((t - t0) / ((t1 - t0) || 1)) * 100;
+    if (bars) {
+      const n = 24;
+      const width = 100 / n;
+      list.forEach((s, k) => {
+        const sums = new Array(n).fill(0);
+        const counts = new Array(n).fill(0);
+        for (const [t, v] of s.points) {
+          const i = Math.min(n - 1, Math.max(0, Math.floor(((t - t0) / ((t1 - t0) || 1)) * n)));
+          sums[i] += v; counts[i]++;
+        }
+        const w = (width * 0.8) / list.length;
+        for (let i = 0; i < n; i++) {
+          if (!counts[i]) continue;
+          const top = y(sums[i] / counts[i]);
+          const base = y(Math.max(lo, Math.min(hi, 0)));
+          const r = el('rect', { class: 'wb-chart-bar', x: (i * width + width * 0.1 + k * w).toFixed(2), width: w.toFixed(2), y: Math.min(top, base).toFixed(2), height: Math.max(0.5, Math.abs(base - top)).toFixed(2) }, svg, SVG_NS);
+          r.style.fill = s.css;
+        }
+      });
+      return svg;
+    }
+    list.forEach((s) => {
+      if (s.points.length < 2) return;
+      const d = `M${s.points.map(([t, v]) => `${x(t).toFixed(2)},${y(v).toFixed(2)}`).join(' L')}`;
+      if (list.length === 1) {
+        const area = el('path', { class: 'wb-chart-area', d: `${d} L${x(s.points[s.points.length - 1][0]).toFixed(2)},100 L${x(s.points[0][0]).toFixed(2)},100 Z` }, svg, SVG_NS);
+        area.style.fill = `color-mix(in srgb, ${s.css} 18%, transparent)`;
+      }
+      const line = el('path', { class: 'wb-chart-line', d, 'vector-effect': 'non-scaling-stroke' }, svg, SVG_NS);
+      line.style.stroke = s.css;
+    });
     return svg;
   }
 
@@ -543,6 +621,7 @@
     /** Puts a part where it goes: grid cells at the top, the fine grid or per cent in a container. */
     function place(node, part, where) {
       const a = part.at || { x: 0, y: 0, w: 1, h: 1 };
+      if (where === 'item') return; // a Repeater's copy fills its own cell
       if (where === 'free') {
         Object.assign(node.style, { left: `${a.x}%`, top: `${a.y}%`, width: `${a.w}%`, height: `${a.h}%` });
       } else {
@@ -560,16 +639,20 @@
       // `wide`: room for a list beside a donut (three columns, 8 of 12, 60 %).
       if (where === 'free') return { big: a.h >= 40, narrow: a.w <= 25, wide: a.w >= 60 };
       if (where === 'grid') return { big: a.h >= 10, narrow: a.w <= 3, wide: a.w >= 8 };
+      if (where === 'item') return { big: a.h >= 2, narrow: false, wide: a.w >= 3 };
       return { big: a.h >= 2, narrow: a.w === 1, wide: a.w >= 3 };
     }
 
     function build(part, where) {
       const node = el('div', { class: `wb-part wb-k-${part.kind}`, 'data-part': part.id });
-      // Its background (lib/customDesigns.ts' `style`): the native tile, a pill, or none.
-      if (part.kind !== 'container') {
-        const style = styleOf(part);
-        node.classList.add(style === 'none' ? 'wb-bare' : 'wb-tile');
-        if (style === 'pill') node.classList.add('wb-pill');
+      // Its background (lib/customDesigns.ts' `style`): the native tile, a plain pill, or none.
+      const style = styleOf(part);
+      node.classList.add(style === 'none' ? 'wb-bare' : 'wb-tile');
+      if (style === 'pill') node.classList.add('wb-pill');
+      // Its text's colour (a rule's or a Flow's Vivid tint still puts its own text colour on it).
+      if (part.textColor && cssColor(part.textColor)) {
+        node.classList.add('wb-has-ink');
+        node.style.setProperty('--wb-ink', cssColor(part.textColor));
       }
       place(node, part, where);
       for (const e of part.hide || []) node.classList.add(`wb-no-${e}`);
@@ -1126,8 +1209,7 @@
         fill.style.opacity = String((part.opacity != null ? part.opacity : 100) / 100);
         if (form === 'rect') fill.style.borderRadius = `${part.radius != null ? part.radius : 10}px`;
         if (form === 'line') fill.style.setProperty('--wb-thick', `${part.thickness || 2}px`);
-        const bg = part.background || { kind: 'none' };
-        const own = bg.kind === 'color' ? bg.from : bg.kind === 'gradient' ? `linear-gradient(${bg.angle}deg, ${bg.from}, ${bg.to})` : '';
+        const own = backgroundCss(part.background);
         // Its fill: a rule's or a Flow's colour, else its own background, else its colour from Style (CSS).
         return (c, flow, look) => { fill.style.background = look && look.tint ? 'var(--wk-c)' : own; };
       },
@@ -1136,6 +1218,88 @@
         const ic = iconSlot(node);
         // With a device value: its own glyph (a lock open or closed), unless an icon is picked or a rule or Flow sets one.
         return (c, flow) => ic(part, part.slot ? c : null, flow);
+      },
+      chart(part, node) {
+        // A chart of up to three device values over a span: their scale and times along its edges, a legend for more than one.
+        node.classList.add(part.chartStyle === 'bars' ? 'wb-chart-bars' : 'wb-chart-lines');
+        node.classList.toggle('wb-chart-axis', part.axis !== false);
+        const head = el('div', { class: 'wb-top wb-chart-head' }, node);
+        const name = el('span', { class: 'wb-name' }, head);
+        const legend = el('span', { class: 'wb-chart-legend' }, head);
+        const body = el('div', { class: 'wb-chart-body' }, node);
+        const yAxis = el('div', { class: 'wb-chart-y' }, body);
+        const plot = el('div', { class: 'wb-chart-plot' }, body);
+        const xAxis = el('div', { class: 'wb-chart-x' }, node);
+        return (c, flow) => {
+          const list = (part.series || []).map((s, i) => {
+            const v = state.values && state.values[s.slot];
+            const pts = ((state.histories && state.histories[`${part.span}\n${s.slot}`]) || []).filter(p => Array.isArray(p) && Number.isFinite(p[1]));
+            return { ...s, points: pts, entry: v, css: cssColor(s.color || (i === 0 && part.color) || SERIES_COLORS[i % SERIES_COLORS.length]) };
+          });
+          const all = list.flatMap(s => s.points);
+          const first = list.find(s => s.entry && !s.entry.missing);
+          const cap = first ? first.entry.capability || {} : {};
+          name.textContent = (flow && flow.text) || part.name || (list.length === 1 && first ? first.entry.name : '') || '';
+          name.hidden = !name.textContent;
+          legend.textContent = '';
+          if (list.length > 1) {
+            for (const s of list) {
+              const key = el('span', { class: 'wb-chart-key' }, legend);
+              el('i', { class: 'wb-chart-dot' }, key).style.background = s.css;
+              el('span', { text: (s.entry && s.entry.name) || '' }, key);
+            }
+          }
+          head.hidden = !name.textContent && list.length < 2;
+          plot.textContent = '';
+          yAxis.textContent = '';
+          xAxis.textContent = '';
+          if (!all.length) { el('div', { class: 'wb-sub wb-chart-none', text: '–' }, plot); return; }
+          const vs = all.map(p => p[1]);
+          let lo = part.min != null ? part.min : Math.min(...vs);
+          let hi = part.max != null ? part.max : Math.max(...vs);
+          if (part.chartStyle === 'bars' && part.min == null) lo = Math.min(0, lo);
+          if (hi === lo) { hi += 1; lo -= part.min != null ? 0 : 1; }
+          const ts = all.map(p => p[0]);
+          const [t0, t1] = [Math.min(...ts), Math.max(...ts)];
+          chartPlot(list, plot, { lo, hi, t0, t1, bars: part.chartStyle === 'bars' });
+          if (part.axis === false) return;
+          const scale = { ...cap, decimals: Math.abs(hi - lo) >= 20 ? 0 : cap.decimals != null ? Math.min(1, cap.decimals) : 1 };
+          el('span', { text: fmt(scale, hi) }, yAxis);
+          el('span', { text: fmt(scale, lo) }, yAxis);
+          // Over more than a day and a half its dates; else how long ago it starts (a day's both ends have the same clock time) and the time it ends.
+          const long = t1 - t0 > 36 * 3600e3;
+          el('span', { text: long ? dateText(t0, 'short') : relative(t0, Date.now()) }, xAxis);
+          el('span', { text: long ? dateText(t1, 'short') : K.clockTime(t1) }, xAxis);
+        };
+      },
+      each(part, node) {
+        // A ready-made component once per device, each filled in with it, in rows of `columns`.
+        const list = el('div', { class: 'wb-each-list' }, node);
+        list.style.gridTemplateColumns = `repeat(${part.columns || 1}, minmax(0, 1fr))`;
+        const empty = el('div', { class: 'wb-sub wb-each-empty', hidden: '' }, node);
+        let shown = '';
+        return () => {
+          const e = state.each && state.each[part.id];
+          const devices = e && e.part ? e.devices || [] : [];
+          empty.hidden = devices.length > 0;
+          empty.textContent = e && !e.part ? t('noReady') : t('nothing');
+          const key = JSON.stringify([devices, e && e.part]);
+          if (key === shown) return;
+          shown = key;
+          // The copies' views go with them.
+          views = views.filter(v => !list.contains(v.node));
+          list.textContent = '';
+          const h = e && e.part && e.part.at ? Math.max(1, e.part.at.h) : 1;
+          list.style.gridAutoRows = `${h * 64 + (h - 1) * 8}px`;
+          const fresh = [];
+          for (const dev of devices) {
+            const cell = el('div', { class: 'wb-each-item' }, list);
+            const before = views.length;
+            cell.appendChild(build(bindPart(e.part, dev, part.id), 'item'));
+            fresh.push(...views.slice(before));
+          }
+          for (const v of fresh) v.update();
+        };
       },
       container(part, node) {
         node.classList.add(`wb-box-${part.mode === 'free' ? 'free' : 'grid'}`);
@@ -1153,10 +1317,9 @@
           }
         }
         const bg = part.background || { kind: 'none' };
-        if (bg.kind === 'color') node.style.background = bg.from;
-        else if (bg.kind === 'gradient') node.style.background = `linear-gradient(${bg.angle}deg, ${bg.from}, ${bg.to})`;
-        node.classList.toggle('wb-box-plain', bg.kind === 'none');
-        if (bg.kind !== 'none') node.classList.add('wb-box-dark');
+        // Its own background over its style's (a tile's colour, or none); light text on it unless a text colour is set.
+        if (bg.kind !== 'none') { node.style.background = backgroundCss(bg); node.classList.add('wb-box-bg'); }
+        if (bg.kind !== 'none' && !part.textColor) node.classList.add('wb-box-dark');
         const inner = el('div', { class: 'wb-inner' }, node);
         const kids = (part.parts || []).map(kid => [kid, inner.appendChild(build(kid, part.mode === 'free' ? 'free' : 'grid'))]);
         if (paged && nav && part.nav === 'dots') node.appendChild(nav); // dots under the page
@@ -1203,6 +1366,8 @@
           if (p.kind === 'repeat') repeaters.set(p.id, p);
         }
       }
+      // A design for more than one dashboard column has four grid columns per column.
+      grid.style.setProperty('--wb-cols', String(4 * Math.min(3, Math.max(1, Number(builtFor.span) || 1))));
       for (const part of builtFor.parts) grid.appendChild(build(part, 'top'));
       tick();
     }
@@ -1262,6 +1427,9 @@
         if (sameDesign) state.design = builtFor; // keep the built parts (and a drag on a slider)
         message = null;
         msg.reset();
+        // The note goes with the message (reset() doesn't draw): an empty design's, once it has components.
+        note.hidden = !msg.text;
+        note.textContent = msg.text || '';
         if (!state.design.parts.length) { setMessage(t('empty')); return; }
         update();
       },

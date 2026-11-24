@@ -10,7 +10,7 @@
   'use strict';
 
   window.WidgetkeeperWeb.part('builder', (wd) => {
-    const { button, confirmButton, el, failed, icon, request, root, storageSet, t, THEME_STORAGE, toast } = wd;
+    const { button, confirmButton, el, failed, icon, request, root, storageGet, storageSet, t, THEME_STORAGE, toast } = wd;
 
     const GRID = { cols: 4, row: 64, gap: 8 };
     const FINE = { cols: 12, row: 8, gap: 6 };
@@ -20,16 +20,18 @@
     const PREVIEW_MS = 400;
     const SNAP = 2; // per cent: free-form parts snap to the others' edges and middles within this
     const WIDTHS = [300, 440];
+    const COLUMN_GAP = 16; // the web dashboards' gap between columns (.wd-grid)
 
     /** The library: each kind, its group, the kit's icon and the size it gets at the top. */
     const KINDS = [
       ['sparkline', 'show', 'chart', 4, 1], ['arc', 'show', 'gauge', 1, 1], ['bar', 'show', 'battery', 4, 1],
       ['switch', 'control', 'power', 2, 1], ['button', 'control', 'play', 1, 1], ['slider', 'control', 'sun', 4, 1],
-      ['stepper', 'control', 'up', 2, 1], ['choice', 'control', 'list', 2, 1], ['variable', 'control', 'pencil', 1, 1],
+      ['stepper', 'control', 'up', 2, 1], ['choice', 'control', 'checkmark', 2, 1], ['variable', 'control', 'pencil', 1, 1],
       ['container', 'layout', 'dashboard', 4, 3], ['text', 'layout', 'book', 4, 1], ['icon', 'layout', 'star', 1, 1],
       ['shape', 'layout', 'paintbrush', 4, 1], ['calc', 'show', 'settings', 2, 1],
-      ['image', 'layout', 'camera', 2, 2], ['ring', 'show', 'refresh', 2, 2], ['repeat', 'show', 'users', 4, 2],
-      ['state', 'control', 'bookmark', 2, 1], ['segments', 'show', 'plugzap', 4, 2],
+      ['image', 'layout', 'camera', 2, 2], ['ring', 'show', 'refresh', 2, 2], ['repeat', 'show', 'list', 4, 2],
+      ['state', 'control', 'bookmark', 2, 1], ['segments', 'show', 'plugzap', 4, 2], ['chart', 'show', 'chart', 4, 2],
+      ['each', 'layout', 'repeat', 4, 2],
     ].map(([kind, group, glyph, w, h]) => ({ kind, group, glyph, w, h }));
     const GROUPS = ['ready', 'layout', 'show', 'control'];
 
@@ -89,6 +91,13 @@
       }
     }
     const SLOT_KINDS = ['switch', 'slider', 'stepper', 'choice', 'sparkline'];
+    /** lib/customDesigns.ts' TEXT_KINDS: the kinds with a text colour. */
+    const TEXT_KINDS = ['text', 'switch', 'button', 'state', 'stepper', 'choice', 'variable', 'ring', 'segments', 'repeat', 'chart', 'container'];
+    /** The kinds whose own colour accents them (an icon, a toggle, a bar, a line); a shape's is its fill. */
+    const ACCENT_KINDS = ['switch', 'button', 'state', 'slider', 'stepper', 'choice', 'variable', 'icon', 'sparkline', 'arc', 'bar', 'ring', 'segments', 'repeat', 'chart', 'image'];
+    const MAX_SERIES = 3;
+    const MAX_EACH = 12;
+    const MAX_SPAN = 3;
     const VARIABLE_KINDS = ['slider', 'stepper', 'choice', 'variable'];
     const RANGE_KINDS = ['arc', 'bar', 'sparkline', 'slider', 'stepper', 'variable'];
     const SPANS = ['1h', '6h', '24h', '7d', '30d', 'today', 'yesterday', 'thisWeek'];
@@ -111,7 +120,7 @@
       switch: ['icon', 'name'], stepper: ['name'], choice: ['name'], variable: ['name'],
       ring: ['name', 'value'], segments: ['name', 'value'], button: ['icon', 'name'], state: ['icon', 'name'],
     };
-    const TAP_KINDS = ['container', 'text', 'icon', 'shape', 'image', 'ring', 'segments', 'sparkline', 'arc', 'bar'];
+    const TAP_KINDS = ['container', 'text', 'icon', 'shape', 'image', 'ring', 'segments', 'sparkline', 'arc', 'bar', 'chart'];
     /** lib/customDesigns.ts' ICON_KINDS: the kinds that draw an icon (a Ring only with one in its middle). */
     const ICON_KINDS = ['switch', 'button', 'state', 'ring', 'icon'];
     const drawsIcon = p => ICON_KINDS.includes(p.kind) && (p.kind !== 'ring' || p.center === 'icon');
@@ -121,7 +130,7 @@
       shape: ['color', 'hidden'], sparkline: ['color', 'hidden'], arc: ['color', 'hidden'], bar: ['color', 'hidden'], slider: ['color', 'hidden'],
       calc: [], stepper: ['text', 'value', 'color', 'hidden'], choice: ['text', 'value', 'color', 'hidden'], variable: ['text', 'value', 'color', 'hidden'],
       state: ['text', 'color', 'hidden'], image: ['hidden'], ring: ['text', 'color', 'icon', 'hidden'], repeat: ['text', 'color', 'hidden'],
-      segments: ['text', 'color', 'hidden'],
+      segments: ['text', 'color', 'hidden'], chart: ['text', 'color', 'hidden'], each: ['hidden'],
     };
     const flowPropsOf = kind => FLOW_PROPS[kind] || ['text', 'value', 'color', 'icon', 'hidden'];
 
@@ -135,6 +144,21 @@
 
     /** The builder now: the design being built, the selection, the view's choices, undo, the preview. */
     let b = null;
+    /** The dashboard columns the design spans, and its grid's columns (four per dashboard column). */
+    const spanOf = () => Math.min(MAX_SPAN, Math.max(1, Number(b.design.span) || 1));
+    const cols = () => GRID.cols * spanOf();
+    /** A new span: the grid gets four columns per dashboard column; a narrower one keeps every part inside it. */
+    function setSpan(n) {
+      change(() => {
+        if (n > 1) b.design.span = n; else delete b.design.span;
+        for (const p of b.design.parts) {
+          p.at.w = Math.min(p.at.w, cols());
+          p.at.x = Math.min(p.at.x, cols() - p.at.w);
+        }
+        for (const p of b.design.parts) makeRoom(b.design.parts, p);
+      }, { preview: false });
+      sizeCanvas();
+    }
 
     const strings = () => (wd.setup && wd.setup.strings) || {};
     const kindName = kind => (strings().custom && strings().custom.kinds && strings().custom.kinds[kind]) || kind;
@@ -146,26 +170,78 @@
       return def ? window.WidgetkeeperKit.svgIcon(def, cls) : el('span', cls);
     };
 
-    // ---- The front page's section ------------------------------------------------------------------------------
+    // ---- The Widget Builder's own page, and the front page's banner ---------------------------------------------
 
-    /** The designs as cards under the dashboards, each with a sketch of its grid, and a New design card. */
-    function designsSection() {
-      const wrap = el('section', 'wdb-front');
-      wrap.append(el('h2', 'wd-group-title', t('builderTitle')));
+    const PROMO_STORAGE = 'widgetkeeper.web.builderPromo';
+
+    /** The front page's banner for the Widget Builder, until it's put away in this browser (null then). */
+    function builderPromo() {
+      if (storageGet(PROMO_STORAGE) === 'hidden') return null;
+      const box = el('section', 'wdb-promo');
+      const art = el('span', 'wdb-promo-art');
+      art.append(kitIcon('sparkles', 'wdb-promo-icon'));
+      const text = el('div', 'wdb-promo-text');
+      text.append(el('strong', null, t('builderPromoTitle')), el('span', null, t('builderPromoText')));
+      const open = el('a', 'wd-btn primary', t('builderPromoOpen'));
+      open.href = '#/builder';
+      const close = button('wd-icon small wdb-promo-close', '', () => { storageSet(PROMO_STORAGE, 'hidden'); box.remove(); }, t('builderPromoHide'));
+      close.append(icon('close'));
+      box.append(art, text, open, close);
+      return box;
+    }
+
+    /**
+     * `#/builder`: every design as a card (a sketch of its grid) to open in the builder, New design, and the ready-made
+     * components of your own under them.
+     */
+    function renderBuilderHome() {
+      wd.clearRoot();
+      wd.applyTheme('auto');
+      const page = el('div', 'wd-home wdb-home');
+      const head = el('div', 'wd-section-head');
+      const titles = el('div', 'wd-section-titles');
+      titles.append(el('h1', 'wd-h1', t('builderTitle')), el('p', 'wd-muted', t('builderHomeHint')));
+      head.append(titles);
       const grid = el('div', 'wd-dashboards wdb-cards');
-      for (const d of designs()) grid.append(designCard(d));
+      for (const d of designs().filter(x => !x.ready)) grid.append(designCard(d));
       const add = button('wd-dash wd-dash-new', '', () => newDesign(add));
       const plus = el('span', 'wd-dash-plus');
       plus.append(icon('plus'));
       add.append(plus, el('span', 'wd-dash-new-text', t('builderNew')));
       grid.append(add);
-      wrap.append(grid);
-      return wrap;
+      page.append(head, grid);
+      const ready = designs().filter(x => x.ready);
+      if (ready.length) {
+        page.append(el('h2', 'wd-group-title', t('builderGroup_mine')), el('p', 'wd-muted wdb-home-note', t('builderMineHint')));
+        const mine = el('div', 'wd-dashboards wdb-cards');
+        for (const d of ready) mine.append(designCard(d));
+        page.append(mine);
+      }
+      const node = wd.bar(wd.navButton(), wd.brand(), el('span', 'wd-spacer'));
+      node.classList.add('wd-bar-front');
+      root.append(node, page);
+      wd.showNav();
     }
 
+    /** A design's card: a sketch of its grid, its name and how many components. */
     function designCard(d) {
       const card = el('div', 'wd-dash wdb-card');
-      const art = el('div', 'wd-dash-art wdb-art');
+      card.append(designArt(d));
+      const link = el('a', 'wd-dash-link');
+      link.href = `#/builder/${d.id}`;
+      const info = el('span', 'wd-dash-info');
+      const count = d.parts.reduce((n, p) => n + 1 + (p.parts ? p.parts.length : 0), 0);
+      info.append(el('span', 'wd-dash-name', d.name || t('untitled')), el('span', 'wd-muted wd-dash-count', t('builderPartCount', { count })));
+      link.append(info);
+      card.append(link);
+      return card;
+    }
+
+    /** A sketch of a design's grid (its first six rows): a block per part, a container in its background. */
+    function designArt(d, cls = 'wd-dash-art wdb-art') {
+      const art = el('div', cls);
+      const span = Math.min(MAX_SPAN, Math.max(1, Number(d.span) || 1));
+      art.style.gridTemplateColumns = `repeat(${4 * span}, 1fr)`;
       const rows = Math.max(2, ...d.parts.map(p => p.at.y + p.at.h));
       art.style.setProperty('--rows', String(Math.min(rows, 6)));
       for (const p of d.parts) {
@@ -174,18 +250,13 @@
         cell.style.gridColumn = `${p.at.x + 1} / span ${p.at.w}`;
         cell.style.gridRow = `${p.at.y + 1} / span ${Math.min(p.at.h, 6 - p.at.y)}`;
         if (p.kind === 'container' && p.background && p.background.kind !== 'none') {
-          cell.style.background = p.background.kind === 'color' ? p.background.from : `linear-gradient(${p.background.angle}deg, ${p.background.from}, ${p.background.to})`;
+          const css = c => (/^#/.test(c) ? c : `var(--wk-${c}-bright, ${c})`);
+          cell.style.background = p.background.kind === 'color' ? css(p.background.from) : `linear-gradient(${p.background.angle}deg, ${css(p.background.from)}, ${css(p.background.to)})`;
         }
         art.append(cell);
       }
-      const link = el('a', 'wd-dash-link');
-      link.href = `#/builder/${d.id}`;
-      const info = el('span', 'wd-dash-info');
-      const count = d.parts.reduce((n, p) => n + 1 + (p.parts ? p.parts.length : 0), 0);
-      info.append(el('span', 'wd-dash-name', d.name || t('untitled')), el('span', 'wd-muted wd-dash-count', t('builderPartCount', { count })));
-      link.append(info);
-      card.append(art, link);
-      return card;
+      art.classList.add('wk');
+      return art;
     }
 
     async function newDesign(node) {
@@ -225,9 +296,9 @@
 
     function builderBar() {
       const back = el('a', 'wd-icon');
-      back.href = '#/';
-      back.title = t('navAll');
-      back.setAttribute('aria-label', t('navAll'));
+      back.href = '#/builder';
+      back.title = t('builderTitle');
+      back.setAttribute('aria-label', t('builderTitle'));
       back.append(icon('left'));
       const name = el('input', 'wd-input wd-title-input wdb-name');
       name.value = b.design.name;
@@ -255,8 +326,8 @@
       const place = button('wd-btn', '', () => addToDashboard(), t('builderAddTo'));
       place.append(icon('plus'), el('span', 'wd-bar-label', t('builderAddTo')));
       const done = el('a', 'wd-btn primary', t('done'));
-      done.href = '#/';
-      done.addEventListener('click', async (e) => { e.preventDefault(); await flush(); wd.leaveEditor('#/'); });
+      done.href = '#/builder';
+      done.addEventListener('click', async (e) => { e.preventDefault(); await flush(); wd.leaveEditor('#/builder'); });
       const end = el('span', 'wd-bar-end');
       // Dark or light: this browser's own choice (as Settings' Dark or light), the page and the preview alike.
       const mode = button('wd-icon', '', () => {
@@ -311,13 +382,28 @@
         const q = b.query.trim();
         for (const group of GROUPS) {
           if (group === 'ready') {
+            // Your own first (designs saved as ready-made components), then the built-in ones.
+            const mine = designs().filter(d => d.ready && d.parts[0] && d.id !== b.design.id && (!q || wd.matchesWords(q, `${d.name} ${t('builderGroup_mine')}`)));
+            if (mine.length) {
+              list.append(el('h3', 'wdb-h3', t('builderGroup_mine')));
+              const grid = el('div', 'wdb-comps');
+              for (const d of mine) {
+                const c = button('wdb-comp wdb-mine', '', () => { if (!c.dataset.dragged) addMine(d); delete c.dataset.dragged; }, t('builderAdd', { name: d.name }));
+                const glyph = (KINDS.find(k => k.kind === d.parts[0].kind) || {}).glyph || 'star';
+                c.append(kitIcon(glyph, 'wdb-comp-icon'), el('span', null, d.name || t('untitled')));
+                dragToAdd(c, { glyph, label: d.name, size: sizeOfPart(d.parts[0]), container: d.parts[0].kind === 'container', drop: target => addMine(d, target) });
+                grid.append(c);
+              }
+              list.append(grid);
+            }
             const ready = READY.filter(r => !q || wd.matchesWords(q, `${t(`builderReady_${r.id}`)} ${t('builderGroup_ready')}`));
             if (!ready.length) continue;
             list.append(el('h3', 'wdb-h3', t('builderGroup_ready')));
             const grid = el('div', 'wdb-comps');
             for (const r of ready) {
-              const c = button('wdb-comp', '', () => addReady(r), t('builderAdd', { name: t(`builderReady_${r.id}`) }));
+              const c = button('wdb-comp', '', () => { if (!c.dataset.dragged) addReady(r); delete c.dataset.dragged; }, t('builderAdd', { name: t(`builderReady_${r.id}`) }));
               c.append(kitIcon(r.glyph, 'wdb-comp-icon'), el('span', null, t(`builderReady_${r.id}`)));
+              dragToAdd(c, { glyph: r.glyph, label: t(`builderReady_${r.id}`), size: { w: r.w, h: r.h }, container: true, drop: target => addReady(r, target) });
               grid.append(c);
             }
             list.append(grid);
@@ -330,7 +416,7 @@
           for (const k of items) {
             const c = button('wdb-comp', '', () => { if (!c.dataset.dragged) addPart(k.kind); delete c.dataset.dragged; }, t('builderAdd', { name: kindName(k.kind) }));
             c.append(kitIcon(k.glyph, 'wdb-comp-icon'), el('span', null, kindName(k.kind)));
-            dragToAdd(c, k);
+            dragToAdd(c, { glyph: k.glyph, label: kindName(k.kind), size: { w: k.w, h: k.h }, container: k.kind === 'container', drop: target => addPart(k.kind, target) });
             grid.append(c);
           }
           list.append(grid);
@@ -349,32 +435,38 @@
      * Drag a component from the library onto the design: a ghost follows the pointer and the drop puts it there, at the
      * cell under the pointer, or inside the container under it. A tap (no drag) still adds it.
      */
-    function dragToAdd(node, k) {
+    function dragToAdd(node, what) {
       node.addEventListener('pointerdown', (e) => {
         if (e.button) return;
         const start = { x: e.clientX, y: e.clientY };
         let ghost = null;
+        let target = null;
         node.setPointerCapture(e.pointerId);
         const move = (ev) => {
           if (!ghost && Math.abs(ev.clientX - start.x) + Math.abs(ev.clientY - start.y) < 6) return;
           if (!ghost) {
             ghost = el('div', 'wdb-ghost');
-            ghost.append(kitIcon(k.glyph, 'wdb-comp-icon'), el('span', null, kindName(k.kind)));
+            ghost.append(kitIcon(what.glyph, 'wdb-comp-icon'), el('span', null, what.label));
             document.body.append(ghost);
             node.dataset.dragged = '1';
           }
           ghost.style.left = `${ev.clientX + 8}px`;
           ghost.style.top = `${ev.clientY + 8}px`;
-          b.canvas.classList.toggle('dropping', overCanvas(ev.clientX, ev.clientY));
+          const over = overCanvas(ev.clientX, ev.clientY);
+          b.canvas.classList.toggle('dropping', over);
+          // The cell (or the place in a container) it lands on, at its size there.
+          target = over ? dropTarget(what.container ? 'container' : 'part', ev.clientX, ev.clientY) : null;
+          showCell(target && { ...target, ...sizeIn(what.size, target.into) });
         };
         const up = (ev) => {
           node.removeEventListener('pointermove', move);
           node.removeEventListener('pointerup', up);
           node.removeEventListener('pointercancel', up);
+          showCell(null);
           if (!ghost) return;
           ghost.remove();
           b.canvas.classList.remove('dropping');
-          if (ev.type === 'pointerup' && overCanvas(ev.clientX, ev.clientY)) addPart(k.kind, dropTarget(k.kind, ev.clientX, ev.clientY));
+          if (ev.type === 'pointerup' && target) what.drop(target);
           // The click that follows a drag isn't a tap.
           setTimeout(() => { delete node.dataset.dragged; }, 0);
         };
@@ -382,6 +474,49 @@
         node.addEventListener('pointerup', up);
         node.addEventListener('pointercancel', up);
       });
+    }
+
+    /** A size in top-grid cells (`{w, h}`) as it is in a container (`into`): fine-grid cells, or per cent free-form. */
+    function sizeIn(size, into) {
+      if (!into) return { w: Math.min(size.w, cols()), h: size.h };
+      if (into.mode === 'free') return { w: Math.min(48, size.w * 24), h: 30 };
+      return { w: Math.min(FINE.cols, size.w * 3), h: size.h * 8 };
+    }
+
+    /** A top-level part's size in top-grid cells, for a ready-made of your own. */
+    const sizeOfPart = part => ({ w: Math.max(1, part.at.w), h: Math.max(1, part.at.h) });
+
+    /** Highlights where a drag lands: `{into, x, y, w, h}` on its grid (or per cent), or null for none. */
+    function showCell(cell) {
+      b.cell = cell;
+      const old = b.overlay.querySelector('.wdb-cell');
+      if (old) old.remove();
+      if (!cell) return;
+      const r = cellRect(cell);
+      if (!r) return;
+      const n = el('div', 'wdb-cell');
+      Object.assign(n.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
+      b.overlay.append(n);
+    }
+
+    /** A place's box in the overlay: top-grid cells, a container's fine-grid cells, or per cent of its inner box. */
+    function cellRect({ into, x, y, w, h }) {
+      if (!into) {
+        const g = gridOf(null);
+        const cx = clamp(x, 0, cols() - w);
+        return { left: cx * g.colW, top: Math.max(0, y) * g.rowH, width: w * g.colW - GRID.gap, height: h * g.rowH - GRID.gap };
+      }
+      const inner = nodeOf(into.id) && nodeOf(into.id).querySelector('.wb-inner');
+      if (!inner) return null;
+      const r = inner.getBoundingClientRect();
+      if (into.mode === 'free') {
+        const cx = clamp(x, 0, 100 - w);
+        const cy = clamp(y, 0, 100 - h);
+        return { left: r.left + (cx / 100) * r.width, top: r.top + (cy / 100) * r.height, width: (w / 100) * r.width, height: (h / 100) * r.height };
+      }
+      const g = gridOf(into);
+      const cx = clamp(x, 0, FINE.cols - w);
+      return { left: r.left + cx * g.colW, top: r.top + Math.max(0, y) * g.rowH, width: w * g.colW - FINE.gap, height: h * g.rowH };
     }
 
     function overCanvas(x, y) {
@@ -395,7 +530,8 @@
       const fx = x - c.left;
       const fy = y - c.top;
       if (kind !== 'container') {
-        for (const box of b.design.parts.filter(p => p.kind === 'container')) {
+        // The last drawn (on top) first.
+        for (const box of b.design.parts.filter(p => p.kind === 'container').reverse()) {
           const inner = nodeOf(box.id) && nodeOf(box.id).querySelector('.wb-inner');
           if (!inner) continue;
           const r = inner.getBoundingClientRect();
@@ -449,9 +585,16 @@
         return g;
       };
       tools.append(
+        // How many dashboard columns it spans (its grid has four per column), and a column's width here.
+        seg([1, 2, 3].map(n => [n, t('builderSpanN', { n })]), spanOf(), (n) => setSpan(n)),
         seg(WIDTHS.map(w => [w, `${w} px`]), b.width, (w) => { b.width = w; sizeCanvas(); }),
         seg([[false, t('builderMuted')], [true, t('builderVivid')]], b.vivid, (v) => { b.vivid = v; mountPreview(); }),
       );
+      // A design that works with any device: which device the preview fills in.
+      const sampleBox = el('div', 'wdb-sample');
+      b.sampleNode = sampleBox;
+      drawSample();
+      tools.append(sampleBox);
       const canvas = el('div', 'wdb-canvas');
       const guide = el('div', 'wdb-guide');
       const frame = /** @type {HTMLIFrameElement} */ (el('iframe', 'wdb-frame'));
@@ -468,6 +611,24 @@
       frame.addEventListener('load', () => mountPreview());
       sizeCanvas();
       return node;
+    }
+
+    /** The preview's device, shown while the design uses the widget's device anywhere. */
+    function drawSample() {
+      const box = b.sampleNode;
+      if (!box) return;
+      box.textContent = '';
+      box.hidden = !JSON.stringify(b.design.parts).includes('"@:');
+      if (box.hidden) return;
+      const dev = (b.devices || []).find(d => d.id === b.design.sample);
+      const pick = button('wd-btn small', '', async () => {
+        try {
+          const items = await request('GET', '/web/devices?type=custom');
+          wd.chooseDevices({ devices: { singular: true } }, items, b.design.sample ? [b.design.sample] : [], (ids) => change(() => { if (ids[0]) b.design.sample = ids[0]; }));
+        } catch (err) { failed(err); }
+      }, t('builderSampleHint'));
+      pick.append(icon('eye'), el('span', null, t('builderSample', { name: dev ? dev.name : t('builderNoSample') })));
+      box.append(pick);
     }
 
     /**
@@ -497,6 +658,8 @@
       doc.documentElement.style.colorScheme = '';
       const host = doc.getElementById('root');
       host.textContent = '';
+      // Keys pressed with the preview focused count as the page's.
+      if (!win.wdbKeys) { win.wdbKeys = true; doc.addEventListener('keydown', onKey); }
       const lookup = key => key.split('.').reduce((o, k) => (o && typeof o === 'object' ? o[k] : undefined), strings());
       b.widget = win.createCustomWidget(host, {
         t: key => lookup(key) || key,
@@ -509,15 +672,18 @@
     }
 
     function sizeCanvas() {
-      b.canvas.style.width = `${b.width}px`;
+      b.canvas.style.width = `${b.width * spanOf() + COLUMN_GAP * (spanOf() - 1)}px`;
+      b.guide.style.gridTemplateColumns = `repeat(${cols()}, 1fr)`;
       drawOverlay();
     }
 
     /** The design as it is now, with the preview's values (read again a moment after a change that needs them). */
     function showPreview() {
+      drawSample();
       if (!b.widget) return;
       const state = b.state || { values: {}, variables: {}, flows: {}, histories: {}, flow: {} };
-      b.widget.setState({ ...state, design: { ...clone(b.design), updatedAt: b.rev } });
+      // The widget's device (`@:`) as the preview's device, as the app fills it in (lib/customDesigns.ts' bindDevice()).
+      b.widget.setState({ ...state, design: { ...bindSample(b.design), updatedAt: b.rev } });
       // The page each pages container is being edited on.
       for (const [id, page] of Object.entries(b.editPage || {})) if (b.widget.showPage) b.widget.showPage(id, page);
       b.frame.style.height = `${Math.max(rowsOf() * (GRID.row + GRID.gap) - GRID.gap, b.frame.contentDocument.body.scrollHeight)}px`;
@@ -542,6 +708,13 @@
       else b.previewTimer = setTimeout(go, PREVIEW_MS);
     }
 
+    /** A copy of the design with its `@:` values the preview device's. */
+    function bindSample(design) {
+      const dev = design.sample;
+      const json = JSON.stringify(design);
+      return JSON.parse(dev && /^[^\s:"\\]+$/.test(dev) ? json.replace(/"@:/g, `"${dev}:`).replace(/"device":"@"/g, `"device":"${dev}"`) : json);
+    }
+
     const rowsOf = () => Math.max(3, ...b.design.parts.map(p => p.at.y + p.at.h + 1));
 
     function drawGuide() {
@@ -549,7 +722,8 @@
       g.textContent = '';
       const rows = rowsOf();
       g.style.gridTemplateRows = `repeat(${rows}, ${GRID.row}px)`;
-      for (let i = 0; i < rows * GRID.cols; i++) g.append(el('i'));
+      g.style.gridTemplateColumns = `repeat(${cols()}, 1fr)`;
+      for (let i = 0; i < rows * cols(); i++) g.append(el('i'));
       b.canvas.style.minHeight = `${rows * (GRID.row + GRID.gap) - GRID.gap}px`;
     }
 
@@ -570,7 +744,7 @@
         if (!n) return;
         const r = n.getBoundingClientRect();
         if (!r.width && !r.height) return; // on another page of a pages container
-        const node = el('div', `wdb-box${p.kind === 'container' ? ' container' : ''}${b.selected === p.id ? ' on' : ''}${n.classList.contains('wb-hidden') ? ' hidden' : ''}`);
+        const node = el('div', `wdb-box${p.kind === 'container' ? ' container' : ''}${parent ? ' kid' : ''}${b.selected === p.id ? ' on' : ''}${n.classList.contains('wb-hidden') ? ' hidden' : ''}`);
         Object.assign(node.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
         node.style.borderRadius = n.ownerDocument.defaultView.getComputedStyle(n).borderRadius; // a pill's outline is round too
         node.title = partTitle(p);
@@ -587,13 +761,14 @@
         box(p, null);
         if (p.kind === 'container') for (const k of p.parts || []) box(k, p);
       }
+      if (b.cell) showCell(b.cell);
     }
 
     /** The grid a part moves on: its cell size in px, and where its box starts. */
     function gridOf(parent) {
       if (!parent) {
         const w = b.canvas.getBoundingClientRect().width || b.width; // narrower than chosen on a phone
-        return { mode: 'top', cols: GRID.cols, colW: (w - (GRID.cols - 1) * GRID.gap) / GRID.cols + GRID.gap, rowH: GRID.row + GRID.gap };
+        return { mode: 'top', cols: cols(), colW: (w - (cols() - 1) * GRID.gap) / cols() + GRID.gap, rowH: GRID.row + GRID.gap };
       }
       const inner = nodeOf(parent.id) && nodeOf(parent.id).querySelector('.wb-inner');
       const r = inner ? inner.getBoundingClientRect() : { width: 100, height: 100 };
@@ -617,11 +792,30 @@
       const start = { x: e.clientX, y: e.clientY };
       let moved = false;
       let before = null;
+      /** A move over another container (or out of its own, to the top): where it goes when dropped. */
+      let away = null;
       const move = (ev) => {
         const dx = ev.clientX - start.x;
         const dy = ev.clientY - start.y;
         if (!moved && Math.abs(dx) + Math.abs(dy) < 4) return;
         if (!moved) { moved = true; before = JSON.stringify(b.design); }
+        if (how === 'move' && p.kind !== 'container') {
+          const target = dropTarget('part', ev.clientX, ev.clientY);
+          if ((target.into ? target.into.id : null) !== (parent ? parent.id : null)) {
+            // Over another container, or out of this one: only the place it lands on shows until it's dropped.
+            // Everything back where it was meanwhile, as it will be until it's dropped there.
+            if (!away) {
+              for (const [x, place] of places) x.at = { ...place };
+              b.rev++;
+              showPreview();
+            }
+            away = { ...target, ...sizeIn(topSize(p, parent), target.into) };
+            if (away.into && away.into.mode === 'free') { away.x = clamp(away.x - away.w / 2, 0, 100 - away.w); away.y = clamp(away.y - away.h / 2, 0, 100 - away.h); }
+            showCell(away);
+            return;
+          }
+          away = null;
+        }
         const at = { ...from };
         if (g.mode === 'free') {
           const px = (dx / g.w) * 100;
@@ -655,12 +849,32 @@
         b.rev++;
         showPreview();
         drawLines();
+        // On a grid, the cells it covers.
+        b.cell = g.mode === 'free' ? null : { into: parent, ...p.at };
+        if (b.cell) showCell(b.cell);
       };
-      const up = () => {
+      const up = (ev) => {
         node.removeEventListener('pointermove', move);
         node.removeEventListener('pointerup', up);
         node.removeEventListener('pointercancel', up);
         b.lines = null;
+        showCell(null);
+        if (moved && away && ev.type === 'pointerup') {
+          // Into another container, or out to the top: from where it started, so nothing else moved.
+          b.design = JSON.parse(before);
+          const fresh = findPart(p.id);
+          const from = parentOf(p.id);
+          pushUndo(before);
+          // The container it goes into, in the design as it was put back.
+          moveTo(fresh, from, { ...away, into: away.into ? findPart(away.into.id) : null });
+          b.rev++;
+          showPreview();
+          loadPreview();
+          saveSoon();
+          redrawInspector();
+          redrawLibrary();
+          return;
+        }
         if (moved) {
           pushUndo(before);
           saveSoon();
@@ -674,6 +888,34 @@
     }
 
     const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+    /** A part's size in top-grid cells, wherever it is: from a container's fine grid (3 columns, 8 rows a cell) or per cent. */
+    function topSize(p, parent) {
+      if (!parent) return { w: p.at.w, h: p.at.h };
+      if (parent.mode === 'free') return { w: Math.max(1, Math.round(p.at.w / 25)), h: 1 };
+      return { w: Math.max(1, Math.round(p.at.w / 3)), h: Math.max(1, Math.round(p.at.h / 8)) };
+    }
+
+    /** Moves a part (not a container) into another container, or out to the top, at `to` (`{into, x, y, w, h}`). */
+    function moveTo(p, from, to) {
+      const list = from ? from.parts : b.design.parts;
+      list.splice(list.findIndex(x => x.id === p.id), 1);
+      delete p.page;
+      if (!to.into) {
+        p.at = { x: clamp(to.x, 0, cols() - to.w), y: Math.max(0, to.y), w: to.w, h: to.h };
+        b.design.parts.push(p);
+        makeRoom(b.design.parts, p);
+      } else if (to.into.mode === 'free') {
+        p.at = { x: Math.round(to.x * 10) / 10, y: Math.round(to.y * 10) / 10, w: to.w, h: to.h };
+        to.into.parts.push(p);
+      } else {
+        p.at = { x: clamp(to.x, 0, FINE.cols - to.w), y: Math.max(0, to.y), w: to.w, h: to.h };
+        if (to.into.mode === 'pages') p.page = (b.editPage && b.editPage[to.into.id]) || 0;
+        to.into.parts.push(p);
+        makeRoom(to.into.parts, p);
+      }
+      b.selected = p.id;
+    }
 
     /** On a grid: the parts `moved` now overlaps go down below it, and those they then overlap, and so on. */
     function makeRoom(all, moved) {
@@ -822,7 +1064,7 @@
         const res = await request('DELETE', `/web/designs/${encodeURIComponent(b.design.id)}`);
         wd.designs = res.designs;
         b = null;
-        location.hash = '#/';
+        location.hash = '#/builder';
       } catch (err) { failed(err); }
     }
 
@@ -838,7 +1080,12 @@
           try {
             const next = clone(dash);
             if (!next.columns.length) next.columns.push([]);
-            const widget = { id: wd.newId(), type: 'custom', title: b.design.name, settings: { design: { id: b.design.id, name: b.design.name } }, deviceIds: [] };
+            // As wide as it's made for, and a design for any device with its preview device to start with.
+            const anyDevice = JSON.stringify(b.design.parts).includes('"@:');
+            const widget = {
+              id: wd.newId(), type: 'custom', title: b.design.name, settings: { design: { id: b.design.id, name: b.design.name } },
+              deviceIds: anyDevice && b.design.sample ? [b.design.sample] : [], ...(spanOf() > 1 ? { span: spanOf() } : {}),
+            };
             next.columns[0].push(widget);
             const saved = await request('PUT', '/web/dashboards', next);
             wd.dashboards = wd.dashboards.map(x => (x.id === saved.id ? saved : x));
@@ -876,37 +1123,90 @@
      * Adds a ready-made tile, asking for its device value first where it needs one: a free-form container of its parts
      * at the bottom, or, in a container (one level deep), its parts in a region of it.
      */
-    async function addReady(r) {
-      if (!r.value) { placeReady(r, ''); return; }
+    async function addReady(r, drop) {
+      if (!r.value) { placeKids({ name: t(`builderReady_${r.id}`), w: r.w, h: r.h, kids: readyParts(r.id, '') }, drop); return; }
       try {
         const devices = await wd.valueDevices('values');
-        wd.chooseValue(devices, null, item => placeReady(r, item.id));
+        wd.chooseValue(devices, null, item => placeKids({ name: t(`builderReady_${r.id}`), w: r.w, h: r.h, kids: readyParts(r.id, item.id) }, drop));
       } catch (err) { failed(err); }
     }
 
-    function placeReady(r, slot) {
-      const kids = readyParts(r.id, slot);
-      const into = targetContainer();
+    /** A copy of a part with new ids (a container's parts too). */
+    function freshCopy(part) {
+      const copy = clone(part);
+      const renew = (x) => { x.id = partId(); for (const k of x.parts || []) renew(k); };
+      renew(copy);
+      return copy;
+    }
+
+    /**
+     * Adds a ready-made component of your own (a design saved as one): a copy of it, at the drop's cell or at the
+     * bottom; into a container, a container's parts go in a region of it (nesting is one level), anything else as itself.
+     */
+    function addMine(d, drop) {
+      const part = freshCopy(d.parts[0]);
+      // Its `@` values stay the widget's device; this design then shows them with the same preview device.
+      if (!b.design.sample && d.sample) b.design.sample = d.sample;
+      const into = drop ? drop.into : targetContainer();
+      if (!into) {
+        change(() => {
+          const w = Math.min(part.at.w, cols());
+          const y = drop ? Math.max(0, drop.y) : b.design.parts.reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0);
+          part.at = { x: drop ? clamp(drop.x, 0, cols() - w) : 0, y, w, h: part.at.h };
+          b.design.parts.push(part);
+          makeRoom(b.design.parts, part);
+          b.selected = part.id;
+        });
+        return;
+      }
+      if (part.kind === 'container') {
+        // Its parts in per cent of it, then placed as a built-in ready-made's.
+        const rows = Math.max(1, part.at.h * 8);
+        const kids = (part.parts || []).map(k => ({ ...k, at: part.mode === 'free' ? k.at : { x: (k.at.x / FINE.cols) * 100, y: Math.min(95, (k.at.y / rows) * 100), w: (k.at.w / FINE.cols) * 100, h: Math.min(100, (k.at.h / rows) * 100) } }));
+        for (const k of kids) delete k.page;
+        placeKids({ name: d.name, w: part.at.w, h: part.at.h, kids }, { ...drop, into });
+        return;
+      }
+      change(() => {
+        const size = sizeIn(sizeOfPart(part), into);
+        part.at = { x: drop ? drop.x : 0, y: drop ? drop.y : (into.parts || []).reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0), ...size };
+        if (into.mode === 'pages') part.page = (b.editPage && b.editPage[into.id]) || 0;
+        into.parts.push(part);
+        if (into.mode !== 'free') makeRoom(into.parts, part);
+        b.selected = part.id;
+      });
+    }
+
+    /**
+     * Adds a ready-made: at the top a free-form container of its parts (in per cent), at the drop's cell or at the
+     * bottom; in a container (one level deep) its parts in a region of it, at the drop's place or under what's there.
+     */
+    function placeKids({ name, w: rw, h: rh, kids }, drop) {
+      const into = drop ? drop.into : targetContainer();
       change(() => {
         if (!into) {
-          const y = b.design.parts.reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0);
+          const w = Math.min(rw, cols());
+          const y = drop ? Math.max(0, drop.y) : b.design.parts.reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0);
           const box = {
-            id: partId(), kind: 'container', name: t(`builderReady_${r.id}`), color: null, icon: null, style: 'tile', rules: [], flow: {}, reset: 'never',
-            mode: 'free', background: { kind: 'none' }, parts: kids, at: { x: 0, y, w: r.w, h: r.h },
+            id: partId(), kind: 'container', name, color: null, icon: null, style: 'tile', rules: [], flow: {}, reset: 'never',
+            mode: 'free', background: { kind: 'none' }, parts: kids, at: { x: drop ? clamp(drop.x, 0, cols() - w) : 0, y, w, h: rh },
           };
           b.design.parts.push(box);
+          makeRoom(b.design.parts, box);
           b.selected = box.id;
           return;
         }
-        // In a container: the parts in a region of it, as wide as half of it, under what's there.
+        // In a container: the parts in a region of it, as wide as half of it, under what's there (or at the drop).
         const page = into.mode === 'pages' ? ((b.editPage && b.editPage[into.id]) || 0) : undefined;
         if (into.mode === 'free') {
-          const y = Math.min(70, (into.parts || []).reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0));
-          const region = { x: 0, y, w: Math.min(100, r.w * 25), h: Math.min(100 - y, r.h * 30) };
+          const y = drop ? clamp(drop.y, 0, 70) : Math.min(70, (into.parts || []).reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0));
+          const region = { x: drop ? clamp(drop.x, 0, 50) : 0, y, w: Math.min(100, rw * 25), h: Math.min(100 - y, rh * 30) };
+          region.w = Math.min(region.w, 100 - region.x);
           for (const k of kids) k.at = { x: Math.round((region.x + (k.at.x / 100) * region.w) * 10) / 10, y: Math.round((region.y + (k.at.y / 100) * region.h) * 10) / 10, w: Math.max(1, Math.round((k.at.w / 100) * region.w * 10) / 10), h: Math.max(1, Math.round((k.at.h / 100) * region.h * 10) / 10) };
         } else {
-          const y = (into.parts || []).filter(q => (q.page || 0) === (page || 0)).reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0);
-          const region = { x: 0, y, w: Math.min(FINE.cols, r.w * 3), h: r.h * 8 };
+          const y = drop ? Math.max(0, drop.y) : (into.parts || []).filter(q => (q.page || 0) === (page || 0)).reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0);
+          const region = { x: drop ? clamp(drop.x, 0, FINE.cols - 1) : 0, y, w: Math.min(FINE.cols, rw * 3), h: rh * 8 };
+          region.w = Math.min(region.w, FINE.cols - region.x);
           for (const k of kids) {
             const x = Math.round((k.at.x / 100) * region.w);
             const yy = Math.round((k.at.y / 100) * region.h);
@@ -919,6 +1219,38 @@
       });
     }
 
+    /**
+     * Saves a top-level component as a ready-made of your own: a design holding a copy of it (`ready`), offered in the
+     * library and to Repeaters. Its values of the widget's device stay so, filled in where it's used.
+     */
+    function saveAsReady(p) {
+      const { d, body } = wd.dialog(t('builderSaveReady'));
+      const name = el('input', 'wd-input');
+      name.value = partTitle(p);
+      name.setAttribute('aria-label', t('builderName'));
+      const go = async () => {
+        d.close();
+        await flush();
+        const part = freshCopy(p);
+        part.at = { x: 0, y: 0, w: p.at.w, h: p.at.h };
+        const span = Math.ceil(part.at.w / GRID.cols);
+        try {
+          const res = await request('PUT', '/web/designs', { name: name.value.trim().slice(0, 40) || partTitle(p), ready: true, parts: [part], ...(span > 1 ? { span } : {}), ...(b.design.sample ? { sample: b.design.sample } : {}) });
+          wd.designs = res.designs;
+          redrawLibrary();
+          redrawInspector();
+          toast(t('builderSavedReady', { name: res.design.name }));
+        } catch (err) { failed(err); }
+      };
+      name.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
+      const actions = el('div', 'wd-row wd-actions');
+      actions.append(button('wd-btn quiet', t('cancel'), () => d.close()), button('wd-btn primary', t('save'), go));
+      body.append(el('p', 'wd-hint', t('builderSaveReadyHint')), row(t('builderName'), name), actions);
+      d.showModal();
+      name.focus();
+      name.select();
+    }
+
     function addPart(kind, drop) {
       const def = KINDS.find(k => k.kind === kind);
       const into = drop ? drop.into : kind === 'container' ? null : targetContainer();
@@ -926,7 +1258,7 @@
         id: partId(), kind, name: '', color: null, icon: null, style: ['text', 'icon'].includes(kind) ? 'none' : 'tile', rules: [], flow: {}, reset: 'never',
       };
       if (kind === 'text') { p.text = t('builderTextDefault'); p.size = 'heading'; p.align = 'left'; }
-      if (kind === 'container') { p.mode = 'grid'; p.background = { kind: 'gradient', from: '#2d4c7a', to: '#2a1958', angle: 135 }; p.parts = []; }
+      if (kind === 'container') { p.mode = 'grid'; p.background = { kind: 'none' }; p.parts = []; }
       if (kind === 'choice') p.choices = [];
       if (kind === 'stepper') p.step = 0.5;
       if (kind === 'sparkline') p.span = '24h';
@@ -939,13 +1271,15 @@
       if (kind === 'ring') { p.rings = []; p.center = 'value'; }
       if (kind === 'repeat') { p.itemStyle = 'row'; p.columns = 1; p.text = ''; }
       if (kind === 'segments') { p.segments = []; p.barStyle = 'bar'; p.scale = 'sum'; p.legend = true; p.units = ''; }
+      if (kind === 'chart') { p.series = []; p.span = '24h'; p.chartStyle = 'line'; p.axis = true; }
+      if (kind === 'each') { p.style = 'none'; p.devices = []; p.columns = 1; const first = designs().find(d => d.ready); if (first) p.ready = first.id; }
       if (into && into.mode === 'pages') p.page = (b.editPage && b.editPage[into.id]) || 0;
       change(() => {
         const w = Number(def.w);
         const h = Number(def.h);
         if (!into) {
           const y = drop ? Math.max(0, drop.y) : b.design.parts.reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0);
-          p.at = { x: drop ? clamp(drop.x, 0, GRID.cols - w) : 0, y, w, h };
+          p.at = { x: drop ? clamp(drop.x, 0, cols() - w) : 0, y, w, h };
           b.design.parts.push(p);
           makeRoom(b.design.parts, p);
         } else if (into.mode === 'free') {
@@ -1010,7 +1344,7 @@
       const tabs = el('div', 'wdb-tabs');
       tabs.setAttribute('role', 'tablist');
       // A calculated value is never drawn: only what it calculates.
-      const ids = p.kind === 'calc' ? ['part'] : p.kind === 'container' ? ['part', 'rules', 'flow'] : ['part', 'look', 'rules', 'flow'];
+      const ids = p.kind === 'calc' ? ['part'] : p.kind === 'each' ? ['part', 'look', 'flow'] : ['part', 'look', 'rules', 'flow'];
       if (!ids.includes(b.tab)) b.tab = 'part';
       for (const id of ids) {
         const label = t(`builderTab_${id}`);
@@ -1059,9 +1393,6 @@
       const set = (fn, opts) => change(fn, opts);
       if (p.kind === 'text') {
         body.append(row(t('builderText'), textInput(p.text, v => set(() => { p.text = v.slice(0, 200); }, { preview: false }), { multi: true })));
-        body.append(row(t('builderSize'), segs([['display', t('builderSizeDisplay')], ['heading', t('builderHeading')], ['body', t('builderBody')], ['small', t('builderSmall')]], p.size, v => set(() => { p.size = v; }, { preview: false }))));
-        body.append(row(t('builderWeight'), segs([['', t('builderAuto')], ['regular', t('builderWeight_regular')], ['medium', t('builderWeight_medium')], ['bold', t('builderWeight_bold')]], p.weight || '', v => set(() => { if (v) p.weight = v; else delete p.weight; }, { preview: false }))));
-        body.append(row(t('builderAlign'), segs([['left', t('builderLeft')], ['center', t('builderCenter')], ['right', t('builderRight')]], p.align, v => set(() => { p.align = v; }, { preview: false }))));
       } else {
         body.append(row(t('builderPartName'), textInput(p.name, v => set(() => { p.name = v.trim().slice(0, 40); }, { preview: false }), { placeholder: ownName(p) || t('builderNameHint') })));
       }
@@ -1071,7 +1402,6 @@
       if (p.kind === 'sparkline') body.append(row(t('builderSpan'), spanSelect(p)));
       if (p.kind === 'arc' || p.kind === 'bar') {
         body.append(row(t('builderValue'), sourcePicker(p.src, src => change(() => { p.src = src; }), { self: p.id })));
-        body.append(row(t('builderThickness'), textInput(p.thickness || 8, v => change(() => { const n = Math.round(Number(v)); p.thickness = Number.isFinite(n) ? Math.min(24, Math.max(2, n)) : 8; }, { preview: false }), { type: 'number' })));
         if (p.kind === 'bar') body.append(row(t('builderDirection'), segs([['horizontal', t('builderHorizontal')], ['vertical', t('builderVertical')]], p.dir || 'horizontal', v => change(() => { if (v === 'vertical') p.dir = v; else delete p.dir; }, { preview: false }))));
       }
       // A variable's range only where it's a number (or not read yet).
@@ -1091,6 +1421,8 @@
         }
       }
       if (p.kind === 'choice') choicesRows(body, p);
+      if (p.kind === 'chart') chartRows(body, p);
+      if (p.kind === 'each') eachRows(body, p);
       if (p.kind === 'container') containerRows(body, p);
       if (p.kind === 'text') refRows(body, p);
       if (p.kind === 'shape') shapeRows(body, p);
@@ -1102,7 +1434,6 @@
         follow.append(slotButton(p.slot, item => change(() => { p.slot = item.id; p.icon = null; })));
         if (p.slot) follow.append(button('wd-btn quiet small', t('clear'), () => change(() => { delete p.slot; p.icon = p.icon || 'star'; })));
         body.append(row(t('builderFollows'), follow, t('builderFollowsHint')));
-        body.append(checkRow(t('builderIconGrow'), p.grow, v => change(() => { if (v) p.grow = true; else delete p.grow; }, { preview: false })));
       }
       if (TAP_KINDS.includes(p.kind)) tapRows(body, p);
       if (p.kind === 'image') imageRows(body, p);
@@ -1117,7 +1448,11 @@
         }))));
       }
       placeRows(body, p, parent);
-      body.append(confirmButton('wd-btn danger wdb-remove', t('builderRemove'), () => removePart(p.id), t('tapAgain')));
+      const end = el('div', 'wd-row wdb-end');
+      // A top-level component (a ready-made's container and all) can be kept as a ready-made of your own.
+      if (!parent && p.kind !== 'calc' && !b.design.ready) end.append(button('wd-btn quiet small', t('builderSaveReady'), () => saveAsReady(p)));
+      end.append(confirmButton('wd-btn danger wdb-remove', t('builderRemove'), () => removePart(p.id), t('tapAgain')));
+      body.append(end);
     }
 
     /** Where a part's value comes from: a device value, or (stepper, choice) a Homey variable. */
@@ -1139,6 +1474,11 @@
     /** The picked value's device and capability, from the device list (or the preview's answer while that's on its way). */
     function slotInfo(slot) {
       if (!slot) return null;
+      // The widget's device: shown with the design's preview device.
+      if (slot.startsWith('@:')) {
+        if (!b.design.sample) return { device: t('builderNoSample'), title: slot.slice(2) };
+        slot = `${b.design.sample}${slot.slice(1)}`;
+      }
       const i = slot.indexOf(':');
       const dev = (b.devices || []).find(d => d.id === slot.slice(0, i));
       const cap = dev && dev.caps.find(c => c.id === slot.slice(i + 1));
@@ -1173,24 +1513,46 @@
       }));
     }
 
-    /** A device value's button: the picked one's device over its value and reading; `picked(item, devices)` on a pick. */
+    /**
+     * A device value's button: the picked one's device over its value and reading; `picked(item, devices)` on a pick.
+     * Under it *The widget's device*: the value as `@:<capability>`, filled in with the device picked where the widget
+     * is placed (or each of a Repeater's), the design's preview device standing in for it here.
+     */
     function slotButton(slot, picked) {
-      const wrap = el('div', 'wd-row');
+      const wrap = el('div', 'wdb-slot');
+      const any = typeof slot === 'string' && slot.startsWith('@:');
       const info = slotInfo(slot);
       const pick = button('wd-btn wd-choice wdb-valuepick', '', async () => {
         try {
           const devices = await wd.valueDevices('values');
-          wd.chooseValue(devices, slot || null, item => picked(item, devices));
+          const sample = b.design.sample;
+          const current = any && sample ? `${sample}${slot.slice(1)}` : slot || null;
+          wd.chooseValue(devices, current, (item) => {
+            // Still the widget's device: the picked device becomes the preview's.
+            if (any) { const i = item.id.indexOf(':'); b.design.sample = item.id.slice(0, i); picked({ ...item, id: `@${item.id.slice(i)}` }, devices); } else picked(item, devices);
+          });
         } catch (err) { failed(err); }
       });
       if (!info) pick.append(el('span', null, t('chooseValue')));
       else if (info.loading) pick.append(el('span', 'wd-muted', t('builderLoading')));
       else if (info.gone) pick.append(el('span', null, t('builderValueGone')));
       else {
-        pick.append(el('span', 'wdb-valuepick-device', info.device));
+        pick.append(el('span', 'wdb-valuepick-device', any ? t('builderAnyDeviceOf', { name: info.device }) : info.device));
         pick.append(el('span', 'wd-muted wdb-valuepick-value', [info.title, info.reading].filter(Boolean).join(' · ')));
       }
       wrap.append(pick);
+      if (slot) {
+        wrap.append(checkRow(t('builderAnyDevice'), any, (on) => {
+          const i = slot.indexOf(':');
+          if (on) {
+            if (!b.design.sample) b.design.sample = slot.slice(0, i);
+            picked({ id: `@${slot.slice(i)}` }, b.devices || []);
+          } else {
+            const dev = b.design.sample;
+            if (dev) picked({ id: `${dev}${slot.slice(i)}` }, b.devices || []);
+          }
+        }, t('builderAnyDeviceHint')));
+      }
       return wrap;
     }
 
@@ -1260,7 +1622,7 @@
         r.lastChild.append(icon('close'));
         box.append(r);
       });
-      const add = button('wd-btn quiet small', t('builderAddChoice'), () => change(() => { p.choices = [...(p.choices || []), { label: '', value: '' }]; }, { preview: false }));
+      const add = addButton(t('builderAddChoice'), () => change(() => { p.choices = [...(p.choices || []), { label: '', value: '' }]; }, { preview: false }));
       add.disabled = (p.choices || []).length >= MAX_CHOICES;
       body.append(row(t('builderChoices'), box, t('builderChoicesHint')), add);
     }
@@ -1282,28 +1644,21 @@
         p.mode = v;
       }, { preview: false }))));
       if (p.mode === 'pages') pagesRows(body, p);
-      backgroundRows(body, p, t('builderBackground'), t('builderNone'));
     }
 
     /** A container's background, or a shape's fill: none (a shape: its colour from Style), a colour, or a gradient. */
     function backgroundRows(body, p, label, noneLabel) {
       const bg = p.background || { kind: 'none' };
-      body.append(row(label, segs([['none', noneLabel], ['color', t('builderColour')], ['gradient', t('builderGradient')]], bg.kind, v => change(() => {
-        p.background = v === 'none' ? { kind: 'none' } : v === 'color' ? { kind: 'color', from: bg.from || '#2d4c7a' } : { kind: 'gradient', from: bg.from || '#2d4c7a', to: bg.to || '#2a1958', angle: bg.angle || 135 };
+      // Without a label: a shape's gradient, its kind already picked.
+      if (label) body.append(row(label, segs([['none', noneLabel], ['color', t('builderColour')], ['gradient', t('builderGradient')]], bg.kind, v => change(() => {
+        p.background = v === 'none' ? { kind: 'none' } : v === 'color' ? { kind: 'color', from: bg.from || 'blue' } : { kind: 'gradient', from: bg.from || 'blue', to: bg.to || 'purple', angle: bg.angle || 135 };
       }, { preview: false }))));
-      const colour = (key) => {
-        const input = el('input', 'wdb-colour');
-        input.type = 'color';
-        input.value = bg[key] || '#2d4c7a';
-        input.addEventListener('input', () => { bg[key] = input.value; b.rev++; showPreview(); });
-        input.addEventListener('change', () => change(() => { p.background = { ...bg, [key]: input.value }; }, { preview: false, inspector: false }));
-        return input;
-      };
+      const colour = key => colourPicker(bg[key] || 'blue', v => change(() => { p.background = { ...bg, [key]: v || 'blue' }; }, { preview: false }), {
+        none: false, live: (v) => { bg[key] = v; b.rev++; showPreview(); },
+      });
       if (bg.kind !== 'none') {
-        const two = el('div', 'wdb-two');
-        two.append(row(bg.kind === 'gradient' ? t('builderGradientFrom') : t('builderColour'), colour('from')));
-        if (bg.kind === 'gradient') two.append(row(t('builderTo'), colour('to')));
-        body.append(two);
+        body.append(row(bg.kind === 'gradient' ? t('builderGradientFrom') : t('builderColour'), colour('from')));
+        if (bg.kind === 'gradient') body.append(row(t('builderTo'), colour('to')));
         if (bg.kind === 'gradient') body.append(row(t('builderAngle'), textInput(bg.angle, v => change(() => { p.background = { ...bg, angle: Math.round(Number(v) || 0) % 360 }; }, { preview: false }), { type: 'number' })));
       }
     }
@@ -1317,9 +1672,9 @@
         if (!Number.isFinite(n)) return;
         p.at = { ...p.at, [key]: free ? Math.round(n * 10) / 10 : Math.max(key === 'w' || key === 'h' ? 1 : 0, Math.round(n) - (key === 'x' || key === 'y' ? 1 : 0)) };
         if (!free) {
-          const cols = parent ? FINE.cols : GRID.cols;
-          p.at.w = Math.min(p.at.w, cols);
-          p.at.x = Math.min(p.at.x, cols - p.at.w);
+          const n = parent ? FINE.cols : cols();
+          p.at.w = Math.min(p.at.w, n);
+          p.at.x = Math.min(p.at.x, n - p.at.w);
           makeRoom(parent ? parent.parts : b.design.parts, p);
         }
       }, { preview: false }), { type: 'number', step: free ? '0.1' : '1' }));
@@ -1437,7 +1792,7 @@
           body.append(fmt);
         }
       });
-      const add = button('wd-btn quiet small', t('builderInsert'), () => change(() => {
+      const add = addButton(t('builderInsert'), () => change(() => {
         p.refs = [...refs, { slot: '' }];
         p.text = `${String(p.text || '').trimEnd()} {${p.refs.length}}`.trim();
       }));
@@ -1469,7 +1824,7 @@
         line.append(el('span', 'wdb-ref-key', String(i + 1)), textInput(pg.name, v => change(() => { pg.name = v.trim().slice(0, 24); }, { preview: false }), { placeholder: t('builderPageN', { n: i + 1 }) }), drop);
         body.append(line);
       });
-      const add = button('wd-btn quiet small', t('builderAddPage'), () => change(() => { p.pages = [...pages, { name: '' }]; }, { preview: false }));
+      const add = addButton(t('builderAddPage'), () => change(() => { p.pages = [...pages, { name: '' }]; }, { preview: false }));
       add.disabled = pages.length >= MAX_PAGES;
       body.append(add);
       const states = everyPart().filter(x => x.kind === 'state');
@@ -1534,7 +1889,7 @@
         }
         body.append(box);
       });
-      const add = button('wd-btn quiet small', t('builderAddAction'), () => change(() => { p.actions = [...actions, { do: 'set', value: 'toggle' }]; }));
+      const add = addButton(t('builderAddAction'), () => change(() => { p.actions = [...actions, { do: 'set', value: 'toggle' }]; }));
       add.disabled = actions.length >= MAX_ACTIONS;
       body.append(add, el('p', 'wd-hint', t(tap ? 'builderWhenTappedHint' : 'builderActionsHint')));
     }
@@ -1561,21 +1916,20 @@
     function ringRows(body, p) {
       const rings = p.rings || [];
       body.append(el('h4', 'wdb-h4', t('builderRings')));
-      const colours = [['', t('builderNoColour')], ...window.WidgetkeeperKit.COLORS.map(c => [c, colourName(c)])];
       rings.forEach((r, i) => {
         const box = el('div', 'wdb-action');
         const head = el('div', 'wdb-action-head');
         const drop = button('wd-icon small', '', () => change(() => { p.rings.splice(i, 1); }), t('remove'));
         drop.append(icon('close'));
-        head.append(el('span', 'wdb-ref-key', String(i + 1)), selectOf(colours, r.color || '', v => change(() => { r.color = v || null; }, { preview: false })), drop);
-        box.append(head, sourcePicker(r.src, src => change(() => { p.rings[i] = { ...r, src }; }), { self: p.id }));
+        head.append(el('span', 'wdb-ref-key', String(i + 1)), sourcePicker(r.src, src => change(() => { p.rings[i] = { ...r, src }; }), { self: p.id }), drop);
+        box.append(head, colourPicker(r.color, v => change(() => { r.color = v || null; }, { preview: false }), { none: t('builderAuto') }));
         const two = el('div', 'wdb-two');
         two.append(textInput(r.min, v => change(() => { const n = numOrNull(v); if (n === undefined) delete r.min; else r.min = n; }, { preview: false }), { type: 'number', placeholder: `${t('builderMin')} · ${t('builderAuto')}` }),
           textInput(r.max, v => change(() => { const n = numOrNull(v); if (n === undefined) delete r.max; else r.max = n; }, { preview: false }), { type: 'number', placeholder: `${t('builderMax')} · ${t('builderAuto')}` }));
         box.append(two);
         body.append(box);
       });
-      const add = button('wd-btn quiet small', t('builderAddRing'), () => change(() => { p.rings = [...rings, { src: { slot: '' }, color: null }]; }));
+      const add = addButton(t('builderAddRing'), () => change(() => { p.rings = [...rings, { src: { slot: '' }, color: null }]; }));
       add.disabled = rings.length >= MAX_RINGS;
       body.append(add, el('p', 'wd-hint', t('builderRingsHint')));
       body.append(row(t('builderRingMiddle'), segs([['value', t('builderRingMiddle_value')], ['icon', t('builderIcon')], ['none', t('builderNone')]], p.center || 'value', v => change(() => { p.center = v; }, { preview: false }))));
@@ -1612,20 +1966,17 @@
     function segmentRows(body, p) {
       const list = p.segments || [];
       body.append(el('h4', 'wdb-h4', t('builderSegments')));
-      const colours = [['', t('builderAuto')], ...window.WidgetkeeperKit.COLORS.map(c => [c, colourName(c)])];
       list.forEach((x, i) => {
         const box = el('div', 'wdb-action');
         const head = el('div', 'wdb-action-head');
         const drop = button('wd-icon small', '', () => change(() => { p.segments.splice(i, 1); }), t('remove'));
         drop.append(icon('close'));
-        const two = el('div', 'wdb-two');
-        two.append(textInput(x.label, v => change(() => { x.label = v.trim().slice(0, 24); }, { preview: false }), { placeholder: t('builderLabel') }),
-          selectOf(colours, x.color || '', v => change(() => { x.color = v || null; }, { preview: false })));
-        head.append(el('span', 'wdb-ref-key', String(i + 1)), two, drop);
-        box.append(head, sourcePicker(x.src, src => change(() => { p.segments[i] = { ...x, src }; }), { self: p.id }));
+        head.append(el('span', 'wdb-ref-key', String(i + 1)), textInput(x.label, v => change(() => { x.label = v.trim().slice(0, 24); }, { preview: false }), { placeholder: t('builderLabel') }), drop);
+        box.append(head, sourcePicker(x.src, src => change(() => { p.segments[i] = { ...x, src }; }), { self: p.id }),
+          colourPicker(x.color, v => change(() => { x.color = v || null; }, { preview: false }), { none: t('builderAuto') }));
         body.append(box);
       });
-      const add = button('wd-btn quiet small', t('builderAddSegment'), () => change(() => { p.segments = [...list, { src: { slot: '' }, color: null, label: '' }]; }));
+      const add = addButton(t('builderAddSegment'), () => change(() => { p.segments = [...list, { src: { slot: '' }, color: null, label: '' }]; }));
       add.disabled = list.length >= MAX_SEGMENTS;
       body.append(add, el('p', 'wd-hint', t('builderSegmentsHint')));
       body.append(row(t('builderBarStyle'), segs([['bar', t('builderBarStyle_bar')], ['donut', t('builderBarStyle_donut')]], p.barStyle || 'bar', v => change(() => { p.barStyle = v; }, { preview: false }))));
@@ -1636,19 +1987,88 @@
     }
 
 
+    /** A Chart's series (each a device value and its colour), its span, lines or bars, its scale and its edges. */
+    function chartRows(body, p) {
+      const list = p.series || [];
+      body.append(el('h4', 'wdb-h4', t('builderSeries')));
+      list.forEach((x, i) => {
+        const box = el('div', 'wdb-action');
+        const head = el('div', 'wdb-action-head');
+        const drop = button('wd-icon small', '', () => change(() => { p.series.splice(i, 1); }), t('remove'));
+        drop.append(icon('close'));
+        head.append(el('span', 'wdb-ref-key', String(i + 1)), slotButton(x.slot, item => change(() => { p.series[i] = { ...x, slot: item.id }; })), drop);
+        box.append(head, colourPicker(x.color, v => change(() => { x.color = v || null; }, { preview: false }), { none: t('builderAuto') }));
+        body.append(box);
+      });
+      const add = addButton(t('builderAddSeries'), async () => {
+        try {
+          const devices = await wd.valueDevices('values');
+          wd.chooseValue(devices, null, item => change(() => { p.series = [...(p.series || []), { slot: item.id, color: null }]; }));
+        } catch (err) { failed(err); }
+      });
+      add.disabled = list.length >= MAX_SERIES;
+      body.append(add);
+      body.append(row(t('builderSpan'), spanSelect(p)));
+      body.append(row(t('builderChartStyle'), segs([['line', t('builderChart_line')], ['bars', t('builderChart_bars')]], p.chartStyle || 'line', v => change(() => { p.chartStyle = v; }, { preview: false }))));
+      body.append(checkRow(t('builderAxis'), p.axis !== false, v => change(() => { p.axis = v; }, { preview: false })));
+    }
+
+    /**
+     * A Repeater: the ready-made component it repeats, and its devices (picked, or every one with a capability in a
+     * room), each filling in the component's values of *the widget's device*.
+     */
+    function eachRows(body, p) {
+      const ready = designs().filter(d => d.ready);
+      if (!ready.length) body.append(el('p', 'wd-hint wdb-note', t('builderEachNoReady')));
+      body.append(row(t('builderEachReady'), selectOf([['', t('choose')], ...ready.map(d => [d.id, d.name || t('untitled')])], p.ready || '', v => change(() => { if (v) p.ready = v; else delete p.ready; })), t('builderEachReadyHint')));
+      const byCap = !!p.capability;
+      body.append(row(t('builderEachDevices'), segs([['pick', t('builderEach_pick')], ['cap', t('builderEach_cap')]], byCap ? 'cap' : 'pick', v => change(() => {
+        if (v === 'cap') { delete p.devices; p.capability = p.capability || 'onoff'; } else { delete p.capability; delete p.zone; p.devices = p.devices || []; }
+      }))));
+      if (byCap) {
+        const { caps, zones } = capsAndZones();
+        body.append(row(t('builderRepeatCap'), selectOf([['', t('choose')], ...caps], p.capability || '', v => change(() => { if (v) p.capability = v; else delete p.capability; }))));
+        body.append(row(t('builderRepeatZone'), selectOf([['', t('builderEverywhere')], ...zones], p.zone || '', v => change(() => { if (v) p.zone = v; else delete p.zone; }))));
+      } else {
+        const names = (p.devices || []).map(id => ((b.devices || []).find(d => d.id === id) || {}).name || id);
+        const pick = button('wd-btn wd-choice', names.length ? names.join(', ') : t('chooseDevices'), async () => {
+          try {
+            const items = await request('GET', '/web/devices?type=custom');
+            wd.chooseDevices({ devices: { singular: false } }, items, p.devices || [], ids => change(() => { p.devices = ids.slice(0, MAX_EACH); }));
+          } catch (err) { failed(err); }
+        });
+        body.append(row(t('devices'), pick));
+      }
+      body.append(row(t('builderColumns'), segs([1, 2, 3, 4].map(n => [n, String(n)]), p.columns || 1, v => change(() => { p.columns = v; }, { preview: false }))));
+      body.append(row(t('builderRepeatLimit'), textInput(p.limit, v => change(() => { const n = Math.round(Number(v)); if (String(v).trim() && Number.isFinite(n) && n >= 1) p.limit = Math.min(MAX_EACH, n); else delete p.limit; }), { type: 'number', placeholder: t('builderAuto') })));
+    }
+
+    /** The capabilities and rooms of the value picker's devices, by title (apps' logs left out). */
+    function capsAndZones() {
+      const caps = new Map();
+      const zones = new Map();
+      for (const d of b.devices || []) {
+        if (d.id === 'log') continue;
+        for (const c of d.caps) if (!caps.has(c.id)) caps.set(c.id, c.title || c.id);
+        if (d.zone && d.zone.id) zones.set(d.zone.id, d.zone.name);
+      }
+      const byTitle = m => [...m].sort((x, y) => String(x[1]).localeCompare(String(y[1])));
+      return { caps: byTitle(caps).map(([id, title]) => [id, `${title} (${id})`]), zones: byTitle(zones) };
+    }
+
+    /** An *Add …* button: quiet, with a plus, at the start of its line under what it adds to. */
+    function addButton(label, fn) {
+      const x = button('wd-btn quiet small wdb-add', '', fn);
+      x.append(icon('plus'), el('span', null, label));
+      return x;
+    }
+
     function shapeRows(body, p) {
       body.append(row(t('builderShape'), segs([['rect', t('builderShape_rect')], ['circle', t('builderShape_circle')], ['line', t('builderShape_line')]], p.shape || 'rect', v => change(() => {
         p.shape = v;
         if (v === 'rect' && p.radius == null) p.radius = 10;
         if (v === 'line') { if (!p.thickness) p.thickness = 2; if (!p.dir) p.dir = 'horizontal'; }
       }, { preview: false }))));
-      backgroundRows(body, p, t('builderFill'), t('builderFillStyle'));
-      const two = el('div', 'wdb-two');
-      const clampTo = (v, lo, hi, d) => { const n = Math.round(Number(v)); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
-      two.append(row(t('builderOpacity'), textInput(p.opacity != null ? p.opacity : 100, v => change(() => { p.opacity = clampTo(v, 10, 100, 100); }, { preview: false }), { type: 'number' })));
-      if ((p.shape || 'rect') === 'rect') two.append(row(t('builderRadius'), textInput(p.radius != null ? p.radius : 10, v => change(() => { p.radius = clampTo(v, 0, 32, 10); }, { preview: false }), { type: 'number' })));
-      if (p.shape === 'line') two.append(row(t('builderThickness'), textInput(p.thickness || 2, v => change(() => { p.thickness = clampTo(v, 1, 8, 2); }, { preview: false }), { type: 'number' })));
-      body.append(two);
       if (p.shape === 'line') body.append(row(t('builderDirection'), segs([['horizontal', t('builderHorizontal')], ['vertical', t('builderVertical')]], p.dir || 'horizontal', v => change(() => { p.dir = v; }, { preview: false }))));
     }
 
@@ -1682,7 +2102,7 @@
         line.append(el('span', 'wdb-ref-key', p.op === 'formula' ? INPUT_NAMES[i] : String(i + 1)), sourcePicker(src, next => change(() => { p.inputs[i] = next; }), { calc: false }), drop);
         body.append(line);
       });
-      const add = button('wd-btn quiet small', t('builderAddInput'), () => change(() => { p.inputs = [...inputs, { slot: '' }]; }));
+      const add = addButton(t('builderAddInput'), () => change(() => { p.inputs = [...inputs, { slot: '' }]; }));
       add.disabled = inputs.length >= MAX_INPUTS;
       body.append(add);
       if (p.op === 'count') {
@@ -1705,24 +2125,98 @@
     }
 
 
+    const clampTo = (v, lo, hi, d) => { const n = Math.round(Number(v)); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
+
+    /**
+     * The Style tab: how it looks, not what it shows (that's Settings). Its background (a tile, a plain pill or none,
+     * and a container's colour or gradient), its colours (an accent, a shape's fill, the text's), the text's size, weight
+     * and alignment, its icon, the parts shown, and a shape's or a bar's measures.
+     */
     function lookTab(body, p) {
-      const colours = [{ id: 'none', title: t('builderNoColour') }, ...window.WidgetkeeperKit.COLORS.map(c => ({ id: c, title: colourName(c) }))];
-      body.append(row(t('builderColour'), wd.choiceGroup({ id: 'colour' }, colours, p.color || 'none', v => change(() => { p.color = v === 'none' ? null : v; }, { preview: false }), true), t(p.kind === 'shape' ? 'builderShapeColourHint' : 'builderColourHint')));
-      if (p.kind === 'shape') return;
+      const quiet = fn => change(fn, { preview: false });
+      // Background: a calculated value has none; a shape is its own.
+      if (p.kind !== 'shape') {
+        const style = ['tile', 'pill', 'none'].includes(p.style) ? p.style : (p.tile === false || ['text', 'icon', 'sparkline', 'arc', 'bar', 'each'].includes(p.kind) ? 'none' : 'tile');
+        body.append(row(t('builderStyle'), segs([['tile', t('builderStyleTile')], ['pill', t('builderStylePill')], ['none', t('builderStyleNone')]], style, v => quiet(() => { p.style = v; delete p.tile; })), t(p.kind === 'container' ? 'builderBoxStyleHint' : 'builderStyleHint')));
+      }
+      if (p.kind === 'container') backgroundRows(body, p, t('builderFill'), t('builderNone'));
+      if (p.kind === 'shape') {
+        // A shape's fill: a colour (the palette's or its own), or a gradient.
+        const bg = p.background || { kind: 'none' };
+        const gradient = bg.kind === 'gradient';
+        body.append(row(t('builderFill'), segs([['color', t('builderColour')], ['gradient', t('builderGradient')]], gradient ? 'gradient' : 'color', v => quiet(() => {
+          if (v === 'gradient') p.background = { kind: 'gradient', from: (bg.kind === 'color' && bg.from) || p.color || 'blue', to: 'purple', angle: 135 };
+          else { p.background = { kind: 'none' }; if (bg.kind !== 'none' && !p.color) p.color = bg.from; }
+        }))));
+        if (gradient) backgroundRows(body, p, null, null);
+        else body.append(colourPicker(p.color || (bg.kind === 'color' ? bg.from : null), v => quiet(() => { p.color = v; p.background = { kind: 'none' }; }), { none: t('builderShapeGrey') }));
+        const two = el('div', 'wdb-two');
+        two.append(row(t('builderOpacity'), textInput(p.opacity != null ? p.opacity : 100, v => quiet(() => { p.opacity = clampTo(v, 10, 100, 100); }), { type: 'number' })));
+        if ((p.shape || 'rect') === 'rect') two.append(row(t('builderRadius'), textInput(p.radius != null ? p.radius : 10, v => quiet(() => { p.radius = clampTo(v, 0, 32, 10); }), { type: 'number' })));
+        if (p.shape === 'line') two.append(row(t('builderThickness'), textInput(p.thickness || 2, v => quiet(() => { p.thickness = clampTo(v, 1, 8, 2); }), { type: 'number' })));
+        body.append(two);
+      }
+      if (ACCENT_KINDS.includes(p.kind)) {
+        body.append(row(t('builderColour'), colourPicker(p.color, v => quiet(() => { p.color = v; })), t('builderColourHint')));
+      }
+      if (TEXT_KINDS.includes(p.kind)) {
+        body.append(row(t('builderTextColour'), colourPicker(p.textColor, v => quiet(() => { if (v) p.textColor = v; else delete p.textColor; }), { none: t('builderAuto') }), t('builderTextColourHint')));
+      }
+      if (p.kind === 'text') {
+        body.append(row(t('builderSize'), segs([['display', t('builderSizeDisplay')], ['heading', t('builderHeading')], ['body', t('builderBody')], ['small', t('builderSmall')]], p.size, v => quiet(() => { p.size = v; }))));
+        body.append(row(t('builderWeight'), segs([['', t('builderAuto')], ['regular', t('builderWeight_regular')], ['medium', t('builderWeight_medium')], ['bold', t('builderWeight_bold')]], p.weight || '', v => quiet(() => { if (v) p.weight = v; else delete p.weight; }))));
+        body.append(row(t('builderAlign'), segs([['left', t('builderLeft')], ['center', t('builderCenter')], ['right', t('builderRight')]], p.align, v => quiet(() => { p.align = v; }))));
+      }
+      if (p.kind === 'arc' || p.kind === 'bar') {
+        body.append(row(t('builderThickness'), textInput(p.thickness || 8, v => quiet(() => { p.thickness = clampTo(v, 2, 24, 8); }), { type: 'number' })));
+      }
+      if (p.kind === 'icon') body.append(checkRow(t('builderIconGrow'), p.grow, v => quiet(() => { if (v) p.grow = true; else delete p.grow; })));
+      if (drawsIcon(p)) lookIcon(body, p);
       if (ELEMENTS[p.kind]) {
         body.append(el('h4', 'wdb-h4', t('builderShowParts')));
         for (const e of ELEMENTS[p.kind]) {
-          body.append(checkRow(t(`builderEl_${e}`), !(p.hide || []).includes(e), v => change(() => {
+          body.append(checkRow(t(`builderEl_${e}`), !(p.hide || []).includes(e), v => quiet(() => {
             const hide = new Set(p.hide || []);
             if (v) hide.delete(e); else hide.add(e);
             if (hide.size) p.hide = ELEMENTS[p.kind].filter(x => hide.has(x)); else delete p.hide;
-          }, { preview: false })));
+          })));
         }
         body.append(el('p', 'wd-hint', t('builderShowPartsHint')));
       }
-      if (drawsIcon(p)) lookIcon(body, p);
-      const style = ['tile', 'pill', 'none'].includes(p.style) ? p.style : (p.tile === false || ['text', 'icon'].includes(p.kind) ? 'none' : 'tile');
-      body.append(row(t('builderStyle'), segs([['tile', t('builderStyleTile')], ['pill', t('builderStylePill')], ['none', t('builderStyleNone')]], style, v => change(() => { p.style = v; delete p.tile; }, { preview: false })), t('builderStyleHint')));
+    }
+
+    /**
+     * A colour: none (`none`'s label; `false` for no such choice), the palette's twelve as Muted or Vivid draws them (as
+     * the preview), or one of its own from the browser's colour picker. `set(value)`: a palette name, `#rrggbb` or null;
+     * `live(hex)` while the picker is open.
+     */
+    /** @param {any} value @param {(v: any) => void} set @param {{none?: any, live?: (hex: string) => void}} [o] */
+    function colourPicker(value, set, { none = t('builderNoColour'), live = undefined } = {}) {
+      const wrap = el('div', `wk wdb-swatches${b.vivid ? ' wk-deep' : ''}`);
+      wrap.setAttribute('role', 'radiogroup');
+      const custom = typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value);
+      const swatch = (id, title, paint, cls = '') => {
+        const on = (value || '') === id;
+        const x = button(`wdb-swatch${cls}${on ? ' on' : ''}`, '', () => set(id || null), title);
+        x.setAttribute('role', 'radio');
+        x.setAttribute('aria-checked', String(on));
+        if (paint) x.style.setProperty('--sw', paint);
+        return x;
+      };
+      if (none !== false) wrap.append(swatch('', none, '', ' none'));
+      for (const c of window.WidgetkeeperKit.COLORS) wrap.append(swatch(c, colourName(c), `var(--wk-${c})`));
+      const own = el('label', `wdb-swatch wdb-swatch-own${custom ? ' on' : ''}`);
+      own.title = t('builderOwnColour');
+      own.setAttribute('aria-label', t('builderOwnColour'));
+      if (custom) own.style.setProperty('--sw', value);
+      const input = el('input');
+      input.type = 'color';
+      input.value = custom ? value.toLowerCase() : '#2d4c7a';
+      input.addEventListener('input', () => { own.style.setProperty('--sw', input.value); if (live) live(input.value); });
+      input.addEventListener('change', () => set(input.value.toLowerCase()));
+      own.append(input);
+      wrap.append(own);
+      return wrap;
     }
 
     /** The Style tab's icon, for a component that draws one. */
@@ -1756,13 +2250,15 @@
         // Between shows a second field: redrawn.
         op.addEventListener('change', () => change(() => { r.op = op.value; if (r.op === 'between') r.to = r.to || ''; else delete r.to; }));
         const values = testValues(r, next => change(() => { r.value = next.value; if (r.op === 'between') r.to = next.to || ''; }, { preview: false }));
-        const look = el('select', 'wd-input');
-        for (const o of [...(drawsIcon(p) ? ['same'] : []), ...colours, 'hide']) { const opt = el('option', null, o === 'hide' ? t('builderHide') : o === 'same' ? t('builderKeepColour') : colourName(o)); opt.value = o; opt.selected = r.look === o; look.append(opt); }
-        look.addEventListener('change', () => change(() => { r.look = look.value; }, { preview: false }));
         const drop = button('wd-icon small', '', () => change(() => { p.rules.splice(i, 1); }, { preview: false }), t('remove'));
         drop.append(icon('close'));
-        line.append(op, ...values, look, drop);
+        line.append(op, ...values, drop);
         body.append(line);
+        // Then: a colour (the palette's or its own), hidden, or (with an icon) its colour kept.
+        const then = r.look === 'hide' ? 'hide' : r.look === 'same' ? 'same' : 'colour';
+        const looks = [['colour', t('builderColour')], ...(drawsIcon(p) ? [['same', t('builderKeepColour')]] : []), ['hide', t('builderHide')]];
+        body.append(segs(looks, then, v => change(() => { r.look = v === 'colour' ? (colours.includes(r.look) || /^#/.test(r.look) ? r.look : 'red') : v; }, { preview: false })));
+        if (then === 'colour') body.append(colourPicker(r.look, v => change(() => { r.look = v || 'red'; }, { preview: false }), { none: false }));
         // And the icon it shows meanwhile, where the component draws one.
         if (r.look !== 'hide' && drawsIcon(p)) {
           const pickIc = button('wd-btn quiet small wdb-rule-icon', '', () => wd.pickIcon({ value: r.icon || null, noneLabel: t('builderNoIcon'), picked: v => change(() => { if (v && !wd.isIconPicture(v)) r.icon = v; else delete r.icon; }, { preview: false }) }));
@@ -1773,7 +2269,7 @@
         }
       });
       if (!(p.rules || []).length) body.append(el('p', 'wd-muted', t('builderNoRules')));
-      const add = button('wd-btn quiet small', t('builderAddRule'), () => change(() => {
+      const add = addButton(t('builderAddRule'), () => change(() => {
         p.rules = [...(p.rules || []), { op: 'above', value: '', look: 'red', ...(valueless ? { of: { slot: '' } } : {}) }];
       }, { preview: false }));
       add.disabled = (p.rules || []).length >= MAX_RULES;
@@ -1805,6 +2301,16 @@
     // Leaving the builder sends what waits; a design another browser changed is drawn again on the front page.
     window.addEventListener('pagehide', () => { if (b && b.saveTimer) save(); });
 
-    Object.assign(wd, { designsSection, renderBuilder, flushBuilder: flush });
+    /** Delete (or Backspace) removes the selected component, Escape lets go of it: not while typing in a field. */
+    function onKey(e) {
+      if (!b || !b.node || !b.node.isConnected || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
+      const target = /** @type {HTMLElement} */ (e.target);
+      if (target && target.closest && target.closest('input, textarea, select, [contenteditable="true"], dialog')) return;
+      if ((e.key === 'Delete' || e.key === 'Backspace') && b.selected && findPart(b.selected)) { e.preventDefault(); removePart(b.selected); }
+      else if (e.key === 'Escape' && b.selected) { e.preventDefault(); select(null); }
+    }
+    document.addEventListener('keydown', onKey);
+
+    Object.assign(wd, { builderPromo, renderBuilderHome, renderBuilder, flushBuilder: flush, designArt });
   });
 })();

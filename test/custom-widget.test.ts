@@ -175,8 +175,10 @@ describe('mount', () => {
     root.querySelector<HTMLElement>('[data-part="s"]')!.click();
     root.querySelector<HTMLElement>('[data-part="v"]')!.click();
     await vi.advanceTimersByTimeAsync(0);
-    expect(Homey.api).toHaveBeenCalledWith('POST', '/set', { design: 'd', part: 's', value: true });
-    expect(Homey.api).toHaveBeenCalledWith('POST', '/variable', { design: 'd', part: 'v', value: true });
+    // The widget's device goes along, for a design that works with any device.
+    expect(Homey.api).toHaveBeenCalledWith('GET', expect.stringMatching(/^\/state\?design=d&device=d1&/));
+    expect(Homey.api).toHaveBeenCalledWith('POST', '/set', { design: 'd', part: 's', value: true, device: 'd1' });
+    expect(Homey.api).toHaveBeenCalledWith('POST', '/variable', { design: 'd', part: 'v', value: true, device: 'd1' });
     const reads = () => Homey.api.mock.calls.filter((c: any[]) => String(c[1]).startsWith('/state')).length;
     const before = reads();
     Homey.emit('custom:design', { id: 'other' });
@@ -652,5 +654,85 @@ describe('the settings closing the review\'s gaps (2026-11-22)', () => {
   it("shows a text's value with its own decimals, with or without its unit", () => {
     const { at } = widget(state([part('t', 'text', { text: '{1} | {2}', refs: [{ slot: 'a:t', decimals: 0 }, { slot: 'a:t', decimals: 2, plain: true }] })], [value('a:t', 21.456)]));
     expect(at('t').textContent).toBe('21°C | 21.46');
+  });
+});
+
+describe('styles, colours, width, charts and Repeaters (2026-11-24)', () => {
+  it("takes away the empty design's note once the design has components", () => {
+    const { w, root } = widget(state([]));
+    const note = root.querySelector<HTMLElement>('.wb-message')!;
+    expect(note.hidden).toBe(false);
+    expect(note.textContent).toContain('no components');
+    w.setState({ ...state([part('t', 'text', { text: 'Hi' })]), design: { id: 'd', name: 'D', updatedAt: 2, parts: [part('t', 'text', { text: 'Hi' })] } });
+    expect(note.hidden).toBe(true);
+    expect(root.querySelector<HTMLElement>('.wb-grid')!.hidden).toBe(false);
+  });
+
+  it("draws a container's style and background (a palette colour as Muted or Vivid's) and a text colour", () => {
+    const { at } = widget(state([
+      part('tile', 'container', { style: 'tile', mode: 'grid', background: { kind: 'none' }, parts: [] }),
+      part('pill', 'container', { style: 'pill', mode: 'grid', background: { kind: 'color', from: 'teal' }, parts: [] }),
+      part('bare', 'container', { style: 'none', mode: 'grid', background: { kind: 'gradient', from: 'blue', to: '#102030', angle: 90 }, parts: [] }),
+      part('old', 'container', { mode: 'grid', background: { kind: 'color', from: '#112233' }, parts: [] }),
+      part('ink', 'text', { text: 'Hi', textColor: 'red' }),
+      part('own', 'switch', { slot: 'a:onoff', textColor: '#123456' }),
+    ], [value('a:onoff', true, { type: 'boolean' })]));
+    expect(at('tile').classList.contains('wb-tile')).toBe(true);
+    expect(at('pill').className).toMatch(/wb-tile.*wb-pill|wb-pill.*wb-tile/);
+    expect(at('pill').style.background).toContain('var(--wk-teal)');
+    expect(at('pill').classList.contains('wb-box-dark')).toBe(true);
+    expect(at('bare').classList.contains('wb-bare')).toBe(true);
+    expect(at('bare').style.background).toContain('var(--wk-blue)');
+    // A container from before styles: none where it had a background.
+    expect(at('old').classList.contains('wb-bare')).toBe(true);
+    expect(at('ink').classList.contains('wb-has-ink')).toBe(true);
+    expect(at('ink').style.getPropertyValue('--wb-ink')).toBe('var(--wk-red)');
+    expect(at('own').style.getPropertyValue('--wb-ink')).toBe('#123456');
+  });
+
+  it('gives a design made for more columns four grid columns per column', () => {
+    const { root } = widget({ ...state([part('t', 'text')]), design: { id: 'd', name: 'D', updatedAt: 1, span: 2, parts: [part('t', 'text')] } });
+    expect(root.querySelector<HTMLElement>('.wb-grid')!.style.getPropertyValue('--wb-cols')).toBe('8');
+  });
+
+  it('draws a chart of its series as lines or bars, with its scale, times and a legend for more than one', () => {
+    const now = Date.now();
+    const pts = (f: (i: number) => number) => Array.from({ length: 13 }, (_, i) => [now - (12 - i) * 3600e3, f(i)]);
+    const histories = { '24h\na:t': pts(i => 20 + i / 4), '24h\nb:t': pts(i => 18 - i / 6) };
+    const s = state([part('c', 'chart', { series: [{ slot: 'a:t', color: 'red' }, { slot: 'b:t', color: null }], span: '24h', chartStyle: 'line', axis: true, at: { x: 0, y: 0, w: 4, h: 2 } })],
+      [{ ...value('a:t', 23), name: 'Living' }, { ...value('b:t', 16), name: 'Bedroom' }], { histories });
+    const { at } = widget(s);
+    const c = at('c');
+    expect(c.querySelectorAll('.wb-chart-line')).toHaveLength(2);
+    expect((c.querySelector('.wb-chart-line') as SVGElement).style.stroke).toBe('var(--wk-red)');
+    expect([...c.querySelectorAll('.wb-chart-key')].map(k => k.textContent)).toEqual(['Living', 'Bedroom']);
+    expect([...c.querySelectorAll('.wb-chart-y span')].map(x => x.textContent)).toEqual(['23°C', '16°C']);
+    expect(c.querySelectorAll('.wb-chart-x span')).toHaveLength(2);
+    const bars = widget(state([part('b', 'chart', { series: [{ slot: 'a:t', color: null }], span: '24h', chartStyle: 'bars', axis: false })], [value('a:t', 23)], { histories }));
+    expect(bars.at('b').querySelectorAll('.wb-chart-bar').length).toBeGreaterThan(10);
+    expect(bars.at('b').classList.contains('wb-chart-axis')).toBe(false);
+  });
+
+  it("repeats a ready-made component once per device, each with that device's values, its requests naming the copy and device", async () => {
+    const ready = part('box', 'container', { mode: 'free', style: 'tile', at: { x: 0, y: 0, w: 2, h: 1 }, parts: [
+      part('sw', 'switch', { slot: '@:onoff', at: { x: 0, y: 0, w: 50, h: 100 } }),
+      part('n', 'text', { text: '{1}', refs: [{ slot: '@:onoff', show: 'name' }], at: { x: 50, y: 0, w: 50, h: 100 } }),
+    ] });
+    const onSet = vi.fn(async () => {});
+    const { root } = widget(state([part('e', 'each', { ready: 'r', columns: 2, at: { x: 0, y: 0, w: 4, h: 2 } })],
+      [{ ...value('l1:onoff', true, { type: 'boolean' }), name: 'Lamp one' }, { ...value('l2:onoff', false, { type: 'boolean' }), name: 'Lamp two' }],
+      { each: { e: { part: ready, devices: ['l1', 'l2'] } } }), { onSet });
+    const copies = root.querySelectorAll('.wb-each-item');
+    expect(copies).toHaveLength(2);
+    // The switch's name and the text, both the copy's device's.
+    expect([...copies].map(c => c.textContent)).toEqual(['Lamp oneLamp one', 'Lamp twoLamp two']);
+    expect(root.querySelector('[data-part="e/sw"]')!.getAttribute('aria-checked')).toBe('true');
+    expect([...root.querySelectorAll('[data-part="e/sw"]')][1].getAttribute('aria-checked')).toBe('false');
+    ([...root.querySelectorAll<HTMLElement>('[data-part="e/sw"]')][1]).click();
+    await Promise.resolve();
+    expect(onSet).toHaveBeenCalledWith(expect.objectContaining({ id: 'e/sw', slot: 'l2:onoff', device: 'l2' }), true);
+    // Without a ready-made it says so.
+    const none = widget(state([part('e', 'each', { at: { x: 0, y: 0, w: 4, h: 1 } })], [], { each: { e: { part: null, devices: [] } } }));
+    expect(none.root.textContent).toContain('ready-made');
   });
 });

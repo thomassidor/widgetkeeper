@@ -43028,6 +43028,10 @@
       "deprecated": true,
       "height": 100,
       "transparent": true,
+      "devices": {
+        "type": "global",
+        "singular": true
+      },
       "settings": [
         {
           "id": "design",

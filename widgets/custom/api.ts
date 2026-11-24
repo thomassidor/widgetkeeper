@@ -4,45 +4,46 @@ import { keyResult, logged, logPerf, requireId } from '../../lib/widgetApi.js';
 import { tileShadowOf } from '../../lib/tileShadow.js';
 
 type Homey = App['homey'];
-type Body = { design?: unknown, part?: unknown, value?: unknown, instance?: unknown, slot?: unknown, index?: unknown, do?: unknown };
+type Body = { design?: unknown, part?: unknown, value?: unknown, instance?: unknown, slot?: unknown, index?: unknown, do?: unknown, device?: unknown };
 
 export default {
   /**
-   * `design`: a design's id. A design and what it shows (`CustomWidgetService.getState()`), or `{missing: true}`;
-   * `tileShadow` rides along (`lib/tileShadow.ts`).
+   * `design`: a design's id, `device` the widget's device (a design that works with any device). A design and what it
+   * shows (`CustomWidgetService.getState()`), or `{missing: true}`; `tileShadow` rides along (`lib/tileShadow.ts`).
+   * Every route below takes `device` too.
    */
   async getState({ homey, query }: { homey: Homey, query: Record<string, string> }) {
     const app = homey.app as WidgetkeeperApp;
     logPerf(app, 'Widget Builder', query);
-    const state = await logged(app, 'Widget Builder state failed:', () => app.custom.getState(query.design || ''));
+    const state = await logged(app, 'Widget Builder state failed:', () => app.custom.getState(query.design || '', query.device || undefined));
     return { ...state, tileShadow: tileShadowOf(homey) };
   },
 
   /** `{design, part, value}`: a switch, slider, stepper or choice sets its own device value (the app's token). */
   async set({ homey, body }: { homey: Homey, body: Body }) {
     const app = homey.app as WidgetkeeperApp;
-    return logged(app, 'Widget Builder set failed:', () => app.custom.setValue(requireId(body?.design, 'design'), requireId(body?.part, 'part'), body?.value, body?.slot));
+    return logged(app, 'Widget Builder set failed:', () => app.custom.setValue(requireId(body?.design, 'design'), requireId(body?.part, 'part'), body?.value, body?.slot, body?.device));
   },
 
   /** `{design, part, value}`: a variable, stepper or choice sets its Homey variable (the personal API key). */
   async variable({ homey, body }: { homey: Homey, body: Body }) {
     const app = homey.app as WidgetkeeperApp;
     const [design, part] = [requireId(body?.design, 'design'), requireId(body?.part, 'part')];
-    return keyResult(app, 'Widget Builder variable failed', async () => { await app.custom.setVariable(design, part, body?.value); });
+    return keyResult(app, 'Widget Builder variable failed', async () => { await app.custom.setVariable(design, part, body?.value, body?.device); });
   },
 
   /** `{design, part}`: a button starts its Flow (the personal API key). */
   async flow({ homey, body }: { homey: Homey, body: Body }) {
     const app = homey.app as WidgetkeeperApp;
     const [design, part] = [requireId(body?.design, 'design'), requireId(body?.part, 'part')];
-    return keyResult(app, 'Widget Builder Flow failed', async () => { await app.custom.startFlow(design, part); });
+    return keyResult(app, 'Widget Builder Flow failed', async () => { await app.custom.startFlow(design, part, body?.device); });
   },
 
   /** `{design, part, instance}`: a button without a Flow fires *A Widget Builder button was tapped*. */
   async tap({ homey, body }: { homey: Homey, body: Body }) {
     const app = homey.app as WidgetkeeperApp;
     const instance = typeof body?.instance === 'string' ? body.instance : undefined;
-    return logged(app, 'Widget Builder tap failed:', () => app.custom.tap(requireId(body?.design, 'design'), requireId(body?.part, 'part'), instance));
+    return logged(app, 'Widget Builder tap failed:', () => app.custom.tap(requireId(body?.design, 'design'), requireId(body?.part, 'part'), instance, body?.device));
   },
 
   /**
@@ -52,12 +53,12 @@ export default {
   async action({ homey, body }: { homey: Homey, body: Body }) {
     const app = homey.app as WidgetkeeperApp;
     const [design, part] = [requireId(body?.design, 'design'), requireId(body?.part, 'part')];
-    return keyResult(app, 'Widget Builder action failed', async () => { await app.custom.runAction(design, part, body?.index, body?.do); });
+    return keyResult(app, 'Widget Builder action failed', async () => { await app.custom.runAction(design, part, body?.index, body?.do, body?.device); });
   },
 
   /** `design`, `part`: an image's picture from its device, `{type, data}` base64. */
   async image({ homey, query }: { homey: Homey, query: Record<string, string> }) {
     const app = homey.app as WidgetkeeperApp;
-    return logged(app, 'Widget Builder image failed:', () => app.custom.image(query.design || '', query.part || ''));
+    return logged(app, 'Widget Builder image failed:', () => app.custom.image(query.design || '', query.part || '', query.device || undefined));
   },
 };

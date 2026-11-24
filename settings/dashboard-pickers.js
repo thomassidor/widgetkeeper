@@ -577,6 +577,6 @@
       return wrap;
     }
 
-    Object.assign(wd, { autocompletePicker, chooseValue, devicePicker, valueDevices, valuePicker, isChosen });
+    Object.assign(wd, { autocompletePicker, chooseDevices, chooseValue, devicePicker, valueDevices, valuePicker, isChosen });
   });
 })();

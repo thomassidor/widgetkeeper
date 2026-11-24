@@ -27,7 +27,7 @@ html, body { background: transparent !important; }
 .wb * { box-sizing: border-box; }
 .wb [dir="auto"] { text-align: inherit; }
 
-.wb-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 64px; gap: var(--homey-su-2, 8px); }
+.wb-grid { display: grid; grid-template-columns: repeat(var(--wb-cols, 4), minmax(0, 1fr)); grid-auto-rows: 64px; gap: var(--homey-su-2, 8px); }
 .wb-message { font-size: var(--wb-fs-small); line-height: var(--wb-lh-small); color: var(--wb-muted); padding: 8px 2px; }
 .wb-grid:not([hidden]) + .wb-message:not([hidden]) { padding-bottom: 0; }
 
@@ -38,7 +38,7 @@ html, body { background: transparent !important; }
   background: var(--wb-tile); border-radius: var(--wb-radius); padding: 8px 10px; overflow: hidden; isolation: isolate;
   transition: background-color .15s, color .15s, transform .1s;
 }
-.homey-dark-mode .wb-tile::after, .wb.homey-dark-mode .wb-tile::after {
+.homey-dark-mode .wb-tile:not(.wb-pill)::after, .wb.homey-dark-mode .wb-tile:not(.wb-pill)::after {
   content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / .05), inset 0 0 0 1px rgb(255 255 255 / .03);
 }
@@ -69,8 +69,12 @@ html, body { background: transparent !important; }
 .wb-svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .wb-svg .filled { fill: currentColor; stroke: none; }
 
-/* Pill: fully rounded; a one-row component lays out in a row, the icon, the name, then the value or switch. */
-.wb-pill { border-radius: 999px; padding: 6px 16px; }
+/*
+ * Pill: fully rounded and plain (no rim, no shadow, as Sensor Alarms' tiles); a one-row component lays out in a row,
+ * the icon, the name, then the value or switch. A container's pill is rounder than a tile, not a stadium.
+ */
+.wb-pill { border-radius: 999px; padding: 6px 16px; box-shadow: none; }
+.wb-k-container.wb-pill { border-radius: 24px; padding: 12px; }
 .wb-pill:is(.wb-k-value:not(.wb-big):not(.wb-narrow), .wb-k-calc:not(.wb-big):not(.wb-narrow), .wb-k-time:not(.wb-big), .wb-k-flowvalue, .wb-k-switch, .wb-k-status, .wb-k-variable, .wb-k-button) {
   flex-direction: row; align-items: center; justify-content: flex-start; gap: 10px;
 }
@@ -178,9 +182,14 @@ html, body { background: transparent !important; }
 .wb-k-icon .wb-icon { width: min(100cqw, 100cqh, 34px); height: min(100cqw, 100cqh, 34px); color: var(--wk-c); }
 .wb-k-icon.wb-align-start { align-items: flex-start; }
 
-/* Container: a background holding parts, on a fine grid or free-form. Light text on a colour or gradient. */
-.wb-k-container { border-radius: 14px; padding: 10px; overflow: hidden; }
-.wb-box-plain { background-color: var(--wb-tile); }
+/*
+ * Container: holding parts on a fine grid or free-form; its style a tile (Quick Actions', the rim and the light-mode
+ * shadow), a plain pill, or none (only its own background). Light text on a colour or gradient.
+ */
+.wb-k-container { border-radius: 14px; padding: 10px; overflow: hidden; justify-content: flex-start; }
+.wb-k-container.wb-tile { border-radius: var(--wb-radius); padding: 10px; }
+/* Without a style or a background of its own: its components right on the widget's background. */
+.wb-k-container.wb-bare:not(.wb-box-bg) { padding: 0; }
 .wb-box-dark { --wb-text: #FFFFFF; --wb-muted: rgb(255 255 255 / .72); --wb-track: rgb(255 255 255 / .18); color: var(--wb-text); }
 .wb-box-dark .wb-tile { --wb-text: var(--homey-text-color, #1F2029); --wb-muted: var(--homey-text-color-light, #6B6C75); --wb-track: var(--homey-color-mono-050, #EAEAF1); color: var(--wb-text); }
 .homey-dark-mode .wb-box-dark .wb-tile, .wb.homey-dark-mode .wb-box-dark .wb-tile { --wb-tile: rgb(24 25 32 / .82); --wb-text: #EDEEF0; --wb-muted: #9C9DA5; --wb-track: #2E3039; }
@@ -362,3 +371,35 @@ html, body { background: transparent !important; }
 .wb-k-icon.wb-icon-grow .wb-icon { width: min(100cqw, 100cqh); height: min(100cqw, 100cqh); }
 /* A text's own colour (a rule's or a Flow's tints it as before). */
 .wb-k-text.wb-has-color:not(.wb-colored) .wb-text { color: var(--wk-c); }
+
+/* Text colour (`textColor`): its text and the muted text with it; a Vivid tint's text on the colour still wins. */
+.wb .wb-has-ink { --wb-text: var(--wb-ink); --wb-muted: color-mix(in srgb, var(--wb-ink) 72%, transparent); color: var(--wb-ink); }
+.wb .wb-has-ink .wb-text, .wb .wb-has-ink .wb-value, .wb .wb-has-ink .wb-name { color: var(--wb-ink); }
+.wb.wk-deep .wb-has-ink.wb-colored, .wb.wk-deep .wb-has-ink.wb-colored :is(.wb-text, .wb-value, .wb-name) { --wb-text: var(--wk-on); color: var(--wk-on); }
+
+/* Chart: its name and legend, the scale at the left, the plot, the times under it. */
+.wb-k-chart { justify-content: flex-start; gap: 4px; }
+.wb-k-chart.wb-tile { padding: 8px 10px 6px; }
+.wb-chart-head[hidden] { display: none; }
+.wb-chart-head .wb-name[hidden] { display: none; }
+.wb-chart-legend { display: flex; gap: 8px; min-width: 0; overflow: hidden; font-size: 11px; line-height: 14px; color: var(--wb-muted); }
+.wb-chart-key { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; min-width: 0; }
+.wb-chart-key span { overflow: hidden; text-overflow: ellipsis; }
+.wb-chart-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.wb-chart-body { flex: 1; min-height: 0; display: flex; gap: 6px; }
+.wb-chart-y { display: none; flex-direction: column; justify-content: space-between; font-size: 10px; line-height: 12px; color: var(--wb-muted); text-align: right; white-space: nowrap; }
+.wb-chart-axis .wb-chart-y { display: flex; }
+.wb-chart-plot { position: relative; flex: 1; min-width: 0; min-height: 0; }
+.wb-chart-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.wb-chart-grid { stroke: color-mix(in srgb, var(--wb-text) 10%, transparent); stroke-width: 1; fill: none; }
+.wb-chart-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.wb-chart-x { display: none; justify-content: space-between; font-size: 10px; line-height: 12px; color: var(--wb-muted); padding-left: 0; }
+.wb-chart-axis .wb-chart-x { display: flex; }
+.wb-chart-none { position: absolute; inset: 0; display: grid; place-items: center; }
+
+/* Repeater: a ready-made component once per device, in rows. */
+.wb-k-each { justify-content: flex-start; overflow: hidden; }
+.wb-each-list { display: grid; gap: var(--homey-su-2, 8px); min-height: 0; }
+.wb-each-item { position: relative; min-width: 0; min-height: 0; display: flex; }
+.wb-each-item > .wb-part { flex: 1; min-width: 0; }
+.wb-each-empty[hidden] { display: none; }

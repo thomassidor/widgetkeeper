@@ -176,7 +176,7 @@
       v('rules', 'Rules: a door in red, a charger hidden', { scene: 'rules' }),
       v('controls', 'Light · Stepper, choice, variables, gauge', { scene: 'controls' }, true),
       v('blocks', 'Text with values, sums, the time and shapes', { scene: 'blocks' }),
-      v('more', 'Light · Pages by a state, ring, picture, repeater', { scene: 'more' }, true),
+      v('more', 'Light · Pages by a state, ring, picture, list', { scene: 'more' }, true),
       v('split', 'Segmented bar, donut and trends', { scene: 'split' }),
       v('bare', 'Light · The primitives on their own', { scene: 'bare' }, true)],
     sparklines: [LIGHT, VIVID, lightVivid,

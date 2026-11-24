@@ -1034,9 +1034,20 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-status { font-size: 13px; white-space: nowrap; }
 .wdb-status.bad { color: var(--wd-red); }
 
-.wdb { display: grid; grid-template-columns: 240px minmax(0, 1fr) 330px; min-height: calc(100vh - 64px); border-top: 1px solid var(--wd-line); }
+.wdb { display: grid; grid-template-columns: 264px minmax(0, 1fr) 340px; min-height: calc(100vh - 64px); border-top: 1px solid var(--wd-line); }
 .wdb-lib, .wdb-insp { padding: 12px; overflow: auto; max-height: calc(100vh - 64px); position: sticky; top: 64px; box-sizing: border-box; }
-.wdb-lib { border-right: 1px solid var(--wd-line); }
+/* The library and the inspector scroll with the side pane's thin, quiet scrollbar. */
+.wdb-lib, .wdb-insp { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--wd-text) 18%, transparent) transparent; }
+.wdb-lib:hover, .wdb-insp:hover { scrollbar-color: color-mix(in srgb, var(--wd-text) 32%, transparent) transparent; }
+.wdb-lib { border-right: 1px solid var(--wd-line); background: color-mix(in srgb, var(--wd-tile) 55%, var(--wd-bg)); padding-top: 0; }
+.wdb-insp { background: color-mix(in srgb, var(--wd-tile) 55%, var(--wd-bg)); }
+/* The tabs and the search stay at the top while the list scrolls. */
+.wdb-lib > .wdb-tabs { position: sticky; top: 0; z-index: 2; margin: 0 -12px 0; padding: 12px 12px 0; border-radius: 0; background: inherit; }
+.wdb-lib > .wdb-tabs .wdb-tab { background: var(--wd-raised); }
+.wdb-lib > .wdb-tabs .wdb-tab:first-child { border-radius: 8px 0 0 8px; }
+.wdb-lib > .wdb-tabs .wdb-tab:last-child { border-radius: 0 8px 8px 0; }
+.wdb-lib > .wdb-tabs .wdb-tab.on { background: var(--wd-accent); color: #FFFFFF; box-shadow: none; }
+.wdb-lib-body > .wd-input[type="search"] { position: sticky; top: 42px; z-index: 1; margin-top: 10px; }
 .wdb-insp { border-left: 1px solid var(--wd-line); }
 .wdb-tabs { display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: var(--wd-raised); margin-bottom: 10px; }
 .wdb-tab {
@@ -1047,13 +1058,21 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-h3 { margin: 14px 2px 8px; font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: var(--wd-muted); }
 .wdb-h4 { margin: 16px 0 6px; font-size: 13px; font-weight: 500; color: var(--wd-muted); }
 .wdb-where { margin: 8px 2px 0; }
-.wdb-comps { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.wdb-comps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
 .wdb-comp {
-  -webkit-appearance: none; appearance: none; border: 1px solid transparent; display: flex; flex-direction: column; align-items: center; gap: 4px;
-  padding: 10px 4px 8px; border-radius: 10px; background: var(--wd-tile); color: var(--wd-text); cursor: pointer;
-  font: 400 12px/15px inherit; font-family: inherit; text-align: center;
+  -webkit-appearance: none; appearance: none; border: 1px solid var(--wd-line); display: flex; align-items: center; gap: 8px;
+  min-height: 40px; padding: 6px 8px; border-radius: 9px; background: var(--wd-tile); color: var(--wd-text); cursor: grab;
+  font: 400 12.5px/15px inherit; font-family: inherit; text-align: left; transition: border-color .12s, background-color .12s, transform .08s;
 }
-.wdb-comp:hover { border-color: var(--wd-accent); }
+.wdb-comp > span { min-width: 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.wdb-comp .wdb-comp-icon { width: 18px; height: 18px; flex: none; }
+.wdb-comp:hover { border-color: var(--wd-accent); background: color-mix(in srgb, var(--wd-accent) 6%, var(--wd-tile)); }
+.wdb-comp:hover .wdb-comp-icon { stroke: var(--wd-accent); }
+.wdb-comp:hover .wdb-comp-icon .filled { fill: var(--wd-accent); }
+.wdb-comp:active { transform: scale(.97); cursor: grabbing; }
+.wdb-comp:focus-visible { outline: 2px solid var(--wd-accent); outline-offset: 1px; }
+.wdb-mine { border-style: dashed; }
+.wdb-lib .wdb-h3 { margin: 18px 2px 8px; }
 .wdb-comp-icon, .wdb-layer-icon { width: 22px; height: 22px; fill: none; stroke: var(--wd-muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .wdb-comp-icon .filled, .wdb-layer-icon .filled { fill: var(--wd-muted); stroke: none; }
 .wdb-layers { display: flex; flex-direction: column; gap: 2px; }
@@ -1073,13 +1092,19 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-tools { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 .wdb-canvas { position: relative; max-width: 100%; }
 .wdb-guide { position: absolute; inset: 0 0 auto 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; pointer-events: none; }
+.wdb-tools .wdb-sample .wd-btn { height: 32px; }
 .wdb-guide i { border: 1px dashed color-mix(in srgb, var(--wd-text) 16%, transparent); border-radius: 10px; }
 .wdb-frame { position: relative; display: block; width: 100%; border: 0; background: transparent; }
 .wdb-overlay { position: absolute; inset: 0; }
 .wdb-box { position: absolute; border-radius: 10px; cursor: grab; touch-action: none; }
 .wdb-box:hover { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wd-accent) 60%, transparent); }
 .wdb-box.on { box-shadow: 0 0 0 2px var(--wd-accent); z-index: 2; }
-.wdb-box.container.on { box-shadow: 0 0 0 2px var(--wd-accent), 0 0 0 4px color-mix(in srgb, var(--wd-accent) 25%, transparent); }
+/* A selected container stays under its components' boxes, so they can still be picked inside it. */
+.wdb-box.container.on { box-shadow: 0 0 0 2px var(--wd-accent), 0 0 0 4px color-mix(in srgb, var(--wd-accent) 25%, transparent); z-index: 1; }
+.wdb-box.kid { z-index: 2; }
+.wdb-box.kid.on { z-index: 3; }
+/* Where a drag lands: the cells (or the place in a container) it will cover. */
+.wdb-cell { position: absolute; z-index: 4; pointer-events: none; border-radius: 10px; background: color-mix(in srgb, var(--wd-accent) 18%, transparent); box-shadow: inset 0 0 0 2px var(--wd-accent); }
 .wdb-box.hidden { background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--wd-text) 10%, transparent) 0 6px, transparent 6px 12px); }
 .wdb-handle { position: absolute; right: -6px; bottom: -6px; width: 14px; height: 14px; border-radius: 4px; background: var(--wd-tile); border: 2px solid var(--wd-accent); cursor: nwse-resize; touch-action: none; }
 .wdb-tag { position: absolute; left: 0; top: -20px; font-size: 11px; line-height: 16px; color: var(--wd-accent); white-space: nowrap; pointer-events: none; }
@@ -1109,7 +1134,54 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-action { display: grid; gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--wd-line); }
 .wdb-action-head { display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; gap: 6px; align-items: center; }
 .wdb-colour { width: 100%; height: 36px; padding: 2px; border: 1px solid var(--wd-line); border-radius: 8px; background: var(--wd-tile); cursor: pointer; }
-.wdb-remove { margin-top: 12px; align-self: flex-start; }
+.wdb-remove { align-self: flex-start; }
+.wdb-end { margin-top: 12px; gap: 8px; flex-wrap: wrap; align-items: center; }
+/* Add …: quiet, at the start of its line, with a plus, under what it adds to. */
+.wdb-add { align-self: flex-start; justify-content: flex-start; gap: 6px; padding-left: 8px; }
+.wdb-add svg { width: 16px; height: 16px; }
+/* A group of settings (When tapped, Actions, Rings …) starts with a line above its heading. */
+.wdb-form .wdb-h4 { margin: 10px 0 0; padding-top: 14px; border-top: 1px solid var(--wd-line); color: var(--wd-text); font-weight: 600; }
+.wdb-form > .wdb-h4:first-child { border-top: 0; padding-top: 0; }
+.wdb-note { margin: 0; }
+
+/* Colours: none, the palette as the preview's Muted or Vivid draws it, and one of its own. */
+.wdb-swatches { display: flex; flex-wrap: wrap; gap: 6px; }
+.wdb-swatch {
+  -webkit-appearance: none; appearance: none; position: relative; width: 26px; height: 26px; padding: 0; border-radius: 50%; cursor: pointer;
+  border: 1px solid color-mix(in srgb, var(--wd-text) 14%, transparent); background: var(--sw, transparent); flex: none;
+}
+.wdb-swatch.on { box-shadow: 0 0 0 2px var(--wd-panel, var(--wd-bg)), 0 0 0 4px var(--wd-accent); }
+.wdb-swatch.none::after { content: ''; position: absolute; left: 3px; right: 3px; top: 50%; height: 2px; margin-top: -1px; background: var(--wd-muted); transform: rotate(-45deg); border-radius: 1px; }
+.wdb-swatch-own { background: var(--sw, conic-gradient(#F25F5C, #F5C518, #71D51B, #2CC3E8, #2F8DF6, #9033FC, #F2549E, #F25F5C)); overflow: hidden; }
+.wdb-swatch-own input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: 0; padding: 0; }
+.wdb-swatch:focus-visible, .wdb-swatch-own:focus-within { outline: 2px solid var(--wd-accent); outline-offset: 2px; }
+
+/* A device value's button, and The widget's device under it. */
+.wdb-slot { display: grid; gap: 2px; min-width: 0; }
+.wdb-slot .wdb-flowrow { border-bottom: 0; padding: 4px 0 0; }
+.wdb-sample { display: flex; }
+.wdb-sample[hidden] { display: none; }
+.wdb-sample .wd-btn svg { width: 16px; height: 16px; }
+
+/* The front page's banner for the Widget Builder. */
+.wdb-promo {
+  display: flex; align-items: center; gap: 16px; margin: 0 0 8px; padding: 16px 18px; border-radius: 16px; color: #FFFFFF;
+  background: linear-gradient(120deg, #2A1958, #4B2E9E 55%, #2F8DF6);
+}
+.wdb-promo-art { width: 44px; height: 44px; border-radius: 12px; flex: none; display: grid; place-items: center; background: rgb(255 255 255 / .14); }
+.wdb-promo-icon { width: 26px; height: 26px; fill: none; stroke: #FFFFFF; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.wdb-promo-icon .filled { fill: #FFFFFF; stroke: none; }
+.wdb-promo-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.wdb-promo-text span { opacity: .85; font-size: 14px; }
+.wdb-promo .wd-btn.primary { background: #FFFFFF; color: #2A1958; flex: none; }
+.wdb-promo-close { color: #FFFFFF; flex: none; }
+@media (max-width: 600px) { .wdb-promo { flex-wrap: wrap; } .wdb-promo-text { flex-basis: calc(100% - 100px); } }
+
+/* The builder's own page, and Add widget's designs. */
+.wdb-home-note { margin: -4px 0 12px; }
+.wdb-type-art { padding: 8px; box-sizing: border-box; }
+.wdb-type-plus { display: grid; place-items: center; color: var(--wd-accent); border: 1px dashed var(--wd-line); border-radius: 10px; }
+.wdb-type-new { text-decoration: none; color: inherit; }
 .wdb-dashpick { width: 100%; justify-content: flex-start; margin-bottom: 6px; }
 
 /* One column below 960 px: the library as a row over the stage, the inspector under it. */
@@ -1131,3 +1203,4 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-valuepick { flex-direction: column; align-items: flex-start; gap: 0; height: auto; min-height: 44px; padding: 6px 12px; text-align: left; width: 100%; }
 .wdb-valuepick-device { font-weight: 500; }
 .wdb-valuepick-value { font-size: 13px; font-weight: 400; }
+.wdb-type-plus svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 2; }

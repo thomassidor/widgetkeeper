@@ -2,25 +2,29 @@
 
 [← All widgets](../../README.md#widgets)
 
-For [web dashboards](../../README.md#web-dashboards) only, for now: a widget you design yourself. On the web dashboards' front page, under **Widget Builder**, tap **New design**. The builder shows your design at its real size, with its live values:
+For [web dashboards](../../README.md#web-dashboards) only, for now: a widget you design yourself. Open **Widget Builder** from the side pane (or the banner on the front page): it lists your designs; open one, or tap **New design**. The builder shows your design at its real size, with its live values:
 
-- Tap a component on the left to add it at the bottom (or into the selected container), or drag it to where you want it.
-- Drag a component to move it, or drag its corner to resize it. The components below move down to make room.
-- On the right, the selected component's **Settings** (what it shows or changes, its position and size), **Style** (colour, icon, and a tile, pill or no background), **Rules** and **Flows**.
-- The moon or sun in the bar switches the editor and the preview between dark and light.
+- Tap a component on the left to add it at the bottom (or into the selected container), or drag it to where you want it: the cells it will cover light up.
+- Drag a component to move it, into a container or out of one, or drag its corner to resize it. The components below move down to make room. **Delete** removes the selected one, **Escape** lets go of it.
+- On the right, the selected component's **Settings** (what it shows or does, its position and size), **Style** (how it looks: a tile, a plain pill or no background, its colour and text colour, a text's size, an icon), **Rules** and **Flows**. Every colour is one of the twelve, drawn as Muted or Vivid draws them, or one of your own.
+- At the top: how many dashboard columns the design spans (its grid gets four columns per column), a column's width, Muted or Vivid. The moon or sun in the bar switches the editor and the preview between dark and light.
 
-Changes are saved as you go, and Undo takes them back. **Add to dashboard** puts the design on a web dashboard, or add it there yourself with Add widget → Widget Builder and pick it in the widget's settings. A change to a design shows on every dashboard that has it.
+Changes are saved as you go, and Undo takes them back. **Add to dashboard** puts the design on a web dashboard, as wide as it's made for, or add it there yourself: Add widget lists every design under **Widget Builder**. A change to a design shows on every dashboard that has it.
+
+**Any device:** a device value can be *the widget's device* instead of one device: the design then works with any device, picked in the widget's settings where it's placed. The builder shows it with a preview device of your choosing.
+
+**Your own ready-mades:** **Save as ready-made** (a component's Settings) keeps a copy of it, a whole tile with everything in it, to drag into this design or another, and for a **Repeater**, which shows it once for each of its devices (those you pick, or every device with a value, in a room or everywhere), its values of the widget's device filled in with each.
 
 **Components** are primitives, each one thing, to put together as you like:
 - **Ready-made:** Value tile, Chart tile, Gauge tile, Level tile, Status tile, Slider tile, Trend tile, Clock and Flow value tile. Each asks for its device value and adds a container of the primitives below (an icon, the value, the device's name, a graph), to change or take apart.
-- **Layout:** Container, Text, Icon, Shape (a rectangle, circle or line, in a colour or a gradient), Image (a picture from the web, or a device's own: a camera's snapshot, album art, read again every few minutes).
-- **Display:** Sparkline (a value's history as a line), Arc (a gauge's arc), Bar (a level bar), Ring (up to three rings, each a value between its minimum and maximum), Segmented bar (several values as shares of their sum or of a maximum, as a bar or a donut), Repeater (every device with a value, in a room or everywhere, listed by name; only those that are on or open if you like; a tap can switch one, and other components can use how many it shows: *{1} open*), Calculated value (not drawn: up to 12 values summed, averaged, the lowest or highest, a difference, a count, a formula like `(a + b) / 2`, a value's change over the last hour, day or week, or the minutes since it changed, for texts and rules to use).
+- **Layout:** Container, Text, Icon, Shape (a rectangle, circle or line, in a colour or a gradient), Image (a picture from the web, or a device's own: a camera's snapshot, album art, read again every few minutes), Repeater (a ready-made of your own, once per device).
+- **Display:** Sparkline (a value's history as a line), Chart (up to three values over an hour, a day, a week or a month, as lines or bars, with their scale and times), Arc (a gauge's arc), Bar (a level bar), Ring (up to three rings, each a value between its minimum and maximum), Segmented bar (several values as shares of their sum or of a maximum, as a bar or a donut), List (every device with a value, in a room or everywhere, listed by name; only those that are on or open if you like; a tap can switch one, and other components can use how many it shows: *{1} open*), Calculated value (not drawn: up to 12 values summed, averaged, the lowest or highest, a difference, a count, a formula like `(a + b) / 2`, a value's change over the last hour, day or week, or the minutes since it changed, for texts and rules to use).
 - **Controls:** Switch, Button (starts a Flow, or triggers *A Widget Builder button was tapped*), Slider (just the bar), Stepper (− and +, for a setpoint or a number variable), Choice (one of a few options: a mode, a scene, a variable's value), Variable (a yes/no switches with a tap; a number or text is typed right in the tile), Widget state (an on/off or a choice that only the widget keeps, on that screen: for rules, texts, buttons, or to switch a container's pages).
 - **Buttons** can do several things in order: set a device value or a variable (on, off, toggle or a value), start a Flow, open another web dashboard, set a widget state. They can ask for a second tap, or to be held.
 
 **A Text** holds values where you put `{1}`, `{2}` …: a device value or its device's name, a variable, a calculated value, the time (with or without seconds), the date, the weekday, how long since a value changed (*8 min. ago*), or the time until a time of day. It can be Big (32 px) and bold, and a Flow can set its text or a value with units. **An Icon** can follow a device value (a lock open or closed), and a rule can swap any component's icon as well as its colour. Any component that isn't a control can do things when tapped, like a button: a shape, a text, a picture or a whole container. Switch, Stepper, Choice, Variable and Button can turn off their own icon or label in the Style tab.
 
-A **container** is a background (a colour or a gradient) that holds components of its own, snapped to a finer grid (12 columns), placed freely, or on **pages** (up to six) switched with tabs, dots or a widget state.
+A **container** is a tile, a plain pill or just a background (a colour or a gradient) that holds components of its own, snapped to a finer grid (12 columns), placed freely, or on **pages** (up to six) switched with tabs, dots or a widget state.
 
 **Rules:** a component can change with its value, or with another one. When the value is above, below, is or is not something you type, it takes a colour or is hidden. The first rule that matches is used. Shapes, texts, icons, buttons and containers have no value of their own, so their rules check another: a dot that turns red while the front door is unlocked, a container that turns orange when the calculated power goes over 2,000 W. A calculated *minutes since a change* lets a rule say *no motion for 30 minutes*.
 
@@ -31,7 +35,7 @@ A **container** is a background (a colour or a gradient) that holds components o
 
 Starting a Flow or setting a variable needs the [API key](../../README.md#api-key).
 
-**Settings:** the design; [colour style](../../README.md#colour-style).
+**Settings:** the design; the device, for a design that works with any device; [colour style](../../README.md#colour-style).
 
 ## Looks
 
@@ -43,7 +47,7 @@ Starting a Flow or setting a variable needs the [API key](../../README.md#api-ke
 <img src="../variants/custom-rules.webp" alt="Widget Builder: Rules: a door in red, a charger hidden" width="300" align="top">
 <img src="../variants/custom-controls.webp" alt="Widget Builder: Light · Stepper, choice, variables, gauge" width="300" align="top">
 <img src="../variants/custom-blocks.webp" alt="Widget Builder: Text with values, sums, the time and shapes" width="300" align="top">
-<img src="../variants/custom-more.webp" alt="Widget Builder: Light · Pages by a state, ring, picture, repeater" width="300" align="top">
+<img src="../variants/custom-more.webp" alt="Widget Builder: Light · Pages by a state, ring, picture, list" width="300" align="top">
 <img src="../variants/custom-split.webp" alt="Widget Builder: Segmented bar, donut and trends" width="300" align="top">
 <img src="../variants/custom-bare.webp" alt="Widget Builder: Light · The primitives on their own" width="300" align="top">
 </p>

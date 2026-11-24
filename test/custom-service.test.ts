@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
-import { MAX_INPUTS, MAX_PARTS, allParts, designCharts, designFlows as designFlowsOf, designSlots, designVariables, readDesign, readPart, ruleHolds } from '../lib/customDesigns.js';
+import { MAX_INPUTS, MAX_PARTS, allParts, bindDevice, designCharts, designFlows as designFlowsOf, designSlots, designVariables, readDesign, readPart, ruleHolds, usesDevice } from '../lib/customDesigns.js';
 import CustomWidgetService, {
   CUSTOM_CHOICE_CARD, CUSTOM_DESIGN_EVENT, CUSTOM_DESIGNS_SETTING, CUSTOM_FLOW_EVENT, CUSTOM_FLOW_SETTING, CUSTOM_TAPPED_CARD,
 } from '../lib/CustomWidgetService.js';
@@ -64,7 +64,9 @@ describe('readDesign: a design as kept', () => {
     expect(readPart({ kind: 'switch', tile: false })!.style).toBe('none');
     for (const kind of ['text', 'icon', 'sparkline', 'arc', 'bar']) expect([kind, readPart({ kind })!.style]).toEqual([kind, 'none']);
     // The tiles that bundled a value, a label and a graph are gone: their kinds aren't read.
-    for (const kind of ['value', 'chart', 'gauge', 'level', 'status', 'flowvalue', 'time', 'trend']) expect(readPart({ kind })).toBeNull();
+    for (const kind of ['value', 'gauge', 'level', 'status', 'flowvalue', 'time', 'trend']) expect(readPart({ kind })).toBeNull();
+    // The Mini chart's id is the Chart's now: its value is the Chart's one series.
+    expect(readPart({ kind: 'chart', slot: 'a:measure_power' })!.series).toEqual([{ slot: 'a:measure_power', color: null }]);
   });
 
   it('refuses what is not a design, and a reserved id', () => {
@@ -539,5 +541,107 @@ describe('readDesign: parts turned off, taps on any component, icons from values
     const { service, deps } = setup([{ id: 'tp', name: 'T', parts: [part('sh', 'shape', { actions: [{ do: 'flow', flowId: 'flow:x' }] })] }]);
     await service.runAction('tp', 'sh', 0, 'flow');
     expect(deps.flows.trigger).toHaveBeenCalledWith('flow:x');
+  });
+});
+
+describe('readDesign: styles, colours, width, charts, any device and ready-mades (2026-11-24)', () => {
+  it("gives a container a style (a tile where it had no background before, else none) and every text kind a text colour", () => {
+    expect(readPart({ kind: 'container' })!.style).toBe('tile');
+    expect(readPart({ kind: 'container', background: { kind: 'color', from: '#112233' } })!.style).toBe('none');
+    expect(readPart({ kind: 'container', style: 'pill', background: { kind: 'color', from: 'teal' } })).toMatchObject({ style: 'pill', background: { kind: 'color', from: 'teal' } });
+    // A palette colour in a background or gradient, as Muted or Vivid draws it.
+    expect(readPart({ kind: 'shape', background: { kind: 'gradient', from: 'blue', to: '#ABCDEF' } })!.background).toEqual({ kind: 'gradient', from: 'blue', to: '#abcdef', angle: 135 });
+    expect(readPart({ kind: 'switch', textColor: 'red' })!.textColor).toBe('red');
+    expect(readPart({ kind: 'shape', textColor: 'red' })).not.toHaveProperty('textColor');
+    // A Text's own colour was its text's: it's its text colour now.
+    expect(readPart({ kind: 'text', color: '#FF0000' })).toMatchObject({ textColor: '#ff0000', color: null });
+  });
+
+  it('lays a design for more than one dashboard column out on four grid columns per column', () => {
+    const wide = readDesign({ span: 2, parts: [part('a', 'text', { at: { x: 6, y: 0, w: 4, h: 1 } })] })!;
+    expect(wide.span).toBe(2);
+    expect(wide.parts[0].at).toEqual({ x: 6, y: 0, w: 2, h: 1 });
+    const narrow = readDesign({ span: 9, parts: [part('a', 'text', { at: { x: 6, y: 0, w: 4, h: 1 } })] })!;
+    expect(narrow.span).toBe(3);
+    expect(readDesign({ parts: [] })).not.toHaveProperty('span');
+  });
+
+  it("keeps a chart's series (three at most, once each), span, style and edges among the design's values and histories", () => {
+    const d = readDesign({ parts: [part('c', 'chart', { series: [{ slot: 'a:measure_power', color: 'red' }, { slot: 'a:measure_power' }, { slot: 'b:measure_power' }, { slot: 'c:x' }, { slot: 'd:x' }, { slot: 'nope' }], span: '7d', chartStyle: 'bars', axis: false })] })!;
+    expect(d.parts[0]).toMatchObject({ series: [{ slot: 'a:measure_power', color: 'red' }, { slot: 'b:measure_power', color: null }, { slot: 'c:x', color: null }], span: '7d', chartStyle: 'bars', axis: false });
+    expect(designSlots(d)).toEqual(['a:measure_power', 'b:measure_power', 'c:x']);
+    expect(designCharts(d).map(c => `${c.span} ${c.slot}`)).toEqual(['7d a:measure_power', '7d b:measure_power', '7d c:x']);
+  });
+
+  it("fills in the widget's device (`@`) everywhere a design reads one, and says when a design uses it", () => {
+    const d = readDesign({ sample: 'lamp', parts: [
+      part('s', 'switch', { slot: '@:onoff', rules: [{ op: 'is', value: 'on', look: 'red', of: { slot: '@:alarm' } }] }),
+      part('t', 'text', { text: '{1}', refs: [{ slot: '@:dim', show: 'name' }] }),
+      part('i', 'image', { image: { kind: 'device', device: '@' } }),
+      part('o', 'text', { text: '{1}', refs: [{ slot: 'other:dim' }] }),
+    ] })!;
+    expect(d.sample).toBe('lamp');
+    expect(usesDevice(d)).toBe(true);
+    expect(usesDevice(readDesign({ parts: [part('o', 'text')] })!)).toBe(false);
+    const bound = bindDevice(d, 'd7');
+    expect(designSlots(bound)).toEqual(['d7:onoff', 'd7:alarm', 'd7:dim', 'other:dim']);
+    expect(bound.parts[2].image).toEqual({ kind: 'device', device: 'd7' });
+    // The design itself is left as it was; without a device, it's the same object.
+    expect(designSlots(d)).toEqual(['@:onoff', '@:alarm', '@:dim', 'other:dim']);
+    expect(bindDevice(d, undefined)).toBe(d);
+    expect(bindDevice(d, 'a:b')).toBe(d);
+  });
+
+  it("keeps a design saved as a ready-made, and a Repeater's ready-made and devices (picked, or by capability)", () => {
+    expect(readDesign({ ready: true, parts: [part('box', 'container')] })!.ready).toBe(true);
+    expect(readDesign({ ready: 'yes', parts: [] })).not.toHaveProperty('ready');
+    const each = readPart({ kind: 'each', ready: 'r1', devices: ['a', 'a', 'b', '@', 'has space'], columns: 9, limit: 99 })!;
+    expect(each).toMatchObject({ ready: 'r1', devices: ['a', 'b'], columns: 4, limit: 12, style: 'none' });
+    expect(readPart({ kind: 'each', capability: 'onoff', zone: 'z1', devices: ['a'] })).toMatchObject({ capability: 'onoff', zone: 'z1' });
+    expect(readPart({ kind: 'each', capability: 'onoff', devices: ['a'] })).not.toHaveProperty('devices');
+  });
+});
+
+describe('CustomWidgetService: any device, Repeaters and ready-mades (2026-11-24)', () => {
+  const lamp = (id: string, name: string, on: boolean) => fakeDevice({ id, name, zone: 'z', caps: { onoff: { type: 'boolean', value: on, title: 'On' } } });
+  const READY = { id: 'tile', name: 'Lamp tile', ready: true, parts: [part('box', 'container', { mode: 'free', parts: [part('sw', 'switch', { slot: '@:onoff', at: { x: 0, y: 0, w: 50, h: 50 } })] })] };
+  const ANY = { id: 'any', name: 'Any lamp', parts: [
+    part('sw', 'switch', { slot: '@:onoff' }),
+    part('rep', 'each', { ready: 'tile', devices: ['l1', 'l2'] }),
+    part('all', 'each', { ready: 'tile', capability: 'onoff' }),
+    part('none', 'each', { ready: 'any' }),
+  ] };
+
+  it("reads a design for any device with the widget's device, and a Repeater's ready-made with each of its devices", async () => {
+    const { service, deps } = setup([READY, ANY], [lamp('l1', 'Lamp B', true), lamp('l2', 'Lamp A', false)]);
+    const state: any = await service.getState('any', 'l2');
+    expect(state.design.parts[0].slot).toBe('l2:onoff');
+    expect(state.each.rep).toEqual({ part: READY.parts[0] && expect.objectContaining({ id: 'box' }), devices: ['l1', 'l2'] });
+    // Every device with the capability, by name; a design that isn't a ready-made repeats nothing.
+    expect(state.each.all.devices).toEqual(['heat', 'l2', 'l1']);
+    expect(state.each.none).toEqual({ part: null, devices: [] });
+    // Each copy's values are read with the design's own.
+    expect(deps.values.getState.mock.calls.at(-1)![0]).toEqual(expect.arrayContaining(['l2:onoff', 'l1:onoff', 'heat:onoff']));
+    // The ready-mades aren't designs to place.
+    expect(service.designItems('').map(i => i.id)).toEqual(['any']);
+  });
+
+  it("acts on the widget's device, and on a Repeater's copy only for one of its devices", async () => {
+    const devices = [lamp('l1', 'Lamp B', true), lamp('l2', 'Lamp A', false)];
+    const { service } = setup([READY, ANY], devices);
+    await service.setValue('any', 'sw', true, undefined, 'l2');
+    expect((devices[1] as any).sent).toEqual(['onoff=true']);
+    await service.setValue('any', 'rep/sw', false, undefined, 'l1');
+    expect((devices[0] as any).sent).toEqual(['onoff=false']);
+    await expect(service.setValue('any', 'rep/sw', true, undefined, 'heat')).rejects.toThrow('No such part');
+    await expect(service.setValue('any', 'rep/nope', true, undefined, 'l1')).rejects.toThrow('No such part');
+    await expect(service.setValue('any', 'sw/sw', true, undefined, 'l1')).rejects.toThrow('No such part');
+  });
+
+  it("shows the builder's preview with its preview device", async () => {
+    const { service } = setup([READY], [lamp('l1', 'Lamp', true)]);
+    const state: any = await service.previewState({ ...ANY, sample: 'l1' });
+    expect(state.design.parts[0].slot).toBe('l1:onoff');
+    expect(Object.keys(state.values)).toContain('l1:onoff');
   });
 });

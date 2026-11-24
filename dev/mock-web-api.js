@@ -145,15 +145,34 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
   const designs = window.mockCustomState ? ['living', 'container', 'free', 'controls', 'blocks', 'more', 'split', 'bare'].map(s => window.mockCustomState(s).design) : [];
 
   /** A design's preview: mock-custom.js' readings, else the made-up house's (`readings`) for a value picked here. */
-  function designPreview(design) {
+  function designPreview(saved) {
     const base = window.mockCustomState ? window.mockCustomState() : { values: {}, variables: {}, flows: {}, histories: {} };
+    // The widget's device (`@:`) as the preview's device, as lib/customDesigns.ts' bindDevice().
+    const bind = (v, dev) => (dev ? JSON.parse(JSON.stringify(v).replace(/"@:/g, `"${dev}:`).replace(/"device":"@"/g, `"device":"${dev}"`)) : v);
+    const design = bind(saved, saved.sample);
+    // A Repeater's component, once per device (those picked, or every made-up one with its capability).
+    const each = {};
+    const copies = [];
+    (function eachPart(parts) {
+      for (const x of parts || []) {
+        if (x.kind === 'each') {
+          const ready = designs.find(d => d.id === x.ready && d.ready);
+          const part = ready && ready.parts[0] ? ready.parts[0] : null;
+          const ids = x.capability ? devices.filter(d => (d.capabilities || []).includes(x.capability) && (!x.zone || d.zone === x.zone)).map(d => d.id) : x.devices || [];
+          each[x.id] = { part, devices: part ? ids.slice(0, x.limit || 12) : [] };
+          if (part) for (const id of each[x.id].devices) copies.push(bind(part, id));
+        }
+        eachPart(x.parts);
+      }
+    })(design.parts);
     const slots = [];
     // Every value a design reads, as lib/customDesigns.ts' designSlots(): its own, its rules' and texts' and inputs'.
     const walk = parts => (parts || []).forEach((x) => {
-      for (const src of [x, ...(x.rules || []).map(r => r.of), ...(x.refs || []), ...(x.inputs || []), ...(x.rings || []).map(r => r.src), ...(x.segments || []).map(r => r.src), ...(x.actions || [])]) if (src && src.slot) slots.push(src.slot);
+      for (const src of [x, ...(x.rules || []).map(r => r.of), ...(x.refs || []), ...(x.inputs || []), ...(x.rings || []).map(r => r.src), ...(x.segments || []).map(r => r.src), ...(x.series || []), ...(x.actions || [])]) if (src && src.slot) slots.push(src.slot);
       walk(x.parts);
     });
     walk(design.parts);
+    walk(copies);
     const values = {};
     for (const slot of slots) {
       if (base.values[slot]) { values[slot] = base.values[slot]; continue; }
@@ -188,7 +207,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
     const histories = { ...base.histories };
     for (const slot of slots) if (!Object.keys(histories).some(k => k.endsWith(`\n${slot}`))) histories[`24h\n${slot}`] = base.histories['24h\nlr:measure_temperature'];
     for (const span of ['1h', '6h', '7d', '30d', 'today', 'yesterday', 'thisWeek']) for (const slot of slots) histories[`${span}\n${slot}`] = histories[`24h\n${slot}`];
-    return { design, values, repeats, language: 'en', timeFormat: '24', variables: base.variables, flows: { ...base.flows, 'flow:goodnight': { id: 'flow:goodnight', name: 'Good night' }, 'advanced:away': { id: 'advanced:away', name: 'Leaving home' } }, histories, flow: {}, now: Date.now() };
+    return { design, values, repeats, each, language: 'en', timeFormat: '24', variables: base.variables, flows: { ...base.flows, 'flow:goodnight': { id: 'flow:goodnight', name: 'Good night' }, 'advanced:away': { id: 'advanced:away', name: 'Leaving home' } }, histories, flow: {}, now: Date.now() };
   }
 
   async function answer(method, path, body) {

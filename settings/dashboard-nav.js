@@ -433,6 +433,11 @@
       pin.append(icon('pin'), el('span', 'wd-nav-name', t(pinned ? 'navStopKeeping' : 'navKeepOpen')));
       const settings = button('wd-nav-row wd-nav-settings', '', openSettings);
       settings.append(icon('sliders'), el('span', 'wd-nav-name', t('pageSettings')));
+      // The Widget Builder's page (dashboard-builder.js), as a link so it takes a dashboard's code as the others do.
+      const builder = el('a', `wd-nav-row wd-nav-builder${/^#\/builder/.test(location.hash) ? ' on' : ''}`);
+      builder.href = '#/builder';
+      builder.addEventListener('click', e => leave(e, '#/builder'));
+      builder.append(icon('squares'), el('span', 'wd-nav-name', t('builderTitle')));
       // The foot's rows fold away under its handle, for a list with more room; open unless this browser folded them.
       const folded = nav.prefs.footFolded;
       const fold = button('wd-nav-foot-fold', '', () => {
@@ -445,9 +450,9 @@
       }, t(folded ? 'navFootShow' : 'navFootHide'));
       fold.setAttribute('aria-expanded', String(!folded));
       fold.append(icon(folded ? 'up' : 'down'));
-      for (const row of [custom, pin, settings]) if (folded) row.hidden = true;
+      for (const row of [custom, pin, builder, settings]) if (folded) row.hidden = true;
       nav.foot.classList.toggle('folded', folded);
-      nav.foot.replaceChildren(fold, custom, pin, settings);
+      nav.foot.replaceChildren(fold, custom, pin, builder, settings);
     }
 
     function draw() {

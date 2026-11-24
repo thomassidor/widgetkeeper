@@ -364,6 +364,43 @@
     },
     // The Widget Builder (dashboard-builder.js).
     builderTitle: "Widget Builder",
+    groupBuilder: "Widget Builder",
+    builderPromoTitle: "New: build your own widgets",
+    builderPromoText: "Put values, switches, charts and Flows together in the Widget Builder, then place the widget on any dashboard.",
+    builderPromoOpen: "Open Widget Builder",
+    builderPromoHide: "Hide",
+    builderHomeHint: "Your own widgets, built from components. Open one to change it, or start a new one.",
+    builderGroup_mine: "Your ready-mades",
+    builderMineHint: "Components you saved to use again: in the builder's list, and repeated per device by a Repeater.",
+    builderSpanN: "__n__ col.",
+    builderSample: "Preview with: __name__",
+    builderSampleHint: "The device shown here for the widget's device",
+    builderNoSample: "no device yet",
+    builderSaveReady: "Save as ready-made",
+    builderSaveReadyHint: "Keeps a copy of this component to add again, in this design or another, or to repeat per device in a Repeater.",
+    builderSavedReady: "Saved __name__ as a ready-made",
+    builderAnyDevice: "The widget's device",
+    builderAnyDeviceHint: "Works with any device: filled in with the device picked where the widget is placed, or with each of a Repeater's.",
+    builderAnyDeviceOf: "Widget's device (here __name__)",
+    builderSeries: "Values",
+    builderAddSeries: "Add value",
+    builderChartStyle: "Draw as",
+    builderChart_line: "Lines",
+    builderChart_bars: "Bars",
+    builderAxis: "Scale and times",
+    builderEachNoReady: "Save a component as a ready-made first (its Settings, Save as ready-made): the Repeater shows it once per device.",
+    builderEachReady: "Repeats",
+    builderEachReadyHint: "Its values of the widget's device are filled in with each device.",
+    builderEachDevices: "For",
+    builderEach_pick: "Devices picked",
+    builderEach_cap: "Every device with",
+    builderShapeGrey: "Grey",
+    builderTextColour: "Text colour",
+    builderTextColourHint: "Automatic follows the background: dark or light.",
+    builderOwnColour: "Your own colour",
+    builderGroupHint: "Your designs from the Widget Builder.",
+    builderNewAbout: "Opens the Widget Builder.",
+    builderBoxStyleHint: "A tile has a thin edge, and a shadow in light mode; a pill is plain and rounder. None shows only its background.",
     builderNew: "New design",
     builderUntitled: "New design",
     builderPartCount: "__count__ components",
@@ -473,7 +510,7 @@
     builderStyleTile: "Tile",
     builderStylePill: "Pill",
     builderStyleNone: "None",
-    builderStyleHint: "A tile has rounded corners, a pill fully round ends. None puts the component straight on the background.",
+    builderStyleHint: "A tile has a thin edge, and a shadow in light mode; a pill is plain with round ends. None puts it straight on the background.",
     builderOp_above: "Is above",
     builderOp_below: "Is below",
     builderOp_between: "Is between",
@@ -1393,6 +1430,7 @@
         return;
       }
       if (location.hash === '#/edit') { wd.renderList(true); return; }
+      if (location.hash === '#/builder') { wd.renderBuilderHome(); return; }
       const design = location.hash.match(/^#\/builder\/([A-Za-z0-9_-]+)$/);
       if (design) { wd.renderBuilder(design[1]); return; }
       if (!m) { wd.renderList(); return; }
@@ -1445,8 +1483,9 @@
       if (/kiosk=/.test(location.hash)) { start(); return; } // kiosk mode turned on or off in an open page
       // A screen's code opened in a page already open: used as at a load.
       if (/code=/.test(location.hash)) { start(); return; }
-      // Leaving the editor: wait for the last save, so the view shows what was saved.
-      await wd.saving;
+      // Leaving the editor: wait for the last save, so the view shows what was saved (not for ever: a save that
+      // hangs mustn't keep the page in the editor, as happened leaving one with a Widget Builder widget).
+      await Promise.race([wd.saving.catch(() => {}), new Promise(r => setTimeout(r, 5000))]);
       route();
     });
     keepAwake.set(storageGet(AWAKE_STORAGE) === '1');

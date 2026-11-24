@@ -34,6 +34,9 @@
       const grid = dashboardGrid('');
       for (const d of wd.dashboards) if (!sectionOf(d)) grid.append(dashboardCard(d, editing));
       if (!editing) grid.append(newDashboardCard(''));
+      // The Widget Builder's banner, until it's put away (dashboard-builder.js).
+      const promo = editing ? null : wd.builderPromo();
+      if (promo) page.append(promo);
       page.append(head, grid);
       sections.forEach((section, i) => {
         const g = dashboardGrid(section.id);
@@ -58,7 +61,6 @@
         wd.showNav({ inactive: true });
         return;
       }
-      page.append(wd.designsSection()); // the Widget Builder's designs (dashboard-builder.js)
       if (wd.types.size && wd.frontPage.widgets) page.append(widgetCarousel());
 
       const edit = el('a', 'wd-icon');
