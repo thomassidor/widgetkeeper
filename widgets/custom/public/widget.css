@@ -328,9 +328,29 @@ html, body { background: transparent !important; }
 .wb-k-container.wb-tile { padding: 8px 10px; }
 /* Without a style or a background of its own: its components right on the widget's background. */
 .wb-k-container.wb-bare:not(.wb-box-bg) { padding: 0; }
-.wb-box-dark { --wb-text: #FFFFFF; --wb-muted: rgb(255 255 255 / .72); --wb-track: rgb(255 255 255 / .18); color: var(--wb-text); }
-.wb-box-dark .wb-tile { --wb-text: var(--homey-text-color, #1F2029); --wb-muted: var(--homey-text-color-light, #6B6C75); --wb-track: var(--homey-color-mono-050, #EAEAF1); color: var(--wb-text); }
-.homey-dark-mode .wb-box-dark .wb-tile, .wb.homey-dark-mode .wb-box-dark .wb-tile { --wb-tile: rgb(24 25 32 / .82); --wb-text: #EDEEF0; --wb-muted: #9C9DA5; --wb-track: #2E3039; }
+/*
+ * A container's own fill at its strength. *Like the widgets* (the default) is the normal tiles' colour: 22 % into the
+ * tile in Muted, the solid shade in Vivid, and a colour of its own solid in both (a Flow's custom colour on Device
+ * Values' tiles); Half mixes the bright colour 50 % into the tile; Full is the bright colour, solid. On a solid fill
+ * the text is the colour's own (dark on yellow), unless a text colour is set.
+ */
+.wb-box-bg {
+  --wb-mix: 22%; --wb-f: var(--wb-from); --wb-t: var(--wb-to);
+  background: linear-gradient(var(--wb-angle, 180deg), color-mix(in srgb, var(--wb-f) var(--wb-mix), var(--wb-tile)), color-mix(in srgb, var(--wb-t) var(--wb-mix), var(--wb-tile)));
+}
+.wb.wk-deep .wb-box-bg.wb-dim-widget, .wb-box-bg.wb-dim-widget.wb-bg-hex { --wb-mix: 100%; --wb-ink-on: var(--wb-on); }
+.wb-box-bg.wb-dim-half { --wb-mix: 50%; --wb-f: var(--wb-from-bright); --wb-t: var(--wb-to-bright); }
+.wb-box-bg.wb-dim-full { --wb-mix: 100%; --wb-f: var(--wb-from-bright); --wb-t: var(--wb-to-bright); --wb-ink-on: var(--wb-on-bright); }
+:is(.wb.wk-deep .wb-box-bg.wb-dim-widget, .wb-box-bg.wb-dim-widget.wb-bg-hex, .wb-box-bg.wb-dim-full):not(.wb-has-ink) {
+  --wb-text: var(--wb-ink-on); --wb-muted: color-mix(in srgb, var(--wb-ink-on) 72%, transparent);
+  --wb-track: color-mix(in srgb, var(--wb-ink-on) 18%, transparent); color: var(--wb-text);
+}
+/* The tiles inside keep their own colours. */
+.wb-box-bg .wb-tile { --wb-text: var(--homey-text-color, #1F2029); --wb-muted: var(--homey-text-color-light, #6B6C75); --wb-track: var(--homey-color-mono-050, #EAEAF1); color: var(--wb-text); }
+.homey-dark-mode .wb-box-bg .wb-tile, .wb.homey-dark-mode .wb-box-bg .wb-tile { --wb-text: #EDEEF0; --wb-muted: #9C9DA5; --wb-track: #2E3039; }
+/* On a solid fill in dark mode, a tile a little see-through. */
+.homey-dark-mode :is(.wb.wk-deep .wb-box-bg.wb-dim-widget, .wb-box-bg.wb-dim-widget.wb-bg-hex, .wb-box-bg.wb-dim-full) .wb-tile,
+.wb.homey-dark-mode :is(.wb.wk-deep .wb-box-bg.wb-dim-widget, .wb-box-bg.wb-dim-widget.wb-bg-hex, .wb-box-bg.wb-dim-full) .wb-tile { --wb-tile: rgb(24 25 32 / .82); }
 .wb-inner { position: relative; height: 100%; }
 .wb-box-grid .wb-inner { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 8px; column-gap: 6px; }
 .wb-box-free .wb-part { position: absolute; }

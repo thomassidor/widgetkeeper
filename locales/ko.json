@@ -1736,7 +1736,12 @@
     "builderTextMuted": "보조 텍스트",
     "builderReady_value2": "두 개의 값",
     "builderFillByHint": "값이 범위에서 위치한 만큼 왼쪽부터 채웁니다. 설정한 수준보다 낮으면 빨간색이나 노란색, 그 외에는 초록색입니다.",
-    "builderShowRangeHint": "기간 동안의 최저값부터 최고값까지입니다. 기기 값에만 해당합니다."
+    "builderShowRangeHint": "기간 동안의 최저값부터 최고값까지입니다. 기기 값에만 해당합니다.",
+    "builderDim": "강도",
+    "builderDim_widget": "위젯과 같이",
+    "builderDim_half": "절반",
+    "builderDim_full": "원래 색",
+    "builderDimHint": "위젯과 같이: 차분하게에서는 옅은 색, 선명하게에서는 채운 색으로, 일반 타일과 같습니다. 직접 고른 색은 둘 다 채운 색입니다. 원래 색은 둘 다 밝은 색입니다."
   },
   "autocomplete": {
     "pickThermostat": "먼저 온도 조절기를 선택하세요",

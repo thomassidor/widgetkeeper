@@ -1736,7 +1736,12 @@
     "builderTextMuted": "Texte secondaire",
     "builderReady_value2": "Deux valeurs",
     "builderFillByHint": "Le remplit depuis la gauche jusqu’à la valeur dans sa plage : rouge ou jaune sous les niveaux choisis, sinon vert.",
-    "builderShowRangeHint": "De la valeur la plus basse à la plus haute sur la période. Seulement pour une valeur d’appareil."
+    "builderShowRangeHint": "De la valeur la plus basse à la plus haute sur la période. Seulement pour une valeur d’appareil.",
+    "builderDim": "Intensité",
+    "builderDim_widget": "Comme les widgets",
+    "builderDim_half": "Moitié",
+    "builderDim_full": "Couleur pleine",
+    "builderDimHint": "Comme les widgets : une teinte en « Atténuées » et pleine en « Vives », comme les tuiles normales ; une couleur à vous est pleine dans les deux. Couleur pleine est la couleur vive dans les deux."
   },
   "autocomplete": {
     "pickThermostat": "Choisissez d’abord un thermostat",

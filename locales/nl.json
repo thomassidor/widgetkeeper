@@ -1736,7 +1736,12 @@
     "builderTextMuted": "Secundaire tekst",
     "builderReady_value2": "Twee waarden",
     "builderFillByHint": "Vult hem van links tot waar de waarde in zijn bereik staat: rood of geel onder de ingestelde niveaus, anders groen.",
-    "builderShowRangeHint": "De laagste tot de hoogste waarde in de periode. Alleen voor een apparaatwaarde."
+    "builderShowRangeHint": "De laagste tot de hoogste waarde in de periode. Alleen voor een apparaatwaarde.",
+    "builderDim": "Sterkte",
+    "builderDim_widget": "Zoals de widgets",
+    "builderDim_half": "Half",
+    "builderDim_full": "Volle kleur",
+    "builderDimHint": "Zoals de widgets: een tint bij Gedempt en effen bij Levendig, zoals de gewone tegels; een eigen kleur is in beide effen. Volle kleur is in beide de felle kleur."
   },
   "autocomplete": {
     "pickThermostat": "Kies eerst een thermostaat",

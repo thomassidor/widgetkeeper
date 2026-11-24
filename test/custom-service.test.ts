@@ -698,3 +698,11 @@ describe("the normal widgets' options (2026-11-24, the user's review of the styl
     }
   });
 });
+
+describe("a container's fill strength", () => {
+  it('keeps half or full on a container, the default unsaid, and none on a shape', () => {
+    const fill = (kind: string, dim: unknown) => readPart(part('p', kind, { background: { kind: 'color', from: 'blue', dim } }))!.background;
+    expect([fill('container', 'half'), fill('container', 'widget'), fill('container', 'x'), fill('shape', 'full')])
+      .toEqual([{ kind: 'color', from: 'blue', dim: 'half' }, { kind: 'color', from: 'blue' }, { kind: 'color', from: 'blue' }, { kind: 'color', from: 'blue' }]);
+  });
+});

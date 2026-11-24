@@ -1736,7 +1736,12 @@
     "builderTextMuted": "Tekst drugorzędny",
     "builderReady_value2": "Dwie wartości",
     "builderFillByHint": "Wypełnia od lewej tak daleko, jak sięga wartość w swoim zakresie: na czerwono lub żółto poniżej ustawionych poziomów, w innym razie na zielono.",
-    "builderShowRangeHint": "Od najniższej do najwyższej wartości w okresie. Tylko dla wartości urządzenia."
+    "builderShowRangeHint": "Od najniższej do najwyższej wartości w okresie. Tylko dla wartości urządzenia.",
+    "builderDim": "Intensywność",
+    "builderDim_widget": "Jak w widżetach",
+    "builderDim_half": "Połowa",
+    "builderDim_full": "Pełny kolor",
+    "builderDimHint": "Jak w widżetach: odcień przy „Stonowane” i pełny przy „Żywe”, jak zwykłe kafelki; własny kolor jest pełny w obu. Pełny kolor to jasny kolor w obu."
   },
   "autocomplete": {
     "pickThermostat": "Najpierw wybierz termostat",

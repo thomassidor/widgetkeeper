@@ -1736,7 +1736,12 @@
     "builderTextMuted": "Nebentext",
     "builderReady_value2": "Zwei Werte",
     "builderFillByHint": "Füllt ihn von links so weit, wie der Wert in seinem Bereich steht: rot oder gelb unter den eingestellten Stufen, sonst grün.",
-    "builderShowRangeHint": "Der niedrigste bis höchste Wert im Zeitraum. Nur für einen Gerätewert."
+    "builderShowRangeHint": "Der niedrigste bis höchste Wert im Zeitraum. Nur für einen Gerätewert.",
+    "builderDim": "Stärke",
+    "builderDim_widget": "Wie die Widgets",
+    "builderDim_half": "Halb",
+    "builderDim_full": "Volle Farbe",
+    "builderDimHint": "Wie die Widgets: ein Farbton bei „Gedämpft“ und deckend bei „Kräftig“, wie die normalen Kacheln; eine eigene Farbe ist in beiden deckend. Volle Farbe ist in beiden die helle Farbe."
   },
   "autocomplete": {
     "pickThermostat": "Wähle zuerst ein Thermostat",

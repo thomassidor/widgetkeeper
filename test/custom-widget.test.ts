@@ -688,10 +688,10 @@ describe('styles, colours, width, charts and Repeaters (2026-11-24)', () => {
     ], [value('a:onoff', true, { type: 'boolean' })]));
     expect(at('tile').classList.contains('wb-tile')).toBe(true);
     expect(at('pill').className).toMatch(/wb-tile.*wb-pill|wb-pill.*wb-tile/);
-    expect(at('pill').style.background).toContain('var(--wk-teal)');
-    expect(at('pill').classList.contains('wb-box-dark')).toBe(true);
+    expect(at('pill').style.getPropertyValue('--wb-from')).toBe('var(--wk-teal)');
+    expect(at('pill').classList.contains('wb-box-bg')).toBe(true);
     expect(at('bare').classList.contains('wb-bare')).toBe(true);
-    expect(at('bare').style.background).toContain('var(--wk-blue)');
+    expect([at('bare').style.getPropertyValue('--wb-from'), at('bare').style.getPropertyValue('--wb-to')]).toEqual(['var(--wk-blue)', '#102030']);
     // A container from before styles: none where it had a background.
     expect(at('old').classList.contains('wb-bare')).toBe(true);
     expect(at('ink').classList.contains('wb-has-ink')).toBe(true);
@@ -844,5 +844,21 @@ describe("the normal widgets' looks and options (2026-11-24, the user's review o
     expect(at('c').querySelector<HTMLElement>('.wb-presets')!.style.getPropertyValue('--wb-count')).toBe('2');
     const css = readFileSync('widgets/custom/public/widget.css', 'utf8');
     expect(css).toContain('.wb-nav-dots .wb-pagebtn.on::before { width: 16px;');
+  });
+});
+
+describe("a container's fill at its strength (2026-11-24, the user: like the normal tiles)", () => {
+  it('draws a palette colour as the normal tiles (Like the widgets), half or full, and a colour of its own solid', () => {
+    const box = (id: string, background: object) => part(id, 'container', { mode: 'grid', style: 'tile', background, parts: [] });
+    const { at } = widget(state([
+      box('w', { kind: 'color', from: 'blue' }), box('h', { kind: 'color', from: 'blue', dim: 'half' }),
+      box('f', { kind: 'gradient', from: 'red', to: 'orange', angle: 90, dim: 'full' }), box('x', { kind: 'color', from: '#2d4c7a' }),
+    ]));
+    expect(['w', 'h', 'f', 'x'].map(id => [...at(id).classList].filter(c => /^wb-(dim|bg)-/.test(c)).join(' '))).toEqual(['wb-dim-widget', 'wb-dim-half', 'wb-dim-full', 'wb-dim-widget wb-bg-hex']);
+    expect([at('w').style.getPropertyValue('--wb-from'), at('w').style.getPropertyValue('--wb-on'), at('f').style.getPropertyValue('--wb-to-bright'), at('f').style.getPropertyValue('--wb-angle')])
+      .toEqual(['var(--wk-blue)', 'var(--wk-on-blue)', 'var(--wk-orange-bright)', '90deg']);
+    expect(at('x').style.getPropertyValue('--wb-on')).toBe('#FFFFFF');
+    const css = readFileSync('widgets/custom/public/widget.css', 'utf8');
+    expect(css).toContain('.wb.wk-deep .wb-box-bg.wb-dim-widget, .wb-box-bg.wb-dim-widget.wb-bg-hex { --wb-mix: 100%;');
   });
 });

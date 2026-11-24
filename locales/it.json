@@ -1736,7 +1736,12 @@
     "builderTextMuted": "Testo secondario",
     "builderReady_value2": "Due valori",
     "builderFillByHint": "Lo riempie da sinistra fin dove arriva il valore nel suo intervallo: rosso o giallo sotto i livelli impostati, altrimenti verde.",
-    "builderShowRangeHint": "Dal valore più basso al più alto nel periodo. Solo per un valore di un dispositivo."
+    "builderShowRangeHint": "Dal valore più basso al più alto nel periodo. Solo per un valore di un dispositivo.",
+    "builderDim": "Intensità",
+    "builderDim_widget": "Come i widget",
+    "builderDim_half": "Metà",
+    "builderDim_full": "Colore pieno",
+    "builderDimHint": "Come i widget: una tinta con «Smorzati» e piena con «Vivaci», come i riquadri normali; un colore tuo è pieno in entrambi. Colore pieno è il colore acceso in entrambi."
   },
   "autocomplete": {
     "pickThermostat": "Scegli prima un termostato",

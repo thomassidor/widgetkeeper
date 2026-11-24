@@ -1736,7 +1736,12 @@
     "builderTextMuted": "Secondary text",
     "builderReady_value2": "Two values",
     "builderFillByHint": "Fills it from the left as far as the value goes along its range: red or yellow below the levels set, else green.",
-    "builderShowRangeHint": "The lowest to the highest value over its time span. Only for a device value."
+    "builderShowRangeHint": "The lowest to the highest value over its time span. Only for a device value.",
+    "builderDim": "Strength",
+    "builderDim_widget": "Like the widgets",
+    "builderDim_half": "Half",
+    "builderDim_full": "Full colour",
+    "builderDimHint": "Like the widgets: a tint in Muted and solid in Vivid, as the normal tiles; a colour of your own is solid in both. Full colour is the bright colour in both."
   },
   "autocomplete": {
     "pickThermostat": "Pick a thermostat first",

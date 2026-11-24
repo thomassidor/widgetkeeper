@@ -1721,12 +1721,21 @@
       const bg = p.background || { kind: 'none' };
       // Without a label: a shape's gradient, its kind already picked.
       if (label) body.append(row(label, segs([['none', noneLabel], ['color', t('builderColour')], ['gradient', t('builderGradient')]], bg.kind, v => change(() => {
-        p.background = v === 'none' ? { kind: 'none' } : v === 'color' ? { kind: 'color', from: bg.from || 'blue' } : { kind: 'gradient', from: bg.from || 'blue', to: bg.to || 'purple', angle: bg.angle || 135 };
+        const dim = bg.dim ? { dim: bg.dim } : {};
+        p.background = v === 'none' ? { kind: 'none' } : v === 'color' ? { kind: 'color', from: bg.from || 'blue', ...dim } : { kind: 'gradient', from: bg.from || 'blue', to: bg.to || 'purple', angle: bg.angle || 135, ...dim };
       }, { preview: false }))));
       const colour = key => colourPicker(bg[key] || 'blue', v => change(() => { p.background = { ...bg, [key]: v || 'blue' }; }, { preview: false }), {
         none: false, live: (v) => { bg[key] = v; b.rev++; showPreview(); },
       });
       if (bg.kind !== 'none') {
+        // A container's strength: as the normal tiles (a tint in Muted, solid in Vivid), half, or the full colour.
+        if (label && p.kind === 'container') {
+          body.append(row(t('builderDim'), segs([['widget', t('builderDim_widget')], ['half', t('builderDim_half')], ['full', t('builderDim_full')]], bg.dim || 'widget', v => change(() => {
+            const next = { ...bg };
+            if (v === 'widget') delete next.dim; else next.dim = v;
+            p.background = next;
+          }, { preview: false })), t('builderDimHint')));
+        }
         body.append(row(bg.kind === 'gradient' ? t('builderGradientFrom') : t('builderColour'), colour('from')));
         if (bg.kind === 'gradient') body.append(row(t('builderTo'), colour('to')));
         if (bg.kind === 'gradient') body.append(row(t('builderAngle'), textInput(bg.angle, v => change(() => { p.background = { ...bg, angle: Math.round(Number(v) || 0) % 360 }; }, { preview: false }), { type: 'number' })));

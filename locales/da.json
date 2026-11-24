@@ -1736,7 +1736,12 @@
     "builderTextMuted": "Sekundær tekst",
     "builderReady_value2": "To værdier",
     "builderFillByHint": "Fylder den fra venstre så langt værdien når i sit interval: rød eller gul under de valgte niveauer, ellers grøn.",
-    "builderShowRangeHint": "Den laveste til den højeste værdi i tidsrummet. Kun for en enhedsværdi."
+    "builderShowRangeHint": "Den laveste til den højeste værdi i tidsrummet. Kun for en enhedsværdi.",
+    "builderDim": "Styrke",
+    "builderDim_widget": "Som widgetterne",
+    "builderDim_half": "Halv",
+    "builderDim_full": "Fuld farve",
+    "builderDimHint": "Som widgetterne: en tone med Dæmpede og fyldt med Livlige, som de normale fliser; en egen farve er fyldt i begge. Fuld farve er den klare farve i begge."
   },
   "autocomplete": {
     "pickThermostat": "Vælg en termostat først",

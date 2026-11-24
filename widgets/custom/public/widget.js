@@ -188,6 +188,26 @@
     if (K.isCustomColor(c)) return c;
     return K.COLORS.includes(c) ? `var(--wk-${c}-bright)` : '';
   }
+  /**
+   * A container's own fill (`background`), as CSS variables its stylesheet draws at its strength (`dim`): each end's colour
+   * in the colour style's pick and in its bright set, with the text on each, and whether both are colours of its own
+   * (`#rrggbb`, solid in both styles, as a Flow's custom colour on Device Values' tiles).
+   */
+  function paintBox(node, bg) {
+    const ends = [bg.from, bg.kind === 'gradient' ? bg.to : bg.from];
+    const own = c => K.isCustomColor(c);
+    const set = (name, v) => node.style.setProperty(name, v);
+    ends.forEach((c, i) => {
+      const at = i ? 'to' : 'from';
+      set(`--wb-${at}`, own(c) ? c : `var(--wk-${c})`);
+      set(`--wb-${at}-bright`, own(c) ? c : `var(--wk-${c}-bright)`);
+    });
+    set('--wb-on', own(bg.from) ? K.customInk(bg.from) : `var(--wk-on-${bg.from})`);
+    set('--wb-on-bright', own(bg.from) ? K.customInk(bg.from) : `var(--wk-on-${bg.from}-bright)`);
+    set('--wb-angle', `${bg.kind === 'gradient' ? bg.angle : 180}deg`);
+    node.classList.add('wb-box-bg', `wb-dim-${['half', 'full'].includes(bg.dim) ? bg.dim : 'widget'}`);
+    node.classList.toggle('wb-bg-hex', ends.every(own));
+  }
   /** A container's or a shape's background as CSS: none, a colour or a gradient (each colour a palette name or hex). */
   function backgroundCss(bg) {
     if (!bg || bg.kind === 'none') return '';
@@ -1606,8 +1626,8 @@
         }
         const bg = part.background || { kind: 'none' };
         // Its own background over its style's (a tile's colour, or none); light text on it unless a text colour is set.
-        if (bg.kind !== 'none') { node.style.background = backgroundCss(bg); node.classList.add('wb-box-bg'); }
-        if (bg.kind !== 'none' && !part.textColor) node.classList.add('wb-box-dark');
+        // Its own colour or gradient at its strength (`dim`): *Like the widgets* by default (CSS), Half or Full.
+        if (bg.kind !== 'none') paintBox(node, bg);
         const inner = el('div', { class: 'wb-inner' }, node);
         const kids = (part.parts || []).map(kid => [kid, inner.appendChild(build(kid, part.mode === 'free' ? 'free' : 'grid'))]);
         if (paged && nav && part.nav === 'dots') node.appendChild(nav); // dots under the page

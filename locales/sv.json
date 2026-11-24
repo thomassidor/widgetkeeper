@@ -1736,7 +1736,12 @@
     "builderTextMuted": "Sekundär text",
     "builderReady_value2": "Två värden",
     "builderFillByHint": "Fyller den från vänster så långt värdet når i sitt intervall: rött eller gult under de valda nivåerna, annars grönt.",
-    "builderShowRangeHint": "Det lägsta till det högsta värdet under tidsperioden. Bara för ett enhetsvärde."
+    "builderShowRangeHint": "Det lägsta till det högsta värdet under tidsperioden. Bara för ett enhetsvärde.",
+    "builderDim": "Styrka",
+    "builderDim_widget": "Som widgetarna",
+    "builderDim_half": "Halv",
+    "builderDim_full": "Full färg",
+    "builderDimHint": "Som widgetarna: en ton med Dämpade och heltäckande med Livfulla, som de vanliga rutorna; en egen färg är heltäckande i båda. Full färg är den klara färgen i båda."
   },
   "autocomplete": {
     "pickThermostat": "Välj en termostat först",

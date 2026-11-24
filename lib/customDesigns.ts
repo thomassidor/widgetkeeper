@@ -327,10 +327,16 @@ export type Part = {
   devices?: string[],
 };
 
+/**
+ * A container's fill (a shape's too, which ignores `dim`): its strength, `widget` (missing: the normal tiles' colour, a
+ * tint in Muted and solid in Vivid), `half` or `full` (the bright colour, solid).
+ */
 export type Background =
   | { kind: 'none' }
-  | { kind: 'color', from: string }
-  | { kind: 'gradient', from: string, to: string, angle: number };
+  | { kind: 'color', from: string, dim?: BackgroundDim }
+  | { kind: 'gradient', from: string, to: string, angle: number, dim?: BackgroundDim };
+export const BACKGROUND_DIMS = ['widget', 'half', 'full'] as const;
+export type BackgroundDim = typeof BACKGROUND_DIMS[number];
 
 /**
  * A design. `span`: the dashboard columns it's made for (1–3; its grid has 4 columns per column). `ready`: saved as a
@@ -461,10 +467,12 @@ function flowOf(v: unknown, icons = true): Partial<Record<FlowProp, true>> {
 /** A background: none, a colour or a gradient, each colour a palette name (Muted or Vivid's) or `#rrggbb`. */
 function backgroundOf(v: any): Background {
   const from = color(v?.from);
-  if (v?.kind === 'color' && from) return { kind: 'color', from };
+  // `widget`, the default, isn't kept.
+  const dim = v?.dim === 'half' || v?.dim === 'full' ? { dim: v.dim as BackgroundDim } : {};
+  if (v?.kind === 'color' && from) return { kind: 'color', from, ...dim };
   const to = color(v?.to);
   if (v?.kind === 'gradient' && from && to) {
-    return { kind: 'gradient', from, to, angle: num(v.angle, 0, 359, 135) };
+    return { kind: 'gradient', from, to, angle: num(v.angle, 0, 359, 135), ...dim };
   }
   return { kind: 'none' };
 }
@@ -762,6 +770,8 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', spa
     case 'shape':
       p.shape = oneOf(r.shape, SHAPES, 'rect');
       p.background = backgroundOf(r.background);
+      // A shape's fill is as picked, with its own opacity.
+      if ('dim' in p.background) delete p.background.dim;
       p.opacity = num(r.opacity, 10, 100, 100);
       if (p.shape === 'rect') p.radius = num(r.radius, 0, 32, 10);
       if (p.shape === 'line') {
