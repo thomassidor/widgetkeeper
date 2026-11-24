@@ -1030,7 +1030,6 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-thumb-text, .wdb-thumb-icon { background: color-mix(in srgb, var(--wd-text) 8%, transparent); }
 
 .wdb-bar .wdb-name { max-width: 260px; }
-.wdb-switch { max-width: 200px; }
 .wdb-status { font-size: 13px; white-space: nowrap; }
 .wdb-status.bad { color: var(--wd-red); }
 

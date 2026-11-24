@@ -323,15 +323,6 @@
       name.value = b.design.name;
       name.setAttribute('aria-label', t('builderName'));
       name.addEventListener('change', () => change(() => { b.design.name = name.value.trim().slice(0, 40) || t('builderUntitled'); }, { preview: false }));
-      const pick = el('select', 'wd-input wdb-switch');
-      pick.setAttribute('aria-label', t('builderDesigns'));
-      for (const d of designs()) {
-        const o = el('option', null, d.name || t('untitled'));
-        o.value = d.id;
-        o.selected = d.id === b.design.id;
-        pick.append(o);
-      }
-      pick.addEventListener('change', async () => { await flush(); location.hash = `#/builder/${pick.value}`; });
       const status = el('span', 'wd-muted wdb-status', t('builderSaved'));
       status.setAttribute('role', 'status');
       b.statusNode = status;
@@ -360,7 +351,7 @@
       }, t(b.dark ? 'builderLightMode' : 'builderDarkMode'));
       mode.append(icon(b.dark ? 'sun' : 'moon'));
       end.append(status, mode, undo, copy, remove, place, done);
-      const node = wd.bar(back, name, pick, el('span', 'wd-spacer'), end);
+      const node = wd.bar(back, name, el('span', 'wd-spacer'), end);
       node.classList.add('wdb-bar');
       return node;
     }
@@ -371,7 +362,7 @@
       const lib = el('aside', 'wdb-lib');
       const tabs = el('div', 'wdb-tabs');
       tabs.setAttribute('role', 'tablist');
-      for (const [id, label] of [['parts', t('builderParts')], ['layers', t('builderLayers')]]) {
+      for (const [id, label] of [['parts', t('builderParts')], ['ready', t('builderGroup_ready')], ['layers', t('builderLayers')]]) {
         const tb = button(`wdb-tab${b.libTab === id ? ' on' : ''}`, label, () => { b.libTab = id; redrawLibrary(); });
         tb.setAttribute('role', 'tab');
         tb.setAttribute('aria-selected', String(b.libTab === id));
@@ -381,7 +372,7 @@
       lib.append(tabs, body);
       b.libNode = lib;
       if (b.libTab === 'layers') drawLayers(body);
-      else drawParts(body);
+      else drawParts(body, b.libTab === 'ready');
       return lib;
     }
 
@@ -390,7 +381,8 @@
       old.replaceWith(library());
     }
 
-    function drawParts(body) {
+    /** The library's Components tab, or with `ready` its Ready-made tab: your own ready-mades, then the built-in ones. */
+    function drawParts(body, ready) {
       const search = el('input', 'wd-input');
       search.type = 'search';
       search.placeholder = t('builderSearch');
@@ -400,6 +392,7 @@
         list.textContent = '';
         const q = b.query.trim();
         for (const group of GROUPS) {
+          if ((group === 'ready') !== ready) continue;
           if (group === 'ready') {
             // Your own first (designs saved as ready-made components), then the built-in ones.
             const mine = designs().filter(d => d.ready && d.parts[0] && d.id !== b.design.id && (!q || wd.matchesWords(q, `${d.name} ${t('builderGroup_mine')}`)));
@@ -415,11 +408,11 @@
               }
               list.append(grid);
             }
-            const ready = READY.filter(r => !q || wd.matchesWords(q, `${t(`builderReady_${r.id}`)} ${t('builderGroup_ready')}`));
-            if (!ready.length) continue;
-            list.append(el('h3', 'wdb-h3', t('builderGroup_ready')));
+            const builtIn = READY.filter(r => !q || wd.matchesWords(q, `${t(`builderReady_${r.id}`)} ${t('builderGroup_ready')}`));
+            if (!builtIn.length) continue;
+            if (list.firstChild) list.append(el('h3', 'wdb-h3', t('builderGroup_ready')));
             const grid = el('div', 'wdb-comps');
-            for (const r of ready) {
+            for (const r of builtIn) {
               const c = button('wdb-comp', '', () => { if (!c.dataset.dragged) addReady(r); delete c.dataset.dragged; }, t('builderAdd', { name: t(`builderReady_${r.id}`) }));
               c.append(kitIcon(r.glyph, 'wdb-comp-icon'), el('span', null, t(`builderReady_${r.id}`)));
               dragToAdd(c, { glyph: r.glyph, label: t(`builderReady_${r.id}`), size: { w: r.w, h: r.h }, container: true, drop: target => addReady(r, target) });
@@ -1329,7 +1322,7 @@
       b.selected = id;
       drawOverlay();
       redrawInspector();
-      if (b.libTab === 'layers' || b.libTab === 'parts') redrawLibrary();
+      redrawLibrary();
     }
 
     function removePart(id) {

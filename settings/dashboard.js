@@ -405,7 +405,6 @@
     builderUntitled: "New design",
     builderPartCount: "__count__ components",
     builderName: "Design name",
-    builderDesigns: "Designs",
     builderSaved: "Saved",
     builderSaving: "Saving…",
     builderNotSaved: "Not saved",
