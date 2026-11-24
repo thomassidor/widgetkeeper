@@ -128,7 +128,7 @@ a.wd-nav-row:hover, button.wd-nav-row:hover { background: color-mix(in srgb, var
 .wd-nav-count { flex: none; font-size: 13px; color: var(--wd-muted); }
 .wd-nav-note { margin: 2px 10px 6px; font-size: 13px; line-height: 18px; color: var(--wd-muted); }
 .wd-nav-reset { color: var(--wd-accent); }
-.wd-kiosk-help { margin: 0; padding: 12px 16px; border-top: 1px solid var(--wd-line); overflow-wrap: anywhere; }
+.wd-kiosk-help { margin: 0; padding: 12px 16px; border-top: 1px solid var(--wd-line); overflow-wrap: break-word; }
 .wd-nav-grip { flex: none; display: grid; place-items: center; width: 24px; height: 40px; margin-left: -6px; color: var(--wd-muted); cursor: grab; touch-action: none; }
 .wd-nav-grip:focus-visible, .wd-nav-eye:focus-visible { outline: 2px solid var(--wd-accent); outline-offset: -2px; border-radius: 8px; }
 .wd-nav-eye { -webkit-appearance: none; appearance: none; border: 0; padding: 0; background: transparent; cursor: pointer; flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin-right: -8px; color: var(--wd-muted); }
@@ -290,7 +290,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wd-dashboards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); grid-auto-rows: 1fr; gap: 16px; }
 /* The front page's sections: a heading over each one's cards; in edit mode the name is typed in place (as the editor's
    bar's), with ↑ ↓ and delete, and an empty one is a dashed place to drag dashboards into. */
-.wd-group-title { margin: 12px 0 0; font-size: 20px; line-height: 28px; font-weight: 700; overflow-wrap: anywhere; }
+.wd-group-title { margin: 12px 0 0; font-size: 20px; line-height: 28px; font-weight: 700; overflow-wrap: break-word; }
 .wd-group-head { display: flex; align-items: center; gap: 4px; margin-top: 12px; }
 .wd-group-name {
   grid-area: 1 / 1; width: 0; min-width: 100%; min-height: 36px; padding: 4px 10px; border-color: transparent; border-radius: 10px;
@@ -1035,7 +1035,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 /* A phone's bar holds its eight controls a little closer together. */
 @media (max-width: 480px) { .wdb-bar .wd-bar-end { gap: 4px; } }
 
-.wdb { display: grid; grid-template-columns: 264px minmax(0, 1fr) 340px; min-height: calc(100vh - 64px); border-top: 1px solid var(--wd-line); }
+.wdb { display: grid; grid-template-columns: 280px minmax(0, 1fr) 340px; min-height: calc(100vh - 64px); border-top: 1px solid var(--wd-line); }
 .wdb-lib, .wdb-insp { padding: 12px; overflow: auto; max-height: calc(100vh - 64px); position: sticky; top: 64px; box-sizing: border-box; }
 /* The library and the inspector scroll with the side pane's thin, quiet scrollbar. */
 .wdb-lib, .wdb-insp { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--wd-text) 18%, transparent) transparent; }
@@ -1045,6 +1045,9 @@ textarea.wd-input { width: 100%; resize: vertical; }
 /* The tabs and the search stay at the top while the list scrolls. */
 .wdb-lib > .wdb-tabs { position: sticky; top: 0; z-index: 2; margin: 0 -12px 0; padding: 12px 12px 10px; border-radius: 0; background: inherit; }
 .wdb-lib > .wdb-tabs .wdb-tab { background: var(--wd-raised); }
+/* Each tab as wide as its label, the room left shared out; a desktop scrollbar or a long label (French's
+   *Prêts à l'emploi*) would otherwise push the last one out of the pane, so a long label wraps onto two lines. */
+.wdb-lib > .wdb-tabs .wdb-tab { flex: 1 1 auto; padding: 0 5px; white-space: normal; line-height: 14px; }
 .wdb-lib > .wdb-tabs .wdb-tab:first-child { border-radius: 8px 0 0 8px; }
 .wdb-lib > .wdb-tabs .wdb-tab:last-child { border-radius: 0 8px 8px 0; }
 .wdb-lib > .wdb-tabs .wdb-tab.on { background: var(--wd-accent); color: #FFFFFF; box-shadow: none; }

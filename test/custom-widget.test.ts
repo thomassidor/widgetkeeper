@@ -366,6 +366,22 @@ describe('widget states, pages, actions, images, rings and repeaters', () => {
     expect(again.at('t').textContent).toBe('Now Beta');
   });
 
+  it("reads a widget state's start again when Starts on changes (the builder's preview), else keeps it", () => {
+    // Each a new version of the design, as the builder's every change (the same one isn't built again).
+    let version = 1;
+    const s = (initial: string, name = 'Guests') => {
+      const next: any = state([part('tg', 'state', { stateType: 'toggle', initial, name })]);
+      next.design.updatedAt = version++;
+      return next;
+    };
+    const { w, at } = widget(s('true'));
+    expect(at('tg').getAttribute('aria-checked')).toBe('true');
+    w.setState(s('true', 'Visitors'));
+    expect(at('tg').getAttribute('aria-checked')).toBe('true');
+    w.setState(s('false'));
+    expect(at('tg').getAttribute('aria-checked')).toBe('false');
+  });
+
   it('pages with tabs or dots, and shows the page the builder is editing', () => {
     const s = state([part('box', 'container', { mode: 'pages', nav: 'tabs', pages: [{ name: 'One' }, { name: '' }], parts: [
       part('p0', 'text', { text: 'zero', page: 0 }), part('p1', 'text', { text: 'one', page: 1 }),

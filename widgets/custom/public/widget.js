@@ -418,6 +418,8 @@
     let states = new Map();
     let repeaters = new Map();
     const stateValues = new Map();
+    /** What each state started as when its value was read: a changed *Starts on* (in the builder) reads it again. */
+    const stateStarts = new Map();
     /** A pages container's page now (by id), and the builder's pick of the page it's editing. */
     const pageNow = new Map();
     const forcedPage = new Map();
@@ -549,6 +551,8 @@
     const stateKey = part => (opts.storeKey ? `widgetkeeper.custom.${opts.storeKey}.${part.id}` : '');
     /** A widget state's value: set on this screen (kept for its next load), else what it starts as. */
     function stateValue(part) {
+      if (stateStarts.has(part.id) && stateStarts.get(part.id) !== part.initial) stateValues.delete(part.id);
+      stateStarts.set(part.id, part.initial);
       if (stateValues.has(part.id)) return stateValues.get(part.id);
       let v = part.initial;
       try {

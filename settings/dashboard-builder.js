@@ -175,13 +175,20 @@
     /** The dashboard columns the design spans, and its grid's columns (four per dashboard column). */
     const spanOf = () => Math.min(MAX_SPAN, Math.max(1, Number(b.design.span) || 1));
     const cols = () => GRID.cols * spanOf();
-    /** A new span: the grid gets four columns per dashboard column; a narrower one keeps every part inside it. */
+    /**
+     * A new span: the grid gets four columns per dashboard column, and the design stretches (or narrows) with it, as a
+     * normal widget does over more columns: each top-level part's columns scaled by the change (a container's own grid
+     * and per cents follow its box), kept inside the grid.
+     */
     function setSpan(n) {
+      const was = spanOf();
       change(() => {
         if (n > 1) b.design.span = n; else delete b.design.span;
+        const f = spanOf() / was;
         for (const p of b.design.parts) {
-          p.at.w = Math.min(p.at.w, cols());
-          p.at.x = Math.min(p.at.x, cols() - p.at.w);
+          const x = Math.round(p.at.x * f);
+          p.at.w = Math.min(Math.max(1, Math.round((p.at.x + p.at.w) * f) - x), cols());
+          p.at.x = Math.min(x, cols() - p.at.w);
         }
         for (const p of b.design.parts) makeRoom(b.design.parts, p);
       }, { preview: false });
@@ -557,16 +564,15 @@
     }
 
     /** Where a drop at a point goes: the container under it (not for a container) and the cell or per cent there. */
-    function dropTarget(kind, x, y) {
+    function dropTarget(kind, x, y, boxes = null) {
       const c = b.canvas.getBoundingClientRect();
       const fx = x - c.left;
       const fy = y - c.top;
       if (kind !== 'container') {
         // The last drawn (on top) first.
         for (const box of b.design.parts.filter(p => p.kind === 'container').reverse()) {
-          const inner = nodeOf(box.id) && nodeOf(box.id).querySelector('.wb-inner');
-          if (!inner) continue;
-          const r = inner.getBoundingClientRect();
+          const r = boxes ? boxes.get(box.id) : innerRect(box.id);
+          if (!r) continue;
           if (fx < r.left || fx > r.right || fy < r.top || fy > r.bottom) continue;
           if (box.mode === 'free') return { into: box, x: ((fx - r.left) / r.width) * 100, y: ((fy - r.top) / r.height) * 100 };
           const g = gridOf(box);
@@ -575,6 +581,19 @@
       }
       const g = gridOf(null);
       return { into: null, x: Math.floor(fx / g.colW), y: Math.floor(fy / g.rowH) };
+    }
+
+    /** A container's inner box in the frame's coordinates (the overlay's), or null. */
+    function innerRect(id) {
+      const inner = nodeOf(id) && nodeOf(id).querySelector('.wb-inner');
+      return inner ? inner.getBoundingClientRect() : null;
+    }
+
+    /** Every top-level container's inner box now: where a drag looks for one to drop into (see startDrag()). */
+    function containerRects() {
+      const m = new Map();
+      for (const box of b.design.parts) if (box.kind === 'container') { const r = innerRect(box.id); if (r) m.set(box.id, r); }
+      return m;
     }
 
     function drawLayers(body) {
@@ -951,6 +970,9 @@
       const startNode = nodeOf(p.id);
       const startBox = startNode ? startNode.getBoundingClientRect() : null;
       const radius = startNode ? startNode.ownerDocument.defaultView.getComputedStyle(startNode).borderRadius : '';
+      // The containers where they were as the drag started: a top-level part moving onto one's cells pushes it down out
+      // from under the pointer, so looking where it is now, nothing could ever be dragged into one.
+      const boxes = containerRects();
       const dir = how === 'move' ? '' : how;
       let moved = false;
       let before = null;
@@ -962,7 +984,7 @@
         if (!moved && Math.abs(dx) + Math.abs(dy) < 4) return;
         if (!moved) { moved = true; before = JSON.stringify(b.design); }
         if (how === 'move' && p.kind !== 'container') {
-          const target = dropTarget('part', ev.clientX, ev.clientY);
+          const target = dropTarget('part', ev.clientX, ev.clientY, boxes);
           if ((target.into ? target.into.id : null) !== (parent ? parent.id : null)) {
             // Over another container, or out of this one: only the place it lands on shows until it's dropped.
             // Everything back where it was meanwhile, as it will be until it's dropped there.
@@ -2513,7 +2535,11 @@
       body.append(row(t('builderScale'), segs([['sum', t('builderScale_sum')], ['max', t('builderScale_max')]], p.scale || 'sum', v => change(() => { p.scale = v; if (v === 'max' && !p.max) p.max = 100; }, { preview: false }))));
       if (p.scale === 'max') body.append(row(t('builderMax'), textInput(p.max, v => change(() => { const n = numOrNull(v); p.max = n && n > 0 ? n : 100; }, { preview: false }), { type: 'number' })));
       body.append(row(t('builderUnits'), textInput(p.units, v => change(() => { p.units = v.trim().slice(0, 12); }, { preview: false }), { placeholder: t('builderAuto') })));
-      body.append(checkRow(t('builderLegend'), p.legend !== false, v => change(() => { p.legend = v; }, { preview: false })));
+      // A donut has its list beside it only where it's wide (the widget's `size.wide`): say so where it isn't.
+      const box = parentOf(p.id);
+      const wide = !box ? p.at.w >= 3 : box.mode === 'free' ? p.at.w >= 60 : p.at.w >= 8;
+      const hidden = p.barStyle === 'donut' && !wide && p.legend !== false;
+      body.append(checkRow(t('builderLegend'), p.legend !== false, v => change(() => { p.legend = v; }, { preview: false }), hidden ? t('builderLegendDonutHint') : undefined));
     }
 
 
@@ -2701,7 +2727,10 @@
         if (p.shape === 'line') two.append(row(t('builderThickness'), textInput(p.thickness || 2, v => quiet(() => { p.thickness = clampTo(v, 1, 8, 2); }), { type: 'number' })));
         body.append(two);
       }
-      if (ACCENT_KINDS.includes(p.kind)) {
+      // An Arc or Bar coloured by level takes its colours from the level, so its own colour would do nothing.
+      if (ACCENT_KINDS.includes(p.kind) && (p.kind === 'arc' || p.kind === 'bar') && p.zones) {
+        body.append(row(t('builderColour'), el('p', 'wd-hint', t('builderZonesColourHint'))));
+      } else if (ACCENT_KINDS.includes(p.kind)) {
         body.append(row(t('builderColour'), colourPicker(p.color, v => quiet(() => { p.color = v; })), t('builderColourHint')));
       }
       if (TEXT_KINDS.includes(p.kind)) {
@@ -2712,7 +2741,7 @@
         const size = ({ body: 'small', heading: 'default' })[p.size] || p.size || 'small';
         body.append(row(t('builderSize'), segs([['display', t('builderSizeDisplay')], ['large', t('builderSizeLarge')], ['default', t('builderSizeDefault')], ['small', t('builderSmall')]], size, v => quiet(() => { p.size = v; }))));
         body.append(row(t('builderWeight'), segs([['', t('builderAuto')], ['regular', t('builderWeight_regular')], ['medium', t('builderWeight_medium')], ['bold', t('builderWeight_bold')]], p.weight || '', v => quiet(() => { if (v) p.weight = v; else delete p.weight; }))));
-        body.append(row(t('builderAlign'), segs([['left', t('builderLeft')], ['center', t('builderCenter')], ['right', t('builderRight')]], p.align, v => quiet(() => { p.align = v; }))));
+        body.append(row(t('builderAlign'), segs([['left', t('builderLeft')], ['center', t('builderCenter')], ['right', t('builderRight')]], p.align || 'left', v => quiet(() => { p.align = v; }))));
         // Notes' *Long text*; a Post-it shows three lines.
         if (p.style !== 'postit') body.append(row(t('builderOverflow'), segs([['ellipsis', t('builderOverflow_ellipsis')], ['scroll', t('builderOverflow_scroll')], ['wrap', t('builderOverflow_wrap')]], p.overflow || 'wrap', v => quiet(() => { if (v === 'wrap') delete p.overflow; else p.overflow = v; }))));
         body.append(checkRow(t('builderTextMuted'), p.muted, v => quiet(() => { if (v) p.muted = true; else delete p.muted; })));
