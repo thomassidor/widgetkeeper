@@ -1430,7 +1430,12 @@
         // The note goes with the message (reset() doesn't draw): an empty design's, once it has components.
         note.hidden = !msg.text;
         note.textContent = msg.text || '';
-        if (!state.design.parts.length) { setMessage(t('empty')); return; }
+        if (!state.design.parts.length) {
+          // The builder's canvas shows its empty grid itself; the message only gets in the way there.
+          if (opts.preview) { grid.textContent = ''; builtFor = null; views = []; grid.hidden = false; report(); return; }
+          setMessage(t('empty'));
+          return;
+        }
         update();
       },
       /** Realtime `values:state`: one capability's new value. */

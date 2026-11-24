@@ -108,6 +108,11 @@ describe('drawing', () => {
     w.setState({});
     expect(root.querySelector('.wb-message')!.textContent).toBe('Could not load the design.');
   });
+
+  it("leaves an empty design's message out of the builder's preview", () => {
+    const { root } = widget(state([]), { preview: true });
+    expect((root.querySelector('.wb-message') as HTMLElement).hidden).toBe(true);
+  });
 });
 
 describe('controls', () => {
