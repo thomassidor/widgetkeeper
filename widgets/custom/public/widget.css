@@ -1,6 +1,9 @@
 /*
- * The Widget Builder (`custom`): Quick Actions' native tile (10 px, the dark tile and its rim, 14 bold names) on a
- * 4-column grid of 64 px rows; containers hold a fine grid (12 columns, 8 px rows) or free-form parts.
+ * The Widget Builder (`custom`): the normal widgets' looks, each noted where it's from (no look of its own): Quick
+ * Actions' native tile (10 px, the dark tile and its rim, 14 bold names) and pill, Variables' switch, − / + and field,
+ * Flow Buttons' round button, Light Controls' bar, Variable Presets' buttons, Notes' text sizes and Post-it, Sparklines'
+ * line, Chart · Basic's chart and Chart · Gauge's dial; on a 4-column grid of 64 px rows, containers holding a fine
+ * grid (12 columns, 8 px rows) or free-form parts.
  */
 .wb {
   --wb-tile: var(--homey-background-color, #FFFFFF);
@@ -10,14 +13,36 @@
   --wb-radius: 10px; /* Homey's native device tiles */
   --wb-fs-small: var(--homey-font-size-small, 14px); --wb-lh-small: var(--homey-line-height-small, 20px);
   --wb-fs-default: var(--homey-font-size-default, 17px); --wb-lh-default: var(--homey-line-height-default, 24px);
+  --wb-fs-large: var(--homey-font-size-xlarge, 24px); --wb-lh-large: var(--homey-line-height-xlarge, 32px);
   --wb-bold: var(--homey-font-weight-bold, 700);
   --wb-medium: var(--homey-font-weight-medium, 500);
-  --wk-c: var(--wk-blue);
+  --wb-regular: var(--homey-font-weight-regular, 400);
+  /* Quick Actions' *Lighter tile*; Variables' switch track when off and its −/+ (Flow Buttons' grey). */
+  --wb-lighter: color-mix(in srgb, var(--wb-text) 9%, var(--wb-tile));
+  --wb-off: color-mix(in srgb, var(--wb-text) 22%, var(--wb-tile));
+  --wb-button: color-mix(in srgb, var(--wb-text) 8%, var(--wb-tile));
+  /* Quick Actions' and Flow Buttons' red text on a red-tinted light tile (Tap again). */
+  --wb-red-text: #D93B37;
+  /* Chart · Basic's below zero (chart.css' `--ew-export`). */
+  --wb-export: #9A6A00;
+  /* Chart · Gauge's track, and its zones mixed into it. */
+  --wb-gauge-track: color-mix(in srgb, var(--wb-text) 9%, var(--wb-tile));
+  --wb-zone-mix: 28%;
+  --wb-zone-green: color-mix(in srgb, var(--wk-green-bright, #71D51B) var(--wb-zone-mix), var(--wb-tile));
+  --wb-zone-yellow: color-mix(in srgb, var(--wk-yellow-bright, #F5C518) var(--wb-zone-mix), var(--wb-tile));
+  --wb-zone-red: color-mix(in srgb, var(--wk-red-bright, #F25F5C) var(--wb-zone-mix), var(--wb-tile));
+  /* Blue until a colour is set (kit.css' `data-wk-color` sets them all). */
+  --wk-c: var(--wk-blue); --wk-on: var(--wk-on-blue);
+  --wk-c-bright: var(--wk-blue-bright); --wk-on-bright: var(--wk-on-blue-bright);
+  --wk-c-shade: var(--wk-blue-shade); --wk-on-shade: var(--wk-on-blue-shade);
+  --wb-hold: 600ms;
 }
 .homey-dark-mode .wb, .wb.homey-dark-mode {
   --wb-tile: var(--wk-surface, #181920); --wb-text: var(--homey-text-color, #EDEEF0); --wb-muted: var(--homey-text-color-light, #9C9DA5);
-  --wb-track: #2E3039;
+  --wb-track: #2E3039; --wb-lighter: #2E3039; --wb-button: #2E3039; --wb-red-text: var(--wk-red); --wb-export: #F5C518;
 }
+.wb.wk-deep { --wb-zone-mix: 50%; --wb-gauge-track: color-mix(in srgb, var(--wk-c-bright) 22%, var(--wb-tile)); }
+.wb.wk-deep .wb-zoned { --wb-gauge-track: color-mix(in srgb, var(--wb-text) 9%, var(--wb-tile)); }
 
 html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
 html, body { margin: 0; }
@@ -32,7 +57,7 @@ html, body { background: transparent !important; }
 .wb-grid:not([hidden]) + .wb-message:not([hidden]) { padding-bottom: 0; }
 
 /* A part. Hidden by a rule or a Flow keeps its cells. */
-.wb-part { position: relative; min-width: 0; min-height: 0; display: flex; flex-direction: column; justify-content: space-between; -webkit-tap-highlight-color: transparent; }
+.wb-part { position: relative; isolation: isolate; min-width: 0; min-height: 0; display: flex; flex-direction: column; justify-content: space-between; -webkit-tap-highlight-color: transparent; }
 .wb-hidden { visibility: hidden; }
 .wb-tile {
   background: var(--wb-tile); border-radius: var(--wb-radius); padding: 8px 10px; overflow: hidden; isolation: isolate;
@@ -43,17 +68,35 @@ html, body { background: transparent !important; }
   box-shadow: inset 0 1px 0 rgb(255 255 255 / .05), inset 0 0 0 1px rgb(255 255 255 / .03);
 }
 .wb-bare { background: none; padding: 0 2px; }
-/* A colour (its own, a rule's or a Flow's), and a switch or status that's on: the tile tinted, its icon in the colour. */
+/* A colour (its own, a rule's or a Flow's), and a switch that's on: the tile tinted, its icon in the colour (Quick Actions'). */
 .wb-tile.wb-colored, .wb-k-switch.wb-on, .wb-k-variable.wb-on { background: color-mix(in srgb, var(--wk-c) 22%, var(--wb-tile)); }
 .wb-has-color .wb-icon, .wb-on .wb-icon { color: var(--wk-c); }
+/* Quick Actions' *Lighter tile*: a plain lighter tile when on, its icons as the text. */
+.wb-k-switch.wb-lighter.wb-on:not(.wb-colored) { background: var(--wb-lighter); }
+.wb-k-switch.wb-lighter.wb-on .wb-icon { color: inherit; }
 .wb-bare.wb-colored { color: var(--wk-c); }
 /* Vivid: solid, with the text on it. */
-.wb.wk-deep .wb-tile.wb-colored, .wb.wk-deep .wb-k-switch.wb-on, .wb.wk-deep .wb-k-variable.wb-on {
+.wb.wk-deep .wb-tile.wb-colored, .wb.wk-deep .wb-k-switch.wb-on:not(.wb-lighter), .wb.wk-deep .wb-k-variable.wb-on {
   background: var(--wk-c); --wb-text: var(--wk-on); --wb-muted: var(--wk-on-muted, var(--wk-on)); color: var(--wb-text);
 }
 .wb.wk-deep .wb-colored .wb-icon, .wb.wk-deep .wb-on .wb-icon { color: var(--wk-on); }
 [role="button"].wb-part, [role="switch"].wb-part, .wb-k-variable { cursor: pointer; user-select: none; -webkit-user-select: none; }
 [role="button"].wb-part:active, [role="switch"].wb-part:active { transform: scale(.97); }
+
+/*
+ * Quick Actions' and Flow Buttons' *Activate with*: held, it fills from the left until it acts; waiting for the second
+ * tap, it's tinted red with its name in red (Vivid: the red shade, solid).
+ */
+.wb-part::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
+  background: color-mix(in srgb, var(--wb-text) 18%, transparent); transform: scaleX(0); transform-origin: left center;
+}
+.wb-part.holding::before { transform: scaleX(1); transition: transform var(--wb-hold) linear; }
+.wb-part.holding { transform: none; }
+.wb-part.confirm { background: color-mix(in srgb, var(--wk-red) 22%, var(--wb-tile)) !important; }
+.wb-part.confirm .wb-name { color: var(--wb-red-text); }
+.wb.wk-deep .wb-part.confirm { background: var(--wk-red) !important; --wb-text: var(--wk-on-red); }
+.wb.wk-deep .wb-part.confirm .wb-name { color: var(--wk-on-red); }
 .wb-part:focus-visible { outline: 2px solid var(--wk-c); outline-offset: 2px; }
 
 .wb-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-width: 0; }
@@ -70,111 +113,206 @@ html, body { background: transparent !important; }
 .wb-svg .filled { fill: currentColor; stroke: none; }
 
 /*
- * Pill: fully rounded and plain (no rim, no shadow, as Sensor Alarms' tiles); a one-row component lays out in a row,
- * the icon, the name, then the value or switch. A container's pill is rounder than a tile, not a stadium.
+ * Pill: the pill of Quick Actions, Device Values and Sensor Alarms: the native tile's 10 px corners on #2B2C36 in dark
+ * mode, no rim, the 24 px muted icon beside the name (14 bold) over the value (14 muted), on 18 px lines, and a switch's
+ * toggle at the end. Containers keep their padding.
  */
-.wb-pill { border-radius: 999px; padding: 6px 16px; box-shadow: none; }
-.wb-k-container.wb-pill { border-radius: 24px; padding: 12px; }
-.wb-pill:is(.wb-k-value:not(.wb-big):not(.wb-narrow), .wb-k-calc:not(.wb-big):not(.wb-narrow), .wb-k-time:not(.wb-big), .wb-k-flowvalue, .wb-k-switch, .wb-k-status, .wb-k-variable, .wb-k-button) {
-  flex-direction: row; align-items: center; justify-content: flex-start; gap: 10px;
+.homey-dark-mode .wb .wb-pill, .wb.homey-dark-mode .wb-pill { --wb-tile: var(--wk-surface, #2B2C36); }
+.wb-pill { padding: 7px 12px 5px 10px; }
+.wb-pill:is(.wb-k-switch, .wb-k-state:not(:has(.wb-presets))) {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-rows: auto; align-content: center; column-gap: 13px;
 }
 .wb-pill .wb-top { display: contents; }
-.wb-pill .wb-icon, .wb-pill .wb-dot { order: 0; }
-.wb-pill:not(.wb-k-button) .wb-name { order: 1; flex: 1 1 auto; }
-.wb-pill .wb-value, .wb-pill .wb-sub { order: 2; }
-.wb-pill .wb-toggle { order: 3; }
-.wb-pill.wb-k-button { justify-content: center; }
-.wb-pill.wb-k-button .wb-icon { width: 20px; height: 20px; }
-.wb-pill.wb-k-slider { padding: 0; }
-.wb-pill.wb-k-slider .wb-row { padding: 0 18px; }
+.wb-pill > .wb-top > .wb-icon { grid-column: 1; grid-row: 1 / span 2; align-self: center; width: 24px; height: 24px; color: var(--wb-muted); }
+.wb-pill .wb-name { grid-column: 2; line-height: 18px; }
+.wb-pill .wb-value { grid-column: 2; font-size: var(--wb-fs-small); line-height: 18px; font-weight: var(--wb-regular); color: var(--wb-muted); }
+.wb-pill .wb-toggle { display: none; }
+.wb-pill.wb-on:not(.wb-lighter) > .wb-top > .wb-icon { color: var(--wk-c); }
 
-/* Value: a big one (two rows or more) puts the number large under the icon row. */
-.wb-big { justify-content: flex-start; }
-.wb-big .wb-value { font-size: var(--homey-font-size-xxlarge, 32px); line-height: var(--homey-line-height-xxlarge, 40px); font-weight: var(--wb-bold); position: relative; z-index: 1; }
-.wb-big .wb-name { position: relative; z-index: 1; }
-.wb-spark { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 42%; pointer-events: none; z-index: 0; }
-.wb-spark-line { fill: none; stroke: var(--wk-c); stroke-width: 2; }
-.wb-spark-area { fill: color-mix(in srgb, var(--wk-c) 18%, transparent); }
-.wb-k-chart .wb-top { position: relative; z-index: 1; }
-.wb-k-chart .wb-value { font-size: var(--wb-fs-small); }
-
-.wb-narrow .wb-name { display: none; }
-.wb-narrow .wb-value { font-size: var(--wb-fs-small); }
-
-/* Gauge */
-.wb-k-gauge { padding: 4px 8px; }
-.wb-gauge-box { position: relative; flex: 1; min-height: 0; display: flex; justify-content: center; }
-.wb-arc { height: 100%; max-width: 100%; }
-.wb-arc-track, .wb-arc-fill { fill: none; stroke-width: 8; stroke-linecap: round; }
-.wb-arc-track { stroke: var(--wb-track); }
-.wb-arc-fill { stroke: var(--wk-c); }
-.wb-tile.wb-colored .wb-arc-track { stroke: color-mix(in srgb, var(--wb-text) 14%, transparent); }
-.wb.wk-deep .wb-tile.wb-colored .wb-arc-fill { stroke: var(--wk-on); }
-.wb-gauge-mid { position: absolute; inset: 34% 0 0; display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 0; }
-.wb-gauge-mid .wb-name { font-weight: var(--homey-font-weight-regular, 400); font-size: 12px; line-height: 16px; color: var(--wb-muted); max-width: 100%; }
-
-/* Level bar */
-.wb-level { height: 8px; border-radius: 4px; background: var(--wb-track); overflow: hidden; }
-.wb-level i { display: block; height: 100%; border-radius: 4px; background: var(--wk-c); }
+/* A bare bar's track (Light Controls' and Room Health's 6 px), its value in the colour. */
+.wb-level { height: 6px; border-radius: 999px; background: var(--wb-track); overflow: hidden; }
+.wb-level i { display: block; height: 100%; border-radius: 999px; background: var(--wk-c); }
 .wb.wk-deep .wb-tile.wb-colored .wb-level { background: color-mix(in srgb, var(--wk-on) 25%, transparent); }
 .wb.wk-deep .wb-tile.wb-colored .wb-level i { background: var(--wk-on); }
+/* Chart · Gauge's levels: the value in its level's bright colour, the track in stretches (set inline). */
+.wb-level i.green { background: var(--wk-green-bright, #71D51B); }
+.wb-level i.yellow { background: var(--wk-yellow-bright, #F5C518); }
+.wb-level i.red { background: var(--wk-red-bright, #F25F5C); }
+/* The span's lowest to highest under the bar (Chart · Gauge's range, 4 px). */
+.wb-k-bar { position: relative; }
+.wb-level-range { position: absolute; top: calc(50% + 7px); height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--wb-text) 45%, transparent); }
+.wb-level-range[hidden] { display: none; }
+.wb-level-range-v { top: auto; left: calc(50% + 7px); width: 4px; height: auto; }
 
-/* Status: a dot, coloured while on (green unless the part has a colour). */
-.wb-k-status { --wb-dot: var(--wk-green); }
-.wb-k-status.wb-has-color { --wb-dot: var(--wk-c); }
-.wb-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--wb-muted); opacity: .6; }
-.wb-dot.on { background: var(--wb-dot); opacity: 1; box-shadow: 0 0 0 4px color-mix(in srgb, var(--wb-dot) 25%, transparent); }
-.wb.wk-deep .wb-tile.wb-colored .wb-dot.on { background: var(--wk-on); box-shadow: none; }
+/* Chart · Gauge's dial: the track (or its zones), the range inside it, the value in its colour, and the knob. */
+.wb-arc-track, .wb-arc-fill, .wb-arc-zone, .wb-arc-range { fill: none; stroke-linecap: round; }
+.wb-arc-track { stroke: var(--wb-gauge-track); }
+.wb-arc-zone { stroke-linecap: butt; }
+.wb-arc-zone.green, .wb-arc-cap.green { stroke: var(--wb-zone-green); }
+.wb-arc-zone.yellow, .wb-arc-cap.yellow { stroke: var(--wb-zone-yellow); }
+.wb-arc-zone.red, .wb-arc-cap.red { stroke: var(--wb-zone-red); }
+.wb-arc-cap, .wb-arc-knob, .wb-arc-knob-in { fill: none; stroke-linecap: round; }
+.wb-arc-range { stroke: color-mix(in srgb, var(--wb-text) 45%, transparent); }
+.wb.wk-deep .wb-k-arc:not(.wb-zoned) .wb-arc-range { stroke: color-mix(in srgb, var(--wk-c-bright) 70%, var(--wb-text)); }
+.wb-arc-fill, .wb-arc-knob { stroke: var(--wk-c-bright); }
+.wb-arc-fill.green, .wb-arc-knob.green { stroke: var(--wk-green-bright, #71D51B); }
+.wb-arc-fill.yellow, .wb-arc-knob.yellow { stroke: var(--wk-yellow-bright, #F5C518); }
+.wb-arc-fill.red, .wb-arc-knob.red { stroke: var(--wk-red-bright, #F25F5C); }
+.wb-arc-knob-in { stroke: var(--wb-tile); }
+.wb-bare .wb-arc-knob-in { stroke: var(--homey-background-color, var(--wb-tile)); }
 
-/* Switch: Quick Actions' state, with a toggle. */
-.wb-toggle { width: 36px; height: 22px; border-radius: 11px; background: var(--wb-track); position: relative; flex: none; transition: background-color .15s; }
-.wb-toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--wb-muted); transition: left .15s; }
+/* A dot (Variables' read-only yes/no): the colour for yes, a ring when unknown. */
+.wb-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--wb-muted); }
+.wb-dot[hidden] { display: none; }
+.wb-on .wb-dot { background: var(--wk-c); }
+.wb-unknown .wb-dot { background: transparent; box-shadow: inset 0 0 0 1.5px var(--wb-muted); }
+.wb.wk-deep .wb-on .wb-dot { background: var(--wk-on); }
+
+/* Variables' and Lights by Room's switch: 40 × 24, a white 20 px knob with its shadow; the colour when on. */
+.wb-toggle { position: relative; flex: none; width: 40px; height: 24px; border-radius: 12px; background: var(--wb-off); transition: background-color .15s; }
+.wb-toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--homey-color-white, #FFFFFF); box-shadow: 0 1px 2px rgb(0 0 0 / .25); transition: transform .15s;
+}
 .wb-toggle.on { background: var(--wk-c); }
-.wb-toggle.on::after { left: 17px; background: #FFFFFF; }
-.wb.wk-deep .wb-toggle.on { background: color-mix(in srgb, var(--wk-on) 40%, transparent); }
+.wb-toggle.on::after { transform: translateX(16px); }
+.wb.wk-deep .wb-on .wb-toggle.on { background: color-mix(in srgb, var(--wk-on) 40%, transparent); }
 .wb-toggle[hidden] { display: none; }
 
-/* Button */
-.wb-k-button { align-items: center; justify-content: center; gap: 2px; text-align: center; }
-.wb-k-button .wb-icon { width: 24px; height: 24px; color: var(--wk-c); }
-.wb-k-button.busy { opacity: .6; }
-.wb-k-button.done .wb-icon { animation: wb-pop .4s ease; }
-@keyframes wb-pop { 50% { transform: scale(1.25); } }
+/*
+ * Button: Flow Buttons' row, the round 32 px button in its colour with an 18 px icon (white, dark on the light colours),
+ * then the name (14 bold, two lines); Vivid the whole row in its colour with the button a lighter circle on it. While
+ * it starts, a ring spins round the button; done, the icon pops. Narrow: only the button, centred.
+ */
+.wb-k-button { flex-direction: row; align-items: center; justify-content: flex-start; gap: 10px; }
+.wb-tile.wb-k-button { padding: 8px 12px 8px 8px; }
+.wb-k-button .wb-name { flex: 1 1 auto; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow-wrap: anywhere; }
+.wb-fbtn {
+  position: relative; flex: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: var(--wk-c); color: var(--wk-on); transition: transform .1s;
+}
+.wb-k-button .wb-fbtn .wb-icon { width: 18px; height: 18px; color: inherit; }
+.wb-k-button:active .wb-fbtn { transform: scale(.9); }
+.wb-k-button.wb-narrow { justify-content: center; padding: 0; }
+.wb-k-button.wb-narrow .wb-name { display: none; }
+.wb.wk-deep .wb-k-button:not(.wb-bare):not(.confirm) { background: var(--wk-c); --wb-text: var(--wk-on); --wb-muted: var(--wk-on-muted); color: var(--wb-text); }
+.wb.wk-deep .wb-k-button:not(.wb-bare) .wb-fbtn { background: color-mix(in srgb, var(--wk-on) 20%, transparent); color: var(--wk-on); }
+.wb-k-button.running .wb-fbtn .wb-icon { opacity: .45; }
+.wb-k-button.running .wb-fbtn::after {
+  content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid transparent;
+  border-top-color: var(--wk-c); border-right-color: var(--wk-c); animation: wb-spin .7s linear infinite;
+}
+.wb.wk-deep .wb-k-button.running .wb-fbtn::after { border-top-color: var(--wk-on); border-right-color: var(--wk-on); }
+@keyframes wb-spin { to { transform: rotate(360deg); } }
+.wb-k-button.done .wb-fbtn .wb-icon { animation: wb-pop .25s ease-out; }
+@keyframes wb-pop { from { transform: scale(.4); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .wb-k-button.done .wb-fbtn .wb-icon { animation: none; } }
 
-/* Slider: Light Controls' bar, the whole tile. */
-.wb-k-slider { padding: 0; justify-content: center; touch-action: none; cursor: pointer; user-select: none; -webkit-user-select: none; }
-.wb-fill { position: absolute; inset: 0 auto 0 0; background: color-mix(in srgb, var(--wk-c) 40%, var(--wb-tile)); z-index: -1; transition: width .1s; }
-.wb.wk-deep .wb-fill { background: var(--wk-c); }
-.wb.wk-deep .wb-k-slider { --wb-text: var(--homey-text-color, inherit); }
-.wb-k-slider.dragging .wb-fill { transition: none; }
-.wb-row { display: flex; align-items: center; gap: 10px; padding: 0 12px; min-width: 0; }
-.wb-row .wb-name { flex: 1; }
-.wb-row .wb-icon { color: var(--wb-text); }
+/*
+ * Slider: Light Controls' and Curtains' bar: the whole box is the hit area round a 6 px track, its fill in the colour,
+ * and a 14 px white knob at the value, larger while dragged.
+ */
+.wb-k-slider { justify-content: center; touch-action: none; cursor: ew-resize; user-select: none; -webkit-user-select: none; --wb-x: 0; }
+.wb-tile.wb-k-slider { padding: 0 12px; }
+.wb-track { position: relative; height: 6px; border-radius: 3px; overflow: hidden; background: var(--wb-track); }
+.wb-fill { position: absolute; inset: 0 auto 0 0; width: calc(var(--wb-x) * 100%); background: var(--wk-c); border-radius: inherit; }
+.wb-knob {
+  position: absolute; top: calc(50% - 7px); width: 14px; height: 14px; border-radius: 50%; pointer-events: none;
+  left: calc(var(--wb-x) * (100% - 14px)); background: #FFFFFF; box-shadow: 0 1px 3px rgb(0 0 0 / .35);
+}
+.wb-tile.wb-k-slider .wb-knob { left: calc(12px + var(--wb-x) * (100% - 24px - 14px)); }
+.wb-fill, .wb-knob { transition: left .15s, width .15s; }
+.wb-k-slider.dragging .wb-knob { transform: scale(1.2); }
+.wb-k-slider.dragging .wb-fill, .wb-k-slider.dragging .wb-knob { transition: none; }
+.wb.wk-deep .wb-tile.wb-colored .wb-fill { background: var(--wk-on); }
+.wb.wk-deep .wb-tile.wb-colored .wb-track { background: color-mix(in srgb, var(--wk-on) 25%, transparent); }
 
-/* Stepper: Variables' − / + buttons. */
-.wb-stepper { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+/*
+ * Stepper and Variable: Variables' row, the name (14 bold) then the control: − value + (round 32 px buttons, 17 bold,
+ * Flow Buttons' grey; dimmed at the limit), the number 14 bold, a switch, or a text 14 muted; stacked, name over
+ * control, where the component isn't wide.
+ */
+.wb-row-layout { flex-direction: row; align-items: center; gap: var(--homey-su-2, 8px); }
+.wb-row-layout .wb-name { flex: 1 1 auto; }
+.wb-tile.wb-row-layout { padding: 4px 6px 4px 12px; }
+.wb-stack { justify-content: center; gap: 0; }
+.wb-tile.wb-stack { padding: 6px 10px; }
+.wb-stepper, .wb-control { display: flex; align-items: center; justify-content: flex-end; gap: 2px; min-width: 0; }
+.wb-stack .wb-stepper, .wb-stack .wb-control { justify-content: space-between; }
+.wb-stack.wb-k-variable:not([data-type="number"]) .wb-control { justify-content: flex-start; }
+.wb-k-stepper .wb-value, .wb-k-variable[data-type="number"] .wb-value {
+  font-size: var(--wb-fs-small); line-height: var(--wb-lh-small); font-weight: var(--wb-bold); font-variant-numeric: tabular-nums;
+  min-width: 36px; text-align: center; padding: 0 2px;
+}
+.wb-k-variable:not([data-type="number"]) .wb-value { font-size: var(--wb-fs-small); line-height: var(--wb-lh-small); font-weight: var(--wb-regular); color: var(--wb-muted); }
+.wb-k-variable.wb-on .wb-value { color: var(--wb-text); }
+.wb-readonly.wb-k-variable[data-type="number"] .wb-value { min-width: 0; text-align: right; padding: 0; }
+.wb-k-variable .wb-control { gap: 6px; }
+.wb-k-variable[data-type="number"]:not(.wb-readonly) .wb-control { gap: 2px; }
+.wb-readonly { cursor: default; }
 .wb-step {
-  appearance: none; border: 0; width: 32px; height: 32px; border-radius: 16px; flex: none; display: grid; place-items: center;
-  background: var(--wb-track); color: var(--wb-text); font: 400 20px/1 Roboto, -apple-system, system-ui, sans-serif; cursor: pointer;
+  appearance: none; border: 0; margin: 0; padding: 0; flex: none; width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; background: var(--wb-button); color: var(--wb-text);
+  font: inherit; font-size: var(--wb-fs-default); line-height: 1; font-weight: var(--wb-bold);
+  cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform .1s;
 }
-.wb-step:active { transform: scale(.92); }
-.wb-stepper .wb-value { text-align: center; flex: 1; }
+.wb-step[hidden], .wb-narrow .wb-step { display: none; }
+.wb-step:active { transform: scale(.9); }
+.wb-step.at-limit { opacity: .4; cursor: default; }
+.wb-step.at-limit:active { transform: none; }
 
-/* Choice: a segmented row. */
-.wb-choices { display: flex; gap: 3px; padding: 3px; border-radius: 9px; background: var(--wb-track); }
-.wb-choice {
-  appearance: none; border: 0; flex: 1; min-width: 0; padding: 4px 2px; border-radius: 7px; background: none; color: var(--wb-muted);
-  font: 400 13px/18px Roboto, -apple-system, system-ui, sans-serif; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+/*
+ * Choice (and a choice Widget state): Variable Presets' and Thermostat Presets' buttons in a row, 2 px apart, the outer
+ * corners rounded, the label 14 bold (17 where it's big), lit in the colour's shade with its text (Vivid: the bright
+ * colour's gradient). They fill the component under its name.
+ */
+.wb-k-choice, .wb-k-state:has(.wb-presets) { justify-content: flex-start; gap: 6px; }
+.wb-presets { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(var(--wb-count, 3), minmax(0, 1fr)); gap: 2px; }
+.wb-preset {
+  appearance: none; border: 0; margin: 0; min-width: 0; padding: 0 4px; font: inherit; cursor: pointer;
+  background: color-mix(in srgb, var(--wb-text) 7%, var(--wb-tile)); color: var(--wb-text); border-radius: 3px;
+  font-size: var(--wb-fs-small); line-height: var(--wb-lh-small); font-weight: var(--wb-bold);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -webkit-tap-highlight-color: transparent;
 }
-.wb-choice.on { background: var(--wk-c); color: var(--wk-on, #FFFFFF); font-weight: var(--wb-medium); }
+.wb-presets-big .wb-preset { font-size: var(--wb-fs-default); line-height: var(--wb-lh-default); }
+.wb-preset:first-child { border-radius: var(--wb-radius) 3px 3px var(--wb-radius); }
+.wb-preset:last-child { border-radius: 3px var(--wb-radius) var(--wb-radius) 3px; }
+.wb-preset:only-child { border-radius: var(--wb-radius); }
+.wb-preset:active { transform: scale(.97); }
+.wb-preset.active { background: var(--wk-c-shade); color: var(--wk-on-shade); }
+.wb.wk-deep .wb-preset.active {
+  color: var(--wk-on-bright);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--wk-c-bright) 92%, #fff), color-mix(in srgb, var(--wk-c-bright) 88%, #000));
+}
 
-/* Text */
-.wb-text { white-space: pre-wrap; overflow-wrap: anywhere; }
-.wb-size-heading .wb-text { font-size: var(--homey-font-size-large, 20px); line-height: var(--homey-line-height-large, 28px); font-weight: var(--wb-medium); }
-.wb-size-body .wb-text { font-size: var(--wb-fs-small); line-height: var(--wb-lh-small); }
-.wb-size-small .wb-text { font-size: 12px; line-height: 16px; color: var(--wb-muted); }
-.wb-text { min-width: 0; }
+/* Text: Notes' sizes, Small 14, Default 17 medium, Large 24 bold, and Big 32 bold (its values' units Chart · Gauge's 17). */
+.wb-text-wrap { min-width: 0; }
+.wb-text { white-space: pre-wrap; overflow-wrap: anywhere; min-width: 0; }
+.wb-size-small .wb-text { font-size: var(--wb-fs-small); line-height: var(--wb-lh-small); font-weight: var(--wb-regular); }
+.wb-size-default .wb-text { font-size: var(--wb-fs-default); line-height: var(--wb-lh-default); font-weight: var(--wb-medium); }
+.wb-size-large .wb-text { font-size: var(--wb-fs-large); line-height: var(--wb-lh-large); font-weight: var(--wb-bold); }
+.wb-size-display .wb-text { font-size: var(--homey-font-size-xxlarge, 32px); line-height: var(--homey-line-height-xxlarge, 40px); font-weight: var(--wb-bold); }
+.wb-unit { font-size: var(--wb-fs-default); font-weight: var(--wb-regular); color: var(--wb-muted); }
+.wb-size-large .wb-unit { font-size: var(--wb-fs-small); color: inherit; }
 .wb-part.wb-k-text { justify-content: center; }
+/* Secondary text: Homey's lighter text colour (Device Values' second value). */
+.wb-muted .wb-text { color: var(--wb-muted); }
+/* Notes' *Long text*: cut short with …, or scrolled to its end and back with a pause at each end and soft edges. */
+.wb-over-ellipsis .wb-text, .wb-over-scroll .wb-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wb-over-scroll .wb-text-wrap { overflow: hidden; }
+.wb-over-scroll .wb-text-wrap.scrolling {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8px, #000 calc(100% - 8px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 8px, #000 calc(100% - 8px), transparent);
+}
+.wb-over-scroll .scrolling .wb-text {
+  display: inline-block; overflow: visible; text-overflow: clip; padding-inline: 8px; margin-inline: -8px;
+  animation: wb-scroll var(--wb-scroll-s, 8s) ease-in-out infinite alternate;
+}
+@keyframes wb-scroll {
+  0%, 15% { transform: translateX(0); }
+  85%, 100% { transform: translateX(var(--wb-shift, 0)); }
+}
+@media (prefers-reduced-motion: reduce) { .wb-over-scroll .scrolling .wb-text { animation: none; } }
 
 /* Icon on its own */
 .wb-k-icon { align-items: center; justify-content: center; container-type: size; }
@@ -186,8 +324,8 @@ html, body { background: transparent !important; }
  * Container: holding parts on a fine grid or free-form; its style a tile (Quick Actions', the rim and the light-mode
  * shadow), a plain pill, or none (only its own background). Light text on a colour or gradient.
  */
-.wb-k-container { border-radius: 14px; padding: 10px; overflow: hidden; justify-content: flex-start; }
-.wb-k-container.wb-tile { border-radius: var(--wb-radius); padding: 10px; }
+.wb-k-container { border-radius: var(--wb-radius); padding: 10px; overflow: hidden; justify-content: flex-start; }
+.wb-k-container.wb-tile { padding: 8px 10px; }
 /* Without a style or a background of its own: its components right on the widget's background. */
 .wb-k-container.wb-bare:not(.wb-box-bg) { padding: 0; }
 .wb-box-dark { --wb-text: #FFFFFF; --wb-muted: rgb(255 255 255 / .72); --wb-track: rgb(255 255 255 / .18); color: var(--wb-text); }
@@ -209,24 +347,14 @@ html, body { background: transparent !important; }
 .wb-line-v .wb-shape-fill { inset: 0 auto; left: calc(50% - var(--wb-thick, 2px) / 2); width: var(--wb-thick, 2px); border-radius: var(--wb-thick, 2px); }
 
 /* A container a rule colours: tinted over its own background (solid in Vivid). */
-.wb-k-container.wb-colored { background: color-mix(in srgb, var(--wk-c) 30%, var(--wb-tile)) !important; }
+.wb-k-container.wb-colored { background: color-mix(in srgb, var(--wk-c) 22%, var(--wb-tile)) !important; }
 .wb.wk-deep .wb-k-container.wb-colored { background: var(--wk-c) !important; }
 
-/* A calculated value only for text and rules: left out on a dashboard, faint in the builder. */
-.wb:not(.wb-preview) .wb-source-only { display: none; }
-.wb-preview .wb-source-only { opacity: .5; }
-
-/* Time: a one-row time without a name centres its value. */
-.wb-k-time.wb-noname:not(.wb-big) { justify-content: center; }
-.wb-k-time.wb-noname .wb-name { display: none; }
 
 /* Widget state: a switch or a choice that only the widget keeps (as Switch and Choice look). */
 .wb-k-state.wb-on { background: color-mix(in srgb, var(--wk-c) 22%, var(--wb-tile)); }
 .wb.wk-deep .wb-k-state.wb-on { background: var(--wk-c); --wb-text: var(--wk-on); color: var(--wb-text); }
 .wb-k-state[role="switch"] { cursor: pointer; user-select: none; -webkit-user-select: none; }
-.wb-pill.wb-k-state[role="switch"] { flex-direction: row; align-items: center; gap: 10px; }
-.wb-pill.wb-k-state .wb-name { order: 1; flex: 1 1 auto; }
-.wb-pill.wb-k-state .wb-toggle { order: 3; }
 
 /* Pages: tabs over the page, or dots under it; a part on another page is left out. */
 .wb-box-pages { display: flex; flex-direction: column; }
@@ -239,14 +367,17 @@ html, body { background: transparent !important; }
   font-size: 12px; line-height: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;
 }
 .wb-nav-tabs .wb-pagebtn.on { background: var(--wk-c); color: var(--wk-on, #FFFFFF); font-weight: var(--wb-medium); }
-.wb-nav-dots > .wb-pagenav { justify-content: center; padding-top: 6px; }
-.wb-nav-dots .wb-pagebtn { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: var(--wb-muted); opacity: .45; cursor: pointer; }
-.wb-nav-dots .wb-pagebtn.on { background: var(--wb-text); opacity: 1; }
-
-/* A button that asks for a second tap, or to be held. */
-.wb-press-hint { text-align: center; }
-.wb-k-button.wb-asking { outline: 2px solid var(--wk-c); outline-offset: -2px; }
-.wb-k-button.holding { transform: scale(.95); transition: transform .6s; }
+/* The Smart Stack's dots: a 28 × 20 px target round a 6 px dot, the page showing a 16 px one. */
+.wb-nav-dots > .wb-pagenav { justify-content: center; gap: 0; }
+.wb-nav-dots .wb-pagebtn {
+  appearance: none; border: 0; margin: 0; padding: 0; background: none; cursor: pointer; width: 28px; height: 20px;
+  display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent;
+}
+.wb-nav-dots .wb-pagebtn::before {
+  content: ''; width: 6px; height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--wb-muted) 55%, transparent);
+  transition: width .2s ease, background-color .2s ease;
+}
+.wb-nav-dots .wb-pagebtn.on::before { width: 16px; background: var(--wb-text); }
 
 /* Image: the whole box, cut to its background's corners. */
 .wb-k-image { padding: 0; overflow: hidden; }
@@ -301,63 +432,44 @@ html, body { background: transparent !important; }
 .wb-seg-num { color: var(--wb-muted); white-space: nowrap; }
 .wb-k-segments .wb-top .wb-name:empty { display: none; }
 
-/* Trend: an arrow and the change, the value now under the name. */
-.wb-trend-arrow { color: var(--wb-muted); }
-.wb-k-trend[data-trend="up"] .wb-trend-arrow, .wb-k-trend[data-trend="down"] .wb-trend-arrow { color: var(--wk-c); }
-.wb-k-trend .wb-sub[hidden] { display: none; }
-.wb-trend-foot { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
-.wb-trend-foot .wb-name { flex: 0 1 auto; }
-.wb-trend-foot .wb-sub { flex: none; margin-left: auto; }
-.wb-seg-donut .wb-seg-body { justify-content: center; }
-
-/* A variable typed in its tile. */
+/* A variable typed in its tile: Variables' field, 36 px with a 1 px border in the colour. */
 .wb-input {
-  min-width: 0; width: 100%; font: inherit; font-size: var(--wb-fs-default); line-height: var(--wb-lh-default); color: var(--wb-text);
-  background: color-mix(in srgb, var(--wb-text) 8%, transparent); border: 0; border-radius: 6px; padding: 0 6px; outline: 2px solid var(--wk-c);
+  min-width: 0; width: 100%; height: 36px; margin: 0; padding: 0 10px; font: inherit; font-size: var(--wb-fs-small); color: var(--wb-text);
+  background: var(--wb-button); border: 1px solid var(--wk-c); border-radius: 8px; outline: none;
+  user-select: text; -webkit-user-select: text;
 }
+.wb-row-layout .wb-input { flex: 1 1 60%; }
 
 /* A built-in component's parts turned off (`hide`): a bare bar, line, arc or toggle where all its text is off. */
 .wb-no-icon .wb-icon { display: none !important; }
-.wb-no-name .wb-name, .wb-no-name:is(.wb-k-stepper, .wb-k-choice, .wb-k-state) > .wb-sub { display: none !important; }
-.wb-no-value .wb-value, .wb-no-value:is(.wb-k-status, .wb-k-trend) .wb-sub { display: none !important; }
-.wb-no-graph .wb-spark { display: none; }
-.wb-no-name.wb-no-value:is(.wb-k-level, .wb-k-chart) > .wb-top { display: none; }
-.wb-k-level.wb-no-name.wb-no-value { justify-content: center; }
-.wb-k-chart.wb-no-name.wb-no-value .wb-spark { height: 100%; }
+.wb-no-name .wb-name { display: none !important; }
+.wb-no-value .wb-value { display: none !important; }
 .wb-k-switch.wb-no-icon.wb-no-name { align-items: center; justify-content: center; }
 .wb-k-switch.wb-no-icon.wb-no-name .wb-top { justify-content: center; }
-.wb-k-status.wb-no-name.wb-no-value { align-items: center; justify-content: center; }
 
-/* Text: a big one, and its weight. */
-.wb-size-display .wb-text { font-size: var(--homey-font-size-xxlarge, 32px); line-height: var(--homey-line-height-xxlarge, 40px); font-weight: var(--wb-bold); }
+/* Text: its weight. */
 .wb-weight-regular .wb-text { font-weight: var(--homey-font-weight-regular, 400); }
 .wb-weight-medium .wb-text { font-weight: var(--wb-medium); }
 .wb-weight-bold .wb-text { font-weight: var(--wb-bold); }
 
-/* Any component with actions: pressed like a button; its Tap again or Hold as a badge. */
-.wb-tappable { cursor: pointer; user-select: none; -webkit-user-select: none; }
+/* Any component with actions: pressed like a button (Quick Actions' tap). */
+.wb-tappable { cursor: pointer; user-select: none; -webkit-user-select: none; isolation: isolate; }
 .wb-tappable:active { transform: scale(.97); }
-.wb-tappable.wb-asking { outline: 2px solid var(--wk-c); outline-offset: 2px; }
-.wb-press-tip {
-  position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%); z-index: 3; padding: 2px 8px; border-radius: 999px;
-  background: var(--wk-c); color: var(--wk-on, #FFFFFF); font-size: 12px; line-height: 16px; white-space: nowrap; pointer-events: none;
-}
-.wb-press-tip[hidden] { display: none; }
 
+/* Sparklines' line (1.5 px) and area (15 %), in the bright colour; Vivid 2 px and 45 %. */
+.wb-spark { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 42%; pointer-events: none; z-index: 0; }
+.wb-spark-line { fill: none; stroke: var(--wk-c-bright); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+.wb-spark-area { fill: var(--wk-c-bright); fill-opacity: .15; stroke: none; }
+.wb.wk-deep .wb-spark-line { stroke-width: 2; }
+.wb.wk-deep .wb-spark-area { fill-opacity: .45; }
 /* The bare data primitives: a sparkline, a gauge's arc and a level bar fill their box. */
 .wb-k-sparkline { padding: 0; overflow: hidden; }
 .wb-k-sparkline .wb-spark { position: absolute; inset: 0; height: 100%; }
 .wb-k-sparkline.wb-tile .wb-spark { inset: 8px 0 0; height: calc(100% - 8px); }
 .wb-k-arc { align-items: center; justify-content: center; padding: 2px; }
-.wb-k-arc .wb-arc { height: 100%; width: 100%; }
-.wb-k-arc .wb-arc-track, .wb-k-arc .wb-arc-fill { stroke-width: var(--wb-arc-w, 8); }
+.wb-k-arc .wb-arc { height: 100%; width: 100%; overflow: visible; }
 .wb-k-bar { justify-content: center; }
-.wb-k-bar .wb-level { height: 8px; border-radius: 999px; }
-.wb-k-bar .wb-level i { border-radius: 999px; }
 .wb-tile.wb-k-bar { padding: 0 12px; }
-/* A bare slider: the whole box is the bar. */
-.wb-k-slider { isolation: isolate; overflow: hidden; }
-.wb-k-slider.wb-bare { border-radius: var(--wb-radius); background: var(--wb-track); }
 /* A calculated value, in the builder only. */
 .wb-calc-chip { font-size: 11px; line-height: 14px; color: var(--wb-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: 1px dashed var(--wb-muted); border-radius: 6px; padding: 2px 6px; align-self: flex-start; }
 .wb:not(.wb-preview) .wb-k-calc { display: none; }
@@ -377,23 +489,46 @@ html, body { background: transparent !important; }
 .wb .wb-has-ink .wb-text, .wb .wb-has-ink .wb-value, .wb .wb-has-ink .wb-name { color: var(--wb-ink); }
 .wb.wk-deep .wb-has-ink.wb-colored, .wb.wk-deep .wb-has-ink.wb-colored :is(.wb-text, .wb-value, .wb-name) { --wb-text: var(--wk-on); color: var(--wk-on); }
 
-/* Chart: its name and legend, the scale at the left, the plot, the times under it. */
+/*
+ * Chart: Chart · Basic's look (chart.css): the values now at the top (24 bold, the unit 14, the name under it in 14
+ * muted), each series' chip (12/16 on a 9 % chip, its dot 8 px) above or below the plot, the grid in Homey's light line
+ * colour, the labels 12/16 muted; areas fading from 45 % (Vivid 75 %), lines 2 px, bars 70 % (Vivid 90 %), below zero in
+ * chart.css' yellow; series in their colours' bright set.
+ */
 .wb-k-chart { justify-content: flex-start; gap: 4px; }
 .wb-k-chart.wb-tile { padding: 8px 10px 6px; }
-.wb-chart-head[hidden] { display: none; }
-.wb-chart-head .wb-name[hidden] { display: none; }
-.wb-chart-legend { display: flex; gap: 8px; min-width: 0; overflow: hidden; font-size: 11px; line-height: 14px; color: var(--wb-muted); }
-.wb-chart-key { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; min-width: 0; }
-.wb-chart-key span { overflow: hidden; text-overflow: ellipsis; }
-.wb-chart-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.wb-chart-header { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--homey-su-4, 16px); flex: none; }
+.wb-chart-header.one { grid-template-columns: minmax(0, 1fr); }
+.wb-chart-hcol { display: flex; flex-direction: column; min-width: 0; }
+.wb-chart-hval { display: flex; align-items: baseline; white-space: nowrap; color: var(--wb-series, var(--wb-text)); }
+.wb-chart-hval .v { font-size: var(--wb-fs-large); line-height: var(--wb-lh-large); font-weight: var(--wb-bold); }
+.wb-chart-hval .v.export { color: var(--wb-export); }
+.wb-chart-hval .u { font-size: var(--wb-fs-small); line-height: var(--wb-lh-small); font-weight: var(--wb-regular); white-space: pre; }
+.wb-chart-hsub { font-size: var(--wb-fs-small); line-height: var(--wb-lh-small); color: var(--wb-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wb-chart-chips { display: flex; gap: 6px; min-width: 0; flex: none; }
+.wb-chart-chips[hidden] { display: none; }
+.wb-chart-chip {
+  display: inline-flex; align-items: center; gap: 6px; max-width: 100%; min-width: 0; padding: 2px 10px 2px 8px; border-radius: 12px;
+  background: color-mix(in srgb, var(--wb-text) 9%, var(--wb-tile)); font-size: 12px; line-height: 16px; color: var(--wb-text); white-space: nowrap;
+}
+.wb-chart-chip > span { overflow: hidden; text-overflow: ellipsis; }
+.wb-chart-chip i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
 .wb-chart-body { flex: 1; min-height: 0; display: flex; gap: 6px; }
-.wb-chart-y { display: none; flex-direction: column; justify-content: space-between; font-size: 10px; line-height: 12px; color: var(--wb-muted); text-align: right; white-space: nowrap; }
+.wb-chart-y { display: none; flex-direction: column; justify-content: space-between; font-size: 12px; line-height: 16px; color: var(--wb-muted); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .wb-chart-axis .wb-chart-y { display: flex; }
 .wb-chart-plot { position: relative; flex: 1; min-width: 0; min-height: 0; }
 .wb-chart-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.wb-chart-grid { stroke: color-mix(in srgb, var(--wb-text) 10%, transparent); stroke-width: 1; fill: none; }
-.wb-chart-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
-.wb-chart-x { display: none; justify-content: space-between; font-size: 10px; line-height: 12px; color: var(--wb-muted); padding-left: 0; }
+.wb-chart-grid { stroke: var(--homey-line-color-light, color-mix(in srgb, var(--wb-text) 9%, var(--wb-tile))); stroke-width: 1; fill: none; }
+.wb-chart-line { fill: none; stroke: var(--wb-series); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.wb-chart-line.export { stroke: var(--wb-export); }
+.wb-chart-stop { stop-opacity: 0; }
+.wb-chart-stop.strong { stop-opacity: .45; }
+.wb.wk-deep .wb-chart-stop { stop-opacity: .08; }
+.wb.wk-deep .wb-chart-stop.strong { stop-opacity: .75; }
+.wb-chart-bar { fill: color-mix(in srgb, var(--wb-series) 70%, transparent); }
+.wb-chart-bar.export { fill: color-mix(in srgb, var(--wb-export) 70%, transparent); }
+.wb.wk-deep .wb-chart-bar { fill: color-mix(in srgb, var(--wb-series) 90%, transparent); }
+.wb-chart-x { display: none; justify-content: space-between; font-size: 12px; line-height: 16px; color: var(--wb-muted); padding-left: 0; }
 .wb-chart-axis .wb-chart-x { display: flex; }
 .wb-chart-none { position: absolute; inset: 0; display: grid; place-items: center; }
 
@@ -403,3 +538,79 @@ html, body { background: transparent !important; }
 .wb-each-item { position: relative; min-width: 0; min-height: 0; display: flex; }
 .wb-each-item > .wb-part { flex: 1; min-width: 0; }
 .wb-each-empty[hidden] { display: none; }
+
+/*
+ * Device Values' *Fill percentages by level*: a container filled from the left as far as its value goes, green, yellow
+ * or red 22 % into the tile (Vivid: solid, the shade).
+ */
+.wb-k-container.wb-filled { --wb-level: var(--wk-green); --wb-fill-mix: 22%;
+  background: linear-gradient(to right, color-mix(in srgb, var(--wb-level) var(--wb-fill-mix), var(--wb-tile)) var(--wb-fill), var(--wb-tile) var(--wb-fill)); }
+.wb-k-container.wb-filled[data-level="red"] { --wb-level: var(--wk-red); }
+.wb-k-container.wb-filled[data-level="yellow"] { --wb-level: var(--wk-yellow); }
+.wb.wk-deep .wb-k-container.wb-filled { --wb-fill-mix: 100%; }
+
+/*
+ * Notes' Post-it note: yellow paper (its colour another one's), a ballpoint's blue-black in Caveat, tilted, its bottom
+ * right corner folded over and a soft shadow under its lifted bottom edge. It's paper, so it's the same in dark mode.
+ */
+@font-face {
+  font-family: 'Widgetkeeper Caveat'; font-style: normal; font-weight: 500; font-display: swap;
+  src: url(../textline/fonts/caveat-latin.woff2) format('woff2'), url(../../textline/public/fonts/caveat-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F,
+    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Widgetkeeper Caveat'; font-style: normal; font-weight: 500; font-display: swap;
+  src: url(../textline/fonts/caveat-latin-ext.woff2) format('woff2'), url(../../textline/public/fonts/caveat-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF,
+    U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Widgetkeeper Caveat'; font-style: normal; font-weight: 500; font-display: swap;
+  src: url(../textline/fonts/caveat-cyrillic.woff2) format('woff2'), url(../../textline/public/fonts/caveat-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+.wb-postit { padding: 6px 8px 10px; display: flex; align-items: center; justify-content: center; overflow: visible; }
+.wb-note {
+  --wb-paper: #FFEF7A; --wb-paper-top: #FFF4A0; --wb-paper-low: #FBE35E; --wb-fold: 24px;
+  position: relative; width: 100%; height: 100%; transform: rotate(-2deg);
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / .16)) drop-shadow(0 3px 4px rgb(0 0 0 / .12));
+}
+.wb-paper {
+  position: relative; height: 100%; display: flex; align-items: center; padding: 10px 14px 16px; color: #22305E;
+  background: linear-gradient(180deg, var(--wb-paper-top) 0%, var(--wb-paper) 35%, var(--wb-paper) 70%, var(--wb-paper-low) 100%);
+  border-radius: 1px;
+  -webkit-mask-image: linear-gradient(315deg, transparent calc(var(--wb-fold) * .7071), #000 calc(var(--wb-fold) * .7071 + .5px));
+  mask-image: linear-gradient(315deg, transparent calc(var(--wb-fold) * .7071), #000 calc(var(--wb-fold) * .7071 + .5px));
+}
+.wb-paper::after {
+  content: ''; position: absolute; right: 0; bottom: 0; width: var(--wb-fold); height: var(--wb-fold); pointer-events: none;
+  background: linear-gradient(to bottom right, color-mix(in srgb, var(--wb-paper-low) 92%, #000) 0%,
+    color-mix(in srgb, var(--wb-paper-low) 78%, #000) 50%, transparent 50%);
+  filter: drop-shadow(-1px -1px 1.5px rgb(0 0 0 / .18));
+}
+.wb-note::after {
+  content: ''; position: absolute; z-index: -1; left: 6px; right: 22px; bottom: 4px; height: 16px;
+  border-radius: 50%; box-shadow: 0 8px 10px rgb(0 0 0 / .32); pointer-events: none;
+}
+.wb-postit .wb-text-wrap { flex: 1 1 auto; }
+.wb-postit .wb-text {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; color: #22305E !important;
+  font-family: 'Widgetkeeper Caveat', 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive;
+  font-weight: 500 !important; font-size: var(--wb-note-font, 30px) !important; line-height: 1.1 !important; white-space: pre-line;
+}
+.wb-postit[data-wk-color="orange"] .wb-note { --wb-paper: #FFCB8A; --wb-paper-top: #FFDDB2; --wb-paper-low: #FCBC6C; }
+.wb-postit[data-wk-color="red"] .wb-note { --wb-paper: #FFA9B3; --wb-paper-top: #FFC6CD; --wb-paper-low: #FB939F; }
+.wb-postit[data-wk-color="purple"] .wb-note { --wb-paper: #D6C1FF; --wb-paper-top: #E5D8FF; --wb-paper-low: #C8ADFB; }
+.wb-postit[data-wk-color="blue"] .wb-note { --wb-paper: #A8D8FF; --wb-paper-top: #C6E6FF; --wb-paper-low: #92CCFB; }
+.wb-postit[data-wk-color="green"] .wb-note { --wb-paper: #BDEDA0; --wb-paper-top: #D3F4BF; --wb-paper-low: #A9E486; }
+.wb-postit[data-wk-color="teal"] .wb-note { --wb-paper: #9FE8DC; --wb-paper-top: #C0F0E8; --wb-paper-low: #86DCCD; }
+.wb-postit[data-wk-color="cyan"] .wb-note { --wb-paper: #A6E6F7; --wb-paper-top: #C5EFFA; --wb-paper-low: #8DDCF2; }
+.wb-postit[data-wk-color="indigo"] .wb-note { --wb-paper: #C3C6FF; --wb-paper-top: #D8DAFF; --wb-paper-low: #AFB3FB; }
+.wb-postit[data-wk-color="pink"] .wb-note { --wb-paper: #FFB8D9; --wb-paper-top: #FFD2E7; --wb-paper-low: #FBA0CA; }
+.wb-postit[data-wk-color="brown"] .wb-note { --wb-paper: #DDC2A3; --wb-paper-top: #E9D5BE; --wb-paper-low: #D2B08C; }
+.wb-postit[data-wk-color="grey"] .wb-note { --wb-paper: #D3D5DB; --wb-paper-top: #E2E3E8; --wb-paper-low: #C4C6CE; }
+.wb-postit[style*="--wk-c:"] .wb-note {
+  --wb-paper: color-mix(in srgb, var(--wk-c) 45%, #FFFFFF); --wb-paper-top: color-mix(in srgb, var(--wk-c) 30%, #FFFFFF);
+  --wb-paper-low: color-mix(in srgb, var(--wk-c) 55%, #FFFFFF);
+}

@@ -54,6 +54,11 @@ const SPANS = {
 } as const;
 export type SpanId = keyof typeof SPANS;
 
+/** Whether Sparklines name this span (`24h`, `today` …): the Widget Builder reads it as they do. */
+export function isNamedSpan(id: string | undefined): boolean {
+  return !!id && id in SPANS;
+}
+
 export function spanOf(id: string | undefined): SpanId {
   return id && id in SPANS ? id as SpanId : '24h';
 }

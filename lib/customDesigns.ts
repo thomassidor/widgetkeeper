@@ -161,8 +161,15 @@ export const MAX_EACH = 12;
 /** How many of a dashboard's columns a design spans: its grid has 4 columns per dashboard column. */
 export const MAX_SPAN = 3;
 
-/** Top level: cells of the 4-column grid. In a container: fine-grid cells, or per cent of its inner box (free-form). */
-export const PART_STYLES = ['tile', 'pill', 'none'] as const;
+/**
+ * A part's background: Quick Actions' tile, the pill of Quick Actions, Device Values and Sensor Alarms, none, or (a Text
+ * only) Notes' Post-it note.
+ */
+export const PART_STYLES = ['tile', 'pill', 'none', 'postit'] as const;
+/** A Text's sizes: Notes' Small 14, Default 17 medium and Large 24 bold, and Big 32 bold. */
+export const TEXT_SIZES = ['display', 'large', 'default', 'small'] as const;
+/** A Text's sizes before they were Notes': Normal (14) is Small now, Heading (20) Default. */
+const OLD_SIZES: Record<string, typeof TEXT_SIZES[number]> = { body: 'small', heading: 'default' };
 export type PartStyle = typeof PART_STYLES[number];
 
 export type Place = { x: number, y: number, w: number, h: number };
@@ -191,8 +198,12 @@ export type Part = {
   /** A button's Flow (`flow:<id>` or `advanced:<id>`); without one the button fires *A part was tapped*. */
   flowId?: string,
   text?: string,
-  size?: 'display' | 'heading' | 'body' | 'small',
+  size?: typeof TEXT_SIZES[number],
   weight?: 'regular' | 'medium' | 'bold',
+  /** A Text's long text, as Notes' *Long text*: cut short, scrolled to its end and back, or on more lines (missing). */
+  overflow?: 'ellipsis' | 'scroll',
+  /** A Text in Homey's lighter text colour (Device Values' second value). */
+  muted?: true,
   /** The built-in parts it leaves out (`ELEMENTS`). */
   hide?: Element[],
   align?: 'left' | 'center' | 'right',
@@ -201,8 +212,13 @@ export type Part = {
   max?: number,
   step?: number,
   choices?: Choice[],
-  /** A Sparkline's time span (the kit's `timeSpan()` ids), and a calculated value's `change`. */
+  /**
+   * A Sparkline's, a Chart's and a calculated value's `change` time span: the kit's `timeSpan()` ids, as the charts'
+   * time span settings write them (`24h`, `3d!` the last three calendar days, `1w!-` last week), or the old names.
+   */
   span?: string,
+  /** A Sparkline's and a Chart's lines smoothed (Sparklines' and Charts' *Smooth chart lines*). */
+  smooth?: true,
   /** An Arc's or a Bar's value (between `min` and `max`, else the capability's range, else 0–100). */
   src?: Source,
   /** A container's (and a shape's `background`, its fill): */
@@ -272,10 +288,37 @@ export type Part = {
   limit?: number,
   /** The colour of its text (a palette name or `#rrggbb`), on any kind that draws text (`TEXT_KINDS`). */
   textColor?: TileColor,
-  /** A Chart's series, drawn as lines or bars, with its scale and times along its edges (`axis`). */
-  series?: { slot: string, color: TileColor | null }[],
-  chartStyle?: 'line' | 'bars',
+  /**
+   * A Chart's series (each with its title, else the device's name), drawn as areas, lines or bars (Chart · Basic's
+   * styles), with its scale and times along its edges (`axis`), the scale from zero (`scale: 'zero'`, else fitted),
+   * below zero in yellow (`negative`), the legend's chips above or below it or none, and the values now at its top.
+   */
+  series?: { slot: string, color: TileColor | null, title?: string }[],
+  chartStyle?: 'area' | 'line' | 'bars',
   axis?: boolean,
+  chartScale?: 'fit' | 'zero',
+  negative?: true,
+  chartLegend?: 'above' | 'below' | 'hidden',
+  header?: true,
+  /**
+   * An Arc's and a Bar's colour by level (Chart · Gauge's): `rising` (higher is worse) or `falling`, yellow from
+   * `yellowAt`, red from `redAt`; and the lowest to highest over `rangeSpan` (a device value's history).
+   */
+  zones?: 'rising' | 'falling',
+  yellowAt?: number,
+  redAt?: number,
+  rangeSpan?: string,
+  /** A Switch that's on as Quick Actions' *Lighter tile* (else tinted in its colour). */
+  active?: 'lighter',
+  /** A Variable shown only (Variables' *Read only*): a yes/no as a dot and Yes or No. */
+  readOnly?: true,
+  /**
+   * A container filled from the left by a value's level (Device Values' *Fill percentages by level*): red below
+   * `redBelow` per cent of its range, yellow below `yellowBelow`, else green.
+   */
+  fillBy?: Source,
+  redBelow?: number,
+  yellowBelow?: number,
   /**
    * A Repeater's: the ready-made component it repeats (a design saved as one, `ready`), once per device: the devices
    * picked (`devices`), or every device with `capability` (in `zone`), each filling in the component's `@` values.
@@ -298,7 +341,18 @@ export type Design = { id: string, name: string, updatedAt: number, parts: Part[
 
 const HEX = /^#[0-9a-f]{6}$/;
 const ID = /^[A-Za-z0-9_-]{1,24}$/;
-const SPANS = new Set(['1h', '6h', '24h', '7d', '30d', 'today', 'yesterday', 'thisWeek']);
+/** The names a span had before it took the charts' time span (the kit's `SPAN_NAMES` reads them too). */
+const SPAN_NAMES = new Set(['1h', '6h', '24h', '7d', '30d', 'today', 'yesterday', 'thisWeek', 'lastWeek', 'thisMonth', 'lastMonth', 'thisYear', 'lastYear']);
+/** A time span as the kit's `timeSpan()` reads it: a count of minutes … years, `!` whole periods, `-` the one before. */
+const SPAN = /^([1-9]\d{0,5})(mo|m|h|d|w|y)(!?)(-?)$/;
+/** A span as kept, else `fallback`. */
+export function spanOf(v: unknown, fallback = '24h'): string {
+  if (typeof v !== 'string') return fallback;
+  if (SPAN_NAMES.has(v)) return v;
+  const m = SPAN.exec(v);
+  if (!m || (m[3] && (m[2] === 'm' || m[2] === 'h')) || (m[4] && !m[3])) return fallback;
+  return v;
+}
 
 const num = (v: unknown, lo: number, hi: number, fallback: number, step = 1) => {
   const n = typeof v === 'number' ? v : typeof v === 'string' && v.trim() ? Number(v) : NaN;
@@ -479,6 +533,7 @@ function checkPartSources(design: Design) {
     if (p.rings) p.rings = p.rings.filter(r => ok(r.src, p.id));
     if (p.segments) p.segments = p.segments.filter(x => ok(x.src, p.id));
     if (p.src && !ok(p.src, p.id)) delete p.src;
+    if (p.fillBy && !ok(p.fillBy, p.id)) { delete p.fillBy; delete p.redBelow; delete p.yellowBelow; }
     // A page is picked by a widget state only.
     if (p.pageBy && !('part' in p.pageBy && kindOf.get(p.pageBy.part) === 'state')) delete p.pageBy;
     if (p.nav === 'state' && !p.pageBy) p.nav = 'tabs';
@@ -542,7 +597,7 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', spa
     icon: ICON_KINDS.includes(kind) && typeof r.icon === 'string' && /^[a-z0-9-]{1,40}$/.test(r.icon) ? r.icon : null,
     // Saved before 1.4.0's release as `tile: false` (on a container's background).
     // Text, icons and the bare data primitives sit right on their background unless given one.
-    style: kind === 'shape' ? 'none' : oneOf(r.style, PART_STYLES, r.tile === false || BARE_KINDS.includes(kind) ? 'none' : 'tile'),
+    style: kind === 'shape' ? 'none' : oneOf(r.style === 'postit' && kind !== 'text' ? undefined : r.style, PART_STYLES, r.tile === false || BARE_KINDS.includes(kind) ? 'none' : 'tile'),
     // An icon that follows a device value has one of its own.
     rules: kind === 'calc' ? [] : rulesOf(r.rules, VALUELESS_KINDS.includes(kind) && !(kind === 'icon' && slotOf(r.slot)), ICON_KINDS.includes(kind)),
     flow: kind === 'calc' ? {} : flowOf(r.flow, ICON_KINDS.includes(kind)),
@@ -553,7 +608,8 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', spa
     // A Text's own colour was its text's before it had a text colour.
     const ink = color(r.textColor) ?? (kind === 'text' ? color(r.color) : null);
     if (ink) p.textColor = ink;
-    if (kind === 'text') p.color = null;
+    // A Text's own colour is a Post-it's paper only.
+    if (kind === 'text' && p.style !== 'postit') p.color = null;
   }
   if (SLOT_KINDS.includes(kind) || kind === 'icon') {
     const slot = slotOf(r.slot);
@@ -575,6 +631,7 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', spa
   if (kind === 'switch') {
     const press = oneOf(r.press, ['tap', 'confirm', 'long'] as const, 'tap');
     if (press !== 'tap') p.press = press;
+    if (r.active === 'lighter') p.active = 'lighter';
   }
   if (VARIABLE_KINDS.includes(kind) && !p.slot) {
     const variable = idOf(r.variable, 100);
@@ -582,7 +639,8 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', spa
   }
   switch (kind) {
     case 'sparkline': {
-      p.span = SPANS.has(r.span) ? r.span : '24h';
+      p.span = spanOf(r.span);
+      if (r.smooth === true) p.smooth = true;
       readRange(p, r);
       break;
     }
@@ -591,6 +649,9 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', spa
       break;
     case 'variable': {
       readRange(p, r);
+      if (r.readOnly === true) p.readOnly = true;
+      // − and + on a number (Variables' *Step for − and + on numbers*).
+      if (optNum(r.step) !== undefined && Number(r.step) > 0) p.step = num(r.step, 0.01, 1000, 1, 0.01);
       const decimals = optNum(r.decimals);
       if (decimals !== undefined) p.decimals = num(decimals, 0, 3, 2);
       const units = str(r.units, MAX_UNITS);
@@ -601,8 +662,15 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', spa
       const src = sourceOf(r.src);
       if (src) p.src = src;
       readRange(p, r);
-      p.thickness = num(r.thickness, 2, 24, 8);
+      // Chart · Gauge's 12 px arc; the 6 px track of Light Controls' and Room Health's bars.
+      p.thickness = num(r.thickness, 2, 24, kind === 'arc' ? 12 : 6);
       if (kind === 'bar' && r.dir === 'vertical') p.dir = 'vertical';
+      if (r.zones === 'rising' || r.zones === 'falling') {
+        p.zones = r.zones;
+        p.yellowAt = optNum(r.yellowAt) ?? (r.zones === 'rising' ? 60 : 40);
+        p.redAt = optNum(r.redAt) ?? (r.zones === 'rising' ? 80 : 20);
+      }
+      if (r.rangeSpan !== undefined && r.rangeSpan !== null && r.rangeSpan !== '') p.rangeSpan = spanOf(r.rangeSpan, '1d!');
       break;
     }
     case 'slider': case 'stepper': {
@@ -684,8 +752,10 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', spa
     }
     case 'text':
       p.text = typeof r.text === 'string' ? r.text.slice(0, MAX_TEXT) : '';
-      p.size = oneOf(r.size, ['display', 'heading', 'body', 'small'] as const, 'body');
+      p.size = oneOf(OLD_SIZES[r.size] ?? r.size, TEXT_SIZES, 'small');
       if (['regular', 'medium', 'bold'].includes(r.weight)) p.weight = r.weight;
+      if (r.overflow === 'ellipsis' || r.overflow === 'scroll') p.overflow = r.overflow;
+      if (r.muted === true) p.muted = true;
       p.align = oneOf(r.align, ['left', 'center', 'right'] as const, 'left');
       if (Array.isArray(r.refs) && r.refs.length) p.refs = r.refs.slice(0, MAX_REFS).map(refOf);
       break;
@@ -708,7 +778,7 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', spa
       }
       if (p.op === 'formula') p.formula = str(r.formula, MAX_FORMULA);
       if (p.op === 'change') {
-        p.span = SPANS.has(r.span) ? r.span : '1h';
+        p.span = spanOf(r.span, '1h');
         if (r.percent === true) p.percent = true;
       }
       const decimals = optNum(r.decimals);
@@ -721,12 +791,18 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', spa
       // A Mini chart (before 1.4.0's release, the same id) kept its value as `slot`.
       for (const x of Array.isArray(r.series) ? r.series : slotOf(r.slot) ? [{ slot: r.slot }] : []) {
         const slot = slotOf(x?.slot);
-        if (slot && !series.some(s => s.slot === slot) && series.length < MAX_SERIES) series.push({ slot, color: color(x?.color) });
+        const title = str(x?.title, 24);
+        if (slot && !series.some(s => s.slot === slot) && series.length < MAX_SERIES) series.push({ slot, color: color(x?.color), ...(title ? { title } : {}) });
       }
       p.series = series;
-      p.span = SPANS.has(r.span) ? r.span : '24h';
-      p.chartStyle = r.chartStyle === 'bars' ? 'bars' : 'line';
+      p.span = spanOf(r.span);
+      p.chartStyle = oneOf(r.chartStyle, ['area', 'line', 'bars'] as const, 'area');
       p.axis = r.axis !== false;
+      if (r.smooth === true) p.smooth = true;
+      if (r.chartScale === 'zero') p.chartScale = 'zero';
+      if (r.negative === true) p.negative = true;
+      p.chartLegend = oneOf(r.chartLegend, ['above', 'below', 'hidden'] as const, 'above');
+      if (r.header === true) p.header = true;
       readRange(p, r);
       break;
     }
@@ -749,7 +825,15 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', spa
       p.mode = r.mode === 'free' ? 'free' : r.mode === 'pages' ? 'pages' : 'grid';
       p.background = backgroundOf(r.background);
       // Before containers had a style: drawn on the tile's colour without a background of their own, else on it.
-      if (!PART_STYLES.includes(r.style)) p.style = p.background.kind === 'none' ? 'tile' : 'none';
+      if (!PART_STYLES.includes(r.style) || r.style === 'postit') p.style = p.background.kind === 'none' ? 'tile' : 'none';
+      {
+        const by = sourceOf(r.fillBy);
+        if (by) {
+          p.fillBy = by;
+          p.redBelow = num(r.redBelow, 0, 100, 10);
+          p.yellowBelow = num(r.yellowBelow, 0, 100, 20);
+        }
+      }
       p.parts = [];
       if (p.mode === 'pages') {
         const pages = (Array.isArray(r.pages) ? r.pages.slice(0, MAX_PAGES) : []).map((x: any) => ({ name: str(x?.name, 24) }));
@@ -780,6 +864,7 @@ function designSources(design: Design): Source[] {
   for (const p of allParts(design)) {
     if (p.slot) out.push({ slot: p.slot });
     if (p.src) out.push(p.src);
+    if (p.fillBy) out.push(p.fillBy);
     if (p.variable) out.push({ variable: p.variable });
     for (const r of p.rules) if (r.of) out.push(r.of);
     for (const r of p.refs ?? []) {
@@ -817,6 +902,8 @@ export function designCharts(design: Design): { slot: string, span: string }[] {
     const first = p.inputs?.[0];
     const slot = p.kind === 'sparkline' ? p.slot : p.kind === 'calc' && p.op === 'change' && first && 'slot' in first ? first.slot : undefined;
     for (const x of p.kind === 'chart' && p.span ? p.series ?? [] : []) seen.set(`${p.span}\n${x.slot}`, { slot: x.slot, span: p.span! });
+    // An arc's or bar's range over its span (Chart · Gauge's *Show the range*).
+    if (p.rangeSpan && p.src && 'slot' in p.src) seen.set(`${p.rangeSpan}\n${p.src.slot}`, { slot: p.src.slot, span: p.rangeSpan });
     if (!slot || !p.span) continue;
     seen.set(`${p.span}\n${slot}`, { slot, span: p.span });
   }

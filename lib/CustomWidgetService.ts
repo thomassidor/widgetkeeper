@@ -12,7 +12,9 @@ import { convertTemperature, shownTemperatureScale, temperatureScaleOf } from '.
 import { nextLocalTime } from './WebSyncService.js';
 import { timeFormatOf } from './timeFormat.js';
 import type FlowService from './FlowService.js';
+import { isNamedSpan } from './SparklineService.js';
 import type SparklineService from './SparklineService.js';
+import { periodStart, type CalendarUnit } from './logPlan.js';
 import type ValueService from './ValueService.js';
 import type VariableService from './VariableService.js';
 
@@ -264,6 +266,17 @@ export default class CustomWidgetService {
     return d?.ready && d.parts[0] ? d.parts[0] : null;
   }
 
+  /**
+   * The histories of `slots` over a span: Sparklines' own for the spans it names (`24h`, `today` …), else the window the
+   * charts' time span means now in the Homey's time zone (the kit's `timeSpan()`), as the chart widgets read it.
+   */
+  private histories(slots: string[], span: string): Promise<any[]> {
+    if (isNamedSpan(span)) return this.deps.sparklines.getState(slots, span);
+    const w = spanWindow(span, Date.now(), this.homey.clock.getTimezone() || 'UTC');
+    if (!w) return this.deps.sparklines.getState(slots, '24h');
+    return this.deps.sparklines.getWindows(slots.map(slot => ({ slot, from: w.from, end: w.end, unit: w.unit, span })));
+  }
+
   private async stateOf(design: Design, flow: Record<string, FlowValues & { expires?: number }>) {
     const repeaters = allParts(design).filter(p => p.kind === 'repeat');
     const repeats = Object.fromEntries(await Promise.all(repeaters.map(async p => [p.id, await this.repeatSlots(p).catch((err) => {
@@ -292,7 +305,7 @@ export default class CustomWidgetService {
       slots.length ? this.deps.values.getState(slots) : [],
       variables.length ? quiet('variables', this.deps.variables.getState(variables), []) : [],
       flows.length ? quiet('flows', this.deps.flows.getState(flows), []) : [],
-      Promise.all([...bySpan].map(([span, list]) => quiet('histories', this.deps.sparklines.getState(list, span), [])
+      Promise.all([...bySpan].map(([span, list]) => quiet('histories', this.histories(list, span), [])
         .then(res => res.map((r: any) => [`${span}\n${r.deviceId}:${r.capabilityId}`, r.points ?? []] as const)))),
     ]);
     return {
@@ -704,4 +717,32 @@ export default class CustomWidgetService {
       flowValues: Object.values(this.flowValues).reduce((n, p) => n + Object.keys(p).length, 0),
     };
   }
+}
+
+const SPAN_UNITS: Record<string, 'minute' | 'hour' | CalendarUnit> = { m: 'minute', h: 'hour', d: 'day', w: 'week', mo: 'month', y: 'year' };
+const UNIT_MS: Record<string, number> = { minute: 60e3, hour: 3600e3, day: 86400e3, week: 7 * 86400e3 };
+
+/**
+ * The window a time span (`24h`, `3d!`, `1w!-`) means at `now` in `timeZone`: the kit's `timeSpan()` on the Homey's
+ * clock. Whole periods (`!`) from the start of the unit holding now, `count` of them back, the current one left out with
+ * `-`; rolling months and years by the calendar. Null for one it can't read.
+ */
+export function spanWindow(span: string, now: number, timeZone: string): { from: number, end: number, unit: CalendarUnit | null } | null {
+  const m = /^(\d{1,6})(mo|m|h|d|w|y)(!?)(-?)$/.exec(span);
+  if (!m || !(+m[1] > 0)) return null;
+  const count = +m[1];
+  const unit = SPAN_UNITS[m[2]];
+  if (m[3]) {
+    if (unit === 'minute' || unit === 'hour') return null;
+    const skip = m[4] ? 1 : 0;
+    const from = periodStart(now, unit, 1 - count - skip, timeZone);
+    const to = periodStart(now, unit, 1 - skip, timeZone);
+    return { from, end: Math.min(to, now), unit };
+  }
+  if (unit === 'month' || unit === 'year') {
+    const d = new Date(now);
+    d.setUTCMonth(d.getUTCMonth() - count * (unit === 'year' ? 12 : 1));
+    return { from: d.getTime(), end: now, unit: null };
+  }
+  return { from: now - count * UNIT_MS[unit], end: now, unit: null };
 }

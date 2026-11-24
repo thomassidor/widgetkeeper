@@ -10,6 +10,10 @@
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const STEP_SEND_MS = 700; // a burst of − / + taps is sent once
   const HOPE_MS = 10e3; // a value just sent, shown until the device says so
+  /** A Text's sizes before they were Notes' (Normal is Small now, Heading Default; lib/customDesigns.ts' `OLD_SIZES`). */
+  const OLD_SIZES = { body: 'small', heading: 'default' };
+  /** Notes' Post-it font by size. */
+  const NOTE_FONT = { small: 24, default: 30, large: 38, display: 38 };
 
   const DEFAULT_STRINGS = {
     error: 'Could not load the design.',
@@ -30,6 +34,8 @@
     hold: 'Hold',
     nothing: 'Nothing to show',
     page: 'Page __n__',
+    yes: 'Yes',
+    no: 'No',
   };
 
   /** lib/customDesigns.ts' `ruleHolds()` (a test checks they agree). */
@@ -165,6 +171,7 @@
     if (part.kind === 'shape') return 'none';
     // A container from before it had a style: on the tile's colour without a background of its own.
     if (part.kind === 'container' && !['tile', 'pill', 'none'].includes(part.style)) return part.background && part.background.kind !== 'none' ? 'none' : 'tile';
+    if (part.style === 'postit') return part.kind === 'text' ? 'postit' : 'tile';
     if (['tile', 'pill', 'none'].includes(part.style)) return part.style;
     return part.tile === false || ['text', 'icon', 'sparkline', 'arc', 'bar', 'calc', 'each'].includes(part.kind) ? 'none' : 'tile';
   }
@@ -174,6 +181,12 @@
     if (!c) return '';
     if (K.isCustomColor(c)) return c;
     return K.COLORS.includes(c) ? `var(--wk-${c})` : '';
+  }
+  /** A chart's colour: a palette name in its bright set, as Charts' and Sparklines' lines in both colour styles. */
+  function chartColor(c) {
+    if (!c) return '';
+    if (K.isCustomColor(c)) return c;
+    return K.COLORS.includes(c) ? `var(--wk-${c}-bright)` : '';
   }
   /** A container's or a shape's background as CSS: none, a colour or a gradient (each colour a palette name or hex). */
   function backgroundCss(bg) {
@@ -204,49 +217,121 @@
     return ic ? K.svgIcon(ic, cls) : null;
   }
 
-  /** A line through the points (`[t, v]`), filled under it, scaled to the box (between `lo` and `hi` where given). */
-  function sparkline(points, parent, min, max) {
+  /**
+   * A line through the points (`[t, v]`), filled under it, scaled to the box (between `lo` and `hi` where given):
+   * Sparklines' line and area, smoothed as theirs with `smooth`.
+   */
+  function sparkline(points, parent, min, max, smooth) {
     const svg = el('svg', { class: 'wb-spark', viewBox: '0 0 100 40', preserveAspectRatio: 'none', 'aria-hidden': 'true' }, parent, SVG_NS);
     const pts = (points || []).filter(p => Array.isArray(p) && Number.isFinite(p[1]));
     if (pts.length < 2) return svg;
     const [t0, t1] = [pts[0][0], pts[pts.length - 1][0]];
-    const vs = pts.map(p => p[1]);
+    const vs = smooth ? K.smoothValues(pts.map(p => p[1])) : pts.map(p => p[1]);
     let [lo, hi] = [min != null ? min : Math.min(...vs), max != null ? max : Math.max(...vs)];
     if (hi < lo) [lo, hi] = [hi, lo];
     const y = v => 37 - (Math.min(1, Math.max(0, (v - lo) / ((hi - lo) || 1)))) * 30;
-    const xy = pts.map(([t, v]) => [((t - t0) / ((t1 - t0) || 1)) * 100, y(v)]);
+    const xy = pts.map(([t], i) => [((t - t0) / ((t1 - t0) || 1)) * 100, y(vs[i])]);
     const d = `M${xy.map(p => p.map(n => n.toFixed(2)).join(',')).join(' L')}`;
     el('path', { class: 'wb-spark-area', d: `${d} L100,40 L0,40 Z` }, svg, SVG_NS);
     el('path', { class: 'wb-spark-line', d, 'vector-effect': 'non-scaling-stroke' }, svg, SVG_NS);
     return svg;
   }
 
-  /** The gauge's arc, 270° from the bottom left, filled to `frac`. */
-  function arc(frac, parent, width = 8) {
-    const svg = el('svg', { class: 'wb-arc', viewBox: '0 0 100 84', 'aria-hidden': 'true' }, parent, SVG_NS);
-    svg.style.setProperty('--wb-arc-w', String(width));
-    const r = 40; const cx = 50; const cy = 48;
-    const a0 = Math.PI * 0.75; const a1 = Math.PI * 2.25;
-    const pt = a => `${(cx + r * Math.cos(a)).toFixed(2)},${(cy + r * Math.sin(a)).toFixed(2)}`;
-    const path = (from, to) => `M${pt(from)} A${r},${r} 0 ${to - from > Math.PI ? 1 : 0} 1 ${pt(to)}`;
-    el('path', { class: 'wb-arc-track', d: path(a0, a1) }, svg, SVG_NS);
-    const f = Math.min(1, Math.max(0, frac));
-    if (f > 0.002) el('path', { class: 'wb-arc-fill', d: path(a0, a0 + (a1 - a0) * f) }, svg, SVG_NS);
+  /**
+   * The level a value is at (Chart · Gauge's `zoneOf()`): `rising`, higher is worse; `falling`, lower is worse: green,
+   * yellow from `yellowAt`, red from `redAt`; null without zones.
+   */
+  function zoneOf(v, part) {
+    if (!Number.isFinite(v)) return null;
+    if (part.zones === 'rising') return v >= part.redAt ? 'red' : v >= part.yellowAt ? 'yellow' : 'green';
+    if (part.zones === 'falling') return v <= part.redAt ? 'red' : v <= part.yellowAt ? 'yellow' : 'green';
+    return null;
+  }
+  /** The stretches of a scale `lo` … `hi` by level, as fractions: `[[from, to, level]]` (Chart · Gauge's zones). */
+  function zoneCuts(part, lo, hi) {
+    const frac = v => Math.max(0, Math.min(1, (v - lo) / (hi - lo)));
+    const cuts = [lo, hi, part.yellowAt, part.redAt].filter(v => Number.isFinite(v) && v >= lo && v <= hi).sort((a, b) => a - b);
+    const out = [];
+    for (let i = 0; i < cuts.length - 1; i++) if (cuts[i + 1] > cuts[i]) out.push([frac(cuts[i]), frac(cuts[i + 1]), zoneOf((cuts[i] + cuts[i + 1]) / 2, part)]);
+    return out;
+  }
+
+  /**
+   * Chart · Gauge's dial: a 240° arc (120° each way from the top) as thick as `width` px, its track (or with zones a
+   * stretch per level), the span's range inside it, and the value from the scale's start with its knob, in its level's
+   * colour with zones. Fractions of the scale; the strokes keep their px at any size.
+   */
+  function gaugeArc(parent, { frac, width = 12, zones = null, level = null, range = null }) {
+    const svg = el('svg', { class: 'wb-arc', viewBox: '0 0 100 76', 'aria-hidden': 'true' }, parent, SVG_NS);
+    const r = 38; const cx = 50; const cy = 46;
+    const deg = f => (-120 + 240 * f) * Math.PI / 180;
+    const pt = (f, rr = r) => [cx + rr * Math.sin(deg(f)), cy - rr * Math.cos(deg(f))];
+    const path = (a, b, rr = r) => {
+      const [x0, y0] = pt(a, rr); const [x1, y1] = pt(b, rr);
+      return `M${x0.toFixed(2)},${y0.toFixed(2)} A${rr},${rr} 0 ${(b - a) * 240 > 180 ? 1 : 0} 1 ${x1.toFixed(2)},${y1.toFixed(2)}`;
+    };
+    const stroke = (a, b, cls, w, rr) => {
+      const n = el('path', { class: cls, d: path(a, b, rr), 'vector-effect': 'non-scaling-stroke' }, svg, SVG_NS);
+      n.style.strokeWidth = `${w}px`;
+      return n;
+    };
+    // A dot of `w` px at `f`: a stroke of no length with round ends, so it keeps its px too.
+    const dot = (f, cls, w) => {
+      const [x, y] = pt(f);
+      const n = el('path', { class: cls, d: `M${x.toFixed(2)},${y.toFixed(2)} h0.001`, 'vector-effect': 'non-scaling-stroke' }, svg, SVG_NS);
+      n.style.strokeWidth = `${w}px`;
+    };
+    if (!zones || !zones.length) stroke(0, 1, 'wb-arc-track', width);
+    else {
+      for (const [a, b, lv] of zones) stroke(a, b, `wb-arc-zone ${lv}`, width);
+      dot(0, `wb-arc-cap ${zones[0][2]}`, width);
+      dot(1, `wb-arc-cap ${zones[zones.length - 1][2]}`, width);
+    }
+    if (range) stroke(range[0], Math.max(range[1], range[0] + 0.006), 'wb-arc-range', 4, r - 13);
+    if (frac !== null && frac !== undefined && Number.isFinite(frac)) {
+      const f = Math.min(1, Math.max(0, frac));
+      stroke(0, Math.max(f, 0.002), `wb-arc-fill${level ? ` ${level}` : ''}`, width);
+      // The knob: Chart · Gauge's ring (3 px, in the value's colour) round the card's colour.
+      dot(f, `wb-arc-knob${level ? ` ${level}` : ''}`, width + 7);
+      dot(f, 'wb-arc-knob-in', width + 1);
+    }
     return svg;
   }
 
   const SERIES_COLORS = ['blue', 'green', 'orange'];
+  let svgIds = 0;
   /**
-   * A Chart's plot: each series' points (`[t, v]`) as a line (filled under it with one series) or as bars (up to 24
-   * per series, each the average of its time), between `lo` and `hi`, over `t0` … `t1`. In a 100 × 100 box drawn to its
-   * size (`preserveAspectRatio: none`), the lines kept 2 px.
+   * A Chart's plot, as Chart · Basic draws it: each series' points (`[t, v]`) as an area (its line over a fading fill),
+   * a line, or bars (up to 24 per series, each the average of its time), between `lo` and `hi` over `t0` … `t1`, the
+   * lines smoothed with `smooth`, below zero in yellow with `negative`. In a 100 × 100 box drawn to its size
+   * (`preserveAspectRatio: none`), the lines kept 2 px.
    */
-  function chartPlot(list, parent, { lo, hi, t0, t1, bars }) {
+  function chartPlot(list, parent, { lo, hi, t0, t1, style, smooth, negative }) {
     const svg = el('svg', { class: 'wb-chart-svg', viewBox: '0 0 100 100', preserveAspectRatio: 'none', 'aria-hidden': 'true' }, parent, SVG_NS);
+    const defs = el('defs', null, svg, SVG_NS);
     for (const f of [0, 0.5, 1]) el('path', { class: 'wb-chart-grid', d: `M0,${(f * 100).toFixed(2)} L100,${(f * 100).toFixed(2)}`, 'vector-effect': 'non-scaling-stroke' }, svg, SVG_NS);
     const y = v => 100 - Math.min(1, Math.max(0, (v - lo) / ((hi - lo) || 1))) * 100;
     const x = t => ((t - t0) / ((t1 - t0) || 1)) * 100;
-    if (bars) {
+    const zeroY = y(Math.max(lo, Math.min(hi, 0)));
+    // Below zero yellow: each series drawn twice, clipped above and below the zero line (chart.js' `exportSplit()`).
+    const split = negative && lo < 0 && hi > 0;
+    const clip = (top, h) => {
+      const id = `wbc${++svgIds}`;
+      el('rect', { x: -10, y: top.toFixed(2), width: 120, height: Math.max(0, h).toFixed(2) }, el('clipPath', { id }, defs, SVG_NS), SVG_NS);
+      return `url(#${id})`;
+    };
+    const sides = split ? [[clip(-10, zeroY + 10), false], [clip(zeroY, 120), true]] : [[null, false]];
+    const gradient = (css, below) => {
+      const id = `wbg${++svgIds}`;
+      const g = el('linearGradient', { id, x1: 0, y1: 0, x2: 0, y2: 1 }, defs, SVG_NS);
+      // Chart · Basic's area: 45 % at the line, nothing at the base (below zero the other way round).
+      for (const [offset, top] of [[0, true], [1, false]]) {
+        const stop = el('stop', { class: `wb-chart-stop${top === !below ? ' strong' : ''}`, offset }, g, SVG_NS);
+        stop.style.stopColor = below ? 'var(--wb-export)' : css;
+      }
+      return `url(#${id})`;
+    };
+    if (style === 'bars') {
       const n = 24;
       const width = 100 / n;
       list.forEach((s, k) => {
@@ -259,23 +344,30 @@
         const w = (width * 0.8) / list.length;
         for (let i = 0; i < n; i++) {
           if (!counts[i]) continue;
-          const top = y(sums[i] / counts[i]);
-          const base = y(Math.max(lo, Math.min(hi, 0)));
-          const r = el('rect', { class: 'wb-chart-bar', x: (i * width + width * 0.1 + k * w).toFixed(2), width: w.toFixed(2), y: Math.min(top, base).toFixed(2), height: Math.max(0.5, Math.abs(base - top)).toFixed(2) }, svg, SVG_NS);
-          r.style.fill = s.css;
+          const v = sums[i] / counts[i];
+          const top = y(v);
+          const r = el('rect', { class: `wb-chart-bar${negative && v < 0 ? ' export' : ''}`, x: (i * width + width * 0.1 + k * w).toFixed(2), width: w.toFixed(2), y: Math.min(top, zeroY).toFixed(2), height: Math.max(0.5, Math.abs(zeroY - top)).toFixed(2) }, svg, SVG_NS);
+          r.style.setProperty('--wb-series', s.css);
         }
       });
       return svg;
     }
     list.forEach((s) => {
       if (s.points.length < 2) return;
-      const d = `M${s.points.map(([t, v]) => `${x(t).toFixed(2)},${y(v).toFixed(2)}`).join(' L')}`;
-      if (list.length === 1) {
-        const area = el('path', { class: 'wb-chart-area', d: `${d} L${x(s.points[s.points.length - 1][0]).toFixed(2)},100 L${x(s.points[0][0]).toFixed(2)},100 Z` }, svg, SVG_NS);
-        area.style.fill = `color-mix(in srgb, ${s.css} 18%, transparent)`;
+      const vs = smooth ? K.smoothValues(s.points.map(p => p[1])) : s.points.map(p => p[1]);
+      const xy = s.points.map(([t], i) => `${x(t).toFixed(2)},${y(vs[i]).toFixed(2)}`);
+      const d = `M${xy.join(' L')}`;
+      for (const [clipPath, below] of sides) {
+        if (style !== 'line') {
+          const base = split ? zeroY : 100;
+          const area = el('path', { class: 'wb-chart-area', d: `${d} L${x(s.points[s.points.length - 1][0]).toFixed(2)},${base.toFixed(2)} L${x(s.points[0][0]).toFixed(2)},${base.toFixed(2)} Z` }, svg, SVG_NS);
+          area.setAttribute('fill', gradient(s.css, below));
+          if (clipPath) area.setAttribute('clip-path', clipPath);
+        }
+        const line = el('path', { class: `wb-chart-line${below ? ' export' : ''}`, d, 'vector-effect': 'non-scaling-stroke' }, svg, SVG_NS);
+        line.style.setProperty('--wb-series', s.css);
+        if (clipPath) line.setAttribute('clip-path', clipPath);
       }
-      const line = el('path', { class: 'wb-chart-line', d, 'vector-effect': 'non-scaling-stroke' }, svg, SVG_NS);
-      line.style.stroke = s.css;
     });
     return svg;
   }
@@ -578,15 +670,56 @@
       if (calc && calc.op === 'change' && typeof e.value === 'number' && e.value > 0) return `+${fmt(cap, e.value)}`;
       return fmt(cap, e.value);
     }
-    function fillText(text, refs) {
-      if (!refs || !refs.length) return text;
-      return String(text).replace(/\{([1-6])\}/g, (m, n) => (Number(n) <= refs.length ? refText(refs[Number(n) - 1]) : m));
+    /**
+     * A text with its values filled in, as pieces: text, and with `big` each value's number and units apart
+     * (`{num, unit, tight}`), so its units are drawn smaller (Chart · Gauge's).
+     */
+    function fillPieces(text, refs, big) {
+      if (!refs || !refs.length) return [String(text)];
+      const out = [];
+      let at = 0;
+      String(text).replace(/\{([1-6])\}/g, (m, n, i) => {
+        if (Number(n) > refs.length) return m;
+        out.push(String(text).slice(at, i));
+        at = i + m.length;
+        const ref = refs[Number(n) - 1];
+        const e = big && ref && !ref.show && !ref.plain && !ref.time && !ref.since && !ref.until ? sourceEntry(ref) : null;
+        const units = e && !e.missing && typeof e.value === 'number' && e.cap && e.cap.units;
+        if (units) {
+          const cap = { ...e.cap, units: null, ...(ref.decimals != null ? { decimals: ref.decimals } : {}) };
+          const calc = ref.part && calcs.get(ref.part);
+          const num = fmt(cap, e.value);
+          out.push({ num: calc && calc.op === 'change' && e.value > 0 ? `+${num}` : num, unit: units, tight: K.TIGHT_UNITS.test(units) });
+        } else out.push(refText(ref));
+        return m;
+      });
+      out.push(String(text).slice(at));
+      return out.filter(x => x !== '');
+    }
+    /** Notes' scrolling text: moved to its end and back where it's longer than its box, with a pause at each end. */
+    function scrollText(wrap, txt) {
+      wrap.classList.remove('scrolling');
+      txt.style.removeProperty('--wb-shift');
+      if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const over = txt.scrollWidth - wrap.clientWidth;
+      if (!(over > 2)) return;
+      txt.style.setProperty('--wb-shift', `${-over}px`);
+      txt.style.setProperty('--wb-scroll-s', `${Math.max(4, (over / 40) / 0.7).toFixed(1)}s`);
+      wrap.classList.add('scrolling');
     }
     /** The part's range: its own min/max, else the capability's, else 0–100. */
     function range(part, cap) {
       const lo = part.min != null ? part.min : cap && cap.min != null ? cap.min : 0;
       const hi = part.max != null ? part.max : cap && cap.max != null ? cap.max : 100;
       return hi > lo ? [lo, hi] : [lo, lo + 1];
+    }
+    /** An arc's or bar's lowest and highest over its `rangeSpan` (its device value's history), scaled as its value. */
+    function spanRange(part, cap) {
+      if (!part.rangeSpan || !part.src || !part.src.slot) return null;
+      const pts = ((state && state.histories && state.histories[`${part.rangeSpan}\n${part.src.slot}`]) || []).filter(p => Array.isArray(p) && Number.isFinite(p[1]));
+      if (!pts.length) return null;
+      const vs = pts.map(p => Number(K.scaled(cap || {}, p[1]))).filter(Number.isFinite);
+      return vs.length ? [Math.min(...vs), Math.max(...vs)] : null;
     }
     function hope(part, value) {
       hoped.set(part.id, { value, until: Date.now() + HOPE_MS });
@@ -647,7 +780,7 @@
       const node = el('div', { class: `wb-part wb-k-${part.kind}`, 'data-part': part.id });
       // Its background (lib/customDesigns.ts' `style`): the native tile, a plain pill, or none.
       const style = styleOf(part);
-      node.classList.add(style === 'none' ? 'wb-bare' : 'wb-tile');
+      node.classList.add(style === 'none' ? 'wb-bare' : style === 'postit' ? 'wb-postit' : 'wb-tile');
       if (style === 'pill') node.classList.add('wb-pill');
       // Its text's colour (a rule's or a Flow's Vivid tint still puts its own text colour on it).
       if (part.textColor && cssColor(part.textColor)) {
@@ -753,37 +886,40 @@
       await opts.onButton(part);
     }
 
+    /** What a press says in a component's name while it waits (Flow Buttons' and Quick Actions' *Tap again* or *Hold*). */
+    const said = node => (node.dataset.say ? t(node.dataset.say) : '');
+
     /**
-     * Wires a press: a tap, a second tap to confirm (*Tap again* in `hint`, else a badge), or a hold. A tap on a control
-     * inside it (a container's switch) is that control's, not this one's.
+     * Wires a press as Quick Actions' and Flow Buttons' *Activate with*: a tap; a second tap to confirm, the component
+     * tinted red meanwhile and its name saying *Tap again*; or a hold, filling from the left while held (a tap says
+     * *Hold*). A tap on a control inside it (a container's switch) is that control's, not this one's. `run`: a switch's
+     * own press, which sends, shakes and vibrates itself.
      */
-    function wirePress(part, node, hint, run) {
+    function wirePress(part, node, run) {
       const actions = part.actions || [];
       let asking = null;
-      let tip = hint;
-      const showHint = (text) => {
-        if (!tip) tip = el('div', { class: 'wb-press-tip', hidden: '' }, node);
-        tip.textContent = text || '';
-        tip.hidden = !text;
-        node.classList.toggle('wb-asking', !!text);
+      let hinting = null;
+      const say = (what) => {
+        node.dataset.say = what || '';
+        node.classList.toggle('confirm', what === 'tapAgain');
+        update();
       };
       async function press() {
-        // A switch's own press: it sends, shakes and vibrates itself.
         if (run) { if (!opts.preview) run(); return; }
-        if (node.classList.contains('busy')) return;
+        if (node.classList.contains('running')) return;
         if (opts.preview && !actions.some(a => a.do === 'state')) return;
-        node.classList.add('busy');
+        node.classList.add('running');
         try {
           await runActions(part);
           if (opts.onHaptic) opts.onHaptic();
           node.classList.add('done');
-          setTimeout(() => node.classList.remove('done'), 1200);
+          setTimeout(() => node.classList.remove('done'), 400);
         } catch (err) {
           console.error(err);
           K.shake(node);
           msg.set(err && K.KEY_PROBLEMS.includes(err.reason) ? t(err.reason) : t('setFailed', { name: part.name || '' }), true);
         } finally {
-          node.classList.remove('busy');
+          node.classList.remove('running');
         }
       }
       const inner = (e) => {
@@ -794,68 +930,129 @@
       };
       K.onTap(node, (e) => {
         if (inner(e)) return;
-        if (part.press === 'long') { showHint(t('hold')); setTimeout(() => showHint(''), 1500); return; }
+        if (part.press === 'long') {
+          clearTimeout(hinting);
+          say('hold');
+          hinting = setTimeout(() => say(''), 1500);
+          return;
+        }
         if (part.press === 'confirm' && !asking) {
-          showHint(t('tapAgain'));
-          asking = setTimeout(() => { asking = null; showHint(''); }, 3000);
+          say('tapAgain');
+          asking = setTimeout(() => { asking = null; say(''); }, 3000);
           return;
         }
         clearTimeout(asking);
         asking = null;
-        showHint('');
+        if (node.dataset.say) say('');
         press();
       }, {
         guard, keys: true,
-        hold: part.press === 'long' ? { ms: 600, when: () => true, act: () => { showHint(''); press(); } } : null,
+        hold: part.press === 'long' ? {
+          ms: 600, when: () => true,
+          start: () => { clearTimeout(hinting); if (node.dataset.say) say(''); },
+          act: () => press(),
+          done: () => {},
+        } : null,
       });
+    }
+
+    /**
+     * − and + by `step` within the part's range, sent once 700 ms after the last tap (Variables'); `limits` dims the
+     * buttons at the lowest or highest number.
+     */
+    function stepper(part, node, minus, plus, step) {
+      const go = (dir) => {
+        if (opts.preview) return;
+        const c = current(part);
+        const base = Number(c && c.value);
+        if (!Number.isFinite(base)) return;
+        const [lo, hi] = part.kind === 'variable' ? [part.min != null ? part.min : -Infinity, part.max != null ? part.max : Infinity] : range(part, c.cap);
+        const s = step();
+        const v = Number(Math.min(hi, Math.max(lo, Math.round((base + dir * s) / s) * s)).toFixed(4));
+        if (v === base) return;
+        const p = pending.get(part.id);
+        if (p) clearTimeout(p.timer);
+        const timer = setTimeout(() => { pending.delete(part.id); act(part, node, v); }, STEP_SEND_MS);
+        pending.set(part.id, { value: v, timer });
+        update();
+      };
+      K.onTap(minus, () => go(-1), { guard, keys: false, stop: true });
+      K.onTap(plus, () => go(1), { guard, keys: false, stop: true });
+      return (c) => {
+        const v = Number(c && c.value);
+        const [lo, hi] = part.kind === 'variable' ? [part.min, part.max] : range(part, c && c.cap);
+        minus.classList.toggle('at-limit', Number.isFinite(v) && lo != null && v <= lo);
+        plus.classList.toggle('at-limit', Number.isFinite(v) && hi != null && v >= hi);
+      };
+    }
+
+    /** Presets' row of buttons, as many columns as choices. */
+    function presetRow(part, node) {
+      const row = el('div', { class: 'wb-presets', role: 'radiogroup' }, node);
+      row.style.setProperty('--wb-count', String(Math.max(1, (part.choices || []).length)));
+      return row;
     }
 
     const MAKERS = {
       switch(part, node) {
+        // Quick Actions' tile (its *Lighter tile* when on, with `active`), with Variables' switch.
+        if (part.active === 'lighter') node.classList.add('wb-lighter');
         const top = el('div', { class: 'wb-top' }, node);
         const ic = iconSlot(top);
         const tog = el('span', { class: 'wb-toggle', 'aria-hidden': 'true' }, top);
         const name = el('div', { class: 'wb-name' }, node);
+        // A pill says On or Off under its name, as Quick Actions' pill, instead of the switch.
+        const said2 = styleOf(part) === 'pill' ? el('div', { class: 'wb-value' }, node) : null;
         node.setAttribute('role', 'switch');
         node.tabIndex = 0;
         let on = false;
         // A second tap to confirm, or a hold, as a button's (a garage door, an alarm).
-        if (part.press === 'confirm' || part.press === 'long') wirePress(part, node, null, () => act(part, node, !on));
+        if (part.press === 'confirm' || part.press === 'long') wirePress(part, node, () => act(part, node, !on));
         else K.onTap(node, () => { if (!opts.preview) act(part, node, !on); }, { guard });
         return (c, flow) => {
           on = c.value === true;
           ic(part, c, flow);
-          node.classList.toggle('wb-on', on);
+          // Waiting for the second tap, it isn't shown as on (Quick Actions').
+          const shown = on && !node.classList.contains('confirm');
+          node.classList.toggle('wb-on', shown);
           node.setAttribute('aria-checked', on ? 'true' : 'false');
           tog.classList.toggle('on', on);
-          name.textContent = (flow && flow.text) || part.name || c.name || '';
+          name.textContent = said(node) || (flow && flow.text) || part.name || c.name || '';
+          if (said2) said2.textContent = c.value === true ? t('on') : c.value === false ? t('off') : '–';
         };
       },
-      button(part, node) {
-        const ic = iconSlot(node);
+      button(part, node, size) {
+        // Flow Buttons' row: the round 32 px button in its colour with an 18 px icon (a play icon without one), then
+        // the name; where it's narrow, only the button.
+        const round = el('span', { class: 'wb-fbtn', 'aria-hidden': 'true' }, node);
+        const ic = iconSlot(round);
         const name = el('div', { class: 'wb-name' }, node);
-        const hint = el('div', { class: 'wb-sub wb-press-hint', hidden: '' }, node);
+        if (size.narrow) node.classList.add('wb-narrow');
         node.setAttribute('role', 'button');
         node.tabIndex = 0;
-        wirePress(part, node, hint);
+        wirePress(part, node);
         return (c, flow) => {
-          ic(part, null, flow);
+          ic(part.icon || (flow && flow.icon) ? part : { ...part, icon: 'play' }, null, flow);
           const f = part.flowId && state.flows && state.flows[part.flowId];
-          name.textContent = (flow && flow.text) || part.name || (f && !f.missing ? f.name : '');
+          const label = (flow && flow.text) || part.name || (f && !f.missing ? f.name : '');
+          name.textContent = said(node) || label;
+          node.title = size.narrow ? label : '';
+          node.setAttribute('aria-label', label);
         };
       },
       state(part, node, size) {
         if (part.stateType === 'choice') {
-          const name = el('div', { class: 'wb-sub' }, node);
-          const row = el('div', { class: 'wb-choices', role: 'radiogroup' }, node);
+          if (size.big) node.classList.add('wb-presets-big');
+          const name = el('div', { class: 'wb-name' }, node);
+          const row = presetRow(part, node);
           const buttons = (part.choices || []).map((ch) => {
-            const b = el('button', { type: 'button', class: 'wb-choice', role: 'radio', text: ch.label }, row);
+            const b = el('button', { type: 'button', class: 'wb-preset', role: 'radio', text: ch.label }, row);
             K.onTap(b, () => { setStateValue(part, ch.value); if (opts.onHaptic) opts.onHaptic(); }, { guard, keys: false, stop: true });
             return { b, ch };
           });
           return (c, flow) => {
             for (const { b, ch } of buttons) {
-              b.classList.toggle('on', ch.value === c.value);
+              b.classList.toggle('active', ch.value === c.value);
               b.setAttribute('aria-checked', ch.value === c.value ? 'true' : 'false');
             }
             name.textContent = (flow && flow.text) || part.name || '';
@@ -1020,8 +1217,10 @@
         };
       },
       slider(part, node) {
-        // A bare bar to drag; its icon, name and value are components of their own beside it.
-        const fill = el('span', { class: 'wb-fill', 'aria-hidden': 'true' }, node);
+        // Light Controls' bar: the whole box is the hit area round a 6 px track and a 14 px knob at the value. Its
+        // icon, name and value are components of their own beside it.
+        el('span', { class: 'wb-fill' }, el('span', { class: 'wb-track', 'aria-hidden': 'true' }, node));
+        el('span', { class: 'wb-knob', 'aria-hidden': 'true' }, node);
         node.setAttribute('role', 'slider');
         node.tabIndex = 0;
         let last = { cap: {} };
@@ -1041,7 +1240,9 @@
           const [lo, hi] = range(part, c.cap);
           const v = Number(c.value);
           const x = drags.has(part.id) ? drags.get(part.id) : Number.isFinite(v) ? (v - lo) / (hi - lo) : 0;
-          fill.style.width = `${Math.min(1, Math.max(0, x)) * 100}%`;
+          const f = Math.min(1, Math.max(0, x));
+          node.style.setProperty('--wb-x', String(f));
+          node.classList.toggle('dragging', drags.has(part.id));
           node.setAttribute('aria-valuenow', String(v));
           node.setAttribute('aria-label', part.name || c.name || '');
         };
@@ -1051,67 +1252,85 @@
         let svg = null;
         return () => {
           if (svg) svg.remove();
-          svg = sparkline(state.histories && state.histories[`${part.span}\n${part.slot}`], node, part.min, part.max);
+          svg = sparkline(state.histories && state.histories[`${part.span}\n${part.slot}`], node, part.min, part.max, part.smooth);
         };
       },
       arc(part, node) {
-        // A gauge's 270° arc of its value between its range.
+        // Chart · Gauge's dial of its value between its range: its zones, the span's range and the knob.
         let svg = null;
+        node.classList.toggle('wb-zoned', !!part.zones);
         return (c) => {
           const [lo, hi] = range(part, c.cap);
           const v = Number(K.scaled(c.cap || {}, c.value));
+          const span = spanRange(part, c.cap);
+          const frac = x => (x - lo) / (hi - lo);
           if (svg) svg.remove();
-          svg = arc(Number.isFinite(v) ? (v - lo) / (hi - lo) : 0, node, part.thickness || 8);
+          svg = gaugeArc(node, {
+            frac: Number.isFinite(v) ? frac(v) : null,
+            width: part.thickness || 12,
+            zones: part.zones ? zoneCuts(part, lo, hi) : null,
+            level: part.zones ? zoneOf(v, part) : null,
+            range: span ? [Math.max(0, frac(span[0])), Math.min(1, frac(span[1]))] : null,
+          });
         };
       },
       bar(part, node) {
-        // A level bar of its value between its range, as thick as set, centred in its box.
+        // A level bar of its value between its range, as thick as set, centred in its box: Chart · Gauge's bar, with
+        // its zones as stretches of the track, the value in its level's colour, and the span's range under it.
         // Vertical: from the bottom up, as a tank or a battery.
         const up = part.dir === 'vertical';
         node.classList.toggle('wb-bar-v', up);
+        node.classList.toggle('wb-zoned', !!part.zones);
         const bar = el('div', { class: `wb-level${up ? ' wb-level-v' : ''}`, 'aria-hidden': 'true' }, node);
         const fill = el('i', null, bar);
-        bar.style[up ? 'width' : 'height'] = `${part.thickness || 8}px`;
+        const band = part.rangeSpan ? el('b', { class: `wb-level-range${up ? ' wb-level-range-v' : ''}`, 'aria-hidden': 'true' }, node) : null;
+        bar.style[up ? 'width' : 'height'] = `${part.thickness || 6}px`;
+        const ZONE_CSS = { green: 'var(--wb-zone-green)', yellow: 'var(--wb-zone-yellow)', red: 'var(--wb-zone-red)' };
         return (c) => {
           const [lo, hi] = range(part, c.cap);
           const v = Number(K.scaled(c.cap || {}, c.value));
-          fill.style[up ? 'height' : 'width'] = `${Number.isFinite(v) ? Math.min(100, Math.max(0, ((v - lo) / (hi - lo)) * 100)) : 0}%`;
+          const pc = x => Math.min(100, Math.max(0, ((x - lo) / (hi - lo)) * 100));
+          fill.style[up ? 'height' : 'width'] = `${Number.isFinite(v) ? pc(v) : 0}%`;
+          const level = part.zones ? zoneOf(v, part) : null;
+          fill.className = level || '';
+          if (part.zones) {
+            // The track in stretches, each its level's colour mixed into the track (hard stops between them).
+            const stops = zoneCuts(part, lo, hi).flatMap(([a, b, lv]) => [`${ZONE_CSS[lv]} ${(a * 100).toFixed(1)}%`, `${ZONE_CSS[lv]} ${(b * 100).toFixed(1)}%`]);
+            bar.style.background = stops.length ? `linear-gradient(${up ? 'to top' : 'to right'}, ${stops.join(', ')})` : '';
+          }
+          if (band) {
+            const span = spanRange(part, c.cap);
+            band.hidden = !span;
+            if (span) {
+              const [a, b] = [pc(span[0]), Math.max(pc(span[1]), pc(span[0]) + 1)];
+              band.style[up ? 'bottom' : 'left'] = `${a}%`;
+              band.style[up ? 'height' : 'width'] = `${b - a}%`;
+            }
+          }
         };
       },
-      stepper(part, node) {
-        const name = el('div', { class: 'wb-sub' }, node);
+      stepper(part, node, size) {
+        // Variables' number row: the name, then − value + (32 px round buttons); stacked where it isn't wide.
+        node.classList.add(size.wide ? 'wb-row-layout' : 'wb-stack');
+        const name = el('div', { class: 'wb-name' }, node);
         const row = el('div', { class: 'wb-stepper' }, node);
         const minus = el('button', { type: 'button', class: 'wb-step', 'aria-label': '−', text: '−' }, row);
         const val = el('span', { class: 'wb-value' }, row);
         const plus = el('button', { type: 'button', class: 'wb-step', 'aria-label': '+', text: '+' }, row);
-        let last = {};
-        const step = (dir) => {
-          if (opts.preview) return;
-          const c = current(part);
-          const base = Number(c && c.value);
-          if (!Number.isFinite(base)) return;
-          const [lo, hi] = range(part, c.cap);
-          const s = part.step || 0.5;
-          const v = Number(Math.min(hi, Math.max(lo, Math.round((base + dir * s) / s) * s)).toFixed(4));
-          const p = pending.get(part.id);
-          if (p) clearTimeout(p.timer);
-          const timer = setTimeout(() => { pending.delete(part.id); act(part, node, v); }, STEP_SEND_MS);
-          pending.set(part.id, { value: v, timer });
-          update();
-        };
-        K.onTap(minus, () => step(-1), { guard, keys: false, stop: true });
-        K.onTap(plus, () => step(1), { guard, keys: false, stop: true });
+        const limits = stepper(part, node, minus, plus, () => part.step || 0.5);
         return (c, flow) => {
-          last = c;
-          name.textContent = (flow && flow.text) || part.name || last.name || '';
+          name.textContent = (flow && flow.text) || part.name || c.name || '';
           val.textContent = textOf(part, c, flow);
+          limits(c);
         };
       },
-      choice(part, node) {
-        const name = el('div', { class: 'wb-sub' }, node);
-        const row = el('div', { class: 'wb-choices', role: 'radiogroup' }, node);
+      choice(part, node, size) {
+        // Variable Presets' and Thermostat Presets' buttons: a row of them, lit in the colour's shade (Vivid: bright).
+        if (size.big) node.classList.add('wb-presets-big');
+        const name = el('div', { class: 'wb-name' }, node);
+        const row = presetRow(part, node);
         const buttons = (part.choices || []).map((ch) => {
-          const b = el('button', { type: 'button', class: 'wb-choice', role: 'radio', text: ch.label }, row);
+          const b = el('button', { type: 'button', class: 'wb-preset', role: 'radio', text: ch.label }, row);
           K.onTap(b, () => { if (!opts.preview) act(part, node, ch.value); }, { guard, keys: false, stop: true });
           return { b, ch };
         });
@@ -1119,17 +1338,29 @@
           const v = c.value === undefined || c.value === null ? '' : String(c.value);
           for (const { b, ch } of buttons) {
             const on = ch.value === v;
-            b.classList.toggle('on', on);
+            b.classList.toggle('active', on);
             b.setAttribute('aria-checked', on ? 'true' : 'false');
           }
           name.textContent = (flow && flow.text) || part.name || c.name || '';
+          name.hidden = !name.textContent;
         };
       },
-      variable(part, node) {
-        const top = el('div', { class: 'wb-top' }, node);
-        const val = el('span', { class: 'wb-value' }, top);
-        const tog = el('span', { class: 'wb-toggle', 'aria-hidden': 'true' }, top);
+      variable(part, node, size) {
+        // Variables' row: the name, then the control: a switch for a yes/no, − value + for a number, the text for a
+        // text (muted). Read only: a yes/no is a dot and Yes or No, a number or text only its value. Stacked where it
+        // isn't wide. A tap toggles a yes/no or types a number or text in the tile.
+        node.classList.add(size.wide ? 'wb-row-layout' : 'wb-stack');
+        // Too narrow for − value +: a tap types the number.
+        if (size.narrow) node.classList.add('wb-narrow');
+        if (part.readOnly) node.classList.add('wb-readonly');
         const name = el('div', { class: 'wb-name' }, node);
+        const control = el('div', { class: 'wb-control' }, node);
+        const minus = el('button', { type: 'button', class: 'wb-step', 'aria-label': '−', text: '−', hidden: '' }, control);
+        const dot = el('span', { class: 'wb-dot', 'aria-hidden': 'true', hidden: '' }, control);
+        const val = el('span', { class: 'wb-value' }, control);
+        const plus = el('button', { type: 'button', class: 'wb-step', 'aria-label': '+', text: '+', hidden: '' }, control);
+        const tog = el('span', { class: 'wb-toggle', 'aria-hidden': 'true' }, control);
+        const limits = stepper(part, node, minus, plus, () => part.step || 1);
         let c = {};
         let input = null;
         /** A text or number variable is typed in the tile: Enter or leaving it sets it, Escape leaves it as it was. */
@@ -1137,7 +1368,7 @@
           if (input) return;
           input = el('input', { class: 'wb-input', type: 'text', inputmode: c.cap.type === 'number' ? 'decimal' : 'text', 'aria-label': part.name || c.name || '' });
           input.value = c.value == null ? '' : String(c.value);
-          val.replaceWith(input);
+          control.replaceWith(input);
           node.classList.add('wb-editing');
           input.focus();
           input.select();
@@ -1146,7 +1377,7 @@
             if (done) return;
             done = true;
             const typed = input.value;
-            input.replaceWith(val);
+            input.replaceWith(control);
             input = null;
             node.classList.remove('wb-editing');
             if (!save || typed === (c.value == null ? '' : String(c.value))) return;
@@ -1164,36 +1395,69 @@
           input.addEventListener('blur', () => finish(true));
           ['click', 'touchend', 'touchstart'].forEach(ev => input.addEventListener(ev, e => e.stopPropagation()));
         }
-        K.onTap(node, () => {
-          if (opts.preview || !c.cap || input) return;
-          if (c.cap.type === 'boolean') { act(part, node, c.value !== true); return; }
-          edit();
-        }, { guard, keys: false });
-        node.addEventListener('keydown', (e) => {
-          if (e.target === node && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); if (!opts.preview && c.cap) { if (c.cap.type === 'boolean') act(part, node, c.value !== true); else edit(); } }
-        });
-        node.setAttribute('role', 'button');
-        node.tabIndex = 0;
+        const use = () => {
+          if (opts.preview || part.readOnly || !c.cap || input) return;
+          if (c.cap.type === 'boolean') act(part, node, c.value !== true);
+          else edit();
+        };
+        if (!part.readOnly) {
+          K.onTap(node, use, { guard, keys: false });
+          node.addEventListener('keydown', (e) => {
+            if (e.target === node && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); use(); }
+          });
+          node.setAttribute('role', 'button');
+          node.tabIndex = 0;
+        }
         return (cur, flow) => {
           c = cur;
-          const bool = cur.cap && cur.cap.type === 'boolean';
-          tog.hidden = !bool;
+          const type = cur.cap && cur.cap.type;
+          const bool = type === 'boolean';
+          node.dataset.type = type || '';
+          tog.hidden = !bool || !!part.readOnly;
           tog.classList.toggle('on', cur.value === true);
+          dot.hidden = !bool || !part.readOnly;
+          node.classList.toggle('wb-unknown', bool && typeof cur.value !== 'boolean');
           node.classList.toggle('wb-on', bool && cur.value === true);
-          val.hidden = bool;
-          if (!input) val.textContent = textOf(part, cur, flow);
+          minus.hidden = plus.hidden = type !== 'number' || !!part.readOnly;
+          val.hidden = bool && !part.readOnly;
+          if (!input) val.textContent = bool ? (cur.value === true ? t('yes') : cur.value === false ? t('no') : '–') : textOf(part, cur, flow);
           name.textContent = (flow && flow.text) || part.name || cur.name || '';
+          if (type === 'number') limits(cur);
         };
       },
       text(part, node) {
-        node.classList.add(`wb-size-${part.size || 'body'}`);
+        // Notes' sizes (Small 14, Default 17 medium, Large 24 bold) and Big 32 bold, whose values' units are drawn as
+        // Chart · Gauge's (17 regular, muted); its long text cut short, scrolled or on more lines; or Notes' Post-it.
+        const size = OLD_SIZES[part.size] || part.size || 'small';
+        node.classList.add(`wb-size-${size}`);
         if (part.weight) node.classList.add(`wb-weight-${part.weight}`);
+        if (part.muted) node.classList.add('wb-muted');
+        const postit = styleOf(part) === 'postit';
+        const overflow = postit ? 'wrap' : part.overflow || 'wrap';
+        node.classList.add(`wb-over-${overflow}`);
         node.style.textAlign = part.align || 'left';
-        const txt = el('div', { class: 'wb-text', dir: 'auto' }, node);
-        // A Flow's text replaces the whole text, its {1} … left as typed.
-        // A Flow's text replaces it, a Flow's value (with its units) too.
+        let holder = node;
+        if (postit) {
+          node.style.setProperty('--wb-note-font', `${NOTE_FONT[size] || 30}px`);
+          holder = el('div', { class: 'wb-paper' }, el('div', { class: 'wb-note' }, node));
+        }
+        const wrap = el('div', { class: 'wb-text-wrap' }, holder);
+        const txt = el('div', { class: 'wb-text', dir: 'auto' }, wrap);
+        // Big values' units as Chart · Gauge's (17), Large ones' as Charts' header (14).
+        const big = (size === 'display' || size === 'large') && !postit;
+        let shown = null;
+        // A Flow's text replaces the whole text, its {1} … left as typed; a Flow's value (with its units) too.
         return (c, flow) => {
-          txt.textContent = (flow && flow.text) || (flow && flow.value !== undefined ? textOf(part, null, flow) : fillText(part.text || '', part.refs));
+          const pieces = (flow && flow.text) ? [flow.text] : (flow && flow.value !== undefined) ? [textOf(part, null, flow)] : fillPieces(part.text || '', part.refs, big);
+          const key = JSON.stringify(pieces);
+          if (key === shown) return;
+          shown = key;
+          txt.textContent = '';
+          for (const x of pieces) {
+            if (typeof x === 'string') txt.append(x);
+            else { txt.append(x.num); el('span', { class: 'wb-unit', text: x.unit }, txt).style.marginLeft = x.tight ? '0' : '3px'; }
+          }
+          if (overflow === 'scroll') requestAnimationFrame(() => scrollText(wrap, txt));
         };
       },
       calc(part, node) {
@@ -1220,48 +1484,72 @@
         return (c, flow) => ic(part, part.slot ? c : null, flow);
       },
       chart(part, node) {
-        // A chart of up to three device values over a span: their scale and times along its edges, a legend for more than one.
-        node.classList.add(part.chartStyle === 'bars' ? 'wb-chart-bars' : 'wb-chart-lines');
+        // Chart · Basic's look: up to three device values over a span, the values now at its top (`header`), each
+        // series' chip above or below the plot (`chartLegend`), the scale at the left and the times under it (`axis`).
+        const style = part.chartStyle || 'area';
+        node.classList.add(`wb-chart-${style}`);
         node.classList.toggle('wb-chart-axis', part.axis !== false);
-        const head = el('div', { class: 'wb-top wb-chart-head' }, node);
-        const name = el('span', { class: 'wb-name' }, head);
-        const legend = el('span', { class: 'wb-chart-legend' }, head);
+        const legendAt = part.chartLegend || 'above';
+        const header = part.header ? el('div', { class: 'wb-chart-header' }, node) : null;
+        const chipsAbove = legendAt === 'above' ? el('div', { class: 'wb-chart-chips' }, node) : null;
         const body = el('div', { class: 'wb-chart-body' }, node);
         const yAxis = el('div', { class: 'wb-chart-y' }, body);
         const plot = el('div', { class: 'wb-chart-plot' }, body);
         const xAxis = el('div', { class: 'wb-chart-x' }, node);
+        const chipsBelow = legendAt === 'below' ? el('div', { class: 'wb-chart-chips' }, node) : null;
+        const chips = chipsAbove || chipsBelow;
         return (c, flow) => {
+          // One series' chip says the chart's name; more each say their own (a title, else the device's).
+          const one = (part.series || []).length === 1;
           const list = (part.series || []).map((s, i) => {
             const v = state.values && state.values[s.slot];
             const pts = ((state.histories && state.histories[`${part.span}\n${s.slot}`]) || []).filter(p => Array.isArray(p) && Number.isFinite(p[1]));
-            return { ...s, points: pts, entry: v, css: cssColor(s.color || (i === 0 && part.color) || SERIES_COLORS[i % SERIES_COLORS.length]) };
+            const name = s.title || (one && ((flow && flow.text) || part.name)) || (v && !v.missing ? v.name : '') || '';
+            return { ...s, points: pts, entry: v, name, css: chartColor(s.color || (i === 0 && part.color) || SERIES_COLORS[i % SERIES_COLORS.length]) };
           });
           const all = list.flatMap(s => s.points);
           const first = list.find(s => s.entry && !s.entry.missing);
           const cap = first ? first.entry.capability || {} : {};
-          name.textContent = (flow && flow.text) || part.name || (list.length === 1 && first ? first.entry.name : '') || '';
-          name.hidden = !name.textContent;
-          legend.textContent = '';
-          if (list.length > 1) {
+          if (header) {
+            // Charts' header: each value now (24 bold, its unit 14) over its name.
+            header.textContent = '';
+            header.classList.toggle('one', list.length < 2);
             for (const s of list) {
-              const key = el('span', { class: 'wb-chart-key' }, legend);
-              el('i', { class: 'wb-chart-dot' }, key).style.background = s.css;
-              el('span', { text: (s.entry && s.entry.name) || '' }, key);
+              const col = el('div', { class: 'wb-chart-hcol' }, header);
+              col.style.setProperty('--wb-series', s.css);
+              const val = el('div', { class: 'wb-chart-hval' }, col);
+              const e = s.entry;
+              const known = e && !e.missing && e.value !== null && e.value !== undefined;
+              const below = known && part.negative && typeof e.value === 'number' && e.value < 0;
+              el('span', { class: `v${below ? ' export' : ''}`, text: known ? fmt({ ...(e.capability || {}), units: null }, e.value) : '–' }, val);
+              const units = known && e.capability && e.capability.units;
+              if (units) el('span', { class: 'u', text: `${K.TIGHT_UNITS.test(units) ? '' : ' '}${units}` }, val);
+              el('div', { class: 'wb-chart-hsub', dir: 'auto', text: s.name }, col);
             }
           }
-          head.hidden = !name.textContent && list.length < 2;
+          if (chips) {
+            chips.textContent = '';
+            for (const s of list) {
+              const chip = el('span', { class: 'wb-chart-chip' }, chips);
+              el('i', null, chip).style.background = s.css;
+              el('span', { dir: 'auto', text: s.name }, chip);
+            }
+            chips.hidden = !list.length;
+          }
           plot.textContent = '';
           yAxis.textContent = '';
           xAxis.textContent = '';
           if (!all.length) { el('div', { class: 'wb-sub wb-chart-none', text: '–' }, plot); return; }
           const vs = all.map(p => p[1]);
+          // Chart · Basic's *Scale*: fitted to the values, or from zero.
           let lo = part.min != null ? part.min : Math.min(...vs);
           let hi = part.max != null ? part.max : Math.max(...vs);
-          if (part.chartStyle === 'bars' && part.min == null) lo = Math.min(0, lo);
+          if ((part.chartScale === 'zero' || style === 'bars') && part.min == null) lo = Math.min(0, lo);
+          if (part.chartScale === 'zero' && part.max == null) hi = Math.max(0, hi);
           if (hi === lo) { hi += 1; lo -= part.min != null ? 0 : 1; }
           const ts = all.map(p => p[0]);
           const [t0, t1] = [Math.min(...ts), Math.max(...ts)];
-          chartPlot(list, plot, { lo, hi, t0, t1, bars: part.chartStyle === 'bars' });
+          chartPlot(list, plot, { lo, hi, t0, t1, style, smooth: part.smooth, negative: part.negative });
           if (part.axis === false) return;
           const scale = { ...cap, decimals: Math.abs(hi - lo) >= 20 ? 0 : cap.decimals != null ? Math.min(1, cap.decimals) : 1 };
           el('span', { text: fmt(scale, hi) }, yAxis);
@@ -1324,6 +1612,7 @@
         const kids = (part.parts || []).map(kid => [kid, inner.appendChild(build(kid, part.mode === 'free' ? 'free' : 'grid'))]);
         if (paged && nav && part.nav === 'dots') node.appendChild(nav); // dots under the page
         return () => {
+          if (part.fillBy) fillLevel(part, node, bg);
           if (!paged) return;
           const page = pageOf(part);
           for (const [kid, n] of kids) n.classList.toggle('wb-off-page', (kid.page || 0) !== page);
@@ -1331,6 +1620,28 @@
         };
       },
     };
+
+    /**
+     * Device Values' *Fill percentages by level*: the container filled from the left as far as its value is along its
+     * range, red below `redBelow` per cent, yellow below `yellowBelow`, else green (22 % into the tile; solid in Vivid).
+     */
+    function fillLevel(part, node, bg) {
+      const e = sourceEntry(part.fillBy);
+      const n = e && !e.missing && !e.offline ? Number(K.scaled(e.cap || {}, e.value)) : NaN;
+      if (!Number.isFinite(n)) {
+        node.classList.remove('wb-filled');
+        node.style.removeProperty('--wb-fill');
+        if (bg.kind === 'none') node.style.removeProperty('background');
+        return;
+      }
+      const cap = e.cap || {};
+      const lo = cap.min != null ? cap.min : 0;
+      const hi = cap.max != null && cap.max > lo ? (cap.units === '%' && cap.max <= 1 ? 100 : cap.max) : 100;
+      const pc = Math.min(100, Math.max(0, ((n - lo) / (hi - lo)) * 100));
+      node.classList.add('wb-filled');
+      node.dataset.level = pc < (part.redBelow != null ? part.redBelow : 10) ? 'red' : pc < (part.yellowBelow != null ? part.yellowBelow : 20) ? 'yellow' : 'green';
+      node.style.setProperty('--wb-fill', `${pc}%`);
+    }
 
     /** A pages container's page now: the builder's, its widget state's, else the one tapped (from 0). */
     function pageOf(part) {

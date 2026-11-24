@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
 import { MAX_INPUTS, MAX_PARTS, allParts, bindDevice, designCharts, designFlows as designFlowsOf, designSlots, designVariables, readDesign, readPart, ruleHolds, usesDevice } from '../lib/customDesigns.js';
 import CustomWidgetService, {
-  CUSTOM_CHOICE_CARD, CUSTOM_DESIGN_EVENT, CUSTOM_DESIGNS_SETTING, CUSTOM_FLOW_EVENT, CUSTOM_FLOW_SETTING, CUSTOM_TAPPED_CARD,
+  CUSTOM_CHOICE_CARD, CUSTOM_DESIGN_EVENT, CUSTOM_DESIGNS_SETTING, CUSTOM_FLOW_EVENT, CUSTOM_FLOW_SETTING, CUSTOM_TAPPED_CARD, spanWindow,
 } from '../lib/CustomWidgetService.js';
 import { TEMPERATURE_UNIT_SETTING } from '../lib/temperatureUnit.js';
 
@@ -643,5 +643,58 @@ describe('CustomWidgetService: any device, Repeaters and ready-mades (2026-11-24
     const state: any = await service.previewState({ ...ANY, sample: 'l1' });
     expect(state.design.parts[0].slot).toBe('l1:onoff');
     expect(Object.keys(state.values)).toContain('l1:onoff');
+  });
+});
+
+describe("the normal widgets' options (2026-11-24, the user's review of the styles and options)", () => {
+  it("reads Notes' text sizes (the old ones as the nearest), long text, a Post-it's paper and secondary text", () => {
+    const text = (o: Record<string, unknown>) => readPart(part('t', 'text', o))!;
+    expect(['body', 'heading', 'small', 'large', 'display', 'x'].map(size => text({ size }).size)).toEqual(['small', 'default', 'small', 'large', 'display', 'small']);
+    expect([text({ overflow: 'scroll' }).overflow, text({ overflow: 'wrap' }).overflow, text({ muted: true }).muted]).toEqual(['scroll', undefined, true]);
+    expect([text({ style: 'postit', color: 'pink' }).color, text({ style: 'tile', color: 'pink' }).color]).toEqual(['pink', null]);
+    // A Post-it is a Text's only.
+    expect(readPart(part('c', 'switch', { style: 'postit' }))!.style).toBe('tile');
+  });
+
+  it("reads any of the charts' time spans, smooth lines and Chart · Basic's options", () => {
+    expect(['3d!', '1w!-', '90m', '2mo', '24h', 'today', '1h!', '5d-', 'x'].map(span => readPart(part('s', 'sparkline', { span }))!.span))
+      .toEqual(['3d!', '1w!-', '90m', '2mo', '24h', 'today', '24h', '24h', '24h']);
+    const c = readPart(part('c', 'chart', { series: [{ slot: 'a:t', title: 'Inside' }], chartStyle: 'line', smooth: true, chartScale: 'zero', negative: true, chartLegend: 'below', header: true }))!;
+    expect([c.series![0].title, c.chartStyle, c.smooth, c.chartScale, c.negative, c.chartLegend, c.header]).toEqual(['Inside', 'line', true, 'zero', true, 'below', true]);
+    expect([readPart(part('c', 'chart', {}))!.chartStyle, readPart(part('c', 'chart', {}))!.chartLegend]).toEqual(['area', 'above']);
+  });
+
+  it("reads an arc's and a bar's Chart · Gauge zones and range, their thickness, and asks for the range's history", () => {
+    const a = readPart(part('a', 'arc', { src: { slot: 'm:p' }, zones: 'rising', redAt: 90, rangeSpan: '1d!' }))!;
+    expect([a.zones, a.yellowAt, a.redAt, a.rangeSpan, a.thickness]).toEqual(['rising', 60, 90, '1d!', 12]);
+    expect([readPart(part('b', 'bar', { zones: 'nope' }))!.zones, readPart(part('b', 'bar', {}))!.thickness]).toEqual([undefined, 6]);
+    expect(designCharts(readDesign({ id: 'd', parts: [part('a', 'arc', { src: { slot: 'm:p' }, rangeSpan: '1d!' })] })!)).toEqual([{ slot: 'm:p', span: '1d!' }]);
+  });
+
+  it("reads a switch's lighter tile, a variable's read only and step, and a container's fill by level", () => {
+    expect([readPart(part('s', 'switch', { active: 'lighter' }))!.active, readPart(part('s', 'switch', { active: 'x' }))!.active]).toEqual(['lighter', undefined]);
+    const v = readPart(part('v', 'variable', { variable: 'v1', readOnly: true, step: 5 }))!;
+    expect([v.readOnly, v.step]).toEqual([true, 5]);
+    const d = readDesign({ id: 'd', parts: [part('c', 'container', { fillBy: { slot: 'b:measure_battery' }, redBelow: 15 })] })!;
+    expect([d.parts[0].fillBy, d.parts[0].redBelow, d.parts[0].yellowBelow]).toEqual([{ slot: 'b:measure_battery' }, 15, 20]);
+    expect(designSlots(d)).toEqual(['b:measure_battery']);
+  });
+
+  it("reads a span Sparklines don't name as the window it means now in the Homey's time zone", async () => {
+    vi.useFakeTimers({ now: new Date('2026-11-24T10:00:00Z') });
+    try {
+      expect(spanWindow('3d!', Date.now(), 'Europe/Copenhagen')).toEqual({ from: Date.parse('2026-11-21T23:00:00Z'), end: Date.now(), unit: 'day' });
+      expect(spanWindow('1w!-', Date.now(), 'Europe/Copenhagen')).toEqual({ from: Date.parse('2026-11-15T23:00:00Z'), end: Date.parse('2026-11-22T23:00:00Z'), unit: 'week' });
+      expect(spanWindow('90m', Date.now(), 'UTC')).toEqual({ from: Date.now() - 90 * 60e3, end: Date.now(), unit: null });
+      expect(spanWindow('1h!', Date.now(), 'UTC')).toBeNull();
+      const { service, deps } = setup([{ id: 'd', name: 'D', parts: [part('s', 'sparkline', { slot: 'a:t', span: '3d!' }), part('t', 'sparkline', { slot: 'a:t', span: '24h' })] }]);
+      (deps.sparklines as any).getWindows = vi.fn(async (list: any[]) => list.map(r => ({ deviceId: 'a', capabilityId: 't', points: [[1, 3]] })));
+      const state: any = await service.getState('d');
+      expect((deps.sparklines as any).getWindows).toHaveBeenCalledWith([{ slot: 'a:t', from: Date.parse('2026-11-21T23:00:00Z'), end: Date.now(), unit: 'day', span: '3d!' }]);
+      expect(deps.sparklines.getState).toHaveBeenCalledWith(['a:t'], '24h');
+      expect(state.histories).toMatchObject({ '3d!\na:t': [[1, 3]], '24h\na:t': [[1, 2]] });
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

@@ -25,8 +25,8 @@
     /** The library: each kind, its group, the kit's icon and the size it gets at the top. */
     const KINDS = [
       ['sparkline', 'show', 'chart', 4, 1], ['arc', 'show', 'gauge', 1, 1], ['bar', 'show', 'battery', 4, 1],
-      ['switch', 'control', 'power', 2, 1], ['button', 'control', 'play', 1, 1], ['slider', 'control', 'sun', 4, 1],
-      ['stepper', 'control', 'up', 2, 1], ['choice', 'control', 'checkmark', 2, 1], ['variable', 'control', 'pencil', 1, 1],
+      ['switch', 'control', 'power', 2, 1], ['button', 'control', 'play', 2, 1], ['slider', 'control', 'sun', 4, 1],
+      ['stepper', 'control', 'up', 4, 1], ['choice', 'control', 'checkmark', 4, 1], ['variable', 'control', 'pencil', 4, 1],
       ['container', 'layout', 'dashboard', 4, 3], ['text', 'layout', 'book', 4, 1], ['icon', 'layout', 'star', 1, 1],
       ['shape', 'layout', 'paintbrush', 4, 1], ['calc', 'show', 'settings', 2, 1],
       ['image', 'layout', 'camera', 2, 2], ['ring', 'show', 'refresh', 2, 2], ['repeat', 'show', 'list', 4, 2],
@@ -42,6 +42,7 @@
      */
     const READY = [
       { id: 'value', glyph: 'thermometer', w: 2, h: 1, value: true },
+      { id: 'value2', glyph: 'thermometer', w: 2, h: 1, value: true, second: true },
       { id: 'chart', glyph: 'chart', w: 2, h: 1, value: true },
       { id: 'gauge', glyph: 'gauge', w: 2, h: 2, value: true },
       { id: 'level', glyph: 'battery', w: 2, h: 1, value: true },
@@ -52,40 +53,56 @@
       { id: 'flowvalue', glyph: 'bolt', w: 2, h: 1 },
     ];
     const at = (x, y, w, h) => ({ x, y, w, h });
-    /** A ready-made tile's parts, for `slot` (a device value) where it needs one. */
-    function readyParts(id, slot) {
+    /**
+     * A ready-made tile's parts, for `slot` (a device value) where it needs one, with the looks of the normal widgets:
+     * Device Values' tile (the icon and the value 14 bold on its top row, the name 14 bold under it, a second value 14
+     * muted at its end), Sparklines' tile, Chart · Gauge's dial (its number 32 bold, the units 17), a 6 px level bar,
+     * Light Controls' tile (the icon and name over the bar), Notes' Default text for a Flow's value.
+     */
+    function readyParts(id, slot, second) {
       /** @returns {any} */
       const base = (kind, place, o = {}) => ({ id: partId(), kind, name: '', color: null, icon: null, style: 'none', rules: [], flow: {}, reset: 'never', at: place, ...o });
-      const value = (place, o = {}) => base('text', place, { text: '{1}', refs: [{ slot }], size: 'heading', align: 'right', ...o });
-      const label = (place, o = {}) => base('text', place, { text: '{1}', refs: [{ slot, show: 'name' }], size: 'body', weight: 'bold', align: 'left', ...o });
+      const value = (place, o = {}) => base('text', place, { text: '{1}', refs: [{ slot }], size: 'small', weight: 'bold', align: 'right', ...o });
+      const label = (place, o = {}) => base('text', place, { text: '{1}', refs: [{ slot, show: 'name' }], size: 'small', weight: 'bold', align: 'left', overflow: 'ellipsis', ...o });
+      // Device Values' compact tile: a 20 px row of the icon and the value, then the name's row.
+      const low = at(0, 58, 100, 42);
       switch (id) {
-        case 'value': return [base('icon', at(0, 0, 18, 50), { slot }), value(at(20, 0, 80, 50)), label(at(0, 55, 100, 45))];
-        case 'chart': return [label(at(0, 0, 60, 40)), value(at(60, 0, 40, 40), { size: 'body' }), base('sparkline', at(0, 45, 100, 55), { slot, span: '24h' })];
-        case 'gauge': return [base('arc', at(5, 0, 90, 80), { src: { slot } }), value(at(10, 32, 80, 25), { align: 'center' }), label(at(0, 80, 100, 20), { align: 'center', size: 'small', weight: undefined })];
-        case 'level': return [label(at(0, 0, 60, 50)), value(at(60, 0, 40, 50), { size: 'body' }), base('bar', at(0, 60, 100, 40), { src: { slot } })];
-        case 'status': return [
-          base('shape', at(0, 15, 10, 30), { shape: 'circle', background: { kind: 'none' }, opacity: 100, rules: [{ op: 'is', value: 'on', look: 'green', of: { slot } }] }),
-          label(at(14, 0, 86, 60)),
+        case 'value': return [base('icon', at(0, 0, 14, 42), { slot }), value(at(16, 0, 84, 42)), label(low)];
+        case 'value2': return [
+          base('icon', at(0, 0, 14, 42), { slot }), value(at(16, 0, 84, 42)), label(at(0, 58, 62, 42)),
+          base('text', at(62, 58, 38, 42), { text: '{1}', refs: [{ slot: second || slot }], size: 'small', align: 'right', muted: true, overflow: 'ellipsis' }),
         ];
+        case 'chart': return [base('icon', at(0, 0, 14, 42), { slot }), label(at(16, 0, 44, 42)), value(at(60, 0, 40, 42)), base('sparkline', at(0, 50, 100, 50), { slot, span: '24h' })];
+        case 'gauge': return [
+          base('arc', at(0, 0, 100, 82), { src: { slot } }),
+          value(at(0, 32, 100, 28), { size: 'large', weight: undefined, align: 'center' }),
+          label(at(0, 82, 100, 18), { align: 'center', weight: undefined }),
+        ];
+        case 'level': return [label(at(0, 0, 60, 50)), value(at(60, 0, 40, 50)), base('bar', at(0, 60, 100, 40), { src: { slot } })];
+        case 'status': return [
+          base('shape', at(0, 30, 8, 40), { shape: 'circle', background: { kind: 'none' }, opacity: 100, rules: [{ op: 'is', value: 'on', look: 'green', of: { slot } }] }),
+          label(at(12, 0, 88, 100)),
+        ];
+        // Light Controls' tile: the icon, the name and its value over the bar.
         case 'slider': return [
-          base('slider', at(0, 0, 100, 100), { slot }), base('icon', at(3, 25, 7, 50), { slot }),
-          label(at(12, 0, 55, 100)), value(at(67, 0, 30, 100), { size: 'body' }),
+          base('icon', at(0, 0, 7, 46), { slot }), label(at(9, 0, 66, 46)), value(at(75, 0, 25, 46), { weight: undefined }),
+          base('slider', at(0, 50, 100, 50), { slot }),
         ];
         case 'trend': {
           const calc = base('calc', at(86, 0, 14, 25), { inputs: [{ slot }], op: 'change', span: '24h', units: '' });
           const of = { part: calc.id };
           return [
             calc,
-            base('icon', at(0, 0, 18, 50), { icon: 'right', rules: [{ op: 'above', value: '0', look: 'same', icon: 'up', of }, { op: 'below', value: '0', look: 'same', icon: 'down', of }] }),
-            base('text', at(20, 0, 64, 50), { text: '{1}', refs: [of], size: 'heading', align: 'right' }),
-            base('text', at(0, 55, 100, 45), { text: '{1} · {2}', refs: [{ slot, show: 'name' }, { slot }], size: 'small', align: 'left' }),
+            base('icon', at(0, 0, 14, 42), { icon: 'right', rules: [{ op: 'above', value: '0', look: 'same', icon: 'up', of }, { op: 'below', value: '0', look: 'same', icon: 'down', of }] }),
+            base('text', at(16, 0, 84, 42), { text: '{1}', refs: [of], size: 'small', weight: 'bold', align: 'right' }),
+            base('text', at(0, 58, 100, 42), { text: '{1} · {2}', refs: [{ slot, show: 'name' }, { slot }], size: 'small', weight: 'bold', align: 'left', overflow: 'ellipsis' }),
           ];
         }
         case 'clock': return [base('text', at(0, 0, 100, 100), { text: '{1}', refs: [{ time: 'clock' }], size: 'display', align: 'center' })];
         case 'flowvalue': return [
-          base('icon', at(0, 0, 18, 50), { icon: 'bolt' }),
-          base('text', at(20, 0, 80, 50), { text: '–', size: 'heading', align: 'right', flow: { value: true, text: true } }),
-          base('text', at(0, 55, 100, 45), { text: t('builderReady_flowvalue'), size: 'body', weight: 'bold' }),
+          base('icon', at(0, 0, 14, 42), { icon: 'bolt' }),
+          base('text', at(16, 0, 84, 42), { text: '–', size: 'small', weight: 'bold', align: 'right', flow: { value: true, text: true } }),
+          base('text', low, { text: t('builderReady_flowvalue'), size: 'small', weight: 'bold', overflow: 'ellipsis' }),
         ];
         default: return [];
       }
@@ -100,7 +117,9 @@
     const MAX_SPAN = 3;
     const VARIABLE_KINDS = ['slider', 'stepper', 'choice', 'variable'];
     const RANGE_KINDS = ['arc', 'bar', 'sparkline', 'slider', 'stepper', 'variable'];
-    const SPANS = ['1h', '6h', '24h', '7d', '30d', 'today', 'yesterday', 'thisWeek'];
+    /** The charts' time span units (scripts/chart-settings.json's `span`), as the kit's span ids write them. */
+    const SPAN_UNITS = [['minutes', 'm'], ['hours', 'h'], ['days', 'd'], ['weeks', 'w'], ['months', 'mo'], ['years', 'y'], ['calDays', 'd!'], ['calWeeks', 'w!'], ['calMonths', 'mo!'], ['calYears', 'y!']];
+    const SPAN_LETTER = { minute: 'm', hour: 'h', day: 'd', week: 'w', month: 'mo', year: 'y' };
     const RULE_OPS = ['above', 'below', 'between', 'is', 'isNot'];
     const CALC_OPS = ['sum', 'avg', 'min', 'max', 'diff', 'count', 'formula', 'change', 'since'];
     const MAX_INPUTS = 12;
@@ -1127,7 +1146,12 @@
       if (!r.value) { placeKids({ name: t(`builderReady_${r.id}`), w: r.w, h: r.h, kids: readyParts(r.id, '') }, drop); return; }
       try {
         const devices = await wd.valueDevices('values');
-        wd.chooseValue(devices, null, item => placeKids({ name: t(`builderReady_${r.id}`), w: r.w, h: r.h, kids: readyParts(r.id, item.id) }, drop));
+        wd.chooseValue(devices, null, (item) => {
+          const add = second => placeKids({ name: t(`builderReady_${r.id}`), w: r.w, h: r.h, kids: readyParts(r.id, item.id, second) }, drop);
+          // Device Values' second value: another of its values, asked for next.
+          if (r.second) wd.chooseValue(devices, null, more => add(more.id));
+          else add();
+        });
       } catch (err) { failed(err); }
     }
 
@@ -1257,7 +1281,7 @@
       const p = {
         id: partId(), kind, name: '', color: null, icon: null, style: ['text', 'icon'].includes(kind) ? 'none' : 'tile', rules: [], flow: {}, reset: 'never',
       };
-      if (kind === 'text') { p.text = t('builderTextDefault'); p.size = 'heading'; p.align = 'left'; }
+      if (kind === 'text') { p.text = t('builderTextDefault'); p.size = 'default'; p.align = 'left'; }
       if (kind === 'container') { p.mode = 'grid'; p.background = { kind: 'none' }; p.parts = []; }
       if (kind === 'choice') p.choices = [];
       if (kind === 'stepper') p.step = 0.5;
@@ -1271,7 +1295,7 @@
       if (kind === 'ring') { p.rings = []; p.center = 'value'; }
       if (kind === 'repeat') { p.itemStyle = 'row'; p.columns = 1; p.text = ''; }
       if (kind === 'segments') { p.segments = []; p.barStyle = 'bar'; p.scale = 'sum'; p.legend = true; p.units = ''; }
-      if (kind === 'chart') { p.series = []; p.span = '24h'; p.chartStyle = 'line'; p.axis = true; }
+      if (kind === 'chart') { p.series = []; p.span = '24h'; p.chartStyle = 'area'; p.axis = true; p.chartLegend = 'above'; }
       if (kind === 'each') { p.style = 'none'; p.devices = []; p.columns = 1; const first = designs().find(d => d.ready); if (first) p.ready = first.id; }
       if (into && into.mode === 'pages') p.page = (b.editPage && b.editPage[into.id]) || 0;
       change(() => {
@@ -1399,10 +1423,15 @@
       if (SLOT_KINDS.includes(p.kind) || VARIABLE_KINDS.includes(p.kind)) sourceRows(body, p);
       if (p.kind === 'button' && !(p.actions || []).length) body.append(row(t('builderStarts'), listPicker('flow', p.flowId, item => set(() => { if (item) p.flowId = item.id; else delete p.flowId; }), t('builderTapTrigger')), t('builderStartsHint')));
       if (p.kind === 'switch') body.append(row(t('builderPress'), segs([['tap', t('builderPress_tap')], ['confirm', t('builderPress_confirm')], ['long', t('builderPress_long')]], p.press || 'tap', v => set(() => { if (v === 'tap') delete p.press; else p.press = v; }, { preview: false }))));
-      if (p.kind === 'sparkline') body.append(row(t('builderSpan'), spanSelect(p)));
+      if (p.kind === 'variable') body.append(checkRow(t('builderReadOnly'), p.readOnly, v => set(() => { if (v) p.readOnly = true; else delete p.readOnly; })));
+      if (p.kind === 'sparkline') {
+        spanRows(body, p);
+        body.append(checkRow(t('builderSmooth'), p.smooth, v => change(() => { if (v) p.smooth = true; else delete p.smooth; }, { preview: false })));
+      }
       if (p.kind === 'arc' || p.kind === 'bar') {
         body.append(row(t('builderValue'), sourcePicker(p.src, src => change(() => { p.src = src; }), { self: p.id })));
         if (p.kind === 'bar') body.append(row(t('builderDirection'), segs([['horizontal', t('builderHorizontal')], ['vertical', t('builderVertical')]], p.dir || 'horizontal', v => change(() => { if (v === 'vertical') p.dir = v; else delete p.dir; }, { preview: false }))));
+        gaugeRows(body, p);
       }
       // A variable's range only where it's a number (or not read yet).
       const varType = p.kind === 'variable' && p.variable && b.state && b.state.variables && b.state.variables[p.variable] ? b.state.variables[p.variable].type : null;
@@ -1413,6 +1442,7 @@
         body.append(two);
         if (p.kind === 'stepper') body.append(row(t('builderStep'), textInput(p.step, v => set(() => { p.step = numOrNull(v) || 0.5; }, { preview: false }), { type: 'number', step: 'any' })));
         if (p.kind === 'slider') body.append(row(t('builderStep'), textInput(p.step, v => set(() => { const n = numOrNull(v); if (n && n > 0) p.step = n; else delete p.step; }, { preview: false }), { type: 'number', step: 'any', placeholder: t('builderAuto') })));
+        if (p.kind === 'variable' && !p.readOnly) body.append(row(t('builderStepVariable'), textInput(p.step, v => set(() => { const n = numOrNull(v); if (n && n > 0) p.step = n; else delete p.step; }, { preview: false }), { type: 'number', step: 'any', placeholder: '1' })));
         if (p.kind === 'variable') {
           const two2 = el('div', 'wdb-two');
           two2.append(row(t('builderUnits'), textInput(p.units, v => set(() => { const u = v.trim().slice(0, 12); if (u) p.units = u; else delete p.units; }, { preview: false }))),
@@ -1598,16 +1628,21 @@
       return wrap;
     }
 
-    function spanSelect(p) {
-      const s = el('select', 'wd-input');
-      for (const id of SPANS) {
-        const o = el('option', null, t(`builderSpan_${id}`));
-        o.value = id;
-        o.selected = p.span === id;
-        s.append(o);
-      }
-      s.addEventListener('change', () => change(() => { p.span = s.value; }));
-      return s;
+    /**
+     * The charts' time span block (Chart · Basic's *Time span*, *Unit*, *Leave out the current period*) for `p[key]`, as
+     * the kit's span ids (`24h`, `3d!`, `1w!-`); a span kept under its old name (`today`) is read as the kit reads it.
+     */
+    function spanRows(body, p, key = 'span', fallback = '24h') {
+      const parsed = window.WidgetkeeperKit.parseSpan(p[key] || fallback) || window.WidgetkeeperKit.parseSpan(fallback);
+      const unitId = `${SPAN_LETTER[parsed.unit]}${parsed.whole ? '!' : ''}`;
+      const put = (count, unit, skip) => change(() => { p[key] = `${Math.max(1, Math.round(count) || 1)}${unit}${unit.endsWith('!') && skip ? '-' : ''}`; });
+      const two = el('div', 'wdb-two');
+      two.append(
+        row(t('builderCount'), textInput(parsed.count, v => put(Number(v), unitId, parsed.skip), { type: 'number' })),
+        row(t('builderUnit'), selectOf(SPAN_UNITS.map(([id, u]) => [u, t(`builderUnit_${id}`)]), unitId, u => put(parsed.count, u, parsed.skip))),
+      );
+      body.append(two);
+      if (parsed.whole) body.append(checkRow(t('builderLeaveOut'), parsed.skip, v => put(parsed.count, unitId, v)));
     }
 
     function choicesRows(body, p) {
@@ -1644,6 +1679,41 @@
         p.mode = v;
       }, { preview: false }))));
       if (p.mode === 'pages') pagesRows(body, p);
+      // Device Values' *Fill percentages by level*, by any value of the design.
+      const fill = el('div', 'wdb-fillby');
+      fill.append(sourcePicker(p.fillBy, src => change(() => {
+        if (src && (src.slot || src.variable || src.part)) { p.fillBy = src; if (p.redBelow == null) p.redBelow = 10; if (p.yellowBelow == null) p.yellowBelow = 20; }
+      }), { self: p.id }));
+      if (p.fillBy) fill.append(button('wd-btn quiet small', t('clear'), () => change(() => { delete p.fillBy; delete p.redBelow; delete p.yellowBelow; })));
+      body.append(row(t('builderFillBy'), fill, t('builderFillByHint')));
+      if (p.fillBy) {
+        const two = el('div', 'wdb-two');
+        two.append(row(t('builderRedBelow'), textInput(p.redBelow, v => change(() => { p.redBelow = clampTo(v, 0, 100, 10); }, { preview: false }), { type: 'number' })),
+          row(t('builderYellowBelow'), textInput(p.yellowBelow, v => change(() => { p.yellowBelow = clampTo(v, 0, 100, 20); }, { preview: false }), { type: 'number' })));
+        body.append(two);
+      }
+    }
+
+    /**
+     * An Arc's or a Bar's Chart · Gauge options: colour by level (rising or falling, yellow at, red at), and the span's
+     * lowest to highest (*Show the range*, over its own time span).
+     */
+    function gaugeRows(body, p) {
+      body.append(row(t('builderZones'), selectOf([['', t('builderZones_none')], ['rising', t('builderZones_rising')], ['falling', t('builderZones_falling')]], p.zones || '', v => change(() => {
+        if (!v) { delete p.zones; delete p.yellowAt; delete p.redAt; return; }
+        p.zones = v;
+        if (p.yellowAt == null) p.yellowAt = v === 'rising' ? 60 : 40;
+        if (p.redAt == null) p.redAt = v === 'rising' ? 80 : 20;
+      }))));
+      if (p.zones) {
+        const two = el('div', 'wdb-two');
+        const num = key => textInput(p[key], v => change(() => { const n = numOrNull(v); if (n !== undefined) p[key] = n; }, { preview: false }), { type: 'number', step: 'any' });
+        two.append(row(t('builderYellowAt'), num('yellowAt')), row(t('builderRedAt'), num('redAt')));
+        body.append(two);
+      }
+      const ranged = !!p.rangeSpan;
+      body.append(checkRow(t('builderShowRange'), ranged, v => change(() => { if (v) p.rangeSpan = '1d!'; else delete p.rangeSpan; }), t('builderShowRangeHint')));
+      if (ranged) spanRows(body, p, 'rangeSpan', '1d!');
     }
 
     /** A container's background, or a shape's fill: none (a shape: its colour from Style), a colour, or a gradient. */
@@ -1997,7 +2067,8 @@
         const drop = button('wd-icon small', '', () => change(() => { p.series.splice(i, 1); }), t('remove'));
         drop.append(icon('close'));
         head.append(el('span', 'wdb-ref-key', String(i + 1)), slotButton(x.slot, item => change(() => { p.series[i] = { ...x, slot: item.id }; })), drop);
-        box.append(head, colourPicker(x.color, v => change(() => { x.color = v || null; }, { preview: false }), { none: t('builderAuto') }));
+        box.append(head, row(t('builderSeriesTitle'), textInput(x.title, v => change(() => { const s = v.trim().slice(0, 24); if (s) x.title = s; else delete x.title; }, { preview: false }), { placeholder: t('builderAuto') })),
+          colourPicker(x.color, v => change(() => { x.color = v || null; }, { preview: false }), { none: t('builderAuto') }));
         body.append(box);
       });
       const add = addButton(t('builderAddSeries'), async () => {
@@ -2008,9 +2079,16 @@
       });
       add.disabled = list.length >= MAX_SERIES;
       body.append(add);
-      body.append(row(t('builderSpan'), spanSelect(p)));
-      body.append(row(t('builderChartStyle'), segs([['line', t('builderChart_line')], ['bars', t('builderChart_bars')]], p.chartStyle || 'line', v => change(() => { p.chartStyle = v; }, { preview: false }))));
-      body.append(checkRow(t('builderAxis'), p.axis !== false, v => change(() => { p.axis = v; }, { preview: false })));
+      spanRows(body, p);
+      // Chart · Basic's options.
+      const quiet = fn => change(fn, { preview: false });
+      body.append(row(t('builderChartStyle'), segs([['area', t('builderChart_area')], ['line', t('builderChart_line')], ['bars', t('builderChart_bars')]], p.chartStyle || 'area', v => quiet(() => { p.chartStyle = v; }))));
+      body.append(row(t('builderChartScale'), segs([['fit', t('builderChartScale_fit')], ['zero', t('builderChartScale_zero')]], p.chartScale || 'fit', v => quiet(() => { if (v === 'zero') p.chartScale = v; else delete p.chartScale; }))));
+      body.append(row(t('builderChartLegend'), segs([['above', t('builderChartLegend_above')], ['below', t('builderChartLegend_below')], ['hidden', t('builderChartLegend_hidden')]], p.chartLegend || 'above', v => quiet(() => { p.chartLegend = v; }))));
+      body.append(checkRow(t('builderHeader'), p.header, v => quiet(() => { if (v) p.header = true; else delete p.header; })));
+      body.append(checkRow(t('builderSmooth'), p.smooth, v => quiet(() => { if (v) p.smooth = true; else delete p.smooth; })));
+      body.append(checkRow(t('builderNegative'), p.negative, v => quiet(() => { if (v) p.negative = true; else delete p.negative; })));
+      body.append(checkRow(t('builderAxis'), p.axis !== false, v => quiet(() => { p.axis = v; })));
     }
 
     /**
@@ -2088,7 +2166,8 @@
       }))));
       // A change (Trend's) and minutes since a change read their first value only.
       if (p.op === 'change') {
-        body.append(row(t('builderTrendSpan'), spanSelect(p)));
+        body.append(el('h4', 'wdb-h4', t('builderTrendSpan')));
+        spanRows(body, p, 'span', '1h');
         body.append(checkRow(t('builderPercent'), p.percent, v => change(() => { if (v) p.percent = true; else delete p.percent; }, { preview: false })));
         body.append(el('p', 'wd-hint', t('builderTrendHint')));
       }
@@ -2136,8 +2215,12 @@
       const quiet = fn => change(fn, { preview: false });
       // Background: a calculated value has none; a shape is its own.
       if (p.kind !== 'shape') {
-        const style = ['tile', 'pill', 'none'].includes(p.style) ? p.style : (p.tile === false || ['text', 'icon', 'sparkline', 'arc', 'bar', 'each'].includes(p.kind) ? 'none' : 'tile');
-        body.append(row(t('builderStyle'), segs([['tile', t('builderStyleTile')], ['pill', t('builderStylePill')], ['none', t('builderStyleNone')]], style, v => quiet(() => { p.style = v; delete p.tile; })), t(p.kind === 'container' ? 'builderBoxStyleHint' : 'builderStyleHint')));
+        const style = ['tile', 'pill', 'none', 'postit'].includes(p.style) && (p.style !== 'postit' || p.kind === 'text') ? p.style : (p.tile === false || ['text', 'icon', 'sparkline', 'arc', 'bar', 'each'].includes(p.kind) ? 'none' : 'tile');
+        // A Text may also be Notes' Post-it.
+        const styles = [['tile', t('builderStyleTile')], ['pill', t('builderStylePill')], ['none', t('builderStyleNone')], ...(p.kind === 'text' ? [['postit', t('builderStylePostit')]] : [])];
+        body.append(row(t('builderStyle'), segs(styles, style, v => quiet(() => { p.style = v; delete p.tile; })), t(p.kind === 'container' ? 'builderBoxStyleHint' : 'builderStyleHint')));
+        // A Post-it's paper, in the palette's colours (yellow without one).
+        if (p.kind === 'text' && style === 'postit') body.append(row(t('builderPaper'), colourPicker(p.color, v => quiet(() => { p.color = v; }), { none: t('builderAuto') })));
       }
       if (p.kind === 'container') backgroundRows(body, p, t('builderFill'), t('builderNone'));
       if (p.kind === 'shape') {
@@ -2163,12 +2246,20 @@
         body.append(row(t('builderTextColour'), colourPicker(p.textColor, v => quiet(() => { if (v) p.textColor = v; else delete p.textColor; }), { none: t('builderAuto') }), t('builderTextColourHint')));
       }
       if (p.kind === 'text') {
-        body.append(row(t('builderSize'), segs([['display', t('builderSizeDisplay')], ['heading', t('builderHeading')], ['body', t('builderBody')], ['small', t('builderSmall')]], p.size, v => quiet(() => { p.size = v; }))));
+        // Notes' sizes, and Big.
+        const size = ({ body: 'small', heading: 'default' })[p.size] || p.size || 'small';
+        body.append(row(t('builderSize'), segs([['display', t('builderSizeDisplay')], ['large', t('builderSizeLarge')], ['default', t('builderSizeDefault')], ['small', t('builderSmall')]], size, v => quiet(() => { p.size = v; }))));
         body.append(row(t('builderWeight'), segs([['', t('builderAuto')], ['regular', t('builderWeight_regular')], ['medium', t('builderWeight_medium')], ['bold', t('builderWeight_bold')]], p.weight || '', v => quiet(() => { if (v) p.weight = v; else delete p.weight; }))));
         body.append(row(t('builderAlign'), segs([['left', t('builderLeft')], ['center', t('builderCenter')], ['right', t('builderRight')]], p.align, v => quiet(() => { p.align = v; }))));
+        // Notes' *Long text*; a Post-it shows three lines.
+        if (p.style !== 'postit') body.append(row(t('builderOverflow'), segs([['ellipsis', t('builderOverflow_ellipsis')], ['scroll', t('builderOverflow_scroll')], ['wrap', t('builderOverflow_wrap')]], p.overflow || 'wrap', v => quiet(() => { if (v === 'wrap') delete p.overflow; else p.overflow = v; }))));
+        body.append(checkRow(t('builderTextMuted'), p.muted, v => quiet(() => { if (v) p.muted = true; else delete p.muted; })));
       }
+      // Quick Actions' *Active tile style*.
+      if (p.kind === 'switch') body.append(row(t('builderActive'), segs([['tint', t('builderActive_tint')], ['lighter', t('builderActive_lighter')]], p.active || 'tint', v => quiet(() => { if (v === 'lighter') p.active = v; else delete p.active; }))));
       if (p.kind === 'arc' || p.kind === 'bar') {
-        body.append(row(t('builderThickness'), textInput(p.thickness || 8, v => quiet(() => { p.thickness = clampTo(v, 2, 24, 8); }), { type: 'number' })));
+        const thick = p.kind === 'arc' ? 12 : 6;
+        body.append(row(t('builderThickness'), textInput(p.thickness || thick, v => quiet(() => { p.thickness = clampTo(v, 2, 24, thick); }), { type: 'number' })));
       }
       if (p.kind === 'icon') body.append(checkRow(t('builderIconGrow'), p.grow, v => quiet(() => { if (v) p.grow = true; else delete p.grow; })));
       if (drawsIcon(p)) lookIcon(body, p);

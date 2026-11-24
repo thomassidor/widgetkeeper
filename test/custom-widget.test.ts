@@ -144,8 +144,8 @@ describe('controls', () => {
     const onSet = vi.fn(async () => {});
     const choices = [{ label: 'Auto', value: 'auto' }, { label: 'Heat', value: 'heat' }];
     const { at } = widget(state([part('c', 'choice', { slot: 'a:mode', choices })], [value('a:mode', 'auto', { type: 'enum', units: null })]), { onSet });
-    const buttons = [...at('c').querySelectorAll<HTMLElement>('.wb-choice')];
-    expect(buttons.map(b => b.classList.contains('on'))).toEqual([true, false]);
+    const buttons = [...at('c').querySelectorAll<HTMLElement>('.wb-preset')];
+    expect(buttons.map(b => b.classList.contains('active'))).toEqual([true, false]);
     buttons[1].click();
     expect(onSet).toHaveBeenCalledWith(expect.objectContaining({ id: 'c' }), 'heat');
   });
@@ -354,7 +354,7 @@ describe('widget states, pages, actions, images, rings and repeaters', () => {
     const { at, root } = widget(s(), { storeKey: 'd' });
     expect(at('t').textContent).toBe('Now Alpha');
     expect([at('p0').classList.contains('wb-off-page'), at('p1').classList.contains('wb-off-page')]).toEqual([false, true]);
-    root.querySelectorAll<HTMLElement>('[data-part="st"] .wb-choice')[1].click();
+    root.querySelectorAll<HTMLElement>('[data-part="st"] .wb-preset')[1].click();
     expect(at('t').textContent).toBe('Now Beta');
     expect([at('p0').classList.contains('wb-off-page'), at('p1').classList.contains('wb-off-page')]).toEqual([true, false]);
     at('tg').click();
@@ -393,7 +393,9 @@ describe('widget states, pages, actions, images, rings and repeaters', () => {
       onOpen: (id: string) => calls.push(`open:${id}`),
     });
     at('b').click();
-    expect(at('b').classList.contains('wb-asking')).toBe(true);
+    // Flow Buttons' Tap again: tinted red, its name saying so.
+    expect(at('b').classList.contains('confirm')).toBe(true);
+    expect(at('b').querySelector('.wb-name')!.textContent).toBe('Tap again');
     expect(calls).toEqual([]);
     at('b').click();
     await vi.waitFor(() => expect(calls).toEqual(['0:set', '1:flow', 'open:home']));
@@ -578,10 +580,11 @@ describe('the bare data primitives', () => {
     expect(at('sp').querySelector('.wb-spark-line')!.getAttribute('d')).toMatch(/^M0\.00,/);
     expect([at('sp').classList.contains('wb-tile'), at('ar').classList.contains('wb-tile')]).toEqual([false, false]);
     expect(at('ar').querySelector('.wb-arc-fill')).toBeTruthy();
-    expect(at('ar').querySelector<SVGElement>('.wb-arc')!.style.getPropertyValue('--wb-arc-w')).toBe('12');
+    expect(at('ar').querySelector<SVGElement>('.wb-arc-fill')!.style.strokeWidth).toBe('12px');
     expect(at('br').querySelector<HTMLElement>('.wb-level i')!.style.width).toBe('50%');
     expect(at('br').querySelector<HTMLElement>('.wb-level')!.style.height).toBe('6px');
-    expect(at('sl').querySelector<HTMLElement>('.wb-fill')!.style.width).toBe('25%');
+    expect(at('sl').style.getPropertyValue('--wb-x')).toBe('0.25');
+    expect([at('sl').querySelector('.wb-track .wb-fill'), at('sl').querySelector('.wb-knob')].every(Boolean)).toBe(true);
     expect([at('sl').querySelector('.wb-name'), at('sl').querySelector('.wb-icon'), at('sl').getAttribute('aria-label')]).toEqual([null, null, 'Ceiling']);
   });
 });
@@ -603,7 +606,8 @@ describe('the settings closing the review\'s gaps (2026-11-22)', () => {
     const { at } = widget(state([part('s', 'switch', { slot: 'a:onoff', press: 'confirm' })], [value('a:onoff', false, { type: 'boolean', units: null })]), { onSet });
     at('s').click();
     expect(onSet).not.toHaveBeenCalled();
-    expect(at('s').querySelector('.wb-press-tip')!.textContent).toBe('Tap again');
+    expect(at('s').querySelector('.wb-name')!.textContent).toBe('Tap again');
+    expect(at('s').classList.contains('confirm')).toBe(true);
     at('s').click();
     expect(onSet).toHaveBeenCalledWith(expect.objectContaining({ id: 's' }), true);
   });
@@ -616,8 +620,8 @@ describe('the settings closing the review\'s gaps (2026-11-22)', () => {
     ], [], { variables: { v1: { id: 'v1', name: 'Use', type: 'number', value: 4.4 } } });
     const { at } = widget(s, { onSet: async (_p: unknown, v: unknown) => { sent.push(v); } });
     expect(at('v').querySelector('.wb-value')!.textContent).toBe('4 kWh');
-    expect(Number.parseFloat(at('sl').querySelector<HTMLElement>('.wb-fill')!.style.width)).toBeCloseTo(22);
-    at('v').click();
+    expect(Number.parseFloat(at('sl').style.getPropertyValue('--wb-x')) * 100).toBeCloseTo(22);
+    at('v').querySelector<HTMLElement>('.wb-value')!.click();
     const input = at('v').querySelector<HTMLInputElement>('.wb-input')!;
     input.value = '50';
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
@@ -709,8 +713,9 @@ describe('styles, colours, width, charts and Repeaters (2026-11-24)', () => {
     const { at } = widget(s);
     const c = at('c');
     expect(c.querySelectorAll('.wb-chart-line')).toHaveLength(2);
-    expect((c.querySelector('.wb-chart-line') as SVGElement).style.stroke).toBe('var(--wk-red)');
-    expect([...c.querySelectorAll('.wb-chart-key')].map(k => k.textContent)).toEqual(['Living', 'Bedroom']);
+    // Charts' colours: the bright set; each series' chip.
+    expect((c.querySelector('.wb-chart-line') as SVGElement).style.getPropertyValue('--wb-series')).toBe('var(--wk-red-bright)');
+    expect([...c.querySelectorAll('.wb-chart-chip')].map(k => k.textContent)).toEqual(['Living', 'Bedroom']);
     expect([...c.querySelectorAll('.wb-chart-y span')].map(x => x.textContent)).toEqual(['23°C', '16°C']);
     expect(c.querySelectorAll('.wb-chart-x span')).toHaveLength(2);
     const bars = widget(state([part('b', 'chart', { series: [{ slot: 'a:t', color: null }], span: '24h', chartStyle: 'bars', axis: false })], [value('a:t', 23)], { histories }));
@@ -739,5 +744,105 @@ describe('styles, colours, width, charts and Repeaters (2026-11-24)', () => {
     // Without a ready-made it says so.
     const none = widget(state([part('e', 'each', { at: { x: 0, y: 0, w: 4, h: 1 } })], [], { each: { e: { part: null, devices: [] } } }));
     expect(none.root.textContent).toContain('ready-made');
+  });
+});
+
+describe("the normal widgets' looks and options (2026-11-24, the user's review of the styles and options)", () => {
+  it("draws a button as Flow Buttons' round button and name, only the button where it's narrow", () => {
+    const { at } = widget(state([part('b', 'button', { name: 'Night', color: 'green' }), part('n', 'button', { name: 'Go', at: { x: 0, y: 1, w: 1, h: 1 } })]));
+    expect([!!at('b').querySelector('.wb-fbtn .wb-icon svg'), at('b').querySelector('.wb-name')!.textContent]).toEqual([true, 'Night']);
+    expect([at('n').classList.contains('wb-narrow'), at('n').title]).toEqual([true, 'Go']);
+  });
+
+  it("holds a long press's fill and says Hold on a tap, as Quick Actions", async () => {
+    vi.useFakeTimers();
+    const onSet = vi.fn(async () => {});
+    const { at } = widget(state([part('s', 'switch', { slot: 'a:onoff', press: 'long', name: 'Garage' })], [value('a:onoff', false, { type: 'boolean', units: null })]), { onSet });
+    at('s').click();
+    expect(at('s').querySelector('.wb-name')!.textContent).toBe('Hold');
+    await vi.advanceTimersByTimeAsync(1600);
+    expect(at('s').querySelector('.wb-name')!.textContent).toBe('Garage');
+    expect(onSet).not.toHaveBeenCalled();
+  });
+
+  it("lights a switch as a lighter tile, and steps a number variable with − and + within its range, as Variables", async () => {
+    vi.useFakeTimers();
+    const sent: unknown[] = [];
+    const s = state([
+      part('sw', 'switch', { slot: 'a:onoff', active: 'lighter' }),
+      part('v', 'variable', { variable: 'v1', step: 5, max: 20, at: { x: 0, y: 1, w: 4, h: 1 } }),
+    ], [value('a:onoff', true, { type: 'boolean', units: null })], { variables: { v1: { id: 'v1', name: 'Use', type: 'number', value: 10 } } });
+    const { at } = widget(s, { onSet: async (_p: unknown, v: unknown) => { sent.push(v); } });
+    expect([at('sw').classList.contains('wb-lighter'), at('sw').classList.contains('wb-on')]).toEqual([true, true]);
+    expect(at('v').classList.contains('wb-row-layout')).toBe(true);
+    const [minus, plus] = [...at('v').querySelectorAll<HTMLElement>('.wb-step')];
+    expect([minus.hidden, plus.hidden]).toEqual([false, false]);
+    plus.click();
+    plus.click();
+    expect(at('v').querySelector('.wb-value')!.textContent).toBe('20');
+    expect(plus.classList.contains('at-limit')).toBe(true);
+    await vi.advanceTimersByTimeAsync(800);
+    expect(sent).toEqual([20]);
+  });
+
+  it("shows a read-only variable's yes/no as a dot and Yes, and does nothing on a tap", () => {
+    const onSet = vi.fn(async () => {});
+    const s = state([part('v', 'variable', { variable: 'v1', readOnly: true })], [], { variables: { v1: { id: 'v1', name: 'Away', type: 'boolean', value: true } } });
+    const { at } = widget(s, { onSet });
+    expect([at('v').querySelector<HTMLElement>('.wb-dot')!.hidden, at('v').querySelector<HTMLElement>('.wb-toggle')!.hidden, at('v').querySelector('.wb-value')!.textContent]).toEqual([false, true, 'Yes']);
+    at('v').click();
+    expect(onSet).not.toHaveBeenCalled();
+  });
+
+  it("draws Notes' sizes (the old ones as the nearest), a Big value's units apart, a Post-it and long text", () => {
+    const { at } = widget(state([
+      part('a', 'text', { text: 'x', size: 'heading' }),
+      part('b', 'text', { text: '{1}', refs: [{ slot: 'a:t' }], size: 'display' }),
+      part('c', 'text', { text: 'Milk', style: 'postit', color: 'pink' }),
+      part('d', 'text', { text: 'A long line', overflow: 'scroll', muted: true }),
+    ], [value('a:t', 21.5)]));
+    expect(at('a').classList.contains('wb-size-default')).toBe(true);
+    expect([at('b').querySelector('.wb-text')!.firstChild!.textContent, at('b').querySelector('.wb-unit')!.textContent]).toEqual(['21.5', '°C']);
+    expect([at('c').classList.contains('wb-postit'), !!at('c').querySelector('.wb-note .wb-paper .wb-text'), at('c').dataset.wkColor]).toEqual([true, true, 'pink']);
+    expect([at('d').classList.contains('wb-over-scroll'), at('d').classList.contains('wb-muted')]).toEqual([true, true]);
+  });
+
+  it("draws an arc's and a bar's Chart · Gauge zones, the value in its level's colour, and the span's range", () => {
+    const s = state([
+      part('a', 'arc', { src: { slot: 'm:p' }, min: 0, max: 100, zones: 'rising', yellowAt: 50, redAt: 80, rangeSpan: '1d!' }),
+      part('b', 'bar', { src: { slot: 'm:p' }, min: 0, max: 100, zones: 'falling', yellowAt: 40, redAt: 20, rangeSpan: '1d!' }),
+    ], [value('m:p', 90, { units: 'W' })], { histories: { '1d!\nm:p': [[1, 30], [2, 60]] } });
+    const { at } = widget(s);
+    expect([...at('a').querySelectorAll('.wb-arc-zone')].map(z => z.getAttribute('class'))).toEqual(['wb-arc-zone green', 'wb-arc-zone yellow', 'wb-arc-zone red']);
+    expect(at('a').querySelector('.wb-arc-fill')!.getAttribute('class')).toBe('wb-arc-fill red');
+    expect(at('a').querySelector('.wb-arc-range')).toBeTruthy();
+    expect(at('b').querySelector('.wb-level i')!.className).toBe('green');
+    expect([at('b').querySelector<HTMLElement>('.wb-level-range')!.style.left, at('b').querySelector<HTMLElement>('.wb-level-range')!.style.width]).toEqual(['30%', '30%']);
+  });
+
+  it("draws Chart · Basic's areas, values at the top, chips below, a zero scale and below zero in yellow", () => {
+    const now = Date.now();
+    const histories = { '24h\na:t': Array.from({ length: 6 }, (_, i) => [now - (5 - i) * 3600e3, i - 2]) };
+    const s = state([part('c', 'chart', { series: [{ slot: 'a:t', color: null, title: 'Outside' }], span: '24h', chartStyle: 'area', header: true, chartLegend: 'below', negative: true, chartScale: 'zero', smooth: true, at: { x: 0, y: 0, w: 4, h: 3 } })],
+      [{ ...value('a:t', -1.5), name: 'Garden' }], { histories });
+    const { at } = widget(s);
+    const c = at('c');
+    expect(c.querySelector('.wb-chart-hval .v')!.classList.contains('export')).toBe(true);
+    expect([c.querySelector('.wb-chart-hsub')!.textContent, c.querySelector('.wb-chart-chip')!.textContent]).toEqual(['Outside', 'Outside']);
+    expect(c.lastElementChild!.classList.contains('wb-chart-chips')).toBe(true);
+    expect(c.querySelectorAll('.wb-chart-area')).toHaveLength(2);
+    expect(c.querySelector('.wb-chart-line.export')).toBeTruthy();
+  });
+
+  it("fills a container by a value's level, as Device Values' percentages", () => {
+    const { at } = widget(state([part('box', 'container', { mode: 'free', style: 'tile', fillBy: { slot: 'b:bat' }, redBelow: 10, yellowBelow: 20, parts: [] })], [value('b:bat', 15, { units: '%', min: 0, max: 100 })]));
+    expect([at('box').classList.contains('wb-filled'), at('box').dataset.level, at('box').style.getPropertyValue('--wb-fill')]).toEqual([true, 'yellow', '15%']);
+  });
+
+  it("draws a choice as Presets' buttons and a pages container's dots as the Smart Stack's", () => {
+    const { at } = widget(state([part('c', 'choice', { slot: 'a:m', choices: [{ label: 'A', value: 'a' }, { label: 'B', value: 'b' }] })], [value('a:m', 'b', { type: 'enum', units: null })]));
+    expect(at('c').querySelector<HTMLElement>('.wb-presets')!.style.getPropertyValue('--wb-count')).toBe('2');
+    const css = readFileSync('widgets/custom/public/widget.css', 'utf8');
+    expect(css).toContain('.wb-nav-dots .wb-pagebtn.on::before { width: 16px;');
   });
 });
