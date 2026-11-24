@@ -28,3 +28,13 @@ describe('parseCustomColor (the custom colour cards)', () => {
     expect(parseTileColor(parseCustomColor(''))).toBeNull();
   });
 });
+
+describe('parseTileColor (the colour cards)', () => {
+  it('takes white and black as their custom colour, so every widget draws them as one (wk-135)', () => {
+    expect(parseTileColor('white')).toBe('#ffffff');
+    expect(parseTileColor('black')).toBe('#000000');
+    expect(parseTileColor('grey')).toBe('grey');
+    expect(parseTileColor('default')).toBeNull();
+    expect(() => parseTileColor('toString')).toThrow(/Unknown colour/);
+  });
+});

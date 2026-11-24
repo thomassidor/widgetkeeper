@@ -8,15 +8,23 @@ import type Homey from 'homey';
 export const TILE_COLORS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'teal', 'cyan', 'indigo', 'pink', 'brown', 'grey'] as const;
 export type TileColor = typeof TILE_COLORS[number] | `#${string}`;
 
+/**
+ * White and black (1.4.0, wk-135: a device whose normal state is On can look calm): only on the Flow cards, after the
+ * palette. Not palette colours (no Vivid shade, no colour setting has them): a card's `white`/`black` is kept and sent
+ * as this custom colour, drawn as any other (the kit's `paintColor()`: a 22 % tint in Muted, solid in Vivid).
+ */
+export const FLOW_ONLY_COLORS = { white: '#ffffff', black: '#000000' } as const;
+
 /** A custom colour as kept and sent: `#rrggbb`, lower case (the kit's `isCustomColor()` takes the same). */
 const CUSTOM = /^#[0-9a-f]{6}$/;
 
 /**
- * A Flow card's `color` argument: a tile colour or a custom colour as `parseCustomColor()` gives it, or null for
- * `default` (the widget's own). Anything else throws.
+ * A Flow card's `color` argument: a tile colour, `white` or `black` (as their hex) or a custom colour as
+ * `parseCustomColor()` gives it, or null for `default` (the widget's own). Anything else throws.
  */
 export function parseTileColor(color: string): TileColor | null {
   if (color === 'default') return null;
+  if (Object.prototype.hasOwnProperty.call(FLOW_ONLY_COLORS, color)) return FLOW_ONLY_COLORS[color as keyof typeof FLOW_ONLY_COLORS];
   if ((TILE_COLORS as readonly string[]).includes(color) || CUSTOM.test(color)) return color as TileColor;
   throw new Error(`Unknown colour: ${color}`);
 }

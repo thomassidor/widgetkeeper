@@ -332,6 +332,42 @@
             "ko": "회색",
             "ar": "رمادي"
           }
+        },
+        {
+          "id": "white",
+          "title": {
+            "en": "White",
+            "nl": "Wit",
+            "de": "Weiß",
+            "fr": "Blanc",
+            "it": "Bianco",
+            "sv": "Vit",
+            "no": "Hvit",
+            "es": "Blanco",
+            "da": "Hvid",
+            "ru": "Белый",
+            "pl": "Biały",
+            "ko": "흰색",
+            "ar": "أبيض"
+          }
+        },
+        {
+          "id": "black",
+          "title": {
+            "en": "Black",
+            "nl": "Zwart",
+            "de": "Schwarz",
+            "fr": "Noir",
+            "it": "Nero",
+            "sv": "Svart",
+            "no": "Svart",
+            "es": "Negro",
+            "da": "Sort",
+            "ru": "Чёрный",
+            "pl": "Czarny",
+            "ko": "검은색",
+            "ar": "أسود"
+          }
         }
       ]
     }
