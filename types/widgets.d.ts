@@ -135,6 +135,7 @@ interface Window {
     scaled: (cap: any, value: number) => number,
     formatNumber: (cap: any, value: number, averaged?: boolean) => string,
     formatValue: (cap: any, value: unknown, t?: (key: string) => string) => string,
+    decimalsSetting: (value: unknown) => number | null,
     valueGlyph: (capabilityId: string, value?: unknown) => string,
     knownValue: (column: { capabilityId?: string, units?: string | null } | null | undefined) => { range: { min: number | null, max: number | null }, label: string | { key: string } } | null,
     okRange: (text: unknown, column?: { capabilityId?: string, units?: string | null } | null) => { min: number | null, max: number | null } | null,

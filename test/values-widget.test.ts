@@ -32,6 +32,15 @@ describe("formatValue (the kit's)", () => {
     expect(f(cap('number'), 5.25)).toBe(dec(5.25));
   });
 
+  it('takes a Decimals setting as `digits`: always that many; decimalsSetting reads 0–2, else Automatic', () => {
+    const k = win.WidgetkeeperKit;
+    const fixed = (n: number, d: number) => n.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d });
+    expect(f(cap('number', { units: '%', decimals: 1, digits: 0 }), 56.83)).toBe('57%');
+    expect(f(cap('number', { units: '°C', decimals: 1, digits: 2 }), 21)).toBe(`${fixed(21, 2)}°C`);
+    expect(k.formatNumber(cap('number', { decimals: 2, digits: 2 }), 12273.24, true)).toBe(fixed(12273.24, 2));
+    expect(['0', '1', '2', 2, 'auto', '3', '', undefined, null, 1.5].map(k.decimalsSetting)).toEqual([0, 1, 2, 2, null, null, null, null, null, null]);
+  });
+
   it("scales a 0–1 percentage (Homey's dim) to 0–100", () => {
     expect(f(cap('number', { units: '%', min: 0, max: 1, decimals: 2 }), 0.5)).toBe('50%');
     expect(f(cap('number', { units: '%', min: 0, max: 100 }), 50)).toBe('50%');
@@ -310,5 +319,15 @@ describe('Widen the last tile (1.3.0)', () => {
     expect(on(three(), '3')).toEqual([false, false, false]);
     expect(on(three(), '2', false)).toEqual([false, false, false]);
     expect(on(three().slice(0, 2), '2')).toEqual([false, false]);
+  });
+});
+
+describe('Decimals per tile', () => {
+  it("rounds each tile's value to its own setting, by position; the second value keeps its own", () => {
+    const hum = { deviceId: 'a', capabilityId: 'measure_humidity', name: 'Stue', capability: cap('number', { units: '%', decimals: 1 }), value: 56.83 };
+    const withSecond = { ...temp(21.46), second: { capabilityId: 'measure_humidity', capability: hum.capability, value: 56.83 } };
+    const { text } = widget([withSecond, hum, temp(21.46)], 3, { decimals: ['0', '0', 'auto'] });
+    expect(text('.vt-value')).toEqual(['21°C', '57%', `${dec(21.5)}°C`]);
+    expect(text('.vt-second')[0]).toContain(dec(56.8));
   });
 });

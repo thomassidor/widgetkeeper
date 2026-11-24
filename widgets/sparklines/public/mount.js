@@ -13,7 +13,8 @@ window.mountSparklinesWidget = function (Homey, { root, frame }) {
 
   const settings = Homey.getSettings() || {};
   // Each slot setting is an autocomplete item whose id is `<deviceId>:<capabilityId>`.
-  const slots = [1, 2, 3, 4, 5, 6].map(n => slotId(settings[`slot${n}`])).filter(Boolean);
+  const picked = [1, 2, 3, 4, 5, 6].filter(n => slotId(settings[`slot${n}`]));
+  const slots = picked.map(n => slotId(settings[`slot${n}`]));
   // A number of a unit (1.2.0, as the chart widgets'), or the span set before (`24h`, `today` …) until a unit is picked.
   const span = spanSetting(settings, '', { count: 24, unit: 'hours' });
   /** The name each value was picked by: a gone device's tile keeps it. */
@@ -33,6 +34,7 @@ window.mountSparklinesWidget = function (Homey, { root, frame }) {
     onRename: (key, name) => tileNames.rename(key, name),
     span,
     columns: settings.columns,
+    decimals: picked.map(n => settings[`decimals${n}`]), // each tile's Decimals setting, in the slots' order
     labels,
     onHeight: link.setHeight,
   });

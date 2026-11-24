@@ -443,6 +443,7 @@ const BUILD = {
     return { cols: 2, widgets: [
       w('values', 'Temperatures · 3 columns', slots('slot', temps)),
       w('values', 'Mixed types · 2 columns', { columns: '2', ...slots('slot', mixed) }),
+      w('values', 'Decimals: 0, 1, 2, automatic', { ...slots('slot', temps.slice(0, 4)), decimals1: '0', decimals2: '1', decimals3: '2', decimals4: 'auto' }),
       w('values', 'Batteries · fill (red < 30, yellow < 50)', { percentFill: true, redBelow: 30, yellowBelow: 50, ...slots('slot', batteries) }),
       w('values', 'Brightness (0–1 %) · fill', { percentFill: true, ...slots('slot', dims) }),
       w('values', 'Batteries · Vivid fill (red < 30, yellow < 50)', { colorStyle: 'deep', percentFill: true, redBelow: 30, yellowBelow: 50, ...slots('slot', batteries) }),
@@ -526,6 +527,8 @@ const BUILD = {
     const two = where(d => has(d, 'measure_temperature'), 2);
     return { cols: 3, widgets: [
       w('combined', 'Average temperature · range · dots', { capability: temp, name: 'Indoor temperature' }, climate),
+      w('combined', 'Average temperature · 0 decimals', { capability: temp, decimals: '0' }, climate),
+      w('combined', 'Sum of power · 2 decimals', { capability: power, show: 'sum', decimals: '2' }, plugs),
       w('combined', 'OK range 10–35 · green when fine', { capability: temp, okRange: '10–35', greenWhenFine: true }, climate),
       w('combined', 'Batteries under 20 % · OK range >20 · green when fine', { capability: battery, show: 'out', okRange: '>20', greenWhenFine: true }, batteries),
       w('combined', 'Sum of power · share · no range', { capability: power, show: 'sum', showRange: false, name: 'Power now' }, plugs),
@@ -609,6 +612,7 @@ const BUILD = {
     ];
     const out = spans.map(([title, span]) => w('sparklines', title, { ...span, ...slots('slot', set.slice(0, 4)) }));
     out.push(
+      w('sparklines', 'Decimals: 0, 1, 2, automatic', { ...slots('slot', set.slice(0, 4)), decimals1: '0', decimals2: '1', decimals3: '2', decimals4: 'auto' }),
       w('sparklines', 'Smooth lines', { smooth: true, ...slots('slot', set.slice(0, 2)) }),
       w('sparklines', 'Purple', { color: 'purple', ...slots('slot', set.slice(0, 2)) }),
       w('sparklines', 'Green · Vivid', { color: 'green', colorStyle: 'deep', ...slots('slot', set.slice(0, 2)) }),

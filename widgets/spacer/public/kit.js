@@ -512,12 +512,23 @@
   }
 
   /**
+   * A Decimals setting (Value Matrix's columns, Device Values' and Sparklines' tiles, Combined Value; 1.4.0): `0`, `1`
+   * or `2` as a number, else null for Automatic (`auto`, and missing on a widget placed before the setting).
+   */
+  function decimalsSetting(value) {
+    const n = typeof value === 'number' ? value : typeof value === 'string' && /^[0-2]$/.test(value) ? Number(value) : NaN;
+    return n === 0 || n === 1 || n === 2 ? n : null;
+  }
+
+  /**
    * A number in the device locale, to the capability's decimals (at most 4; 1 without them, none for a scaled `%`).
    * `averaged`: a value Homey didn't report (an average, a chart's point or bar, its high or low) keeps three
    * significant digits within those, so a 2-decimal meter's average is `1,304`, not `1,304.48`; `22.5`, `0.137` stay.
    */
   function formatNumber(cap, value, averaged = false) {
     const v = scaled(cap, value);
+    // A widget's Decimals setting (`decimalsSetting()`), as `digits`: always that many, an average too.
+    if (cap.digits != null) return v.toLocaleString(undefined, { minimumFractionDigits: cap.digits, maximumFractionDigits: cap.digits });
     let digits = v !== value ? 0 : cap.decimals != null ? Math.max(0, Math.min(cap.decimals, 4)) : 1;
     if (averaged && v !== 0) digits = Math.min(digits, Math.max(0, 2 - Math.floor(Math.log10(Math.abs(v)))));
     return v.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: digits });
@@ -1852,7 +1863,7 @@
   window.WidgetkeeperKit = {
     applySurface,
     openVideoStream, playCameraStream, STREAM_NEXT_MS, STREAM_LAST_MS,
-    icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
+    icons: ICONS, lights: LIGHTS, TIGHT_UNITS, KEY_PROBLEMS, COLORS, scaled, formatNumber, formatValue, decimalsSetting, valueGlyph, undoTextZoom, el, setMask, tileNames, timeFormatter,
     getTimeFormat, setTimeFormat, wireTimeFormat, setTileShadow, takeTileShadow, wireTileShadow, uses12Hours, clockTime, hourLabel, smoothValues,
     formatSince, baseTitle, lowestSlot, parseSpan, timeSpan, isTimeSpan, sixHourLog, spanSetting, slotId, wireFrame, wireRefresh, wireHaptic, pressGuard, markOffline, getDeviceIds, wireTileNames, touchGuard, onTap, messageLine, wireDeviceState,
     onDeviceNames, temperatureIn, colorStyle, applyColors, isCustomColor, customInk, paintColor, sound, optimistic, shake, translator, heightReporter, svgIcon, wireBar, roomTiles, knownValue, okRange, okLevel,

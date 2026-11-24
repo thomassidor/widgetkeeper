@@ -21,6 +21,7 @@ window.mountCombinedWidget = function (Homey, { root, frame }) {
     t: (key, tokens) => Homey.__(key, tokens),
     show: settings.show,
     name: settings.name,
+    decimals: settings.decimals,
     okRange: settings.okRange,
     range: settings.showRange !== false,
     chart: settings.chart !== false,

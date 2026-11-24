@@ -8,7 +8,7 @@
  * typed name stands for the device everywhere the widget names it. Plain browser JS (served as-is).
  */
 (function () {
-  const { el, COLORS, TIGHT_UNITS, formatNumber, scaled, valueGlyph, setMask, applyColors, messageLine, okRange, okLevel, onTap, tileNames, shake } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, COLORS, TIGHT_UNITS, formatNumber, decimalsSetting, scaled, valueGlyph, setMask, applyColors, messageLine, okRange, okLevel, onTap, tileNames, shake } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -89,7 +89,7 @@
 
   /**
    * @param {HTMLElement} root
-   * @param {{ t?: (key: string, tokens?: object) => string, show?: string, name?: string, range?: boolean, chart?: boolean,
+   * @param {{ t?: (key: string, tokens?: object) => string, show?: string, name?: string, decimals?: string|number, range?: boolean, chart?: boolean,
    *   okRange?: string, greenWhenFine?: boolean, tileStyle?: string, color?: string, colorStyle?: string, onHeight?: (h: number) => void,
    *   onTap?: () => void, renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any> }} opts
    */
@@ -165,7 +165,10 @@
     }
 
     /** A number as the tiles show it (`averaged`: three significant digits within the decimals). */
-    const num = (v, averaged = false) => formatNumber(state.capability, v, averaged).replace(/^-/, '−');
+    // The Decimals setting (`opts.decimals`; Automatic: the capability's, an average to three significant digits).
+    const digits = decimalsSetting(opts.decimals);
+    const shownCap = () => (digits == null ? state.capability : { ...state.capability, digits });
+    const num = (v, averaged = false) => formatNumber(shownCap(), v, averaged).replace(/^-/, '−');
     const units = () => state.capability.units || '';
     const withUnits = (s) => {
       const u = units();
@@ -228,7 +231,7 @@
       if (counts(d)) return withUnits(num(d.value));
       const u = d.otherUnits;
       return typeof d.value === 'number' && isFinite(d.value) && u != null
-        ? `${formatNumber({ ...state.capability, units: u, min: null, max: null }, d.value).replace(/^-/, '−')}${u ? (TIGHT_UNITS.test(u) ? u : ` ${u}`) : ''}` : '–';
+        ? `${formatNumber({ ...shownCap(), units: u, min: null, max: null }, d.value).replace(/^-/, '−')}${u ? (TIGHT_UNITS.test(u) ? u : ` ${u}`) : ''}` : '–';
     }
 
     function renderList(read, c, f) {

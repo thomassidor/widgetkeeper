@@ -124,14 +124,8 @@
         const header = typeof c.header === 'string' && c.header.trim() ? c.header.trim()
           : known ? (typeof known.label === 'string' ? known.label : t(known.label.key))
             : d.units && d.units.length <= 4 ? d.units : d.title;
-        return { ...d, header, range: okRange(c.range, d), digits: pickedDigits(c.decimals) };
+        return { ...d, header, range: okRange(c.range, d), digits: window.WidgetkeeperKit.decimalsSetting(c.decimals) };
       });
-    }
-
-    /** A column's Decimals setting: 0, 1 or 2, else null (Automatic, also on widgets placed before it). */
-    function pickedDigits(value) {
-      const n = typeof value === 'number' ? value : typeof value === 'string' && /^[0-2]$/.test(value) ? Number(value) : NaN;
-      return n === 0 || n === 1 || n === 2 ? n : null;
     }
 
     /**

@@ -15,7 +15,7 @@ window.mountValuesWidget = function (Homey, { root, frame }) {
   // Each slot setting is an autocomplete item whose id is `<deviceId>:<capabilityId>`, and so is its second value (`secondN`),
   // which counts only while it's another value of the same device: Tile N may have been changed since.
   const pairs = [1, 2, 3, 4, 5, 6]
-    .map(n => ({ slot: slotId(settings[`slot${n}`]), second: slotId(settings[`second${n}`]) }))
+    .map(n => ({ slot: slotId(settings[`slot${n}`]), second: slotId(settings[`second${n}`]), decimals: settings[`decimals${n}`] }))
     .filter(p => p.slot);
   const slots = pairs.map(p => p.slot);
   const seconds = pairs.map(({ slot, second }) => {
@@ -41,6 +41,7 @@ window.mountValuesWidget = function (Homey, { root, frame }) {
     redBelow: settings.redBelow,
     yellowBelow: settings.yellowBelow,
     wideLast: settings.wideLast === true,
+    decimals: pairs.map(p => p.decimals), // each tile's Decimals setting, in the slots' order
     labels,
     onHeight: link.setHeight,
   });

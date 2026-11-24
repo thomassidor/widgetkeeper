@@ -73,6 +73,17 @@ describe('the Combined Value widget', () => {
     expect(line()).toBe(line_);
   });
 
+  it('rounds the value, the range and the list to the Decimals setting; Automatic as the capability', () => {
+    const fixed = (n: number, d: number) => n.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d });
+    const zero = widget({ capability: TEMP, devices: temps() }, { decimals: '0' });
+    expect(zero.value()).toBe('22°C'); // 21.5
+    expect(zero.line()).toBe('20–23°C');
+    zero.w.toggle();
+    expect(zero.all('.cv-row-value').map(r => r.textContent)).toEqual(['20°C', '22°C', '23°C']);
+    expect(widget({ capability: TEMP, devices: temps() }, { decimals: '2' }).value()).toBe(`${fixed(21.5, 2)}°C`);
+    expect(widget({ capability: TEMP, devices: temps() }, { decimals: 'auto' }).value()).toBe(`${num(21.5, 1)}°C`);
+  });
+
   it('Lowest – highest is the value itself, so the line is left out and the name centred', () => {
     const { value, line, q } = widget({ capability: TEMP, devices: temps() }, { show: 'range' });
     expect(value()).toBe(`${num(19.6, 1)}–${num(23.1, 1)}°C`);

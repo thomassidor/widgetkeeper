@@ -83,6 +83,14 @@ describe('render', () => {
     expect(text('.sl-min')).toEqual([`↓${(1304).toLocaleString()}`]);
   });
 
+  it("rounds the value, the high and the low to the tile's Decimals setting, by position", () => {
+    const fixed = (n: number, d: number) => n.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d });
+    const { text } = widget([temp(), temp()], { decimals: ['0', '2'] });
+    expect(text('.sl-value')).toEqual(['22°C', `${fixed(21.5, 2)}°C`]);
+    expect(text('.sl-max')).toEqual(['↑23', `↑${fixed(23.1, 2)}`]);
+    expect(text('.sl-min')).toEqual(['↓19', `↓${fixed(19.4, 2)}`]);
+  });
+
   it('uses the span: older points are left out', () => {
     const { text } = widget([temp()], { span: '6h' });
     // Only the last point and the current value are in the last 6 hours.

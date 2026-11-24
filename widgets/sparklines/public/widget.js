@@ -4,7 +4,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, formatNumber, formatValue, valueGlyph: glyph, applyColors, timeSpan, isTimeSpan, sixHourLog, messageLine, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, formatNumber, formatValue, decimalsSetting, valueGlyph: glyph, applyColors, timeSpan, isTimeSpan, sixHourLog, messageLine, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -68,7 +68,7 @@
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, color?: string, smooth?: boolean, t?: (key: string, tokens?: object) => string, span?: string, columns?: number|string,
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
-   *   now?: () => number, labels?: Record<string, string>, onHeight?: (h: number) => void }} opts
+   *   now?: () => number, decimals?: (string|number|undefined)[], labels?: Record<string, string>, onHeight?: (h: number) => void }} opts
    */
   function createSparklinesWidget(root, opts = {}) {
     const t = window.WidgetkeeperKit.translator('sparklines', DEFAULT_STRINGS, opts);
@@ -155,7 +155,7 @@
         const max = el('span', { class: 'sl-max' }, range);
         const min = el('span', { class: 'sl-min' }, range);
         const name = el('span', { class: 'sl-name', dir: 'auto' }, node);
-        tile = { tile: node, icon, value, plot, area, line, dot, max, min, name };
+        tile = { tile: node, icon, value, plot, area, line, dot, max, min, name, digits: null };
         tiles.set(key, tile);
       }
       return tile;
@@ -181,9 +181,14 @@
       tile.dot.style.display = p ? '' : 'none';
       if (p) { tile.dot.setAttribute('cx', String(p.dot.x)); tile.dot.setAttribute('cy', String(p.dot.y)); }
       // The history's points are averages, so the high and low are rounded (`averaged`); the value on top isn't.
-      tile.max.textContent = p ? `↑${formatNumber(s.capability, p.max, true)}` : '';
-      tile.min.textContent = p ? `↓${formatNumber(s.capability, p.min, true)}` : '';
+      // A tile's Decimals setting (`tile.digits`, set by `render()`) rounds all three alike.
+      const cap = capOf(tile, s);
+      tile.max.textContent = p ? `↑${formatNumber(cap, p.max, true)}` : '';
+      tile.min.textContent = p ? `↓${formatNumber(cap, p.min, true)}` : '';
     }
+
+    /** The slot's capability, with the tile's Decimals setting as `digits` when one is picked. */
+    const capOf = (tile, s) => (tile.digits == null ? s.capability : { ...s.capability, digits: tile.digits });
 
     const reportHeight = window.WidgetkeeperKit.heightReporter(root, opts);
     function render() {
@@ -206,7 +211,8 @@
           const field = names.field(named[i], s.name);
           if (field.previousSibling !== tile.name) tile.name.after(field);
         }
-        tile.value.textContent = missing ? '' : formatValue(s.capability, s.value);
+        tile.digits = decimalsSetting(opts.decimals && opts.decimals[i]);
+        tile.value.textContent = missing ? '' : formatValue(capOf(tile, s), s.value);
         setMask(tile.icon, iconFor(s));
         drawChart(tile, s);
         tile.tile.classList.toggle('missing', missing);

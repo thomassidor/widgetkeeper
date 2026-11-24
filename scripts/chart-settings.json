@@ -2243,19 +2243,19 @@
       "id": "slot{n}",
       "type": "autocomplete",
       "title": {
-        "en": "Tile {n}",
-        "nl": "Tegel {n}",
-        "de": "Kachel {n}",
-        "fr": "Tuile {n}",
-        "it": "Riquadro {n}",
-        "sv": "Ruta {n}",
-        "no": "Flis {n}",
-        "es": "Mosaico {n}",
-        "da": "Felt {n}",
-        "ru": "Плитка {n}",
-        "pl": "Kafelek {n}",
-        "ko": "타일 {n}",
-        "ar": "البلاطة {n}"
+        "en": "Tile {n}: value",
+        "nl": "Tegel {n}: waarde",
+        "de": "Kachel {n}: Wert",
+        "fr": "Tuile {n} : valeur",
+        "it": "Riquadro {n}: valore",
+        "sv": "Ruta {n}: värde",
+        "no": "Flis {n}: verdi",
+        "es": "Mosaico {n}: valor",
+        "da": "Felt {n}: værdi",
+        "ru": "Плитка {n}: значение",
+        "pl": "Kafelek {n}: wartość",
+        "ko": "타일 {n}: 값",
+        "ar": "البلاطة {n}: القيمة"
       },
       "hint": {
         "en": "Pick a value for each tile. Only numbers with Insights history are listed; empty tiles are left out.",
@@ -2272,6 +2272,115 @@
         "ko": "타일마다 값을 선택하세요. Insights 기록이 있는 숫자만 나열되며, 빈 타일은 표시되지 않습니다.",
         "ar": "اختر قيمة لكل بلاطة. تظهر فقط الأرقام التي لها سجل في Insights، وتُحذف البلاطات الفارغة."
       }
+    },
+    "sparklines.decimals": {
+      "id": "decimals{n}",
+      "type": "dropdown",
+      "value": "auto",
+      "title": {
+        "en": "  – Decimals",
+        "nl": "  – Decimalen",
+        "de": "  – Nachkommastellen",
+        "fr": "  – Décimales",
+        "it": "  – Decimali",
+        "sv": "  – Decimaler",
+        "no": "  – Desimaler",
+        "es": "  – Decimales",
+        "da": "  – Decimaler",
+        "ru": "  – Знаки после запятой",
+        "pl": "  – Miejsca po przecinku",
+        "ko": "  – 소수점 자리",
+        "ar": "  – المنازل العشرية"
+      },
+      "hint": {
+        "en": "Automatic: as the device reports it.",
+        "nl": "Automatisch: zoals het apparaat het meldt.",
+        "de": "Automatisch: wie das Gerät ihn meldet.",
+        "fr": "Automatique : comme l'appareil la donne.",
+        "it": "Automatico: come lo riporta il dispositivo.",
+        "sv": "Automatiskt: som enheten rapporterar det.",
+        "no": "Automatisk: slik enheten rapporterer den.",
+        "es": "Automático: como lo indica el dispositivo.",
+        "da": "Automatisk: som enheden rapporterer den.",
+        "ru": "Автоматически: как сообщает устройство.",
+        "pl": "Automatycznie: tak, jak podaje urządzenie.",
+        "ko": "자동: 기기가 보내는 대로.",
+        "ar": "تلقائي: كما يرسلها الجهاز."
+      },
+      "values": [
+        {
+          "id": "auto",
+          "title": {
+            "en": "Automatic",
+            "nl": "Automatisch",
+            "de": "Automatisch",
+            "fr": "Automatique",
+            "it": "Automatico",
+            "sv": "Automatiskt",
+            "no": "Automatisk",
+            "es": "Automático",
+            "da": "Automatisk",
+            "ru": "Автоматически",
+            "pl": "Automatycznie",
+            "ko": "자동",
+            "ar": "تلقائي"
+          }
+        },
+        {
+          "id": "0",
+          "title": {
+            "en": "0",
+            "nl": "0",
+            "de": "0",
+            "fr": "0",
+            "it": "0",
+            "sv": "0",
+            "no": "0",
+            "es": "0",
+            "da": "0",
+            "ru": "0",
+            "pl": "0",
+            "ko": "0",
+            "ar": "0"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "1",
+            "nl": "1",
+            "de": "1",
+            "fr": "1",
+            "it": "1",
+            "sv": "1",
+            "no": "1",
+            "es": "1",
+            "da": "1",
+            "ru": "1",
+            "pl": "1",
+            "ko": "1",
+            "ar": "1"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "2",
+            "nl": "2",
+            "de": "2",
+            "fr": "2",
+            "it": "2",
+            "sv": "2",
+            "no": "2",
+            "es": "2",
+            "da": "2",
+            "ru": "2",
+            "pl": "2",
+            "ko": "2",
+            "ar": "2"
+          }
+        }
+      ]
     },
     "totals.show": {
       "id": "show",
@@ -3743,8 +3852,13 @@
       },
       "sparklines.colorStyle",
       "sparklines.slot:1",
+      "sparklines.decimals:1",
       {
         "use": "sparklines.slot:2",
+        "hint": null
+      },
+      {
+        "use": "sparklines.decimals:2",
         "hint": null
       },
       {
@@ -3752,7 +3866,15 @@
         "hint": null
       },
       {
+        "use": "sparklines.decimals:3",
+        "hint": null
+      },
+      {
         "use": "sparklines.slot:4",
+        "hint": null
+      },
+      {
+        "use": "sparklines.decimals:4",
         "hint": null
       },
       {
@@ -3760,7 +3882,15 @@
         "hint": null
       },
       {
+        "use": "sparklines.decimals:5",
+        "hint": null
+      },
+      {
         "use": "sparklines.slot:6",
+        "hint": null
+      },
+      {
+        "use": "sparklines.decimals:6",
         "hint": null
       }
     ],

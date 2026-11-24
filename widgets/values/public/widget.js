@@ -5,7 +5,7 @@
  * Plain browser JS (served as-is).
  */
 (function () {
-  const { el, tileNames, formatValue, valueGlyph: glyph, applyColors, paintColor, messageLine, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
+  const { el, tileNames, formatValue, decimalsSetting, valueGlyph: glyph, applyColors, paintColor, messageLine, markOffline } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
   'use strict';
 
   const DEFAULT_STRINGS = {
@@ -88,7 +88,7 @@
    * @param {{ t?: (key: string, tokens?: object) => string, columns?: number|string, tileStyle?: string, colorStyle?: string,
    *   percentFill?: boolean, redBelow?: number|string, yellowBelow?: number|string,
    *   renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
-   *   wideLast?: boolean, labels?: Record<string, string>, onHeight?: (h: number) => void }} opts
+   *   wideLast?: boolean, decimals?: (string|number|undefined)[], labels?: Record<string, string>, onHeight?: (h: number) => void }} opts
    */
   function createValuesWidget(root, opts = {}) {
     const t = window.WidgetkeeperKit.translator('values', DEFAULT_STRINGS, opts);
@@ -205,7 +205,9 @@
           const field = typed.field(named[i], s.name);
           if (field.previousSibling !== tile.name) tile.name.after(field);
         }
-        tile.value.textContent = missing ? '' : formatValue(s.capability, s.value, t);
+        // The tile's Decimals setting, by position (`opts.decimals`), for its value only: the second is another value.
+        const digits = decimalsSetting(opts.decimals && opts.decimals[i]);
+        tile.value.textContent = missing ? '' : formatValue(digits == null ? s.capability : { ...s.capability, digits }, s.value, t);
         setMask(tile.icon, iconFor(s));
         // The second value: another of the device's values, as text only (the first decides the tile's colour).
         const second = !missing && s.second ? s.second : null;
