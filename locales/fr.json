@@ -1667,6 +1667,7 @@
     "builderEditReady": "Modifier le composant prêt",
     "builderDetach": "Détacher",
     "builderDeleteReady": "Supprimer __name__",
+    "builderUseDeviceHint": "Ses valeurs de l’appareil du widget affichent celui-ci à la place. Vide : celui du widget.",
     "builderAnyDevice": "Appareil du widget",
     "builderAnyDeviceHint": "Pour n'importe quel appareil : rempli avec l'appareil choisi là où le widget est placé, ou avec chacun de ceux d'un Répéteur.",
     "builderAnyDeviceOf": "Appareil du widget (ici __name__)",

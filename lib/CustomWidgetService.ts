@@ -300,10 +300,10 @@ export default class CustomWidgetService {
       const devices = part ? await this.eachDevices(p).catch((err) => { this.log('Widget Builder: a repeater\'s devices failed:', err); return [] as string[]; }) : [];
       return [p.id, { part, devices }] as const;
     })));
-    // A linked ready-made: its source once, filled in with the widget's device (`@` where there's none).
+    // A linked ready-made: its source once, filled in with its own device, else the widget's (`@` where there's none).
     for (const p of allParts(design).filter(x => x.kind === 'use')) {
       const part = this.readyPart(p);
-      each[p.id] = { part, devices: part ? [usable(device)] : [] };
+      each[p.id] = { part, devices: part ? [p.device ?? usable(device)] : [] };
     }
     const reads: Design = {
       ...design,
@@ -376,7 +376,8 @@ export default class CustomWidgetService {
     if (inner !== undefined) {
       const ready = part?.kind === 'each' || part?.kind === 'use' ? this.readyPart(part) : null;
       // A Repeater's copy acts for one of its devices; a linked ready-made for the widget's, as the design's own parts.
-      if (!part || !ready || !dev || (part.kind === 'each' && !(await this.eachDevices(part)).includes(dev))) throw new Error('No such part');
+      if (!part || !ready || !dev || (part.kind === 'each' && !(await this.eachDevices(part)).includes(dev))
+        || (part.kind === 'use' && part.device && dev !== part.device)) throw new Error('No such part');
       const copy = bindDevice({ id: '', name: '', updatedAt: 0, parts: [ready] } as Design, dev);
       part = findPart(copy, inner);
     }

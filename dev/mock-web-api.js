@@ -166,8 +166,8 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
           // A linked ready-made: its source once, with the preview's device.
           const ready = designs.find(d => d.id === x.ready && d.ready);
           const part = ready && ready.parts[0] ? ready.parts[0] : null;
-          each[x.id] = { part, devices: part ? [saved.sample || '@'] : [] };
-          if (part) copies.push(bind(part, saved.sample));
+          each[x.id] = { part, devices: part ? [x.device || saved.sample || '@'] : [] };
+          if (part) copies.push(bind(part, x.device || saved.sample));
         }
         eachPart(x.parts);
       }

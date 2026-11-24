@@ -1667,6 +1667,7 @@
     "builderEditReady": "Editar el prediseñado",
     "builderDetach": "Desvincular",
     "builderDeleteReady": "Eliminar __name__",
+    "builderUseDeviceHint": "Sus valores del dispositivo del widget muestran este en su lugar. Vacío: el del widget.",
     "builderAnyDevice": "Dispositivo del widget",
     "builderAnyDeviceHint": "Sirve para cualquier dispositivo: se rellena con el que se elija donde se coloque el widget, o con cada uno de un Repetidor.",
     "builderAnyDeviceOf": "Dispositivo del widget (aquí __name__)",

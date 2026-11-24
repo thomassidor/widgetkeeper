@@ -1667,6 +1667,7 @@
     "builderEditReady": "Modifica il pronto",
     "builderDetach": "Scollega",
     "builderDeleteReady": "Elimina __name__",
+    "builderUseDeviceHint": "I suoi valori del dispositivo del widget mostrano invece questo. Vuoto: quello del widget.",
     "builderAnyDevice": "Dispositivo del widget",
     "builderAnyDeviceHint": "Per qualsiasi dispositivo: riempito con il dispositivo scelto dove si mette il widget, o con ciascuno di un Ripetitore.",
     "builderAnyDeviceOf": "Dispositivo del widget (qui __name__)",

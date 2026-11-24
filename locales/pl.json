@@ -1667,6 +1667,7 @@
     "builderEditReady": "Edytuj gotowy",
     "builderDetach": "Odłącz",
     "builderDeleteReady": "Usuń __name__",
+    "builderUseDeviceHint": "Jego wartości urządzenia widżetu pokazują zamiast tego to urządzenie. Puste: urządzenie widżetu.",
     "builderAnyDevice": "Urządzenie widżetu",
     "builderAnyDeviceHint": "Dla dowolnego urządzenia: wypełniane urządzeniem wybranym tam, gdzie stoi widżet, albo każdym z urządzeń Powielacza.",
     "builderAnyDeviceOf": "Urządzenie widżetu (tu __name__)",

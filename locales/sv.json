@@ -1667,6 +1667,7 @@
     "builderEditReady": "Redigera den färdiga",
     "builderDetach": "Koppla loss",
     "builderDeleteReady": "Ta bort __name__",
+    "builderUseDeviceHint": "Dess värden från widgetens enhet visar den här i stället. Tom: widgetens egen.",
     "builderAnyDevice": "Widgetens enhet",
     "builderAnyDeviceHint": "Fungerar med alla enheter: fylls i med enheten som väljs där widgeten placeras, eller med var och en av en Upprepares.",
     "builderAnyDeviceOf": "Widgetens enhet (här __name__)",

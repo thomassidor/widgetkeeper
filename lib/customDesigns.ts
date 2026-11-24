@@ -324,6 +324,8 @@ export type Part = {
    * picked (`devices`), or every device with `capability` (in `zone`), each filling in the component's `@` values.
    */
   ready?: string,
+  /** A linked ready-made's own device for its `@` values (`use`); without one, the widget's. */
+  device?: string,
   devices?: string[],
 };
 
@@ -820,6 +822,9 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', spa
       // A linked ready-made: its source's component as it is now, in this box (`renewIds()` turns it into a copy).
       const ready = typeof r.ready === 'string' && ID.test(r.ready) && !isReservedKey(r.ready) ? r.ready : '';
       if (ready) p.ready = ready;
+      // Its own device for the ready-made's values of the widget's device (`@`); without one, the widget's.
+      const device = idOf(r.device, 100);
+      if (device && device !== '@') p.device = device;
       break;
     }
     case 'each': {

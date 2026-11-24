@@ -683,6 +683,18 @@ describe('linked ready-mades (2026-11-24, the user: delete your own, and detach 
     expect((await service.getState('host') as any).each.u.devices).toEqual(['@']);
   });
 
+  it('shows a linked ready-made with its own device, and acts only for that one', async () => {
+    expect(readPart({ kind: 'use', ready: 'tile', device: '@' })).not.toHaveProperty('device');
+    const devices = [lamp('l1', 'Lamp', true), lamp('l2', 'Other', false)];
+    const own = { id: 'own', name: 'Own', parts: [part('u', 'use', { ready: 'tile', device: 'l2' })] };
+    const { service, deps } = setup([READY, own], devices);
+    expect((await service.getState('own', 'l1') as any).each.u.devices).toEqual(['l2']);
+    expect(deps.values.getState.mock.calls.at(-1)![0]).toEqual(['l2:onoff']);
+    await service.setValue('own', 'u/sw', true, undefined, 'l2');
+    expect((devices[1] as any).sent).toEqual(['onoff=true']);
+    await expect(service.setValue('own', 'u/sw', true, undefined, 'l1')).rejects.toThrow('No such part');
+  });
+
   it("turns a deleted ready-made's linked instances into copies of their own, except a container inside a container", () => {
     const { service } = setup([READY, HOST]);
     expect(service.remove('tile')).toEqual({ removed: true });

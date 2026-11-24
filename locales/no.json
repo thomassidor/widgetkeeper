@@ -1667,6 +1667,7 @@
     "builderEditReady": "Rediger den ferdige",
     "builderDetach": "Koble fra",
     "builderDeleteReady": "Slett __name__",
+    "builderUseDeviceHint": "Verdiene fra widgetens enhet viser denne i stedet. Tom: widgetens egen.",
     "builderAnyDevice": "Widgetens enhet",
     "builderAnyDeviceHint": "Virker med alle enheter: fylles ut med enheten som velges der widgeten plasseres, eller med hver av en Gjentakers.",
     "builderAnyDeviceOf": "Widgetens enhet (her __name__)",

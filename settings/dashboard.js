@@ -384,6 +384,7 @@
     builderEditReady: "Edit the ready-made",
     builderDetach: "Detach",
     builderDeleteReady: "Delete __name__",
+    builderUseDeviceHint: "Its values of the widget's device show this one instead. Empty: the widget's own.",
     builderAnyDevice: "The widget's device",
     builderAnyDeviceHint: "Works with any device: filled in with the device picked where the widget is placed, or with each of a Repeater's.",
     builderAnyDeviceOf: "Widget's device (here __name__)",

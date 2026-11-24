@@ -634,7 +634,11 @@
       const box = b.sampleNode;
       if (!box) return;
       box.textContent = '';
-      box.hidden = !JSON.stringify(b.design.parts).includes('"@:');
+      // Its own parts, or a linked ready-made without a device of its own whose ready-made uses it.
+      box.hidden = !usesAnyDevice(b.design.parts) && !everyPart().some((p) => {
+        const d = p.kind === 'use' && !p.device && sourceOf(p);
+        return d && usesAnyDevice(d.parts);
+      });
       if (box.hidden) return;
       const dev = (b.devices || []).find(d => d.id === b.design.sample);
       const pick = button('wd-btn small', '', async () => {
@@ -1477,6 +1481,24 @@
       open.addEventListener('click', async (e) => { e.preventDefault(); await flush(); location.hash = open.getAttribute('href'); });
       actions.append(button('wd-btn small', t('builderDetach'), () => detach(p)), open);
       body.append(actions);
+      // Its own device, where the ready-made works with any device; without one, the widget's.
+      if (!usesAnyDevice(d.parts)) return;
+      const dev = p.device && (b.devices || []).find(x => x.id === p.device);
+      const line = el('div', 'wd-row');
+      line.append(button('wd-btn wd-choice', p.device ? (dev ? dev.name : t('missingDevice')) : t('builderAnyDevice'), async () => {
+        try {
+          const items = await request('GET', '/web/devices?type=custom');
+          wd.chooseDevices({ devices: { singular: true } }, items, p.device ? [p.device] : [], ids => change(() => { if (ids[0]) p.device = ids[0]; }));
+        } catch (err) { failed(err); }
+      }));
+      if (p.device) line.append(button('wd-btn quiet small', t('clear'), () => change(() => { delete p.device; })));
+      body.append(row(t('builderDevice'), line, t('builderUseDeviceHint')));
+    }
+
+    /** Whether parts use the widget's device (`@`) anywhere. */
+    function usesAnyDevice(parts) {
+      const json = JSON.stringify(parts);
+      return json.includes('"@:') || json.includes('"device":"@"');
     }
 
     function partTab(body, p, parent) {

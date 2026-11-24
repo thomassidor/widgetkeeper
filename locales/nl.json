@@ -1667,6 +1667,7 @@
     "builderEditReady": "Kant-en-klare bewerken",
     "builderDetach": "Ontkoppelen",
     "builderDeleteReady": "__name__ verwijderen",
+    "builderUseDeviceHint": "Zijn waarden van het apparaat van de widget tonen dit apparaat. Leeg: dat van de widget.",
     "builderAnyDevice": "Apparaat van de widget",
     "builderAnyDeviceHint": "Werkt met elk apparaat: ingevuld met het apparaat dat je kiest waar de widget staat, of met elk apparaat van een Herhaler.",
     "builderAnyDeviceOf": "Apparaat van de widget (hier __name__)",

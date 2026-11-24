@@ -1667,6 +1667,7 @@
     "builderEditReady": "기성 구성 요소 편집",
     "builderDetach": "연결 해제",
     "builderDeleteReady": "__name__ 삭제",
+    "builderUseDeviceHint": "위젯 기기의 값 대신 이 기기를 표시합니다. 비우면 위젯의 기기입니다.",
     "builderAnyDevice": "위젯의 기기",
     "builderAnyDeviceHint": "어떤 기기에도 쓸 수 있습니다: 위젯을 놓을 때 고른 기기, 또는 반복기의 각 기기로 채워집니다.",
     "builderAnyDeviceOf": "위젯의 기기 (여기서는 __name__)",

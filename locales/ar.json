@@ -1667,6 +1667,7 @@
     "builderEditReady": "تعديل الجاهز",
     "builderDetach": "فصل",
     "builderDeleteReady": "حذف __name__",
+    "builderUseDeviceHint": "تعرض قيمه من جهاز الأداة هذا الجهاز بدلًا منه. فارغ: جهاز الأداة.",
     "builderAnyDevice": "جهاز الأداة",
     "builderAnyDeviceHint": "يعمل مع أي جهاز: يُملأ بالجهاز المختار حيث توضع الأداة، أو بكل جهاز من أجهزة المكرِّر.",
     "builderAnyDeviceOf": "جهاز الأداة (هنا __name__)",

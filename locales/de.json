@@ -1667,6 +1667,7 @@
     "builderEditReady": "Fertigteil bearbeiten",
     "builderDetach": "Trennen",
     "builderDeleteReady": "__name__ löschen",
+    "builderUseDeviceHint": "Seine Werte des Widget-Geräts zeigen stattdessen dieses. Leer: das des Widgets.",
     "builderAnyDevice": "Gerät des Widgets",
     "builderAnyDeviceHint": "Für jedes Gerät: gefüllt mit dem Gerät, das beim Platzieren des Widgets gewählt wird, oder mit jedem eines Wiederholers.",
     "builderAnyDeviceOf": "Gerät des Widgets (hier __name__)",
