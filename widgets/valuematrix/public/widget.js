@@ -55,7 +55,7 @@
 
   /**
    * @param {HTMLElement} root
-   * @param {{ colorStyle?: string, rows?: string, showLegend?: boolean, greenWhenFine?: boolean, columns?: {capabilityId: string, title?: string, range?: string, header?: string}[],
+   * @param {{ colorStyle?: string, rows?: string, showLegend?: boolean, greenWhenFine?: boolean, columns?: {capabilityId: string, title?: string, range?: string, header?: string, decimals?: string | number}[],
    *   t?: (key: string, tokens?: object) => string, locale?: string, renameTiles?: boolean,
    *   onRename?: (key: string, name: string) => Promise<any>, onHeight?: (h: number) => void }} opts
    */
@@ -124,17 +124,24 @@
         const header = typeof c.header === 'string' && c.header.trim() ? c.header.trim()
           : known ? (typeof known.label === 'string' ? known.label : t(known.label.key))
             : d.units && d.units.length <= 4 ? d.units : d.title;
-        return { ...d, header, range: okRange(c.range, d) };
+        return { ...d, header, range: okRange(c.range, d), digits: pickedDigits(c.decimals) };
       });
     }
 
+    /** A column's Decimals setting: 0, 1 or 2, else null (Automatic, also on widgets placed before it). */
+    function pickedDigits(value) {
+      const n = typeof value === 'number' ? value : typeof value === 'string' && /^[0-2]$/.test(value) ? Number(value) : NaN;
+      return n === 0 || n === 1 || n === 2 ? n : null;
+    }
+
     /**
-     * A value in the device locale, to the column's decimals (at most one; up to one when it has none). With more than
-     * four columns the cells are narrow, so without a thousands separator.
+     * A value in the device locale, to the column's Decimals setting, else to the capability's decimals (at most one;
+     * up to one when it has none). With more than four columns the cells are narrow, so without a thousands separator.
      */
     function formatNumber(column, value, many) {
       if (typeof value !== 'number' || !isFinite(value)) return '–';
-      const digits = column.decimals != null ? Math.max(0, Math.min(column.decimals, 1)) : null;
+      const digits = column.digits != null ? column.digits
+        : column.decimals != null ? Math.max(0, Math.min(column.decimals, 1)) : null;
       return value.toLocaleString(opts.locale, {
         ...(digits != null ? { minimumFractionDigits: digits, maximumFractionDigits: digits } : { maximumFractionDigits: 1 }),
         useGrouping: !many,

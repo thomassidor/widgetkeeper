@@ -13,12 +13,12 @@ window.mountValueMatrixWidget = function (Homey, { root, frame }) {
 
   const settings = Homey.getSettings() || {};
 
-  // The picked columns in order, skipping empty ones and `None`: the capability, its range and its header.
+  // The picked columns in order, skipping empty ones and `None`: the capability, its range, header and decimals.
   const columns = [];
   for (const n of COLUMNS) {
     const col = settings[`col${n}`];
     if (!col || !col.id || col.id === 'none') continue;
-    columns.push({ capabilityId: col.id, title: col.name, range: settings[`range${n}`], header: settings[`header${n}`] });
+    columns.push({ capabilityId: col.id, title: col.name, range: settings[`range${n}`], header: settings[`header${n}`], decimals: settings[`decimals${n}`] });
   }
 
   const tileNames = wireTileNames(Homey, names => widget.setNames(names));

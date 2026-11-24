@@ -335,6 +335,8 @@ const BUILD = {
       w('valuematrix', 'Power (no range, header "Watt") · battery >30 · deleted device',
         { ...cols(power, battery), header1: 'Watt', range2: '>30', rows: 'devices' }, [...plugs.slice(0, 3), ...batteries.slice(0, 3), MISSING]),
       w('valuematrix', 'Six columns · typed headers and ranges (no range on W)', { ...six, ...typed }, climate),
+      w('valuematrix', 'Decimals: °C 2, % 0, CO₂ 1, radon automatic',
+        { ...cols(temp, hum, co2, radon), decimals1: '2', decimals2: '0', decimals3: '1', decimals4: 'auto' }, climate),
       w('valuematrix', 'Unreadable range (plain column)', { ...cols(temp, hum), range1: 'warm', range2: '–' }, climate.slice(0, 4)),
       w('valuematrix', 'No values picked', {}, climate.slice(0, 3)),
       renaming('valuematrix', 'Rename tiles', cols(temp, hum), climate.slice(0, 3), climate.length ? { [`zone:${zoneOf(climate[0])}`]: 'Typed room name' } : {}),

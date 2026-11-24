@@ -23,7 +23,7 @@ const LIVING = { id: 'z1', name: 'Living room' };
 const BEDROOM = { id: 'z2', name: 'Bedroom' };
 const device = (id: string, zone: object | null, values: Record<string, number | null>) => ({ id, name: `Sensor ${id}`, zone, values });
 
-function widget(devices: any[], columns: { capabilityId: string, range?: string, header?: string }[], opts: object = {}) {
+function widget(devices: any[], columns: { capabilityId: string, range?: string, header?: string, decimals?: string }[], opts: object = {}) {
   const root = document.createElement('div');
   document.body.append(root);
   const w = win.createValueMatrixWidget(root, { columns, ...opts });
@@ -141,6 +141,20 @@ describe('createValueMatrixWidget', () => {
   it('drops the thousands separator with more than four columns', () => {
     const { cells } = widget([device('a', null, { [C]: 1640 })], [...four, { capabilityId: 'measure_power' }]);
     expect(cells(0)[2]).toEqual([num(1640, 0, false), 'far']);
+  });
+
+  it("rounds each column to its Decimals setting, else to the value's own decimals", () => {
+    const floats = { ...DESCRIBED[H], decimals: 1 };
+    const root = document.createElement('div');
+    document.body.append(root);
+    const columns = [{ capabilityId: T, decimals: '1' }, { capabilityId: H, decimals: '0' }, { capabilityId: C, decimals: '0' }, { capabilityId: 'measure_power', decimals: '2' }];
+    const w = win.createValueMatrixWidget(root, { columns });
+    w.setState({ columns: [DESCRIBED[T], floats, { ...DESCRIBED[C], decimals: 2 }, DESCRIBED.measure_power], devices: [device('a', null, { [T]: 20.34, [H]: 56.83, [C]: 779, measure_power: 3 })] });
+    expect([...root.querySelectorAll('.vm-row:not(.vm-head) .vm-cell')].map(c => c.textContent)).toEqual([num(20.3, 1), num(57), num(779), num(3, 2)]);
+    // Automatic (and a widget placed before the setting): the capability's decimals, at most one, as before.
+    const auto = widget([device('a', null, { [H]: 56.83 })], [{ capabilityId: H, decimals: 'auto' }, { capabilityId: H }]);
+    auto.w.setState({ columns: [floats, floats], devices: [device('a', null, { [H]: 56.83 })] });
+    expect(auto.cells(0).map(c => c[0])).toEqual([num(56.8, 1), num(56.8, 1)]);
   });
 
   it('labels the legend OK, Warning and Alert', () => {
