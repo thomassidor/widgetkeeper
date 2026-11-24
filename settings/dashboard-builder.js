@@ -163,6 +163,13 @@
       return (v && v.title) || id;
     }
 
+    /** A widget setting's title in Homey's language (the manifests are translated), or null. */
+    function settingTitle(type, id) {
+      const def = wd.types && wd.types.get(type);
+      const s = def && (def.settings || []).find(x => x.id === id);
+      return (s && s.title) || null;
+    }
+
     /** The builder now: the design being built, the selection, the view's choices, undo, the preview. */
     let b = null;
     /** The dashboard columns the design spans, and its grid's columns (four per dashboard column). */
@@ -304,7 +311,7 @@
       b = {
         design: clone(found), selected: keep ? keep.selected : null, libTab: keep ? keep.libTab : 'parts', tab: keep ? keep.tab : 'part',
         width: keep ? keep.width : 440, dark: wd.isDark(), vivid: keep ? keep.vivid : false,
-        query: '', undo: [], state: null, rev: 1, saveTimer: null, previewTimer: null, status: 'saved', node: null,
+        query: '', undo: [], redo: [], state: null, rev: 1, saveTimer: null, previewTimer: null, status: 'saved', node: null,
       };
       const page = el('div', 'wdb');
       page.append(library(), stage(), inspector());
@@ -328,10 +335,15 @@
       const status = el('span', 'wd-muted wdb-status', t('builderSaved'));
       status.setAttribute('role', 'status');
       b.statusNode = status;
-      const undo = button('wd-btn quiet', '', () => undoChange(), t('undo'));
-      undo.append(el('span', null, t('undo')));
+      // Undo and Redo as icons, their names as tooltips (Ctrl or ⌘ with Z, Shift+Z), so the bar fits a phone.
+      const undo = button('wd-icon', '', () => undoChange(), t('undo'));
+      undo.append(icon('undo'));
       undo.disabled = true;
       b.undoNode = undo;
+      const redo = button('wd-icon', '', () => redoChange(), t('redo'));
+      redo.append(icon('redo'));
+      redo.disabled = true;
+      b.redoNode = redo;
       const copy = button('wd-icon', '', () => duplicateDesign(), t('duplicate'));
       copy.append(icon('copy'));
       const remove = confirmButton('wd-icon wd-bar-delete', icon('trash'), () => deleteDesign(), t('tapAgain'), t('builderDelete'));
@@ -352,7 +364,7 @@
         mountPreview();
       }, t(b.dark ? 'builderLightMode' : 'builderDarkMode'));
       mode.append(icon(b.dark ? 'sun' : 'moon'));
-      end.append(status, mode, undo, copy, remove, place, done);
+      end.append(status, mode, undo, redo, copy, remove, place, done);
       const node = wd.bar(back, name, el('span', 'wd-spacer'), end);
       node.classList.add('wdb-bar');
       return node;
@@ -479,6 +491,7 @@
           node.removeEventListener('pointermove', move);
           node.removeEventListener('pointerup', up);
           node.removeEventListener('pointercancel', up);
+          node.removeEventListener('lostpointercapture', up);
           showCell(null);
           if (!ghost) return;
           ghost.remove();
@@ -490,6 +503,8 @@
         node.addEventListener('pointermove', move);
         node.addEventListener('pointerup', up);
         node.addEventListener('pointercancel', up);
+        // A capture lost without a pointerup (the window left mid-drag) ends it too, or the ghost would stay.
+        node.addEventListener('lostpointercapture', up);
       });
     }
 
@@ -586,7 +601,14 @@
 
     function partTitle(p) {
       const source = p.kind === 'use' && !p.name ? sourceOf(p) : null;
-      return p.name || (p.kind === 'text' && p.text ? p.text.slice(0, 30) : '') || (source && source.name) || kindName(p.kind);
+      return p.name || (p.kind === 'text' && p.text ? textTitle(p) : '') || (source && source.name) || kindName(p.kind);
+    }
+
+    /** A text's title: as typed, or with values in it (`{1}`) as the preview shows it now (`22.4 °C`). */
+    function textTitle(p) {
+      const n = /\{\d+\}/.test(p.text) && b && b.frame && nodeOf(p.id);
+      const shown = n ? n.textContent.replace(/\s+/g, ' ').trim() : '';
+      return (shown || p.text).slice(0, 30);
     }
 
     // ---- The stage: the design at its size --------------------------------------------------------------------
@@ -602,11 +624,19 @@
         }
         return g;
       };
+      // Each group under its name (the editor's Columns and Column width, the widgets' Colour style: no new strings).
+      const group = (label, control) => {
+        const g = el('div', 'wdb-toolgroup');
+        g.append(el('span', 'wdb-toollabel', label), control);
+        return g;
+      };
+      const spanSeg = seg([1, 2, 3].map(n => [n, t('builderSpanN', { n })]), spanOf(), (n) => setSpan(n));
+      b.spanSeg = spanSeg;
       tools.append(
         // How many dashboard columns it spans (its grid has four per column), and a column's width here.
-        seg([1, 2, 3].map(n => [n, t('builderSpanN', { n })]), spanOf(), (n) => setSpan(n)),
-        seg(WIDTHS.map(w => [w, `${w} px`]), b.width, (w) => { b.width = w; sizeCanvas(); }),
-        seg([[false, t('builderMuted')], [true, t('builderVivid')]], b.vivid, (v) => { b.vivid = v; mountPreview(); }),
+        group(t('columns'), spanSeg),
+        group(t('columnWidth'), seg(WIDTHS.map(w => [w, `${w} px`]), b.width, (w) => { b.width = w; sizeCanvas(); })),
+        group(settingTitle('values', 'colorStyle') || t('builderMuted'), seg([[false, t('builderMuted')], [true, t('builderVivid')]], b.vivid, (v) => { b.vivid = v; mountPreview(); })),
       );
       // A design that works with any device: which device the preview fills in.
       const sampleBox = el('div', 'wdb-sample');
@@ -623,7 +653,7 @@
       b.guide = guide;
       b.frame = frame;
       b.overlay = overlay;
-      overlay.addEventListener('pointerdown', (e) => { if (e.target === overlay) { select(null); } });
+      overlay.addEventListener('pointerdown', onOverlayDown);
       node.append(tools, canvas, el('p', 'wd-hint wdb-tip', t('builderTip')));
       frame.srcdoc = frameDoc();
       frame.addEventListener('load', () => mountPreview());
@@ -767,16 +797,29 @@
         if (!n) return;
         const r = n.getBoundingClientRect();
         if (!r.width && !r.height) return; // on another page of a pages container
-        const node = el('div', `wdb-box${p.kind === 'container' ? ' container' : ''}${parent ? ' kid' : ''}${b.selected === p.id ? ' on' : ''}${n.classList.contains('wb-hidden') ? ' hidden' : ''}`);
+        // A container's components take the pointer only once it's entered (it or one of them selected): until then a
+        // tap anywhere on it is the whole container's, and the hover shows that.
+        const sealed = parent && !entered(parent);
+        const node = el('div', `wdb-box${p.kind === 'container' ? ' container' : ''}${parent ? ' kid' : ''}${sealed ? ' sealed' : ''}${b.selected === p.id ? ' on' : ''}${n.classList.contains('wb-hidden') ? ' hidden' : ''}`);
         Object.assign(node.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
         node.style.borderRadius = n.ownerDocument.defaultView.getComputedStyle(n).borderRadius; // a pill's outline is round too
         node.title = partTitle(p);
-        node.addEventListener('pointerdown', e => startDrag(e, p, parent, 'move'));
         if (b.selected === p.id) {
-          const handle = el('span', 'wdb-handle');
-          handle.addEventListener('pointerdown', e => startDrag(e, p, parent, 'resize'));
-          node.append(handle);
-          if (p.kind === 'container') node.append(el('span', 'wdb-tag', t(p.mode === 'free' ? 'builderFree' : 'builderFine')));
+          // Every corner and, where the box is long enough for them, every edge; centred on the outline.
+          for (const dir of ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w']) {
+            const edge = dir.length === 1;
+            if (edge && ((dir === 'n' || dir === 's') ? r.width : r.height) < 48) continue;
+            // A narrow container's top edge holds its placement's label (its corners still resize it).
+            if (dir === 'n' && p.kind === 'container' && r.width < 280) continue;
+            if (!edge && dir !== 'se' && (r.width < 24 || r.height < 24)) continue;
+            const handle = el('span', `wdb-handle ${edge ? 'edge' : 'corner'} h-${dir}`);
+            handle.addEventListener('pointerdown', e => startDrag(e, p, parent, dir));
+            node.append(handle);
+          }
+          if (p.kind === 'container') {
+            // Its placement, a label on its top edge.
+            node.append(el('span', 'wdb-tag', t(p.mode === 'free' ? 'builderFree' : p.mode === 'pages' ? 'builderPages' : 'builderFine')));
+          }
         }
         o.append(node);
       };
@@ -785,6 +828,93 @@
         if (p.kind === 'container') for (const k of p.parts || []) box(k, p);
       }
       if (b.cell) showCell(b.cell);
+      if (b.dragGhost) drawDragGhost();
+    }
+
+    /** A container is entered while it or one of its components is selected: then a tap picks the component under it. */
+    const entered = box => !!b.selected && (b.selected === box.id || (box.parts || []).some(k => k.id === b.selected));
+
+    /**
+     * Every component under a point of the overlay, the topmost first: in the order they're drawn, a container's
+     * components over the container.
+     * @returns {{p: any, parent: any}[]}
+     */
+    function partsAt(x, y) {
+      const out = [];
+      const hit = (p, parent) => {
+        const n = nodeOf(p.id);
+        if (!n) return;
+        const r = n.getBoundingClientRect();
+        if (!r.width && !r.height) return;
+        if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) out.push({ p, parent });
+      };
+      for (const p of [...b.design.parts].reverse()) {
+        if (p.kind === 'container') for (const k of [...(p.parts || [])].reverse()) hit(k, p);
+        hit(p, null);
+      }
+      return out;
+    }
+
+    /**
+     * A press on the canvas: the first tap selects the whole thing under it (a container, with every component in it);
+     * once a container is entered, its component under the pointer. A tap on what's selected picks the next one under
+     * it (a container's component, one hidden behind another, then round again), and a drag moves what's selected. A tap
+     * on a selected pages container's tab or dot shows that page.
+     */
+    function onOverlayDown(e) {
+      if (e.button) return;
+      const o = b.overlay.getBoundingClientRect();
+      const x = e.clientX - o.left;
+      const y = e.clientY - o.top;
+      const stack = partsAt(x, y);
+      if (!stack.length) { if (b.selected) select(null); return; }
+      const i = stack.findIndex(s => s.p.id === b.selected);
+      const inside = i < 0 && stack.find(s => s.parent && entered(s.parent));
+      const pick = i >= 0 ? stack[i] : inside || stack.find(s => !s.parent) || stack[0];
+      const tab = pageTabAt(stack, e.clientX, e.clientY);
+      const wasSelected = i >= 0;
+      startDrag(e, pick.p, pick.parent, 'move', () => {
+        if (tab) { showEditPage(tab.box, tab.page); return; }
+        if (!wasSelected || stack.length < 2) return;
+        select(stack[(i + 1) % stack.length].p.id);
+      });
+    }
+
+    /** A pages container's tab or dot under a point (the frame's coordinates are the overlay's), or null. */
+    function pageTabAt(stack, cx, cy) {
+      const o = b.overlay.getBoundingClientRect();
+      for (const { p } of stack) {
+        if (p.kind !== 'container' || p.mode !== 'pages') continue;
+        const btns = [...(nodeOf(p.id) ? nodeOf(p.id).querySelectorAll('.wb-pagebtn') : [])];
+        const page = btns.findIndex((btn) => {
+          const r = btn.getBoundingClientRect();
+          return cx - o.left >= r.left && cx - o.left <= r.right && cy - o.top >= r.top && cy - o.top <= r.bottom;
+        });
+        if (page >= 0) return { box: p, page };
+      }
+      return null;
+    }
+
+    /** Shows (and edits) a pages container's page: the inspector's Editing page, or a tap on its tab in the preview. */
+    function showEditPage(box, page) {
+      (b.editPage || (b.editPage = {}))[box.id] = page;
+      if (b.widget && b.widget.showPage) b.widget.showPage(box.id, page);
+      // A component on another page lets go.
+      const sel = b.selected && findPart(b.selected);
+      if (sel && sel !== box && parentOf(sel.id) === box && (sel.page || 0) !== page) b.selected = box.id;
+      redrawInspector();
+      drawOverlay();
+    }
+
+    /** What a drag into another container (or out of its own) carries: its outline, following the pointer. */
+    function drawDragGhost() {
+      const g = b.dragGhost;
+      const old = b.overlay.querySelector('.wdb-dragghost');
+      if (old) old.remove();
+      if (!g) return;
+      const n = el('div', 'wdb-dragghost');
+      Object.assign(n.style, { left: `${g.left}px`, top: `${g.top}px`, width: `${g.width}px`, height: `${g.height}px`, borderRadius: g.radius });
+      b.overlay.append(n);
     }
 
     /** The grid a part moves on: its cell size in px, and where its box starts. */
@@ -799,7 +929,11 @@
       return { mode: 'grid', cols: FINE.cols, colW: (r.width - (FINE.cols - 1) * FINE.gap) / FINE.cols + FINE.gap, rowH: FINE.row, rows: Math.floor(r.height / FINE.row) };
     }
 
-    function startDrag(e, p, parent, how) {
+    /**
+     * A drag on the canvas: `how` is `move`, or the handle a resize starts from (`n`, `ne`, `e` … `nw`). `onClick` runs
+     * when the pointer comes up without having moved.
+     */
+    function startDrag(e, p, parent, how, onClick) {
       if (e.button) return;
       e.preventDefault();
       e.stopPropagation();
@@ -813,6 +947,11 @@
       const siblings = parent ? parent.parts : b.design.parts;
       const places = new Map(siblings.map(x => [x, { ...x.at }]));
       const start = { x: e.clientX, y: e.clientY };
+      // Its box as the drag starts, for the outline that follows the pointer out of its container.
+      const startNode = nodeOf(p.id);
+      const startBox = startNode ? startNode.getBoundingClientRect() : null;
+      const radius = startNode ? startNode.ownerDocument.defaultView.getComputedStyle(startNode).borderRadius : '';
+      const dir = how === 'move' ? '' : how;
       let moved = false;
       let before = null;
       /** A move over another container (or out of its own, to the top): where it goes when dropped. */
@@ -834,10 +973,13 @@
             }
             away = { ...target, ...sizeIn(topSize(p, parent), target.into) };
             if (away.into && away.into.mode === 'free') { away.x = clamp(away.x - away.w / 2, 0, 100 - away.w); away.y = clamp(away.y - away.h / 2, 0, 100 - away.h); }
+            b.dragGhost = startBox && { left: startBox.left + dx, top: startBox.top + dy, width: startBox.width, height: startBox.height, radius };
             showCell(away);
+            drawDragGhost();
             return;
           }
           away = null;
+          if (b.dragGhost) { b.dragGhost = null; drawDragGhost(); }
         }
         const at = { ...from };
         if (g.mode === 'free') {
@@ -847,10 +989,7 @@
             at.x = clamp(from.x + px, 0, 100 - at.w);
             at.y = clamp(from.y + py, 0, 100 - at.h);
             snapFree(at, parent, p);
-          } else {
-            at.w = clamp(from.w + px, 4, 100 - at.x);
-            at.h = clamp(from.h + py, 4, 100 - at.y);
-          }
+          } else resizeTo(at, from, dir, px, py, { cols: 100, min: 4, maxH: 100, free: true });
           for (const k of ['x', 'y', 'w', 'h']) at[k] = Math.round(at[k] * 10) / 10;
         } else {
           const cx = Math.round(dx / g.colW);
@@ -858,10 +997,7 @@
           if (how === 'move') {
             at.x = clamp(from.x + cx, 0, g.cols - from.w);
             at.y = Math.max(0, from.y + cy);
-          } else {
-            at.w = clamp(from.w + cx, 1, g.cols - from.x);
-            at.h = clamp(from.h + cy, 1, g.mode === 'top' ? 8 : 200);
-          }
+          } else resizeTo(at, from, dir, cx, cy, { cols: g.cols, min: 1, maxH: g.mode === 'top' ? 8 : 200 });
         }
         if (['x', 'y', 'w', 'h'].every(k => at[k] === p.at[k])) return;
         p.at = at;
@@ -880,9 +1016,16 @@
         node.removeEventListener('pointermove', move);
         node.removeEventListener('pointerup', up);
         node.removeEventListener('pointercancel', up);
+        node.removeEventListener('lostpointercapture', up);
         b.lines = null;
+        b.dragGhost = null;
+        drawDragGhost();
         showCell(null);
-        if (moved && away && ev.type === 'pointerup') {
+        if (!moved) {
+          if (ev.type === 'pointerup' && onClick) onClick();
+          return;
+        }
+        if (away && ev.type === 'pointerup') {
           // Into another container, or out to the top: from where it started, so nothing else moved.
           b.design = JSON.parse(before);
           const fresh = findPart(p.id);
@@ -898,16 +1041,41 @@
           redrawLibrary();
           return;
         }
-        if (moved) {
-          pushUndo(before);
-          saveSoon();
-          drawOverlay();
-          redrawInspector();
+        if (away) {
+          // Let go elsewhere (cancelled): everything as it was.
+          b.design = JSON.parse(before);
+          b.rev++;
+          showPreview();
+          return;
         }
+        // Back where it started: nothing to undo or save.
+        if (JSON.stringify(b.design) === before) { drawOverlay(); return; }
+        pushUndo(before);
+        saveSoon();
+        drawOverlay();
+        redrawInspector();
       };
       node.addEventListener('pointermove', move);
       node.addEventListener('pointerup', up);
       node.addEventListener('pointercancel', up);
+      node.addEventListener('lostpointercapture', up);
+    }
+
+    /**
+     * A resize from a handle (`dir`: the edges it moves, `n`, `e`, `s`, `w` or two of them) by `dx`, `dy` cells or per
+     * cent; the opposite edges stay where they were. `o`: the columns (or 100), the smallest size and the tallest.
+     */
+    function resizeTo(at, from, dir, dx, dy, o) {
+      if (dir.includes('e')) at.w = clamp(from.w + dx, o.min, o.cols - from.x);
+      if (dir.includes('s')) at.h = clamp(from.h + dy, o.min, o.free ? 100 - from.y : o.maxH);
+      if (dir.includes('w')) {
+        at.x = clamp(from.x + dx, 0, from.x + from.w - o.min);
+        at.w = from.w - (at.x - from.x);
+      }
+      if (dir.includes('n')) {
+        at.y = clamp(from.y + dy, Math.max(0, from.y + from.h - o.maxH), from.y + from.h - o.min);
+        at.h = from.h - (at.y - from.y);
+      }
     }
 
     const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
@@ -1000,9 +1168,12 @@
 
     // ---- Changes, undo, saving -------------------------------------------------------------------------------
 
-    /** A change to the design: kept for Undo, drawn at once, saved soon; `preview` reads the values again. */
-    function change(fn, { preview = true, inspector = true } = {}) {
-      pushUndo(JSON.stringify(b.design));
+    /**
+     * A change to the design: kept for Undo, drawn at once, saved soon; `preview` reads the values again; `undo: false`
+     * adds no step (a run of arrow-key nudges is one).
+     */
+    function change(fn, { preview = true, inspector = true, undo = true } = {}) {
+      if (undo) pushUndo(JSON.stringify(b.design));
       fn();
       b.rev++;
       showPreview();
@@ -1012,18 +1183,43 @@
       if (b.libTab === 'layers') redrawLibrary();
     }
 
-    function pushUndo(before) {
+    /** A step for Undo; a new change (not a Redo) clears what Redo had. */
+    function pushUndo(before, redoing = false) {
       b.undo.push(before);
       if (b.undo.length > 50) b.undo.shift();
-      b.undoNode.disabled = false;
+      if (!redoing) b.redo = [];
+      b.nudged = null;
+      undoButtons();
+    }
+
+    function undoButtons() {
+      if (b.undoNode) b.undoNode.disabled = !b.undo.length;
+      if (b.redoNode) b.redoNode.disabled = !(b.redo || []).length;
     }
 
     function undoChange() {
       const last = b.undo.pop();
       if (!last) return;
-      b.design = JSON.parse(last);
+      (b.redo || (b.redo = [])).push(JSON.stringify(b.design));
+      restore(last);
+    }
+
+    function redoChange() {
+      const next = b.redo && b.redo.pop();
+      if (!next) return;
+      pushUndo(JSON.stringify(b.design), true);
+      restore(next);
+    }
+
+    /** The design as an Undo or Redo step had it, drawn, saved and read again. */
+    function restore(json) {
+      b.design = JSON.parse(json);
+      b.nudged = null;
       if (b.selected && !findPart(b.selected)) b.selected = null;
-      b.undoNode.disabled = !b.undo.length;
+      undoButtons();
+      // Its width may have changed with it.
+      if (b.spanSeg) [...b.spanSeg.children].forEach((x, i) => x.classList.toggle('on', i + 1 === spanOf()));
+      sizeCanvas();
       b.rev++;
       showPreview();
       loadPreview();
@@ -1471,7 +1667,9 @@
         keep.append(kitIcon('bookmark', ''));
         tools.append(keep);
       }
-      tools.append(confirmButton('wd-icon small wdb-head-delete', icon('trash'), () => removePart(p.id), t('tapAgain'), t('builderRemove')));
+      const copy = button('wd-icon small', '', () => duplicatePart(p.id), t('duplicate'));
+      copy.append(icon('copy'));
+      tools.append(copy, confirmButton('wd-icon small wdb-head-delete', icon('trash'), () => removePart(p.id), t('tapAgain'), t('builderRemove')));
       head.append(badge, el('span', 'wdb-head-name', partTitle(p)), path, tools);
       return head;
     }
@@ -2116,12 +2314,7 @@
     function pagesRows(body, p) {
       const pages = p.pages || [];
       const editing = Math.min(pages.length - 1, (b.editPage && b.editPage[p.id]) || 0);
-      body.append(row(t('builderEditPage'), segs(pages.map((pg, i) => [i, pg.name || String(i + 1)]), editing, (i) => {
-        (b.editPage || (b.editPage = {}))[p.id] = i;
-        if (b.widget && b.widget.showPage) b.widget.showPage(p.id, i);
-        redrawInspector();
-        drawOverlay();
-      }), t('builderEditPageHint')));
+      body.append(row(t('builderEditPage'), segs(pages.map((pg, i) => [i, pg.name || String(i + 1)]), editing, i => showEditPage(p, i)), t('builderEditPageHint')));
       body.append(el('h4', 'wdb-h4', t('builderPageList')));
       pages.forEach((pg, i) => {
         const line = el('div', 'wdb-ref');
@@ -2668,13 +2861,85 @@
     // Leaving the builder sends what waits; a design another browser changed is drawn again on the front page.
     window.addEventListener('pagehide', () => { if (b && b.saveTimer) save(); });
 
-    /** Delete (or Backspace) removes the selected component, Escape lets go of it: not while typing in a field. */
+    /**
+     * The canvas' keys, not while typing in a field: Delete (or Backspace) removes the selected component, Escape goes
+     * up to its container and then lets go, the arrows move it a cell (1 % free-form) and with Shift resize it; with
+     * Ctrl or ⌘, Z undoes, Shift+Z (or Y) redoes and D duplicates the selected component.
+     */
     function onKey(e) {
-      if (!b || !b.node || !b.node.isConnected || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (!b || !b.node || !b.node.isConnected || e.defaultPrevented || e.altKey) return;
       const target = /** @type {HTMLElement} */ (e.target);
       if (target && target.closest && target.closest('input, textarea, select, [contenteditable="true"], dialog')) return;
-      if ((e.key === 'Delete' || e.key === 'Backspace') && b.selected && findPart(b.selected)) { e.preventDefault(); removePart(b.selected); }
-      else if (e.key === 'Escape' && b.selected) { e.preventDefault(); select(null); }
+      if (document.querySelector('dialog[open]')) return;
+      const sel = b.selected && findPart(b.selected);
+      const key = e.key.toLowerCase();
+      if (e.ctrlKey || e.metaKey) {
+        if (key === 'z' && !e.shiftKey) { e.preventDefault(); undoChange(); }
+        else if ((key === 'z' && e.shiftKey) || key === 'y') { e.preventDefault(); redoChange(); }
+        else if (key === 'd' && sel) { e.preventDefault(); duplicatePart(sel.id); }
+        return;
+      }
+      if ((e.key === 'Delete' || e.key === 'Backspace') && sel) { e.preventDefault(); removePart(sel.id); }
+      else if (e.key === 'Escape' && sel) {
+        e.preventDefault();
+        const parent = parentOf(sel.id);
+        select(parent ? parent.id : null);
+      } else if (sel && ARROWS[e.key]) {
+        e.preventDefault();
+        nudge(sel, ...ARROWS[e.key], e.shiftKey);
+      }
+    }
+    const ARROWS = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
+
+    /**
+     * Moves the selected component a cell (1 % free-form), or with `resize` makes it a cell larger or smaller; the
+     * others make room on a grid. A run of nudges to one component within a second is one Undo step.
+     */
+    function nudge(p, dx, dy, resize) {
+      const parent = parentOf(p.id);
+      const free = !!parent && parent.mode === 'free';
+      const n = free ? 100 : parent ? FINE.cols : cols();
+      const min = free ? 4 : 1;
+      const tallest = free ? 100 : parent ? 200 : 8;
+      const now = Date.now();
+      const same = b.nudged && b.nudged.id === p.id && now - b.nudged.at < 1000;
+      const at = { ...p.at };
+      if (resize) {
+        at.w = clamp(at.w + dx, min, n - at.x);
+        at.h = clamp(at.h + dy, min, free ? 100 - at.y : tallest);
+      } else {
+        at.x = clamp(at.x + dx, 0, n - at.w);
+        at.y = free ? clamp(at.y + dy, 0, 100 - at.h) : Math.max(0, at.y + dy);
+      }
+      if (free) for (const k of ['x', 'y', 'w', 'h']) at[k] = Math.round(at[k] * 10) / 10;
+      if (['x', 'y', 'w', 'h'].every(k => at[k] === p.at[k])) return;
+      change(() => {
+        p.at = at;
+        if (!free) makeRoom(parent ? parent.parts : b.design.parts, p);
+      }, { preview: false, undo: !same });
+      b.nudged = { id: p.id, at: now };
+    }
+
+    /**
+     * A copy of a component (a container with its components), with new ids, right after it: under it on a grid (the
+     * others making room), a little down and right free-form; selected.
+     */
+    function duplicatePart(id) {
+      const p = findPart(id);
+      if (!p) return;
+      const parent = parentOf(id);
+      change(() => {
+        const list = parent ? parent.parts : b.design.parts;
+        const copy = freshCopy(p);
+        list.splice(list.indexOf(p) + 1, 0, copy);
+        if (parent && parent.mode === 'free') {
+          copy.at = { ...p.at, x: Math.round(clamp(p.at.x + 4, 0, 100 - p.at.w) * 10) / 10, y: Math.round(clamp(p.at.y + 4, 0, 100 - p.at.h) * 10) / 10 };
+        } else {
+          copy.at = { ...p.at, y: p.at.y + p.at.h };
+          makeRoom(list, copy);
+        }
+        b.selected = copy.id;
+      });
     }
     document.addEventListener('keydown', onKey);
 

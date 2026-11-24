@@ -141,7 +141,7 @@
         ],
       }),
       READY.value('p', at(0, 3, 2), 'meter:measure_power', { name: 'Using now', icon: 'bolt', color: 'orange' }),
-      READY.value('s', at(2, 3, 2), 'solar:measure_power', { name: 'Solar', icon: 'sun' }),
+      READY.value('sol', at(2, 3, 2), 'solar:measure_power', { name: 'Solar', icon: 'sun' }),
     ],
     free: [
       part('box', 'container', at(0, 0, 4, 4), {

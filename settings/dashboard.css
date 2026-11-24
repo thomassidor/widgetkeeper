@@ -1032,6 +1032,8 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-bar .wdb-name { max-width: 260px; }
 .wdb-status { font-size: 13px; white-space: nowrap; }
 .wdb-status.bad { color: var(--wd-red); }
+/* A phone's bar holds its eight controls a little closer together. */
+@media (max-width: 480px) { .wdb-bar .wd-bar-end { gap: 4px; } }
 
 .wdb { display: grid; grid-template-columns: 264px minmax(0, 1fr) 340px; min-height: calc(100vh - 64px); border-top: 1px solid var(--wd-line); }
 .wdb-lib, .wdb-insp { padding: 12px; overflow: auto; max-height: calc(100vh - 64px); position: sticky; top: 64px; box-sizing: border-box; }
@@ -1094,7 +1096,12 @@ textarea.wd-input { width: 100%; resize: vertical; }
 
 .wdb-stage { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 18px; min-width: 0;
   background-image: radial-gradient(color-mix(in srgb, var(--wd-text) 10%, transparent) 1px, transparent 1px); background-size: 16px 16px; }
-.wdb-tools { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.wdb-tools { display: flex; flex-wrap: wrap; gap: 8px 12px; justify-content: center; align-items: flex-end; }
+/* Each of the stage's switches under its name. */
+/* The builder bar's Undo and Redo while there's nothing to undo or redo. */
+.wdb-bar .wd-icon:disabled { opacity: .35; cursor: default; background: transparent; }
+.wdb-toolgroup { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.wdb-toollabel { font-size: 11px; line-height: 14px; color: var(--wd-muted); }
 .wdb-canvas { position: relative; max-width: 100%; }
 .wdb-guide { position: absolute; inset: 0 0 auto 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; pointer-events: none; }
 .wdb-tools .wdb-sample .wd-btn { height: 32px; }
@@ -1111,8 +1118,44 @@ textarea.wd-input { width: 100%; resize: vertical; }
 /* Where a drag lands: the cells (or the place in a container) it will cover. */
 .wdb-cell { position: absolute; z-index: 4; pointer-events: none; border-radius: 10px; background: color-mix(in srgb, var(--wd-accent) 18%, transparent); box-shadow: inset 0 0 0 2px var(--wd-accent); }
 .wdb-box.hidden { background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--wd-text) 10%, transparent) 0 6px, transparent 6px 12px); }
-.wdb-handle { position: absolute; right: -6px; bottom: -6px; width: 14px; height: 14px; border-radius: 4px; background: var(--wd-tile); border: 2px solid var(--wd-accent); cursor: nwse-resize; touch-action: none; }
-.wdb-tag { position: absolute; left: 0; top: -20px; font-size: 11px; line-height: 16px; color: var(--wd-accent); white-space: nowrap; pointer-events: none; }
+/* A container's components take no pointer until it's entered: the tap and the hover are the container's. */
+.wdb-box.sealed { pointer-events: none; }
+/*
+ * The resize handles, centred on the outline so they hardly cover the component: corners a 10 px square, edges a
+ * short bar, each with a larger invisible area to grab (larger again for a finger).
+ */
+.wdb-handle { position: absolute; z-index: 1; box-sizing: border-box; background: var(--wd-tile); border: 2px solid var(--wd-accent); touch-action: none; }
+.wdb-handle::before { content: ''; position: absolute; inset: -8px; }
+.wdb-handle.corner { width: 10px; height: 10px; border-radius: 3px; }
+.wdb-handle.edge { border-radius: 3px; }
+.wdb-handle.h-nw { left: -5px; top: -5px; cursor: nwse-resize; }
+.wdb-handle.h-ne { right: -5px; top: -5px; cursor: nesw-resize; }
+.wdb-handle.h-se { right: -5px; bottom: -5px; cursor: nwse-resize; }
+.wdb-handle.h-sw { left: -5px; bottom: -5px; cursor: nesw-resize; }
+.wdb-handle.h-n, .wdb-handle.h-s { left: calc(50% - 9px); width: 18px; height: 8px; cursor: ns-resize; }
+.wdb-handle.h-n { top: -4px; }
+.wdb-handle.h-s { bottom: -4px; }
+.wdb-handle.h-e, .wdb-handle.h-w { top: calc(50% - 9px); width: 8px; height: 18px; cursor: ew-resize; }
+.wdb-handle.h-e { right: -4px; }
+.wdb-handle.h-w { left: -4px; }
+@media (pointer: coarse) {
+  .wdb-handle.corner { width: 14px; height: 14px; }
+  .wdb-handle.h-nw { left: -7px; top: -7px; }
+  .wdb-handle.h-ne { right: -7px; top: -7px; }
+  .wdb-handle.h-se { right: -7px; bottom: -7px; }
+  .wdb-handle.h-sw { left: -7px; bottom: -7px; }
+  .wdb-handle::before { inset: -14px; }
+}
+/* A container's placement: a small label on its top edge (the stage's tools sit 12 px above the canvas). */
+.wdb-tag {
+  position: absolute; left: 18px; top: -8px; padding: 0 6px; border-radius: 6px; font-size: 11px; line-height: 16px; font-weight: 500;
+  color: #FFFFFF; background: var(--wd-accent); white-space: nowrap; pointer-events: none;
+}
+/* What a drag out of its container (or into another) carries, following the pointer. */
+.wdb-dragghost {
+  position: absolute; z-index: 5; pointer-events: none; box-sizing: border-box; border: 2px solid var(--wd-accent);
+  background: color-mix(in srgb, var(--wd-accent) 10%, transparent); box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
+}
 .wdb-line { position: absolute; pointer-events: none; z-index: 3; }
 .wdb-line.x { width: 0; border-left: 1px dashed #FF4FA3; }
 .wdb-line.y { height: 0; border-top: 1px dashed #FF4FA3; }
@@ -1193,9 +1236,11 @@ textarea.wd-input { width: 100%; resize: vertical; }
 @media (max-width: 960px) {
   .wdb { grid-template-columns: minmax(0, 1fr); }
   .wdb-lib, .wdb-insp { position: static; max-height: none; border: 0; }
-  .wdb-lib { border-bottom: 1px solid var(--wd-line); }
+  /* The design first, then what's selected (right under it), then the library. */
+  .wdb-stage { order: 1; }
+  .wdb-insp { order: 2; border-top: 1px solid var(--wd-line); }
+  .wdb-lib { order: 3; border-top: 1px solid var(--wd-line); }
   .wdb-comps { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
-  .wdb-insp { border-top: 1px solid var(--wd-line); }
 }
 .wdb .wd-icon.small { width: 28px; height: 28px; }
 .wdb-lib .wd-input { width: 100%; box-sizing: border-box; min-width: 0; }
@@ -1294,6 +1339,6 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-fold > summary .wdb-h4 { margin: 0; padding: 0; border: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: var(--wd-text); }
 .wdb-fold > summary svg { width: 16px; height: 16px; color: var(--wd-muted); transition: transform .15s ease; }
 .wdb-fold[open] > summary svg { transform: rotate(180deg); }
-.wdb-fold-now { justify-self: end; font-size: 12px; color: var(--wd-muted); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wdb-fold-now { min-width: 0; text-align: right; font-size: 12px; color: var(--wd-muted); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .wdb-fold[open] .wdb-fold-now { visibility: hidden; }
 .wdb-fold:not([open]) { gap: 0; }

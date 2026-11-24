@@ -5,11 +5,13 @@
 For [web dashboards](../../README.md#web-dashboards) only, for now: a widget you design yourself. Open **Widget Builder** from the side pane (or the banner on the front page): it lists your designs; open one, or tap **New design**. The builder shows your design at its real size, with its live values:
 
 - Tap a component on the left to add it at the bottom (or into the selected container), or drag it to where you want it: the cells it will cover light up.
-- Drag a component to move it, into a container or out of one, or drag its corner to resize it. The components below move down to make room. **Delete** removes the selected one, **Escape** lets go of it.
+- A tap on the design selects the whole thing under it: a container (a ready-made tile) with everything in it. Tap again for the component inside under your finger, and again for one hidden underneath; a tap on a pages container's tab shows that page.
+- Drag a component to move it, into a container or out of one, or drag an edge or corner to resize it. The components below move down to make room.
+- Keys: the arrows move the selected component a cell (Shift resizes it), **Delete** removes it, **Escape** goes up to its container and then lets go; Ctrl or ⌘ with **Z** undoes, **Shift+Z** redoes and **D** duplicates.
 - On the right, the selected component's **Settings** (what it shows or does, its position and size), **Style** (how it looks: a tile, a pill (Quick Actions' and Device Values' pill) or no background, its colour and text colour, a text's size, an icon), **Rules** and **Flows**. Every colour is one of the twelve, drawn as Muted or Vivid draws them, or one of your own.
 - At the top: how many dashboard columns the design spans (its grid gets four columns per column), a column's width, Muted or Vivid. The moon or sun in the bar switches the editor and the preview between dark and light.
 
-Changes are saved as you go, and Undo takes them back. **Add to dashboard** puts the design on a web dashboard, as wide as it's made for, or add it there yourself: Add widget lists every design under **Widget Builder**. A change to a design shows on every dashboard that has it.
+Changes are saved as you go; Undo and Redo are in the bar, and Duplicate beside a component's name. **Add to dashboard** puts the design on a web dashboard, as wide as it's made for, or add it there yourself: Add widget lists every design under **Widget Builder**. A change to a design shows on every dashboard that has it.
 
 **Any device:** a device value can be *the widget's device* instead of one device: the design then works with any device, picked in the widget's settings where it's placed. The builder shows it with a preview device of your choosing.
 
