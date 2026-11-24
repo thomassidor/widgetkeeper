@@ -51,7 +51,7 @@ const SHOWN_SETTINGS: Record<string, string[]> = {
   lights: ['groupByZone', 'wideLast', 'palette'],
   lines: ['style', 'plotHeight', 'legend', 'range', 'smooth', 'names'],
   locks: ['view', 'allowUnlock', 'allowOpen'],
-  media: ['layout', 'volumeLayout', 'showProgress', 'showShuffle', 'canSwitch', 'buttons', 'color'],
+  media: ['layout', 'volumeLayout', 'showProgress', 'showShuffle', 'shortcut', 'canSwitch', 'buttons', 'color'],
   pollen: ['density', 'showUv'],
   popups: ['popup', 'countdown'],
   price: ['hours', 'tint', 'color'],

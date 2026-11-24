@@ -52,6 +52,7 @@ window.mountMediaWidget = function (Homey, { root, frame }) {
     color: settings.color,
     t: (key, tokens) => Homey.__(key, tokens),
     buttons,
+    shortcut: window.mediaShortcutIndex(settings),
     volumeStep: Number(settings.volumeStep || 5) / 100,
     maxVolume: maxVolume > 0 && maxVolume < 100 ? maxVolume / 100 : 1,
     showShuffle: settings.showShuffle === true,

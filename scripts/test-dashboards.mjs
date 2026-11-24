@@ -1201,6 +1201,8 @@ const BUILD = {
       w('media', 'Large', { device: sp(0), layout: 'large' }),
       w('media', 'Large · volume buttons · shuffle · buttons', { device: tv.device, layout: 'large', volumeLayout: 'buttons', showShuffle: true, ...buttons }),
       w('media', 'Four named buttons (the last without an icon)', { device: tv.device, ...four }),
+      w('media', 'Shortcut beside ⋯ (button 1)', { device: tv.device, ...four, shortcut: '1' }),
+      w('media', 'Large · volume buttons · shortcut without an icon (button 4)', { device: tv.device, layout: 'large', volumeLayout: 'buttons', ...four, shortcut: '4' }),
       w('media', 'Eight buttons · volume buttons · shuffle', { device: tv.device, volumeLayout: 'buttons', showShuffle: true, ...eight }),
       w('media', 'Large · tapping the art doesn\'t switch layout', { device: sp(1), layout: 'large', layoutTap: false }),
       w('media', 'Nothing picked'),

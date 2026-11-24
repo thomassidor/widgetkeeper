@@ -137,6 +137,20 @@
   }
 
   /**
+   * The shortcut beside ⋯ (wk-136): the `shortcut` setting (`1`…`8`, a button's number) as its index in
+   * mediaButtonsFromSettings()' list, or -1 for none, an empty button or anything else.
+   */
+  function mediaShortcutIndex(settings) {
+    const n = Number(settings && settings.shortcut);
+    if (!Number.isInteger(n) || n < 1 || n > 8) return -1;
+    const picked = k => { const b = settings[`button${k}`]; return !!(b && typeof b.id === 'string' && b.id && b.id !== 'none'); };
+    if (!picked(n)) return -1;
+    let index = 0;
+    for (let k = 1; k < n; k++) if (picked(k)) index++;
+    return index;
+  }
+
+  /**
    * A device icon: Homey's SVG (a data URL from the app) as a mask in the text colour, or the drawn speaker.
    * @param {string|null|undefined} icon @param {string} cls
    */
@@ -173,7 +187,7 @@
    *   buttons?: {id: string, name: string, icon?: string | null}[], volumeStep?: number, maxVolume?: number, showShuffle?: boolean,
    *   volumeLayout?: 'line' | 'buttons', layout?: 'compact' | 'large', showProgress?: boolean, now?: () => number,
    *   canSwitch?: boolean, onListSpeakers?: () => Promise<any[]>, onSwitch?: (id: string) => void,
-   *   layoutTap?: boolean, onLayout?: (layout: 'compact' | 'large') => void }} opts
+   *   layoutTap?: boolean, onLayout?: (layout: 'compact' | 'large') => void, shortcut?: number }} opts
    */
   function createMediaWidget(root, opts = {}) {
     const t = window.WidgetkeeperKit.translator('media', DEFAULT_STRINGS, opts);
@@ -181,6 +195,8 @@
     /** The volume limit (0–1): the bar's right end, and `+` stops there. */
     const maxVolume = typeof opts.maxVolume === 'number' && opts.maxVolume > 0 && opts.maxVolume < 1 ? opts.maxVolume : 1;
     const buttons = Array.isArray(opts.buttons) ? opts.buttons : [];
+    /** The button shown beside ⋯ as its icon instead of in the overlay (wk-136): its index in `buttons`, or -1. */
+    const shortcut = Number.isInteger(opts.shortcut) && buttons[opts.shortcut] ? opts.shortcut : -1;
     /** `buttons`: − and + around mute in the transport row, no bar. Anything else is the bar on its own line. */
     const volumeButtons = opts.volumeLayout === 'buttons';
     /** The clock the position counts on with (the README screenshot fixes it). */
@@ -245,6 +261,17 @@
     const progressText = el('div', { class: 'mw-progress-text' }, info);
     const moreBtn = el('button', { type: 'button', class: 'mw-btn mw-more', 'aria-label': t('more'), 'aria-expanded': 'false' }, nowPlaying);
     moreBtn.appendChild(glyph('more'));
+    // The shortcut: the button's icon (or its name's first letter), lit, running and done as its pill would be.
+    const shortcutBtn = shortcut >= 0
+      ? el('button', { type: 'button', class: 'mw-btn mw-shortcut', 'aria-label': buttons[shortcut].name, dir: 'auto' })
+      : null;
+    if (shortcutBtn) {
+      const b = buttons[shortcut];
+      if (b.icon && BUTTON_ICONS[b.icon]) shortcutBtn.appendChild(svgGlyph(BUTTON_ICONS[b.icon]));
+      else el('span', { class: 'mw-shortcut-letter', text: Array.from(b.name.trim())[0] || '?' }, shortcutBtn);
+      shortcutBtn.appendChild(glyph('check', 'mw-glyph mw-shortcut-done'));
+      nowPlaying.insertBefore(shortcutBtn, moreBtn);
+    }
 
     const controls = el('div', { class: 'mw-controls' }, main);
     const control = (name, label, cls) => {
@@ -283,6 +310,7 @@
     const panel = el('div', { class: 'mw-panel', 'aria-hidden': 'true' }, card);
     const chips = el('div', { class: 'mw-chips' }, panel);
     const chipEls = buttons.map((b, i) => {
+      if (i === shortcut) return null; // beside ⋯, not in the overlay
       const chip = el('button', { type: 'button', class: 'mw-chip', dir: 'auto' }, chips);
       if (b.icon && BUTTON_ICONS[b.icon]) chip.appendChild(svgGlyph(BUTTON_ICONS[b.icon]));
       el('span', { class: 'mw-chip-text', text: b.name }, chip);
@@ -491,7 +519,7 @@
       const b = buttons[index];
       if (!b || busy.get(index) === 'running') return;
       haptic();
-      poke();
+      if (panelOpen) poke();
       busy.set(index, 'running');
       render();
       const began = Date.now();
@@ -538,6 +566,7 @@
     onTap(downBtn, () => stepVolume(-1));
     onTap(upBtn, () => stepVolume(1));
     onTap(moreBtn, () => { haptic(); setPanel(!panelOpen); });
+    if (shortcutBtn) onTap(shortcutBtn, () => runButton(shortcut));
     if (canSwitch) onTap(who, () => { haptic(); setSpeakers(!speakersOpen); });
     onTap(speakersClose, (e) => { e.stopPropagation(); setSpeakers(false); });
     onTap(speakersPanel, () => setSpeakers(false));
@@ -915,14 +944,14 @@
         // Buttons: a TV/line-in button is lit while the speaker plays from it (by its name, the only clue).
         let anyLit = false;
         buttons.forEach((b, i) => {
-          const chip = chipEls[i];
+          const chip = chipEls[i] || shortcutBtn;
           chip.style.display = buttonAvailable(b) ? '' : 'none';
           const state = busy.get(i) || null;
           chip.classList.toggle('running', state === 'running');
           chip.classList.toggle('done', state === 'done');
           const lit = (source === 'tv' && /\b(tv|hdmi)\b/i.test(b.name)) || (source === 'lineIn' && /line/i.test(b.name));
           chip.classList.toggle('on', lit);
-          if (lit) anyLit = true;
+          if (lit && chip !== shortcutBtn) anyLit = true;
         });
         // ⋯ is tinted while a button in it is lit, so the TV source shows without opening it.
         moreBtn.classList.toggle('on', anyLit);
@@ -939,7 +968,7 @@
           repeatChip.classList.toggle('one', r === 'track');
         }
       }
-      const panelButtons = ok ? buttons.filter(buttonAvailable).length : 0;
+      const panelButtons = ok ? buttons.filter((b, i) => i !== shortcut && buttonAvailable(b)).length : 0;
       const panelItems = ok ? panelButtons
         + (shuffleChip && has('speaker_shuffle') ? 1 : 0) + (repeatChip && has('speaker_repeat') ? 1 : 0) : 0;
       // Only shuffle and repeat in it: widget.css hides ⋯ while they fit in the row.
@@ -955,6 +984,7 @@
       panel.setAttribute('aria-hidden', String(!panelOpen));
       panel.style.display = panelItems ? '' : 'none';
       controls.style.display = ok ? '' : 'none';
+      if (shortcutBtn && !ok) shortcutBtn.style.display = 'none';
       if (!ok) volume.style.display = 'none';
 
       // The speaker: its icon (as the list shows it) and the switcher.
@@ -982,4 +1012,5 @@
   window.createMediaWidget = createMediaWidget;
   window.mediaSource = mediaSource;
   window.mediaButtonsFromSettings = mediaButtonsFromSettings;
+  window.mediaShortcutIndex = mediaShortcutIndex;
 })();

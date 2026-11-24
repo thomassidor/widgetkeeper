@@ -257,6 +257,7 @@ interface Window {
   webPageBox: (width: number, pageWidth: number, pageHeight: number) => { width: number, height: number, scale: number, boxHeight: number };
   mediaSource: (caps: object) => 'tv' | 'lineIn' | null;
   mediaButtonsFromSettings: (settings: object) => { id: string, name: string, icon: string | null }[];
+  mediaShortcutIndex: (settings: object) => number;
   sparkPath: (points: [number, number][], from: number, to: number, w: number, h: number) => { line: string, area: string, dot: { x: number, y: number }, min: number, max: number } | null;
   heatmapPeriodDays: (period: string | undefined) => number;
   thermostatPresetsFromSettings: (settings: Record<string, any>) => { values: object[] }[];

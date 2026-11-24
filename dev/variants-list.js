@@ -124,6 +124,7 @@
       v('progress', 'Progress and shuffle, in orange', { showProgress: true, showShuffle: true, volumeLayout: 'line', color: 'orange' }),
       v('speakers', 'Light · Switching speakers', { canSwitch: true }, true, '.mw-who.switch'),
       v('buttons', 'Your own buttons', { buttons: [{ id: 'card:tv', name: 'TV' }, { id: 'card:line', name: 'Line-in' }, { id: 'card:radio', name: 'Morning radio' }] }, false, '.mw-more'),
+      v('shortcut', 'Light · A power shortcut beside ⋯', { shortcut: 0, buttons: [{ id: 'flow:off', name: 'Turn off', icon: 'power' }, { id: 'card:tv', name: 'TV', icon: 'tv' }] }, true),
       v('idle', 'Light · Nothing playing', { scene: 'idle' }, true)],
     pollen: [LIGHT, VIVID,
       v('detailed', 'Detailed: the next days and the numbers', { density: 'detailed' }),

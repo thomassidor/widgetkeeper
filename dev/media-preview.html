@@ -31,6 +31,8 @@
   <div class="col"><span>358 px · dark · eight buttons, ⋯ open</span><div class="card mw-frame homey-dark-mode" style="width:358px"><div id="w15"></div></div></div>
   <div class="col"><span>300 px · dark · volume as buttons, eight buttons</span><div class="card mw-frame homey-dark-mode" style="width:300px"><div id="w16"></div></div></div>
   <div class="col"><span>300 px · dark · volume as buttons, eight buttons, ⋯ open (grows while open)</span><div class="card mw-frame homey-dark-mode" style="width:300px"><div id="w17"></div></div></div>
+  <div class="col"><span>358 px · dark · shortcut beside ⋯ (wk-136)</span><div class="card mw-frame homey-dark-mode" style="width:358px"><div id="w18"></div></div></div>
+  <div class="col"><span>300 px · light · volume as buttons, letter shortcut, nothing else in ⋯</span><div class="card light" style="width:300px"><div id="w19"></div></div></div>
   <div class="col"><span>358 px · dark · no progress</span><div class="card mw-frame homey-dark-mode" style="width:358px"><div id="w13"></div></div></div>
   <div class="col"><span>358 px · dark · speaker list open</span><div class="card mw-frame homey-dark-mode" style="width:358px"><div id="w11"></div></div></div>
   <div class="col"><span>300 px · light · speaker list open</span><div class="card light" style="width:300px"><div id="w12"></div></div></div>
@@ -61,6 +63,8 @@
     mountMockMedia(document.getElementById('w15'), mockSpeaker('Kitchen', 0), { buttons: EIGHT, t: devT }).setPanel(true);
     mountMockMedia(document.getElementById('w16'), mockSpeaker('Kitchen', 0), { buttons: EIGHT, volumeLayout: 'buttons', t: devT });
     mountMockMedia(document.getElementById('w17'), mockSpeaker('Kitchen', 0), { buttons: EIGHT, volumeLayout: 'buttons', t: devT }).setPanel(true);
+    mountMockMedia(document.getElementById('w18'), mockSpeaker('Kitchen', 0), { buttons: [{ id: 'flow:off', name: 'Turn off', icon: 'power' }, ...SOURCES], shortcut: 0, canSwitch: true, t: devT });
+    mountMockMedia(document.getElementById('w19'), mockSpeaker('Bedroom', 1), { buttons: [{ id: 'flow:movie', name: 'Movie night' }], shortcut: 0, volumeLayout: 'buttons', t: devT });
     mountMockMedia(document.getElementById('w14'), mockSpeaker('Kitchen', 0), { volumeLayout: 'buttons', showShuffle: true, canSwitch: true, t: devT });
     mountMockMedia(document.getElementById('w13'), mockSpeaker('Kitchen', 0), { buttons: SOURCES, canSwitch: true, showProgress: false, volumeLayout: 'buttons', t: devT });
     mountMockMedia(document.getElementById('w11'), mockSpeaker('Kitchen', 0), { buttons: SOURCES, canSwitch: true, t: devT }).setSpeakers(true);

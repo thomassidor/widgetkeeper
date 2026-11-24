@@ -33571,6 +33571,205 @@
           }
         },
         {
+          "id": "shortcut",
+          "type": "dropdown",
+          "value": "none",
+          "title": {
+            "en": "Shortcut beside ⋯",
+            "nl": "Snelkoppeling naast ⋯",
+            "de": "Kurzbefehl neben ⋯",
+            "fr": "Raccourci à côté de ⋯",
+            "it": "Scorciatoia accanto a ⋯",
+            "sv": "Genväg bredvid ⋯",
+            "no": "Snarvei ved siden av ⋯",
+            "es": "Atajo junto a ⋯",
+            "da": "Genvej ved siden af ⋯",
+            "ru": "Ярлык рядом с ⋯",
+            "pl": "Skrót obok ⋯",
+            "ko": "⋯ 옆 바로 가기",
+            "ar": "اختصار بجانب ⋯"
+          },
+          "values": [
+            {
+              "id": "none",
+              "title": {
+                "en": "None",
+                "nl": "Geen",
+                "de": "Keine",
+                "fr": "Aucun",
+                "it": "Nessuno",
+                "sv": "Ingen",
+                "no": "Ingen",
+                "es": "Ninguno",
+                "da": "Ingen",
+                "ru": "Нет",
+                "pl": "Brak",
+                "ko": "없음",
+                "ar": "بلا"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "Button 1",
+                "nl": "Knop 1",
+                "de": "Button 1",
+                "fr": "Bouton 1",
+                "it": "Pulsante 1",
+                "sv": "Knapp 1",
+                "no": "Knapp 1",
+                "es": "Botón 1",
+                "da": "Knap 1",
+                "ru": "Кнопка 1",
+                "pl": "Przycisk 1",
+                "ko": "버튼 1",
+                "ar": "الزر 1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "Button 2",
+                "nl": "Knop 2",
+                "de": "Button 2",
+                "fr": "Bouton 2",
+                "it": "Pulsante 2",
+                "sv": "Knapp 2",
+                "no": "Knapp 2",
+                "es": "Botón 2",
+                "da": "Knap 2",
+                "ru": "Кнопка 2",
+                "pl": "Przycisk 2",
+                "ko": "버튼 2",
+                "ar": "الزر 2"
+              }
+            },
+            {
+              "id": "3",
+              "title": {
+                "en": "Button 3",
+                "nl": "Knop 3",
+                "de": "Button 3",
+                "fr": "Bouton 3",
+                "it": "Pulsante 3",
+                "sv": "Knapp 3",
+                "no": "Knapp 3",
+                "es": "Botón 3",
+                "da": "Knap 3",
+                "ru": "Кнопка 3",
+                "pl": "Przycisk 3",
+                "ko": "버튼 3",
+                "ar": "الزر 3"
+              }
+            },
+            {
+              "id": "4",
+              "title": {
+                "en": "Button 4",
+                "nl": "Knop 4",
+                "de": "Button 4",
+                "fr": "Bouton 4",
+                "it": "Pulsante 4",
+                "sv": "Knapp 4",
+                "no": "Knapp 4",
+                "es": "Botón 4",
+                "da": "Knap 4",
+                "ru": "Кнопка 4",
+                "pl": "Przycisk 4",
+                "ko": "버튼 4",
+                "ar": "الزر 4"
+              }
+            },
+            {
+              "id": "5",
+              "title": {
+                "en": "Button 5",
+                "nl": "Knop 5",
+                "de": "Button 5",
+                "fr": "Bouton 5",
+                "it": "Pulsante 5",
+                "sv": "Knapp 5",
+                "no": "Knapp 5",
+                "es": "Botón 5",
+                "da": "Knap 5",
+                "ru": "Кнопка 5",
+                "pl": "Przycisk 5",
+                "ko": "버튼 5",
+                "ar": "الزر 5"
+              }
+            },
+            {
+              "id": "6",
+              "title": {
+                "en": "Button 6",
+                "nl": "Knop 6",
+                "de": "Button 6",
+                "fr": "Bouton 6",
+                "it": "Pulsante 6",
+                "sv": "Knapp 6",
+                "no": "Knapp 6",
+                "es": "Botón 6",
+                "da": "Knap 6",
+                "ru": "Кнопка 6",
+                "pl": "Przycisk 6",
+                "ko": "버튼 6",
+                "ar": "الزر 6"
+              }
+            },
+            {
+              "id": "7",
+              "title": {
+                "en": "Button 7",
+                "nl": "Knop 7",
+                "de": "Button 7",
+                "fr": "Bouton 7",
+                "it": "Pulsante 7",
+                "sv": "Knapp 7",
+                "no": "Knapp 7",
+                "es": "Botón 7",
+                "da": "Knap 7",
+                "ru": "Кнопка 7",
+                "pl": "Przycisk 7",
+                "ko": "버튼 7",
+                "ar": "الزر 7"
+              }
+            },
+            {
+              "id": "8",
+              "title": {
+                "en": "Button 8",
+                "nl": "Knop 8",
+                "de": "Button 8",
+                "fr": "Bouton 8",
+                "it": "Pulsante 8",
+                "sv": "Knapp 8",
+                "no": "Knapp 8",
+                "es": "Botón 8",
+                "da": "Knap 8",
+                "ru": "Кнопка 8",
+                "pl": "Przycisk 8",
+                "ko": "버튼 8",
+                "ar": "الزر 8"
+              }
+            }
+          ],
+          "hint": {
+            "en": "One of the buttons below, shown as its icon beside ⋯ so it’s one tap away, such as a flow that turns the speaker off. Without an icon it shows its name’s first letter.",
+            "nl": "Een van de knoppen hieronder, als pictogram naast ⋯ zodat hij één tik weg is, zoals een flow die de speaker uitzet. Zonder pictogram toont hij de eerste letter van zijn naam.",
+            "de": "Einer der Buttons unten, als Symbol neben ⋯, damit er nur einen Tipp entfernt ist, etwa ein Flow, der den Lautsprecher ausschaltet. Ohne Symbol zeigt er den ersten Buchstaben seines Namens.",
+            "fr": "Un des boutons ci-dessous, affiché par son icône à côté de ⋯ pour être à un toucher, comme un flow qui éteint l’enceinte. Sans icône, il affiche la première lettre de son nom.",
+            "it": "Uno dei pulsanti qui sotto, mostrato come icona accanto a ⋯ così è a un tocco, come un flow che spegne l’altoparlante. Senza icona mostra la prima lettera del suo nome.",
+            "sv": "En av knapparna nedan, som sin ikon bredvid ⋯ så att den är ett tryck bort, till exempel ett flöde som stänger av högtalaren. Utan ikon visas första bokstaven i namnet.",
+            "no": "En av knappene nedenfor, vist som ikonet sitt ved siden av ⋯ så den er ett trykk unna, for eksempel en flyt som slår av høyttaleren. Uten ikon vises første bokstav i navnet.",
+            "es": "Uno de los botones de abajo, mostrado con su icono junto a ⋯ para tenerlo a un toque, como un flujo que apaga el altavoz. Sin icono muestra la primera letra de su nombre.",
+            "da": "En af knapperne nedenfor, vist som sit ikon ved siden af ⋯, så den er ét tryk væk, fx et flow der slukker højttaleren. Uden ikon vises det første bogstav i navnet.",
+            "ru": "Одна из кнопок ниже, показанная значком рядом с ⋯, чтобы она была в одно касание, например поток, выключающий колонку. Без значка показывается первая буква её названия.",
+            "pl": "Jeden z przycisków poniżej, pokazany jako ikona obok ⋯, aby był o jedno dotknięcie, np. flow wyłączający głośnik. Bez ikony pokazuje pierwszą literę nazwy.",
+            "ko": "아래 버튼 중 하나를 ⋯ 옆에 아이콘으로 보여 한 번에 누를 수 있게 합니다. 예: 스피커를 끄는 플로우. 아이콘이 없으면 이름의 첫 글자를 보여 줍니다.",
+            "ar": "أحد الأزرار أدناه، يظهر كأيقونته بجانب ⋯ ليكون على بعد لمسة واحدة، مثل تدفق يطفئ السماعة. بدون أيقونة يظهر الحرف الأول من اسمه."
+          }
+        },
+        {
           "id": "color",
           "type": "dropdown",
           "title": {

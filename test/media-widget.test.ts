@@ -340,6 +340,64 @@ describe('buttons', () => {
   });
 });
 
+describe('shortcut beside ⋯ (wk-136)', () => {
+  const buttons = [{ id: 'flow:off', name: 'Turn off', icon: 'power' }, { id: 'card:homey:device:k:tv', name: 'TV' }, { id: 'flow:f1', name: 'Movie time' }];
+
+  it('finds the picked button in the list, skipping empty ones', () => {
+    const settings = { button1: { id: 'none', name: 'None' }, button2: { id: 'flow:a', name: 'A' }, button4: { id: 'flow:b', name: 'B' } };
+    expect(win.mediaShortcutIndex({ ...settings, shortcut: '4' })).toBe(1);
+    expect(win.mediaShortcutIndex({ ...settings, shortcut: '2' })).toBe(0);
+    for (const shortcut of ['1', '3', 'none', '9', undefined]) expect(win.mediaShortcutIndex({ ...settings, shortcut })).toBe(-1);
+  });
+
+  it('shows the button as its icon beside ⋯, not in the overlay', () => {
+    const { root, q } = widget(speaker(), { buttons, shortcut: 0 });
+    const s = q('.mw-shortcut');
+    expect(s.nextElementSibling).toBe(q('.mw-more'));
+    expect(s.getAttribute('aria-label')).toBe('Turn off');
+    expect(s.querySelector('.mw-glyph path')!.getAttribute('d')).toBe(win.WidgetkeeperKit.icons.power.d);
+    expect([...root.querySelectorAll('.mw-chip')].map(c => c.textContent)).toEqual(['TV', 'Movie time']);
+    expect(q('.mw-more').style.display).toBe('');
+  });
+
+  it('shows the first letter without an icon, and no ⋯ when nothing else is in it', () => {
+    const { root, q } = widget(speaker(), { buttons: [{ id: 'flow:f1', name: 'movie time' }], shortcut: 0 });
+    expect(q('.mw-shortcut-letter').textContent).toBe('m');
+    expect(root.querySelectorAll('.mw-chip')).toHaveLength(0);
+    expect(q('.mw-more').style.display).toBe('none');
+  });
+
+  it('runs the button with a tap, with the check when done, and leaves ⋯ closed', async () => {
+    const { q, click, onButton } = widget(speaker(), { buttons, shortcut: 0 });
+    click('.mw-shortcut');
+    expect(onButton).toHaveBeenCalledWith('flow:off');
+    expect(q('.mw-shortcut').classList.contains('running')).toBe(true);
+    await vi.advanceTimersByTimeAsync(500);
+    expect(q('.mw-shortcut').classList.contains('done')).toBe(true);
+    expect(q('.mw-card').classList.contains('panel-open')).toBe(false);
+    await vi.advanceTimersByTimeAsync(1600);
+    expect(q('.mw-shortcut').classList.contains('done')).toBe(false);
+  });
+
+  it('lights itself, not ⋯, while the speaker plays from it', () => {
+    const { q, w } = widget(speaker(), { buttons, shortcut: 1 });
+    w.pushChange({ capabilityId: 'speaker_track', value: 'HDMI' });
+    expect(q('.mw-shortcut').classList.contains('on')).toBe(true);
+    expect(q('.mw-more').classList.contains('on')).toBe(false);
+  });
+
+  it('is left out for an index without a button', () => {
+    const { root } = widget(speaker(), { buttons, shortcut: 5 });
+    expect(root.querySelector('.mw-shortcut')).toBeNull();
+    expect(root.querySelectorAll('.mw-chip')).toHaveLength(3);
+  });
+
+  it('hides with a missing speaker', () => {
+    const { q } = widget({ id: 'k', missing: true }, { buttons, shortcut: 0 });
+    expect(q('.mw-shortcut').style.display).toBe('none');
+  });
+});
+
 describe('album art', () => {
   it('loads the art with a cache buster that changes with the track', async () => {
     const { w, q } = widget(speaker(), {});
@@ -527,6 +585,30 @@ describe('mount: a switched speaker’s cards', () => {
       .toEqual([expect.not.stringContaining('cards=1')]);
     expect(await paths({ button1: { id: 'card:homey:device:k:cloud_play_home_theater', name: 'TV' } }))
       .toEqual([expect.stringContaining('/state?deviceId=b&cards=1')]);
+  });
+});
+
+describe('mount: the shortcut setting', () => {
+  beforeAll(() => { loadMount('media'); });
+
+  it('puts the picked button beside ⋯, and none without the setting', async () => {
+    const mount = async (settings: object) => {
+      const root = document.createElement('div');
+      document.body.append(root);
+      const Homey = {
+        api: vi.fn(async () => speaker()),
+        on: vi.fn(), ready: vi.fn(), setHeight: vi.fn(), hapticFeedback: vi.fn(),
+        getSettings: () => ({ device: { id: 'k' }, button2: { id: 'flow:f1', name: 'Off' }, button3: { id: 'flow:f2', name: 'TV' }, ...settings }),
+        getDeviceIds: () => [], getWidgetInstanceId: () => 'w1', __: (key: string) => key,
+      };
+      win.mountMediaWidget(Homey, { root, frame: root });
+      await vi.advanceTimersByTimeAsync(0);
+      return root;
+    };
+    const root = await mount({ shortcut: '3' });
+    expect(root.querySelector('.mw-shortcut')!.getAttribute('aria-label')).toBe('TV');
+    expect([...root.querySelectorAll('.mw-chip')].map(c => c.textContent)).toEqual(['Off']);
+    expect((await mount({})).querySelector('.mw-shortcut')).toBeNull();
   });
 });
 

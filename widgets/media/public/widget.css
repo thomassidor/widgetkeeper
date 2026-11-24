@@ -342,3 +342,27 @@ button.mw-who.pressing { opacity: .6; }
   .mw-chip.running { animation: none; opacity: .7; }
   .mw-panel, .mw-main, .mw-card.panel-open .mw-panel { transition: none; }
 }
+
+/*
+ * The shortcut beside ⋯ (wk-136): one of the buttons as an icon, as ⋯ itself (36 px, no fill; 44 in Large). Lit in the
+ * colour while its pill would be (TV), dimmed while it runs, a green check when done. Hidden while ⋯ is open.
+ */
+.mw-btn.mw-shortcut {
+  width: 36px; height: 36px; align-self: flex-start; margin: -6px -2px 0 -4px;
+  background: transparent; color: var(--mw-muted);
+}
+.mw-shortcut .mw-glyph { width: 20px; height: 20px; }
+.mw-shortcut-letter { font-size: var(--mw-fs-default); line-height: 20px; font-weight: var(--mw-bold); }
+.mw-shortcut .mw-shortcut-done { display: none; }
+.mw-shortcut.done > :not(.mw-shortcut-done) { display: none; }
+.mw-shortcut.done .mw-shortcut-done { display: block; }
+.mw-shortcut.on { color: var(--mw-accent); }
+.mw-shortcut.running { animation: mw-pulse 1s ease-in-out infinite; }
+.mw-shortcut.done { color: var(--homey-color-green, #5DB815); }
+.mw.wk-deep .mw-shortcut.on { background: var(--mw-accent); color: var(--mw-on); }
+.mw-large .mw-btn.mw-shortcut { width: 44px; height: 44px; margin: -10px -6px 0 -4px; }
+.mw-large .mw-shortcut .mw-glyph { width: 24px; height: 24px; }
+.mw-large .mw-shortcut-letter { font-size: var(--homey-font-size-large, 20px); line-height: 24px; }
+@media (prefers-reduced-motion: reduce) {
+  .mw-shortcut.running { animation: none; opacity: .7; }
+}
