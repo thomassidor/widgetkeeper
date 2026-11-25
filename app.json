@@ -18998,6 +18998,115 @@
           "value": ""
         },
         {
+          "id": "decimals",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "Decimals",
+            "nl": "Decimalen",
+            "de": "Nachkommastellen",
+            "fr": "Décimales",
+            "it": "Decimali",
+            "sv": "Decimaler",
+            "no": "Desimaler",
+            "es": "Decimales",
+            "da": "Decimaler",
+            "ru": "Знаки после запятой",
+            "pl": "Miejsca po przecinku",
+            "ko": "소수점 자리",
+            "ar": "المنازل العشرية"
+          },
+          "hint": {
+            "en": "Automatic: as the devices report it, an average to three significant digits.",
+            "nl": "Automatisch: zoals de apparaten het melden, een gemiddelde op drie significante cijfers.",
+            "de": "Automatisch: wie die Geräte ihn melden, ein Durchschnitt auf drei signifikante Stellen.",
+            "fr": "Automatique : comme les appareils la donnent, une moyenne à trois chiffres significatifs.",
+            "it": "Automatico: come lo riportano i dispositivi, una media a tre cifre significative.",
+            "sv": "Automatiskt: som enheterna rapporterar det, ett medelvärde med tre värdesiffror.",
+            "no": "Automatisk: slik enhetene rapporterer den, et gjennomsnitt med tre gjeldende sifre.",
+            "es": "Automático: como lo indican los dispositivos, una media con tres cifras significativas.",
+            "da": "Automatisk: som enhederne rapporterer den, et gennemsnit med tre betydende cifre.",
+            "ru": "Автоматически: как сообщают устройства, среднее — до трёх значащих цифр.",
+            "pl": "Automatycznie: tak, jak podają urządzenia, średnia z trzema cyframi znaczącymi.",
+            "ko": "자동: 기기가 보내는 대로, 평균은 유효숫자 세 자리.",
+            "ar": "تلقائي: كما ترسلها الأجهزة، والمتوسط بثلاثة أرقام معنوية."
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
+        },
+        {
           "id": "okRange",
           "type": "text",
           "title": {
@@ -25058,6 +25167,115 @@
           }
         },
         {
+          "id": "decimals1",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "hint": {
+            "en": "Automatic: as the device reports it.",
+            "nl": "Automatisch: zoals het apparaat het meldt.",
+            "de": "Automatisch: wie das Gerät ihn meldet.",
+            "fr": "Automatique : comme l'appareil la donne.",
+            "it": "Automatico: come lo riporta il dispositivo.",
+            "sv": "Automatiskt: som enheten rapporterar det.",
+            "no": "Automatisk: slik enheten rapporterer den.",
+            "es": "Automático: como lo indica el dispositivo.",
+            "da": "Automatisk: som enheden rapporterer den.",
+            "ru": "Автоматически: как сообщает устройство.",
+            "pl": "Automatycznie: tak, jak podaje urządzenie.",
+            "ko": "자동: 기기가 보내는 대로.",
+            "ar": "تلقائي: كما يرسلها الجهاز."
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
+        },
+        {
           "id": "slot2",
           "type": "autocomplete",
           "title": {
@@ -25094,6 +25312,100 @@
             "ko": "  – 두 번째 값",
             "ar": "  – القيمة الثانية"
           }
+        },
+        {
+          "id": "decimals2",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
         },
         {
           "id": "slot3",
@@ -25134,6 +25446,100 @@
           }
         },
         {
+          "id": "decimals3",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
+        },
+        {
           "id": "slot4",
           "type": "autocomplete",
           "title": {
@@ -25170,6 +25576,100 @@
             "ko": "  – 두 번째 값",
             "ar": "  – القيمة الثانية"
           }
+        },
+        {
+          "id": "decimals4",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
         },
         {
           "id": "slot5",
@@ -25210,6 +25710,100 @@
           }
         },
         {
+          "id": "decimals5",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
+        },
+        {
           "id": "slot6",
           "type": "autocomplete",
           "title": {
@@ -25246,6 +25840,100 @@
             "ko": "  – 두 번째 값",
             "ar": "  – القيمة الثانية"
           }
+        },
+        {
+          "id": "decimals6",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
         }
       ],
       "api": {
@@ -38225,19 +38913,19 @@
           "id": "slot1",
           "type": "autocomplete",
           "title": {
-            "en": "Tile 1",
-            "nl": "Tegel 1",
-            "de": "Kachel 1",
-            "fr": "Tuile 1",
-            "it": "Riquadro 1",
-            "sv": "Ruta 1",
-            "no": "Flis 1",
-            "es": "Mosaico 1",
-            "da": "Felt 1",
-            "ru": "Плитка 1",
-            "pl": "Kafelek 1",
-            "ko": "타일 1",
-            "ar": "البلاطة 1"
+            "en": "Tile 1: value",
+            "nl": "Tegel 1: waarde",
+            "de": "Kachel 1: Wert",
+            "fr": "Tuile 1 : valeur",
+            "it": "Riquadro 1: valore",
+            "sv": "Ruta 1: värde",
+            "no": "Flis 1: verdi",
+            "es": "Mosaico 1: valor",
+            "da": "Felt 1: værdi",
+            "ru": "Плитка 1: значение",
+            "pl": "Kafelek 1: wartość",
+            "ko": "타일 1: 값",
+            "ar": "البلاطة 1: القيمة"
           },
           "hint": {
             "en": "Pick a value for each tile. Only numbers with Insights history are listed; empty tiles are left out.",
@@ -38256,99 +38944,678 @@
           }
         },
         {
+          "id": "decimals1",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "hint": {
+            "en": "Automatic: as the device reports it.",
+            "nl": "Automatisch: zoals het apparaat het meldt.",
+            "de": "Automatisch: wie das Gerät ihn meldet.",
+            "fr": "Automatique : comme l'appareil la donne.",
+            "it": "Automatico: come lo riporta il dispositivo.",
+            "sv": "Automatiskt: som enheten rapporterar det.",
+            "no": "Automatisk: slik enheten rapporterer den.",
+            "es": "Automático: como lo indica el dispositivo.",
+            "da": "Automatisk: som enheden rapporterer den.",
+            "ru": "Автоматически: как сообщает устройство.",
+            "pl": "Automatycznie: tak, jak podaje urządzenie.",
+            "ko": "자동: 기기가 보내는 대로.",
+            "ar": "تلقائي: كما يرسلها الجهاز."
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
+        },
+        {
           "id": "slot2",
           "type": "autocomplete",
           "title": {
-            "en": "Tile 2",
-            "nl": "Tegel 2",
-            "de": "Kachel 2",
-            "fr": "Tuile 2",
-            "it": "Riquadro 2",
-            "sv": "Ruta 2",
-            "no": "Flis 2",
-            "es": "Mosaico 2",
-            "da": "Felt 2",
-            "ru": "Плитка 2",
-            "pl": "Kafelek 2",
-            "ko": "타일 2",
-            "ar": "البلاطة 2"
+            "en": "Tile 2: value",
+            "nl": "Tegel 2: waarde",
+            "de": "Kachel 2: Wert",
+            "fr": "Tuile 2 : valeur",
+            "it": "Riquadro 2: valore",
+            "sv": "Ruta 2: värde",
+            "no": "Flis 2: verdi",
+            "es": "Mosaico 2: valor",
+            "da": "Felt 2: værdi",
+            "ru": "Плитка 2: значение",
+            "pl": "Kafelek 2: wartość",
+            "ko": "타일 2: 값",
+            "ar": "البلاطة 2: القيمة"
           }
+        },
+        {
+          "id": "decimals2",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
         },
         {
           "id": "slot3",
           "type": "autocomplete",
           "title": {
-            "en": "Tile 3",
-            "nl": "Tegel 3",
-            "de": "Kachel 3",
-            "fr": "Tuile 3",
-            "it": "Riquadro 3",
-            "sv": "Ruta 3",
-            "no": "Flis 3",
-            "es": "Mosaico 3",
-            "da": "Felt 3",
-            "ru": "Плитка 3",
-            "pl": "Kafelek 3",
-            "ko": "타일 3",
-            "ar": "البلاطة 3"
+            "en": "Tile 3: value",
+            "nl": "Tegel 3: waarde",
+            "de": "Kachel 3: Wert",
+            "fr": "Tuile 3 : valeur",
+            "it": "Riquadro 3: valore",
+            "sv": "Ruta 3: värde",
+            "no": "Flis 3: verdi",
+            "es": "Mosaico 3: valor",
+            "da": "Felt 3: værdi",
+            "ru": "Плитка 3: значение",
+            "pl": "Kafelek 3: wartość",
+            "ko": "타일 3: 값",
+            "ar": "البلاطة 3: القيمة"
           }
+        },
+        {
+          "id": "decimals3",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
         },
         {
           "id": "slot4",
           "type": "autocomplete",
           "title": {
-            "en": "Tile 4",
-            "nl": "Tegel 4",
-            "de": "Kachel 4",
-            "fr": "Tuile 4",
-            "it": "Riquadro 4",
-            "sv": "Ruta 4",
-            "no": "Flis 4",
-            "es": "Mosaico 4",
-            "da": "Felt 4",
-            "ru": "Плитка 4",
-            "pl": "Kafelek 4",
-            "ko": "타일 4",
-            "ar": "البلاطة 4"
+            "en": "Tile 4: value",
+            "nl": "Tegel 4: waarde",
+            "de": "Kachel 4: Wert",
+            "fr": "Tuile 4 : valeur",
+            "it": "Riquadro 4: valore",
+            "sv": "Ruta 4: värde",
+            "no": "Flis 4: verdi",
+            "es": "Mosaico 4: valor",
+            "da": "Felt 4: værdi",
+            "ru": "Плитка 4: значение",
+            "pl": "Kafelek 4: wartość",
+            "ko": "타일 4: 값",
+            "ar": "البلاطة 4: القيمة"
           }
+        },
+        {
+          "id": "decimals4",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
         },
         {
           "id": "slot5",
           "type": "autocomplete",
           "title": {
-            "en": "Tile 5",
-            "nl": "Tegel 5",
-            "de": "Kachel 5",
-            "fr": "Tuile 5",
-            "it": "Riquadro 5",
-            "sv": "Ruta 5",
-            "no": "Flis 5",
-            "es": "Mosaico 5",
-            "da": "Felt 5",
-            "ru": "Плитка 5",
-            "pl": "Kafelek 5",
-            "ko": "타일 5",
-            "ar": "البلاطة 5"
+            "en": "Tile 5: value",
+            "nl": "Tegel 5: waarde",
+            "de": "Kachel 5: Wert",
+            "fr": "Tuile 5 : valeur",
+            "it": "Riquadro 5: valore",
+            "sv": "Ruta 5: värde",
+            "no": "Flis 5: verdi",
+            "es": "Mosaico 5: valor",
+            "da": "Felt 5: værdi",
+            "ru": "Плитка 5: значение",
+            "pl": "Kafelek 5: wartość",
+            "ko": "타일 5: 값",
+            "ar": "البلاطة 5: القيمة"
           }
+        },
+        {
+          "id": "decimals5",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
         },
         {
           "id": "slot6",
           "type": "autocomplete",
           "title": {
-            "en": "Tile 6",
-            "nl": "Tegel 6",
-            "de": "Kachel 6",
-            "fr": "Tuile 6",
-            "it": "Riquadro 6",
-            "sv": "Ruta 6",
-            "no": "Flis 6",
-            "es": "Mosaico 6",
-            "da": "Felt 6",
-            "ru": "Плитка 6",
-            "pl": "Kafelek 6",
-            "ko": "타일 6",
-            "ar": "البلاطة 6"
+            "en": "Tile 6: value",
+            "nl": "Tegel 6: waarde",
+            "de": "Kachel 6: Wert",
+            "fr": "Tuile 6 : valeur",
+            "it": "Riquadro 6: valore",
+            "sv": "Ruta 6: värde",
+            "no": "Flis 6: verdi",
+            "es": "Mosaico 6: valor",
+            "da": "Felt 6: værdi",
+            "ru": "Плитка 6: значение",
+            "pl": "Kafelek 6: wartość",
+            "ko": "타일 6: 값",
+            "ar": "البلاطة 6: القيمة"
           }
+        },
+        {
+          "id": "decimals6",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
         }
       ],
       "api": {
@@ -40445,6 +41712,115 @@
           }
         },
         {
+          "id": "decimals1",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "hint": {
+            "en": "Automatic: as the device reports it, at most one.",
+            "nl": "Automatisch: zoals het apparaat het meldt, hooguit één.",
+            "de": "Automatisch: wie das Gerät ihn meldet, höchstens eine.",
+            "fr": "Automatique : comme l'appareil la donne, une au plus.",
+            "it": "Automatico: come lo riporta il dispositivo, al massimo uno.",
+            "sv": "Automatiskt: som enheten rapporterar det, högst en.",
+            "no": "Automatisk: slik enheten rapporterer den, høyst én.",
+            "es": "Automático: como lo indica el dispositivo, como mucho uno.",
+            "da": "Automatisk: som enheden rapporterer den, højst én.",
+            "ru": "Автоматически: как сообщает устройство, не больше одного.",
+            "pl": "Automatycznie: tak, jak podaje urządzenie, najwyżej jedno.",
+            "ko": "자동: 기기가 보내는 대로, 최대 한 자리.",
+            "ar": "تلقائي: كما يرسلها الجهاز، منزلة واحدة على الأكثر."
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
+        },
+        {
           "id": "header1",
           "type": "text",
           "value": "",
@@ -40519,6 +41895,100 @@
           }
         },
         {
+          "id": "decimals2",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
+        },
+        {
           "id": "header2",
           "type": "text",
           "value": "",
@@ -40576,6 +42046,100 @@
             "ko": "  – 정상 범위",
             "ar": "  – النطاق الجيد"
           }
+        },
+        {
+          "id": "decimals3",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
         },
         {
           "id": "header3",
@@ -40637,6 +42201,100 @@
           }
         },
         {
+          "id": "decimals4",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
+        },
+        {
           "id": "header4",
           "type": "text",
           "value": "",
@@ -40696,6 +42354,100 @@
           }
         },
         {
+          "id": "decimals5",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
+        },
+        {
           "id": "header5",
           "type": "text",
           "value": "",
@@ -40753,6 +42505,100 @@
             "ko": "  – 정상 범위",
             "ar": "  – النطاق الجيد"
           }
+        },
+        {
+          "id": "decimals6",
+          "type": "dropdown",
+          "value": "auto",
+          "title": {
+            "en": "  – Decimals",
+            "nl": "  – Decimalen",
+            "de": "  – Nachkommastellen",
+            "fr": "  – Décimales",
+            "it": "  – Decimali",
+            "sv": "  – Decimaler",
+            "no": "  – Desimaler",
+            "es": "  – Decimales",
+            "da": "  – Decimaler",
+            "ru": "  – Знаки после запятой",
+            "pl": "  – Miejsca po przecinku",
+            "ko": "  – 소수점 자리",
+            "ar": "  – المنازل العشرية"
+          },
+          "values": [
+            {
+              "id": "auto",
+              "title": {
+                "en": "Automatic",
+                "nl": "Automatisch",
+                "de": "Automatisch",
+                "fr": "Automatique",
+                "it": "Automatico",
+                "sv": "Automatiskt",
+                "no": "Automatisk",
+                "es": "Automático",
+                "da": "Automatisk",
+                "ru": "Автоматически",
+                "pl": "Automatycznie",
+                "ko": "자동",
+                "ar": "تلقائي"
+              }
+            },
+            {
+              "id": "0",
+              "title": {
+                "en": "0",
+                "nl": "0",
+                "de": "0",
+                "fr": "0",
+                "it": "0",
+                "sv": "0",
+                "no": "0",
+                "es": "0",
+                "da": "0",
+                "ru": "0",
+                "pl": "0",
+                "ko": "0",
+                "ar": "0"
+              }
+            },
+            {
+              "id": "1",
+              "title": {
+                "en": "1",
+                "nl": "1",
+                "de": "1",
+                "fr": "1",
+                "it": "1",
+                "sv": "1",
+                "no": "1",
+                "es": "1",
+                "da": "1",
+                "ru": "1",
+                "pl": "1",
+                "ko": "1",
+                "ar": "1"
+              }
+            },
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            }
+          ]
         },
         {
           "id": "header6",
@@ -43025,13 +44871,8 @@
         "ko": "위젯 빌더",
         "ar": "منشئ الأدوات"
       },
-      "deprecated": true,
       "height": 100,
       "transparent": true,
-      "devices": {
-        "type": "global",
-        "singular": true
-      },
       "settings": [
         {
           "id": "design",
@@ -43065,6 +44906,40 @@
             "pl": "Tworzony na stronie Kreator widżetów pulpitów webowych.",
             "ko": "웹 대시보드의 위젯 빌더 페이지에서 만듭니다.",
             "ar": "يُنشأ في صفحة منشئ الأدوات في لوحات الويب."
+          }
+        },
+        {
+          "id": "device",
+          "type": "autocomplete",
+          "title": {
+            "en": "Device",
+            "nl": "Apparaat",
+            "de": "Gerät",
+            "fr": "Appareil",
+            "it": "Dispositivo",
+            "sv": "Enhet",
+            "no": "Enhet",
+            "es": "Dispositivo",
+            "da": "Enhed",
+            "ru": "Устройство",
+            "pl": "Urządzenie",
+            "ko": "기기",
+            "ar": "الجهاز"
+          },
+          "hint": {
+            "en": "Only for a design that shows the widget's device: the device it shows here.",
+            "nl": "Alleen voor een ontwerp dat het apparaat van de widget toont: het apparaat dat het hier toont.",
+            "de": "Nur für einen Entwurf, der das Gerät des Widgets zeigt: das Gerät, das er hier zeigt.",
+            "fr": "Seulement pour un modèle qui affiche l'appareil du widget : l'appareil affiché ici.",
+            "it": "Solo per un design che mostra il dispositivo del widget: il dispositivo che mostra qui.",
+            "sv": "Bara för en design som visar widgetens enhet: enheten den visar här.",
+            "no": "Bare for et design som viser widgetens enhet: enheten det viser her.",
+            "es": "Solo para un diseño que muestra el dispositivo del widget: el dispositivo que muestra aquí.",
+            "da": "Kun for et design, der viser widgettens enhed: den enhed, det viser her.",
+            "ru": "Только для макета, который показывает устройство виджета: устройство, которое он показывает здесь.",
+            "pl": "Tylko dla projektu, który pokazuje urządzenie widżetu: urządzenie, które tu pokazuje.",
+            "ko": "위젯의 기기를 표시하는 디자인에만 해당: 여기에서 표시할 기기입니다.",
+            "ar": "فقط لتصميم يعرض جهاز الأداة: الجهاز الذي يعرضه هنا."
           }
         },
         {
@@ -45267,6 +47142,42 @@
                   "ko": "회색",
                   "ar": "رمادي"
                 }
+              },
+              {
+                "id": "white",
+                "title": {
+                  "en": "White",
+                  "nl": "Wit",
+                  "de": "Weiß",
+                  "fr": "Blanc",
+                  "it": "Bianco",
+                  "sv": "Vit",
+                  "no": "Hvit",
+                  "es": "Blanco",
+                  "da": "Hvid",
+                  "ru": "Белый",
+                  "pl": "Biały",
+                  "ko": "흰색",
+                  "ar": "أبيض"
+                }
+              },
+              {
+                "id": "black",
+                "title": {
+                  "en": "Black",
+                  "nl": "Zwart",
+                  "de": "Schwarz",
+                  "fr": "Noir",
+                  "it": "Nero",
+                  "sv": "Svart",
+                  "no": "Svart",
+                  "es": "Negro",
+                  "da": "Sort",
+                  "ru": "Чёрный",
+                  "pl": "Czarny",
+                  "ko": "검은색",
+                  "ar": "أسود"
+                }
               }
             ]
           }
@@ -46460,6 +48371,42 @@
                   "ko": "회색",
                   "ar": "رمادي"
                 }
+              },
+              {
+                "id": "white",
+                "title": {
+                  "en": "White",
+                  "nl": "Wit",
+                  "de": "Weiß",
+                  "fr": "Blanc",
+                  "it": "Bianco",
+                  "sv": "Vit",
+                  "no": "Hvit",
+                  "es": "Blanco",
+                  "da": "Hvid",
+                  "ru": "Белый",
+                  "pl": "Biały",
+                  "ko": "흰색",
+                  "ar": "أبيض"
+                }
+              },
+              {
+                "id": "black",
+                "title": {
+                  "en": "Black",
+                  "nl": "Zwart",
+                  "de": "Schwarz",
+                  "fr": "Noir",
+                  "it": "Nero",
+                  "sv": "Svart",
+                  "no": "Svart",
+                  "es": "Negro",
+                  "da": "Sort",
+                  "ru": "Чёрный",
+                  "pl": "Czarny",
+                  "ko": "검은색",
+                  "ar": "أسود"
+                }
               }
             ]
           }
@@ -47565,6 +49512,42 @@
                   "pl": "Szary",
                   "ko": "회색",
                   "ar": "رمادي"
+                }
+              },
+              {
+                "id": "white",
+                "title": {
+                  "en": "White",
+                  "nl": "Wit",
+                  "de": "Weiß",
+                  "fr": "Blanc",
+                  "it": "Bianco",
+                  "sv": "Vit",
+                  "no": "Hvit",
+                  "es": "Blanco",
+                  "da": "Hvid",
+                  "ru": "Белый",
+                  "pl": "Biały",
+                  "ko": "흰색",
+                  "ar": "أبيض"
+                }
+              },
+              {
+                "id": "black",
+                "title": {
+                  "en": "Black",
+                  "nl": "Zwart",
+                  "de": "Schwarz",
+                  "fr": "Noir",
+                  "it": "Nero",
+                  "sv": "Svart",
+                  "no": "Svart",
+                  "es": "Negro",
+                  "da": "Sort",
+                  "ru": "Чёрный",
+                  "pl": "Czarny",
+                  "ko": "검은색",
+                  "ar": "أسود"
                 }
               }
             ]
@@ -51439,6 +53422,42 @@
                   "ko": "회색",
                   "ar": "رمادي"
                 }
+              },
+              {
+                "id": "white",
+                "title": {
+                  "en": "White",
+                  "nl": "Wit",
+                  "de": "Weiß",
+                  "fr": "Blanc",
+                  "it": "Bianco",
+                  "sv": "Vit",
+                  "no": "Hvit",
+                  "es": "Blanco",
+                  "da": "Hvid",
+                  "ru": "Белый",
+                  "pl": "Biały",
+                  "ko": "흰색",
+                  "ar": "أبيض"
+                }
+              },
+              {
+                "id": "black",
+                "title": {
+                  "en": "Black",
+                  "nl": "Zwart",
+                  "de": "Schwarz",
+                  "fr": "Noir",
+                  "it": "Nero",
+                  "sv": "Svart",
+                  "no": "Svart",
+                  "es": "Negro",
+                  "da": "Sort",
+                  "ru": "Чёрный",
+                  "pl": "Czarny",
+                  "ko": "검은색",
+                  "ar": "أسود"
+                }
               }
             ]
           }
@@ -52013,6 +54032,42 @@
                   "pl": "Szary",
                   "ko": "회색",
                   "ar": "رمادي"
+                }
+              },
+              {
+                "id": "white",
+                "title": {
+                  "en": "White",
+                  "nl": "Wit",
+                  "de": "Weiß",
+                  "fr": "Blanc",
+                  "it": "Bianco",
+                  "sv": "Vit",
+                  "no": "Hvit",
+                  "es": "Blanco",
+                  "da": "Hvid",
+                  "ru": "Белый",
+                  "pl": "Biały",
+                  "ko": "흰색",
+                  "ar": "أبيض"
+                }
+              },
+              {
+                "id": "black",
+                "title": {
+                  "en": "Black",
+                  "nl": "Zwart",
+                  "de": "Schwarz",
+                  "fr": "Noir",
+                  "it": "Nero",
+                  "sv": "Svart",
+                  "no": "Svart",
+                  "es": "Negro",
+                  "da": "Sort",
+                  "ru": "Чёрный",
+                  "pl": "Czarny",
+                  "ko": "검은색",
+                  "ar": "أسود"
                 }
               }
             ]

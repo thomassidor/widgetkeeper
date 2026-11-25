@@ -172,26 +172,19 @@
 
     /** The builder now: the design being built, the selection, the view's choices, undo, the preview. */
     let b = null;
-    /** The dashboard columns the design spans, and its grid's columns (four per dashboard column). */
-    const spanOf = () => Math.min(MAX_SPAN, Math.max(1, Number(b.design.span) || 1));
-    const cols = () => GRID.cols * spanOf();
     /**
-     * A new span: the grid gets four columns per dashboard column, and the design stretches (or narrows) with it, as a
-     * normal widget does over more columns: each top-level part's columns scaled by the change (a container's own grid
-     * and per cents follow its box), kept inside the grid.
+     * The web dashboard columns the design is shown over (the preview's width, and Add to dashboard's), and its grid's
+     * columns: always 4, as a design is made for one column and stretches over more as a normal widget does (the user,
+     * 2026-11-24: no widget is wider than one column by design, so it fits a Homey dashboard too).
+     */
+    const spanOf = () => Math.min(MAX_SPAN, Math.max(1, Number(b.design.span) || 1));
+    const cols = () => GRID.cols;
+    /**
+     * A new span: the same design over more columns, stretched. A view of it, as the column width and colour style
+     * are, so no Undo step, and Undo and Redo keep it (restore(); the user, 2026-11-25).
      */
     function setSpan(n) {
-      const was = spanOf();
-      change(() => {
-        if (n > 1) b.design.span = n; else delete b.design.span;
-        const f = spanOf() / was;
-        for (const p of b.design.parts) {
-          const x = Math.round(p.at.x * f);
-          p.at.w = Math.min(Math.max(1, Math.round((p.at.x + p.at.w) * f) - x), cols());
-          p.at.x = Math.min(x, cols() - p.at.w);
-        }
-        for (const p of b.design.parts) makeRoom(b.design.parts, p);
-      }, { preview: false });
+      change(() => { if (n > 1) b.design.span = n; else delete b.design.span; }, { preview: false, undo: false });
       sizeCanvas();
     }
 
@@ -275,8 +268,7 @@
     /** A sketch of a design's grid (its first six rows): a block per part, a container in its background. */
     function designArt(d, cls = 'wd-dash-art wdb-art') {
       const art = el('div', cls);
-      const span = Math.min(MAX_SPAN, Math.max(1, Number(d.span) || 1));
-      art.style.gridTemplateColumns = `repeat(${4 * span}, 1fr)`;
+      art.style.gridTemplateColumns = 'repeat(4, 1fr)';
       const rows = Math.max(2, ...d.parts.map(p => p.at.y + p.at.h));
       art.style.setProperty('--rows', String(Math.min(rows, 6)));
       for (const p of d.parts) {
@@ -675,13 +667,30 @@
           const r = boxes ? boxes.get(box.id) : innerRect(box.id);
           if (!r) continue;
           if (fx < r.left || fx > r.right || fy < r.top || fy > r.bottom) continue;
-          if (box.mode === 'free') return { into: box, x: ((fx - r.left) / r.width) * 100, y: ((fy - r.top) / r.height) * 100 };
+          const px = fx - r.left;
+          const py = fy - r.top;
+          if (box.mode === 'free') return { into: box, x: (px / r.width) * 100, y: (py / r.height) * 100, px, py };
           const g = gridOf(box);
-          return { into: box, x: Math.floor((fx - r.left) / g.colW), y: Math.floor((fy - r.top) / g.rowH) };
+          return { into: box, x: Math.floor(px / g.colW), y: Math.floor(py / g.rowH), px, py };
         }
       }
       const g = gridOf(null);
-      return { into: null, x: Math.floor(fx / g.colW), y: Math.floor(fy / g.rowH) };
+      return { into: null, x: Math.floor(fx / g.colW), y: Math.floor(fy / g.rowH), px: fx, py: fy };
+    }
+
+    /**
+     * Where a component of `size` (top-grid cells) lands at a drop target, held at `grab` (0–1 across and down its box):
+     * that point of its new box under the pointer, snapped to the target's grid (per cent free-form).
+     */
+    function landAt(target, size, grab) {
+      const s = sizeIn(size, target.into);
+      const g = gridOf(target.into);
+      if (g.mode === 'free') {
+        return { into: target.into, ...s, x: clamp(target.x - grab.x * s.w, 0, 100 - s.w), y: clamp(target.y - grab.y * s.h, 0, 100 - s.h) };
+      }
+      const x = Math.round((target.px - grab.x * (s.w * g.colW)) / g.colW);
+      const y = Math.round((target.py - grab.y * (s.h * g.rowH)) / g.rowH);
+      return { into: target.into, ...s, x: clamp(x, 0, g.cols - s.w), y: Math.max(0, y) };
     }
 
     /** A container's inner box in the frame's coordinates (the overlay's), or null. */
@@ -753,7 +762,7 @@
       const spanSeg = seg([1, 2, 3].map(n => [n, t('builderSpanN', { n })]), spanOf(), (n) => setSpan(n));
       b.spanSeg = spanSeg;
       tools.append(
-        // How many dashboard columns it spans (its grid has four per column), and a column's width here.
+        // How many dashboard columns it's shown over (stretched), and a column's width here.
         group(t('columns'), spanSeg),
         group(t('columnWidth'), seg(WIDTHS.map(w => [w, `${w} px`]), b.width, (w) => { b.width = w; sizeCanvas(); })),
         group(settingTitle('values', 'colorStyle') || t('builderMuted'), seg([[false, t('builderMuted')], [true, t('builderVivid')]], b.vivid, (v) => { b.vivid = v; mountPreview(); })),
@@ -948,7 +957,6 @@
         if (p.kind === 'container') for (const k of p.parts || []) box(k, p);
       }
       if (b.cell) showCell(b.cell);
-      if (b.dragGhost) drawDragGhost();
     }
 
     /** A container is entered while it or one of its components is selected: then a tap picks the component under it. */
@@ -1026,17 +1034,6 @@
       drawOverlay();
     }
 
-    /** What a drag into another container (or out of its own) carries: its outline, following the pointer. */
-    function drawDragGhost() {
-      const g = b.dragGhost;
-      const old = b.overlay.querySelector('.wdb-dragghost');
-      if (old) old.remove();
-      if (!g) return;
-      const n = el('div', 'wdb-dragghost');
-      Object.assign(n.style, { left: `${g.left}px`, top: `${g.top}px`, width: `${g.width}px`, height: `${g.height}px`, borderRadius: g.radius });
-      b.overlay.append(n);
-    }
-
     /** The grid a part moves on: its cell size in px, and where its box starts. */
     function gridOf(parent) {
       if (!parent) {
@@ -1067,10 +1064,14 @@
       const siblings = parent ? parent.parts : b.design.parts;
       const places = new Map(siblings.map(x => [x, { ...x.at }]));
       const start = { x: e.clientX, y: e.clientY };
-      // Its box as the drag starts, for the outline that follows the pointer out of its container.
+      // Where in its box it was grabbed (0–1 across and down): a move into another container lands with that point
+      // under the pointer, so the cells it lands on are the one marker and stay where the box would be.
       const startNode = nodeOf(p.id);
       const startBox = startNode ? startNode.getBoundingClientRect() : null;
-      const radius = startNode ? startNode.ownerDocument.defaultView.getComputedStyle(startNode).borderRadius : '';
+      const o = b.overlay.getBoundingClientRect();
+      const grab = startBox && startBox.width && startBox.height
+        ? { x: clamp((e.clientX - o.left - startBox.left) / startBox.width, 0, 1), y: clamp((e.clientY - o.top - startBox.top) / startBox.height, 0, 1) }
+        : { x: 0, y: 0 };
       // The containers where they were as the drag started: a top-level part moving onto one's cells pushes it down out
       // from under the pointer, so looking where it is now, nothing could ever be dragged into one.
       const boxes = containerRects();
@@ -1094,15 +1095,11 @@
               b.rev++;
               showPreview();
             }
-            away = { ...target, ...sizeIn(topSize(p, parent), target.into) };
-            if (away.into && away.into.mode === 'free') { away.x = clamp(away.x - away.w / 2, 0, 100 - away.w); away.y = clamp(away.y - away.h / 2, 0, 100 - away.h); }
-            b.dragGhost = startBox && { left: startBox.left + dx, top: startBox.top + dy, width: startBox.width, height: startBox.height, radius };
+            away = landAt(target, topSize(p, parent), grab);
             showCell(away);
-            drawDragGhost();
             return;
           }
           away = null;
-          if (b.dragGhost) { b.dragGhost = null; drawDragGhost(); }
         }
         const at = { ...from };
         if (g.mode === 'free') {
@@ -1141,8 +1138,6 @@
         node.removeEventListener('pointercancel', up);
         node.removeEventListener('lostpointercapture', up);
         b.lines = null;
-        b.dragGhost = null;
-        drawDragGhost();
         showCell(null);
         if (!moved) {
           if (ev.type === 'pointerup' && onClick) onClick();
@@ -1336,12 +1331,12 @@
 
     /** The design as an Undo or Redo step had it, drawn, saved and read again. */
     function restore(json) {
+      const span = b.design.span;
       b.design = JSON.parse(json);
+      if (span) b.design.span = span; else delete b.design.span;
       b.nudged = null;
       if (b.selected && !findPart(b.selected)) b.selected = null;
       undoButtons();
-      // Its width may have changed with it.
-      if (b.spanSeg) [...b.spanSeg.children].forEach((x, i) => x.classList.toggle('on', i + 1 === spanOf()));
       sizeCanvas();
       b.rev++;
       showPreview();
@@ -1636,9 +1631,8 @@
         await flush();
         const part = freshCopy(p);
         part.at = { x: 0, y: 0, w: p.at.w, h: p.at.h };
-        const span = Math.ceil(part.at.w / GRID.cols);
         try {
-          const res = await request('PUT', '/web/designs', { name: name.value.trim().slice(0, 40) || partTitle(p), ready: true, parts: [part], ...(span > 1 ? { span } : {}), ...(b.design.sample ? { sample: b.design.sample } : {}) });
+          const res = await request('PUT', '/web/designs', { name: name.value.trim().slice(0, 40) || partTitle(p), ready: true, parts: [part], ...(b.design.sample ? { sample: b.design.sample } : {}) });
           wd.designs = res.designs;
           redrawLibrary();
           redrawInspector();

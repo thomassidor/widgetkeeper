@@ -1,6 +1,6 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
-import { byName, devicesAndZones, matches, type AutocompleteItem } from './autocomplete.js';
+import { byName, devicesAndZones, listDevicesWhere, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { deviceImage, fetchImageBase64 } from './deviceIcon.js';
 import {
   MAX_DESIGNS, MAX_EACH, MAX_REPEAT_CANDIDATES, SERVER_ACTIONS, TAP_KINDS, allParts, bindDevice, designCharts, detachUses, designFlows, designSlots, designVariables, findPart, partLabel, readDesign,
@@ -128,6 +128,14 @@ export default class CustomWidgetService {
     return this.designs
       .filter(d => !d.ready && matches(query, d.name))
       .map(d => ({ id: d.id, name: d.name, description: this.homey.__('custom.partCount', { count: allParts(d).length }) || `${allParts(d).length} components` }));
+  }
+
+  /**
+   * The widget's Device autocomplete on a Homey dashboard (a design for any device shows it): None, then every device.
+   * The web editor has its own picker (`WEB_DEVICES` in `WebDashboardService.ts`).
+   */
+  async deviceItems(query: string): Promise<AutocompleteItem[]> {
+    return withNone(this.homey.__('values.none') || 'None', query, await listDevicesWhere(this.homey, query, () => true));
   }
 
   /** Every design, whole: the builder page's library. */

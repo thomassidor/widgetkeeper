@@ -1777,7 +1777,6 @@
     "missing": "This design was removed.",
     "pickDesign": "Pick a design in the widget's settings.",
     "empty": "This design has no components yet.",
-    "webOnly": "Widget Builder designs show on web dashboards for now.",
     "unavailable": "Unavailable",
     "on": "On",
     "off": "Off",

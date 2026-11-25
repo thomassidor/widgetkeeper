@@ -20,7 +20,6 @@
     missing: 'This design was removed.',
     pickDesign: 'Pick a design in the widget\'s settings.',
     empty: 'This design has no components yet.',
-    webOnly: 'Widget Builder designs show on web dashboards for now.',
     unavailable: 'Unavailable',
     on: 'On',
     off: 'Off',
@@ -1707,8 +1706,6 @@
           if (p.kind === 'repeat') repeaters.set(p.id, p);
         }
       }
-      // A design for more than one dashboard column has four grid columns per column.
-      grid.style.setProperty('--wb-cols', String(4 * Math.min(3, Math.max(1, Number(builtFor.span) || 1))));
       for (const part of builtFor.parts) grid.appendChild(build(part, 'top'));
       tick();
     }

@@ -39,7 +39,14 @@ const MAX_TEXT = 2000;
  * A Devices picker only the web editor has: Cameras' left the manifest in 1.2.1, as Homey's editor won't save a widget
  * with one and nothing picked, but a web dashboard has no such rule, and its saved picks must stay.
  */
-const WEB_DEVICES: Record<string, any> = { cameras: { type: 'global', singular: false, filter: { class: 'camera|doorbell' } } };
+const WEB_DEVICES: Record<string, any> = {
+  cameras: { type: 'global', singular: false, filter: { class: 'camera|doorbell' } },
+  // The Widget Builder's device (a design for any device) left the manifest for the same reason (1.4.0); the phone has
+  // its `device` autocomplete instead, which the web editor leaves out (`PHONE_ONLY_SETTINGS`).
+  custom: { type: 'global', singular: true },
+};
+/** Settings only Homey's own editor shows: the web editor has a picker of its own for them (`WEB_DEVICES`). */
+const PHONE_ONLY_SETTINGS: Record<string, string[]> = { custom: ['device'] };
 const MAX_FOREIGN_SETTINGS = 60; // per widget of another app
 const ID = /^[A-Za-z0-9_-]{1,40}$/;
 /** A dashboard's Keypad code: Any code, or a code's id (`KeypadService`'s 12 hex digits). */
@@ -626,7 +633,7 @@ export default class WebDashboardService {
   /** Every widget type, in the manifest's order, with its settings in Homey's language. */
   widgetTypes(language = this.homey.i18n.getLanguage()): WebWidgetType[] {
     return Object.entries(this.manifestWidgets).map(([type, w]) => {
-      const settings = Array.isArray(w.settings) ? w.settings : [];
+      const settings = (Array.isArray(w.settings) ? w.settings : []).filter((x: any) => !PHONE_ONLY_SETTINGS[type]?.includes(x?.id));
       const { sections, labels } = settingSections(settings, language);
       const devices = this.deviceSetting(type, w);
       return {

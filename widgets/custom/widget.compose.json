@@ -14,13 +14,8 @@
     "ko": "위젯 빌더",
     "ar": "منشئ الأدوات"
   },
-  "deprecated": true,
   "height": 100,
   "transparent": true,
-  "devices": {
-    "type": "global",
-    "singular": true
-  },
   "settings": [
     {
       "id": "design",
@@ -54,6 +49,40 @@
         "pl": "Tworzony na stronie Kreator widżetów pulpitów webowych.",
         "ko": "웹 대시보드의 위젯 빌더 페이지에서 만듭니다.",
         "ar": "يُنشأ في صفحة منشئ الأدوات في لوحات الويب."
+      }
+    },
+    {
+      "id": "device",
+      "type": "autocomplete",
+      "title": {
+        "en": "Device",
+        "nl": "Apparaat",
+        "de": "Gerät",
+        "fr": "Appareil",
+        "it": "Dispositivo",
+        "sv": "Enhet",
+        "no": "Enhet",
+        "es": "Dispositivo",
+        "da": "Enhed",
+        "ru": "Устройство",
+        "pl": "Urządzenie",
+        "ko": "기기",
+        "ar": "الجهاز"
+      },
+      "hint": {
+        "en": "Only for a design that shows the widget's device: the device it shows here.",
+        "nl": "Alleen voor een ontwerp dat het apparaat van de widget toont: het apparaat dat het hier toont.",
+        "de": "Nur für einen Entwurf, der das Gerät des Widgets zeigt: das Gerät, das er hier zeigt.",
+        "fr": "Seulement pour un modèle qui affiche l'appareil du widget : l'appareil affiché ici.",
+        "it": "Solo per un design che mostra il dispositivo del widget: il dispositivo che mostra qui.",
+        "sv": "Bara för en design som visar widgetens enhet: enheten den visar här.",
+        "no": "Bare for et design som viser widgetens enhet: enheten det viser her.",
+        "es": "Solo para un diseño que muestra el dispositivo del widget: el dispositivo que muestra aquí.",
+        "da": "Kun for et design, der viser widgettens enhed: den enhed, det viser her.",
+        "ru": "Только для макета, который показывает устройство виджета: устройство, которое он показывает здесь.",
+        "pl": "Tylko dla projektu, który pokazuje urządzenie widżetu: urządzenie, które tu pokazuje.",
+        "ko": "위젯의 기기를 표시하는 디자인에만 해당: 여기에서 표시할 기기입니다.",
+        "ar": "فقط لتصميم يعرض جهاز الأداة: الجهاز الذي يعرضه هنا."
       }
     },
     {

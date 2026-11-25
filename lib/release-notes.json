@@ -1,18 +1,18 @@
 {
   "version": "1.4.0",
   "notes": {
-    "en": "Widget Builder: design your own widgets for web dashboards, plus custom colours from Flows and tabs in the Smart Stack.",
-    "nl": "Widgetbouwer: ontwerp je eigen widgets voor webdashboards, plus eigen kleuren vanuit Flows en tabs in de Smart Stack.",
-    "de": "Widget-Baukasten: Entwirf eigene Widgets für Web-Dashboards, dazu eigene Farben aus Flows und Tabs im Smart Stack.",
-    "fr": "Créateur de widgets : concevez vos widgets pour les tableaux de bord web, plus des couleurs perso par Flow et des onglets.",
-    "it": "Costruttore di widget: crea i tuoi widget per le dashboard web, più colori personali dai Flow e schede nello Smart Stack.",
-    "sv": "Widgetbyggare: designa egna widgets för webbpaneler, plus egna färger från Flows och flikar i Smart Stack.",
-    "no": "Widgetbygger: lag egne widgets for nettdashbord, pluss egne farger fra Flows og faner i Smart Stack.",
-    "es": "Creador de widgets: diseña tus widgets para paneles web, con colores propios desde Flows y pestañas en el Smart Stack.",
-    "da": "Widgetbygger: design dine egne widgets til webdashboards, plus egne farver fra Flows og faner i Smart Stack.",
-    "ru": "Конструктор виджетов: свои виджеты для веб-панелей, а также свои цвета из Flow и вкладки в Smart Stack.",
-    "pl": "Kreator widżetów: projektuj własne widżety dla pulpitów web, do tego własne kolory z Flow i karty w Smart Stack.",
-    "ko": "위젯 빌더: 웹 대시보드용 위젯을 직접 디자인하세요. Flow의 사용자 색상과 Smart Stack 탭도 추가됐습니다.",
-    "ar": "منشئ الأدوات: صمّم أدواتك للوحات الويب، مع ألوان خاصة من Flows وعلامات تبويب في Smart Stack."
+    "en": "Widget Builder: design your own widgets for any dashboard, plus custom colours from Flows and tabs in the Smart Stack.",
+    "nl": "Widgetbouwer: ontwerp je eigen widgets voor elk dashboard, plus eigen kleuren vanuit Flows en tabs in de Smart Stack.",
+    "de": "Widget-Baukasten: Entwirf eigene Widgets für jedes Dashboard, dazu eigene Farben aus Flows und Tabs im Smart Stack.",
+    "fr": "Créateur de widgets : concevez vos widgets pour tout tableau de bord, plus des couleurs perso par Flow et des onglets.",
+    "it": "Costruttore di widget: crea i tuoi widget per ogni dashboard, più colori personali dai Flow e schede nello Smart Stack.",
+    "sv": "Widgetbyggare: designa egna widgets för alla paneler, plus egna färger från Flows och flikar i Smart Stack.",
+    "no": "Widgetbygger: lag egne widgets for alle dashbord, pluss egne farger fra Flows og faner i Smart Stack.",
+    "es": "Creador de widgets: diseña tus widgets para cualquier panel, con colores propios desde Flows y pestañas en el Smart Stack.",
+    "da": "Widgetbygger: design dine egne widgets til alle dashboards, plus egne farver fra Flows og faner i Smart Stack.",
+    "ru": "Конструктор виджетов: свои виджеты для любых панелей, а также свои цвета из Flow и вкладки в Smart Stack.",
+    "pl": "Kreator widżetów: projektuj własne widżety dla każdego pulpitu, do tego własne kolory z Flow i karty w Smart Stack.",
+    "ko": "위젯 빌더: 어느 대시보드에나 둘 위젯을 직접 디자인하세요. Flow의 사용자 색상과 Smart Stack 탭도 추가됐습니다.",
+    "ar": "منشئ الأدوات: صمّم أدواتك لأي لوحة، مع ألوان خاصة من Flows وعلامات تبويب في Smart Stack."
   }
 }

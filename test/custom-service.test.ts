@@ -557,12 +557,16 @@ describe('readDesign: styles, colours, width, charts, any device and ready-mades
     expect(readPart({ kind: 'text', color: '#FF0000' })).toMatchObject({ textColor: '#ff0000', color: null });
   });
 
-  it('lays a design for more than one dashboard column out on four grid columns per column', () => {
-    const wide = readDesign({ span: 2, parts: [part('a', 'text', { at: { x: 6, y: 0, w: 4, h: 1 } })] })!;
-    expect(wide.span).toBe(2);
-    expect(wide.parts[0].at).toEqual({ x: 6, y: 0, w: 2, h: 1 });
-    const narrow = readDesign({ span: 9, parts: [part('a', 'text', { at: { x: 6, y: 0, w: 4, h: 1 } })] })!;
-    expect(narrow.span).toBe(3);
+  it('keeps every design on the one column\'s four grid columns, narrowing one laid out over more before', () => {
+    // Before 2026-11-24 a two-column design had eight grid columns; it's narrowed onto four, rows kept.
+    const old = readDesign({ span: 2, parts: [part('a', 'text', { at: { x: 6, y: 1, w: 2, h: 1 } }), part('b', 'text', { at: { x: 0, y: 0, w: 4, h: 2 } })] })!;
+    expect(old.span).toBe(2);
+    expect(old.parts.map(p => p.at)).toEqual([{ x: 3, y: 1, w: 1, h: 1 }, { x: 0, y: 0, w: 2, h: 2 }]);
+    // One made since: within four columns, left as it is (the span only shows it stretched).
+    const now = readDesign({ span: 3, parts: [part('a', 'text', { at: { x: 1, y: 0, w: 3, h: 1 } })] })!;
+    expect(now.parts[0].at).toEqual({ x: 1, y: 0, w: 3, h: 1 });
+    expect(readDesign(now)!.parts[0].at).toEqual({ x: 1, y: 0, w: 3, h: 1 });
+    expect(readDesign({ span: 9, parts: [] })!.span).toBe(3);
     expect(readDesign({ parts: [] })).not.toHaveProperty('span');
   });
 

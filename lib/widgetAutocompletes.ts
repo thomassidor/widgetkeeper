@@ -101,6 +101,7 @@ export function widgetAutocompletes(app: WidgetkeeperApp): Record<string, Record
 
   // Widget Builder: a design from the builder page's library.
   add('custom', 'design', async query => app.custom.designItems(query));
+  add('custom', 'device', query => app.custom.deviceItems(query));
 
   // Notes: a text variable to show, and the tile's icon.
   add('textline', 'variable', query => app.variables.listVariables(query, { types: ['string'] }));

@@ -1059,7 +1059,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 /* Each tab as wide as its label, the room left shared out; a desktop scrollbar or a long label (French's
    *Prêts à l'emploi*) would otherwise push the last one out of the pane, so a long label wraps onto two lines;
    with bigger text (a browser's font settings) a long word breaks too rather than push *Layers* out. */
-.wdb-lib > .wdb-tabs .wdb-tab { flex: 1 1 auto; min-width: 0; padding: 0 5px; white-space: normal; overflow-wrap: break-word; line-height: 1.1; }
+.wdb-lib > .wdb-tabs .wdb-tab { flex: 1 1 auto; min-width: 0; padding: 0 5px; border-radius: 0; white-space: normal; overflow-wrap: break-word; line-height: 1.1; }
 .wdb-lib > .wdb-tabs .wdb-tab:first-child { border-radius: 8px 0 0 8px; }
 .wdb-lib > .wdb-tabs .wdb-tab:last-child { border-radius: 0 8px 8px 0; }
 .wdb-lib > .wdb-tabs .wdb-tab.on { background: var(--wd-accent); color: #FFFFFF; box-shadow: none; }
@@ -1165,11 +1165,6 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-tag {
   position: absolute; left: 18px; top: -8px; padding: 0 6px; border-radius: 6px; font-size: 11px; line-height: 16px; font-weight: 500;
   color: #FFFFFF; background: var(--wd-accent); white-space: nowrap; pointer-events: none;
-}
-/* What a drag out of its container (or into another) carries, following the pointer. */
-.wdb-dragghost {
-  position: absolute; z-index: 5; pointer-events: none; box-sizing: border-box; border: 2px solid var(--wd-accent);
-  background: color-mix(in srgb, var(--wd-accent) 10%, transparent); box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
 }
 .wdb-line { position: absolute; pointer-events: none; z-index: 3; }
 .wdb-line.x { width: 0; border-left: 1px dashed #FF4FA3; }

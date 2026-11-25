@@ -56,7 +56,7 @@ This file holds what applies across the app. Each widget's notes, and those of t
 | Web Page | `webpage` | `widgets/webpage.md` |
 | Popups (and their Flow cards, prompt page and web overlay) | `popups` | `widgets/popups.md` |
 | Keypad | `keypad` | `widgets/keypad.md` |
-| Widget Builder (custom widgets from parts, web dashboards first; 1.4.0) | `custom` | `widgets/custom.md` |
+| Widget Builder (custom widgets from parts, built on the web dashboards, placed on Homey and web dashboards; 1.4.0) | `custom` | `widgets/custom.md` |
 
 Areas: `tile-names.md` (Rename tiles in sixteen widgets, `lib/TileNameService.ts`), `web-dashboards.md` (`settings/dashboard.*` and its parts `settings/dashboard-*.js`, `/web/…` routes, the password), `web-sync.md` (syncing web dashboards with Homey dashboards, `lib/dashboardSync.ts`) and `renders.md` (the render scripts and their pages in `dev/`).
 

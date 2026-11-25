@@ -192,14 +192,43 @@ describe('mount', () => {
     expect(reads()).toBe(before + 1);
   });
 
-  it("says it's for web dashboards on a Homey dashboard, without asking the app", async () => {
+  it('works on a Homey dashboard too, opening a web dashboard by its whole address', async () => {
     vi.useFakeTimers();
     const { frame, root } = frameElements();
-    const Homey = fakeFrame({ design: { id: 'd' } }, { instance: 'w1' });
+    const Homey = fakeFrame({ design: { id: 'd' } }, { instance: 'w1', api: async (method: string, path: string) => (path.startsWith('/state')
+      ? state([part('b', 'button', { actions: [{ do: 'dashboard', dashboard: 'home' }] })])
+      : { ok: true }) });
     win.mountCustomWidget(Homey, { root, frame });
     await vi.advanceTimersByTimeAsync(100);
-    expect(Homey.api).not.toHaveBeenCalled();
-    expect(root.textContent).toContain('web dashboards');
+    expect(Homey.api).toHaveBeenCalledWith('GET', expect.stringMatching(/^\/state\?design=d/));
+    root.querySelector<HTMLElement>('[data-part="b"]')!.click();
+    await vi.advanceTimersByTimeAsync(0);
+    // The frame is /app/<appId>/widgets/custom/, the web dashboards' page /app/<appId>/settings/dashboard.html.
+    const url = new URL(Homey.popup.mock.calls[0][0]);
+    expect(url.pathname).toBe(new URL('../../settings/dashboard.html', location.href).pathname);
+    expect(url.hash).toBe('#/d/home');
+  });
+
+  it("takes a Homey dashboard's device from its Device setting, without a Devices pick", async () => {
+    vi.useFakeTimers();
+    const { frame, root } = frameElements();
+    const Homey = fakeFrame({ design: { id: 'd' }, device: { id: 'lamp', name: 'Lamp' } }, { instance: 'w1', deviceIds: [], api: async () => state([]) });
+    win.mountCustomWidget(Homey, { root, frame });
+    await vi.advanceTimersByTimeAsync(100);
+    expect(Homey.api).toHaveBeenCalledWith('GET', expect.stringMatching(/^\/state\?design=d&device=lamp&/));
+  });
+
+  it('opens a web dashboard on a web dashboard by its page', async () => {
+    vi.useFakeTimers();
+    const { frame, root } = frameElements();
+    const Homey = fakeFrame({ design: { id: 'd' } }, { instance: 'web-home-w1', api: async (method: string, path: string) => (path.startsWith('/state')
+      ? state([part('b', 'button', { actions: [{ do: 'dashboard', dashboard: 'home' }] })])
+      : { ok: true }) });
+    win.mountCustomWidget(Homey, { root, frame });
+    await vi.advanceTimersByTimeAsync(100);
+    root.querySelector<HTMLElement>('[data-part="b"]')!.click();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(Homey.popup).toHaveBeenCalledWith('#/d/home');
   });
 
   it('keeps the README in step with the parts', () => {
@@ -715,9 +744,9 @@ describe('styles, colours, width, charts and Repeaters (2026-11-24)', () => {
     expect(at('own').style.getPropertyValue('--wb-ink')).toBe('#123456');
   });
 
-  it('gives a design made for more columns four grid columns per column', () => {
+  it('stretches a design shown over more columns on its four grid columns', () => {
     const { root } = widget({ ...state([part('t', 'text')]), design: { id: 'd', name: 'D', updatedAt: 1, span: 2, parts: [part('t', 'text')] } });
-    expect(root.querySelector<HTMLElement>('.wb-grid')!.style.getPropertyValue('--wb-cols')).toBe('8');
+    expect(root.querySelector<HTMLElement>('.wb-grid')!.style.getPropertyValue('--wb-cols')).toBe('');
   });
 
   it('draws a chart of its series as lines or bars, with its scale, times and a legend for more than one', () => {

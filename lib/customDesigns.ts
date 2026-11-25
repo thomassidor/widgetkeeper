@@ -158,7 +158,10 @@ export const TEXT_KINDS: readonly PartKind[] = [
 export const MAX_SERIES = 3;
 /** A Repeater's devices (each a ready-made component filled in with one). */
 export const MAX_EACH = 12;
-/** How many of a dashboard's columns a design spans: its grid has 4 columns per dashboard column. */
+/**
+ * How many of a web dashboard's columns a design is shown over at first (the builder's preview, Add widget): it's made
+ * for one column, its grid always 4 columns, which stretch over more as a normal widget's do.
+ */
 export const MAX_SPAN = 3;
 
 /**
@@ -341,7 +344,7 @@ export const BACKGROUND_DIMS = ['widget', 'half', 'full'] as const;
 export type BackgroundDim = typeof BACKGROUND_DIMS[number];
 
 /**
- * A design. `span`: the dashboard columns it's made for (1–3; its grid has 4 columns per column). `ready`: saved as a
+ * A design. `span`: the web dashboard columns it's shown over at first (1–3; its grid stays 4 columns, stretched). `ready`: saved as a
  * ready-made component (the builder's library, a Repeater's item), not a widget of its own: its first part is the
  * component. `sample`: the device the builder shows the widget's device (`@`) with.
  */
@@ -392,13 +395,13 @@ export function newId(): string {
  * Where a part goes, kept on its grid: top level in the 4 × 64 px cells, in a container on its fine grid (12 columns,
  * any row) or, free-form, in per cent of the container (one decimal).
  */
-function placeOf(v: any, where: 'top' | 'grid' | 'free', span = 1): Place {
+function placeOf(v: any, where: 'top' | 'grid' | 'free'): Place {
   if (where === 'free') {
     const x = num(v?.x, 0, 99, 0, 0.1);
     const y = num(v?.y, 0, 99, 0, 0.1);
     return { x, y, w: num(v?.w, 1, 100 - x, Math.min(25, 100 - x), 0.1), h: num(v?.h, 1, 100 - y, Math.min(25, 100 - y), 0.1) };
   }
-  const cols = where === 'top' ? GRID_COLUMNS * span : FINE_COLUMNS;
+  const cols = where === 'top' ? GRID_COLUMNS : FINE_COLUMNS;
   const rows = where === 'top' ? MAX_GRID_ROWS : MAX_GRID_ROWS * 9;
   const x = num(v?.x, 0, cols - 1, 0);
   const y = num(v?.y, 0, rows - 1, 0);
@@ -480,6 +483,23 @@ function backgroundOf(v: any): Background {
 }
 
 /**
+ * Whether a design was laid out before 2026-11-24's one-column designs: on 4 grid columns per dashboard column, with a
+ * top-level part reaching past the fourth.
+ */
+function wideLayout(parts: unknown): boolean {
+  return Array.isArray(parts) && parts.some((p: any) => Number(p?.at?.x) + Number(p?.at?.w) > GRID_COLUMNS);
+}
+
+/** A top-level part of such a design, its columns scaled onto the one column's 4 (rows stay). */
+function narrowed(raw: unknown, span: number): unknown {
+  const r = raw as any;
+  if (!r || typeof r !== 'object' || !r.at || typeof r.at !== 'object') return raw;
+  const x = Math.round(Number(r.at.x) / span) || 0;
+  const w = Math.max(1, Math.round((Number(r.at.x) + Number(r.at.w)) / span) - x);
+  return { ...r, at: { ...r.at, x, w } };
+}
+
+/**
  * A design as kept: every part well-formed, ids unique, at most `MAX_PARTS` parts, containers one level deep (a
  * container inside a container is left out). What can't be read is left out rather than refused, as an older design
  * may hold what a newer app doesn't know.
@@ -489,6 +509,7 @@ export function readDesign(v: unknown, fallbackId = newId()): Design | null {
   const d = v as Record<string, unknown>;
   const id = typeof d.id === 'string' && ID.test(d.id) && !isReservedKey(d.id) ? d.id : fallbackId;
   const span = num(d.span, 1, MAX_SPAN, 1);
+  const narrow = span > 1 && wideLayout(d.parts) ? span : 1;
   const seen = new Set<string>();
   let count = 0;
   const partsOf = (list: unknown, where: 'top' | 'grid' | 'free'): Part[] => {
@@ -496,7 +517,7 @@ export function readDesign(v: unknown, fallbackId = newId()): Design | null {
     const out: Part[] = [];
     for (const raw of list) {
       if (count >= MAX_PARTS) break;
-      const p = readPart(raw, where, span);
+      const p = readPart(where === 'top' && narrow > 1 ? narrowed(raw, narrow) : raw, where);
       if (!p || (p.kind === 'container' && where !== 'top')) continue;
       if (where === 'top') delete p.page;
       while (seen.has(p.id)) p.id = newId();
@@ -592,7 +613,7 @@ function readRange(p: Part, r: Record<string, any>) {
 }
 
 /** One part, or null when its kind isn't known. Only the fields its kind uses are kept. */
-export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', span = 1): Part | null {
+export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Part | null {
   if (!v || typeof v !== 'object') return null;
   const r = v as Record<string, any>;
   if (!PART_KINDS.includes(r.kind)) return null;
@@ -601,7 +622,7 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top', spa
     id: typeof r.id === 'string' && ID.test(r.id) && !isReservedKey(r.id) ? r.id : newId(),
     kind,
     name: str(r.name, MAX_NAME),
-    at: placeOf(r.at, where, span),
+    at: placeOf(r.at, where),
     // A calculated value is never drawn: no colour, icon, rules or Flow changes of its own.
     color: kind === 'calc' ? null : color(r.color),
     icon: ICON_KINDS.includes(kind) && typeof r.icon === 'string' && /^[a-z0-9-]{1,40}$/.test(r.icon) ? r.icon : null,

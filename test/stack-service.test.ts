@@ -77,7 +77,7 @@ describe('dashboardPages', () => {
 
   it('knows every widget of the app but the stack, the spacer, Lights by Room, Value Board, Dashboard Shortcuts, Web Page, Popups, Keypad and the Widget Builder', () => {
     const app = JSON.parse(readFileSync('app.json', 'utf8'));
-    // Dashboard Shortcuts and the Widget Builder are web only (deprecated on Homey's dashboards), so a stack never meets them. A Web Page's frame
+    // Dashboard Shortcuts is web only (deprecated on Homey's dashboards), so a stack never meets it; the Widget Builder isn't a page yet. A Web Page's frame
     // would take the stack's swipes; Popups draws nothing; Lights by Room's list of rooms and Value Board's groups are too tall for a slide (for now), and
     // the Keypad's pad grows it, which isn't tried in a slide yet.
     expect([...STACK_TYPES].sort()).toEqual(Object.keys(app.widgets).filter(id => !['stack', 'spacer', 'lightrooms', 'valueboard', 'shortcuts', 'webpage', 'popups', 'keypad', 'custom'].includes(id)).sort());

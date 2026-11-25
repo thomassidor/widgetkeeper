@@ -243,7 +243,7 @@ Any web page, scaled to fill the widget, with buttons to switch between addresse
 <a name="widget-builder"></a>
 <p><a href="docs/widgets/custom.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/custom-dark.png"><img src="docs/previews/custom-light.png" alt="" width="120" align="left"></picture></a>
 <a href="docs/widgets/custom.md"><b>Widget Builder</b></a><br>
-Your own widget from components (values, switches, sliders, gauges and more), built on the web dashboards, with Flows where you choose<br clear="left"></p>
+Your own widget from components (values, switches, sliders, gauges and more), built on the web dashboards for any dashboard, with Flows where you choose<br clear="left"></p>
 
 ## Web dashboards
 <img src="docs/web/dashboard.png" alt="A web dashboard with Widgetkeeper widgets in a browser window, with Dashboard Shortcuts at the top as a menu" width="100%">

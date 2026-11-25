@@ -1,7 +1,7 @@
 /*
  * Wires createCustomWidget to Homey: the design setting, the app's API and its realtime events. index.html calls it
- * with the frame's own Homey and body. Web dashboards only for now (instances `web-<dashboard>-<widget>`); on a Homey
- * dashboard it says so without asking the app.
+ * with the frame's own Homey and body. On a web dashboard (instances `web-<dashboard>-<widget>`) or a Homey dashboard
+ * alike; only opening a web dashboard differs.
  */
 window.mountCustomWidget = function (Homey, { root, frame }) {
   const REFRESH_MS = 5 * 60e3; // keeps the app's device subscriptions alive and resyncs state
@@ -13,9 +13,11 @@ window.mountCustomWidget = function (Homey, { root, frame }) {
 
   const settings = Homey.getSettings() || {};
   const design = settings.design && typeof settings.design.id === 'string' && settings.design.id !== 'none' ? settings.design.id : '';
-  // The widget's device: a design that works with any device shows this one's values.
-  let device = '';
-  const devices = window.WidgetkeeperKit.getDeviceIds(Homey).then((ids) => { device = ids[0] || ''; });
+  // The widget's device: a design that works with any device shows this one's values. A web dashboard's Devices picker
+  // (and a Homey dashboard widget placed before 1.4.0's manifest lost `devices`), else the Device setting (the phone's).
+  const picked = settings.device && typeof settings.device.id === 'string' && settings.device.id !== 'none' ? settings.device.id : '';
+  let device = picked;
+  const devices = window.WidgetkeeperKit.getDeviceIds(Homey).then((ids) => { device = ids[0] || picked; });
   /** A request's device: a Repeater's copy names its own, else the widget's. */
   const deviceOf = part => (part && part.device) || device || undefined;
   let instance = '';
@@ -42,8 +44,12 @@ window.mountCustomWidget = function (Homey, { root, frame }) {
     onButton: part => call('POST', part.flowId ? '/flow' : '/tap', { design, part: part.id, instance, device: deviceOf(part) }),
     // A button's actions the app runs, one at a time and in order; `do` says which kind (its API key use).
     onAction: (part, index, action) => call('POST', '/action', { design, part: part.id, index, do: action.do, device: deviceOf(part) }),
-    // A web dashboard's page opens one (as Dashboard Shortcuts does).
-    onOpen: (id) => { try { Homey.popup(`#/d/${encodeURIComponent(id)}`); } catch (e) { console.error(e); } },
+    // A web dashboard's page opens one (as Dashboard Shortcuts does); a Homey dashboard its whole address, in the phone
+    // app's own browser (this frame is `/app/<appId>/widgets/custom/`, the page `/app/<appId>/settings/dashboard.html`).
+    onOpen: async (id) => {
+      const hash = `#/d/${encodeURIComponent(id)}`;
+      try { Homey.popup(await web ? hash : new URL(`../../settings/dashboard.html${hash}`, location.href).href); } catch (e) { console.error(e); }
+    },
     onImage: part => Homey.api('GET', `/image?design=${encodeURIComponent(design)}&part=${encodeURIComponent(part.id)}${deviceOf(part) ? `&device=${encodeURIComponent(deviceOf(part))}` : ''}`),
     // Widget states are kept on this screen, per design.
     storeKey: design,
@@ -52,7 +58,6 @@ window.mountCustomWidget = function (Homey, { root, frame }) {
   const ready = () => link.ready({ fonts: true });
 
   async function load() {
-    if (!await web) { widget.setMessage(widget.t('webOnly')); ready(); return; }
     if (!design) { widget.setMessage(widget.t('pickDesign')); ready(); return; }
     await devices;
     const mine = ++reading;

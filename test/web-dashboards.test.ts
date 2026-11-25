@@ -491,7 +491,7 @@ describe('web dashboards: what the editor needs', () => {
     expect(plainHas('roomhealth', 'co2Max')).toBe(true);
     expect(of('roomhealth').settings.find(s => s.id === 'tempMax')!.label).toBe('Highest (°C/°F)');
     expect(groups('stack')).toEqual(['Show page dots or tabs:4']);
-    expect(groups('values')).toEqual(Array.from({ length: 6 }, (_, i) => `Tile ${i + 1}#:2`));
+    expect(groups('values')).toEqual(Array.from({ length: 6 }, (_, i) => `Tile ${i + 1}#:3`));
     expect(of('values').settings.filter(s => /^(slot|second)1$/.test(s.id)).map(s => s.label)).toEqual(['Value', 'Second value']);
     expect(groups('variables')).toEqual(['slots:10']);
     expect(of('variables').settings.find(s => s.id === 'slot3')!.label).toBe('Variable\u00A03');
