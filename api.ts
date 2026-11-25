@@ -151,7 +151,6 @@ const api = {
     return { version: homey.manifest.version };
   },
 
-  /** The icon picker's list: `[{id, name}]`, the page draws the icons itself. */
   /** The Widget Builder's page: saves a design (a new one gets an id); answers it as kept and the library. */
   async putWebDesign({ homey, query, body }: { homey: Homey, query?: Record<string, string>, body: unknown }) {
     const app = homey.app as WidgetkeeperApp;
@@ -226,6 +225,7 @@ const api = {
     return app.custom.deviceImage(requireId(body?.device, 'device'));
   },
 
+  /** The icon picker's list: `[{id, name}]`, the page draws the icons itself. */
   async getWebIcons({ homey, query }: { homey: Homey, query?: Record<string, string> }) {
     assertWebSession(homey.app as WidgetkeeperApp, query);
     return (homey.app as WidgetkeeperApp).flows.iconNames();

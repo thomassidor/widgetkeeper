@@ -165,6 +165,14 @@ export default class CustomWidgetService {
     else this.designs[i] = design;
     this.write();
     this.homey.api.realtime(CUSTOM_DESIGN_EVENT, { id: design.id });
+    // The designs linking or repeating a ready-made draw it as it is now: they read again too.
+    if (design.ready) {
+      for (const d of this.designs) {
+        if (d.id !== design.id && allParts(d).some(p => (p.kind === 'use' || p.kind === 'each') && p.ready === design.id)) {
+          this.homey.api.realtime(CUSTOM_DESIGN_EVENT, { id: d.id });
+        }
+      }
+    }
     this.debug(`Widget Builder: saved design ${design.id} (${allParts(design).length} parts)`);
     return design;
   }
@@ -439,23 +447,26 @@ export default class CustomWidgetService {
    * The part a widget's request acts on, which must be one of `kinds`; anything else throws. `device`: the widget's
    * device, filling in the design's `@` values. A Repeater's copy is `<repeater>/<part>`, `device` one of its devices.
    */
-  private async partFor(designId: unknown, partId: unknown, kinds: readonly string[], device?: unknown): Promise<{ design: Design, part: Part }> {
+  private async partFor(designId: unknown, partId: unknown, kinds: readonly string[], device?: unknown): Promise<{ design: Design, part: Part, owner: string }> {
     const saved = this.get(String(designId ?? ''));
     if (!saved) throw new Error('No such design');
     const dev = typeof device === 'string' && device ? device : undefined;
     const design = bindDevice(saved, dev);
     const [outer, inner] = String(partId ?? '').split('/');
     let part = findPart(design, outer);
+    // The design a trigger names the part by (`listParts()`): a copy's is its ready-made's.
+    let owner = design.id;
     if (inner !== undefined) {
       const ready = part?.kind === 'each' || part?.kind === 'use' ? this.readyPart(part) : null;
       // A Repeater's copy acts for one of its devices; a linked ready-made for the widget's, as the design's own parts.
       if (!part || !ready || !dev || (part.kind === 'each' && !(await this.eachDevices(part)).includes(dev))
         || (part.kind === 'use' && part.device && dev !== part.device)) throw new Error('No such part');
+      owner = part.ready ?? owner;
       const copy = bindDevice({ id: '', name: '', updatedAt: 0, parts: [ready] } as Design, dev);
       part = findPart(copy, inner);
     }
     if (!part || !kinds.includes(part.kind)) throw new Error('No such part');
-    return { design, part };
+    return { design, part, owner };
   }
 
   /**
@@ -463,15 +474,15 @@ export default class CustomWidgetService {
    * of its type: a switch's boolean, a number within the capability's (and the part's) range, or one of a choice's values.
    */
   async setValue(designId: unknown, partId: unknown, value: unknown, slot?: unknown, device?: unknown) {
-    const { design, part } = await this.partFor(designId, partId, ['switch', 'slider', 'stepper', 'choice', 'repeat'], device);
+    const { part, owner } = await this.partFor(designId, partId, ['switch', 'slider', 'stepper', 'choice', 'repeat'], device);
     if (part.kind === 'repeat') {
       // A repeater switches one of its own devices' yes/no, and only with Tap to switch on.
       if (!part.control || typeof value !== 'boolean') throw new Error('The repeater can\'t switch this');
       if (!(await this.repeatSlots(part)).includes(String(slot ?? ''))) throw new Error('Not one of the repeater\'s devices');
-      return this.writeCapability(design.id, part, String(slot), value);
+      return this.writeCapability(owner, part, String(slot), value);
     }
     if (!part.slot) throw new Error('The part has no device value');
-    return this.writeCapability(design.id, part, part.slot, value);
+    return this.writeCapability(owner, part, part.slot, value);
   }
 
   /** Sets a slot's capability for a part: a value of its type, within the capability's and the part's range. */
@@ -555,7 +566,8 @@ export default class CustomWidgetService {
       // As a Flow would, for the widget's device where the input is per device.
       const input = this.inputList.find(x => x.id === action.input);
       if (!input) throw new Error('No such Flow input');
-      const dev = input.perDevice && typeof device === 'string' && device ? device : undefined;
+      // A device id as a card's (`cardDevice()`): never a reserved key, nor `@` (no device) or one with spaces or `:`.
+      const dev = input.perDevice && typeof device === 'string' && device && device !== '@' && !isReservedKey(device) && !/[\s:]/.test(device) ? device : undefined;
       this.setInputValue(input, CustomWidgetService.actionValue(input, action.value, this.current(input, dev)), dev);
     } else if (action.do === 'variable') {
       const current = (await this.deps.variables.getState([action.variable]))[0] as any;
@@ -606,7 +618,7 @@ export default class CustomWidgetService {
    * does); a number within the part's own range.
    */
   async setVariable(designId: unknown, partId: unknown, value: unknown, device?: unknown) {
-    const { part } = await this.partFor(designId, partId, ['variable', 'slider', 'stepper', 'choice'], device);
+    const { part, owner } = await this.partFor(designId, partId, ['variable', 'slider', 'stepper', 'choice'], device);
     if (!part.variable) throw new Error('The part has no variable');
     let v = value;
     if (part.kind === 'choice') {
@@ -618,7 +630,7 @@ export default class CustomWidgetService {
       v = Math.min(part.max ?? Infinity, Math.max(part.min ?? -Infinity, v));
     }
     await this.deps.variables.set(part.variable, v);
-    if (part.kind === 'choice') void this.fireChoice(designId, part, String(value));
+    if (part.kind === 'choice') void this.fireChoice(owner, part, String(value));
     return { ok: true as const };
   }
 
@@ -634,11 +646,11 @@ export default class CustomWidgetService {
    * A button without a Flow fires *A Widget Builder button was tapped*: no API key, the app fires its own card.
    */
   async tap(designId: unknown, partId: unknown, instance?: string, device?: unknown) {
-    const { design, part } = await this.partFor(designId, partId, ['button'], device);
+    const { design, part, owner } = await this.partFor(designId, partId, ['button'], device);
     if (part.flowId) throw new Error('The button starts a Flow');
     await this.trigger(CUSTOM_TAPPED_CARD,
       { part: part.name || part.kind, design: design.name, dashboard: CustomWidgetService.dashboardOf(instance) },
-      { part: `${design.id}/${part.id}` });
+      { part: `${owner}/${part.id}` });
     return { ok: true as const };
   }
 
@@ -857,7 +869,11 @@ export function spanWindow(span: string, now: number, timeZone: string): { from:
   }
   if (unit === 'month' || unit === 'year') {
     const d = new Date(now);
+    const day = d.getUTCDate();
+    // The same day that many months back, or the month's last where it's shorter (31 March → 28 February, not 3 March).
+    d.setUTCDate(1);
     d.setUTCMonth(d.getUTCMonth() - count * (unit === 'year' ? 12 : 1));
+    d.setUTCDate(Math.min(day, new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate()));
     return { from: d.getTime(), end: now, unit: null };
   }
   return { from: now - count * UNIT_MS[unit], end: now, unit: null };
