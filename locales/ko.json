@@ -1380,7 +1380,7 @@
     "builderNoDashboards": "아직 웹 대시보드가 없습니다.",
     "builderParts": "구성 요소",
     "builderLayers": "레이어",
-    "builderLayersHint": "목록에서 아래에 있는 구성 요소가 위에 그려집니다.",
+    "builderLayersHint": "목록에서 위에 있는 구성 요소가 앞에 그려집니다.",
     "builderSearch": "구성 요소 검색",
     "builderNoMatches": "구성 요소를 찾을 수 없습니다.",
     "builderGroup_layout": "레이아웃",

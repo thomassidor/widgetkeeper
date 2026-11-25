@@ -423,7 +423,7 @@
     builderNoDashboards: "You don't have any web dashboards yet.",
     builderParts: "Components",
     builderLayers: "Layers",
-    builderLayersHint: "Components lower in the list are drawn on top.",
+    builderLayersHint: "Components higher in the list are drawn on top.",
     builderSearch: "Search components",
     builderNoMatches: "No components found.",
     builderGroup_layout: "Layout",

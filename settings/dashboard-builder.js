@@ -708,24 +708,29 @@
 
     function drawLayers(body) {
       const list = el('div', 'wdb-layers');
+      // Shown front first, as design tools list layers: the parts are drawn in their saved order, the last on top,
+      // so the list runs backwards through it and ↑ moves a part later (forward).
       const row = (p, depth, siblings, i) => {
         const r = el('div', `wdb-layer${b.selected === p.id ? ' on' : ''}${depth ? ' in' : ''}`);
         const pick = button('wdb-layer-pick', '', () => select(p.id));
         pick.append(kitIcon((KINDS.find(k => k.kind === p.kind) || {}).glyph, 'wdb-layer-icon'), el('span', null, partTitle(p)));
         if (Object.keys(p.flow || {}).length) pick.append(el('span', 'wdb-flowmark', '⚡'));
-        const up = button('wd-icon small', '', () => change(() => { siblings.splice(i - 1, 0, siblings.splice(i, 1)[0]); }), t('moveUp'));
+        const up = button('wd-icon small', '', () => change(() => { siblings.splice(i + 1, 0, siblings.splice(i, 1)[0]); }), t('moveUp'));
         up.append(icon('up'));
-        up.disabled = i === 0;
-        const down = button('wd-icon small', '', () => change(() => { siblings.splice(i + 1, 0, siblings.splice(i, 1)[0]); }), t('moveDown'));
+        up.disabled = i === siblings.length - 1;
+        const down = button('wd-icon small', '', () => change(() => { siblings.splice(i - 1, 0, siblings.splice(i, 1)[0]); }), t('moveDown'));
         down.append(icon('down'));
-        down.disabled = i === siblings.length - 1;
+        down.disabled = i === 0;
         r.append(pick, up, down);
         list.append(r);
-        if (p.kind === 'container') (p.parts || []).forEach((k, j) => row(k, depth + 1, p.parts, j));
+        if (p.kind === 'container') frontFirst(p.parts || [], depth + 1);
       };
-      b.design.parts.forEach((p, i) => row(p, 0, b.design.parts, i));
+      const frontFirst = (siblings, depth) => { for (let i = siblings.length - 1; i >= 0; i--) row(siblings[i], depth, siblings, i); };
+      frontFirst(b.design.parts, 0);
       if (!b.design.parts.length) list.append(el('p', 'wd-muted', t('builderEmpty')));
-      body.append(list, el('p', 'wd-hint', t('builderLayersHint')));
+      body.append(list);
+      // Only free-form parts can overlap: the grids push them apart.
+      if (b.design.parts.some(p => p.kind === 'container' && p.mode === 'free')) body.append(el('p', 'wd-hint', t('builderLayersHint')));
     }
 
     function partTitle(p) {

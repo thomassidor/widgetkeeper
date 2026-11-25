@@ -1380,7 +1380,7 @@
     "builderNoDashboards": "Aún no tienes paneles web.",
     "builderParts": "Componentes",
     "builderLayers": "Capas",
-    "builderLayersHint": "Los componentes más abajo en la lista se dibujan encima.",
+    "builderLayersHint": "Los componentes más arriba en la lista se dibujan encima.",
     "builderSearch": "Buscar componentes",
     "builderNoMatches": "No se encontraron componentes.",
     "builderGroup_layout": "Diseño",

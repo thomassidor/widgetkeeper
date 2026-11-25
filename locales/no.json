@@ -1380,7 +1380,7 @@
     "builderNoDashboards": "Du har ingen nettdashbord ennå.",
     "builderParts": "Komponenter",
     "builderLayers": "Lag",
-    "builderLayersHint": "Komponenter lenger ned i listen tegnes øverst.",
+    "builderLayersHint": "Komponenter høyere opp i listen tegnes øverst.",
     "builderSearch": "Søk etter komponenter",
     "builderNoMatches": "Ingen komponenter funnet.",
     "builderGroup_layout": "Oppsett",

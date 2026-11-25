@@ -1380,7 +1380,7 @@
     "builderNoDashboards": "Non hai ancora dashboard web.",
     "builderParts": "Componenti",
     "builderLayers": "Livelli",
-    "builderLayersHint": "I componenti più in basso nella lista stanno sopra.",
+    "builderLayersHint": "I componenti più in alto nella lista stanno sopra.",
     "builderSearch": "Cerca componenti",
     "builderNoMatches": "Nessun componente trovato.",
     "builderGroup_layout": "Layout",

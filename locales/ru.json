@@ -1380,7 +1380,7 @@
     "builderNoDashboards": "У вас пока нет веб-панелей.",
     "builderParts": "Компоненты",
     "builderLayers": "Слои",
-    "builderLayersHint": "Компоненты ниже в списке рисуются поверх.",
+    "builderLayersHint": "Компоненты выше в списке рисуются поверх.",
     "builderSearch": "Поиск компонентов",
     "builderNoMatches": "Компоненты не найдены.",
     "builderGroup_layout": "Разметка",

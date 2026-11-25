@@ -1380,7 +1380,7 @@
     "builderNoDashboards": "ليست لديك لوحات ويب بعد.",
     "builderParts": "المكوّنات",
     "builderLayers": "الطبقات",
-    "builderLayersHint": "المكوّنات الأدنى في القائمة تُرسم في الأعلى.",
+    "builderLayersHint": "المكوّنات الأعلى في القائمة تُرسم فوق غيرها.",
     "builderSearch": "ابحث في المكوّنات",
     "builderNoMatches": "لم يُعثر على مكوّنات.",
     "builderGroup_layout": "التخطيط",

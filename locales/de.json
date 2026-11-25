@@ -1380,7 +1380,7 @@
     "builderNoDashboards": "Du hast noch keine Web-Dashboards.",
     "builderParts": "Komponenten",
     "builderLayers": "Ebenen",
-    "builderLayersHint": "Komponenten weiter unten in der Liste liegen oben.",
+    "builderLayersHint": "Komponenten weiter oben in der Liste liegen darüber.",
     "builderSearch": "Komponenten suchen",
     "builderNoMatches": "Keine Komponenten gefunden.",
     "builderGroup_layout": "Layout",

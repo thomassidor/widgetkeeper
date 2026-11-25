@@ -1380,7 +1380,7 @@
     "builderNoDashboards": "Vous n'avez pas encore de tableau de bord web.",
     "builderParts": "Composants",
     "builderLayers": "Calques",
-    "builderLayersHint": "Les composants plus bas dans la liste passent au-dessus.",
+    "builderLayersHint": "Les composants plus haut dans la liste passent au-dessus.",
     "builderSearch": "Rechercher des composants",
     "builderNoMatches": "Aucun composant trouvé.",
     "builderGroup_layout": "Mise en page",

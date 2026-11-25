@@ -1380,7 +1380,7 @@
     "builderNoDashboards": "Du har ingen webdashboards endnu.",
     "builderParts": "Komponenter",
     "builderLayers": "Lag",
-    "builderLayersHint": "Komponenter længere nede i listen tegnes øverst.",
+    "builderLayersHint": "Komponenter højere oppe i listen tegnes øverst.",
     "builderSearch": "Søg komponenter",
     "builderNoMatches": "Ingen komponenter fundet.",
     "builderGroup_layout": "Layout",

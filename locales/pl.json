@@ -1380,7 +1380,7 @@
     "builderNoDashboards": "Nie masz jeszcze pulpitów webowych.",
     "builderParts": "Komponenty",
     "builderLayers": "Warstwy",
-    "builderLayersHint": "Komponenty niżej na liście są rysowane na wierzchu.",
+    "builderLayersHint": "Komponenty wyżej na liście są rysowane na wierzchu.",
     "builderSearch": "Szukaj komponentów",
     "builderNoMatches": "Nie znaleziono komponentów.",
     "builderGroup_layout": "Układ",

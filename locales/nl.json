@@ -1380,7 +1380,7 @@
     "builderNoDashboards": "Je hebt nog geen webdashboards.",
     "builderParts": "Componenten",
     "builderLayers": "Lagen",
-    "builderLayersHint": "Componenten lager in de lijst liggen bovenop.",
+    "builderLayersHint": "Componenten hoger in de lijst liggen bovenop.",
     "builderSearch": "Componenten zoeken",
     "builderNoMatches": "Geen componenten gevonden.",
     "builderGroup_layout": "Opmaak",

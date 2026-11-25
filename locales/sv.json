@@ -1380,7 +1380,7 @@
     "builderNoDashboards": "Du har inga webbpaneler än.",
     "builderParts": "Komponenter",
     "builderLayers": "Lager",
-    "builderLayersHint": "Komponenter längre ner i listan ritas överst.",
+    "builderLayersHint": "Komponenter högre upp i listan ritas överst.",
     "builderSearch": "Sök komponenter",
     "builderNoMatches": "Inga komponenter hittades.",
     "builderGroup_layout": "Layout",
