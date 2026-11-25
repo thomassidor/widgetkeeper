@@ -903,7 +903,7 @@ describe("the normal widgets' looks and options (2026-11-24, the user's review o
 });
 
 describe("a container's fill at its strength (2026-11-24, the user: like the normal tiles)", () => {
-  it('draws a palette colour as the normal tiles (Like the widgets), half or full, and a colour of its own solid', () => {
+  it('draws a palette colour as the normal tiles (Standard), half or full, and a colour of its own solid', () => {
     const box = (id: string, background: object) => part(id, 'container', { mode: 'grid', style: 'tile', background, parts: [] });
     const { at } = widget(state([
       box('w', { kind: 'color', from: 'blue' }), box('h', { kind: 'color', from: 'blue', dim: 'half' }),

@@ -2889,7 +2889,6 @@
             if (hide.size) p.hide = ELEMENTS[p.kind].filter(x => hide.has(x)); else delete p.hide;
           })));
         }
-        body.append(el('p', 'wd-hint', t('builderShowPartsHint')));
       }
     }
 

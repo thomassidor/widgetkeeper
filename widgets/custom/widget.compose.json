@@ -70,19 +70,19 @@
         "ar": "الجهاز"
       },
       "hint": {
-        "en": "Only for a design that shows the widget's device: the device it shows here.",
-        "nl": "Alleen voor een ontwerp dat het apparaat van de widget toont: het apparaat dat het hier toont.",
-        "de": "Nur für einen Entwurf, der das Gerät des Widgets zeigt: das Gerät, das er hier zeigt.",
-        "fr": "Seulement pour un modèle qui affiche l'appareil du widget : l'appareil affiché ici.",
-        "it": "Solo per un design che mostra il dispositivo del widget: il dispositivo che mostra qui.",
-        "sv": "Bara för en design som visar widgetens enhet: enheten den visar här.",
-        "no": "Bare for et design som viser widgetens enhet: enheten det viser her.",
-        "es": "Solo para un diseño que muestra el dispositivo del widget: el dispositivo que muestra aquí.",
-        "da": "Kun for et design, der viser widgettens enhed: den enhed, det viser her.",
-        "ru": "Только для макета, который показывает устройство виджета: устройство, которое он показывает здесь.",
-        "pl": "Tylko dla projektu, który pokazuje urządzenie widżetu: urządzenie, które tu pokazuje.",
-        "ko": "위젯의 기기를 표시하는 디자인에만 해당: 여기에서 표시할 기기입니다.",
-        "ar": "فقط لتصميم يعرض جهاز الأداة: الجهاز الذي يعرضه هنا."
+        "en": "For a design that uses the widget's device.",
+        "nl": "Voor een ontwerp dat het apparaat van de widget gebruikt.",
+        "de": "Für einen Entwurf, der das Gerät des Widgets nutzt.",
+        "fr": "Pour un modèle qui utilise l'appareil du widget.",
+        "it": "Per un design che usa il dispositivo del widget.",
+        "sv": "För en design som använder widgetens enhet.",
+        "no": "For et design som bruker widgetens enhet.",
+        "es": "Para un diseño que usa el dispositivo del widget.",
+        "da": "Til et design, der bruger widgettens enhed.",
+        "ru": "Для макета, который использует устройство виджета.",
+        "pl": "Dla projektu, który używa urządzenia widżetu.",
+        "ko": "위젯의 기기를 쓰는 디자인용입니다.",
+        "ar": "لتصميم يستخدم جهاز الأداة."
       }
     },
     {

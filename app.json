@@ -44927,19 +44927,19 @@
             "ar": "الجهاز"
           },
           "hint": {
-            "en": "Only for a design that shows the widget's device: the device it shows here.",
-            "nl": "Alleen voor een ontwerp dat het apparaat van de widget toont: het apparaat dat het hier toont.",
-            "de": "Nur für einen Entwurf, der das Gerät des Widgets zeigt: das Gerät, das er hier zeigt.",
-            "fr": "Seulement pour un modèle qui affiche l'appareil du widget : l'appareil affiché ici.",
-            "it": "Solo per un design che mostra il dispositivo del widget: il dispositivo che mostra qui.",
-            "sv": "Bara för en design som visar widgetens enhet: enheten den visar här.",
-            "no": "Bare for et design som viser widgetens enhet: enheten det viser her.",
-            "es": "Solo para un diseño que muestra el dispositivo del widget: el dispositivo que muestra aquí.",
-            "da": "Kun for et design, der viser widgettens enhed: den enhed, det viser her.",
-            "ru": "Только для макета, который показывает устройство виджета: устройство, которое он показывает здесь.",
-            "pl": "Tylko dla projektu, który pokazuje urządzenie widżetu: urządzenie, które tu pokazuje.",
-            "ko": "위젯의 기기를 표시하는 디자인에만 해당: 여기에서 표시할 기기입니다.",
-            "ar": "فقط لتصميم يعرض جهاز الأداة: الجهاز الذي يعرضه هنا."
+            "en": "For a design that uses the widget's device.",
+            "nl": "Voor een ontwerp dat het apparaat van de widget gebruikt.",
+            "de": "Für einen Entwurf, der das Gerät des Widgets nutzt.",
+            "fr": "Pour un modèle qui utilise l'appareil du widget.",
+            "it": "Per un design che usa il dispositivo del widget.",
+            "sv": "För en design som använder widgetens enhet.",
+            "no": "For et design som bruker widgetens enhet.",
+            "es": "Para un diseño que usa el dispositivo del widget.",
+            "da": "Til et design, der bruger widgettens enhed.",
+            "ru": "Для макета, который использует устройство виджета.",
+            "pl": "Dla projektu, który używa urządzenia widżetu.",
+            "ko": "위젯의 기기를 쓰는 디자인용입니다.",
+            "ar": "لتصميم يستخدم جهاز الأداة."
           }
         },
         {
@@ -46841,19 +46841,19 @@
           "ar": "لوّن [[part]] بـ [[color]]"
         },
         "hint": {
-          "en": "Only components opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
-          "nl": "Alleen componenten die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
-          "de": "Nur Komponenten, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
-          "fr": "Seuls les composants ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
-          "it": "Sono elencati solo i componenti aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
-          "sv": "Bara komponenter som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
-          "no": "Bare komponenter som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
-          "es": "Solo se listan los componentes abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
-          "da": "Kun komponenter, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
-          "ru": "В списке только компоненты, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
-          "pl": "Na liście są tylko komponenty otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
-          "ko": "위젯 빌더의 Flow 탭에서 허용한 구성 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
-          "ar": "تظهر فقط المكوّنات المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+          "en": "Only components with this switched on in the Widget Builder's Flows tab are listed. Every copy of the design shows it, on every screen.",
+          "nl": "Alleen componenten waarbij dit aanstaat op het tabblad Flows van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+          "de": "Nur Komponenten, bei denen dies im Tab Flows des Widget-Baukastens eingeschaltet ist, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+          "fr": "Seuls les composants où ceci est activé dans l'onglet Flows du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+          "it": "Sono elencati solo i componenti con questo attivo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+          "sv": "Bara komponenter där detta är påslaget på Widgetbyggarens flik Flows listas. Varje kopia av designen visar det, på varje skärm.",
+          "no": "Bare komponenter der dette er slått på i Widgetbyggerens fane Flows, vises. Hver kopi av designet viser det, på hver skjerm.",
+          "es": "Solo se listan los componentes con esto activado en la pestaña Flows del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+          "da": "Kun komponenter, hvor dette er slået til på Widgetbyggerens fane Flows, vises. Hver kopi af designet viser det, på hver skærm.",
+          "ru": "В списке только компоненты, у которых это включено на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+          "pl": "Na liście są tylko komponenty z tym włączonym na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+          "ko": "위젯 빌더의 Flow 탭에서 이 항목을 켠 구성 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+          "ar": "تظهر فقط المكوّنات التي فُعِّل لها هذا في علامة تبويب Flows في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
         },
         "args": [
           {
@@ -47216,19 +47216,19 @@
           "ar": "امنح [[part]] اللون [[color]]"
         },
         "hint": {
-          "en": "Only components opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
-          "nl": "Alleen componenten die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
-          "de": "Nur Komponenten, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
-          "fr": "Seuls les composants ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
-          "it": "Sono elencati solo i componenti aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
-          "sv": "Bara komponenter som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
-          "no": "Bare komponenter som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
-          "es": "Solo se listan los componentes abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
-          "da": "Kun komponenter, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
-          "ru": "В списке только компоненты, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
-          "pl": "Na liście są tylko komponenty otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
-          "ko": "위젯 빌더의 Flow 탭에서 허용한 구성 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
-          "ar": "تظهر فقط المكوّنات المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+          "en": "Only components with this switched on in the Widget Builder's Flows tab are listed. Every copy of the design shows it, on every screen.",
+          "nl": "Alleen componenten waarbij dit aanstaat op het tabblad Flows van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+          "de": "Nur Komponenten, bei denen dies im Tab Flows des Widget-Baukastens eingeschaltet ist, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+          "fr": "Seuls les composants où ceci est activé dans l'onglet Flows du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+          "it": "Sono elencati solo i componenti con questo attivo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+          "sv": "Bara komponenter där detta är påslaget på Widgetbyggarens flik Flows listas. Varje kopia av designen visar det, på varje skärm.",
+          "no": "Bare komponenter der dette er slått på i Widgetbyggerens fane Flows, vises. Hver kopi av designet viser det, på hver skjerm.",
+          "es": "Solo se listan los componentes con esto activado en la pestaña Flows del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+          "da": "Kun komponenter, hvor dette er slået til på Widgetbyggerens fane Flows, vises. Hver kopi af designet viser det, på hver skærm.",
+          "ru": "В списке только компоненты, у которых это включено на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+          "pl": "Na liście są tylko komponenty z tym włączonym na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+          "ko": "위젯 빌더의 Flow 탭에서 이 항목을 켠 구성 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+          "ar": "تظهر فقط المكوّنات التي فُعِّل لها هذا في علامة تبويب Flows في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
         },
         "args": [
           {
@@ -47334,19 +47334,19 @@
           "ar": "امنح [[part]] الأيقونة [[icon]]"
         },
         "hint": {
-          "en": "Only components opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
-          "nl": "Alleen componenten die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
-          "de": "Nur Komponenten, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
-          "fr": "Seuls les composants ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
-          "it": "Sono elencati solo i componenti aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
-          "sv": "Bara komponenter som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
-          "no": "Bare komponenter som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
-          "es": "Solo se listan los componentes abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
-          "da": "Kun komponenter, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
-          "ru": "В списке только компоненты, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
-          "pl": "Na liście są tylko komponenty otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
-          "ko": "위젯 빌더의 Flow 탭에서 허용한 구성 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
-          "ar": "تظهر فقط المكوّنات المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+          "en": "Only components with this switched on in the Widget Builder's Flows tab are listed. Every copy of the design shows it, on every screen.",
+          "nl": "Alleen componenten waarbij dit aanstaat op het tabblad Flows van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+          "de": "Nur Komponenten, bei denen dies im Tab Flows des Widget-Baukastens eingeschaltet ist, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+          "fr": "Seuls les composants où ceci est activé dans l'onglet Flows du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+          "it": "Sono elencati solo i componenti con questo attivo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+          "sv": "Bara komponenter där detta är påslaget på Widgetbyggarens flik Flows listas. Varje kopia av designen visar det, på varje skärm.",
+          "no": "Bare komponenter der dette er slått på i Widgetbyggerens fane Flows, vises. Hver kopi av designet viser det, på hver skjerm.",
+          "es": "Solo se listan los componentes con esto activado en la pestaña Flows del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+          "da": "Kun komponenter, hvor dette er slået til på Widgetbyggerens fane Flows, vises. Hver kopi af designet viser det, på hver skærm.",
+          "ru": "В списке только компоненты, у которых это включено на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+          "pl": "Na liście są tylko komponenty z tym włączonym na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+          "ko": "위젯 빌더의 Flow 탭에서 이 항목을 켠 구성 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+          "ar": "تظهر فقط المكوّنات التي فُعِّل لها هذا في علامة تبويب Flows في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
         },
         "args": [
           {
@@ -47452,19 +47452,19 @@
           "ar": "تعيين نص [[part]] إلى [[text]]"
         },
         "hint": {
-          "en": "Only components opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
-          "nl": "Alleen componenten die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
-          "de": "Nur Komponenten, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
-          "fr": "Seuls les composants ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
-          "it": "Sono elencati solo i componenti aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
-          "sv": "Bara komponenter som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
-          "no": "Bare komponenter som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
-          "es": "Solo se listan los componentes abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
-          "da": "Kun komponenter, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
-          "ru": "В списке только компоненты, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
-          "pl": "Na liście są tylko komponenty otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
-          "ko": "위젯 빌더의 Flow 탭에서 허용한 구성 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
-          "ar": "تظهر فقط المكوّنات المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+          "en": "Only components with this switched on in the Widget Builder's Flows tab are listed. Every copy of the design shows it, on every screen.",
+          "nl": "Alleen componenten waarbij dit aanstaat op het tabblad Flows van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+          "de": "Nur Komponenten, bei denen dies im Tab Flows des Widget-Baukastens eingeschaltet ist, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+          "fr": "Seuls les composants où ceci est activé dans l'onglet Flows du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+          "it": "Sono elencati solo i componenti con questo attivo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+          "sv": "Bara komponenter där detta är påslaget på Widgetbyggarens flik Flows listas. Varje kopia av designen visar det, på varje skärm.",
+          "no": "Bare komponenter der dette er slått på i Widgetbyggerens fane Flows, vises. Hver kopi av designet viser det, på hver skjerm.",
+          "es": "Solo se listan los componentes con esto activado en la pestaña Flows del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+          "da": "Kun komponenter, hvor dette er slået til på Widgetbyggerens fane Flows, vises. Hver kopi af designet viser det, på hver skærm.",
+          "ru": "В списке только компоненты, у которых это включено на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+          "pl": "Na liście są tylko komponenty z tym włączonym na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+          "ko": "위젯 빌더의 Flow 탭에서 이 항목을 켠 구성 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+          "ar": "تظهر فقط المكوّنات التي فُعِّل لها هذا في علامة تبويب Flows في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
         },
         "args": [
           {
@@ -47571,19 +47571,19 @@
           "ar": "تعيين قيمة [[part]] إلى [[value]] [[units]]"
         },
         "hint": {
-          "en": "A Flow value component shows only what Flows give it; another component shows this instead of its device value, if opened to it. A number is shown in the screen's locale.",
-          "nl": "Een Flow-waarde-component toont alleen wat Flows het geven; een ander component toont dit in plaats van de apparaatwaarde, als het hiervoor openstaat. Een getal wordt getoond in de taal van het scherm.",
-          "de": "Eine Flow-Wert-Komponente zeigt nur, was Flows ihr geben; eine andere Komponente zeigt dies statt ihres Gerätewerts, wenn sie dafür freigegeben ist. Eine Zahl erscheint im Format des Bildschirms.",
-          "fr": "Un composant Valeur de Flow n'affiche que ce que les Flows lui donnent ; un autre composant l'affiche à la place de la valeur de l'appareil, s'il y est ouvert. Un nombre suit la langue de l'écran.",
-          "it": "Un componente Valore Flow mostra solo ciò che i Flow gli danno; un altro componente lo mostra al posto del valore del dispositivo, se aperto a questo. Un numero segue la lingua dello schermo.",
-          "sv": "En Flödesvärde-komponent visar bara vad Flows ger den; en annan komponent visar detta i stället för enhetens värde, om den är öppnad för det. Ett tal visas i skärmens språk.",
-          "no": "En Flytverdi-komponent viser bare det Flows gir den; en annen komponent viser dette i stedet for enhetsverdien, hvis den er åpnet for det. Et tall vises i skjermens språk.",
-          "es": "Un componente Valor de Flow solo muestra lo que le dan los Flows; otro componente lo muestra en vez del valor del dispositivo, si está abierto a ello. Un número sigue el idioma de la pantalla.",
-          "da": "En Flowværdi-komponent viser kun, hvad Flows giver den; en anden komponent viser dette i stedet for enhedens værdi, hvis den er åbnet for det. Et tal vises i skærmens sprog.",
-          "ru": "Компонент «Значение из Flow» показывает только то, что задают Flow; другой компонент показывает это вместо значения устройства, если открыт для этого. Число — в формате экрана.",
-          "pl": "Komponent Wartość z Flow pokazuje tylko to, co dadzą mu Flow; inny komponent pokazuje to zamiast wartości urządzenia, jeśli jest na to otwarty. Liczba w formacie ekranu.",
-          "ko": "Flow 값 구성 요소는 Flow가 준 값만 표시하고, 다른 구성 요소는 허용된 경우 기기 값 대신 이를 표시합니다. 숫자는 화면 언어 형식입니다.",
-          "ar": "مكوّن قيمة Flow يعرض فقط ما تعطيه له Flows؛ ومكوّن آخر يعرضه بدلًا من قيمة الجهاز إن كان مفتوحًا لذلك. يُعرض الرقم بلغة الشاشة."
+          "en": "Replaces the component's own value; a Flow value component shows only this. A number follows the screen's language.",
+          "nl": "Vervangt de eigen waarde van het component; een Flow-waarde-component toont alleen dit. Een getal volgt de taal van het scherm.",
+          "de": "Ersetzt den eigenen Wert der Komponente; eine Flow-Wert-Komponente zeigt nur dies. Eine Zahl folgt der Sprache des Bildschirms.",
+          "fr": "Remplace la valeur propre du composant ; un composant Valeur de Flow n'affiche que ceci. Un nombre suit la langue de l'écran.",
+          "it": "Sostituisce il valore proprio del componente; un componente Valore Flow mostra solo questo. Un numero segue la lingua dello schermo.",
+          "sv": "Ersätter komponentens eget värde; en Flödesvärde-komponent visar bara detta. Ett tal följer skärmens språk.",
+          "no": "Erstatter komponentens egen verdi; en Flytverdi-komponent viser bare dette. Et tall følger skjermens språk.",
+          "es": "Sustituye el valor propio del componente; un componente Valor de Flow solo muestra esto. Un número sigue el idioma de la pantalla.",
+          "da": "Erstatter komponentens egen værdi; en Flowværdi-komponent viser kun dette. Et tal følger skærmens sprog.",
+          "ru": "Заменяет собственное значение компонента; компонент «Значение из Flow» показывает только его. Число — в формате языка экрана.",
+          "pl": "Zastępuje własną wartość komponentu; komponent Wartość z Flow pokazuje tylko ją. Liczba w formacie języka ekranu.",
+          "ko": "구성 요소의 자체 값을 대신합니다. Flow 값 구성 요소는 이 값만 표시합니다. 숫자는 화면 언어 형식입니다.",
+          "ar": "يحل محل قيمة المكوّن الخاصة؛ ومكوّن قيمة Flow يعرض هذا فقط. يتبع الرقم لغة الشاشة."
         },
         "args": [
           {
@@ -47724,19 +47724,19 @@
           "ar": "[[shown]] [[part]]"
         },
         "hint": {
-          "en": "Only components opened to this in the Widget Builder's Flow tab are listed. Every copy of the design shows it, on every screen.",
-          "nl": "Alleen componenten die hiervoor openstaan op het Flow-tabblad van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
-          "de": "Nur Komponenten, die im Flow-Tab des Widget-Baukastens dafür freigegeben sind, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
-          "fr": "Seuls les composants ouverts à ceci dans l'onglet Flow du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
-          "it": "Sono elencati solo i componenti aperti a questo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
-          "sv": "Bara komponenter som öppnats för detta på Widgetbyggarens Flow-flik listas. Varje kopia av designen visar det, på varje skärm.",
-          "no": "Bare komponenter som er åpnet for dette i Widgetbyggerens Flow-fane vises. Hver kopi av designet viser det, på hver skjerm.",
-          "es": "Solo se listan los componentes abiertos a esto en la pestaña Flow del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
-          "da": "Kun komponenter, der er åbnet for dette på Widgetbyggerens Flow-fane, vises. Hver kopi af designet viser det, på hver skærm.",
-          "ru": "В списке только компоненты, открытые для этого на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
-          "pl": "Na liście są tylko komponenty otwarte na to na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
-          "ko": "위젯 빌더의 Flow 탭에서 허용한 구성 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
-          "ar": "تظهر فقط المكوّنات المفتوحة لذلك في علامة تبويب Flow في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
+          "en": "Only components with this switched on in the Widget Builder's Flows tab are listed. Every copy of the design shows it, on every screen.",
+          "nl": "Alleen componenten waarbij dit aanstaat op het tabblad Flows van de Widgetbouwer staan in de lijst. Elke kopie van het ontwerp toont het, op elk scherm.",
+          "de": "Nur Komponenten, bei denen dies im Tab Flows des Widget-Baukastens eingeschaltet ist, stehen in der Liste. Jede Kopie des Entwurfs zeigt es, auf jedem Bildschirm.",
+          "fr": "Seuls les composants où ceci est activé dans l'onglet Flows du Créateur de widgets sont listés. Chaque copie du modèle l'affiche, sur chaque écran.",
+          "it": "Sono elencati solo i componenti con questo attivo nella scheda Flow del Costruttore di widget. Ogni copia del design lo mostra, su ogni schermo.",
+          "sv": "Bara komponenter där detta är påslaget på Widgetbyggarens flik Flows listas. Varje kopia av designen visar det, på varje skärm.",
+          "no": "Bare komponenter der dette er slått på i Widgetbyggerens fane Flows, vises. Hver kopi av designet viser det, på hver skjerm.",
+          "es": "Solo se listan los componentes con esto activado en la pestaña Flows del Creador de widgets. Cada copia del diseño lo muestra, en cada pantalla.",
+          "da": "Kun komponenter, hvor dette er slået til på Widgetbyggerens fane Flows, vises. Hver kopi af designet viser det, på hver skærm.",
+          "ru": "В списке только компоненты, у которых это включено на вкладке Flow конструктора виджетов. Каждая копия макета показывает это на каждом экране.",
+          "pl": "Na liście są tylko komponenty z tym włączonym na karcie Flow Kreatora widżetów. Każda kopia projektu to pokazuje, na każdym ekranie.",
+          "ko": "위젯 빌더의 Flow 탭에서 이 항목을 켠 구성 요소만 표시됩니다. 디자인의 모든 사본이 모든 화면에 표시합니다.",
+          "ar": "تظهر فقط المكوّنات التي فُعِّل لها هذا في علامة تبويب Flows في منشئ الأدوات. تعرضه كل نسخة من التصميم على كل شاشة."
         },
         "args": [
           {
