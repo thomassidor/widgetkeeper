@@ -2877,8 +2877,9 @@
         const thick = p.kind === 'arc' ? 12 : 6;
         body.append(row(t('builderThickness'), textInput(p.thickness || thick, v => quiet(() => { p.thickness = clampTo(v, 2, 24, thick); }), { type: 'number' })));
       }
-      if (p.kind === 'icon') body.append(checkRow(t('builderIconGrow'), p.grow, v => quiet(() => { if (v) p.grow = true; else delete p.grow; })));
       if (drawsIcon(p)) lookIcon(body, p);
+      // Under the icon, as it's its size (beside the colours it read as a fill colour; the user, 2026-11-25).
+      if (p.kind === 'icon') body.append(checkRow(t('builderIconGrow'), p.grow, v => quiet(() => { if (v) p.grow = true; else delete p.grow; }), t('builderIconGrowHint')));
       if (ELEMENTS[p.kind]) {
         body.append(el('h4', 'wdb-h4', t('builderShowParts')));
         for (const e of ELEMENTS[p.kind]) {
