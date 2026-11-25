@@ -24,15 +24,40 @@
 
     /** The library: each kind, its group, the kit's icon and the size it gets at the top. */
     const KINDS = [
-      ['sparkline', 'show', 'chart', 4, 1], ['arc', 'show', 'gauge', 1, 1], ['bar', 'show', 'battery', 4, 1],
-      ['switch', 'control', 'power', 2, 1], ['button', 'control', 'play', 2, 1], ['slider', 'control', 'sun', 4, 1],
-      ['stepper', 'control', 'up', 4, 1], ['choice', 'control', 'checkmark', 4, 1], ['variable', 'control', 'pencil', 4, 1],
-      ['container', 'layout', 'dashboard', 4, 3], ['text', 'layout', 'book', 4, 1], ['icon', 'layout', 'star', 1, 1],
-      ['shape', 'layout', 'paintbrush', 4, 1], ['calc', 'show', 'settings', 2, 1],
-      ['image', 'layout', 'camera', 2, 2], ['ring', 'show', 'refresh', 2, 2], ['repeat', 'show', 'list', 4, 2],
-      ['state', 'control', 'bookmark', 2, 1], ['segments', 'show', 'plugzap', 4, 2], ['chart', 'show', 'chart', 4, 2],
-      ['each', 'layout', 'repeat', 4, 2],
+      ['sparkline', 'show', 'pulse', 4, 1], ['arc', 'show', 'gauge', 1, 1], ['bar', 'show', 'progress', 4, 1],
+      ['switch', 'control', 'power', 2, 1], ['button', 'control', 'play', 2, 1], ['slider', 'control', 'slider', 4, 1],
+      ['stepper', 'control', 'stepper', 4, 1], ['choice', 'control', 'radio', 4, 1], ['variable', 'control', 'variable', 4, 1],
+      ['container', 'layout', 'group', 4, 3], ['text', 'layout', 'type', 4, 1], ['icon', 'layout', 'star', 1, 1],
+      ['shape', 'layout', 'shapes', 4, 1], ['calc', 'show', 'calculator', 2, 1],
+      ['image', 'layout', 'picture', 2, 2], ['ring', 'show', 'ring', 2, 2], ['repeat', 'show', 'list', 4, 2],
+      ['state', 'control', 'bookmark', 2, 1], ['segments', 'show', 'segments', 4, 2], ['chart', 'show', 'chart', 4, 2],
+      ['each', 'layout', 'stack', 4, 2],
     ].map(([kind, group, glyph, w, h]) => ({ kind, group, glyph, w, h }));
+    /** A kind's icon; a linked ready-made (`use`, not in the library) has its own. */
+    const glyphOf = kind => (kind === 'use' ? 'link' : (KINDS.find(k => k.kind === kind) || {}).glyph || 'star');
+    /**
+     * The builder's own icons for what the kit's (home and device icons, also every icon setting's list) has none
+     * for: drawn here, or from Lucide (ISC, widgets/spacer/public/icons.LICENSE.txt) as one path. Not in the kit, so
+     * they don't show up in the widgets' icon pickers.
+     */
+    const BUILDER_ICONS = {
+      slider: 'M2 12h6M16 12h6M8 12a4 4 0 1 0 8 0a4 4 0 1 0-8 0z',
+      ring: 'M12 2a10 10 0 1 1-10 10M12 7a5 5 0 1 1-5 5',
+      segments: 'M2 8h5v8H2zM9.5 8h5v8h-5zM17 8h5v8h-5z',
+      progress: 'M5 8h14a4 4 0 0 1 0 8H5a4 4 0 0 1 0-8zM6 12h7',
+      stepper: 'M2 12h8M14 12h8M18 8v8',
+      type: 'M12 4v16M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2M9 20h6',
+      shapes: 'M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1ZM4 14h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1zM14 17.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0z',
+      calculator: 'M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM8 6h8M16 14v4M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01',
+      radio: 'M11 12a1 1 0 1 0 2 0a1 1 0 1 0-2 0zM2 12a10 10 0 1 0 20 0a10 10 0 1 0-20 0z',
+      variable: 'M8 21s-4-3-4-9 4-9 4-9M16 3s4 3 4 9-4 9-4 9M15 9l-6 6M9 9l6 6',
+      group: 'M3 7V5c0-1.1.9-2 2-2h2M17 3h2c1.1 0 2 .9 2 2v2M21 17v2c0 1.1-.9 2-2 2h-2M7 21H5c-1.1 0-2-.9-2-2v-2M8 7h5a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1zM11 12h5a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1z',
+      picture: 'M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM7 9a2 2 0 1 0 4 0a2 2 0 1 0-4 0zM21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21',
+      stack: 'M4 10c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2M10 16c-1.1 0-2-.9-2-2v-4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2M16 14h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z',
+      link: 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71',
+      pulse: 'M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2',
+      trend: 'M16 7h6v6M22 7l-8.5 8.5-5-5L2 17',
+    };
     const GROUPS = ['ready', 'layout', 'show', 'control'];
 
     /**
@@ -47,8 +72,8 @@
       { id: 'gauge', glyph: 'gauge', w: 2, h: 2, value: true },
       { id: 'level', glyph: 'battery', w: 2, h: 1, value: true },
       { id: 'status', glyph: 'shieldcheck', w: 2, h: 1, value: true },
-      { id: 'slider', glyph: 'sun', w: 4, h: 1, value: true },
-      { id: 'trend', glyph: 'navigation', w: 2, h: 1, value: true },
+      { id: 'slider', glyph: 'slider', w: 4, h: 1, value: true },
+      { id: 'trend', glyph: 'trend', w: 2, h: 1, value: true },
       { id: 'clock', glyph: 'clock', w: 2, h: 1 },
       { id: 'flowvalue', glyph: 'bolt', w: 2, h: 1 },
     ];
@@ -194,7 +219,7 @@
     const clone = x => JSON.parse(JSON.stringify(x));
     const partId = () => Math.random().toString(36).slice(2, 10).padEnd(8, '0');
     const kitIcon = (id, cls) => {
-      const def = window.WidgetkeeperKit.icons[id];
+      const def = BUILDER_ICONS[id] ? { d: BUILDER_ICONS[id] } : window.WidgetkeeperKit.icons[id];
       return def ? window.WidgetkeeperKit.svgIcon(def, cls) : el('span', cls);
     };
 
@@ -515,7 +540,7 @@
               const grid = el('div', 'wdb-comps');
               for (const d of mine) {
                 const c = button('wdb-comp wdb-mine', '', () => { if (!c.dataset.dragged) addMine(d); delete c.dataset.dragged; }, t('builderAdd', { name: d.name }));
-                const glyph = (KINDS.find(k => k.kind === d.parts[0].kind) || {}).glyph || 'star';
+                const glyph = glyphOf(d.parts[0].kind);
                 c.append(kitIcon(glyph, 'wdb-comp-icon'), el('span', null, d.name || t('untitled')));
                 dragToAdd(c, { glyph, label: d.name, size: sizeOfPart(d.parts[0]), container: d.parts[0].kind === 'container', drop: target => addMine(d, target) });
                 const line = el('div', 'wdb-mine-line');
@@ -713,7 +738,7 @@
       const row = (p, depth, siblings, i) => {
         const r = el('div', `wdb-layer${b.selected === p.id ? ' on' : ''}${depth ? ' in' : ''}`);
         const pick = button('wdb-layer-pick', '', () => select(p.id));
-        pick.append(kitIcon((KINDS.find(k => k.kind === p.kind) || {}).glyph, 'wdb-layer-icon'), el('span', null, partTitle(p)));
+        pick.append(kitIcon(glyphOf(p.kind), 'wdb-layer-icon'), el('span', null, partTitle(p)));
         if (Object.keys(p.flow || {}).length) pick.append(el('span', 'wdb-flowmark', '⚡'));
         const up = button('wd-icon small', '', () => change(() => { siblings.splice(i + 1, 0, siblings.splice(i, 1)[0]); }), t('moveUp'));
         up.append(icon('up'));
@@ -1774,7 +1799,7 @@
      */
     function inspectorHead(p, parent) {
       const head = el('div', 'wdb-head');
-      const glyph = (KINDS.find(k => k.kind === p.kind) || {}).glyph || 'star';
+      const glyph = glyphOf(p.kind);
       const badge = el('span', 'wdb-head-icon');
       badge.append(kitIcon(glyph, 'wdb-comp-icon'));
       const path = el('span', 'wdb-head-path');
