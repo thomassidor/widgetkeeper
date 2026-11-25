@@ -201,7 +201,10 @@
     if (VIEW === 'kiosk' && !params.has('kiosk')) history.replaceState(null, '', `${location.pathname}${location.search}&kiosk=1${location.hash}`);
     const BOARD = VIEW === 'light' || VIEW === 'background' ? LIGHT_BOARD : VIEW === 'wide' ? WIDE_BOARD : VIEW === 'popup' ? POPUP_BOARD
       : VIEW === 'preview' ? PREVIEW_BOARD : VIEW === 'sync' || VIEW === 'copy' || VIEW === 'addwidget' ? SYNC_BOARD : params.get('d') || 'home';
-    const HASH = VIEW === 'front' || VIEW === 'brand' ? '#/' : VIEW === 'nightly' || VIEW === 'rotate' ? '#/edit' : ['editor', 'settings', 'preview', 'sync', 'copy', 'addwidget', 'background'].includes(VIEW) ? `#/d/${BOARD}/edit` : `#/d/${BOARD}`;
+    // The builder view (1.4.0's teaser): the Widget Builder on mock-custom.js' living room design.
+    const BUILDER_DESIGN = 'd-living';
+    const BUILDER_PART = 'Floor lamp';
+    const HASH = VIEW === 'builder' ? `#/builder/${BUILDER_DESIGN}` : VIEW === 'front' || VIEW === 'brand' ? '#/' : VIEW === 'nightly' || VIEW === 'rotate' ? '#/edit' : ['editor', 'settings', 'preview', 'sync', 'copy', 'addwidget', 'background'].includes(VIEW) ? `#/d/${BOARD}/edit` : `#/d/${BOARD}`;
 
     // The settings, preview and popup views draw their dialog inside the window: shown non-modal over a backdrop of its
     // own, since a modal one sits over the whole render. The settings view: Home's Flow Buttons with four buttons, in its
@@ -446,6 +449,17 @@
         time();
       };
       open();
+    }
+    // The builder view: a component picked (through Layers, then back to the components), so the right pane shows it.
+    if (VIEW === 'builder') {
+      const pick = () => {
+        const layers = [...document.querySelectorAll('.wdb-tab')].find(x => x.textContent === 'Layers');
+        if (!layers || !document.querySelector('.wdb-insp')) { setTimeout(pick, 50); return; }
+        layers.click();
+        [...document.querySelectorAll('.wdb-layer-pick')].find(x => x.textContent.includes(BUILDER_PART)).click();
+        [...document.querySelectorAll('.wdb-tab')].find(x => x.textContent === 'Components').click();
+      };
+      pick();
     }
     // The addwidget view: the editor's Add widget with a search typed and a group's chip picked, so the list fills.
     if (VIEW === 'addwidget') {

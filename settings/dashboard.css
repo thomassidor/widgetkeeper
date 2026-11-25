@@ -1393,3 +1393,10 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-input-head .wd-input { flex: 1; min-width: 0; font-weight: 700; }
 .wdb-input-opts { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
 .wdb-input .wd-hint { margin: 0; }
+.wdb-input-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; padding: 0; list-style: none; }
+.wdb-input-step { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: 14px; background: var(--wd-raised); }
+.wdb-input-step > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 14px; line-height: 20px; }
+.wdb-input-step .wd-muted { font-size: 13px; line-height: 18px; }
+.wdb-input-step-n { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--wd-accent); color: #FFFFFF; font-size: 13px; font-weight: 700; }
+.wdb-input-add { display: inline-flex; align-items: center; gap: 6px; }
+.wdb-input-add svg { width: 16px; height: 16px; }

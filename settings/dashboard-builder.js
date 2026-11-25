@@ -3125,19 +3125,26 @@
           }
           pop.append(list);
         }
-        // A new one: its name, and its type where the setting takes more than one.
+        // A new one: its name (what the Flow cards list), and its type where the setting takes more than one.
         const make = el('div', 'wdb-pop-new');
-        const name = textInput('', () => {}, { placeholder: freeInputName(t('builderInputNewName')) });
+        make.append(el('span', 'wdb-label', t('builderInputNew')));
+        const name = textInput('', () => {}, { placeholder: t('builderInputNamePlaceholder') });
         name.setAttribute('aria-label', t('builderInputName'));
+        make.append(name, el('span', 'wd-hint', t('builderInputNameHint')));
         let type = types[0];
-        make.append(el('span', 'wdb-label', t('builderInputNew')), name);
-        if (types.length > 1) make.append(segs(types.map(x => [x, typeName(x)]), type, (v) => { type = v; [...make.querySelectorAll('.wd-seg-option')].forEach(o => o.classList.toggle('on', o.textContent === typeName(v))); }));
+        if (types.length > 1) {
+          const kinds = segs(types.map(x => [x, typeName(x)]), type, (v) => { type = v; [...kinds.children].forEach((o, i) => { o.classList.toggle('on', types[i] === v); o.setAttribute('aria-pressed', String(types[i] === v)); }); });
+          make.append(row(t('builderInputType'), kinds));
+        }
         const add = button('wd-btn primary small', t('builderInputAdd'), async () => {
-          const input = await saveInput({ name: name.value.trim() || name.placeholder, type, reset: 'never' });
+          if (!name.value.trim()) { name.focus(); return; }
+          const input = await saveInput({ name: name.value.trim(), type, reset: 'never' });
           if (!input) return;
           bind(input.id);
           done();
         });
+        add.disabled = true;
+        name.addEventListener('input', () => { add.disabled = !name.value.trim(); });
         name.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); add.click(); } });
         make.append(add);
         pop.append(make);
@@ -3182,10 +3189,25 @@
     function inputsSection() {
       const sec = el('section', 'wdb-inputs');
       sec.append(el('h2', 'wd-group-title', t('builderFlowInputs')), el('p', 'wd-muted wdb-home-note', t('builderInputsHint')));
+      // How it works, in three steps, while there are none yet (the user, 2026-11-25: a one-line hint said nothing).
+      const steps = el('ol', 'wdb-input-steps');
+      for (const n of [1, 2, 3]) {
+        const li = el('li', 'wdb-input-step');
+        const text = el('div');
+        text.append(el('b', null, t(`builderInputsStep${n}`)), el('span', 'wd-muted', t(`builderInputsStep${n}Hint`)));
+        li.append(el('span', 'wdb-input-step-n', String(n)), text);
+        steps.append(li);
+      }
       const list = el('div', 'wdb-input-list');
+      const add = button('wd-btn primary wdb-input-add', '', async () => {
+        if (await saveInput({ name: freeInputName(t('builderInputNewName')), type: 'text', reset: 'never' })) draw();
+      });
+      add.append(icon('plus'), el('span', null, t('builderInputNew')));
       const draw = () => {
         list.textContent = '';
-        if (!inputs().length) { list.append(el('p', 'wd-muted', t('builderInputsEmpty'))); return; }
+        steps.hidden = inputs().length > 0;
+        add.className = inputs().length ? 'wd-btn quiet wdb-input-add' : 'wd-btn primary wdb-input-add';
+        list.hidden = !inputs().length;
         for (const x of inputs()) {
           const card = el('div', 'wdb-input');
           const head = el('div', 'wdb-input-head');
@@ -3205,10 +3227,7 @@
         }
       };
       draw();
-      const add = addButton(t('builderInputNew'), async () => {
-        if (await saveInput({ name: freeInputName(t('builderInputNewName')), type: 'text', reset: 'never' })) draw();
-      });
-      sec.append(list, add);
+      sec.append(steps, list, add);
       // Read again: a Flow may have set one since the page loaded.
       request('GET', '/web/inputs').then((res) => { if (res && Array.isArray(res.inputs)) { wd.inputs = res.inputs; draw(); } }).catch(() => {});
       return sec;
