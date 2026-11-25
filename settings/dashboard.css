@@ -1028,6 +1028,17 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-thumb { border-radius: 4px; background: color-mix(in srgb, var(--wd-text) 18%, transparent); min-height: 0; }
 .wdb-thumb-container { background: color-mix(in srgb, var(--wd-accent) 30%, transparent); }
 .wdb-thumb-text, .wdb-thumb-icon { background: color-mix(in srgb, var(--wd-text) 8%, transparent); }
+/* The live miniature: the design's widget drawn at a column's width in a frame, scaled onto the sketch (which it hides
+   once drawn); a design taller than the card fades out at its foot. */
+.wdb-art { position: relative; }
+.wdb-card > .wdb-art { aspect-ratio: 4 / 3; }
+.wdb-live { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; pointer-events: none; background: transparent; color-scheme: normal; }
+.wdb-art:not(.wdb-art-live) > .wdb-live { visibility: hidden; }
+.wdb-art-live > .wdb-thumb { visibility: hidden; }
+.wdb-art-cut::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 28px; pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--wd-bg));
+}
 
 .wdb-bar .wdb-name { max-width: 260px; }
 .wdb-status { font-size: 13px; white-space: nowrap; }

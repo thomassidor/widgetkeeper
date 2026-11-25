@@ -291,7 +291,108 @@
         art.append(cell);
       }
       art.classList.add('wk');
+      livePreview(art, d);
       return art;
+    }
+
+    // ---- The cards' live previews: the real widget, drawn small over the sketch once it's in view ------------------
+
+    const LIVE_WIDTH = WIDTHS[0]; // a column's width the miniature is drawn at, then scaled to the card
+    const liveStates = new Map(); // `<id>:<updatedAt>` → the preview's answer (a promise), for this page's life
+    let liveSeen = null;
+
+    /** The design's widget in a frame over its sketch, once the card scrolls into view; the sketch stays if it fails. */
+    function livePreview(art, d) {
+      if (typeof IntersectionObserver !== 'function' || !d.parts.length) return;
+      if (!liveSeen) {
+        liveSeen = new IntersectionObserver((entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            liveSeen.unobserve(e.target);
+            const go = /** @type {any} */ (e.target).wdbLive;
+            if (go) go();
+          }
+        }, { rootMargin: '200px' });
+      }
+      /** @type {any} */ (art).wdbLive = () => startLive(art, d);
+      liveSeen.observe(art);
+    }
+
+    function liveState(d) {
+      const key = `${d.id}:${d.updatedAt || ''}`;
+      if (!liveStates.has(key)) {
+        const p = request('POST', '/web/designs/preview', { design: d });
+        p.catch(() => liveStates.delete(key));
+        liveStates.set(key, p);
+      }
+      return liveStates.get(key);
+    }
+
+    function startLive(art, d) {
+      const span = Math.min(MAX_SPAN, Math.max(1, Number(d.span) || 1));
+      const width = LIVE_WIDTH * span + COLUMN_GAP * (span - 1);
+      const frame = /** @type {HTMLIFrameElement} */ (el('iframe', 'wdb-live'));
+      frame.title = d.name || t('untitled');
+      frame.tabIndex = -1;
+      frame.setAttribute('scrolling', 'no');
+      frame.setAttribute('aria-hidden', 'true');
+      frame.style.width = `${width}px`;
+      frame.style.height = '1200px';
+      let height = 0;
+      const fit = () => {
+        if (!height || !art.isConnected) return;
+        const cs = getComputedStyle(art);
+        const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+        const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+        const boxW = art.clientWidth - padX;
+        const boxH = art.clientHeight - padY;
+        if (boxW <= 0 || boxH <= 0) return;
+        // Whole where it fits; a tall design at no less than 70 % of the card's width, its foot faded out.
+        const fitW = boxW / width;
+        const scale = Math.min(1, fitW, Math.max(boxH / height, fitW * 0.7));
+        const left = parseFloat(cs.paddingLeft) + (boxW - width * scale) / 2;
+        const shown = height * scale;
+        const top = parseFloat(cs.paddingTop) + Math.max(0, (boxH - shown) / 2);
+        frame.style.height = `${height}px`;
+        frame.style.transform = `translate(${left}px, ${top}px) scale(${scale})`;
+        art.classList.toggle('wdb-art-cut', shown > boxH + 1);
+      };
+      const measure = (doc) => {
+        const root = doc.getElementById('root');
+        const h = Math.ceil(root ? root.getBoundingClientRect().height : doc.body.scrollHeight);
+        if (h > 0 && h !== height) { height = h; fit(); }
+      };
+      frame.addEventListener('load', async () => {
+        const win = /** @type {any} */ (frame.contentWindow);
+        if (!win || !win.createCustomWidget) return;
+        const doc = win.document;
+        doc.documentElement.classList.toggle('homey-dark-mode', wd.isDark());
+        doc.documentElement.style.overflow = 'hidden';
+        const lookup = key => key.split('.').reduce((o, k) => (o && typeof o === 'object' ? o[k] : undefined), strings());
+        let widget;
+        try {
+          widget = win.createCustomWidget(doc.getElementById('root'), {
+            t: key => lookup(key) || key,
+            colorStyle: 'soft',
+            preview: true,
+            onHeight: () => queueMicrotask(() => measure(doc)),
+            onImage: part => request('POST', '/web/designs/image', { device: part.image.device }),
+          });
+          const state = await liveState(d);
+          if (!art.isConnected) return;
+          widget.setState({ ...state, design: { ...bindSample(d), updatedAt: d.updatedAt || 1 } });
+        } catch (err) {
+          console.error(err);
+          frame.remove();
+          return;
+        }
+        measure(doc);
+        if (!height) { frame.remove(); return; }
+        art.classList.add('wdb-art-live');
+        if (typeof ResizeObserver === 'function') new ResizeObserver(fit).observe(art);
+      });
+      frame.srcdoc = frameDoc();
+      art.append(frame);
     }
 
     async function newDesign(node) {
