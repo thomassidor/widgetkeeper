@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html class="homey-dark-mode">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New in 1.4.0</title>
+  <!--
+    A teaser of 1.4.0 (.homeychangelog.json), in the look of the 1.1.0 to 1.3.0 posters (whats-next-1.3.0.html): the
+    Widget Builder beside the real builder page (docs/web/builder.png, `npm run web-showcase -- builder`), four designs
+    made with it (its Looks, docs/variants/custom-*.webp), Flow inputs (their cards drawn with their real titles, beside
+    the free-form Look with a Flow input's message), then a row of custom colours from Flows (Flow Buttons mounted with
+    typed colours), the Smart Stack's tabs and Media's shortcut (their Looks) and the app settings on the web dashboards
+    (their tabs drawn), and And also. All on made-up data.
+    scripts/render-whats-next.mjs (`npm run whats-next`) renders it to docs/whats-next-1.4.0.png at 2x; the clock is fixed
+    (fixed-clock.js).
+  -->
+  <script src="fixed-clock.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../widgets/spacer/public/kit.css">
+  <link rel="stylesheet" href="../widgets/flows/public/widget.css">
+  <script src="../widgets/spacer/public/kit.js"></script>
+  <!-- The renders' times in 24 hours, as the made-up house's. -->
+  <script>WidgetkeeperKit.setTimeFormat('24');</script>
+  <script src="../widgets/spacer/public/icons.js"></script>
+  <script src="../widgets/flows/public/widget.js"></script>
+  <script src="../temp/screenshot-icons.js" onerror="window.ICONS = {}"></script>
+  <script src="mock-util.js"></script>
+  <script src="showcase-data.js"></script>
+  <script src="showcase-mount.js"></script>
+  <style>
+    html { background: #0C0B12 !important; }
+    body {
+      margin: 0; padding: 56px 48px 48px; width: 1760px; box-sizing: border-box; font-family: Roboto, sans-serif; color: #FFFFFF;
+      background:
+        radial-gradient(1100px 520px at 18% -4%, rgba(92, 64, 180, 0.55), transparent 70%),
+        radial-gradient(900px 600px at 96% 8%, rgba(42, 25, 88, 0.9), transparent 70%),
+        #0C0B12 !important;
+    }
+
+    header { display: flex; align-items: center; gap: 28px; margin: 0 8px 44px; }
+    .logo {
+      width: 96px; height: 96px; flex: none; border-radius: 26px; background: #2A1958;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 12px 32px rgba(0, 0, 0, 0.4);
+      display: grid; place-items: center;
+    }
+    .logo svg { width: 72px; height: 72px; display: block; }
+    header h1 { margin: 0; font-size: 64px; line-height: 68px; font-weight: 900; letter-spacing: -1.5px; }
+    .eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 6px; font-size: 20px; line-height: 28px; font-weight: 700; color: #B9A6FF; }
+    .eyebrow span { padding: 2px 10px; border-radius: 999px; background: rgba(185, 166, 255, 0.16); font-size: 13px; line-height: 20px; letter-spacing: 0.6px; text-transform: uppercase; }
+    header p { margin: 8px 0 0; font-size: 22px; line-height: 30px; color: #B4B2C6; max-width: 900px; }
+    .chips { margin-left: auto; display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; max-width: 560px; }
+    .chips span { padding: 8px 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.07); color: #DCDAE8; font-size: 15px; font-weight: 500; }
+
+    .columns { display: flex; gap: 24px; align-items: stretch; }
+    .columns + .columns, .columns + .feat { margin-top: 24px; }
+    .column { width: 398px; flex: none; display: flex; flex-direction: column; }
+    .column > .feat { flex: 1 1 auto; }
+
+    .feat {
+      background: #111217; border-radius: 28px; padding: 22px 20px 20px; box-sizing: border-box;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07), 0 16px 40px rgba(0, 0, 0, 0.35);
+    }
+    .tag {
+      display: inline-block; margin: 0 0 10px; padding: 3px 10px; border-radius: 999px; font-size: 12px; line-height: 18px;
+      font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; background: rgba(255, 255, 255, 0.08); color: #C9C7D6;
+    }
+    .tag.new { background: #6C4CE0; color: #FFFFFF; }
+    .feat h2 { margin: 0 0 6px; font-size: 24px; line-height: 30px; font-weight: 700; }
+    .feat p { margin: 0 0 18px; font-size: 15px; line-height: 21px; color: #A9A8B8; }
+    .feat .label { margin: 14px 0 8px; font-size: 13px; line-height: 16px; font-weight: 500; color: #8E8DA0; text-transform: uppercase; letter-spacing: 0.5px; }
+    ul.more { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    ul.more li { font-size: 15px; line-height: 21px; color: #A9A8B8; padding-left: 18px; position: relative; }
+    ul.more li::before { content: ''; position: absolute; left: 2px; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: #8E6CFF; }
+    ul.more b { color: #FFFFFF; font-weight: 500; }
+
+    .fcs { display: flex; flex-direction: column; gap: 8px; }
+    .fc { display: flex; gap: 12px; padding: 12px 14px; border-radius: 14px; background: #1F2029; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); }
+    .fc .icon { flex: none; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; }
+    .fc .icon svg { width: 22px; height: 22px; display: block; }
+    .fc .owner { font-size: 12px; line-height: 16px; color: #8E8DA0; }
+    .fc .text { font-size: 15px; line-height: 24px; color: #E4E4E7; }
+    .fc .arg { display: inline-block; padding: 0 8px; border-radius: 6px; background: #2B2C36; color: #FFFFFF; font-weight: 500; line-height: 22px; }
+    .fc .tokens { display: flex; gap: 6px; margin-top: 8px; }
+    .fc .token { padding: 1px 8px 1px 6px; border-radius: 999px; background: rgba(108, 76, 224, 0.3); color: #D9CFFF; font-size: 12px; line-height: 18px; font-weight: 500; }
+    .fc .token::before { content: '◆ '; font-size: 9px; color: #B9A6FF; }
+
+
+    /* The Widget Builder: its text beside the real builder page (docs/web/builder.png). */
+    .feat.hero { flex: 1 1 0; min-width: 0; display: flex; gap: 32px; align-items: flex-start; }
+    .hero .side { flex: 1 1 0; min-width: 0; }
+    .hero h2 { font-size: 34px; line-height: 40px; }
+    .hero p { font-size: 17px; line-height: 25px; }
+    .hero ul.more li { font-size: 16px; line-height: 23px; }
+    .hero img { flex: none; width: 1160px; height: auto; display: block; margin: -8px -12px -14px 0; }
+
+    /* Designs made with it: four of its Looks (docs/variants/custom-*.webp), tops lined up. */
+    .looks { display: flex; gap: 16px; align-items: flex-start; }
+    .looks img { display: block; flex: 1 1 0; min-width: 0; height: auto; border-radius: 14px; }
+    .feat.wide { flex: 1 1 0; min-width: 0; }
+    .feat.split { display: flex; gap: 28px; align-items: flex-start; }
+    .split > .side { flex: 1 1 0; min-width: 0; }
+    .split > img { flex: none; display: block; border-radius: 14px; }
+    .fcs + .label { margin-top: 18px; }
+    .fc .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+    .feat img.look { display: block; width: 100%; height: auto; border-radius: 14px; }
+    .feat img.look + img.look { margin-top: 12px; }
+    .feat .tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+    .feat .tabs span { padding: 6px 12px; border-radius: 10px; background: #1F2029; color: #DCDAE8; font-size: 14px; line-height: 20px; font-weight: 500; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); }
+    .feat .tabs span.on { background: #0082FA; color: #FFFFFF; box-shadow: none; }
+
+    /* The strip at the bottom: And also, in three columns. */
+    .also { padding: 26px 36px 28px; margin-top: 24px; }
+    .also ul.more { margin: 0; display: block; columns: 3; column-gap: 36px; }
+    .also ul.more li { break-inside: avoid; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="3"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div>
+    <div>
+      <div class="eyebrow">Widgetkeeper 1.4.0 <span>Coming soon</span></div>
+      <h1>New in 1.4.0</h1>
+      <p>Build your own widget from components, fed by your devices, variables and Flows, and place it on any Homey or web dashboard.</p>
+    </div>
+    <div class="chips">
+      <span>Widget Builder</span><span>Flow inputs</span><span>Rules</span><span>Ready-mades</span><span>Custom colours</span><span>Smart Stack tabs</span><span>Media shortcut</span><span>App settings on the web</span><span>Decimals</span>
+    </div>
+  </header>
+
+  <div class="columns">
+    <section class="feat hero">
+      <div class="side">
+        <span class="tag new">New widget</span>
+        <h2>Widget Builder</h2>
+        <p>Design a widget of your own on the web dashboards: pick components, place them on a grid, point them at a device, a variable or a Flow. Then put it on any Homey or web dashboard, and a change shows on every copy.</p>
+        <ul class="more">
+          <li><b>Values, charts, gauges, rings and bars,</b> segmented bars, trends, lists, pictures, times and calculated values.</li>
+          <li><b>Controls:</b> switches, sliders, steppers, choices, variables and buttons that start a Flow, set a value or turn a page.</li>
+          <li><b>Text with values in it,</b> such as <i>Inside 22.4°C · humidity 46%</i>, and shapes to lay it out.</li>
+          <li><b>Containers</b> on a fine grid or free-form, with pages or tabs.</li>
+          <li><b>Rules:</b> turn a component red, or hide it, by its own value or any other.</li>
+          <li><b>Ready-mades</b> to start from, and your own saved to reuse. A Repeater makes one for every device you pick.</li>
+          <li><b>One design for any device:</b> each copy on a dashboard can show its own device.</li>
+          <li><b>See it live</b> while you build, in dark or light, Muted or Vivid, with Undo.</li>
+        </ul>
+      </div>
+      <img src="../docs/web/builder.png" alt="" width="1520" height="1035">
+    </section>
+  </div>
+
+  <div class="columns">
+    <section class="feat wide">
+      <span class="tag">Widget Builder</span>
+      <h2>Made with it</h2>
+      <p>Four designs from the same components: a card with a container, text with values and the time, a power breakdown, and pages turned by a state.</p>
+      <div class="looks">
+        <img src="../docs/variants/custom-container.webp" alt="" width="780" height="672">
+        <img src="../docs/variants/custom-blocks.webp" alt="" width="780" height="672">
+        <img src="../docs/variants/custom-split.webp" alt="" width="780" height="672">
+        <img src="../docs/variants/custom-more.webp" alt="" width="780" height="816">
+      </div>
+    </section>
+  </div>
+
+  <div class="columns">
+    <section class="feat wide split">
+      <div class="side">
+        <span class="tag">Widget Builder</span>
+        <h2>Flow inputs</h2>
+        <p>Name an input, such as <i>Door message</i>, and tie any setting to it with the ⚡ beside it: a text, a colour, an icon, whether it shows, the page. Your Flows set it, and every design that uses it follows.</p>
+        <div class="fcs">
+          <div class="fc"><div class="icon" style="background:#2A1958"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="4"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div><div><div class="owner">Widgetkeeper</div><div class="text">Set <span class="arg">Door message</span> to <span class="arg">Parcel by the door</span> for <span class="arg">Every device</span></div></div></div>
+          <div class="fc"><div class="icon" style="background:#2A1958"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="4"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div><div><div class="owner">Widgetkeeper</div><div class="text">Set <span class="arg">Bin day</span> to <span class="arg">2</span> <span class="arg">days</span> for <span class="arg">Every device</span></div></div></div>
+          <div class="fc"><div class="icon" style="background:#2A1958"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="4"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div><div><div class="owner">Widgetkeeper</div><div class="text">Set <span class="arg">Room colour</span> to the colour <span class="arg"><span class="swatch" style="background:#FF6B9D"></span>#FF6B9D</span> for <span class="arg">Kids’ room</span></div></div></div>
+        </div>
+        <div class="label">And when a button is tapped</div>
+        <div class="fc"><div class="icon" style="background:#2A1958"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="4"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div><div><div class="owner">Widgetkeeper</div><div class="text">Widget Builder button <span class="arg">Ring</span> was tapped</div><div class="tokens"><span class="token">Component</span><span class="token">Design</span><span class="token">Web dashboard</span></div></div></div>
+        <ul class="more">
+          <li><b>Text, number, yes/no, colour or icon,</b> per device if you like, so each copy shows its own device's value.</li>
+          <li><b>Back on its own</b> after an hour or at midnight, or when a Flow clears it.</li>
+          <li><b>Rules and calculated values</b> can read an input too, and a button can set one.</li>
+        </ul>
+      </div>
+      <img src="../docs/variants/custom-free.webp" alt="" width="460" height="481">
+    </section>
+  </div>
+
+  <div class="columns">
+    <div class="column">
+      <section class="feat">
+        <span class="tag">Flow cards</span>
+        <h2>Custom colours</h2>
+        <p>Type any colour on a Flow card, as <i>#FF6B9D</i> or <i>rgb(255, 107, 157)</i>, for Device Values, Flow Buttons, Notes and the Widget Builder. White and Black join the colour lists.</p>
+        <div class="fc"><div class="icon" style="background:#2A1958"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="4"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div><div><div class="owner">Widgetkeeper</div><div class="text">Set the button colour of <span class="arg">Party mode</span> to the custom colour <span class="arg"><span class="swatch" style="background:#FF6B9D"></span>#FF6B9D</span></div></div></div>
+        <div class="label">Flow Buttons in colours of their own</div>
+        <div id="w-flows"></div>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="feat">
+        <span class="tag">Smart Stack</span>
+        <h2>Tabs instead of dots</h2>
+        <p>Name the pages: tabs with an icon and a name, or icons only, above or below.</p>
+        <img class="look" src="../docs/variants/stack-tabs.webp" alt="" width="780" height="332">
+        <img class="look" src="../docs/variants/stack-tabs-icons.webp" alt="" width="780" height="332">
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="feat">
+        <span class="tag">Media</span>
+        <h2>A shortcut beside ⋯</h2>
+        <p>Put one of Media's buttons beside ⋯, such as a power button, so it's one tap away.</p>
+        <img class="look" src="../docs/variants/media-shortcut.webp" alt="" width="780" height="408">
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="feat">
+        <span class="tag">Web dashboards</span>
+        <h2>App settings in Settings</h2>
+        <p>Every setting of the app's settings page, in the web dashboards' Settings, a tab each, with a full-access API key.</p>
+        <div class="tabs">
+          <span class="on">API key</span><span>Names</span><span>Time format</span><span>Temperature</span><span>Appearance</span><span>Keypad codes</span><span>Web dashboards</span><span>Updates</span><span>Diagnostics</span>
+        </div>
+        <ul class="more">
+          <li><b>The same cards</b> as on Homey's app settings page, so nothing differs between the two.</li>
+          <li><b>What could lock you out</b> stays on the Homey: turning web dashboards off and remote access.</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <section class="feat also">
+    <span class="tag">And also</span>
+    <ul class="more">
+      <li><b>Decimals:</b> choose 0, 1 or 2 per tile in Device Values, Sparklines and Combined Value, and per column in Value Matrix.</li>
+      <li><b>White and Black</b> on the Flow cards that colour a Device Values tile, a Flow Button or a Note.</li>
+      <li><b>Web dashboards:</b> the Widget Builder has its own section on the front page, and its designs in Add widget.</li>
+    </ul>
+  </section>
+
+  <script>
+    (function () {
+      const el = id => document.getElementById(id);
+
+      // Flow Buttons, coloured by Flows with typed colours (the widget's flowColors; the kit's paintColor()).
+      const buttons = [
+        ['f1', 'Party mode', '#ff6b9d', 'party'], ['f2', 'Reading light', '#e8b04a', 'book'],
+        ['f3', 'Aquarium', '#1fb5a8', 'fish'], ['f4', 'Gaming', '#7b5cff', 'gamepad'],
+      ];
+      MOUNT.flows(el('w-flows'), {
+        opts: { columns: '2', buttons: buttons.map(([id, , , icon]) => ({ id, icon })) },
+        flows: buttons.map(([id, name, color]) => ({ id, name, color, enabled: true, triggerable: true, advanced: false })),
+      });
+
+      // The page's size and the columns' heights, for the render script.
+      document.fonts.ready.then(() => setTimeout(() => {
+        const r = document.body.getBoundingClientRect();
+        document.body.dataset.width = String(Math.ceil(r.width));
+        document.body.dataset.height = String(Math.ceil(r.height));
+        document.body.dataset.columns = [...document.querySelectorAll('.column, .feat.wide, .hero')].map(c => Math.round(c.getBoundingClientRect().height)).join(',');
+      }, 800));
+    })();
+  </script>
+</body>
+</html>
