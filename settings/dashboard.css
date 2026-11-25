@@ -1387,12 +1387,35 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-pop-opts .wd-btn { align-self: flex-start; }
 .wdb-inputs { margin-top: 32px; }
 .wdb-input-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
-.wdb-input { display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 14px; background: var(--wd-raised); }
-.wdb-input-head { display: flex; align-items: center; gap: 8px; }
-.wdb-input-head > svg { flex: none; width: 16px; height: 16px; color: var(--wd-accent); fill: currentColor; }
-.wdb-input-head .wd-input { flex: 1; min-width: 0; font-weight: 700; }
-.wdb-input-opts { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
-.wdb-input .wd-hint { margin: 0; }
+.wdb-input { display: flex; flex-direction: column; gap: 12px; padding: 14px 14px 0; border-radius: 16px; background: var(--wd-tile); box-shadow: 0 0 0 1px var(--wd-line); overflow: hidden; }
+.wdb-input-head { display: flex; align-items: flex-start; gap: 10px; }
+.wdb-input-badge { flex: none; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; color: var(--wd-accent); background: color-mix(in srgb, var(--wd-accent) 14%, transparent); }
+.wdb-input-badge svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.wdb-input-title { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+/* The name reads as a title, a field only on hover and while typing. */
+.wd-input.wdb-input-name {
+  min-height: 0; margin: -2px 0 0 -6px; padding: 1px 6px; border-color: transparent; background: transparent;
+  font-size: 17px; line-height: 24px; font-weight: 700; text-overflow: ellipsis;
+}
+.wd-input.wdb-input-name:hover { border-color: var(--wd-line); }
+.wd-input.wdb-input-name:focus { border-color: var(--wd-accent); background: var(--wd-panel); }
+.wdb-input-used { font-size: 13px; line-height: 18px; color: var(--wd-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wdb-input-head .wd-icon { margin: -2px -6px 0 0; }
+.wdb-input-value { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; padding: 8px 12px; border-radius: 10px; background: var(--wd-raised); font-size: 14px; line-height: 20px; font-weight: 500; }
+.wdb-input-value.none { color: var(--wd-muted); font-weight: 400; font-style: italic; }
+.wdb-input-dot { flex: none; width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .15); }
+.wdb-input-devices { margin-left: auto; font-size: 12px; font-weight: 400; color: var(--wd-muted); }
+.wdb-input-opts { display: flex; flex-direction: column; }
+.wdb-input-opt { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 6px 0; border-top: 1px solid var(--wd-line); font-size: 14px; line-height: 20px; font-weight: 500; }
+.wdb-input-opt-text { display: flex; flex-direction: column; min-width: 0; }
+.wdb-input-opt-text .wd-hint { font-weight: 400; }
+label.wdb-input-opt { cursor: pointer; }
+.wd-input.wdb-input-select { flex: none; width: auto; min-width: 120px; min-height: 32px; padding: 4px 8px; font-size: 14px; }
+.wdb-input-opt-wide { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 0 12px; }
+.wd-seg.wdb-input-segs { display: flex; flex-wrap: wrap; }
+.wdb-input-segs .wd-seg-option { flex: 1 1 auto; min-width: 0; padding: 0 8px; font-size: 13px; }
+.wdb-input-foot { display: flex; align-items: center; gap: 6px; margin: 0 -14px; padding: 10px 14px; background: var(--wd-raised); color: var(--wd-muted); font-size: 12px; line-height: 16px; }
+.wdb-input-foot svg { flex: none; width: 14px; height: 14px; color: var(--wd-accent); fill: currentColor; }
 .wdb-input-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; padding: 0; list-style: none; }
 .wdb-input-step { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: 14px; background: var(--wd-raised); }
 .wdb-input-step > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 14px; line-height: 20px; }

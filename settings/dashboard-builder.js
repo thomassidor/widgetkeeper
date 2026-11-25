@@ -57,6 +57,9 @@
       link: 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71',
       pulse: 'M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2',
       trend: 'M16 7h6v6M22 7l-8.5 8.5-5-5L2 17',
+      hash: 'M4 9h16M4 15h16M10 3 8 21M16 3l-2 18',
+      toggle: 'M9 5h6a7 7 0 0 1 0 14H9A7 7 0 0 1 9 5zM12 12a3 3 0 1 0 6 0a3 3 0 1 0-6 0z',
+      droplet: 'M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z',
     };
     const GROUPS = ['ready', 'layout', 'show', 'control'];
 
@@ -3042,6 +3045,8 @@
     const inputs = () => wd.inputs || (wd.inputs = (wd.setup && wd.setup.inputs) || []);
     const inputById = id => inputs().find(x => x.id === id);
     const typeName = type => t(`builderInputType_${type}`);
+    /** Each input type's glyph, on its card in the builder home's *Flow inputs*. */
+    const INPUT_GLYPHS = { text: 'type', number: 'hash', yesno: 'toggle', color: 'droplet', icon: 'star' };
     /** An input's value as a line: `22.5 kr`, *Yes*, a colour's name; `''` without one. */
     function inputValueText(input, v = input && input.value) {
       if (!v || v.value === undefined || v.value === null) return '';
@@ -3210,19 +3215,56 @@
         list.hidden = !inputs().length;
         for (const x of inputs()) {
           const card = el('div', 'wdb-input');
+          // The head: the type's glyph, the name (edited in place), where it's used, and Delete.
           const head = el('div', 'wdb-input-head');
+          const badge = el('span', 'wdb-input-badge');
+          badge.append(kitIcon(INPUT_GLYPHS[x.type] || 'star'));
+          badge.title = typeName(x.type);
+          const title = el('div', 'wdb-input-title');
           const name = textInput(x.name, async (v) => { if (v.trim() && v.trim() !== x.name && await saveInput({ ...x, name: v.trim() })) draw(); else draw(); });
+          name.classList.add('wdb-input-name');
           name.setAttribute('aria-label', t('builderInputName'));
-          const del = confirmButton('wd-icon small', icon('trash'), async () => { await removeInput(x.id); draw(); }, t('tapAgain'), t('builderInputDelete'));
-          head.append(icon('bolt'), name, del);
-          const now = inputValueText(x);
-          const facts = [typeName(x.type), x.perDevice ? t('builderInputPerDevice') : '', now ? t('builderInputNow', { value: now }) : t('builderInputNoValue'), x.devices ? t('builderInputDevices', { count: x.devices }) : ''].filter(Boolean).join(' · ');
           const used = (x.usedBy || []).length ? t('builderInputUsedBy', { names: x.usedBy.map(d => d.name).join(', ') }) : t('builderInputUnused');
+          title.append(name, el('span', 'wdb-input-used', used));
+          const del = confirmButton('wd-icon small', icon('trash'), async () => { await removeInput(x.id); draw(); }, t('tapAgain'), t('builderInputDelete'));
+          head.append(badge, title, del);
+          // Its value now, as a chip (a colour's with its dot), and on how many devices it has its own.
+          const now = inputValueText(x);
+          const value = el('div', `wdb-input-value${now ? '' : ' none'}`);
+          if (now && x.type === 'color') {
+            const dot = el('span', 'wk wdb-input-dot');
+            dot.style.background = /^#/.test(x.value.value) ? x.value.value : `var(--wk-${x.value.value}-bright)`;
+            value.append(dot);
+          }
+          value.append(el('span', null, now ? t('builderInputNow', { value: now }) : t('builderInputNoValue')));
+          if (x.devices) value.append(el('span', 'wdb-input-devices', t('builderInputDevices', { count: x.devices })));
+          // The options, a line each: the label left, the control right; Clear the value's segments under it.
           const opts = el('div', 'wdb-input-opts');
-          opts.append(row(t('builderInputType'), selectOf(INPUT_TYPES.map(y => [y, typeName(y)]), x.type, async (v) => { if (await saveInput({ ...x, type: v })) draw(); }), t('builderInputTypeHint')),
-            checkLine(t('builderInputPerDevice'), !!x.perDevice, async (v) => { if (await saveInput({ ...x, perDevice: v })) draw(); }, t('builderInputPerDeviceHint')),
-            row(t('builderInputReset'), segs([['never', t('builderResetNever')], ['hour', t('builderResetHour')], ['midnight', t('builderResetMidnight')]], x.reset || 'never', async (v) => { if (await saveInput({ ...x, reset: v })) draw(); })));
-          card.append(head, el('p', 'wd-hint', facts), el('p', 'wd-hint', used), opts, el('p', 'wd-hint', t('builderInputCard', { card: t(`builderInputCard_${x.type}`) })));
+          const line = (label, control, hint) => {
+            const r = el('label', 'wdb-input-opt');
+            const text = el('span', 'wdb-input-opt-text');
+            text.append(el('span', null, label));
+            if (hint) text.append(el('span', 'wd-hint', hint));
+            r.append(text, control);
+            return r;
+          };
+          const type = selectOf(INPUT_TYPES.map(y => [y, typeName(y)]), x.type, async (v) => { if (await saveInput({ ...x, type: v })) draw(); });
+          type.classList.add('wdb-input-select');
+          const perDevice = el('input', 'wd-switch');
+          perDevice.type = 'checkbox';
+          perDevice.checked = !!x.perDevice;
+          perDevice.addEventListener('change', async () => { if (await saveInput({ ...x, perDevice: perDevice.checked })) draw(); else perDevice.checked = !!x.perDevice; });
+          const perLine = line(t('builderInputPerDevice'), perDevice);
+          perLine.title = t('builderInputPerDeviceHint');
+          const reset = el('div', 'wdb-input-opt wdb-input-opt-wide');
+          const resetSegs = segs([['never', t('builderResetNever')], ['hour', t('builderResetHour')], ['midnight', t('builderResetMidnight')]], x.reset || 'never', async (v) => { if (await saveInput({ ...x, reset: v })) draw(); });
+          resetSegs.classList.add('wdb-input-segs');
+          reset.append(el('span', null, t('builderInputReset')), resetSegs);
+          // A new type clears the values: said only while there's a value to lose.
+          opts.append(line(t('builderInputType'), type, now ? t('builderInputTypeHint') : ''), perLine, reset);
+          const foot = el('div', 'wdb-input-foot');
+          foot.append(icon('bolt'), el('span', null, t('builderInputCard', { card: t(`builderInputCard_${x.type}`) })));
+          card.append(head, value, opts, foot);
           list.append(card);
         }
       };
