@@ -72,6 +72,7 @@ export function routeKeyUse(type: string, method: string, path: string, body: un
  */
 export const DEVICE_WRITES: readonly string[] = [
   'quickactions POST /trigger',
+  'groupaction POST /trigger',
   'lights POST /set',
   'lightrooms POST /set',
   'curtains POST /set',

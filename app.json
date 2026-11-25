@@ -30479,6 +30479,494 @@
       },
       "id": "flowtiles"
     },
+    "groupaction": {
+      "name": {
+        "en": "Group Quick Action",
+        "nl": "Snelle groepsactie",
+        "de": "Gruppen-Schnellaktion",
+        "fr": "Action rapide de groupe",
+        "it": "Azione rapida di gruppo",
+        "sv": "Snabbåtgärd för grupp",
+        "no": "Hurtighandling for gruppe",
+        "es": "Acción rápida de grupo",
+        "da": "Hurtighandling for gruppe",
+        "ru": "Быстрое действие группы",
+        "pl": "Szybka akcja grupy",
+        "ko": "그룹 빠른 실행",
+        "ar": "إجراء سريع للمجموعة"
+      },
+      "height": 56,
+      "transparent": true,
+      "devices": {
+        "type": "global",
+        "singular": false
+      },
+      "settings": [
+        {
+          "id": "name",
+          "type": "text",
+          "title": {
+            "en": "Name",
+            "nl": "Naam",
+            "de": "Name",
+            "fr": "Nom",
+            "it": "Nome",
+            "sv": "Namn",
+            "no": "Navn",
+            "es": "Nombre",
+            "da": "Navn",
+            "ru": "Название",
+            "pl": "Nazwa",
+            "ko": "이름",
+            "ar": "الاسم"
+          },
+          "hint": {
+            "en": "Empty: the room the devices share, else the first device’s name.",
+            "nl": "Leeg: de ruimte van de apparaten, anders de naam van het eerste apparaat.",
+            "de": "Leer: der gemeinsame Raum der Geräte, sonst der Name des ersten Geräts.",
+            "fr": "Vide : la pièce commune des appareils, sinon le nom du premier appareil.",
+            "it": "Vuoto: la stanza comune dei dispositivi, altrimenti il nome del primo dispositivo.",
+            "sv": "Tomt: rummet enheterna delar, annars den första enhetens namn.",
+            "no": "Tomt: rommet enhetene deler, ellers navnet på den første enheten.",
+            "es": "Vacío: la habitación común de los dispositivos, si no el nombre del primero.",
+            "da": "Tomt: rummet, enhederne deler, ellers den første enheds navn.",
+            "ru": "Пусто: общая комната устройств, иначе название первого устройства.",
+            "pl": "Puste: wspólne pomieszczenie urządzeń, inaczej nazwa pierwszego urządzenia.",
+            "ko": "비워 두면 기기들이 함께 있는 방, 아니면 첫 기기의 이름이 쓰입니다.",
+            "ar": "فارغ: الغرفة المشتركة بين الأجهزة، وإلا اسم الجهاز الأول."
+          },
+          "value": ""
+        },
+        {
+          "id": "press",
+          "type": "dropdown",
+          "title": {
+            "en": "Activate with",
+            "nl": "Activeren met",
+            "de": "Auslösen mit",
+            "fr": "Activer par",
+            "it": "Attiva con",
+            "sv": "Aktivera med",
+            "no": "Aktiver med",
+            "es": "Activar con",
+            "da": "Aktivér med",
+            "ru": "Срабатывание",
+            "pl": "Uruchamiaj przez",
+            "ko": "실행 방식",
+            "ar": "التفعيل بـ"
+          },
+          "hint": {
+            "en": "Double press: the first tap turns the tile red and asks for a second within 3 seconds. Long press: hold the tile until it has filled. So a stray tap can't unlock a door.",
+            "nl": "Dubbele tik: de eerste tik kleurt de tegel rood en vraagt binnen 3 seconden om een tweede. Lang indrukken: houd de tegel vast tot hij gevuld is. Zo ontgrendelt een verdwaalde tik geen deur.",
+            "de": "Doppelt tippen: Das erste Tippen färbt die Kachel rot und verlangt innerhalb von 3 Sekunden ein zweites. Lange drücken: Halte die Kachel, bis sie gefüllt ist. So entriegelt ein versehentliches Tippen keine Tür.",
+            "fr": "Double appui : le premier appui colore la tuile en rouge et en demande un second dans les 3 secondes. Appui long : maintenez la tuile jusqu'à ce qu'elle soit remplie. Ainsi, un appui accidentel ne déverrouille pas une porte.",
+            "it": "Doppio tocco: il primo tocco colora il riquadro di rosso e ne chiede un secondo entro 3 secondi. Pressione lunga: tieni premuto il riquadro finché non si riempie. Così un tocco accidentale non sblocca una porta.",
+            "sv": "Dubbeltryck: det första trycket gör rutan röd och ber om ett andra inom 3 sekunder. Långt tryck: håll in rutan tills den har fyllts. Så låser ett oavsiktligt tryck inte upp en dörr.",
+            "no": "Dobbelttrykk: det første trykket gjør flisen rød og ber om et nytt innen 3 sekunder. Langt trykk: hold inne flisen til den er fylt. Slik låser ikke et utilsiktet trykk opp en dør.",
+            "es": "Doble toque: el primer toque pone el mosaico en rojo y pide otro en 3 segundos. Pulsación larga: mantén pulsado el mosaico hasta que se llene. Así un toque accidental no desbloquea una puerta.",
+            "da": "Dobbelttryk: det første tryk gør feltet rødt og beder om et til inden for 3 sekunder. Langt tryk: hold feltet inde, til det er fyldt. Så låser et utilsigtet tryk ikke en dør op.",
+            "ru": "Двойное нажатие: первое нажатие окрашивает плитку в красный и ждёт второго в течение 3 секунд. Долгое нажатие: удерживайте плитку, пока она не заполнится. Так случайное нажатие не отопрёт дверь.",
+            "pl": "Podwójne dotknięcie: pierwsze dotknięcie barwi kafelek na czerwono i czeka 3 sekundy na drugie. Długie przytrzymanie: przytrzymaj kafelek, aż się wypełni. Dzięki temu przypadkowe dotknięcie nie odblokuje drzwi.",
+            "ko": "두 번 탭: 첫 번째 탭은 타일을 빨간색으로 바꾸고 3초 안에 한 번 더 탭하도록 요청합니다. 길게 누르기: 타일이 가득 찰 때까지 누르고 있으세요. 그래서 실수로 탭해도 문 잠금이 해제되지 않습니다.",
+            "ar": "نقرة مزدوجة: النقرة الأولى تجعل المربع أحمر وتطلب نقرة ثانية خلال 3 ثوانٍ. ضغطة مطوّلة: اضغط على المربع حتى يمتلئ. وبذلك لا تفتح نقرة عابرة قفل باب."
+          },
+          "value": "single",
+          "values": [
+            {
+              "id": "single",
+              "title": {
+                "en": "Single press",
+                "nl": "Enkele tik",
+                "de": "Einmal tippen",
+                "fr": "Appui simple",
+                "it": "Tocco singolo",
+                "sv": "Ett tryck",
+                "no": "Ett trykk",
+                "es": "Toque simple",
+                "da": "Ét tryk",
+                "ru": "Одно нажатие",
+                "pl": "Jedno dotknięcie",
+                "ko": "한 번 탭",
+                "ar": "نقرة واحدة"
+              }
+            },
+            {
+              "id": "double",
+              "title": {
+                "en": "Double press",
+                "nl": "Dubbele tik",
+                "de": "Doppelt tippen",
+                "fr": "Double appui",
+                "it": "Doppio tocco",
+                "sv": "Dubbeltryck",
+                "no": "Dobbelttrykk",
+                "es": "Doble toque",
+                "da": "Dobbelttryk",
+                "ru": "Двойное нажатие",
+                "pl": "Podwójne dotknięcie",
+                "ko": "두 번 탭",
+                "ar": "نقرة مزدوجة"
+              }
+            },
+            {
+              "id": "long",
+              "title": {
+                "en": "Long press",
+                "nl": "Lang indrukken",
+                "de": "Lange drücken",
+                "fr": "Appui long",
+                "it": "Pressione lunga",
+                "sv": "Långt tryck",
+                "no": "Langt trykk",
+                "es": "Pulsación larga",
+                "da": "Langt tryk",
+                "ru": "Долгое нажатие",
+                "pl": "Długie przytrzymanie",
+                "ko": "길게 누르기",
+                "ar": "ضغطة مطوّلة"
+              }
+            }
+          ]
+        },
+        {
+          "id": "color",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour",
+            "nl": "Kleur",
+            "de": "Farbe",
+            "fr": "Couleur",
+            "it": "Colore",
+            "sv": "Färg",
+            "no": "Farge",
+            "es": "Color",
+            "da": "Farve",
+            "ru": "Цвет",
+            "pl": "Kolor",
+            "ko": "색상",
+            "ar": "اللون"
+          },
+          "value": "blue",
+          "values": [
+            {
+              "id": "blue",
+              "title": {
+                "en": "Blue",
+                "nl": "Blauw",
+                "de": "Blau",
+                "fr": "Bleu",
+                "it": "Blu",
+                "sv": "Blå",
+                "no": "Blå",
+                "es": "Azul",
+                "da": "Blå",
+                "ru": "Синий",
+                "pl": "Niebieski",
+                "ko": "파랑",
+                "ar": "أزرق"
+              }
+            },
+            {
+              "id": "red",
+              "title": {
+                "en": "Red",
+                "nl": "Rood",
+                "de": "Rot",
+                "fr": "Rouge",
+                "it": "Rosso",
+                "sv": "Röd",
+                "no": "Rød",
+                "es": "Rojo",
+                "da": "Rød",
+                "ru": "Красный",
+                "pl": "Czerwony",
+                "ko": "빨강",
+                "ar": "أحمر"
+              }
+            },
+            {
+              "id": "orange",
+              "title": {
+                "en": "Orange",
+                "nl": "Oranje",
+                "de": "Orange",
+                "fr": "Orange",
+                "it": "Arancione",
+                "sv": "Orange",
+                "no": "Oransje",
+                "es": "Naranja",
+                "da": "Orange",
+                "ru": "Оранжевый",
+                "pl": "Pomarańczowy",
+                "ko": "주황",
+                "ar": "برتقالي"
+              }
+            },
+            {
+              "id": "yellow",
+              "title": {
+                "en": "Yellow",
+                "nl": "Geel",
+                "de": "Gelb",
+                "fr": "Jaune",
+                "it": "Giallo",
+                "sv": "Gul",
+                "no": "Gul",
+                "es": "Amarillo",
+                "da": "Gul",
+                "ru": "Жёлтый",
+                "pl": "Żółty",
+                "ko": "노랑",
+                "ar": "أصفر"
+              }
+            },
+            {
+              "id": "green",
+              "title": {
+                "en": "Green",
+                "nl": "Groen",
+                "de": "Grün",
+                "fr": "Vert",
+                "it": "Verde",
+                "sv": "Grön",
+                "no": "Grønn",
+                "es": "Verde",
+                "da": "Grøn",
+                "ru": "Зелёный",
+                "pl": "Zielony",
+                "ko": "초록",
+                "ar": "أخضر"
+              }
+            },
+            {
+              "id": "purple",
+              "title": {
+                "en": "Purple",
+                "nl": "Paars",
+                "de": "Lila",
+                "fr": "Violet",
+                "it": "Viola",
+                "sv": "Lila",
+                "no": "Lilla",
+                "es": "Morado",
+                "da": "Lilla",
+                "ru": "Фиолетовый",
+                "pl": "Fioletowy",
+                "ko": "보라",
+                "ar": "بنفسجي"
+              }
+            },
+            {
+              "id": "teal",
+              "title": {
+                "en": "Teal",
+                "nl": "Blauwgroen",
+                "de": "Petrol",
+                "fr": "Bleu canard",
+                "it": "Verde acqua",
+                "sv": "Blågrön",
+                "no": "Blågrønn",
+                "es": "Verde azulado",
+                "da": "Blågrøn",
+                "ru": "Бирюзовый",
+                "pl": "Morski",
+                "ko": "청록",
+                "ar": "أزرق مخضر"
+              }
+            },
+            {
+              "id": "cyan",
+              "title": {
+                "en": "Cyan",
+                "nl": "Cyaan",
+                "de": "Cyan",
+                "fr": "Cyan",
+                "it": "Ciano",
+                "sv": "Cyan",
+                "no": "Cyan",
+                "es": "Cian",
+                "da": "Cyan",
+                "ru": "Голубой",
+                "pl": "Cyjan",
+                "ko": "하늘",
+                "ar": "سماوي"
+              }
+            },
+            {
+              "id": "indigo",
+              "title": {
+                "en": "Indigo",
+                "nl": "Indigo",
+                "de": "Indigo",
+                "fr": "Indigo",
+                "it": "Indaco",
+                "sv": "Indigo",
+                "no": "Indigo",
+                "es": "Índigo",
+                "da": "Indigo",
+                "ru": "Индиго",
+                "pl": "Indygo",
+                "ko": "남색",
+                "ar": "نيلي"
+              }
+            },
+            {
+              "id": "pink",
+              "title": {
+                "en": "Pink",
+                "nl": "Roze",
+                "de": "Rosa",
+                "fr": "Rose",
+                "it": "Rosa",
+                "sv": "Rosa",
+                "no": "Rosa",
+                "es": "Rosa",
+                "da": "Lyserød",
+                "ru": "Розовый",
+                "pl": "Różowy",
+                "ko": "분홍",
+                "ar": "وردي"
+              }
+            },
+            {
+              "id": "brown",
+              "title": {
+                "en": "Brown",
+                "nl": "Bruin",
+                "de": "Braun",
+                "fr": "Marron",
+                "it": "Marrone",
+                "sv": "Brun",
+                "no": "Brun",
+                "es": "Marrón",
+                "da": "Brun",
+                "ru": "Коричневый",
+                "pl": "Brązowy",
+                "ko": "갈색",
+                "ar": "بني"
+              }
+            },
+            {
+              "id": "grey",
+              "title": {
+                "en": "Grey",
+                "nl": "Grijs",
+                "de": "Grau",
+                "fr": "Gris",
+                "it": "Grigio",
+                "sv": "Grå",
+                "no": "Grå",
+                "es": "Gris",
+                "da": "Grå",
+                "ru": "Серый",
+                "pl": "Szary",
+                "ko": "회색",
+                "ar": "رمادي"
+              }
+            }
+          ],
+          "hint": {
+            "en": "The colour of a tile that's on.",
+            "nl": "De kleur van een tegel die aan staat.",
+            "de": "Die Farbe einer eingeschalteten Kachel.",
+            "fr": "La couleur d'une tuile allumée.",
+            "it": "Il colore di un riquadro acceso.",
+            "sv": "Färgen på en ruta som är på.",
+            "no": "Fargen på en flis som er på.",
+            "es": "El color de un mosaico encendido.",
+            "da": "Farven på et felt, der er tændt.",
+            "ru": "Цвет включённой плитки.",
+            "pl": "Kolor włączonego kafelka.",
+            "ko": "켜진 타일의 색입니다.",
+            "ar": "لون البلاطة المشغّلة."
+          }
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid fills coloured tiles with a darker shade of the colour and white text.",
+            "nl": "Levendig vult gekleurde tegels met een donkerdere tint van de kleur en witte tekst.",
+            "de": "Kräftig füllt farbige Kacheln mit einem dunkleren Ton der Farbe und weißem Text.",
+            "fr": "Vives remplit les tuiles colorées d'une nuance plus foncée de la couleur, avec un texte blanc.",
+            "it": "Vivaci riempie i riquadri colorati con una tonalità più scura del colore e testo bianco.",
+            "sv": "Livfulla fyller färgade rutor med en mörkare nyans av färgen och vit text.",
+            "no": "Livlige fyller fargede fliser med en mørkere nyanse av fargen og hvit tekst.",
+            "es": "Vivos rellena los mosaicos de color con un tono más oscuro del color y texto blanco.",
+            "da": "Livlige fylder farvede felter med en mørkere nuance af farven og hvid tekst.",
+            "ru": "«Яркие» заливают цветные плитки более тёмным оттенком цвета с белым текстом.",
+            "pl": "Żywe wypełniają kolorowe kafelki ciemniejszym odcieniem koloru z białym tekstem.",
+            "ko": "선명하게는 색이 있는 타일을 더 어두운 색조로 채우고 글자를 흰색으로 표시합니다.",
+            "ar": "«زاهية» تملأ البلاطات الملوّنة بدرجة أغمق من اللون مع نص أبيض."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
+              }
+            }
+          ]
+        }
+      ],
+      "api": {
+        "getState": {
+          "method": "GET",
+          "path": "/state"
+        },
+        "trigger": {
+          "method": "POST",
+          "path": "/trigger"
+        }
+      },
+      "id": "groupaction"
+    },
     "heatmap": {
       "name": {
         "en": "Insights Heatmap",
@@ -52508,6 +52996,24 @@
                   "pl": "Szybkie akcje urządzeń",
                   "ko": "기기 빠른 실행",
                   "ar": "إجراءات سريعة للأجهزة"
+                }
+              },
+              {
+                "id": "groupaction",
+                "title": {
+                  "en": "Group Quick Action",
+                  "nl": "Snelle groepsactie",
+                  "de": "Gruppen-Schnellaktion",
+                  "fr": "Action rapide de groupe",
+                  "it": "Azione rapida di gruppo",
+                  "sv": "Snabbåtgärd för grupp",
+                  "no": "Hurtighandling for gruppe",
+                  "es": "Acción rápida de grupo",
+                  "da": "Hurtighandling for gruppe",
+                  "ru": "Быстрое действие группы",
+                  "pl": "Szybka akcja grupy",
+                  "ko": "그룹 빠른 실행",
+                  "ar": "إجراء سريع للمجموعة"
                 }
               },
               {

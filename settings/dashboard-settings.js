@@ -12,7 +12,7 @@
 
     /** Add widget's groups: every widget of ours is in one (a test checks), alphabetical by its name inside it. */
     const WIDGET_GROUPS = [
-      ['groupControl', ['curtains', 'lightrooms', 'lights', 'media', 'quickactions']],
+      ['groupControl', ['curtains', 'groupaction', 'lightrooms', 'lights', 'media', 'quickactions']],
       ['groupSecurity', ['cameras', 'keypad', 'locks', 'sensoralarms', 'sensordots']],
       ['groupClimate', ['pollen', 'roomhealth', 'thermostat', 'weather']],
       ['groupEnergy', ['electricity', 'price']],

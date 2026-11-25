@@ -19,6 +19,40 @@ const SCREENSHOTS = (function () {
 
   const values = (el, o) => MOUNT.values(el, withOpts(findWidget('values', 1), o)); // security: batteries in red, yellow and green
 
+  // Group Quick Action: three groups of the house: the living room's lights with two of four on, the outdoor lights all on,
+  // the doors with the back door unlocked. `scene` for the Looks: `offline` makes the living room's floor lamp unavailable,
+  // `leftout` puts its speaker in (another quick action), `buttons` makes the last group two doorbells' chimes, `off` turns everything off and locks the doors.
+  const groupaction = (el, { scene, ...o } = {}) => {
+    const ic = name => (window.ICONS && ICONS[name]) || null;
+    const qa = (capabilityId, value) => ({ capabilityId, value: scene === 'off' ? capabilityId === 'locked' : value, actionable: true, momentary: false, icon: null });
+    const room = (id, name) => ({ id, name });
+    const living = room('z1', 'Living room'), garden = room('z5', 'Garden');
+    el.style.cssText = 'display: flex; flex-direction: column; gap: 12px';
+    const add = (opts, devices) => MOUNT.groupaction(el.appendChild(document.createElement('div')), { opts: { ...opts, ...o }, devices });
+    add({}, [
+      { id: 'g1', name: 'Ceiling', icon: ic('light-hanging'), zone: living, quickAction: qa('onoff', true) },
+      { id: 'g2', name: 'Sofa lamp', icon: ic('light-standing'), zone: living, quickAction: qa('onoff', true) },
+      { id: 'g3', name: 'Floor lamp', icon: ic('light-standing'), zone: living, quickAction: qa('onoff', false), ...(scene === 'offline' ? { offline: true } : {}) },
+      { id: 'g4', name: 'Window', icon: ic('light-table'), zone: living, quickAction: qa('onoff', false) },
+      ...(scene === 'leftout' ? [{ id: 'g5', name: 'Speaker', icon: ic('speaker'), zone: living, quickAction: qa('speaker_playing', true) }] : []),
+    ]);
+    add({ name: 'Outdoor lights' }, [
+      { id: 'o1', name: 'Entrance', icon: ic('light-outdoor'), zone: garden, quickAction: qa('onoff', true) },
+      { id: 'o2', name: 'Driveway', icon: ic('light-spot'), zone: room('z6', 'Driveway'), quickAction: qa('onoff', true) },
+      { id: 'o3', name: 'Garden path', icon: ic('light-outdoor'), zone: garden, quickAction: qa('onoff', true) },
+    ]);
+    if (scene === 'buttons') {
+      const chime = (id, name) => ({ id, name, icon: ic('doorbell'), zone: room(id, name), quickAction: { ...qa('button', false), momentary: true } });
+      add({ name: 'Chimes' }, [chime('c1', 'Hall chime'), chime('c2', 'Office chime')]);
+      return;
+    }
+    add({ name: 'Doors', press: 'double' }, [
+      { id: 'd1', name: 'Front door', icon: ic('lock'), zone: room('z7', 'Hall'), quickAction: qa('locked', true) },
+      { id: 'd2', name: 'Back door', icon: ic('lock'), zone: room('z2', 'Kitchen'), quickAction: qa('locked', false) },
+      { id: 'd3', name: 'Terrace door', icon: ic('lock'), zone: living, quickAction: qa('locked', true) },
+    ]);
+  };
+
   // Flow Tiles: what the house's Flows write: the car's charge as a fill, the bins, the internet check, the washer's end, the
   // heat pump's mode and the post.
   const flowtiles = (el, o) => MOUNT.flowtiles(el, { opts: { columns: '2', ...o }, tiles: [
@@ -224,7 +258,7 @@ const SCREENSHOTS = (function () {
   };
 
   return {
-    electricity, thermostat, quickactions, sensoralarms, roomhealth, valuematrix, weather, heatmap, cameras, values, flowtiles, combined, variables, varpresets,
+    electricity, thermostat, quickactions, groupaction, sensoralarms, roomhealth, valuematrix, weather, heatmap, cameras, values, flowtiles, combined, variables, varpresets,
     keypad, flows: flowButtons, price, locks, sparklines, charts, totals, scatter, compare, timeline, stacked, lines, gauge, gaugedial,
     dailyrange, typicalday, clock, textline, dayssince, shortcuts, custom, lightrooms, pollen, webpage, popups,
   };

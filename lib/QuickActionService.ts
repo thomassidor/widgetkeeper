@@ -1,8 +1,8 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
-import DeviceTracker, { type TrackedEntry, offlineFlag } from './DeviceTracker.js';
+import DeviceTracker, { readZones, zoneRef, type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { fetchSvgIcon } from './deviceIcon.js';
-import { deviceNamer } from './deviceNames.js';
+import { deviceNamer, roomNamer } from './deviceNames.js';
 import Timings from './Timings.js';
 
 export const QA_STATE_EVENT = 'quickactions:state';
@@ -19,7 +19,7 @@ type QuickAction = {
 };
 
 export type QuickActionDevice =
-  | { id: string, name: string, icon: string | null, quickAction: QuickAction | null, offline?: true }
+  | { id: string, name: string, icon: string | null, quickAction: QuickAction | null, offline?: true, zone?: { id: string, name: string } | null }
   | { id: string, missing: true };
 
 type Tracked = TrackedEntry & {
@@ -103,13 +103,22 @@ export default class QuickActionService {
     this.tracker.stop();
   }
 
-  /** One entry per device, in the order asked for. A deleted device doesn't fail the others. */
-  async getState(deviceIds: string[]): Promise<QuickActionDevice[]> {
+  /**
+   * One entry per device, in the order asked for. A deleted device doesn't fail the others. With `zones` (Group Quick
+   * Action, which names its tile after a room all its devices share), each device's room too.
+   */
+  async getState(deviceIds: string[], { zones = false }: { zones?: boolean } = {}): Promise<QuickActionDevice[]> {
     const tm = new Timings();
+    const zonesP = zones ? readZones(this.homey, tm, this.log, 'Quick actions') : null;
     const show = await deviceNamer(this.homey, tm, this.log, 'Quick actions');
-    const out = await this.tracker.each(deviceIds, tm, this.log, 'Quick action device', (t, id): QuickActionDevice => (
-      { id, name: show(t.name, t.zone), icon: t.icon, quickAction: t.quickAction && { ...t.quickAction }, ...offlineFlag(t) }
-    ));
+    const room = roomNamer(this.homey);
+    const out = await this.tracker.each(deviceIds, tm, this.log, 'Quick action device', async (t, id): Promise<QuickActionDevice> => {
+      const zone = zonesP ? zoneRef(await zonesP, t.zone, room) : undefined;
+      return {
+        id, name: show(t.name, t.zone), icon: t.icon, quickAction: t.quickAction && { ...t.quickAction }, ...offlineFlag(t),
+        ...(zonesP ? { zone } : {}),
+      };
+    });
     this.debug(`Quick actions state for ${deviceIds.length} devices: ${tm.summary()}`);
     return out;
   }

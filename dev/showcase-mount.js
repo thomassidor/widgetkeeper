@@ -13,6 +13,7 @@ const MOUNT = {
   // `onApply` gives the header its chevron (the controls panel), as on a Homey.
   thermostat: (el, w) => { const x = createThermostatWidget(el, { locale: LOCALE, onApply: async () => {}, ...w.opts }); x.setButtons(thermostatPresetsFromSettings(w.presets)); x.setState(w.state); },
   quickactions: (el, w) => createQuickActionsWidget(el, w.opts || {}).setState(w.devices),
+  groupaction: (el, w) => createGroupActionWidget(el, w.opts || {}).setState(w.devices),
   sensoralarms: (el, w) => createSensorAlarmsWidget(el, w.opts || {}).setState(w.devices),
   sensordots: (el, w) => { const x = createSensorDotsWidget(el, w.opts || {}); x.setState({ devices: w.devices, language: 'en' }); if (w.open) x.open(w.open); },
   // Room Health: `w.devices` are the widget's `/state` entries (sensors with their zone and readings).

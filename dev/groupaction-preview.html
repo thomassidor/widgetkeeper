@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Group Quick Action widget preview</title>
+  <link rel="stylesheet" href="../widgets/spacer/public/kit.css">
+  <link rel="stylesheet" href="../widgets/groupaction/public/widget.css">
+  <script src="../widgets/spacer/public/kit.js"></script>
+  <script>WidgetkeeperKit.setTimeFormat('24');</script>
+  <script src="../widgets/groupaction/public/widget.js"></script>
+  <script src="i18n.js"></script>
+  <link rel="stylesheet" href="preview.css">
+  <style>
+    /* The widget is transparent: it sits straight on the dashboard background. */
+    .dash { padding: 0; box-sizing: border-box; }
+    .light { background: #F2F3F5; padding: 12px; border-radius: 12px; }
+  </style>
+</head>
+<body>
+  <div class="col"><span>358 px (phone) · dark · all off</span><div class="dash homey-dark-mode" style="width:358px"><div id="off"></div></div></div>
+  <div class="col"><span>358 px · dark · 2 of 5 on</span><div class="dash homey-dark-mode" style="width:358px"><div id="some"></div></div></div>
+  <div class="col"><span>358 px · dark · all on</span><div class="dash homey-dark-mode" style="width:358px"><div id="on"></div></div></div>
+  <div class="col"><span>358 px · dark · one unavailable, one gone</span><div class="dash homey-dark-mode" style="width:358px"><div id="unavailable"></div></div></div>
+  <div class="col"><span>358 px · dark · locks, 1 unlocked · double press</span><div class="dash homey-dark-mode" style="width:358px"><div id="locks"></div></div></div>
+  <div class="col"><span>358 px · dark · a typed name, one left out</span><div class="dash homey-dark-mode" style="width:358px"><div id="leftout"></div></div></div>
+  <div class="col"><span>358 px · dark · buttons (momentary) · long press</span><div class="dash homey-dark-mode" style="width:358px"><div id="buttons"></div></div></div>
+  <div class="col"><span>358 px · dark · Vivid yellow · all on</span><div class="dash homey-dark-mode" style="width:358px"><div id="vivid"></div></div></div>
+  <div class="col"><span>358 px · dark · Vivid yellow · 2 of 5 on</span><div class="dash homey-dark-mode" style="width:358px"><div id="vividsome"></div></div></div>
+  <div class="col"><span>358 px · light · 2 of 5 on</span><div class="dash light" style="width:358px"><div id="lightsome"></div></div></div>
+  <div class="col"><span>358 px · light · all on · yellow</span><div class="dash light" style="width:358px"><div id="lighton"></div></div></div>
+  <div class="col"><span>358 px · no devices</span><div class="dash homey-dark-mode" style="width:358px"><div id="empty"></div></div></div>
+
+  <script>
+    const svg = body => 'data:image/svg+xml;base64,' + btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round">${body}</svg>`);
+    const BULB = svg('<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/>');
+    const DOOR = svg('<path d="M10 3v18M10 3h2v18h-2M12 11h7"/>');
+    const BELL = svg('<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/>');
+    const ROOM = { id: 'z1', name: 'Living room' };
+    const qa = (capabilityId, value) => ({ capabilityId, value, actionable: true, momentary: capabilityId.startsWith('button'), icon: null });
+    const lights = (values, zone = ROOM) => ['Ceiling', 'Floor lamp', 'Sofa lamp', 'Window', 'Shelf'].map((name, i) => (
+      values[i] === 'gone' ? { id: `l${i}`, missing: true }
+        : { id: `l${i}`, name, icon: BULB, zone, quickAction: qa('onoff', values[i] === 'x' ? true : !!values[i]), ...(values[i] === 'x' ? { offline: true } : {}) }));
+    const locks = [
+      { id: 'k1', name: 'Front door', icon: DOOR, zone: { id: 'z2', name: 'Hall' }, quickAction: qa('locked', true) },
+      { id: 'k2', name: 'Back door', icon: DOOR, zone: { id: 'z3', name: 'Kitchen' }, quickAction: qa('locked', false) },
+      { id: 'k3', name: 'Garage', icon: DOOR, zone: { id: 'z4', name: 'Garage' }, quickAction: qa('locked', true) },
+    ];
+    const leftout = [...lights([1, 0, 0, 0, 0]).slice(0, 3), { id: 'm1', name: 'Kitchen speaker', icon: null, zone: ROOM, quickAction: qa('speaker_playing', false) }];
+    const buttons = ['Doorbell chime', 'Siren test'].map((name, i) => ({ id: `b${i}`, name, icon: BELL, zone: { id: `zb${i}`, name: `Room ${i}` }, quickAction: qa('button', false) }));
+    for (const [id, list, opts] of [
+      ['off', lights([0, 0, 0, 0, 0]), {}],
+      ['some', lights([1, 0, 1, 0, 0]), {}],
+      ['on', lights([1, 1, 1, 1, 1]), {}],
+      ['unavailable', lights([1, 1, 0, 'x', 'gone']), {}],
+      ['locks', locks, { press: 'double', name: 'Doors' }],
+      ['leftout', leftout, { name: 'Downstairs' }],
+      ['buttons', buttons, { press: 'long' }],
+      ['vivid', lights([1, 1, 1, 1, 1]), { colorStyle: 'deep', color: 'yellow' }],
+      ['vividsome', lights([1, 0, 1, 0, 0]), { colorStyle: 'deep', color: 'yellow' }],
+      ['lightsome', lights([1, 0, 1, 0, 0]), {}],
+      ['lighton', lights([1, 1, 1, 1, 1]), { color: 'yellow' }],
+    ]) {
+      // Simulate the devices confirming after a moment.
+      const w = createGroupActionWidget(document.getElementById(id), {
+        t: devT, ...opts,
+        onTrigger: (deviceId, value) => new Promise(r => setTimeout(() => {
+          const d = list.find(x => x.id === deviceId);
+          if (!d.quickAction.momentary) w.pushChange({ deviceId, capabilityId: d.quickAction.capabilityId, value });
+          r();
+        }, 600)),
+      });
+      w.setState(list);
+    }
+    const empty = createGroupActionWidget(document.getElementById('empty'), { t: devT });
+    empty.setMessage(empty.t('selectDevices'));
+  </script>
+</body>
+</html>

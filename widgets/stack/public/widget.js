@@ -10,7 +10,7 @@
 (function () {
   /** The widgets a page can be, and their mount function (`window[...]`, from the widget's mount.js). */
   const TYPES = {
-    electricity: 'mountElectricityWidget', thermostat: 'mountThermostatWidget', quickactions: 'mountQuickActionsWidget',
+    electricity: 'mountElectricityWidget', thermostat: 'mountThermostatWidget', quickactions: 'mountQuickActionsWidget', groupaction: 'mountGroupActionWidget',
     sensoralarms: 'mountSensorAlarmsWidget', sensordots: 'mountSensorDotsWidget', roomhealth: 'mountRoomHealthWidget',
     valuematrix: 'mountValueMatrixWidget', weather: 'mountWeatherWidget', pollen: 'mountPollenWidget',
     heatmap: 'mountHeatmapWidget', cameras: 'mountCamerasWidget', values: 'mountValuesWidget', combined: 'mountCombinedWidget', flowtiles: 'mountFlowTilesWidget', lights: 'mountLightsWidget',
@@ -30,7 +30,7 @@
     calendar: { d: 'M6 6h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM5 10h14M9 3.5V7M15 3.5V7' },
   };
   const TAB_ICONS = {
-    electricity: 'bolt', thermostat: 'flame', quickactions: 'power', sensoralarms: 'bell', sensordots: 'shield', roomhealth: 'fan',
+    electricity: 'bolt', thermostat: 'flame', quickactions: 'power', groupaction: 'power', sensoralarms: 'bell', sensordots: 'shield', roomhealth: 'fan',
     valuematrix: 'dashboard', weather: 'umbrella', pollen: 'sun', heatmap: 'chart', cameras: 'camera', values: 'thermometer',
     combined: 'thermometer', flowtiles: 'dashboard', lights: 'bulb', sparklines: 'chart', charts: 'chart', totals: 'chart',
     scatter: 'chart', typicalday: 'chart', dailyrange: 'chart', compare: 'chart', timeline: 'chart', stacked: 'chart', lines: 'chart',

@@ -319,6 +319,7 @@
       electricity: 'Live power, the day\'s prices and your usage in charts.',
       thermostat: 'Three preset buttons for a thermostat or an aircon.',
       quickactions: 'Small tiles that switch a device with one tap.',
+      groupaction: 'One tile that switches several devices at once: every light in a room, every lock.',
       sensoralarms: 'Tiles that turn red when a sensor raises an alarm.',
       sensordots: 'Motion, doors and cameras as a grid of dots.',
       roomhealth: "Each room's temperature, humidity and air at a glance, yellow to red when one is off.",

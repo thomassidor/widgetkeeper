@@ -1,0 +1,116 @@
+/*
+ * Colours map to Homey widget tokens (https://apps.developer.homey.app/the-basics/widgets/styling).
+ * The fallbacks are the dark-theme values, used outside Homey (dev/groupaction-preview.html). The tile is Quick Actions'
+ * pill at full width: the native tiles' 10 px radius, the name 14 bold over the state 14 muted.
+ */
+.ga {
+  --ga-tile: var(--homey-background-color, #FFFFFF);
+  --ga-text: var(--homey-text-color, #EDEEF0);
+  --ga-muted: var(--homey-text-color-light, #9C9DA5);
+  --ga-accent: var(--wk-c); /* the colour setting (kit.css; blue by default) */
+  --ga-accent-icon: var(--ga-accent);
+  --ga-warn: var(--wk-orange);
+  --ga-fs-small: var(--homey-font-size-small, 14px); --ga-lh-small: var(--homey-line-height-small, 20px);
+  --ga-bold: var(--homey-font-weight-bold, 700);
+  --ga-radius: 10px;
+  --ga-red-text: #D93B37; /* Quick Actions' Tap again on a red-tinted light tile */
+}
+.homey-dark-mode .ga, .ga.homey-dark-mode {
+  --ga-tile: var(--wk-surface, #2B2C36); --ga-accent-icon: color-mix(in oklab, var(--ga-accent) 72%, #FFFFFF);
+  --ga-red-text: var(--wk-red);
+}
+.homey-dark-mode .ga[data-wk-color="blue"], .ga.homey-dark-mode[data-wk-color="blue"] { --ga-accent-icon: #5AA6FF; }
+
+html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
+html, body { margin: 0; }
+html, body { background: transparent !important; }
+
+.ga { display: flex; flex-direction: column; gap: var(--homey-su-2, 8px); min-width: 0; color: var(--ga-text); }
+.ga * { box-sizing: border-box; }
+.ga [dir="auto"] { text-align: left; }
+
+/* The tile: the icon, the name over the state and its dots, the switch. The whole tile is the button. */
+.ga-tile {
+  position: relative; appearance: none; border: 0; margin: 0; font: inherit; color: var(--ga-text); width: 100%;
+  background: var(--ga-tile); border-radius: var(--ga-radius); padding: 7px 14px 5px 12px; min-width: 0; height: 56px;
+  display: flex; align-items: center; gap: 13px; text-align: left;
+  cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
+  transition: background-color .15s, color .15s, transform .1s;
+  isolation: isolate; -webkit-touch-callout: none;
+}
+.ga-tile:active:not(:disabled), .ga-tile.pressing:not(:disabled) { transform: scale(.98); }
+.ga-tile:disabled { cursor: default; }
+
+.ga-icon, .ga-action {
+  flex-shrink: 0; background: currentColor; color: var(--ga-muted);
+  -webkit-mask: var(--ga-mask) center / contain no-repeat; mask: var(--ga-mask) center / contain no-repeat;
+}
+.ga-icon { width: 24px; height: 24px; }
+.ga-icon.fallback { background: none; -webkit-mask: none; mask: none; border: 2px solid currentColor; border-radius: 4px; width: 20px; height: 20px; margin: 2px; }
+.ga-action { width: 20px; height: 20px; }
+.ga-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.ga-name {
+  font-size: var(--ga-fs-small); line-height: 18px; font-weight: var(--ga-bold);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ga-line { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.ga-state {
+  font-size: var(--ga-fs-small); line-height: 18px; font-weight: var(--homey-font-weight-regular, 400); color: var(--ga-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.ga-state.warn { color: var(--ga-warn); }
+.ga-dots { display: inline-flex; gap: 4px; flex: none; }
+.ga-dots i { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--ga-muted) 45%, transparent); }
+.ga-dots i.l { background: var(--ga-accent-icon); }
+.ga-dots i.x { background: none; box-shadow: inset 0 0 0 1.5px var(--ga-warn); }
+
+/* The switch: off, on, or the knob in the middle with a dash while the devices disagree. */
+.ga-switch {
+  position: relative; flex: none; width: 46px; height: 26px; border-radius: 13px;
+  background: color-mix(in srgb, var(--ga-muted) 35%, var(--ga-tile)); transition: background-color .2s;
+}
+.ga-switch::after {
+  content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%;
+  background: #FFFFFF; box-shadow: 0 1px 2px rgb(0 0 0 / .25); transition: left .2s;
+}
+.ga-switch[data-level="mid"] { background: color-mix(in srgb, var(--ga-accent) 55%, var(--ga-tile)); }
+.ga-switch[data-level="mid"]::after { left: 13px; }
+.ga-switch[data-level="mid"]::before {
+  content: ''; position: absolute; z-index: 1; left: 18px; top: 12px; width: 10px; height: 2px; border-radius: 1px;
+  background: color-mix(in srgb, var(--ga-accent) 70%, #000000);
+}
+.ga-switch[data-level="on"] { background: var(--ga-accent); }
+.ga-switch[data-level="on"]::after { left: 23px; }
+
+/* All on: Quick Actions' tint; some on: a faint one. Icons in the colour while any is on. */
+.ga-tile.active { background: color-mix(in srgb, var(--ga-accent) 22%, var(--ga-tile)); }
+.ga-tile.some { background: color-mix(in srgb, var(--ga-accent) 9%, var(--ga-tile)); }
+.ga-tile:is(.active, .some) .ga-icon, .ga-tile.active .ga-action { color: var(--ga-accent-icon); }
+/* Vivid (kit.css): all on is the colour's shade, solid, with its text, icons, dots and switch in --wk-on. */
+.ga.wk-deep .ga-tile.active {
+  background: var(--wk-c); --ga-text: var(--wk-on); --ga-muted: var(--wk-on-muted); --ga-accent-icon: var(--wk-on);
+}
+.ga.wk-deep .ga-tile.active .ga-switch { background: color-mix(in srgb, var(--wk-on) 35%, var(--wk-c)); }
+.ga.wk-deep .ga-tile.some { background: color-mix(in srgb, var(--ga-accent) 18%, var(--ga-tile)); }
+
+/* A long press (`press: long`): the tile fills from the left while held (--ga-hold, from widget.js). */
+.ga-tile::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
+  background: color-mix(in srgb, var(--ga-text) 18%, transparent); transform: scaleX(0); transform-origin: left center;
+}
+.ga-tile.holding::before { transform: scaleX(1); transition: transform var(--ga-hold, 600ms) linear; }
+
+/* Waiting for the second tap (`press: double`): Quick Actions' red Tap again. */
+.ga-tile.confirm { background: color-mix(in srgb, var(--wk-red) 22%, var(--ga-tile)); }
+.ga-tile.confirm, .ga-tile.confirm .ga-icon { color: var(--ga-red-text); }
+.ga.wk-deep .ga-tile.confirm { background: var(--wk-red); }
+.ga.wk-deep .ga-tile.confirm, .ga.wk-deep .ga-tile.confirm .ga-icon { color: var(--wk-on-red); }
+
+.ga-note, .ga-message { font-size: var(--ga-fs-small); line-height: var(--ga-lh-small); color: var(--ga-muted); }
+.ga-message.error { color: var(--homey-color-red, #F25F5C); }
+
+.ga-tile.shake { animation: ga-shake .35s; }
+@keyframes ga-shake {
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}

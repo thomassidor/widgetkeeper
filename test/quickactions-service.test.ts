@@ -45,6 +45,16 @@ describe('getState', () => {
     expect(await service.getState(['lamp'])).toMatchObject([{ id: 'lamp', name: 'Lamp' }]);
   });
 
+  it("adds each device's room only when asked (Group Quick Action), named as the setting says", async () => {
+    const homey = fakeHomey(fakeApi({ devices: [lamp(), lock()], zones: { z1: { name: 'Living room | Downstairs' } } }));
+    const service = new QuickActionService(homey, () => {});
+    expect((await service.getState(['lamp']))[0]).not.toHaveProperty('zone');
+    homey.settings.set(DEVICE_NAMES_SETTING, { mode: 'before', separator: '|', apply: ['devices', 'rooms'] });
+    expect(await service.getState(['lamp', 'gone'], { zones: true })).toMatchObject([
+      { id: 'lamp', zone: { id: 'z1', name: 'Living room' } }, { id: 'gone', missing: true },
+    ]);
+  });
+
   it('returns the devices in the order asked, with missing ones marked', async () => {
     const { service } = setup();
     const state = await service.getState(['lock', 'nope', 'lamp', 'sensor']);

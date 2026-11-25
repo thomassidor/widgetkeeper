@@ -120,6 +120,24 @@
           }
         },
         {
+          "id": "groupaction",
+          "title": {
+            "en": "Group Quick Action",
+            "nl": "Snelle groepsactie",
+            "de": "Gruppen-Schnellaktion",
+            "fr": "Action rapide de groupe",
+            "it": "Azione rapida di gruppo",
+            "sv": "Snabbåtgärd för grupp",
+            "no": "Hurtighandling for gruppe",
+            "es": "Acción rápida de grupo",
+            "da": "Hurtighandling for gruppe",
+            "ru": "Быстрое действие группы",
+            "pl": "Szybka akcja grupy",
+            "ko": "그룹 빠른 실행",
+            "ar": "إجراء سريع للمجموعة"
+          }
+        },
+        {
           "id": "sensoralarms",
           "title": {
             "en": "Sensor Alarms",

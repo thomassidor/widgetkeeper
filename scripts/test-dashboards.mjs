@@ -248,6 +248,22 @@ const BUILD = {
     ] };
   },
 
+  async groupaction() {
+    const lights = where(d => cls(d) === 'light' && has(d, 'onoff'), 5);
+    const sockets = where(d => cls(d) === 'socket' && has(d, 'onoff'), 3);
+    const locks = where(d => has(d, 'locked'), 3);
+    return { cols: 2, widgets: [
+      w('groupaction', 'Lights · named after their room or the first', {}, lights),
+      w('groupaction', 'Plugs · Vivid yellow', { color: 'yellow', colorStyle: 'deep' }, sockets),
+      w('groupaction', 'Locks · double press', { press: 'double', name: 'Doors' }, locks),
+      w('groupaction', 'Long press · a typed name', { press: 'long', name: 'Everything' }, [...lights.slice(0, 2), ...sockets.slice(0, 1)]),
+      w('groupaction', 'Lights and a lock · the lock left out', {}, [...lights.slice(0, 2), ...locks.slice(0, 1)]),
+      w('groupaction', 'Two + a deleted device', {}, [...lights.slice(0, 2), MISSING]),
+      w('groupaction', 'One device', {}, lights.slice(0, 1)),
+      w('groupaction', 'No devices picked'),
+    ] };
+  },
+
   async sensoralarms() {
     const alarmCaps = d => (d.capabilities ?? []).filter(c => c.startsWith('alarm_') && !/^alarm_(battery|motion|presence|contact|person|vehicle|pet|button)\b/.test(c));
     const counted = where(d => alarmCaps(d).length > 0, 8);

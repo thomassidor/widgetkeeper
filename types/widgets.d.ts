@@ -46,6 +46,7 @@ interface Window {
   chartBuckets: (points: [number, number][], from: number, to: number, bucketMs: number | 'month', current?: number | null) => { t: number, end: number, v: number | null }[];
   createThermostatWidget: (root: HTMLElement, opts?: object) => any;
   createQuickActionsWidget: (root: HTMLElement, opts?: object) => any;
+  createGroupActionWidget: (root: HTMLElement, opts?: object) => any;
   createSensorAlarmsWidget: (root: HTMLElement, opts?: object) => any;
   createSensorDotsWidget: (root: HTMLElement, opts?: object) => any;
   createRoomHealthWidget: (root: HTMLElement, opts?: object) => any;
@@ -282,6 +283,7 @@ interface Window {
   mountDaysSinceWidget: MountWidget;
   mountPriceWidget: MountWidget;
   mountQuickActionsWidget: MountWidget;
+  mountGroupActionWidget: MountWidget;
   mountSensorAlarmsWidget: MountWidget;
   mountSensorDotsWidget: MountWidget;
   mountRoomHealthWidget: MountWidget;

@@ -128,6 +128,11 @@ Start flows with one tap: a round button in the colour and icon you pick, with t
 <a href="docs/widgets/flowtiles.md"><b>Flow Tiles</b></a><br>
 Tiles your Flows write: a text or number, an icon, a colour and a fill, and a tap that starts a Flow<br clear="left"></p>
 
+<a name="group-quick-action"></a>
+<p><a href="docs/widgets/groupaction.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/groupaction-dark.png"><img src="docs/previews/groupaction-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/groupaction.md"><b>Group Quick Action</b></a><br>
+One tile that switches several devices at once, such as every light in a room or every lock, and shows how many are on<br clear="left"></p>
+
 <a name="insights-heatmap"></a>
 <p><a href="docs/widgets/heatmap.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/heatmap-dark.png"><img src="docs/previews/heatmap-light.png" alt="" width="120" align="left"></picture></a>
 <a href="docs/widgets/heatmap.md"><b>Insights Heatmap</b></a><br>

@@ -120,7 +120,7 @@ describe('widget mount.js: its requests reach its own routes', () => {
  * again when the setting changes.
  */
 const DEVICE_NAMES: WidgetName[] = [
-  'cameras', 'charts', 'curtains', 'flows', 'heatmap', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions', 'roomhealth',
+  'cameras', 'charts', 'curtains', 'flows', 'groupaction', 'heatmap', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions', 'roomhealth',
   'sensoralarms', 'sensordots', 'sparklines', 'thermostat', 'totals', 'scatter', 'typicalday', 'dailyrange', 'compare', 'timeline', 'stacked', 'lines', 'gauge', 'valuematrix', 'valueboard', 'values', 'combined', 'custom',
 ];
 

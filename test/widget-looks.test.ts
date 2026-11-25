@@ -37,6 +37,7 @@ const SHOWN_SETTINGS: Record<string, string[]> = {
   charts: ['overlay', 'sharedScale', 'plotHeight', 'legend', 'showHeader', 'style', 'span', 'smooth'],
   clock: ['showWeather'],
   combined: ['chart'],
+  groupaction: ['color'],
   compare: ['sort', 'showRange', 'legend', 'showHeader', 'span', 'color'],
   curtains: ['showState', 'groupByZone', 'wideLast', 'color'],
   dailyrange: ['average', 'range', 'plotHeight', 'legend', 'color'],
@@ -81,7 +82,7 @@ const SHOWN_SETTINGS: Record<string, string[]> = {
 };
 
 /** The widgets with an unavailable device's mark (`markOffline()`, 1.3.0), which a Look of its own shows. */
-const SHOWS_OFFLINE = ['curtains', 'lightrooms', 'lights', 'locks', 'quickactions', 'roomhealth', 'sensoralarms', 'sensordots', 'sparklines', 'thermostat', 'valueboard', 'valuematrix', 'values'];
+const SHOWS_OFFLINE = ['curtains', 'groupaction', 'lightrooms', 'lights', 'locks', 'quickactions', 'roomhealth', 'sensoralarms', 'sensordots', 'sparklines', 'thermostat', 'valueboard', 'valuematrix', 'values'];
 
 describe('widget pages\' looks', () => {
   it.each(Object.keys(VARIANTS))('%s shows what it can do, not only colours', (id) => {

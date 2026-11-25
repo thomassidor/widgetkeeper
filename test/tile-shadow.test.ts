@@ -44,6 +44,7 @@ describe('Tile shadows (lib/tileShadow.ts)', () => {
     ["Flow Tiles' state", 'flowtiles', '/state', { board: 'Kitchen' }],
     ["the Smart Stack's pages", 'stack', '/pages', { dashboardId: 'dash1' }],
     ["Flow Buttons' state", 'flows', '/state', { ids: 'flow:a' }],
+    ["Group Quick Action's state", 'groupaction', '/state', { deviceIds: 'a' }],
   ])('comes with %s', async (_what, type, path, query) => {
     const homey = fakeHomey(fakeApi({}));
     homey.manifest = { ...homey.manifest, widgets: manifest.widgets };

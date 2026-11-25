@@ -345,6 +345,7 @@
     "price": {},
     "flows": {},
     "flowtiles": {},
+    "groupaction": {},
     "heatmap": {},
     "keypad": {},
     "lights": {},
