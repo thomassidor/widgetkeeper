@@ -1398,7 +1398,6 @@
     "builderTip": "Touchez pour sélectionner, touchez à nouveau pour ce qui est dedans ou dessous. Faites glisser pour déplacer, et un bord ou un coin pour redimensionner. Les modifications sont enregistrées automatiquement.",
     "builderFine": "Sur la grille",
     "builderFree": "Placement libre",
-    "builderNothing": "Rien de sélectionné",
     "builderNothingHint": "Ajoutez un composant depuis la liste, ou sélectionnez-en un dans l'aperçu pour le modifier.",
     "builderTab_part": "Réglages",
     "builderTab_look": "Style",

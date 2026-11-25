@@ -1398,7 +1398,6 @@
     "builderTip": "탭하여 선택하고, 다시 탭하면 안쪽이나 아래에 있는 것을 선택합니다. 끌어서 옮기고, 가장자리나 모서리를 끌어 크기를 바꾸세요. 변경 사항은 자동으로 저장됩니다.",
     "builderFine": "격자에 맞춤",
     "builderFree": "자유 배치",
-    "builderNothing": "선택된 항목 없음",
     "builderNothingHint": "목록에서 구성 요소를 추가하거나 미리보기에서 선택해 편집하세요.",
     "builderTab_part": "설정",
     "builderTab_look": "스타일",

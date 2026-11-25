@@ -1398,7 +1398,6 @@
     "builderTip": "Tippe zum Auswählen, nochmals für das, was darin oder darunter liegt. Ziehe zum Verschieben, ziehe an einer Kante oder Ecke für die Größe. Änderungen werden automatisch gespeichert.",
     "builderFine": "Am Raster",
     "builderFree": "Freie Platzierung",
-    "builderNothing": "Nichts ausgewählt",
     "builderNothingHint": "Füge eine Komponente aus der Liste hinzu oder wähle eine in der Vorschau aus, um sie zu bearbeiten.",
     "builderTab_part": "Einstellungen",
     "builderTab_look": "Stil",

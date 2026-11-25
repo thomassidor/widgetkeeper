@@ -457,7 +457,7 @@
       name.value = b.design.name;
       name.setAttribute('aria-label', t('builderName'));
       name.addEventListener('change', () => change(() => { b.design.name = name.value.trim().slice(0, 40) || t('builderUntitled'); }, { preview: false }));
-      const status = el('span', 'wd-muted wdb-status', t('builderSaved'));
+      const status = el('span', 'wdb-status', t('builderSaved'));
       status.setAttribute('role', 'status');
       b.statusNode = status;
       // Undo and Redo as icons, their names as tooltips (Ctrl or ⌘ with Z, Shift+Z), so the bar fits a phone.
@@ -582,7 +582,7 @@
       const where = el('p', 'wd-hint wdb-where');
       const target = targetContainer();
       where.textContent = target ? t('builderAddsInto', { name: target.name || kindName('container') }) : t('builderAddsTop');
-      body.append(search, where, list);
+      body.append(search, list, where);
     }
 
     /**
@@ -1764,7 +1764,7 @@
     function drawInspector(node) {
       const p = b.selected && findPart(b.selected);
       if (!p) {
-        node.append(el('h3', 'wdb-h3', t('builderNothing')), el('p', 'wd-hint', t('builderNothingHint')));
+        node.append(el('p', 'wd-muted wdb-empty', t('builderNothingHint')));
         return;
       }
       const parent = parentOf(p.id);

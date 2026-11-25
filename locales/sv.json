@@ -1398,7 +1398,6 @@
     "builderTip": "Tryck för att markera, tryck igen för det som ligger inuti eller under. Dra för att flytta, dra i en kant eller ett hörn för att ändra storlek. Ändringar sparas automatiskt.",
     "builderFine": "Fäst mot rutnät",
     "builderFree": "Fri placering",
-    "builderNothing": "Inget markerat",
     "builderNothingHint": "Lägg till en komponent från listan, eller markera en i förhandsvisningen för att redigera den.",
     "builderTab_part": "Inställningar",
     "builderTab_look": "Stil",

@@ -1398,7 +1398,6 @@
     "builderTip": "Toca para seleccionar y vuelve a tocar para lo que hay dentro o debajo. Arrastra para mover y arrastra un borde o una esquina para cambiar el tamaño. Los cambios se guardan automáticamente.",
     "builderFine": "Ajustar a cuadrícula",
     "builderFree": "Colocación libre",
-    "builderNothing": "Nada seleccionado",
     "builderNothingHint": "Añade un componente de la lista o selecciona uno en la vista previa para editarlo.",
     "builderTab_part": "Ajustes",
     "builderTab_look": "Estilo",

@@ -1398,7 +1398,6 @@
     "builderTip": "Tap to select, tap again for what's inside or underneath. Drag to move, drag an edge or corner to resize. Changes are saved automatically.",
     "builderFine": "Snap to grid",
     "builderFree": "Free placement",
-    "builderNothing": "Nothing selected",
     "builderNothingHint": "Add a component from the list, or select one in the preview to edit it.",
     "builderTab_part": "Settings",
     "builderTab_look": "Style",

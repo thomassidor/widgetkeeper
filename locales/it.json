@@ -1398,7 +1398,6 @@
     "builderTip": "Tocca per selezionare, tocca di nuovo per ciò che c'è dentro o sotto. Trascina per spostare, trascina un bordo o un angolo per ridimensionare. Le modifiche vengono salvate automaticamente.",
     "builderFine": "Su griglia",
     "builderFree": "Posizionamento libero",
-    "builderNothing": "Nulla selezionato",
     "builderNothingHint": "Aggiungi un componente dalla lista o selezionane uno nell'anteprima per modificarlo.",
     "builderTab_part": "Impostazioni",
     "builderTab_look": "Stile",

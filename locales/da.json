@@ -1398,7 +1398,6 @@
     "builderTip": "Tryk for at vælge, tryk igen for det, der ligger inden i eller under. Træk for at flytte, træk i en kant eller et hjørne for at ændre størrelsen. Ændringer gemmes automatisk.",
     "builderFine": "Fastgør til gitter",
     "builderFree": "Fri placering",
-    "builderNothing": "Intet valgt",
     "builderNothingHint": "Tilføj en komponent fra listen, eller vælg en i forhåndsvisningen for at redigere den.",
     "builderTab_part": "Indstillinger",
     "builderTab_look": "Stil",

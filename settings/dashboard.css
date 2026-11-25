@@ -1041,7 +1041,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 }
 
 .wdb-bar .wdb-name { max-width: 260px; }
-.wdb-status { font-size: 13px; white-space: nowrap; }
+.wdb-status { font-size: 12px; line-height: 16px; color: var(--wd-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .wdb-status.bad { color: var(--wd-red); }
 /* A phone's bar holds its eight controls a little closer together. */
 @media (max-width: 480px) { .wdb-bar .wd-bar-end { gap: 4px; } }
@@ -1059,7 +1059,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 /* Each tab as wide as its label, the room left shared out; a desktop scrollbar or a long label (French's
    *Prêts à l'emploi*) would otherwise push the last one out of the pane, so a long label wraps onto two lines;
    with bigger text (a browser's font settings) a long word breaks too rather than push *Layers* out. */
-.wdb-lib > .wdb-tabs .wdb-tab { flex: 1 1 auto; min-width: 0; padding: 0 5px; border-radius: 0; white-space: normal; overflow-wrap: break-word; line-height: 1.1; }
+.wdb-lib > .wdb-tabs .wdb-tab { flex: 1 1 auto; min-width: 0; padding: 0 5px; border-radius: 0; white-space: normal; overflow-wrap: break-word; line-height: 16px; }
 .wdb-lib > .wdb-tabs .wdb-tab:first-child { border-radius: 8px 0 0 8px; }
 .wdb-lib > .wdb-tabs .wdb-tab:last-child { border-radius: 0 8px 8px 0; }
 .wdb-lib > .wdb-tabs .wdb-tab.on { background: var(--wd-accent); color: #FFFFFF; box-shadow: none; }
@@ -1072,9 +1072,9 @@ textarea.wd-input { width: 100%; resize: vertical; }
   color: var(--wd-muted); font-family: inherit; font-size: 13px; font-weight: 500; line-height: 18px; cursor: pointer; white-space: nowrap;
 }
 .wdb-tab.on { background: var(--wd-tile); color: var(--wd-text); box-shadow: 0 1px 3px rgba(0, 0, 0, .18); }
-.wdb-h3 { margin: 14px 2px 8px; font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: var(--wd-muted); }
+.wdb-h3 { margin: 14px 2px 8px; font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--wd-muted); }
 .wdb-h4 { margin: 16px 0 6px; font-size: 13px; font-weight: 500; color: var(--wd-muted); }
-.wdb-where { margin: 8px 2px 0; }
+.wdb-where { margin: 12px 2px 0; }
 .wdb-comps { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
 /* Your own ready-mades: the chip and a delete button beside it. */
 .wdb-mine-line { display: flex; gap: 4px; align-items: stretch; min-width: 0; }
@@ -1084,7 +1084,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-comp {
   -webkit-appearance: none; appearance: none; border: 1px solid var(--wd-line); display: flex; align-items: center; gap: 8px;
   min-height: 36px; padding: 6px 10px; border-radius: 9px; background: var(--wd-tile); color: var(--wd-text); cursor: grab;
-  font: inherit; font-size: 14px; line-height: 18px; text-align: left; transition: border-color .12s, background-color .12s, transform .08s;
+  font: inherit; font-size: 14px; line-height: 20px; text-align: left; transition: border-color .12s, background-color .12s, transform .08s;
 }
 .wdb-comp > span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .wdb-comp .wdb-comp-icon { width: 18px; height: 18px; flex: none; }
@@ -1094,7 +1094,9 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-comp:active { transform: scale(.97); cursor: grabbing; }
 .wdb-comp:focus-visible { outline: 2px solid var(--wd-accent); outline-offset: 1px; }
 .wdb-mine { border-style: dashed; }
-.wdb-lib .wdb-h3 { margin: 18px 2px 8px; }
+/* The library's groups: dividers with room above, the first one closer to the search. */
+.wdb-lib .wdb-h3 { margin: 24px 2px 8px; }
+.wdb-groups > .wdb-h3:first-child { margin-top: 16px; }
 .wdb-comp-icon, .wdb-layer-icon { width: 22px; height: 22px; fill: none; stroke: var(--wd-muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .wdb-comp-icon .filled, .wdb-layer-icon .filled { fill: var(--wd-muted); stroke: none; }
 .wdb-layers { display: flex; flex-direction: column; gap: 2px; }
@@ -1103,11 +1105,11 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-layer.on { background: color-mix(in srgb, var(--wd-accent) 16%, transparent); }
 .wdb-layer-pick {
   -webkit-appearance: none; appearance: none; border: 0; background: none; color: var(--wd-text); flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px;
-  padding: 6px 8px; font: 400 14px/20px inherit; font-family: inherit; text-align: left; cursor: pointer;
+  padding: 6px 8px; font-family: inherit; font-size: 14px; line-height: 20px; font-weight: 400; text-align: left; cursor: pointer;
 }
 .wdb-layer-pick > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .wdb-layer-icon { width: 16px; height: 16px; flex: none; }
-.wdb-flowmark { margin-left: auto; font-size: 11px; }
+.wdb-flowmark { margin-left: auto; font-size: 12px; line-height: 16px; }
 
 .wdb-stage { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 18px; min-width: 0;
   background-image: radial-gradient(color-mix(in srgb, var(--wd-text) 10%, transparent) 1px, transparent 1px); background-size: 16px 16px; }
@@ -1116,7 +1118,9 @@ textarea.wd-input { width: 100%; resize: vertical; }
 /* The builder bar's Undo and Redo while there's nothing to undo or redo. */
 .wdb-bar .wd-icon:disabled { opacity: .35; cursor: default; background: transparent; }
 .wdb-toolgroup { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-.wdb-toollabel { font-size: 11px; line-height: 14px; color: var(--wd-muted); }
+.wdb-toollabel { font-size: 12px; line-height: 16px; color: var(--wd-muted); }
+/* The stage's choices as the panes' tabs and choices: 13 px medium. */
+.wdb-tools .wd-seg-option { font-size: 13px; line-height: 18px; }
 .wdb-canvas { position: relative; max-width: 100%; }
 .wdb-guide { position: absolute; inset: 0 0 auto 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; pointer-events: none; }
 .wdb-tools .wdb-sample .wd-btn { height: 32px; }
@@ -1163,7 +1167,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 }
 /* A container's placement: a small label on its top edge (the stage's tools sit 12 px above the canvas). */
 .wdb-tag {
-  position: absolute; left: 18px; top: -8px; padding: 0 6px; border-radius: 6px; font-size: 11px; line-height: 16px; font-weight: 500;
+  position: absolute; left: 18px; top: -8px; padding: 0 6px; border-radius: 6px; font-size: 12px; line-height: 16px; font-weight: 500;
   color: #FFFFFF; background: var(--wd-accent); white-space: nowrap; pointer-events: none;
 }
 .wdb-line { position: absolute; pointer-events: none; z-index: 3; }
@@ -1173,7 +1177,8 @@ textarea.wd-input { width: 100%; resize: vertical; }
 
 .wdb-form { display: flex; flex-direction: column; gap: 10px; }
 .wdb-row { display: flex; flex-direction: column; gap: 4px; }
-.wdb-label { font-size: 13px; color: var(--wd-muted); }
+/* A setting's name: in the text colour, so it reads above its hint (grey, 12 px). */
+.wdb-label { font-size: 13px; line-height: 18px; font-weight: 500; color: var(--wd-text); }
 .wdb-two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .wdb-four { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .wdb-four .wd-input, .wdb-two .wd-input { min-width: 0; width: 100%; box-sizing: border-box; }
@@ -1187,7 +1192,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-flowrow .wd-hint { grid-column: 1 / -1; }
 .wdb-source { display: grid; gap: 6px; min-width: 0; }
 .wdb-ref { display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; gap: 6px; align-items: start; padding: 6px 0; border-bottom: 1px solid var(--wd-line); }
-.wdb-ref-key { font-weight: 600; padding-top: 8px; font-variant-numeric: tabular-nums; }
+.wdb-ref-key { font-weight: 700; padding-top: 8px; font-variant-numeric: tabular-nums; }
 .wdb-rule-of { display: grid; gap: 6px; margin-top: 10px; }
 .wdb-action { display: grid; gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--wd-line); }
 .wdb-action-head { display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; gap: 6px; align-items: center; }
@@ -1198,7 +1203,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-add { align-self: flex-start; justify-content: flex-start; gap: 6px; padding-left: 8px; }
 .wdb-add svg { width: 16px; height: 16px; }
 /* A group of settings (When tapped, Actions, Rings …) starts with a line above its heading. */
-.wdb-form .wdb-h4 { margin: 10px 0 0; padding-top: 14px; border-top: 1px solid var(--wd-line); color: var(--wd-text); font-weight: 600; }
+.wdb-form .wdb-h4 { margin: 10px 0 0; padding-top: 14px; border-top: 1px solid var(--wd-line); color: var(--wd-text); font-weight: 700; }
 .wdb-form > .wdb-h4:first-child { border-top: 0; padding-top: 0; }
 .wdb-note { margin: 0; }
 
@@ -1253,7 +1258,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
   .wdb-comps { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
 }
 .wdb .wd-icon.small { width: 28px; height: 28px; }
-.wdb-lib .wd-input { width: 100%; box-sizing: border-box; min-width: 0; }
+.wdb-lib .wd-input { width: 100%; box-sizing: border-box; min-width: 0; min-height: 32px; padding: 5px 10px; font-size: 14px; line-height: 20px; }
 .wdb-ghost {
   position: fixed; z-index: 1000; pointer-events: none; display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 10px;
   background: var(--wd-tile); color: var(--wd-text); font-size: 13px; box-shadow: 0 6px 20px rgba(0, 0, 0, .25); border: 1px solid var(--wd-accent);
@@ -1261,8 +1266,8 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-canvas.dropping { outline: 2px dashed var(--wd-accent); outline-offset: 6px; border-radius: 12px; }
 .wdb-comp { touch-action: none; }
 .wdb-valuepick { flex-direction: column; align-items: flex-start; gap: 0; height: auto; min-height: 44px; padding: 6px 12px; text-align: left; width: 100%; }
-.wdb-valuepick-device { font-weight: 500; }
-.wdb-valuepick-value { font-size: 13px; font-weight: 400; }
+.wdb-valuepick-device { font-weight: 400; }
+.wdb-valuepick-value { font-size: 12px; line-height: 16px; font-weight: 400; color: var(--wd-muted); }
 .wdb-type-plus svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 2; }
 
 /*
@@ -1271,10 +1276,10 @@ textarea.wd-input { width: 100%; resize: vertical; }
  * one line each that opens on a tap, and smaller controls than the dialogs'.
  */
 .wdb-insp { background: var(--wd-bg); padding: 10px; }
-.wdb-head { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 0 10px; align-items: center; margin: 2px 2px 10px; }
-.wdb-head-icon { grid-row: span 2; width: 28px; height: 28px; border-radius: 8px; background: var(--wd-raised); display: grid; place-items: center; }
-.wdb-head-icon .wdb-comp-icon { width: 16px; height: 16px; }
-.wdb-head-name { font-size: 15px; line-height: 20px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wdb-head { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 0 10px; align-items: center; margin: 2px 2px 12px; }
+.wdb-head-icon { grid-row: span 2; width: 36px; height: 36px; border-radius: 8px; background: var(--wd-raised); display: grid; place-items: center; }
+.wdb-head-icon .wdb-comp-icon { width: 20px; height: 20px; }
+.wdb-head-name { font-size: 17px; line-height: 24px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .wdb-head-path { grid-column: 2; font-size: 12px; line-height: 16px; color: var(--wd-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .wdb-head-parent { -webkit-appearance: none; appearance: none; border: 0; padding: 0; background: none; font: inherit; color: var(--wd-accent); cursor: pointer; }
 .wdb-head-parent:hover { text-decoration: underline; }
@@ -1282,25 +1287,29 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-head-tools svg { width: 16px; height: 16px; }
 .wdb-head-delete:not(.armed):hover { color: var(--wd-red); }
 .wdb-insp .wdb-tabs { margin-bottom: 0; }
-.wdb-tab-count { margin-left: 4px; font-size: 11px; color: var(--wd-muted); font-variant-numeric: tabular-nums; }
+.wdb-tab-count { margin-left: 4px; font-size: 12px; color: var(--wd-muted); font-variant-numeric: tabular-nums; }
 
 .wdb-insp .wdb-form { gap: 10px; margin-top: 10px; min-width: 0; }
 .wdb-insp .wdb-form > *, .wdb-sec > *, .wdb-item-body > * { min-width: 0; }
 .wdb-insp .wd-input { max-width: 100%; box-sizing: border-box; }
-.wdb-sec { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 12px; border-radius: 12px; background: var(--wd-tile); box-shadow: 0 1px 2px rgb(0 0 0 / .06); min-width: 0; }
-.wdb-insp .wdb-sec > .wdb-h4 { margin: 0; padding: 0; border: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: var(--wd-text); }
-.wdb-insp .wdb-label { font-size: 12px; line-height: 16px; }
-.wdb-insp .wdb-row { gap: 4px; min-width: 0; }
+.wdb-sec { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 12px; border-radius: 12px; background: var(--wd-tile); box-shadow: 0 1px 2px rgb(0 0 0 / .06); min-width: 0; }
+.wdb-insp .wdb-sec > .wdb-h4 { margin: 0 0 -4px; padding: 0; border: 0; font-size: 14px; line-height: 20px; font-weight: 700; color: var(--wd-text); }
+.wdb-insp .wdb-row { gap: 6px; min-width: 0; }
+/* A hint hugs what it explains (2 px under it); the next setting is 16 px further. */
+.wdb-row > .wd-hint, .wdb-flowrow > .wd-hint { margin-top: -4px; }
+.wdb-sec > .wd-hint:not(:first-child), .wdb-sec > .wdb-shows { margin-top: -14px; }
+.wdb-sec > .wdb-h4 + .wd-hint { margin-top: -8px; }
+.wdb-empty { margin: 8px 4px; }
 .wdb-insp .wd-hint { font-size: 12px; line-height: 16px; }
 /* Switches without a line under each: the panels make the groups. */
 .wdb-insp .wdb-flowrow { border-bottom: 0; padding: 2px 0; }
-.wdb-check { display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 18px; cursor: pointer; min-width: 0; }
+.wdb-check { display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 18px; font-weight: 500; cursor: pointer; min-width: 0; }
 .wdb-check input { width: 16px; height: 16px; margin: 0; flex: none; accent-color: var(--wd-accent); }
 /* Smaller fields and buttons than the dialogs'; a choice fills its width evenly. */
 .wdb-insp .wd-input { min-height: 32px; padding: 5px 10px; font-size: 14px; line-height: 20px; }
 .wdb-insp textarea.wd-input { min-height: 56px; }
 .wdb-insp .wd-seg { display: flex; flex-wrap: wrap; align-self: stretch; }
-.wdb-insp .wd-seg-option { flex: 1 1 auto; min-height: 26px; padding: 0 8px; font-size: 13px; }
+.wdb-insp .wd-seg-option { flex: 1 1 auto; min-height: 26px; padding: 0 8px; font-size: 13px; line-height: 18px; }
 .wdb-insp .wd-btn { min-height: 32px; }
 .wdb-insp .wdb-add { min-height: 28px; padding-left: 0; color: var(--wd-accent); }
 /* A device value: one field, the device over the value and its reading, a chevron at the end. */
@@ -1322,7 +1331,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 /* A list's item: one line (its key, what it is, its reading), its settings under it while open. */
 .wdb-item { border-top: 1px solid var(--wd-line); min-width: 0; }
 .wdb-sec > .wdb-h4 + .wdb-item, .wdb-sec > .wd-hint + .wdb-item, .wdb-sec > .wdb-item:first-child { border-top: 0; }
-.wdb-item + :not(.wdb-item) { margin-top: -4px; }
+.wdb-item + :not(.wdb-item) { margin-top: -10px; }
 .wdb-item-head {
   -webkit-appearance: none; appearance: none; width: 100%; border: 0; margin: 0; padding: 8px 0; background: none; color: inherit; font: inherit; cursor: pointer; text-align: left;
   display: grid; grid-template-columns: auto minmax(0, 1fr) auto 16px; gap: 8px; align-items: center;
@@ -1333,9 +1342,9 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-item-key:has(.wdb-item-swatch) { background: none; min-width: 0; padding: 0; }
 .wdb-item-swatch { display: inline-block; vertical-align: middle; width: 14px; height: 14px; border-radius: 50%; background: var(--sw, var(--wd-raised)); border: 1px solid color-mix(in srgb, var(--wd-text) 14%, transparent); box-sizing: border-box; }
 .wdb-item-what { display: grid; min-width: 0; }
-.wdb-item-title { font-size: 14px; line-height: 20px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wdb-item-title { font-size: 14px; line-height: 20px; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .wdb-item-sub { font-size: 12px; line-height: 16px; color: var(--wd-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.wdb-item-value { font-size: 13px; color: var(--wd-muted); white-space: nowrap; font-variant-numeric: tabular-nums; max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
+.wdb-item-value { font-size: 12px; line-height: 16px; color: var(--wd-muted); white-space: nowrap; font-variant-numeric: tabular-nums; max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
 .wdb-item-look { display: inline-flex; align-items: center; gap: 5px; }
 .wdb-item-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 0 0 12px 30px; min-width: 0; }
 .wdb-item-remove { justify-self: start; color: var(--wd-red); padding: 0; min-height: 24px !important; }
@@ -1346,9 +1355,9 @@ textarea.wd-input { width: 100%; resize: vertical; }
 /* Position and size: folded, the place on its line. */
 .wdb-fold > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: auto minmax(0, 1fr) 16px; gap: 8px; align-items: center; }
 .wdb-fold > summary::-webkit-details-marker { display: none; }
-.wdb-fold > summary .wdb-h4 { margin: 0; padding: 0; border: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: var(--wd-text); }
+.wdb-fold > summary .wdb-h4 { margin: 0; padding: 0; border: 0; font-size: 14px; line-height: 20px; font-weight: 700; color: var(--wd-text); }
 .wdb-fold > summary svg { width: 16px; height: 16px; color: var(--wd-muted); transition: transform .15s ease; }
 .wdb-fold[open] > summary svg { transform: rotate(180deg); }
-.wdb-fold-now { min-width: 0; text-align: right; font-size: 12px; color: var(--wd-muted); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wdb-fold-now { min-width: 0; text-align: right; font-size: 12px; line-height: 16px; color: var(--wd-muted); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .wdb-fold[open] .wdb-fold-now { visibility: hidden; }
 .wdb-fold:not([open]) { gap: 0; }
