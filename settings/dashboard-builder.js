@@ -2,8 +2,8 @@
  * The web dashboards page — the Widget Builder (1.4.0, `.claude/rules/widgets/custom.md`): the designs on the front
  * page, and the builder (`#/builder/<id>`): the parts library and Layers on the left, the design in the middle at its
  * real size (the real widget, `widgets/custom/public/widget.js`, in a same-origin frame of its own so its stylesheet
- * stays there, with an overlay to select, move and resize parts), and the selected part's Part, Look, Rules and Flow
- * tabs on the right. Every change shows at once and is saved half a second later (`PUT /web/designs`). A part of the
+ * stays there, with an overlay to select, move and resize parts), and the selected part's Settings, Style and Rules
+ * tabs on the right, a ⚡ beside each setting a Flow input may set. Every change shows at once and is saved half a second later (`PUT /web/designs`). A part of the
  * page (settings/dashboard.js): mountWebDashboards() runs it once with `wd`. Plain browser JS (served as-is).
  */
 (function () {
@@ -86,7 +86,7 @@
      */
     function readyParts(id, slot, second) {
       /** @returns {any} */
-      const base = (kind, place, o = {}) => ({ id: partId(), kind, name: '', color: null, icon: null, style: 'none', rules: [], flow: {}, reset: 'never', at: place, ...o });
+      const base = (kind, place, o = {}) => ({ id: partId(), kind, name: '', color: null, icon: null, style: 'none', rules: [], at: place, ...o });
       const value = (place, o = {}) => base('text', place, { text: '{1}', refs: [{ slot }], size: 'small', weight: 'bold', align: 'right', ...o });
       const label = (place, o = {}) => base('text', place, { text: '{1}', refs: [{ slot, show: 'name' }], size: 'small', weight: 'bold', align: 'left', overflow: 'ellipsis', ...o });
       // Device Values' compact tile: a 20 px row of the icon and the value, then the name's row.
@@ -126,7 +126,7 @@
         case 'clock': return [base('text', at(0, 0, 100, 100), { text: '{1}', refs: [{ time: 'clock' }], size: 'display', align: 'center' })];
         case 'flowvalue': return [
           base('icon', at(0, 0, 14, 42), { icon: 'bolt' }),
-          base('text', at(16, 0, 84, 42), { text: '–', size: 'small', weight: 'bold', align: 'right', flow: { value: true, text: true } }),
+          base('text', at(16, 0, 84, 42), { text: '–', size: 'small', weight: 'bold', align: 'right', ...(slot ? { bind: { text: slot } } : {}) }),
           base('text', low, { text: t('builderReady_flowvalue'), size: 'small', weight: 'bold', overflow: 'ellipsis' }),
         ];
         default: return [];
@@ -154,7 +154,7 @@
     const VALUELESS_KINDS = ['shape', 'text', 'icon', 'button', 'container', 'image'];
     /** The kinds another component may read (a `{part}` source): lib/customDesigns.ts' SOURCE_KINDS. */
     const SOURCE_KINDS = ['calc', 'state', 'repeat'];
-    const ACTION_KINDS = ['set', 'variable', 'flow', 'dashboard', 'state'];
+    const ACTION_KINDS = ['set', 'variable', 'flow', 'dashboard', 'state', 'input'];
     const MAX_ACTIONS = 6;
     const MAX_PAGES = 6;
     const MAX_RINGS = 3;
@@ -170,15 +170,26 @@
     /** lib/customDesigns.ts' ICON_KINDS: the kinds that draw an icon (a Ring only with one in its middle). */
     const ICON_KINDS = ['switch', 'button', 'state', 'ring', 'icon'];
     const drawsIcon = p => ICON_KINDS.includes(p.kind) && (p.kind !== 'ring' || p.center === 'icon');
-    /** What a Flow may change, per kind (lib/customDesigns.ts takes any; these are the ones that show on it). */
-    const FLOW_PROPS = {
-      text: ['text', 'value', 'color', 'hidden'], icon: ['icon', 'color', 'hidden'], container: ['hidden'],
-      shape: ['color', 'hidden'], sparkline: ['color', 'hidden'], arc: ['color', 'hidden'], bar: ['color', 'hidden'], slider: ['color', 'hidden'],
-      calc: [], stepper: ['text', 'value', 'color', 'hidden'], choice: ['text', 'value', 'color', 'hidden'], variable: ['text', 'value', 'color', 'hidden'],
-      state: ['text', 'color', 'hidden'], image: ['hidden'], ring: ['text', 'color', 'icon', 'hidden'], repeat: ['text', 'color', 'hidden'],
-      segments: ['text', 'color', 'hidden'], chart: ['text', 'color', 'hidden'], each: ['hidden'],
-    };
-    const flowPropsOf = kind => FLOW_PROPS[kind] || ['text', 'value', 'color', 'icon', 'hidden'];
+    /**
+     * lib/customDesigns.ts' Flow inputs: their types, the settings a ⚡ binds (`bindPropsOf()`) and the types each takes
+     * (`BIND_TYPES`).
+     */
+    const INPUT_TYPES = ['text', 'number', 'yesno', 'color', 'icon'];
+    const BIND_TYPES = { text: ['text', 'number'], color: ['color'], textColor: ['color'], fill: ['color'], icon: ['icon'], shown: ['yesno'], page: ['number', 'text'] };
+    const LABEL_KINDS = ['text', 'switch', 'button', 'state', 'stepper', 'choice', 'variable', 'ring', 'segments', 'chart'];
+    function bindPropsOf(p) {
+      if (p.kind === 'calc') return [];
+      if (p.kind === 'use' || p.kind === 'each') return ['shown'];
+      const out = [];
+      if (LABEL_KINDS.includes(p.kind)) out.push('text');
+      if (ACCENT_KINDS.includes(p.kind)) out.push('color');
+      if (TEXT_KINDS.includes(p.kind)) out.push('textColor');
+      if (p.kind === 'container' || p.kind === 'shape') out.push('fill');
+      if (ICON_KINDS.includes(p.kind)) out.push('icon');
+      out.push('shown');
+      if (p.kind === 'container' && p.mode === 'pages') out.push('page');
+      return out;
+    }
 
     /** A colour's name in Homey's language: Dashboard Shortcuts' colour setting lists every one (the manifests are translated). */
     function colourName(id) {
@@ -244,10 +255,11 @@
     }
 
     /**
-     * `#/builder`: every design as a card (a sketch of its grid) to open in the builder, New design, and the ready-made
-     * components of your own under them.
+     * `#/builder`: every design as a card (a sketch of its grid) to open in the builder, New design, the ready-made
+     * components of your own under them, then the Flow inputs.
      */
     function renderBuilderHome() {
+      closePopover();
       wd.clearRoot();
       wd.applyTheme('auto');
       const page = el('div', 'wd-home wdb-home');
@@ -270,6 +282,7 @@
         for (const d of ready) mine.append(designCard(d));
         page.append(mine);
       }
+      page.append(inputsSection());
       const node = wd.bar(wd.navButton(), wd.brand(), el('span', 'wd-spacer'));
       node.classList.add('wd-bar-front');
       root.append(node, page);
@@ -427,6 +440,7 @@
     // ---- The builder -------------------------------------------------------------------------------------------
 
     function renderBuilder(id) {
+      closePopover();
       const found = designs().find(d => d.id === id);
       if (!found) { wd.renderMissing(); return; }
       wd.clearRoot();
@@ -739,7 +753,7 @@
         const r = el('div', `wdb-layer${b.selected === p.id ? ' on' : ''}${depth ? ' in' : ''}`);
         const pick = button('wdb-layer-pick', '', () => select(p.id));
         pick.append(kitIcon(glyphOf(p.kind), 'wdb-layer-icon'), el('span', null, partTitle(p)));
-        if (Object.keys(p.flow || {}).length) pick.append(el('span', 'wdb-flowmark', '⚡'));
+        if (p.bind && Object.keys(p.bind).length) pick.append(el('span', 'wdb-flowmark', '⚡'));
         const up = button('wd-icon small', '', () => change(() => { siblings.splice(i + 1, 0, siblings.splice(i, 1)[0]); }), t('moveUp'));
         up.append(icon('up'));
         up.disabled = i === siblings.length - 1;
@@ -892,7 +906,7 @@
     function showPreview() {
       drawSample();
       if (!b.widget) return;
-      const state = b.state || { values: {}, variables: {}, flows: {}, histories: {}, flow: {} };
+      const state = b.state || { values: {}, variables: {}, flows: {}, histories: {}, inputs: {} };
       // The widget's device (`@:`) as the preview's device, as the app fills it in (lib/customDesigns.ts' bindDevice()).
       b.widget.setState({ ...state, design: { ...bindSample(b.design), updatedAt: b.rev } });
       fillShowsAs();
@@ -1512,6 +1526,12 @@
      * at the bottom, or, in a container (one level deep), its parts in a region of it.
      */
     async function addReady(r, drop) {
+      // A Flow value tile follows a new Flow input of its own (`readyParts()` takes its id as the slot).
+      if (r.id === 'flowvalue') {
+        const input = await saveInput({ name: freeInputName(t('builderReady_flowvalue')), type: 'text', reset: 'never' });
+        if (input) placeKids({ name: input.name, w: r.w, h: r.h, kids: readyParts(r.id, input.id) }, drop);
+        return;
+      }
       if (!r.value) { placeKids({ name: t(`builderReady_${r.id}`), w: r.w, h: r.h, kids: readyParts(r.id, '') }, drop); return; }
       try {
         const devices = await wd.valueDevices('values');
@@ -1571,7 +1591,7 @@
       // nest) and for a container dropped into a container (containers are one level deep).
       const linked = !b.design.ready && !(into0 && d.parts[0].kind === 'container');
       const part = linked
-        ? { id: partId(), kind: 'use', name: '', ready: d.id, color: null, icon: null, style: 'none', rules: [], flow: {}, reset: 'never', at: { ...d.parts[0].at } }
+        ? { id: partId(), kind: 'use', name: '', ready: d.id, color: null, icon: null, style: 'none', rules: [], at: { ...d.parts[0].at } }
         : freshCopy(d.parts[0]);
       // Its `@` values stay the widget's device; this design then shows them with the same preview device.
       if (!b.design.sample && d.sample) b.design.sample = d.sample;
@@ -1616,7 +1636,7 @@
           const w = Math.min(rw, cols());
           const y = drop ? Math.max(0, drop.y) : b.design.parts.reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0);
           const box = {
-            id: partId(), kind: 'container', name, color: null, icon: null, style: 'tile', rules: [], flow: {}, reset: 'never',
+            id: partId(), kind: 'container', name, color: null, icon: null, style: 'tile', rules: [],
             mode: 'free', background: { kind: 'none' }, parts: kids, at: { x: drop ? clamp(drop.x, 0, cols() - w) : 0, y, w, h: rh },
           };
           b.design.parts.push(box);
@@ -1682,7 +1702,7 @@
       const def = KINDS.find(k => k.kind === kind);
       const into = drop ? drop.into : kind === 'container' ? null : targetContainer();
       const p = {
-        id: partId(), kind, name: '', color: null, icon: null, style: ['text', 'icon'].includes(kind) ? 'none' : 'tile', rules: [], flow: {}, reset: 'never',
+        id: partId(), kind, name: '', color: null, icon: null, style: ['text', 'icon'].includes(kind) ? 'none' : 'tile', rules: [],
       };
       if (kind === 'text') { p.text = t('builderTextDefault'); p.size = 'default'; p.align = 'left'; }
       if (kind === 'container') { p.mode = 'grid'; p.background = { kind: 'none' }; p.parts = []; }
@@ -1772,10 +1792,10 @@
       const tabs = el('div', 'wdb-tabs');
       tabs.setAttribute('role', 'tablist');
       // A calculated value is never drawn: only what it calculates.
-      const ids = p.kind === 'calc' || p.kind === 'use' ? ['part'] : p.kind === 'each' ? ['part', 'look', 'flow'] : ['part', 'look', 'rules', 'flow'];
+      const ids = p.kind === 'calc' || p.kind === 'use' ? ['part'] : p.kind === 'each' ? ['part', 'look'] : ['part', 'look', 'rules'];
       if (!ids.includes(b.tab)) b.tab = 'part';
-      // How many rules it has, and how many changes Flows may make: there's something on that tab.
-      const counts = { rules: (p.rules || []).length, flow: Object.values(p.flow || {}).filter(v => v === true).length };
+      // How many rules it has: there's something on that tab.
+      const counts = { rules: (p.rules || []).length };
       for (const id of ids) {
         const tb = button(`wdb-tab${b.tab === id ? ' on' : ''}`, t(`builderTab_${id}`), () => { b.tab = id; redrawInspector(); });
         if (counts[id]) tb.append(el('span', 'wdb-tab-count', String(counts[id])));
@@ -1788,8 +1808,7 @@
       node.append(body);
       if (b.tab === 'part') partTab(body, p, parent);
       else if (b.tab === 'look') lookTab(body, p);
-      else if (b.tab === 'rules') rulesTab(body, p);
-      else flowTab(body, p);
+      else rulesTab(body, p);
       sheets(body);
     }
 
@@ -1878,6 +1897,10 @@
         const x = everyPart().find(c => c.id === src.part);
         return { title: x ? partTitle(x) : t('chooseValue'), sub: t('builderFromComponent') };
       }
+      if (kind === 'input') {
+        const x = src.input && inputById(src.input);
+        return x ? { title: x.name, sub: `${t('builderInput')} · ${typeName(x.type)}`, value: inputValueText(x) } : { title: t('chooseValue') };
+      }
       if (kind === 'variable') {
         const v = src.variable && b.state && b.state.variables && b.state.variables[src.variable];
         return src.variable ? { title: v ? v.name : src.variable, sub: t('builderVariable'), value: v && v.value != null ? String(v.value) : '' } : { title: t('chooseValue') };
@@ -1926,7 +1949,7 @@
       open.href = `#/builder/${d.id}`;
       open.addEventListener('click', async (e) => { e.preventDefault(); await flush(); location.hash = open.getAttribute('href'); });
       actions.append(button('wd-btn small', t('builderDetach'), () => detach(p)), open);
-      body.append(actions);
+      body.append(actions, shownRow(p));
       // Its own device, where the ready-made works with any device; without one, the widget's.
       if (!usesAnyDevice(d.parts)) return;
       const dev = p.device && (b.devices || []).find(x => x.id === p.device);
@@ -1950,7 +1973,7 @@
     function partTab(body, p, parent) {
       const set = (fn, opts) => change(fn, opts);
       if (p.kind === 'text') {
-        body.append(row(t('builderText'), textInput(p.text, v => set(() => { p.text = v.slice(0, 200); }, { preview: false }), { multi: true })));
+        body.append(bolt(row(t('builderText'), textInput(p.text, v => set(() => { p.text = v.slice(0, 200); }, { preview: false }), { multi: true })), p, 'text'));
         if ((p.refs || []).length) {
           const shows = el('p', 'wd-hint wdb-shows');
           b.showsAs = { node: shows, id: p.id };
@@ -1958,7 +1981,7 @@
           fillShowsAs();
         }
       } else if (p.kind !== 'use') {
-        body.append(row(t('builderPartName'), textInput(p.name, v => set(() => { p.name = v.trim().slice(0, 40); }, { preview: false }), { placeholder: ownName(p) || (NAMED_KINDS.includes(p.kind) ? t('builderNameHint') : kindName(p.kind)) })));
+        body.append(bolt(row(t('builderPartName'), textInput(p.name, v => set(() => { p.name = v.trim().slice(0, 40); }, { preview: false }), { placeholder: ownName(p) || (NAMED_KINDS.includes(p.kind) ? t('builderNameHint') : kindName(p.kind)) })), p, 'text'));
       }
       if (SLOT_KINDS.includes(p.kind) || VARIABLE_KINDS.includes(p.kind)) sourceRows(body, p);
       if (p.kind === 'button' && !(p.actions || []).length) body.append(row(t('builderStarts'), listPicker('flow', p.flowId, item => set(() => { if (item) p.flowId = item.id; else delete p.flowId; }), t('builderTapTrigger')), t('builderStartsHint')));
@@ -2252,10 +2275,10 @@
     function backgroundRows(body, p, label, noneLabel) {
       const bg = p.background || { kind: 'none' };
       // Without a label: a shape's gradient, its kind already picked.
-      if (label) body.append(row(label, segs([['none', noneLabel], ['color', t('builderColour')], ['gradient', t('builderGradient')]], bg.kind, v => change(() => {
+      if (label) body.append(bolt(row(label, segs([['none', noneLabel], ['color', t('builderColour')], ['gradient', t('builderGradient')]], bg.kind, v => change(() => {
         const dim = bg.dim ? { dim: bg.dim } : {};
         p.background = v === 'none' ? { kind: 'none' } : v === 'color' ? { kind: 'color', from: bg.from || 'blue', ...dim } : { kind: 'gradient', from: bg.from || 'blue', to: bg.to || 'purple', angle: bg.angle || 135, ...dim };
-      }, { preview: false }))));
+      }, { preview: false }))), p, 'fill'));
       const colour = key => colourPicker(bg[key] || 'blue', v => change(() => { p.background = { ...bg, [key]: v || 'blue' }; }, { preview: false }), {
         none: false, live: (v) => { bg[key] = v; b.rev++; showPreview(); },
       });
@@ -2319,8 +2342,20 @@
     const everyPart = () => b.design.parts.flatMap(p => [p, ...(p.parts || [])]);
     /** The components another may read: calculated values, widget states and repeaters (how many they show). */
     const allCalcs = () => everyPart().filter(p => SOURCE_KINDS.includes(p.kind));
-    const sourceKind = src => (!src || 'slot' in src ? 'device' : 'time' in src || 'since' in src || 'until' in src ? 'time' : 'part' in src ? 'calc' : 'variable');
+    const sourceKind = src => (!src || 'slot' in src ? 'device' : 'time' in src || 'since' in src || 'until' in src ? 'time' : 'part' in src ? 'calc' : 'input' in src ? 'input' : 'variable');
     const TIME_REFS = ['clock', 'seconds', 'date', 'weekday', 'since', 'until'];
+
+    /** A Flow input to pick (any type), or a new one named in place; `set(id)`. */
+    function inputSelect(current, set) {
+      const NEW = '+new';
+      const items = [['', t('choose')], ...inputs().map(x => [x.id, `${x.name} · ${typeName(x.type)}`]), [NEW, t('builderInputNew')]];
+      return selectOf(items, current || '', async (v) => {
+        if (v !== NEW) { set(v); return; }
+        const input = await saveInput({ name: freeInputName(t('builderInputNewName')), type: 'text', reset: 'never' });
+        if (input) set(input.id);
+        else redrawInspector();
+      });
+    }
 
     /**
      * Where a value comes from: a device value, a variable, a calculated value (`o.calc`, not `o.self`) or the time
@@ -2331,16 +2366,18 @@
       const calcs = o.calc === false ? [] : allCalcs().filter(c => c.id !== o.self);
       const kinds = [['device', t('builderDevice')], ['variable', t('builderVariable')]];
       if (calcs.length) kinds.push(['calc', t('builderFromComponent')]);
+      if (o.inputs !== false) kinds.push(['input', t('builderInput')]);
       if (o.time) kinds.push(['time', t('builderTimeNow')]);
       const kind = sourceKind(src);
       wrap.append(selectOf(kinds, kind, (v) => {
         if (v === kind) return;
-        set(v === 'device' ? { slot: '' } : v === 'variable' ? { variable: '' } : v === 'calc' ? { part: calcs[0].id } : { time: 'clock' });
+        set(v === 'device' ? { slot: '' } : v === 'variable' ? { variable: '' } : v === 'calc' ? { part: calcs[0].id } : v === 'input' ? { input: '' } : { time: 'clock' });
       }));
       // A text's value may be the source's name instead (a device's, a variable's).
       const named = next => (o.time && src && src.show === 'name' ? { ...next, show: 'name' } : next);
       if (kind === 'device') wrap.append(slotButton(src && src.slot, item => set(named({ slot: item.id }))));
       else if (kind === 'variable') wrap.append(listPicker('variable', src.variable || '', item => set(named({ variable: item ? item.id : '' }))));
+      else if (kind === 'input') wrap.append(inputSelect(src.input, id => set(named({ input: id }))));
       else if (kind === 'time') {
         const which = 'since' in src ? 'since' : 'until' in src ? 'until' : src.time;
         wrap.append(selectOf(TIME_REFS.map(x => [x, t(`builderRef_${x}`)]), which, v => set(v === 'since' ? { since: '' } : v === 'until' ? { until: '22:00' } : { time: v })));
@@ -2482,11 +2519,11 @@
       const states = everyPart().filter(x => x.kind === 'state');
       const navs = [['tabs', t('builderNav_tabs')], ['dots', t('builderNav_dots')]];
       if (states.length) navs.push(['state', t('builderNav_state')]);
-      body.append(row(t('builderNav'), segs(navs, p.nav || 'tabs', v => change(() => {
+      body.append(bolt(row(t('builderNav'), segs(navs, p.nav || 'tabs', v => change(() => {
         p.nav = v;
         if (v === 'state' && !p.pageBy) p.pageBy = { part: states[0].id };
         if (v !== 'state') delete p.pageBy;
-      }, { preview: false }))));
+      }, { preview: false }))), p, 'page'));
       if (p.nav === 'state' && states.length) {
         body.append(row(t('builderPageBy'), selectOf(states.map(x => [x.id, partTitle(x)]), p.pageBy && p.pageBy.part, v => change(() => { p.pageBy = { part: v }; }, { preview: false })), t('builderPageByHint')));
       }
@@ -2525,14 +2562,15 @@
           key: String(i + 1), ...actionSummary(a), remove: () => change(() => { p.actions.splice(i, 1); if (!p.actions.length) delete p.actions; }),
           fill: (box) => {
             box.append(selectOf(kinds, a.do, v => change(() => {
-              p.actions[i] = v === 'state' ? { do: v, part: states[0].id, value: 'toggle' } : v === 'set' || v === 'variable' ? { do: v, value: '' } : { do: v };
+              p.actions[i] = v === 'state' ? { do: v, part: states[0].id, value: 'toggle' } : v === 'set' || v === 'variable' || v === 'input' ? { do: v, value: '' } : { do: v };
             })));
             if (a.do === 'set') box.append(slotButton(a.slot, item => set({ slot: item.id })));
             if (a.do === 'variable') box.append(listPicker('variable', a.variable, item => set({ variable: item ? item.id : '' })));
             if (a.do === 'flow') box.append(listPicker('flow', a.flowId, item => set({ flowId: item ? item.id : '' })));
             if (a.do === 'dashboard') box.append(selectOf([['', t('choose')], ...wd.dashboards.map(d => [d.id, d.name || t('untitled')])], a.dashboard || '', v => set({ dashboard: v })));
             if (a.do === 'state') box.append(selectOf(states.map(x => [x.id, partTitle(x)]), a.part, v => set({ part: v })));
-            if (a.do === 'set' || a.do === 'variable' || a.do === 'state') {
+            if (a.do === 'input') box.append(inputSelect(a.input, id => set({ input: id })));
+            if (a.do === 'set' || a.do === 'variable' || a.do === 'state' || a.do === 'input') {
               box.append(textInput(a.value, v => change(() => { p.actions[i] = { ...a, value: v.trim().slice(0, 60) }; }, { preview: false }), { placeholder: t('builderActionValue') }));
             }
           },
@@ -2564,6 +2602,7 @@
       if (a.do === 'flow') { const f = a.flowId && b.state && b.state.flows && b.state.flows[a.flowId]; sub = f ? f.name : ''; }
       if (a.do === 'dashboard') { const d = wd.dashboards.find(x => x.id === a.dashboard); sub = d ? d.name || t('untitled') : ''; }
       if (a.do === 'state') { const x = everyPart().find(c => c.id === a.part); sub = x ? partTitle(x) : ''; }
+      if (a.do === 'input') { const x = a.input && inputById(a.input); sub = x ? x.name : ''; }
       return { title: t(`builderAction_${a.do}`), sub, value: a.value ? `→ ${a.value}` : null };
     }
 
@@ -2824,8 +2863,15 @@
      * and a container's colour or gradient), its colours (an accent, a shape's fill, the text's), the text's size, weight
      * and alignment, its icon, the parts shown, and a shape's or a bar's measures.
      */
+    /** *Shown: Always*, with a ⚡ for a yes/no Flow input that hides it while it's No. */
+    function shownRow(p) {
+      return bolt(row(t('builderShown'), el('span', 'wdb-value', t('builderShownAlways'))), p, 'shown');
+    }
+
     function lookTab(body, p) {
       const quiet = fn => change(fn, { preview: false });
+      // Always shown, unless a yes/no Flow input says no (its rules may still hide it).
+      body.append(shownRow(p));
       // Background: a calculated value has none; a shape is its own.
       if (p.kind !== 'shape') {
         const style = ['tile', 'pill', 'none', 'postit'].includes(p.style) && (p.style !== 'postit' || p.kind === 'text') ? p.style : (p.tile === false || ['text', 'icon', 'sparkline', 'arc', 'bar', 'each'].includes(p.kind) ? 'none' : 'tile');
@@ -2840,10 +2886,10 @@
         // A shape's fill: a colour (the palette's or its own), or a gradient.
         const bg = p.background || { kind: 'none' };
         const gradient = bg.kind === 'gradient';
-        body.append(row(t('builderFill'), segs([['color', t('builderColour')], ['gradient', t('builderGradient')]], gradient ? 'gradient' : 'color', v => quiet(() => {
+        body.append(bolt(row(t('builderFill'), segs([['color', t('builderColour')], ['gradient', t('builderGradient')]], gradient ? 'gradient' : 'color', v => quiet(() => {
           if (v === 'gradient') p.background = { kind: 'gradient', from: (bg.kind === 'color' && bg.from) || p.color || 'blue', to: 'purple', angle: 135 };
           else { p.background = { kind: 'none' }; if (bg.kind !== 'none' && !p.color) p.color = bg.from; }
-        }))));
+        }))), p, 'fill'));
         if (gradient) backgroundRows(body, p, null, null);
         else body.append(colourPicker(p.color || (bg.kind === 'color' ? bg.from : null), v => quiet(() => { p.color = v; p.background = { kind: 'none' }; }), { none: t('builderShapeGrey') }));
         const two = el('div', 'wdb-two');
@@ -2856,10 +2902,10 @@
       if (ACCENT_KINDS.includes(p.kind) && (p.kind === 'arc' || p.kind === 'bar') && p.zones) {
         body.append(row(t('builderColour'), el('p', 'wd-hint', t('builderZonesColourHint'))));
       } else if (ACCENT_KINDS.includes(p.kind)) {
-        body.append(row(t('builderColour'), colourPicker(p.color, v => quiet(() => { p.color = v; })), t('builderColourHint')));
+        body.append(bolt(row(t('builderColour'), colourPicker(p.color, v => quiet(() => { p.color = v; })), t('builderColourHint')), p, 'color'));
       }
       if (TEXT_KINDS.includes(p.kind)) {
-        body.append(row(t('builderTextColour'), colourPicker(p.textColor, v => quiet(() => { if (v) p.textColor = v; else delete p.textColor; }), { none: t('builderAuto') }), t('builderTextColourHint')));
+        body.append(bolt(row(t('builderTextColour'), colourPicker(p.textColor, v => quiet(() => { if (v) p.textColor = v; else delete p.textColor; }), { none: t('builderAuto') }), t('builderTextColourHint')), p, 'textColor'));
       }
       if (p.kind === 'text') {
         // Notes' sizes, and Big.
@@ -2934,7 +2980,7 @@
       if (current) pick.append(current);
       pick.append(el('span', null, p.icon ? t('builderChange') : t('builderNoIcon')));
       iconRow.append(pick);
-      body.append(row(t('builderIcon'), iconRow, t('builderIconHint')));
+      body.append(bolt(row(t('builderIcon'), iconRow, t('builderIconHint')), p, 'icon'));
     }
 
     function rulesTab(body, p) {
@@ -2990,26 +3036,182 @@
       body.append(add);
     }
 
-    function flowTab(body, p) {
-      const name = `${b.design.name} · ${partTitle(p)}`;
-      body.append(el('p', 'wd-hint', t('builderFlowHint', { name })));
-      // An icon only where it's drawn (a Ring's with one in its middle).
-      for (const prop of flowPropsOf(p.kind).filter(x => x !== 'icon' || drawsIcon(p))) {
-        const on = p.flow && p.flow[prop] === true;
-        const sw = el('input', 'wd-switch');
-        sw.type = 'checkbox';
-        sw.checked = on;
-        sw.addEventListener('change', () => change(() => {
-          const next = { ...(p.flow || {}) };
-          if (sw.checked) next[prop] = true; else delete next[prop];
-          p.flow = next;
-        }, { preview: false }));
-        const r = el('label', 'wdb-flowrow');
-        r.append(el('span', 'wdb-label', t(`builderFlow_${prop}`)), sw, el('span', 'wd-hint', t(`builderFlowCard_${prop}`, { name })));
-        body.append(r);
+    // ------------------------------------------------------------ Flow inputs
+
+    /** The Flow inputs (`GET /web/inputs`, kept from the setup and each answer): `{id, name, type, perDevice, reset, value, devices, usedBy}`. */
+    const inputs = () => wd.inputs || (wd.inputs = (wd.setup && wd.setup.inputs) || []);
+    const inputById = id => inputs().find(x => x.id === id);
+    const typeName = type => t(`builderInputType_${type}`);
+    /** An input's value as a line: `22.5 kr`, *Yes*, a colour's name; `''` without one. */
+    function inputValueText(input, v = input && input.value) {
+      if (!v || v.value === undefined || v.value === null) return '';
+      if (input.type === 'yesno') return v.value ? t('builderYes') : t('builderNo');
+      if (input.type === 'color') return /^#/.test(v.value) ? v.value : colourName(v.value);
+      return [String(v.value), v.units].filter(Boolean).join(' ');
+    }
+
+    /** Adds or changes an input (`PUT /web/inputs`); the input as kept, or null (a name that's taken says so). */
+    async function saveInput(body) {
+      try {
+        const res = await request('PUT', '/web/inputs', body);
+        if (res && res.ok === false) { toast(t('builderInputTaken')); return null; }
+        wd.inputs = res.inputs;
+        return res.input;
+      } catch (err) { failed(err); return null; }
+    }
+    async function removeInput(id) {
+      try {
+        const res = await request('DELETE', `/web/inputs/${encodeURIComponent(id)}`);
+        wd.inputs = res.inputs;
+      } catch (err) { failed(err); }
+    }
+    /** A name no input has yet: `base`, else `base 2` … */
+    function freeInputName(base) {
+      const taken = new Set(inputs().map(x => x.name.toLowerCase()));
+      if (!taken.has(base.toLowerCase())) return base;
+      for (let n = 2; ; n++) if (!taken.has(`${base} ${n}`.toLowerCase())) return `${base} ${n}`;
+    }
+
+    /**
+     * The ⚡ beside a setting's name (`r`, a row from `row()`): lit while it follows a Flow input, a line under it
+     * saying which and its value now; a tap opens the popover to pick one, make one or stop following.
+     */
+    function bolt(r, p, prop) {
+      if (!r || !bindPropsOf(p).includes(prop)) return r;
+      const id = p.bind && p.bind[prop];
+      const input = id && inputById(id);
+      const btn = button(`wdb-bolt${id ? ' on' : ''}`, '', e => { e.preventDefault(); e.stopPropagation(); bindPopover(btn, p, prop); }, t('builderInputBolt'));
+      btn.append(icon('bolt'));
+      // The setting's name and the ⚡ on one line.
+      const label = r.querySelector('.wdb-label');
+      const line = el('span', 'wdb-labelline');
+      if (label) { label.replaceWith(line); line.append(label, btn); } else { line.append(btn); r.prepend(line); }
+      if (id) {
+        const now = input && inputValueText(input);
+        const follows = el('span', 'wd-hint wdb-follows', input
+          ? `${t('builderInputFollows', { name: input.name })} · ${now ? t('builderInputNow', { value: now }) : t('builderInputNoValue')}`
+          : t('builderInputGone'));
+        r.append(follows);
       }
-      body.append(row(t('builderReset'), segs([['never', t('builderResetNever')], ['hour', t('builderResetHour')], ['midnight', t('builderResetMidnight')]], p.reset || 'never', v => change(() => { p.reset = v; }, { preview: false })), t('builderResetHint')));
-      if (p.kind === 'button' && !p.flowId) body.append(el('p', 'wd-hint', t('builderTapHint', { name })));
+      return r;
+    }
+
+    /** The ⚡'s popover: the inputs of the types this setting takes, a new one, and (while it follows one) its options. */
+    function bindPopover(anchor, p, prop) {
+      closePopover();
+      const types = BIND_TYPES[prop];
+      const pop = el('div', 'wdb-pop');
+      pop.setAttribute('role', 'dialog');
+      pop.setAttribute('aria-label', t('builderInputBolt'));
+      const done = () => { closePopover(); redrawInspector(); };
+      const bind = id => change(() => {
+        const next = { ...(p.bind || {}) };
+        if (id) next[prop] = id; else delete next[prop];
+        if (Object.keys(next).length) p.bind = next; else delete p.bind;
+      });
+      const draw = () => {
+        pop.textContent = '';
+        pop.append(el('p', 'wdb-pop-title', t('builderInputBolt')), el('p', 'wd-hint', t(prop === 'page' ? 'builderInputPageHint' : prop === 'shown' ? 'builderInputShownHint' : 'builderInputPopHint')));
+        const current = p.bind && p.bind[prop];
+        const fitting = inputs().filter(x => types.includes(x.type));
+        if (fitting.length) {
+          const list = el('div', 'wdb-pop-list');
+          for (const x of fitting) {
+            const on = x.id === current;
+            const item = button(`wdb-pop-item${on ? ' on' : ''}`, '', () => { bind(on ? null : x.id); done(); });
+            item.setAttribute('aria-pressed', String(on));
+            item.append(el('span', 'wdb-pop-name', x.name), el('span', 'wd-hint', [typeName(x.type), x.perDevice ? t('builderInputPerDevice') : '', inputValueText(x)].filter(Boolean).join(' · ')));
+            list.append(item);
+          }
+          pop.append(list);
+        }
+        // A new one: its name, and its type where the setting takes more than one.
+        const make = el('div', 'wdb-pop-new');
+        const name = textInput('', () => {}, { placeholder: freeInputName(t('builderInputNewName')) });
+        name.setAttribute('aria-label', t('builderInputName'));
+        let type = types[0];
+        make.append(el('span', 'wdb-label', t('builderInputNew')), name);
+        if (types.length > 1) make.append(segs(types.map(x => [x, typeName(x)]), type, (v) => { type = v; [...make.querySelectorAll('.wd-seg-option')].forEach(o => o.classList.toggle('on', o.textContent === typeName(v))); }));
+        const add = button('wd-btn primary small', t('builderInputAdd'), async () => {
+          const input = await saveInput({ name: name.value.trim() || name.placeholder, type, reset: 'never' });
+          if (!input) return;
+          bind(input.id);
+          done();
+        });
+        name.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); add.click(); } });
+        make.append(add);
+        pop.append(make);
+        // The one it follows: kept per device or not, when it goes back, the card that sets it, and Stop following.
+        const x = current && inputById(current);
+        if (x) {
+          const opts = el('div', 'wdb-pop-opts');
+          opts.append(el('p', 'wdb-pop-title', x.name));
+          const perDevice = checkLine(t('builderInputPerDevice'), !!x.perDevice, async (v) => { if (await saveInput({ ...x, perDevice: v })) draw(); }, t('builderInputPerDeviceHint'));
+          opts.append(perDevice, el('p', 'wd-hint', t('builderInputPerDeviceHint')));
+          opts.append(row(t('builderInputReset'), segs([['never', t('builderResetNever')], ['hour', t('builderResetHour')], ['midnight', t('builderResetMidnight')]], x.reset || 'never', async (v) => { if (await saveInput({ ...x, reset: v })) draw(); })));
+          opts.append(el('p', 'wd-hint', t('builderInputCard', { card: t(`builderInputCard_${x.type}`) })));
+          opts.append(button('wd-btn quiet small', t('builderInputUnbind'), () => { bind(null); done(); }));
+          pop.append(opts);
+        } else if (current) {
+          pop.append(el('p', 'wd-hint', t('builderInputGone')), button('wd-btn quiet small', t('builderInputUnbind'), () => { bind(null); done(); }));
+        }
+      };
+      draw();
+      document.body.append(pop);
+      // Under the ⚡, kept inside the window.
+      const r = anchor.getBoundingClientRect();
+      const w = Math.min(300, document.documentElement.clientWidth - 16);
+      pop.style.width = `${w}px`;
+      // Its right edge at the ⚡'s, as the ⚡ sits at a row's right end.
+      pop.style.left = `${Math.max(8, Math.min(r.right - w, document.documentElement.clientWidth - w - 8))}px`;
+      pop.style.top = `${r.bottom + 6 + window.scrollY}px`;
+      const outside = (e) => { if (!pop.contains(e.target) && e.target !== anchor && !anchor.contains(e.target)) closePopover(); };
+      const escape = (e) => { if (e.key === 'Escape') { e.stopPropagation(); closePopover(); anchor.focus(); } };
+      document.addEventListener('pointerdown', outside, true);
+      document.addEventListener('keydown', escape, true);
+      b.popover = { node: pop, close: () => { document.removeEventListener('pointerdown', outside, true); document.removeEventListener('keydown', escape, true); pop.remove(); } };
+      name0(pop);
+    }
+    /** Focus the popover's first field, so a name can be typed at once. */
+    const name0 = pop => { const f = pop.querySelector('input.wd-input'); if (f && !pop.querySelector('.wdb-pop-item')) f.focus(); };
+    function closePopover() {
+      if (b && b.popover) { b.popover.close(); b.popover = null; }
+    }
+
+    /** The builder home's *Flow inputs*: each input's name, type, value now and where it's used; rename, options, delete. */
+    function inputsSection() {
+      const sec = el('section', 'wdb-inputs');
+      sec.append(el('h2', 'wd-group-title', t('builderFlowInputs')), el('p', 'wd-muted wdb-home-note', t('builderInputsHint')));
+      const list = el('div', 'wdb-input-list');
+      const draw = () => {
+        list.textContent = '';
+        if (!inputs().length) { list.append(el('p', 'wd-muted', t('builderInputsEmpty'))); return; }
+        for (const x of inputs()) {
+          const card = el('div', 'wdb-input');
+          const head = el('div', 'wdb-input-head');
+          const name = textInput(x.name, async (v) => { if (v.trim() && v.trim() !== x.name && await saveInput({ ...x, name: v.trim() })) draw(); else draw(); });
+          name.setAttribute('aria-label', t('builderInputName'));
+          const del = confirmButton('wd-icon small', icon('trash'), async () => { await removeInput(x.id); draw(); }, t('tapAgain'), t('builderInputDelete'));
+          head.append(icon('bolt'), name, del);
+          const now = inputValueText(x);
+          const facts = [typeName(x.type), x.perDevice ? t('builderInputPerDevice') : '', now ? t('builderInputNow', { value: now }) : t('builderInputNoValue'), x.devices ? t('builderInputDevices', { count: x.devices }) : ''].filter(Boolean).join(' · ');
+          const used = (x.usedBy || []).length ? t('builderInputUsedBy', { names: x.usedBy.map(d => d.name).join(', ') }) : t('builderInputUnused');
+          const opts = el('div', 'wdb-input-opts');
+          opts.append(row(t('builderInputType'), selectOf(INPUT_TYPES.map(y => [y, typeName(y)]), x.type, async (v) => { if (await saveInput({ ...x, type: v })) draw(); }), t('builderInputTypeHint')),
+            checkLine(t('builderInputPerDevice'), !!x.perDevice, async (v) => { if (await saveInput({ ...x, perDevice: v })) draw(); }, t('builderInputPerDeviceHint')),
+            row(t('builderInputReset'), segs([['never', t('builderResetNever')], ['hour', t('builderResetHour')], ['midnight', t('builderResetMidnight')]], x.reset || 'never', async (v) => { if (await saveInput({ ...x, reset: v })) draw(); })));
+          card.append(head, el('p', 'wd-hint', facts), el('p', 'wd-hint', used), opts, el('p', 'wd-hint', t('builderInputCard', { card: t(`builderInputCard_${x.type}`) })));
+          list.append(card);
+        }
+      };
+      draw();
+      const add = addButton(t('builderInputNew'), async () => {
+        if (await saveInput({ name: freeInputName(t('builderInputNewName')), type: 'text', reset: 'never' })) draw();
+      });
+      sec.append(list, add);
+      // Read again: a Flow may have set one since the page loaded.
+      request('GET', '/web/inputs').then((res) => { if (res && Array.isArray(res.inputs)) { wd.inputs = res.inputs; draw(); } }).catch(() => {});
+      return sec;
     }
 
     // Leaving the builder sends what waits; a design another browser changed is drawn again on the front page.

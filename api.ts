@@ -174,6 +174,33 @@ const api = {
     return { design, designs: app.custom.all() };
   },
 
+  /** The Widget Builder's Flow inputs: each with its value now, how many devices have one, and the designs using it. */
+  async getWebInputs({ homey, query }: { homey: Homey, query?: Record<string, string> }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    return { inputs: app.custom.inputSummary() };
+  },
+
+  /** Adds a Flow input (no id) or changes one; `{ok: false, reason: 'taken'}` for a name another has. */
+  async putWebInput({ homey, query, body }: { homey: Homey, query?: Record<string, string>, body: unknown }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    try {
+      const input = app.custom.saveInput(body);
+      return { ok: true, input, inputs: app.custom.inputSummary() };
+    } catch (err) {
+      if ((err as { reason?: string }).reason === 'taken') return { ok: false, reason: 'taken' };
+      throw err;
+    }
+  },
+
+  /** Deletes a Flow input and its values; settings bound to it show their own again. */
+  async deleteWebInput({ homey, query, params }: { homey: Homey, query?: Record<string, string>, params: Record<string, string> }) {
+    const app = homey.app as WidgetkeeperApp;
+    assertWebSession(app, query);
+    return { ...app.custom.removeInput(params?.id || ''), inputs: app.custom.inputSummary() };
+  },
+
   /** The builder's preview of a design as it's being built (not saved): what the widget's `/state` would answer. */
   async postWebDesignPreview({ homey, query, body }: { homey: Homey, query?: Record<string, string>, body: { design?: unknown } }) {
     const app = homey.app as WidgetkeeperApp;
@@ -239,6 +266,7 @@ const api = {
       dim: app.webDim?.state() ?? null,
       sync: app.webSync?.status() ?? {},
       designs: app.custom?.all() ?? [], // the Widget Builder's library (`lib/CustomWidgetService.ts`)
+      inputs: app.custom?.inputSummary() ?? [], // its Flow inputs
     };
   },
 

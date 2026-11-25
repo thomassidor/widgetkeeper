@@ -1,0 +1,119 @@
+{
+  "id": "custom_input_reset",
+  "title": {
+    "en": "Clear a Widget Builder Flow input",
+    "nl": "Een Widgetbouwer-Flow-invoer wissen",
+    "de": "Eine Flow-Eingabe des Widget-Baukastens leeren",
+    "fr": "Effacer une entrée Flow du Créateur de widgets",
+    "it": "Cancella un input Flow del Costruttore di widget",
+    "sv": "Rensa en Flow-indata i Widgetbyggaren",
+    "no": "Tøm en Flow-inndata i Widgetbyggeren",
+    "es": "Borrar una entrada de Flow del Creador de widgets",
+    "da": "Ryd et Flow-input i Widgetbyggeren",
+    "ru": "Очистить поле Flow конструктора виджетов",
+    "pl": "Wyczyść pole Flow Kreatora widżetów",
+    "ko": "위젯 빌더 Flow 입력 지우기",
+    "ar": "مسح مُدخل Flow في منشئ الأدوات"
+  },
+  "titleFormatted": {
+    "en": "Clear [[input]] for [[device]]",
+    "nl": "Wis [[input]] voor [[device]]",
+    "de": "[[input]] leeren für [[device]]",
+    "fr": "Effacer [[input]] pour [[device]]",
+    "it": "Cancella [[input]] per [[device]]",
+    "sv": "Rensa [[input]] för [[device]]",
+    "no": "Tøm [[input]] for [[device]]",
+    "es": "Borrar [[input]] para [[device]]",
+    "da": "Ryd [[input]] for [[device]]",
+    "ru": "Очистить [[input]] для [[device]]",
+    "pl": "Wyczyść [[input]] dla [[device]]",
+    "ko": "[[device]]의 [[input]] 지우기",
+    "ar": "مسح [[input]] لـ [[device]]"
+  },
+  "hint": {
+    "en": "Every setting that follows it shows its own again. Leave the device empty to clear every value, the devices' too.",
+    "nl": "Elke instelling die het volgt toont weer de eigen waarde. Laat het apparaat leeg om elke waarde te wissen, ook die van de apparaten.",
+    "de": "Jede Einstellung, die ihr folgt, zeigt wieder ihren eigenen Wert. Gerät leer lassen, um jeden Wert zu leeren, auch die der Geräte.",
+    "fr": "Chaque réglage qui la suit affiche à nouveau le sien. Laissez l'appareil vide pour effacer chaque valeur, celles des appareils aussi.",
+    "it": "Ogni impostazione che lo segue mostra di nuovo la propria. Lascia vuoto il dispositivo per cancellare ogni valore, anche quelli dei dispositivi.",
+    "sv": "Varje inställning som följer den visar sin egen igen. Lämna enheten tom för att rensa varje värde, även enheternas.",
+    "no": "Hver innstilling som følger den viser sin egen igjen. La enheten stå tom for å tømme hver verdi, også enhetenes.",
+    "es": "Cada ajuste que la sigue vuelve a mostrar el suyo. Deja el dispositivo vacío para borrar todos los valores, también los de los dispositivos.",
+    "da": "Hver indstilling, der følger det, viser sin egen igen. Lad enheden stå tom for at rydde hver værdi, også enhedernes.",
+    "ru": "Каждая настройка, связанная с ним, снова показывает своё значение. Оставьте устройство пустым, чтобы очистить все значения, и устройств тоже.",
+    "pl": "Każde ustawienie, które za nim podąża, znów pokazuje własne. Zostaw urządzenie puste, by wyczyścić każdą wartość, też urządzeń.",
+    "ko": "이를 따르는 모든 설정이 다시 자체 값을 표시합니다. 기기를 비우면 기기별 값까지 모두 지웁니다.",
+    "ar": "يعرض كل إعداد يتبعه قيمته الخاصة مجددًا. اترك الجهاز فارغًا لمسح كل القيم، وقيم الأجهزة أيضًا."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "input",
+      "title": {
+        "en": "Flow input",
+        "nl": "Flow-invoer",
+        "de": "Flow-Eingabe",
+        "fr": "Entrée Flow",
+        "it": "Input Flow",
+        "sv": "Flow-indata",
+        "no": "Flow-inndata",
+        "es": "Entrada de Flow",
+        "da": "Flow-input",
+        "ru": "Поле Flow",
+        "pl": "Pole Flow",
+        "ko": "Flow 입력",
+        "ar": "مُدخل Flow"
+      },
+      "placeholder": {
+        "en": "Parcel",
+        "nl": "Pakket",
+        "de": "Paket",
+        "fr": "Colis",
+        "it": "Pacco",
+        "sv": "Paket",
+        "no": "Pakke",
+        "es": "Paquete",
+        "da": "Pakke",
+        "ru": "Посылка",
+        "pl": "Paczka",
+        "ko": "택배",
+        "ar": "طرد"
+      }
+    },
+    {
+      "type": "autocomplete",
+      "name": "device",
+      "required": false,
+      "title": {
+        "en": "Device",
+        "nl": "Apparaat",
+        "de": "Gerät",
+        "fr": "Appareil",
+        "it": "Dispositivo",
+        "sv": "Enhet",
+        "no": "Enhet",
+        "es": "Dispositivo",
+        "da": "Enhed",
+        "ru": "Устройство",
+        "pl": "Urządzenie",
+        "ko": "기기",
+        "ar": "الجهاز"
+      },
+      "placeholder": {
+        "en": "Every device",
+        "nl": "Elk apparaat",
+        "de": "Jedes Gerät",
+        "fr": "Chaque appareil",
+        "it": "Ogni dispositivo",
+        "sv": "Varje enhet",
+        "no": "Hver enhet",
+        "es": "Cada dispositivo",
+        "da": "Hver enhed",
+        "ru": "Все устройства",
+        "pl": "Każde urządzenie",
+        "ko": "모든 기기",
+        "ar": "كل الأجهزة"
+      }
+    }
+  ]
+}

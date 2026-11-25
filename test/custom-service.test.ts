@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
-import { MAX_INPUTS, MAX_PARTS, allParts, bindDevice, designCharts, detachUses, renewIds, designFlows as designFlowsOf, designSlots, designVariables, readDesign, readPart, ruleHolds, usesDevice } from '../lib/customDesigns.js';
+import { MAX_INPUTS, MAX_PARTS, allParts, bindDevice, designCharts, designInputs, detachUses, inputValue, readInputs, renewIds, designFlows as designFlowsOf, designSlots, designVariables, readDesign, readPart, ruleHolds, usesDevice } from '../lib/customDesigns.js';
 import CustomWidgetService, {
-  CUSTOM_CHOICE_CARD, CUSTOM_DESIGN_EVENT, CUSTOM_DESIGNS_SETTING, CUSTOM_FLOW_EVENT, CUSTOM_FLOW_SETTING, CUSTOM_TAPPED_CARD, spanWindow,
+  CUSTOM_CHOICE_CARD, CUSTOM_DESIGN_EVENT, CUSTOM_DESIGNS_SETTING, CUSTOM_INPUT_EVENT, CUSTOM_INPUT_VALUES_SETTING, CUSTOM_INPUTS_SETTING, CUSTOM_TAPPED_CARD, spanWindow,
 } from '../lib/CustomWidgetService.js';
 import { TEMPERATURE_UNIT_SETTING } from '../lib/temperatureUnit.js';
 
@@ -164,17 +164,17 @@ describe('ruleHolds', () => {
 });
 
 describe('readDesign: the settings closing the review\'s gaps (2026-11-22)', () => {
-  it('keeps an icon, a rule\'s icon and a Flow\'s icon only on the kinds that draw one', () => {
+  it('keeps an icon, a rule\'s icon and a Flow input\'s icon only on the kinds that draw one', () => {
     const rules = [{ op: 'above', value: 1, look: 'red', icon: 'bell' }, { op: 'is', value: 'x', look: 'same', icon: 'bell' }];
-    const text = readPart(part('t', 'text', { icon: 'star', rules: rules.map(r => ({ ...r, of: { slot: 'a:b' } })), flow: { icon: true, text: true } }))!;
-    expect([text.icon, text.rules, text.flow]).toEqual([null, [{ op: 'above', value: '1', look: 'red', of: { slot: 'a:b' } }], { text: true }]);
-    const sw = readPart(part('s', 'switch', { slot: 'a:onoff', icon: 'star', rules, flow: { icon: true } }))!;
-    expect([sw.icon, sw.rules.map(r => r.icon), sw.flow]).toEqual(['star', ['bell', 'bell'], { icon: true }]);
+    const text = readPart(part('t', 'text', { icon: 'star', rules: rules.map(r => ({ ...r, of: { slot: 'a:b' } })), bind: { icon: 'i1', text: 'i2' } }))!;
+    expect([text.icon, text.rules, text.bind]).toEqual([null, [{ op: 'above', value: '1', look: 'red', of: { slot: 'a:b' } }], { text: 'i2' }]);
+    const sw = readPart(part('s', 'switch', { slot: 'a:onoff', icon: 'star', rules, bind: { icon: 'i1' } }))!;
+    expect([sw.icon, sw.rules.map(r => r.icon), sw.bind]).toEqual(['star', ['bell', 'bell'], { icon: 'i1' }]);
   });
 
-  it('gives a calculated value no colour, rules or Flow changes, as it\'s never drawn', () => {
-    const c = readPart(part('c', 'calc', { color: 'red', icon: 'star', rules: [{ op: 'above', value: 1, look: 'red' }], flow: { text: true } }))!;
-    expect([c.color, c.icon, c.rules, c.flow]).toEqual([null, null, [], {}]);
+  it('gives a calculated value no colour, rules or Flow inputs, as it\'s never drawn', () => {
+    const c = readPart(part('c', 'calc', { color: 'red', icon: 'star', rules: [{ op: 'above', value: 1, look: 'red' }], bind: { text: 'i1' } }))!;
+    expect([c.color, c.icon, c.rules, c.bind]).toEqual([null, null, [], undefined]);
   });
 
   it('reads a switch\'s press, a slider\'s variable and step, a variable\'s range and format, a bar\'s direction, a growing icon and a sparkline\'s range', () => {
@@ -216,10 +216,11 @@ const thermostat = () => fakeDevice({
   },
 });
 
-function setup(designs: unknown[] = [], extra: ReturnType<typeof fakeDevice>[] = [], zones: Record<string, { name: string, parent?: string }> = {}) {
+function setup(designs: unknown[] = [], extra: ReturnType<typeof fakeDevice>[] = [], zones: Record<string, { name: string, parent?: string }> = {}, inputs: unknown[] = INPUTS) {
   const devices = [thermostat(), ...extra];
   const homey = fakeHomey(fakeApi({ devices, zones }));
   if (designs.length) homey.settings.set(CUSTOM_DESIGNS_SETTING, designs);
+  if (inputs.length) homey.settings.set(CUSTOM_INPUTS_SETTING, inputs);
   const deps = {
     values: { getState: vi.fn(async (slots: string[]) => slots.map(s => ({ deviceId: s.split(':')[0], capabilityId: s.split(':')[1], name: 'X', capability: {}, value: 1 }))) },
     variables: { getState: vi.fn(async (ids: string[]) => ids.map(id => ({ id, name: 'V', type: 'number', value: 2 }))), set: vi.fn(async () => {}) },
@@ -232,6 +233,14 @@ function setup(designs: unknown[] = [], extra: ReturnType<typeof fakeDevice>[] =
   return { homey, deps, service, trigger, device };
 }
 
+/** The Flow inputs the tests' designs follow. */
+const INPUTS = [
+  { id: 'note', name: 'Note', type: 'text', reset: 'hour' },
+  { id: 'price', name: 'Price', type: 'number' },
+  { id: 'away', name: 'Away', type: 'yesno', perDevice: true },
+  { id: 'tint', name: 'Tint', type: 'color' },
+];
+
 const DESIGN = {
   id: 'bed', name: 'Bedroom', parts: [
     part('sw', 'switch', { slot: 'heat:onoff' }),
@@ -240,8 +249,8 @@ const DESIGN = {
     part('guests', 'variable', { variable: 'v1' }),
     part('movie', 'button', { flowId: 'flow:f1' }),
     part('ring', 'button', { name: 'Ring' }),
-    part('msg', 'text', { text: 'Hi', flow: { text: true, color: true, hidden: true }, reset: 'hour' }),
-    part('cost', 'text', { text: '–', flow: { value: true } }),
+    part('msg', 'text', { text: 'Hi', bind: { text: 'note', textColor: 'tint', shown: 'away' } }),
+    part('cost', 'text', { text: '–', bind: { text: 'price' } }),
     part('t', 'sparkline', { slot: 'heat:target_temperature', span: '24h' }),
   ],
 };
@@ -329,50 +338,156 @@ describe('CustomWidgetService: the widget', () => {
   });
 });
 
-describe('CustomWidgetService: Flow cards', () => {
-  it('lists only the parts open to a change, as Design · Part', () => {
-    const { service } = setup([DESIGN]);
-    expect(service.listParts('', 'text').map(i => [i.id, i.name])).toEqual([['bed/msg', 'Bedroom · Hi']]);
-    expect(service.listParts('', 'value').map(i => i.id)).toEqual(['bed/cost']);
-    expect(service.listParts('', 'tap').map(i => i.id)).toEqual(['bed/ring']);
-    expect(service.listParts('', 'choice').map(i => i.id)).toEqual(['bed/mode']);
-    expect(service.listParts('', 'icon')).toEqual([]);
+describe('Flow inputs: the model', () => {
+  it('reads inputs leniently: ids and names unique (case aside), known types, a reset', () => {
+    expect(readInputs([
+      { id: 'a', name: ' Parcel ', type: 'text' }, { id: 'b', name: 'parcel', type: 'text' }, { id: 'a', name: 'Other', type: 'number' },
+      { id: 'c', name: 'Mode', type: 'mood' }, { id: 'd', name: '', type: 'text' }, { id: '__proto__', name: 'X', type: 'text' },
+      { id: 'e', name: 'Away', type: 'yesno', perDevice: true, reset: 'midnight' }, null,
+    ])).toEqual([{ id: 'a', name: 'Parcel', type: 'text', reset: 'never' }, { id: 'e', name: 'Away', type: 'yesno', perDevice: true, reset: 'midnight' }]);
   });
 
-  it('sets what a part allows, sends it, keeps it, and refuses the rest', async () => {
+  it('reads a value as its type', () => {
+    expect([inputValue('number', '4,5'), inputValue('number', 'x'), inputValue('yesno', 'Yes'), inputValue('yesno', 'off'), inputValue('yesno', 'maybe')]).toEqual([4.5, undefined, true, false, undefined]);
+    expect([inputValue('color', 'RED'), inputValue('color', '#00ff00'), inputValue('color', 'mauve'), inputValue('icon', 'bell'), inputValue('icon', 'none')]).toEqual(['red', '#00ff00', undefined, 'bell', undefined]);
+    expect(inputValue('text', '  two   words ')).toBe('two words');
+  });
+
+  it('keeps only the bindings a kind has, and gathers every input a design uses', () => {
+    const d = readDesign({ parts: [
+      part('t', 'text', { bind: { text: 'a', color: 'b', textColor: 'c', fill: 'd', shown: 'e', page: 'f' } }),
+      part('box', 'container', { mode: 'pages', bind: { fill: 'g', page: 'h', text: 'x' } }),
+      part('ic', 'icon', { bind: { icon: 'i', color: 'j' } }),
+      part('ar', 'arc', { src: { input: 'k' } }),
+      part('bt', 'button', { actions: [{ do: 'input', input: 'l', value: 'toggle' }, { do: 'input', value: 'x' }] }),
+    ] })!;
+    const [t, box, ic, ar, bt] = d.parts;
+    expect([t.bind, box.bind, ic.bind, ar.src, bt.actions]).toEqual([
+      { text: 'a', textColor: 'c', shown: 'e' }, { fill: 'g', shown: undefined, page: 'h' }, { color: 'j', icon: 'i' }, { input: 'k' }, [{ do: 'input', input: 'l', value: 'toggle' }],
+    ].map(x => (x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.entries(x).filter(([, v]) => v !== undefined)) : x)));
+    expect(designInputs(d).sort()).toEqual(['a', 'c', 'e', 'g', 'h', 'i', 'j', 'k', 'l']);
+  });
+});
+
+describe('CustomWidgetService: Flow inputs', () => {
+  it('adds, renames and deletes inputs, refusing a name that\'s taken', () => {
     const { homey, service } = setup([DESIGN]);
-    service.setText({ id: 'bed/msg' }, '  Parcel   here ');
-    service.setColor({ id: 'bed/msg' }, 'orange');
-    service.setShown({ id: 'bed/msg' }, false);
-    expect(homey.api.realtime).toHaveBeenLastCalledWith(CUSTOM_FLOW_EVENT, {
-      design: 'bed', part: 'msg', values: { text: 'Parcel here', color: 'orange', hidden: true, at: Date.now(), expires: Date.now() + 3600e3 },
+    const made = service.saveInput({ name: 'Parcel', type: 'text' });
+    expect(made).toMatchObject({ name: 'Parcel', type: 'text', reset: 'never' });
+    expect(made.id).toMatch(/^[a-z0-9]{8}$/);
+    expect(() => service.saveInput({ name: 'note', type: 'text' })).toThrow(expect.objectContaining({ reason: 'taken' }));
+    expect(() => service.saveInput({ name: 'X', type: 'mood' })).toThrow('Not a Flow input type');
+    service.saveInput({ id: made.id, name: 'Post' });
+    expect(service.inputs().find(x => x.id === made.id)).toMatchObject({ name: 'Post', type: 'text' });
+    expect(homey.settings.get(CUSTOM_INPUTS_SETTING)).toHaveLength(5);
+    // Which designs use each, for the builder's list.
+    expect(service.inputSummary().find(x => x.id === 'note')).toMatchObject({ value: null, devices: 0, usedBy: [{ id: 'bed', name: 'Bedroom', ready: false }] });
+    homey.api.realtime.mockClear();
+    expect(service.removeInput('note')).toEqual({ removed: true });
+    expect(homey.api.realtime).toHaveBeenCalledWith(CUSTOM_DESIGN_EVENT, { id: 'bed' });
+    expect(service.removeInput('note')).toEqual({ removed: false });
+  });
+
+  it('lists a card\'s inputs by type, and the devices with Every device first', async () => {
+    const { service } = setup([DESIGN]);
+    expect(service.listInputs('', ['color']).map(i => i.id)).toEqual(['tint']);
+    expect(service.listInputs('').map(i => i.name)).toEqual(['Away', 'Note', 'Price', 'Tint']);
+    expect(service.listInputs('', ['yesno'])[0].description).toContain('per device');
+    const devices = await service.listDevices('');
+    expect(devices[0]).toMatchObject({ id: '*', name: 'Every device' });
+    expect(devices.slice(1).map(d => d.id)).toContain('heat');
+  });
+
+  it('sets a value as its type, sends it, keeps it, and serves it in /state', async () => {
+    const { homey, service } = setup([DESIGN]);
+    service.setInput({ id: 'note' }, 'text', '  Parcel   here ');
+    expect(homey.api.realtime).toHaveBeenLastCalledWith(CUSTOM_INPUT_EVENT, {
+      input: 'note', entry: { type: 'text', all: { value: 'Parcel here', at: Date.now(), expires: Date.now() + 3600e3 } },
     });
-    expect(service.isShown({ id: 'bed/msg' })).toBe(false);
-    expect(() => service.setIcon({ id: 'bed/msg' }, 'bell')).toThrow("isn't open to Flows");
-    service.setNumber({ id: 'bed/cost' }, 42.5, 'kr');
+    service.setInput({ id: 'price' }, 'number', '42,5', undefined, 'kr');
+    expect(() => service.setInput({ id: 'price' }, 'number', 'lots')).toThrow('Not a number value');
+    expect(() => service.setInput({ id: 'note' }, 'number', 3)).toThrow("isn't a number input");
+    expect(() => service.setInput({ id: 'gone' }, 'text', 'x')).toThrow('No such Widget Builder Flow input');
+    // A device only for an input kept per device.
+    expect(() => service.setInput({ id: 'note' }, 'text', 'x', { id: 'heat' })).toThrow("isn't kept per device");
     await vi.advanceTimersByTimeAsync(2100);
-    expect(homey.settings.get(CUSTOM_FLOW_SETTING)).toMatchObject({ bed: { msg: { text: 'Parcel here' }, cost: { value: 42.5, units: 'kr' } } });
-    expect(((await service.getState('bed')) as any).flow.cost).toMatchObject({ value: 42.5 });
+    expect(homey.settings.get(CUSTOM_INPUT_VALUES_SETTING)).toMatchObject({ note: { all: { value: 'Parcel here' } }, price: { all: { value: 42.5, units: 'kr' } } });
+    const state = await service.getState('bed') as any;
+    expect(state.inputs.price).toMatchObject({ type: 'number', all: { value: 42.5, units: 'kr' } });
+    expect(Object.keys(state.inputs).sort()).toEqual(['away', 'note', 'price', 'tint']);
+  });
+
+  it('keeps a per-device input\'s values per device, the shared one besides', async () => {
+    const { service } = setup([DESIGN]);
+    service.setInput({ id: 'away' }, 'yesno', true, { id: '*' });
+    service.setInput({ id: 'away' }, 'yesno', false, { id: 'heat' });
+    const state = await service.getState('bed', 'heat') as any;
+    expect(state.device).toBe('heat');
+    expect(state.inputs.away).toMatchObject({ type: 'yesno', perDevice: true, all: { value: true }, devices: { heat: { value: false } } });
+    // The condition: a device's own, else the shared value.
+    expect(service.inputIs({ id: 'away' }, 'no', { id: 'heat' })).toBe(true);
+    expect(service.inputIs({ id: 'away' }, 'yes', { id: 'other' })).toBe(true);
+    expect(service.inputIs({ id: 'away' }, 'yes')).toBe(true);
+    // Cleared for one device, then for all.
+    service.resetInput({ id: 'away' }, { id: 'heat' });
+    expect(service.inputIs({ id: 'away' }, 'yes', { id: 'heat' })).toBe(true);
+    service.resetInput({ id: 'away' });
+    expect(((await service.getState('bed')) as any).inputs.away).toEqual({ type: 'yesno', perDevice: true });
+    // Per device switched off drops the devices' values; a new type every value.
+    service.setInput({ id: 'away' }, 'yesno', true, { id: 'heat' });
+    service.setInput({ id: 'away' }, 'yesno', true);
+    service.saveInput({ id: 'away', perDevice: false });
+    expect(((await service.getState('bed')) as any).inputs.away).toMatchObject({ type: 'yesno', all: { value: true } });
+    expect(((await service.getState('bed')) as any).inputs.away.devices).toBeUndefined();
+    service.saveInput({ id: 'away', type: 'text' });
+    expect(((await service.getState('bed')) as any).inputs.away).toEqual({ type: 'text' });
   });
 
   it('lets a value go back after its hour, telling the widgets', async () => {
     const { homey, service } = setup([DESIGN]);
     service.start();
-    service.setText({ id: 'bed/msg' }, 'Soon gone');
+    service.setInput({ id: 'note' }, 'text', 'Soon gone');
     homey.api.realtime.mockClear();
     await vi.advanceTimersByTimeAsync(3600e3 + 100);
-    expect(homey.api.realtime).toHaveBeenCalledWith(CUSTOM_FLOW_EVENT, { design: 'bed', part: 'msg', values: null });
-    expect(((await service.getState('bed')) as any).flow).toEqual({});
+    expect(homey.api.realtime).toHaveBeenCalledWith(CUSTOM_INPUT_EVENT, { input: 'note', entry: { type: 'text' } });
+    expect(((await service.getState('bed')) as any).inputs.note).toEqual({ type: 'text' });
   });
 
-  it('puts a part back as designed, and forgets what a part no longer allows once saved', async () => {
+  it('reads the values kept, only of known inputs and of their type', () => {
+    const homey = fakeHomey(fakeApi({ devices: [thermostat()] }));
+    homey.settings.set(CUSTOM_INPUTS_SETTING, INPUTS);
+    homey.settings.set(CUSTOM_INPUT_VALUES_SETTING, {
+      note: { all: { value: 'Kept', at: Date.now() } }, price: { all: { value: 'not a number', at: 1 } }, gone: { all: { value: 1, at: 1 } },
+      away: { devices: { heat: { value: true, at: 1 }, hall: { value: 'maybe', at: 1 } } },
+    });
+    const service = new CustomWidgetService(homey as any, {} as any);
+    const summary = service.inputSummary();
+    expect(summary.find(x => x.id === 'note')!.value).toEqual({ value: 'Kept' });
+    expect(summary.find(x => x.id === 'price')!.value).toBeNull();
+    expect(summary.find(x => x.id === 'away')!.devices).toBe(1);
+  });
+
+  it('sets an input from a button: a value, a yes/no toggled, a number stepped, per device for the widget\'s', async () => {
+    const { service } = setup([{ id: 'b', name: 'B', parts: [
+      part('a', 'button', { actions: [{ do: 'input', input: 'away', value: 'toggle' }, { do: 'input', input: 'price', value: '+2' }, { do: 'input', input: 'note', value: 'Hello' }, { do: 'input', input: 'price', value: 'x' }] }),
+    ] }]);
+    await service.runAction('b', 'a', 0, 'input', 'heat');
+    await service.runAction('b', 'a', 1, 'input');
+    await service.runAction('b', 'a', 1, 'input');
+    await service.runAction('b', 'a', 2, 'input');
+    await expect(service.runAction('b', 'a', 3, 'input')).rejects.toThrow('Not a number value');
+    const state = await service.getState('b', 'heat') as any;
+    expect(state.inputs.away.devices.heat.value).toBe(true);
+    expect(state.inputs.away.all).toBeUndefined();
+    expect([state.inputs.price.all.value, state.inputs.note.all.value]).toEqual([4, 'Hello']);
+  });
+});
+
+describe('CustomWidgetService: the trigger cards', () => {
+  it('lists the buttons without a Flow and the choices, as Design · Part', () => {
     const { service } = setup([DESIGN]);
-    service.setText({ id: 'bed/msg' }, 'One');
-    service.reset({ id: 'bed/msg' });
-    expect(((await service.getState('bed')) as any).flow).toEqual({});
-    service.setText({ id: 'bed/msg' }, 'Two');
-    service.save({ ...DESIGN, parts: DESIGN.parts.map(p => (p.id === 'msg' ? { ...p, flow: {} } : p)) });
-    expect(((await service.getState('bed')) as any).flow).toEqual({});
+    expect(service.listParts('', 'tap').map(i => [i.id, i.name])).toEqual([['bed/ring', 'Bedroom · Ring']]);
+    expect(service.listParts('', 'choice').map(i => i.id)).toEqual(['bed/mode']);
   });
 });
 

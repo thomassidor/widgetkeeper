@@ -1,7 +1,7 @@
 // The Widget Builder's made-up designs (the house Solbakken) for the dev pages, screenshots and Looks:
 // `mockCustomState(scene)` is a `/state` answer as lib/CustomWidgetService.ts gives it. Scenes: living (the default, the
 // README screenshot), container (a gradient container on the fine grid), free (free-form over a picture-like gradient,
-// with a Flow's message), rules (colours and a hidden part by rules), controls (stepper, choice, variables), blocks
+// with a Flow input's message), rules (colours and a hidden part by rules), controls (stepper, choice, variables), blocks
 // (a text with values, calculated values, a clock, the time since motion, and shapes coloured by another value), more
 // (a widget state picking a pages container's page, a ring and a picture on it, a repeater of open doors, a button's
 // actions and a yes/no state), split (a segmented bar and a donut of the power, trends over the day), bare (built-in
@@ -53,7 +53,7 @@
     '24h\nmeter:measure_power': curve(49, x => Math.round(900 + 1200 * Math.abs(Math.sin(x * 9)) + 500 * x)),
   };
   const at = (x, y, w = 1, h = 1) => ({ x, y, w, h });
-  const part = (id, kind, place, o = {}) => ({ id, kind, name: '', at: place, color: null, icon: null, tile: true, rules: [], flow: {}, reset: 'never', ...o });
+  const part = (id, kind, place, o = {}) => ({ id, kind, name: '', at: place, color: null, icon: null, tile: true, rules: [], ...o });
 
   // A ready-made tile as the builder puts it together (settings/dashboard-builder.js' readyParts()): a free-form
   // container of primitives, per cent of its box, bound to one device value.
@@ -148,7 +148,7 @@
         mode: 'free', background: { kind: 'gradient', from: '#3a4a5e', to: '#2c3a2e', angle: 160 }, parts: [
           kid('clock', 'text', at(62, 4, 36, 14), { text: 'Front door', size: 'default', align: 'right' }),
           part('msgbg', 'shape', at(4, 36, 58, 24), { shape: 'rect', radius: 10, background: { kind: 'none' }, color: 'orange', opacity: 30, style: 'none' }),
-          kid('msg', 'text', at(8, 36, 52, 24), { text: '', name: 'Message', size: 'small', weight: 'bold', flow: { value: true, text: true, color: true } }),
+          kid('msg', 'text', at(8, 36, 52, 24), { text: '', name: 'Message', size: 'small', weight: 'bold', bind: { text: 'door' } }),
           kid('lockd', 'shape', at(6, 80, 4, 8), { shape: 'circle', background: { kind: 'none' }, rules: [{ op: 'is', value: 'on', look: 'green', of: { slot: 'lock:locked' } }] }),
           kid('lockt', 'text', at(12, 72, 40, 24), { text: 'Locked', weight: 'bold' }),
           part('ring', 'button', at(68, 66, 28, 30), { name: 'Ring', icon: 'bell', color: 'yellow' }),
@@ -264,13 +264,14 @@
   REPEATS.more.open = REPEATS.more.doors;
   const NAMES = { living: 'Living room', container: 'Living room card', free: 'Entrance', rules: 'Garage', controls: 'Bedroom', blocks: 'At a glance', more: 'Home', split: 'Energy', bare: 'Bare parts', widgets: 'As the widgets' };
   // What Flows set: the entrance's message.
-  const FLOW = { free: { msg: { value: 'Parcel by the door', color: 'orange', at: NOW - 13 * 60e3 } } };
+  /** The Flow inputs each scene reads (lib/CustomWidgetService.ts' `inputs`): the front door's message, set by a Flow. */
+  const INPUTS = { free: { door: { type: 'text', all: { value: 'Parcel by the door', at: NOW - 13 * 60e3 } } } };
 
   window.mockCustomState = function (scene = 'living') {
     const parts = DESIGNS[scene] || DESIGNS.living;
     return JSON.parse(JSON.stringify({
       design: { id: `d-${scene}`, name: NAMES[scene] || scene, updatedAt: 1, parts },
-      values: VALUES, variables: VARIABLES, flows: FLOWS, histories: HISTORIES, flow: FLOW[scene] || {}, repeats: REPEATS[scene] || {}, language: 'en', timeFormat: '24', now: NOW,
+      values: VALUES, variables: VARIABLES, flows: FLOWS, histories: HISTORIES, inputs: INPUTS[scene] || {}, repeats: REPEATS[scene] || {}, language: 'en', timeFormat: '24', now: NOW,
     }));
   };
 })();

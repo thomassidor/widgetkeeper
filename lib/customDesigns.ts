@@ -58,12 +58,35 @@ export const VARIABLE_KINDS: readonly PartKind[] = ['slider', 'stepper', 'choice
 /** The kinds that change something when used: a device (`slot`), a variable, a Flow or the tap trigger. */
 export const CONTROL_KINDS: readonly PartKind[] = ['switch', 'button', 'slider', 'stepper', 'choice', 'variable'];
 
-/** What a Flow may change on a part, each switched on by the user in the part's Flow tab. */
-export const FLOW_PROPS = ['text', 'color', 'hidden', 'icon', 'value'] as const;
-export type FlowProp = typeof FLOW_PROPS[number];
-/** When a value a Flow set goes back to the design's own. */
-export const FLOW_RESETS = ['never', 'hour', 'midnight'] as const;
-export type FlowReset = typeof FLOW_RESETS[number];
+/**
+ * Flow inputs (2026-11-25): named values Flows set, app-wide, each of one type. A component's setting may follow one
+ * (`bind`), any source picker may read one (`{input}`), and an action may set one (`do: 'input'`). A per-device input
+ * keeps a value per device (a design for any device, a Repeater's copies), the shared one where a device has none.
+ */
+export const INPUT_TYPES = ['text', 'number', 'yesno', 'color', 'icon'] as const;
+export type InputType = typeof INPUT_TYPES[number];
+/** When a value a Flow set goes back to nothing (the setting's own again). */
+export const INPUT_RESETS = ['never', 'hour', 'midnight'] as const;
+export type InputReset = typeof INPUT_RESETS[number];
+export const MAX_FLOW_INPUTS = 100;
+export type Input = { id: string, name: string, type: InputType, perDevice?: true, reset: InputReset };
+
+/**
+ * The settings a ⚡ may bind to an input, and the input types each takes: a component's name or text (a number shows
+ * with its units), its colour, text colour, fill (a container's or shape's), icon, whether it's shown, and a pages
+ * container's page (a number from 1, or a page's name).
+ */
+export const BIND_PROPS = ['text', 'color', 'textColor', 'fill', 'icon', 'shown', 'page'] as const;
+export type BindProp = typeof BIND_PROPS[number];
+export const BIND_TYPES: Record<BindProp, readonly InputType[]> = {
+  text: ['text', 'number'], color: ['color'], textColor: ['color'], fill: ['color'], icon: ['icon'], shown: ['yesno'], page: ['number', 'text'],
+};
+/** The kinds with an accent colour (the builder's Style tab: its icon, toggle, bar, line, dot). */
+export const ACCENT_KINDS: readonly PartKind[] = [
+  'switch', 'button', 'state', 'slider', 'stepper', 'choice', 'variable', 'icon', 'sparkline', 'arc', 'bar', 'ring', 'segments', 'repeat', 'chart', 'image',
+];
+/** The kinds whose name or text a Flow input may set. */
+export const LABEL_KINDS: readonly PartKind[] = ['text', 'switch', 'button', 'state', 'stepper', 'choice', 'variable', 'ring', 'segments', 'chart'];
 
 /** The kinds without a value of their own: each of their rules names the value it checks (`of`). */
 export const VALUELESS_KINDS: readonly PartKind[] = ['shape', 'text', 'icon', 'button', 'container', 'image'];
@@ -74,7 +97,7 @@ export const SOURCE_KINDS: readonly PartKind[] = ['calc', 'state', 'repeat'];
  * Where a value comes from: a device value, a Homey variable, or a calculated value of the same design (`part`, only a
  * `calc`; its own inputs are never parts, so nothing loops).
  */
-export type Source = { slot: string } | { variable: string } | { part: string };
+export type Source = { slot: string } | { variable: string } | { part: string } | { input: string };
 /**
  * A text's value: a source (`show: 'name'` its name: a device's, a variable's; `decimals` and `plain`, without its
  * units, how its number shows), the time (with seconds), date or
@@ -101,10 +124,11 @@ export type Action =
   | { do: 'variable', variable: string, value: string }
   | { do: 'flow', flowId: string }
   | { do: 'dashboard', dashboard: string }
-  | { do: 'state', part: string, value: string };
-export const ACTION_KINDS = ['set', 'variable', 'flow', 'dashboard', 'state'] as const;
+  | { do: 'state', part: string, value: string }
+  | { do: 'input', input: string, value: string };
+export const ACTION_KINDS = ['set', 'variable', 'flow', 'dashboard', 'state', 'input'] as const;
 /** The actions the app runs (`POST /action`); the others the widget does itself. */
-export const SERVER_ACTIONS: readonly string[] = ['set', 'variable', 'flow'];
+export const SERVER_ACTIONS: readonly string[] = ['set', 'variable', 'flow', 'input'];
 
 /** A ring of a Ring: its value and range, and its colour. */
 export type RingSpec = { src: Source, min?: number, max?: number, color: TileColor | null };
@@ -182,7 +206,7 @@ export type Choice = { label: string, value: string };
 export type Part = {
   id: string,
   kind: PartKind,
-  /** Shown on the part, and its name in Flow cards (`Design · Part`). */
+  /** Shown on the part, and its name in the trigger cards (`Design · Part`). */
   name: string,
   at: Place,
   color: TileColor | null,
@@ -193,9 +217,8 @@ export type Part = {
    */
   style: PartStyle,
   rules: Rule[],
-  /** What Flows may change (only these show in the cards' lists), and when a Flow's value goes back. */
-  flow: Partial<Record<FlowProp, true>>,
-  reset: FlowReset,
+  /** The settings that follow a Flow input while it has a value (`BIND_PROPS`), by the input's id. */
+  bind?: Partial<Record<BindProp, string>>,
   slot?: string,
   variable?: string,
   /** A button's Flow (`flow:<id>` or `advanced:<id>`); without one the button fires *A part was tapped*. */
@@ -416,6 +439,7 @@ export function sourceOf(v: unknown, parts = true): Source | undefined {
   if (slot) return { slot };
   const variable = idOf(r.variable, 100);
   if (variable) return { variable };
+  if (typeof r.input === 'string' && ID.test(r.input) && !isReservedKey(r.input)) return { input: r.input };
   const part = typeof r.part === 'string' && ID.test(r.part) && !isReservedKey(r.part) ? r.part : undefined;
   return parts && part ? { part } : undefined;
 }
@@ -462,11 +486,64 @@ function rulesOf(v: unknown, valueless = false, icons = true): Rule[] {
 
 const iconOf = (v: unknown) => (typeof v === 'string' && /^[a-z0-9-]{1,40}$/.test(v) ? v : undefined);
 
-/** `icons`: whether the kind draws an icon, so a Flow may change it. */
-function flowOf(v: unknown, icons = true): Partial<Record<FlowProp, true>> {
-  const out: Partial<Record<FlowProp, true>> = {};
-  if (v && typeof v === 'object') for (const p of FLOW_PROPS) if ((v as any)[p] === true && (icons || p !== 'icon')) out[p] = true;
+/** The settings a kind may bind to a Flow input. */
+export function bindPropsOf(kind: PartKind, mode?: Part['mode']): BindProp[] {
+  if (kind === 'calc' || kind === 'use' || kind === 'each') return kind === 'calc' ? [] : ['shown'];
+  const out: BindProp[] = [];
+  if (LABEL_KINDS.includes(kind)) out.push('text');
+  if (ACCENT_KINDS.includes(kind)) out.push('color');
+  if (TEXT_KINDS.includes(kind)) out.push('textColor');
+  if (kind === 'container' || kind === 'shape') out.push('fill');
+  if (ICON_KINDS.includes(kind)) out.push('icon');
+  out.push('shown');
+  if (kind === 'container' && mode === 'pages') out.push('page');
   return out;
+}
+
+/** A part's bindings as kept: only the settings its kind has, each an input's id. */
+function bindOf(v: unknown, props: BindProp[]): Partial<Record<BindProp, string>> | undefined {
+  if (!v || typeof v !== 'object') return undefined;
+  const out: Partial<Record<BindProp, string>> = {};
+  for (const k of props) {
+    const id = (v as any)[k];
+    if (typeof id === 'string' && ID.test(id) && !isReservedKey(id)) out[k] = id;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
+/** The Flow inputs as kept (`customInputs`): well-formed, ids and names (without case) unique, at most 100. */
+export function readInputs(v: unknown): Input[] {
+  const out: Input[] = [];
+  const names = new Set<string>();
+  for (const r of Array.isArray(v) ? v : []) {
+    if (out.length >= MAX_FLOW_INPUTS) break;
+    if (!r || typeof r !== 'object') continue;
+    const id = typeof r.id === 'string' && ID.test(r.id) && !isReservedKey(r.id) ? r.id : '';
+    const name = str(r.name, MAX_NAME);
+    if (!id || !name || out.some(x => x.id === id) || names.has(name.toLowerCase())) continue;
+    if (!INPUT_TYPES.includes(r.type)) continue;
+    names.add(name.toLowerCase());
+    out.push({ id, name, type: r.type, ...(r.perDevice === true ? { perDevice: true as const } : {}), reset: oneOf(r.reset, INPUT_RESETS, 'never') });
+  }
+  return out;
+}
+
+/** An input's value as a Flow or an action gives it, read as its type; undefined when it isn't one. */
+export function inputValue(type: InputType, v: unknown): string | number | boolean | undefined {
+  switch (type) {
+    case 'number': {
+      const n = typeof v === 'number' ? v : typeof v === 'string' && v.trim() ? Number(v.trim().replace(',', '.')) : NaN;
+      return Number.isFinite(n) ? n : undefined;
+    }
+    case 'yesno': {
+      if (typeof v === 'boolean') return v;
+      const s = String(v ?? '').trim().toLowerCase();
+      return ['on', 'yes', 'true', 'open', '1'].includes(s) ? true : ['off', 'no', 'false', 'closed', '0'].includes(s) ? false : undefined;
+    }
+    case 'color': return color(v) ?? undefined;
+    case 'icon': return typeof v === 'string' && /^[a-z0-9-]{1,40}$/.test(v) && v !== 'none' ? v : undefined;
+    default: return typeof v === 'string' || typeof v === 'number' ? String(v).replace(/\s+/g, ' ').trim().slice(0, MAX_TEXT) : undefined;
+  }
 }
 
 /** A background: none, a colour or a gradient, each colour a palette name (Muted or Vivid's) or `#rrggbb`. */
@@ -582,6 +659,7 @@ function actionOf(v: unknown): Action | null {
     case 'flow': { const flowId = idOf(a.flowId); return flowId && /^(flow|advanced):/.test(flowId) ? { do: 'flow', flowId } : null; }
     case 'dashboard': { const dashboard = idOf(a.dashboard, 100); return dashboard ? { do: 'dashboard', dashboard } : null; }
     case 'state': return typeof a.part === 'string' && ID.test(a.part) && !isReservedKey(a.part) ? { do: 'state', part: a.part, value } : null;
+    case 'input': return typeof a.input === 'string' && ID.test(a.input) && !isReservedKey(a.input) ? { do: 'input', input: a.input, value } : null;
     default: return null;
   }
 }
@@ -623,7 +701,7 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     kind,
     name: str(r.name, MAX_NAME),
     at: placeOf(r.at, where),
-    // A calculated value is never drawn: no colour, icon, rules or Flow changes of its own.
+    // A calculated value is never drawn: no colour, icon, rules or Flow inputs of its own.
     color: kind === 'calc' ? null : color(r.color),
     icon: ICON_KINDS.includes(kind) && typeof r.icon === 'string' && /^[a-z0-9-]{1,40}$/.test(r.icon) ? r.icon : null,
     // Saved before 1.4.0's release as `tile: false` (on a container's background).
@@ -631,9 +709,9 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     style: kind === 'shape' ? 'none' : oneOf(r.style === 'postit' && kind !== 'text' ? undefined : r.style, PART_STYLES, r.tile === false || BARE_KINDS.includes(kind) ? 'none' : 'tile'),
     // An icon that follows a device value has one of its own.
     rules: kind === 'calc' ? [] : rulesOf(r.rules, VALUELESS_KINDS.includes(kind) && !(kind === 'icon' && slotOf(r.slot)), ICON_KINDS.includes(kind)),
-    flow: kind === 'calc' ? {} : flowOf(r.flow, ICON_KINDS.includes(kind)),
-    reset: oneOf(r.reset, FLOW_RESETS, 'never'),
   };
+  const bind = bindOf(r.bind, bindPropsOf(kind, kind === 'container' ? (r.mode === 'free' ? 'free' : r.mode === 'pages' ? 'pages' : 'grid') : undefined));
+  if (bind) p.bind = bind;
   if (Number.isInteger(r.page) && r.page >= 0 && r.page < MAX_PAGES) p.page = r.page;
   if (TEXT_KINDS.includes(kind)) {
     // A Text's own colour was its text's before it had a text colour.
@@ -917,7 +995,8 @@ function designSources(design: Design): Source[] {
     for (const r of p.rings ?? []) out.push(r.src);
     for (const x of p.segments ?? []) out.push(x.src);
     for (const x of p.series ?? []) out.push({ slot: x.slot });
-    for (const a of p.actions ?? []) if (a.do === 'set') out.push({ slot: a.slot }); else if (a.do === 'variable') out.push({ variable: a.variable });
+    for (const a of p.actions ?? []) if (a.do === 'set') out.push({ slot: a.slot }); else if (a.do === 'variable') out.push({ variable: a.variable }); else if (a.do === 'input') out.push({ input: a.input });
+    for (const id of Object.values(p.bind ?? {})) out.push({ input: id });
   }
   return out;
 }
@@ -929,6 +1008,11 @@ export function designSlots(design: Design): string[] {
 
 export function designVariables(design: Design): string[] {
   return [...new Set(designSources(design).map(s => ('variable' in s ? s.variable : '')).filter(Boolean))];
+}
+
+/** The Flow inputs a design reads or sets: its bindings, sources and actions. */
+export function designInputs(design: Design): string[] {
+  return [...new Set(designSources(design).map(s => ('input' in s ? s.input : '')).filter(Boolean))];
 }
 
 export function designFlows(design: Design): string[] {
@@ -1014,7 +1098,7 @@ export function detachUses(design: Design, readyId: string, source: Part): boole
   return changed;
 }
 
-/** A part's name in Flow cards and lists: `Design · Part`, the part's kind where it has no name. */
+/** A part's name in the trigger cards' lists: `Design · Part`, the part's kind where it has no name. */
 export function partLabel(design: Design, part: Part): string {
   return `${design.name} · ${part.name || part.text?.slice(0, 30) || part.kind}`;
 }

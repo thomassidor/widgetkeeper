@@ -1,0 +1,176 @@
+{
+  "id": "custom_input_yesno",
+  "title": {
+    "en": "Set a Widget Builder yes/no input",
+    "nl": "Een Widgetbouwer-ja/nee-invoer instellen",
+    "de": "Eine Ja/Nein-Eingabe des Widget-Baukastens setzen",
+    "fr": "Définir une entrée oui/non du Créateur de widgets",
+    "it": "Imposta un input sì/no del Costruttore di widget",
+    "sv": "Ange en ja/nej-indata i Widgetbyggaren",
+    "no": "Angi en ja/nei-inndata i Widgetbyggeren",
+    "es": "Establecer una entrada sí/no del Creador de widgets",
+    "da": "Angiv et ja/nej-input i Widgetbyggeren",
+    "ru": "Задать поле «да/нет» конструктора виджетов",
+    "pl": "Ustaw pole tak/nie Kreatora widżetów",
+    "ko": "위젯 빌더 예/아니요 입력 설정",
+    "ar": "تعيين مُدخل نعم/لا في منشئ الأدوات"
+  },
+  "titleFormatted": {
+    "en": "Set [[input]] to [[value]] for [[device]]",
+    "nl": "Zet [[input]] op [[value]] voor [[device]]",
+    "de": "[[input]] auf [[value]] setzen für [[device]]",
+    "fr": "Définir [[input]] sur [[value]] pour [[device]]",
+    "it": "Imposta [[input]] su [[value]] per [[device]]",
+    "sv": "Sätt [[input]] till [[value]] för [[device]]",
+    "no": "Sett [[input]] til [[value]] for [[device]]",
+    "es": "Poner [[input]] en [[value]] para [[device]]",
+    "da": "Sæt [[input]] til [[value]] for [[device]]",
+    "ru": "Задать [[input]]: [[value]] для [[device]]",
+    "pl": "Ustaw [[input]] na [[value]] dla [[device]]",
+    "ko": "[[device]]의 [[input]]을(를) [[value]](으)로 설정",
+    "ar": "تعيين [[input]] إلى [[value]] لـ [[device]]"
+  },
+  "hint": {
+    "en": "Make Flow inputs in the Widget Builder: with the ⚡ beside a setting, or under Flow inputs. Every widget using the input shows it, on every screen. Device: only for an input kept per device; leave it empty for every device.",
+    "nl": "Maak Flow-invoer in de Widgetbouwer: met de ⚡ naast een instelling, of onder Flow-invoer. Elke widget die de invoer gebruikt toont het, op elk scherm. Apparaat: alleen voor invoer per apparaat; laat leeg voor elk apparaat.",
+    "de": "Flow-Eingaben legst du im Widget-Baukasten an: mit dem ⚡ neben einer Einstellung oder unter Flow-Eingaben. Jedes Widget mit dieser Eingabe zeigt es, auf jedem Bildschirm. Gerät: nur für eine Eingabe pro Gerät; leer lassen für jedes Gerät.",
+    "fr": "Créez les entrées Flow dans le Créateur de widgets : avec le ⚡ à côté d'un réglage, ou sous Entrées Flow. Chaque widget qui utilise l'entrée l'affiche, sur chaque écran. Appareil : seulement pour une entrée par appareil ; laissez vide pour chaque appareil.",
+    "it": "Crea gli input Flow nel Costruttore di widget: con il ⚡ accanto a un'impostazione, o in Input Flow. Ogni widget che usa l'input lo mostra, su ogni schermo. Dispositivo: solo per un input per dispositivo; lascia vuoto per ogni dispositivo.",
+    "sv": "Skapa Flow-indata i Widgetbyggaren: med ⚡ bredvid en inställning, eller under Flow-indata. Varje widget som använder dem visar det, på varje skärm. Enhet: bara för indata per enhet; lämna tomt för varje enhet.",
+    "no": "Lag Flow-inndata i Widgetbyggeren: med ⚡ ved siden av en innstilling, eller under Flow-inndata. Hver widget som bruker dem viser det, på hver skjerm. Enhet: bare for inndata per enhet; la stå tomt for hver enhet.",
+    "es": "Crea entradas de Flow en el Creador de widgets: con el ⚡ junto a un ajuste, o en Entradas de Flow. Cada widget que usa la entrada la muestra, en cada pantalla. Dispositivo: solo para una entrada por dispositivo; déjalo vacío para todos.",
+    "da": "Opret Flow-input i Widgetbyggeren: med ⚡ ved siden af en indstilling, eller under Flow-input. Hver widget, der bruger det, viser det, på hver skærm. Enhed: kun for input pr. enhed; lad den stå tom for hver enhed.",
+    "ru": "Поля Flow создаются в конструкторе виджетов: значком ⚡ рядом с настройкой или в разделе «Поля Flow». Каждый виджет с этим полем показывает его на каждом экране. Устройство: только для поля по устройствам; оставьте пустым для всех.",
+    "pl": "Pola Flow tworzysz w Kreatorze widżetów: ikoną ⚡ obok ustawienia albo w Polach Flow. Każdy widżet z tym polem je pokazuje, na każdym ekranie. Urządzenie: tylko dla pola na urządzenie; zostaw puste dla wszystkich.",
+    "ko": "Flow 입력은 위젯 빌더에서 만듭니다: 설정 옆의 ⚡ 또는 Flow 입력에서. 이 입력을 쓰는 모든 위젯이 모든 화면에 표시합니다. 기기: 기기별 입력에만 해당하며, 모든 기기는 비워 두세요.",
+    "ar": "أنشئ مُدخلات Flow في منشئ الأدوات: بالرمز ⚡ بجوار إعداد، أو ضمن مُدخلات Flow. تعرضه كل أداة تستخدم المُدخل، على كل شاشة. الجهاز: فقط لمُدخل لكل جهاز؛ اتركه فارغًا لكل الأجهزة."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "input",
+      "title": {
+        "en": "Flow input",
+        "nl": "Flow-invoer",
+        "de": "Flow-Eingabe",
+        "fr": "Entrée Flow",
+        "it": "Input Flow",
+        "sv": "Flow-indata",
+        "no": "Flow-inndata",
+        "es": "Entrada de Flow",
+        "da": "Flow-input",
+        "ru": "Поле Flow",
+        "pl": "Pole Flow",
+        "ko": "Flow 입력",
+        "ar": "مُدخل Flow"
+      },
+      "placeholder": {
+        "en": "Parcel",
+        "nl": "Pakket",
+        "de": "Paket",
+        "fr": "Colis",
+        "it": "Pacco",
+        "sv": "Paket",
+        "no": "Pakke",
+        "es": "Paquete",
+        "da": "Pakke",
+        "ru": "Посылка",
+        "pl": "Paczka",
+        "ko": "택배",
+        "ar": "طرد"
+      }
+    },
+    {
+      "type": "dropdown",
+      "name": "value",
+      "title": {
+        "en": "Value",
+        "nl": "Waarde",
+        "de": "Wert",
+        "fr": "Valeur",
+        "it": "Valore",
+        "sv": "Värde",
+        "no": "Verdi",
+        "es": "Valor",
+        "da": "Værdi",
+        "ru": "Значение",
+        "pl": "Wartość",
+        "ko": "값",
+        "ar": "القيمة"
+      },
+      "values": [
+        {
+          "id": "yes",
+          "title": {
+            "en": "Yes",
+            "nl": "Ja",
+            "de": "Ja",
+            "fr": "Oui",
+            "it": "Sì",
+            "sv": "Ja",
+            "no": "Ja",
+            "es": "Sí",
+            "da": "Ja",
+            "ru": "Да",
+            "pl": "Tak",
+            "ko": "예",
+            "ar": "نعم"
+          }
+        },
+        {
+          "id": "no",
+          "title": {
+            "en": "No",
+            "nl": "Nee",
+            "de": "Nein",
+            "fr": "Non",
+            "it": "No",
+            "sv": "Nej",
+            "no": "Nei",
+            "es": "No",
+            "da": "Nej",
+            "ru": "Нет",
+            "pl": "Nie",
+            "ko": "아니요",
+            "ar": "لا"
+          }
+        }
+      ]
+    },
+    {
+      "type": "autocomplete",
+      "name": "device",
+      "required": false,
+      "title": {
+        "en": "Device",
+        "nl": "Apparaat",
+        "de": "Gerät",
+        "fr": "Appareil",
+        "it": "Dispositivo",
+        "sv": "Enhet",
+        "no": "Enhet",
+        "es": "Dispositivo",
+        "da": "Enhed",
+        "ru": "Устройство",
+        "pl": "Urządzenie",
+        "ko": "기기",
+        "ar": "الجهاز"
+      },
+      "placeholder": {
+        "en": "Every device",
+        "nl": "Elk apparaat",
+        "de": "Jedes Gerät",
+        "fr": "Chaque appareil",
+        "it": "Ogni dispositivo",
+        "sv": "Varje enhet",
+        "no": "Hver enhet",
+        "es": "Cada dispositivo",
+        "da": "Hver enhed",
+        "ru": "Все устройства",
+        "pl": "Każde urządzenie",
+        "ko": "모든 기기",
+        "ar": "كل الأجهزة"
+      }
+    }
+  ]
+}

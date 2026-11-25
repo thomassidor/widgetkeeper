@@ -6,8 +6,7 @@ import { logged } from './lib/widgetApi.js';
 import CameraService, { CAMERAS_REFRESH_CARD } from './lib/CameraService.js';
 import CurtainService from './lib/CurtainService.js';
 import CustomWidgetService, {
-  CUSTOM_CHOICE_CARD, CUSTOM_IS_SHOWN_CARD, CUSTOM_RESET_CARD, CUSTOM_SET_COLOR_CARD, CUSTOM_SET_CUSTOM_COLOR_CARD, CUSTOM_SET_ICON_CARD,
-  CUSTOM_SET_TEXT_CARD, CUSTOM_SET_VALUE_CARD, CUSTOM_SHOW_CARD, CUSTOM_TAPPED_CARD, type PartArg,
+  CUSTOM_CHOICE_CARD, CUSTOM_INPUT_CARDS, CUSTOM_INPUT_CUSTOM_COLOR_CARD, CUSTOM_INPUT_IS_CARD, CUSTOM_INPUT_RESET_CARD, CUSTOM_TAPPED_CARD, type CardArg,
 } from './lib/CustomWidgetService.js';
 import DaysSinceService, {
   DAYS_SINCE_IS_OVERDUE_CARD, DAYS_SINCE_OVERDUE_CARD, DAYS_SINCE_RESET_CARD, DAYS_SINCE_SET_CARD, type CounterArg, type OverdueCounter,
@@ -57,7 +56,7 @@ import WebDim, { WEB_DIM_CARD } from './lib/WebDim.js';
 import WebPassword, { WEB_PASSWORD_REMOVE_CARD } from './lib/WebPassword.js';
 import WebScreens from './lib/WebScreens.js';
 import { widgetAutocompletes } from './lib/widgetAutocompletes.js';
-import { parseCustomColor } from './lib/tileColors.js';
+import { parseCustomColor, parseTileColor } from './lib/tileColors.js';
 
 export default class WidgetkeeperApp extends Homey.App {
 
@@ -372,31 +371,39 @@ export default class WidgetkeeperApp extends Homey.App {
    * typed as a new one; a tile's list is its card's board's.
    */
   /**
-   * The Widget Builder's cards: each names a part (`Design · Part`) that the user opened to that change in the builder's
-   * Flow tab (`CustomWidgetService.listParts()`); the triggers list the buttons without a Flow and the choices.
+   * The Widget Builder's cards: each *Set* card names a Flow input of its type (the builder's ⚡ and *Flow inputs*) and,
+   * for a per-device one, a device (*Every device* first: the shared value); the triggers list the buttons without a
+   * Flow and the choices.
    */
   private registerCustomFlows() {
-    type Args = { part?: PartArg };
-    const parts = (prop: Parameters<CustomWidgetService['listParts']>[1]) => async (query: string) => finishList(this.homey, query, this.custom.listParts(query, prop));
-    const action = <A extends Args>(id: string, prop: Parameters<CustomWidgetService['listParts']>[1], fn: (args: A) => void) => this.homey.flow.getActionCard(id)
-      .registerArgumentAutocompleteListener('part', parts(prop))
+    type Args = { input?: CardArg, device?: CardArg };
+    const inputs = (types?: Parameters<CustomWidgetService['listInputs']>[1]) => async (query: string) => finishList(this.homey, query, this.custom.listInputs(query, types));
+    const devices = async (query: string) => finishList(this.homey, query, await this.custom.listDevices(query));
+    const card = <A extends Args>(id: string, types: Parameters<CustomWidgetService['listInputs']>[1], fn: (args: A) => void) => this.homey.flow.getActionCard(id)
+      .registerArgumentAutocompleteListener('input', inputs(types))
+      .registerArgumentAutocompleteListener('device', devices)
       .registerRunListener(async (args: A) => { fn(args); });
-    action<Args & { text?: string }>(CUSTOM_SET_TEXT_CARD, 'text', a => this.custom.setText(a.part, a.text));
-    action<Args & { value?: unknown, units?: string }>(CUSTOM_SET_VALUE_CARD, 'value', a => this.custom.setNumber(a.part, a.value, a.units));
-    action<Args & { color: string }>(CUSTOM_SET_COLOR_CARD, 'color', a => this.custom.setColor(a.part, a.color));
-    action<Args & { color?: string }>(CUSTOM_SET_CUSTOM_COLOR_CARD, 'color', a => this.custom.setColor(a.part, parseCustomColor(a.color)));
-    action<Args & { icon?: { id?: string } }>(CUSTOM_SET_ICON_CARD, 'icon', a => this.custom.setIcon(a.part, a.icon?.id));
-    action<Args & { shown: string }>(CUSTOM_SHOW_CARD, 'hidden', a => this.custom.setShown(a.part, a.shown !== 'hide'));
-    action(CUSTOM_RESET_CARD, 'any', a => this.custom.reset(a.part));
-    this.homey.flow.getActionCard(CUSTOM_SET_ICON_CARD)
-      .registerArgumentAutocompleteListener('icon', async query => finishList(this.homey, query, this.flows.listIcons(query, { none: true })));
-    this.homey.flow.getConditionCard(CUSTOM_IS_SHOWN_CARD)
-      .registerArgumentAutocompleteListener('part', parts('hidden'))
-      .registerRunListener(async (args: Args) => this.custom.isShown(args.part));
+    card<Args & { text?: string }>(CUSTOM_INPUT_CARDS.text, ['text'], a => this.custom.setInput(a.input, 'text', a.text ?? '', a.device));
+    card<Args & { value?: unknown, units?: string }>(CUSTOM_INPUT_CARDS.number, ['number'], a => this.custom.setInput(a.input, 'number', a.value, a.device, a.units));
+    card<Args & { value: string }>(CUSTOM_INPUT_CARDS.yesno, ['yesno'], a => this.custom.setInput(a.input, 'yesno', a.value === 'yes', a.device));
+    // `default` (and an empty custom colour) clears it: the setting's own colour again.
+    const colour = (a: Args, c: string | null) => (c ? this.custom.setInput(a.input, 'color', c, a.device) : this.custom.resetInput(a.input, a.device));
+    card<Args & { color: string }>(CUSTOM_INPUT_CARDS.color, ['color'], a => colour(a, parseTileColor(a.color)));
+    card<Args & { color?: string }>(CUSTOM_INPUT_CUSTOM_COLOR_CARD, ['color'], a => colour(a, parseTileColor(parseCustomColor(a.color))));
+    card<Args & { icon?: { id?: string } }>(CUSTOM_INPUT_CARDS.icon, ['icon'], a => this.custom.setInput(a.input, 'icon', a.icon?.id, a.device));
+    card(CUSTOM_INPUT_RESET_CARD, undefined, a => this.custom.resetInput(a.input, a.device));
+    this.homey.flow.getActionCard(CUSTOM_INPUT_CARDS.icon)
+      .registerArgumentAutocompleteListener('icon', async query => finishList(this.homey, query, this.flows.listIcons(query)));
+    this.homey.flow.getConditionCard(CUSTOM_INPUT_IS_CARD)
+      .registerArgumentAutocompleteListener('input', inputs())
+      .registerArgumentAutocompleteListener('device', devices)
+      .registerRunListener(async (args: Args & { value?: string }) => this.custom.inputIs(args.input, args.value, args.device));
+    type Tap = { part?: CardArg };
+    const parts = (prop: 'tap' | 'choice') => async (query: string) => finishList(this.homey, query, this.custom.listParts(query, prop));
     for (const [id, prop] of [[CUSTOM_TAPPED_CARD, 'tap'], [CUSTOM_CHOICE_CARD, 'choice']] as const) {
       this.homey.flow.getTriggerCard(id)
         .registerArgumentAutocompleteListener('part', parts(prop))
-        .registerRunListener(async (args: Args, state: { part?: string }) => CustomWidgetService.matches(args, state));
+        .registerRunListener(async (args: Tap, state: { part?: string }) => CustomWidgetService.matches(args, state));
     }
   }
 

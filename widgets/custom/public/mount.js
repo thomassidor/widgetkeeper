@@ -77,7 +77,7 @@ window.mountCustomWidget = function (Homey, { root, frame }) {
 
   Homey.on('values:state', (data) => { if (data) widget.pushValue(data); });
   Homey.on('variables:state', (data) => { if (data) widget.pushVariable(data); });
-  Homey.on('custom:flow', (data) => { if (data && data.design === design) widget.pushFlow(data); });
+  Homey.on('custom:input', (data) => { if (data) widget.pushInput(data); });
   Homey.on('custom:design', (data) => { if (data && data.id === design) load(); });
   // The app's time format rides along in `/state` (no route of its own); a change draws the times again.
   Homey.on('timeformat:state', (data) => {

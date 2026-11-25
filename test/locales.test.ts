@@ -128,7 +128,7 @@ describe('locales', () => {
   // Homey's compose has no shared Flow card arguments, so the three colour cards each carry the list.
   it("the Flow colour cards list `default` and TILE_COLORS, each named alike, and the kit's COLORS are the same", async () => {
     const { TILE_COLORS, FLOW_ONLY_COLORS } = await import('../lib/tileColors.js');
-    const lists = ['values_set_color', 'flows_set_color', 'textline_set_color', 'custom_set_color', 'flowtiles_set_look'].map((card) => {
+    const lists = ['values_set_color', 'flows_set_color', 'textline_set_color', 'custom_input_color', 'flowtiles_set_look'].map((card) => {
       const arg = readJson(`.homeycompose/flow/actions/${card}.json`).args.find((a: { name: string }) => a.name === 'color');
       return arg.values as { id: string, title: Record<string, string> }[];
     });

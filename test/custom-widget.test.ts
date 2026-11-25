@@ -14,11 +14,11 @@ const value = (slot: string, v: unknown, c: object = {}) => {
   const [deviceId, capabilityId] = slot.split(':');
   return { deviceId, capabilityId, name: 'Sensor', capability: cap(c), value: v };
 };
-const part = (id: string, kind: string, o: object = {}) => ({ id, kind, name: '', at: { x: 0, y: 0, w: 2, h: 1 }, color: null, icon: null, tile: true, rules: [], flow: {}, reset: 'never', ...o });
+const part = (id: string, kind: string, o: object = {}) => ({ id, kind, name: '', at: { x: 0, y: 0, w: 2, h: 1 }, color: null, icon: null, tile: true, rules: [], ...o });
 const state = (parts: object[], values: object[] = [], extra: object = {}) => ({
   design: { id: 'd', name: 'D', updatedAt: 1, parts },
   values: Object.fromEntries(values.map((v: any) => [`${v.deviceId}:${v.capabilityId}`, v])),
-  variables: {}, flows: {}, histories: {}, flow: {}, now: Date.now(), ...extra,
+  variables: {}, flows: {}, histories: {}, inputs: {}, now: Date.now(), ...extra,
 });
 
 function widget(s: object, opts: object = {}) {
@@ -43,9 +43,9 @@ describe("the widget's rules", () => {
     }
   });
 
-  it('tint a part by the first that holds, or hide it; a Flow wins over both', () => {
+  it('tint a part by the first that holds, or hide it; a Flow input hides it over both, its colour is the own one', () => {
     const rules = [{ op: 'above', value: '25', look: 'red' }, { op: 'below', value: '10', look: 'hide' }];
-    const s = state([part('t', 'bar', { src: { slot: 'a:t' }, rules })], [value('a:t', 27)]);
+    const s = state([part('t', 'bar', { src: { slot: 'a:t' }, rules, bind: { color: 'c', shown: 's' } })], [value('a:t', 27)], { inputs: { c: { type: 'color' }, s: { type: 'yesno' } } });
     const { w, at } = widget(s);
     expect(at('t').classList.contains('wb-colored')).toBe(true);
     expect(at('t').dataset.wkColor).toBe('red');
@@ -53,10 +53,13 @@ describe("the widget's rules", () => {
     expect(at('t').classList.contains('wb-hidden')).toBe(true);
     w.pushValue({ deviceId: 'a', capabilityId: 't', value: 20 });
     expect(at('t').classList.contains('wb-hidden') || at('t').classList.contains('wb-colored')).toBe(false);
-    w.pushFlow({ part: 't', values: { color: '#123456', at: 1 } });
+    w.pushInput({ input: 'c', entry: { type: 'color', all: { value: '#123456', at: 1 } } });
     expect(at('t').style.getPropertyValue('--wk-c')).toBe('#123456');
-    w.pushFlow({ part: 't', values: { hidden: true, at: 1 } });
+    expect(at('t').classList.contains('wb-colored')).toBe(false);
+    w.pushInput({ input: 's', entry: { type: 'yesno', all: { value: false, at: 1 } } });
     expect(at('t').classList.contains('wb-hidden')).toBe(true);
+    w.pushInput({ input: 's', entry: { type: 'yesno', all: { value: true, at: 1 } } });
+    expect(at('t').classList.contains('wb-hidden')).toBe(false);
   });
 });
 
@@ -85,18 +88,19 @@ describe('drawing', () => {
       .toEqual([[false, false], [true, true], [false, false], [false, false], [true, false]]);
   });
 
-  it("shows a value and its device's name in texts, a Flow's value or text over them, and a gone device marked", () => {
+  it("shows a value and its device's name in texts, a Flow input's value or text over them, and a gone device marked", () => {
     const { at, w } = widget(state([
       part('t', 'text', { text: '{1} in {2}', refs: [{ slot: 'a:t' }, { slot: 'a:t', show: 'name' }] }),
-      part('f', 'text', { text: '–', units: 'kr' }),
+      part('f', 'text', { text: '–', bind: { text: 'n' } }),
       part('g', 'bar', { src: { slot: 'gone:t' } }),
-    ], [value('a:t', 21.25), { deviceId: 'gone', capabilityId: 't', missing: true }]));
+    ], [value('a:t', 21.25), { deviceId: 'gone', capabilityId: 't', missing: true }], { inputs: { n: { type: 'number' } } }));
     expect(at('t').textContent).toBe(`${(21.3).toLocaleString()}°C in Sensor`);
     expect(at('f').textContent).toBe('–');
-    w.pushFlow({ part: 'f', values: { value: 42.5, at: 1 } });
+    w.pushInput({ input: 'n', entry: { type: 'number', all: { value: 42.5, units: 'kr', at: 1 } } });
     expect(at('f').textContent).toBe(`${(42.5).toLocaleString()} kr`);
-    w.pushFlow({ part: 'f', values: { text: 'Paid', at: 1 } });
-    expect(at('f').textContent).toBe('Paid');
+    // A value gone back: the text's own again.
+    w.pushInput({ input: 'n', entry: { type: 'number', all: { value: 1, at: 1, expires: Date.now() - 1 } } });
+    expect(at('f').textContent).toBe('–');
     expect(at('g').classList.contains('wk-offline')).toBe(true);
   });
 
@@ -335,13 +339,13 @@ describe('calculated values, shapes, times and texts with values', () => {
     vi.setSystemTime(new Date(2026, 10, 21, 14, 5));
     const s = state([
       part('c', 'calc', { inputs: [{ slot: 'a:t' }, { slot: 'b:t' }], op: 'avg', sourceOnly: true }),
-      part('x', 'text', { text: 'Inside {1}, average {2} at {3}. {4} {5} {9}', refs: [{ slot: 'a:t' }, { part: 'c' }, { time: 'clock' }, null, { variable: 'v' }] }),
-    ], [num('a:t', 21), num('b:t', 23)], { variables: { v: { id: 'v', name: 'Mode', type: 'string', value: 'Away' } } });
+      part('x', 'text', { text: 'Inside {1}, average {2} at {3}. {4} {5} {9}', refs: [{ slot: 'a:t' }, { part: 'c' }, { time: 'clock' }, null, { variable: 'v' }], bind: { text: 'm' } }),
+    ], [num('a:t', 21), num('b:t', 23)], { variables: { v: { id: 'v', name: 'Mode', type: 'string', value: 'Away' } }, inputs: { m: { type: 'text' } } });
     const { w, at } = widget(s);
     expect(at('x').textContent).toBe('Inside 21°C, average 22°C at 14:05. – Away {9}');
     vi.advanceTimersByTime(61e3);
     expect(at('x').textContent).toContain('at 14:06');
-    w.pushFlow({ part: 'x', values: { text: 'Gone {1}', at: 1 } });
+    w.pushInput({ input: 'm', entry: { type: 'text', all: { value: 'Gone {1}', at: 1 } } });
     expect(at('x').textContent).toBe('Gone {1}');
   });
 
@@ -595,15 +599,15 @@ describe('parts turned off, taps on any component, icons from values and rules, 
   it("draws an icon that follows a value with the value's glyph, and a rule's icon while it holds, under a Flow's", () => {
     const s = state([
       part('ic', 'icon', { slot: 'a:locked', icon: null }),
-      part('v', 'switch', { slot: 'a:locked', icon: 'lock', rules: [{ op: 'is', value: 'off', look: 'same', icon: 'unlock' }] }),
-    ], [bool('a:locked', true)]);
+      part('v', 'switch', { slot: 'a:locked', icon: 'lock', rules: [{ op: 'is', value: 'off', look: 'same', icon: 'unlock' }], bind: { icon: 'ic' } }),
+    ], [bool('a:locked', true)], { inputs: { ic: { type: 'icon' } } });
     const { w, at } = widget(s);
     expect(at('ic').querySelector('.wb-icon')!.classList.contains('wb-glyph')).toBe(true);
     const lockSvg = at('v').querySelector('.wb-icon')!.innerHTML;
     w.pushValue({ deviceId: 'a', capabilityId: 'locked', value: false });
     expect(at('v').querySelector('.wb-icon')!.innerHTML).not.toBe(lockSvg);
     expect(at('v').classList.contains('wb-colored')).toBe(false); // `same` keeps the colour
-    w.pushFlow({ part: 'v', values: { icon: 'lock', at: 1 } });
+    w.pushInput({ input: 'ic', entry: { type: 'icon', all: { value: 'lock', at: 1 } } });
     expect(at('v').querySelector('.wb-icon')!.innerHTML).toBe(lockSvg);
   });
 
@@ -915,5 +919,75 @@ describe("a container's fill at its strength (2026-11-24, the user: like the nor
     expect(at('x').style.getPropertyValue('--wb-on')).toBe('#FFFFFF');
     const css = readFileSync('widgets/custom/public/widget.css', 'utf8');
     expect(css).toContain('.wb.wk-deep .wb-box-bg.wb-dim-widget, .wb-box-bg.wb-dim-widget.wb-bg-hex { --wb-mix: 100%;');
+  });
+});
+
+describe('Flow inputs (2026-11-25)', () => {
+  it('reads an input as a value in texts and rules, and ignores one the design doesn\'t read', () => {
+    const s = state([
+      part('t', 'text', { text: 'Bins: {1}', refs: [{ input: 'bins' }] }),
+      part('dot', 'shape', { rules: [{ op: 'is', value: 'yes', look: 'red', of: { input: 'due' } }] }),
+    ], [], { inputs: { bins: { type: 'text', all: { value: 'Tuesday', at: 1 } }, due: { type: 'yesno' } } });
+    const { w, at } = widget(s);
+    expect(at('t').textContent).toBe('Bins: Tuesday');
+    expect(at('dot').classList.contains('wb-colored')).toBe(false);
+    w.pushInput({ input: 'due', entry: { type: 'yesno', all: { value: true, at: 1 } } });
+    expect(at('dot').classList.contains('wb-colored')).toBe(true);
+    w.pushInput({ input: 'other', entry: { type: 'text', all: { value: 'x', at: 1 } } });
+    expect(at('t').textContent).toBe('Bins: Tuesday');
+  });
+
+  it("shows a per-device input's own value for the widget's device, else the shared one", () => {
+    const inputs = { note: { type: 'text', perDevice: true, all: { value: 'Shared', at: 1 }, devices: { kitchen: { value: 'Kitchen', at: 1 } } } };
+    const parts = [part('t', 'text', { text: '–', bind: { text: 'note' } })];
+    expect(widget(state(parts, [], { inputs, device: 'kitchen' })).at('t').textContent).toBe('Kitchen');
+    expect(widget(state(parts, [], { inputs, device: 'hall' })).at('t').textContent).toBe('Shared');
+    // An input that isn't per device ignores the devices'.
+    expect(widget(state(parts, [], { inputs: { note: { ...inputs.note, perDevice: undefined } }, device: 'kitchen' })).at('t').textContent).toBe('Shared');
+  });
+
+  it("gives a Repeater's copies their own device's value of an input they read", () => {
+    const ready = part('r', 'text', { text: '{1}', refs: [{ input: 'note' }] });
+    const s = state([part('rep', 'each', { at: { x: 0, y: 0, w: 4, h: 2 } })], [], {
+      each: { rep: { part: ready, devices: ['a', 'b'] } },
+      inputs: { note: { type: 'text', perDevice: true, all: { value: 'All', at: 1 }, devices: { b: { value: 'Bee', at: 1 } } } },
+    });
+    const { root } = widget(s);
+    expect([...root.querySelectorAll('.wb-each-item')].map(n => n.textContent)).toEqual(['All', 'Bee']);
+  });
+
+  it("sets a text colour, a container's fill and a pages container's page from inputs, a tap still turning it", () => {
+    const s = state([
+      part('t', 'text', { text: 'Hi', textColor: 'blue', bind: { textColor: 'ink' } }),
+      part('box', 'container', { mode: 'pages', pages: [{ name: 'Home' }, { name: 'Away' }], nav: 'tabs', at: { x: 0, y: 1, w: 4, h: 2 }, bind: { fill: 'fill', page: 'page' }, parts: [
+        part('p1', 'text', { text: 'One', page: 0 }), part('p2', 'text', { text: 'Two', page: 1 }),
+      ] }),
+    ], [], { inputs: { ink: { type: 'color' }, fill: { type: 'color' }, page: { type: 'text' } } });
+    const { w, at, root } = widget(s);
+    expect(at('t').style.getPropertyValue('--wb-ink')).toBe('var(--wk-blue)');
+    w.pushInput({ input: 'ink', entry: { type: 'color', all: { value: '#ff0000', at: 1 } } });
+    expect(at('t').style.getPropertyValue('--wb-ink')).toBe('#ff0000');
+    expect(at('box').classList.contains('wb-box-bg')).toBe(false);
+    w.pushInput({ input: 'fill', entry: { type: 'color', all: { value: 'green', at: 1 } } });
+    expect(at('box').classList.contains('wb-box-bg')).toBe(true);
+    expect(at('p2').classList.contains('wb-off-page')).toBe(true);
+    w.pushInput({ input: 'page', entry: { type: 'text', all: { value: 'away', at: 1 } } });
+    expect([at('p1').classList.contains('wb-off-page'), at('p2').classList.contains('wb-off-page')]).toEqual([true, false]);
+    // A tap on the first tab still turns it back; the same value again doesn't turn it.
+    (root.querySelector('.wb-pagebtn') as HTMLElement).click();
+    expect(at('p1').classList.contains('wb-off-page')).toBe(false);
+    w.pushInput({ input: 'page', entry: { type: 'text', all: { value: 'away', at: 1 } } });
+    expect(at('p1').classList.contains('wb-off-page')).toBe(false);
+    // A new value turns it again: page 2.
+    w.pushInput({ input: 'page', entry: { type: 'text', all: { value: '2', at: 2 } } });
+    expect(at('p1').classList.contains('wb-off-page')).toBe(true);
+  });
+
+  it('runs a Set a Flow input action through the app', async () => {
+    const calls: string[] = [];
+    const s = state([part('b', 'button', { actions: [{ do: 'input', input: 'away', value: 'toggle' }] })], [], { inputs: { away: { type: 'yesno' } } });
+    const { at } = widget(s, { onAction: async (p: any, i: number, a: any) => { calls.push(`${p.id}:${i}:${a.do}`); } });
+    (at('b').querySelector('.wb-fbtn') as HTMLElement || at('b')).click();
+    await vi.waitFor(() => expect(calls).toEqual(['b:0:input']));
   });
 });

@@ -1361,3 +1361,35 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-fold-now { min-width: 0; text-align: right; font-size: 12px; line-height: 16px; color: var(--wd-muted); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .wdb-fold[open] .wdb-fold-now { visibility: hidden; }
 .wdb-fold:not([open]) { gap: 0; }
+
+/* Flow inputs (2026-11-25): the ⚡ beside a setting's name, its popover, and the builder home's list. */
+.wdb-labelline { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-width: 0; }
+.wdb-bolt { display: inline-grid; place-items: center; width: 24px; height: 24px; margin: -4px -4px -4px 0; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--wd-muted); cursor: pointer; }
+.wdb-bolt svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+.wdb-bolt:hover { color: var(--wd-text); background: color-mix(in srgb, var(--wd-accent) 10%, transparent); }
+.wdb-bolt.on { color: var(--wd-accent); }
+.wdb-bolt.on svg { fill: currentColor; }
+.wdb-bolt:focus-visible { outline: 2px solid var(--wd-accent); outline-offset: 1px; }
+.wdb-follows { color: var(--wd-accent); }
+.wdb-value { font-size: 14px; line-height: 20px; }
+.wdb-pop { position: absolute; z-index: 60; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 14px; background: var(--wd-raised); box-shadow: 0 0 0 1px var(--wd-line), 0 12px 32px rgba(0, 0, 0, .28); color: var(--wd-text); }
+.wdb-pop-title { margin: 0; font-size: 14px; line-height: 20px; font-weight: 700; }
+.wdb-pop > .wd-hint { margin-top: -8px; }
+.wdb-pop-list { display: flex; flex-direction: column; gap: 2px; max-height: 220px; overflow: auto; }
+.wdb-pop-item { display: flex; flex-direction: column; align-items: flex-start; gap: 0; padding: 6px 8px; border: 0; border-radius: 8px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.wdb-pop-item:hover { background: color-mix(in srgb, var(--wd-accent) 10%, transparent); }
+.wdb-pop-item.on { background: color-mix(in srgb, var(--wd-accent) 16%, transparent); }
+.wdb-pop-item.on .wdb-pop-name { color: var(--wd-accent); }
+.wdb-pop-name { font-size: 14px; line-height: 20px; }
+.wdb-pop-new { display: flex; flex-direction: column; gap: 6px; padding-top: 10px; border-top: 1px solid var(--wd-line); }
+.wdb-pop-new .wd-btn { align-self: flex-start; }
+.wdb-pop-opts { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid var(--wd-line); }
+.wdb-pop-opts .wd-btn { align-self: flex-start; }
+.wdb-inputs { margin-top: 32px; }
+.wdb-input-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+.wdb-input { display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 14px; background: var(--wd-raised); }
+.wdb-input-head { display: flex; align-items: center; gap: 8px; }
+.wdb-input-head > svg { flex: none; width: 16px; height: 16px; color: var(--wd-accent); fill: currentColor; }
+.wdb-input-head .wd-input { flex: 1; min-width: 0; font-weight: 700; }
+.wdb-input-opts { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.wdb-input .wd-hint { margin: 0; }

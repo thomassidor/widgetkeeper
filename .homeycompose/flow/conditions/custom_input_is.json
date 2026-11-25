@@ -1,0 +1,153 @@
+{
+  "id": "custom_input_is",
+  "title": {
+    "en": "A Widget Builder Flow input is a value",
+    "nl": "Een Widgetbouwer-Flow-invoer heeft een waarde",
+    "de": "Eine Flow-Eingabe des Widget-Baukastens hat einen Wert",
+    "fr": "Une entrée Flow du Créateur de widgets a une valeur",
+    "it": "Un input Flow del Costruttore di widget ha un valore",
+    "sv": "En Flow-indata i Widgetbyggaren har ett värde",
+    "no": "En Flow-inndata i Widgetbyggeren har en verdi",
+    "es": "Una entrada de Flow del Creador de widgets tiene un valor",
+    "da": "Et Flow-input i Widgetbyggeren har en værdi",
+    "ru": "Поле Flow конструктора виджетов имеет значение",
+    "pl": "Pole Flow Kreatora widżetów ma wartość",
+    "ko": "위젯 빌더 Flow 입력이 값과 같음",
+    "ar": "مُدخل Flow في منشئ الأدوات له قيمة"
+  },
+  "titleFormatted": {
+    "en": "[[input]] !{{is|is not}} [[value]] for [[device]]",
+    "nl": "[[input]] !{{is|is niet}} [[value]] voor [[device]]",
+    "de": "[[input]] !{{ist|ist nicht}} [[value]] für [[device]]",
+    "fr": "[[input]] !{{est|n'est pas}} [[value]] pour [[device]]",
+    "it": "[[input]] !{{è|non è}} [[value]] per [[device]]",
+    "sv": "[[input]] !{{är|är inte}} [[value]] för [[device]]",
+    "no": "[[input]] !{{er|er ikke}} [[value]] for [[device]]",
+    "es": "[[input]] !{{es|no es}} [[value]] para [[device]]",
+    "da": "[[input]] !{{er|er ikke}} [[value]] for [[device]]",
+    "ru": "[[input]] !{{равно|не равно}} [[value]] для [[device]]",
+    "pl": "[[input]] !{{jest|nie jest}} [[value]] dla [[device]]",
+    "ko": "[[device]]의 [[input]]이(가) [[value]]!{{임|이 아님}}",
+    "ar": "[[input]] !{{يساوي|لا يساوي}} [[value]] لـ [[device]]"
+  },
+  "hint": {
+    "en": "The value it shows now, compared as text, case aside; yes, on and true match a yes. A device's own value, else the shared one.",
+    "nl": "De waarde die het nu toont, vergeleken als tekst, hoofdletters genegeerd; ja, aan en true zijn een ja. De eigen waarde van een apparaat, anders de gedeelde.",
+    "de": "Der Wert, den sie jetzt zeigt, als Text verglichen, ohne Groß/Klein; ja, an und true sind ein Ja. Der eigene Wert eines Geräts, sonst der gemeinsame.",
+    "fr": "La valeur affichée maintenant, comparée comme texte, sans la casse ; oui, on et true valent un oui. La valeur propre d'un appareil, sinon la commune.",
+    "it": "Il valore che mostra ora, confrontato come testo, senza maiuscole; sì, on e true valgono sì. Il valore proprio di un dispositivo, altrimenti quello comune.",
+    "sv": "Värdet den visar nu, jämfört som text utan skiftläge; ja, på och true är ett ja. En enhets eget värde, annars det delade.",
+    "no": "Verdien den viser nå, sammenlignet som tekst uten store/små bokstaver; ja, på og true er et ja. En enhets egen verdi, ellers den delte.",
+    "es": "El valor que muestra ahora, comparado como texto, sin mayúsculas; sí, on y true son un sí. El valor propio de un dispositivo, si no el compartido.",
+    "da": "Værdien, den viser nu, sammenlignet som tekst uden store/små bogstaver; ja, til og true er et ja. En enheds egen værdi, ellers den fælles.",
+    "ru": "Значение, показанное сейчас, сравнивается как текст без учёта регистра; да, on и true — это «да». Собственное значение устройства, иначе общее.",
+    "pl": "Wartość pokazywana teraz, porównana jako tekst bez wielkości liter; tak, on i true to tak. Własna wartość urządzenia, inaczej wspólna.",
+    "ko": "지금 표시되는 값을 대소문자 구분 없이 텍스트로 비교합니다. 예, on, true는 예와 같습니다. 기기 자체 값, 없으면 공유 값.",
+    "ar": "القيمة المعروضة الآن، مقارنةً كنص دون حالة الأحرف؛ نعم وon وtrue تعني نعم. قيمة الجهاز الخاصة، وإلا المشتركة."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "input",
+      "title": {
+        "en": "Flow input",
+        "nl": "Flow-invoer",
+        "de": "Flow-Eingabe",
+        "fr": "Entrée Flow",
+        "it": "Input Flow",
+        "sv": "Flow-indata",
+        "no": "Flow-inndata",
+        "es": "Entrada de Flow",
+        "da": "Flow-input",
+        "ru": "Поле Flow",
+        "pl": "Pole Flow",
+        "ko": "Flow 입력",
+        "ar": "مُدخل Flow"
+      },
+      "placeholder": {
+        "en": "Parcel",
+        "nl": "Pakket",
+        "de": "Paket",
+        "fr": "Colis",
+        "it": "Pacco",
+        "sv": "Paket",
+        "no": "Pakke",
+        "es": "Paquete",
+        "da": "Pakke",
+        "ru": "Посылка",
+        "pl": "Paczka",
+        "ko": "택배",
+        "ar": "طرد"
+      }
+    },
+    {
+      "type": "text",
+      "name": "value",
+      "title": {
+        "en": "Value",
+        "nl": "Waarde",
+        "de": "Wert",
+        "fr": "Valeur",
+        "it": "Valore",
+        "sv": "Värde",
+        "no": "Verdi",
+        "es": "Valor",
+        "da": "Værdi",
+        "ru": "Значение",
+        "pl": "Wartość",
+        "ko": "값",
+        "ar": "القيمة"
+      },
+      "placeholder": {
+        "en": "yes",
+        "nl": "ja",
+        "de": "ja",
+        "fr": "oui",
+        "it": "sì",
+        "sv": "ja",
+        "no": "ja",
+        "es": "sí",
+        "da": "ja",
+        "ru": "да",
+        "pl": "tak",
+        "ko": "예",
+        "ar": "نعم"
+      }
+    },
+    {
+      "type": "autocomplete",
+      "name": "device",
+      "required": false,
+      "title": {
+        "en": "Device",
+        "nl": "Apparaat",
+        "de": "Gerät",
+        "fr": "Appareil",
+        "it": "Dispositivo",
+        "sv": "Enhet",
+        "no": "Enhet",
+        "es": "Dispositivo",
+        "da": "Enhed",
+        "ru": "Устройство",
+        "pl": "Urządzenie",
+        "ko": "기기",
+        "ar": "الجهاز"
+      },
+      "placeholder": {
+        "en": "Every device",
+        "nl": "Elk apparaat",
+        "de": "Jedes Gerät",
+        "fr": "Chaque appareil",
+        "it": "Ogni dispositivo",
+        "sv": "Varje enhet",
+        "no": "Hver enhet",
+        "es": "Cada dispositivo",
+        "da": "Hver enhed",
+        "ru": "Все устройства",
+        "pl": "Każde urządzenie",
+        "ko": "모든 기기",
+        "ar": "كل الأجهزة"
+      }
+    }
+  ]
+}

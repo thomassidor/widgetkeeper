@@ -123,14 +123,15 @@ describe('the app: Flow cards', () => {
     ['flowtiles_remove_fill', 'flowTiles', 'removeFill', { board: { id: 'Car' }, tile: { id: 'Range' } }, ['Car', 'Range']],
     ['flowtiles_remove', 'flowTiles', 'remove', { board: { id: 'Car' }, tile: { id: 'Range' } }, ['Car', 'Range']],
     ['flowtiles_clear', 'flowTiles', 'clear', { board: { id: 'Car' } }, ['Car']],
-    // The Widget Builder's cards: a part argument is `<design>/<part>`.
-    ['custom_set_text', 'custom', 'setText', { part: { id: 'd1/p1' }, text: 'Parcel' }, [{ id: 'd1/p1' }, 'Parcel']],
-    ['custom_set_value', 'custom', 'setNumber', { part: { id: 'd1/p1' }, value: '42.5', units: 'kr' }, [{ id: 'd1/p1' }, '42.5', 'kr']],
-    ['custom_set_color', 'custom', 'setColor', { part: { id: 'd1/p1' }, color: 'red' }, [{ id: 'd1/p1' }, 'red']],
-    ['custom_set_custom_color', 'custom', 'setColor', { part: { id: 'd1/p1' }, color: '#F00' }, [{ id: 'd1/p1' }, '#ff0000']],
-    ['custom_set_icon', 'custom', 'setIcon', { part: { id: 'd1/p1' }, icon: { id: 'bell' } }, [{ id: 'd1/p1' }, 'bell']],
-    ['custom_show', 'custom', 'setShown', { part: { id: 'd1/p1' }, shown: 'hide' }, [{ id: 'd1/p1' }, false]],
-    ['custom_reset', 'custom', 'reset', { part: { id: 'd1/p1' } }, [{ id: 'd1/p1' }]],
+    // The Widget Builder's cards: an input and (optional) a device; `default` and an empty custom colour clear it.
+    ['custom_input_text', 'custom', 'setInput', { input: { id: 'i1' }, text: 'Parcel' }, [{ id: 'i1' }, 'text', 'Parcel', undefined]],
+    ['custom_input_number', 'custom', 'setInput', { input: { id: 'i1' }, value: '42.5', units: 'kr', device: { id: 'd1' } }, [{ id: 'i1' }, 'number', '42.5', { id: 'd1' }, 'kr']],
+    ['custom_input_yesno', 'custom', 'setInput', { input: { id: 'i1' }, value: 'no' }, [{ id: 'i1' }, 'yesno', false, undefined]],
+    ['custom_input_color', 'custom', 'setInput', { input: { id: 'i1' }, color: 'red' }, [{ id: 'i1' }, 'color', 'red', undefined]],
+    ['custom_input_color', 'custom', 'resetInput', { input: { id: 'i1' }, color: 'default' }, [{ id: 'i1' }, undefined]],
+    ['custom_input_custom_color', 'custom', 'setInput', { input: { id: 'i1' }, color: '#F00' }, [{ id: 'i1' }, 'color', '#ff0000', undefined]],
+    ['custom_input_icon', 'custom', 'setInput', { input: { id: 'i1' }, icon: { id: 'bell' } }, [{ id: 'i1' }, 'icon', 'bell', undefined]],
+    ['custom_input_reset', 'custom', 'resetInput', { input: { id: 'i1' }, device: { id: '*' } }, [{ id: 'i1' }, { id: '*' }]],
   ];
 
   it.each(RUNS)('%s calls %s.%s with its arguments', async (id, service, method, args, call) => {

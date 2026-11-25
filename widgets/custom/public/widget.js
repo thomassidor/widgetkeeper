@@ -148,7 +148,8 @@
    */
   function lookOf(part, value, flow, valueOf) {
     if (flow && flow.hidden === true) return { color: null, tint: false, hidden: true };
-    let color = part.color || null;
+    // A colour that follows a Flow input is its own colour while the input has one.
+    let color = (flow && flow.color) || part.color || null;
     let tint = false;
     let hidden = false;
     let icon = null;
@@ -160,7 +161,6 @@
       icon = r.icon || null;
       break;
     }
-    if (flow && flow.color) { color = flow.color; tint = true; }
     return { color, tint, hidden, icon };
   }
   window.customLookOf = lookOf;
@@ -221,6 +221,8 @@
     const walk = (x, key) => {
       if (typeof x === 'string') return /^@:/.test(x) ? `${deviceId}${x.slice(1)}` : key === 'device' && x === '@' ? deviceId : x;
       if (Array.isArray(x)) return x.map(y => walk(y, ''));
+      // A Flow input it reads is this device's (a per-device input's own value).
+      if (x && typeof x === 'object' && typeof x.input === 'string' && !x.device) return { ...Object.fromEntries(Object.entries(x).map(([k, y]) => [k, walk(y, k)])), device: deviceId };
       if (x && typeof x === 'object') return Object.fromEntries(Object.entries(x).map(([k, y]) => [k, walk(y, k)]));
       return x;
     };
@@ -421,6 +423,8 @@
     const stateStarts = new Map();
     /** A pages container's page now (by id), and the builder's pick of the page it's editing. */
     const pageNow = new Map();
+    /** The page a Flow input last said, per pages container: a new one turns the page. */
+    const flowPage = new Map();
     const forcedPage = new Map();
     /** Images' refresh timers, stopped when the parts are built again. */
     let imageTimers = [];
@@ -443,9 +447,49 @@
     function variableEntry(part) {
       return part.variable && state && state.variables ? state.variables[part.variable] : null;
     }
+    /**
+     * A Flow input's value now (`{value, units}`): a per-device input's for `device` (a Repeater's copy's, else the
+     * widget's), else the shared one; null without one, or once it has gone back.
+     */
+    function inputNow(id, device) {
+      const e = state && state.inputs && state.inputs[id];
+      if (!e) return null;
+      const live = v => (v && (!v.expires || v.expires > Date.now()) ? v : null);
+      const dev = device || state.device;
+      return (e.perDevice && dev && e.devices && live(e.devices[dev])) || live(e.all) || null;
+    }
+    /** An input's value for a binding, if it's of a type the setting takes (lib/customDesigns.ts' `BIND_TYPES`). */
+    function bound(part, prop, types) {
+      const id = part.bind && part.bind[prop];
+      const e = id && state && state.inputs && state.inputs[id];
+      if (!e || !types.includes(e.type)) return null;
+      const v = inputNow(id, part.device);
+      return v ? { ...v, type: e.type } : null;
+    }
+    /**
+     * What a part's Flow inputs give it now, in the shape its makers read: `text` (a name or label), `value`/`units` (a
+     * Text's number), `color`, `ink`, `fill`, `icon`, `hidden`, `page`; null when none has a value.
+     */
     function flowOf(part) {
-      const f = state && state.flow && state.flow[part.id];
-      return f && (!f.expires || f.expires > Date.now()) ? f : null;
+      if (!part.bind) return null;
+      const out = {};
+      const text = bound(part, 'text', ['text', 'number']);
+      if (text && text.type === 'number' && part.kind === 'text') { out.value = text.value; if (text.units) out.units = text.units; }
+      else if (text && text.type === 'number') out.text = K.formatValue({ units: text.units || null, decimals: 2 }, text.value);
+      else if (text && String(text.value)) out.text = String(text.value);
+      const colorIn = bound(part, 'color', ['color']);
+      if (colorIn) out.color = colorIn.value;
+      const ink = bound(part, 'textColor', ['color']);
+      if (ink) out.ink = ink.value;
+      const fill = bound(part, 'fill', ['color']);
+      if (fill) out.fill = fill.value;
+      const ic = bound(part, 'icon', ['icon']);
+      if (ic) out.icon = ic.value;
+      const shown = bound(part, 'shown', ['yesno']);
+      if (shown) out.hidden = shown.value === false;
+      const page = bound(part, 'page', ['number', 'text']);
+      if (page) out.page = page.value;
+      return Object.keys(out).length ? out : null;
     }
     /** A source's value now (`{value, cap, name, offline, missing, updatedAt}`), or null when it isn't read. */
     function sourceEntry(src) {
@@ -461,6 +505,13 @@
         if (!v) return null;
         if (v.missing) return { missing: true };
         return { value: v.value, cap: { type: v.type, units: null, decimals: 2 }, name: v.name };
+      }
+      if (src.input) {
+        const e = state.inputs && state.inputs[src.input];
+        if (!e) return null;
+        const v = inputNow(src.input, src.device);
+        const cap = e.type === 'number' ? { type: 'number', units: (v && v.units) || null, decimals: 2 } : e.type === 'yesno' ? { type: 'boolean' } : { type: 'string' };
+        return { value: v ? v.value : null, cap, name: e.name };
       }
       if (src.part) {
         const c = calcs.get(src.part);
@@ -805,11 +856,13 @@
       const style = styleOf(part);
       node.classList.add(style === 'none' ? 'wb-bare' : style === 'postit' ? 'wb-postit' : 'wb-tile');
       if (style === 'pill') node.classList.add('wb-pill');
-      // Its text's colour (a rule's or a Flow's Vivid tint still puts its own text colour on it).
-      if (part.textColor && cssColor(part.textColor)) {
-        node.classList.add('wb-has-ink');
-        node.style.setProperty('--wb-ink', cssColor(part.textColor));
-      }
+      // Its text's colour (a rule's Vivid tint still puts its own text colour on it); a Flow input's over it, on update.
+      const ink = (c) => {
+        node.classList.toggle('wb-has-ink', !!cssColor(c));
+        if (cssColor(c)) node.style.setProperty('--wb-ink', cssColor(c));
+        else node.style.removeProperty('--wb-ink');
+      };
+      ink(part.textColor);
       place(node, part, where);
       for (const e of part.hide || []) node.classList.add(`wb-no-${e}`);
       const make = MAKERS[part.kind] || MAKERS.text;
@@ -824,8 +877,9 @@
       const view = { part, node, update: () => {
         const c = current(part);
         const flow = flowOf(part);
-        const value = flow && flow.value !== undefined ? flow.value : c ? c.value : undefined;
+        const value = c ? c.value : undefined;
         const look = lookOf(part, value, flow, valueOf);
+        if (part.bind && part.bind.textColor) ink((flow && flow.ink) || part.textColor);
         // A calculated value only for text and rules: not drawn on a dashboard, faint in the builder.
         const sourceOnly = part.kind === 'calc';
         if (sourceOnly && !opts.preview) look.hidden = true;
@@ -1497,8 +1551,8 @@
         if (form === 'rect') fill.style.borderRadius = `${part.radius != null ? part.radius : 10}px`;
         if (form === 'line') fill.style.setProperty('--wb-thick', `${part.thickness || 2}px`);
         const own = backgroundCss(part.background);
-        // Its fill: a rule's or a Flow's colour, else its own background, else its colour from Style (CSS).
-        return (c, flow, look) => { fill.style.background = look && look.tint ? 'var(--wk-c)' : own; };
+        // Its fill: a rule's colour, else a Flow input's, else its own background, else its colour from Style (CSS).
+        return (c, flow, look) => { fill.style.background = look && look.tint ? 'var(--wk-c)' : flow && flow.fill ? cssColor(flow.fill) : own; };
       },
       icon(part, node) {
         if (part.grow) node.classList.add('wb-icon-grow');
@@ -1637,13 +1691,25 @@
         // Its own background over its style's (a tile's colour, or none); light text on it unless a text colour is set.
         // Its own colour or gradient at its strength (`dim`): *Like the widgets* by default (CSS), Half or Full.
         if (bg.kind !== 'none') paintBox(node, bg);
+        // A fill that follows a Flow input: its colour as the fill, at the container's strength, while it has one.
+        let painted = '';
+        const paintFill = (flow) => {
+          if (!part.bind || !part.bind.fill) return;
+          const c = (flow && flow.fill) || '';
+          if (c === painted) return;
+          painted = c;
+          if (c) paintBox(node, { kind: 'color', from: c, ...(bg.dim ? { dim: bg.dim } : {}) });
+          else if (bg.kind !== 'none') paintBox(node, bg);
+          else { node.classList.remove('wb-box-bg', 'wb-bg-hex', 'wb-dim-widget', 'wb-dim-half', 'wb-dim-full'); }
+        };
         const inner = el('div', { class: 'wb-inner' }, node);
         const kids = (part.parts || []).map(kid => [kid, inner.appendChild(build(kid, part.mode === 'free' ? 'free' : 'grid'))]);
         if (paged && nav && part.nav === 'dots') node.appendChild(nav); // dots under the page
-        return () => {
+        return (c, flow) => {
+          paintFill(flow);
           if (part.fillBy) fillLevel(part, node, bg);
           if (!paged) return;
-          const page = pageOf(part);
+          const page = pageOf(part, flow);
           for (const [kid, n] of kids) n.classList.toggle('wb-off-page', (kid.page || 0) !== page);
           if (nav) [...nav.children].forEach((b, i) => { b.classList.toggle('on', i === page); b.setAttribute('aria-selected', i === page ? 'true' : 'false'); });
         };
@@ -1672,10 +1738,23 @@
       node.style.setProperty('--wb-fill', `${pc}%`);
     }
 
-    /** A pages container's page now: the builder's, its widget state's, else the one tapped (from 0). */
-    function pageOf(part) {
+    /**
+     * A pages container's page now: the builder's, a Flow input's (a number from 1, or a page's name), its widget
+     * state's, else the one tapped (from 0).
+     */
+    function pageOf(part, flow) {
       const n = (part.pages || []).length || 1;
       let page = pageNow.get(part.id) || 0;
+      // A Flow input's new value turns the page, as a tap would: a tap after it still turns it.
+      const said = flow && flow.page !== undefined ? String(flow.page) : null;
+      if (said !== null && said !== flowPage.get(part.id)) {
+        flowPage.set(part.id, said);
+        const named = (part.pages || []).findIndex(pg => pg.name && pg.name.trim().toLowerCase() === said.trim().toLowerCase());
+        const num = Number(said.replace(',', '.'));
+        if (named >= 0) page = named;
+        else if (Number.isFinite(num)) page = Math.round(num) - 1;
+        pageNow.set(part.id, Math.min(n - 1, Math.max(0, page)));
+      } else if (said === null) flowPage.delete(part.id);
       if (part.nav === 'state' && part.pageBy && part.pageBy.part) {
         const st = states.get(part.pageBy.part);
         if (st) {
@@ -1794,11 +1873,11 @@
         v.value = value;
         update();
       },
-      /** Realtime `custom:flow`: what Flows set on one part (null: back to the design's). */
-      pushFlow({ part, values }) {
-        if (!state) return;
-        state.flow = { ...(state.flow || {}) };
-        if (values) state.flow[part] = values; else delete state.flow[part];
+      /** Realtime `custom:input`: a Flow input's values now (null: it's gone), if the design reads it. */
+      pushInput({ input, entry }) {
+        if (!state || !state.inputs || !(input in state.inputs)) return;
+        state.inputs = { ...state.inputs };
+        if (entry) state.inputs[input] = entry; else delete state.inputs[input];
         update();
       },
       setMessage,

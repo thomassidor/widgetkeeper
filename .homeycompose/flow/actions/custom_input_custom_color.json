@@ -1,0 +1,153 @@
+{
+  "id": "custom_input_custom_color",
+  "title": {
+    "en": "Set a Widget Builder colour input to a custom colour",
+    "nl": "Een Widgetbouwer-kleurinvoer een eigen kleur geven",
+    "de": "Eine Farb-Eingabe des Widget-Baukastens auf eine eigene Farbe setzen",
+    "fr": "Donner une couleur personnalisée à une entrée couleur du Créateur de widgets",
+    "it": "Dai un colore personalizzato a un input colore del Costruttore di widget",
+    "sv": "Ge en färgindata i Widgetbyggaren en egen färg",
+    "no": "Gi en fargeinndata i Widgetbyggeren en egen farge",
+    "es": "Dar un color propio a una entrada de color del Creador de widgets",
+    "da": "Giv et farveinput i Widgetbyggeren en egen farve",
+    "ru": "Задать свой цвет полю цвета конструктора виджетов",
+    "pl": "Nadaj polu koloru Kreatora widżetów własny kolor",
+    "ko": "위젯 빌더 색상 입력에 사용자 색상 지정",
+    "ar": "منح مُدخل لون في منشئ الأدوات لونًا مخصصًا"
+  },
+  "titleFormatted": {
+    "en": "Set [[input]] to the colour [[color]] for [[device]]",
+    "nl": "Zet [[input]] op de kleur [[color]] voor [[device]]",
+    "de": "[[input]] auf die Farbe [[color]] setzen für [[device]]",
+    "fr": "Définir [[input]] sur la couleur [[color]] pour [[device]]",
+    "it": "Imposta [[input]] sul colore [[color]] per [[device]]",
+    "sv": "Sätt [[input]] till färgen [[color]] för [[device]]",
+    "no": "Sett [[input]] til fargen [[color]] for [[device]]",
+    "es": "Poner [[input]] en el color [[color]] para [[device]]",
+    "da": "Sæt [[input]] til farven [[color]] for [[device]]",
+    "ru": "Задать [[input]]: цвет [[color]] для [[device]]",
+    "pl": "Ustaw [[input]] na kolor [[color]] dla [[device]]",
+    "ko": "[[device]]의 [[input]]을(를) 색상 [[color]](으)로 설정",
+    "ar": "تعيين [[input]] إلى اللون [[color]] لـ [[device]]"
+  },
+  "hint": {
+    "en": "Make Flow inputs in the Widget Builder: with the ⚡ beside a setting, or under Flow inputs. Every widget using the input shows it, on every screen. Device: only for an input kept per device; leave it empty for every device. #F00, #FF0000 or rgb(255, 0, 0); empty clears it.",
+    "nl": "Maak Flow-invoer in de Widgetbouwer: met de ⚡ naast een instelling, of onder Flow-invoer. Elke widget die de invoer gebruikt toont het, op elk scherm. Apparaat: alleen voor invoer per apparaat; laat leeg voor elk apparaat. #F00, #FF0000 of rgb(255, 0, 0); leeg wist het.",
+    "de": "Flow-Eingaben legst du im Widget-Baukasten an: mit dem ⚡ neben einer Einstellung oder unter Flow-Eingaben. Jedes Widget mit dieser Eingabe zeigt es, auf jedem Bildschirm. Gerät: nur für eine Eingabe pro Gerät; leer lassen für jedes Gerät. #F00, #FF0000 oder rgb(255, 0, 0); leer löscht es.",
+    "fr": "Créez les entrées Flow dans le Créateur de widgets : avec le ⚡ à côté d'un réglage, ou sous Entrées Flow. Chaque widget qui utilise l'entrée l'affiche, sur chaque écran. Appareil : seulement pour une entrée par appareil ; laissez vide pour chaque appareil. #F00, #FF0000 ou rgb(255, 0, 0) ; vide l'efface.",
+    "it": "Crea gli input Flow nel Costruttore di widget: con il ⚡ accanto a un'impostazione, o in Input Flow. Ogni widget che usa l'input lo mostra, su ogni schermo. Dispositivo: solo per un input per dispositivo; lascia vuoto per ogni dispositivo. #F00, #FF0000 o rgb(255, 0, 0); vuoto lo cancella.",
+    "sv": "Skapa Flow-indata i Widgetbyggaren: med ⚡ bredvid en inställning, eller under Flow-indata. Varje widget som använder dem visar det, på varje skärm. Enhet: bara för indata per enhet; lämna tomt för varje enhet. #F00, #FF0000 eller rgb(255, 0, 0); tomt rensar det.",
+    "no": "Lag Flow-inndata i Widgetbyggeren: med ⚡ ved siden av en innstilling, eller under Flow-inndata. Hver widget som bruker dem viser det, på hver skjerm. Enhet: bare for inndata per enhet; la stå tomt for hver enhet. #F00, #FF0000 eller rgb(255, 0, 0); tomt tømmer det.",
+    "es": "Crea entradas de Flow en el Creador de widgets: con el ⚡ junto a un ajuste, o en Entradas de Flow. Cada widget que usa la entrada la muestra, en cada pantalla. Dispositivo: solo para una entrada por dispositivo; déjalo vacío para todos. #F00, #FF0000 o rgb(255, 0, 0); vacío la borra.",
+    "da": "Opret Flow-input i Widgetbyggeren: med ⚡ ved siden af en indstilling, eller under Flow-input. Hver widget, der bruger det, viser det, på hver skærm. Enhed: kun for input pr. enhed; lad den stå tom for hver enhed. #F00, #FF0000 eller rgb(255, 0, 0); tomt rydder det.",
+    "ru": "Поля Flow создаются в конструкторе виджетов: значком ⚡ рядом с настройкой или в разделе «Поля Flow». Каждый виджет с этим полем показывает его на каждом экране. Устройство: только для поля по устройствам; оставьте пустым для всех. #F00, #FF0000 или rgb(255, 0, 0); пустое очищает.",
+    "pl": "Pola Flow tworzysz w Kreatorze widżetów: ikoną ⚡ obok ustawienia albo w Polach Flow. Każdy widżet z tym polem je pokazuje, na każdym ekranie. Urządzenie: tylko dla pola na urządzenie; zostaw puste dla wszystkich. #F00, #FF0000 lub rgb(255, 0, 0); puste czyści.",
+    "ko": "Flow 입력은 위젯 빌더에서 만듭니다: 설정 옆의 ⚡ 또는 Flow 입력에서. 이 입력을 쓰는 모든 위젯이 모든 화면에 표시합니다. 기기: 기기별 입력에만 해당하며, 모든 기기는 비워 두세요. #F00, #FF0000 또는 rgb(255, 0, 0); 비우면 지웁니다.",
+    "ar": "أنشئ مُدخلات Flow في منشئ الأدوات: بالرمز ⚡ بجوار إعداد، أو ضمن مُدخلات Flow. تعرضه كل أداة تستخدم المُدخل، على كل شاشة. الجهاز: فقط لمُدخل لكل جهاز؛ اتركه فارغًا لكل الأجهزة. #F00 أو #FF0000 أو rgb(255, 0, 0)؛ الفارغ يمسحه."
+  },
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "input",
+      "title": {
+        "en": "Flow input",
+        "nl": "Flow-invoer",
+        "de": "Flow-Eingabe",
+        "fr": "Entrée Flow",
+        "it": "Input Flow",
+        "sv": "Flow-indata",
+        "no": "Flow-inndata",
+        "es": "Entrada de Flow",
+        "da": "Flow-input",
+        "ru": "Поле Flow",
+        "pl": "Pole Flow",
+        "ko": "Flow 입력",
+        "ar": "مُدخل Flow"
+      },
+      "placeholder": {
+        "en": "Parcel",
+        "nl": "Pakket",
+        "de": "Paket",
+        "fr": "Colis",
+        "it": "Pacco",
+        "sv": "Paket",
+        "no": "Pakke",
+        "es": "Paquete",
+        "da": "Pakke",
+        "ru": "Посылка",
+        "pl": "Paczka",
+        "ko": "택배",
+        "ar": "طرد"
+      }
+    },
+    {
+      "type": "text",
+      "name": "color",
+      "title": {
+        "en": "Colour",
+        "nl": "Kleur",
+        "de": "Farbe",
+        "fr": "Couleur",
+        "it": "Colore",
+        "sv": "Färg",
+        "no": "Farge",
+        "es": "Color",
+        "da": "Farve",
+        "ru": "Цвет",
+        "pl": "Kolor",
+        "ko": "색상",
+        "ar": "اللون"
+      },
+      "placeholder": {
+        "en": "#FF0000",
+        "nl": "#FF0000",
+        "de": "#FF0000",
+        "fr": "#FF0000",
+        "it": "#FF0000",
+        "sv": "#FF0000",
+        "no": "#FF0000",
+        "es": "#FF0000",
+        "da": "#FF0000",
+        "ru": "#FF0000",
+        "pl": "#FF0000",
+        "ko": "#FF0000",
+        "ar": "#FF0000"
+      }
+    },
+    {
+      "type": "autocomplete",
+      "name": "device",
+      "required": false,
+      "title": {
+        "en": "Device",
+        "nl": "Apparaat",
+        "de": "Gerät",
+        "fr": "Appareil",
+        "it": "Dispositivo",
+        "sv": "Enhet",
+        "no": "Enhet",
+        "es": "Dispositivo",
+        "da": "Enhed",
+        "ru": "Устройство",
+        "pl": "Urządzenie",
+        "ko": "기기",
+        "ar": "الجهاز"
+      },
+      "placeholder": {
+        "en": "Every device",
+        "nl": "Elk apparaat",
+        "de": "Jedes Gerät",
+        "fr": "Chaque appareil",
+        "it": "Ogni dispositivo",
+        "sv": "Varje enhet",
+        "no": "Hver enhet",
+        "es": "Cada dispositivo",
+        "da": "Hver enhed",
+        "ru": "Все устройства",
+        "pl": "Każde urządzenie",
+        "ko": "모든 기기",
+        "ar": "كل الأجهزة"
+      }
+    }
+  ]
+}

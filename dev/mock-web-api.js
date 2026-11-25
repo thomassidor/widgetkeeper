@@ -144,6 +144,15 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
   /** The Widget Builder's library: the made-up designs, when mock-custom.js is loaded. */
   const designs = window.mockCustomState ? ['living', 'container', 'free', 'controls', 'blocks', 'more', 'split', 'bare'].map(s => window.mockCustomState(s).design) : [];
 
+  /** The Widget Builder's Flow inputs (lib/CustomWidgetService.ts' `inputSummary()`), kept for the page's life. */
+  const inputs = [
+    { id: 'door', name: 'Front door message', type: 'text', reset: 'midnight', value: { value: 'Parcel by the door' }, devices: 0 },
+    { id: 'away', name: 'Away', type: 'yesno', perDevice: true, reset: 'never', value: { value: false }, devices: 2 },
+    { id: 'tint', name: 'Alert colour', type: 'color', reset: 'hour', value: null, devices: 0 },
+  ];
+  const usedBy = id => designs.filter(d => JSON.stringify(d.parts).includes(`"${id}"`)).map(d => ({ id: d.id, name: d.name, ready: !!d.ready }));
+  const inputList = () => inputs.map(x => ({ ...x, usedBy: usedBy(x.id) }));
+
   /** A design's preview: mock-custom.js' readings, else the made-up house's (`readings`) for a value picked here. */
   function designPreview(saved) {
     const base = window.mockCustomState ? window.mockCustomState() : { values: {}, variables: {}, flows: {}, histories: {} };
@@ -214,7 +223,18 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
     const histories = { ...base.histories };
     for (const slot of slots) if (!Object.keys(histories).some(k => k.endsWith(`\n${slot}`))) histories[`24h\n${slot}`] = base.histories['24h\nlr:measure_temperature'];
     for (const span of ['1h', '6h', '7d', '30d', 'today', 'yesterday', 'thisWeek']) for (const slot of slots) histories[`${span}\n${slot}`] = histories[`24h\n${slot}`];
-    return { design, values, repeats, each, language: 'en', timeFormat: '24', variables: base.variables, flows: { ...base.flows, 'flow:goodnight': { id: 'flow:goodnight', name: 'Good night' }, 'advanced:away': { id: 'advanced:away', name: 'Leaving home' } }, histories, flow: {}, now: Date.now() };
+    return { design, values, repeats, each, language: 'en', timeFormat: '24', variables: base.variables, flows: { ...base.flows, 'flow:goodnight': { id: 'flow:goodnight', name: 'Good night' }, 'advanced:away': { id: 'advanced:away', name: 'Leaving home' } }, histories, inputs: previewInputs(design), ...(saved.sample ? { device: saved.sample } : {}), now: Date.now() };
+  }
+
+  /** The inputs a design reads, as `/state` sends them: its type, per device or not, and the shared value. */
+  function previewInputs(design) {
+    const json = JSON.stringify(design.parts);
+    const out = {};
+    for (const x of inputs) {
+      if (!json.includes(`"${x.id}"`)) continue;
+      out[x.id] = { type: x.type, ...(x.perDevice ? { perDevice: true } : {}), ...(x.value ? { all: { ...x.value, at: Date.now() } } : {}) };
+    }
+    return out;
   }
 
   async function answer(method, path, body) {
@@ -246,6 +266,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
         codes: codes.map(({ id, name, digits }) => ({ id, name, digits: digits.length })),
         sync: syncLinks,
         designs,
+        inputs: inputList(),
       };
     }
     // The app's settings (lib/webAppSettings.ts), as for a key with full access: made-up answers, kept for the page's life.
@@ -347,6 +368,21 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
       return { design: copy, designs };
     }
     if (p === '/web/designs/preview') return designPreview(body.design);
+    if (p === '/web/inputs' && method === 'GET') return { inputs: inputList() };
+    if (p === '/web/inputs' && method === 'PUT') {
+      const name = String(body.name || '').trim().slice(0, 40);
+      if (inputs.some(x => x.id !== body.id && x.name.toLowerCase() === name.toLowerCase())) return { ok: false, reason: 'taken' };
+      const old = inputs.find(x => x.id === body.id);
+      const input = { id: old ? old.id : Math.random().toString(36).slice(2, 10), name: name || (old && old.name) || 'Flow input', type: body.type || (old && old.type) || 'text', reset: body.reset || 'never', ...(body.perDevice ? { perDevice: true } : {}) };
+      const kept = { ...input, value: old && old.type === input.type ? old.value : null, devices: old && input.perDevice ? old.devices : 0 };
+      if (old) inputs[inputs.indexOf(old)] = kept; else inputs.push(kept);
+      return { ok: true, input, inputs: inputList() };
+    }
+    if (/^\/web\/inputs\/[^/]+$/.test(p) && method === 'DELETE') {
+      const i = inputs.findIndex(x => x.id === p.split('/')[3]);
+      if (i >= 0) inputs.splice(i, 1);
+      return { removed: i >= 0, inputs: inputList() };
+    }
     // A device's picture: the made-up hallway camera's.
     if (p === '/web/designs/image') {
       const res = await fetch('../dev/cameras/door.webp');

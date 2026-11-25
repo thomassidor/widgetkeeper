@@ -3,11 +3,11 @@ import { getAppApi } from './appApi.js';
 import { byName, devicesAndZones, listDevicesWhere, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { deviceImage, fetchImageBase64 } from './deviceIcon.js';
 import {
-  MAX_DESIGNS, MAX_EACH, MAX_REPEAT_CANDIDATES, SERVER_ACTIONS, TAP_KINDS, allParts, bindDevice, designCharts, detachUses, designFlows, designSlots, designVariables, findPart, partLabel, readDesign,
-  type Design, type FlowProp, type FlowReset, type Part,
+  INPUT_TYPES, MAX_DESIGNS, MAX_EACH, MAX_FLOW_INPUTS, MAX_REPEAT_CANDIDATES, SERVER_ACTIONS, TAP_KINDS, allParts, bindDevice, designCharts, designFlows, designInputs,
+  designSlots, designVariables, detachUses, findPart, inputValue, newId, partLabel, readDesign, readInputs, ruleHolds,
+  type Design, type Input, type InputReset, type InputType, type Part,
 } from './customDesigns.js';
 import { DebouncedSetting, isReservedKey } from './storedSetting.js';
-import { parseTileColor, type TileColor } from './tileColors.js';
 import { convertTemperature, shownTemperatureScale, temperatureScaleOf } from './temperatureUnit.js';
 import { nextLocalTime } from './WebSyncService.js';
 import { timeFormatOf } from './timeFormat.js';
@@ -20,44 +20,39 @@ import type VariableService from './VariableService.js';
 
 /** The app setting holding the designs: `Design[]`, in the library's order. */
 export const CUSTOM_DESIGNS_SETTING = 'customDesigns';
-/** The app setting holding what Flows set: `{[designId]: {[partId]: FlowValues}}`. */
-export const CUSTOM_FLOW_SETTING = 'customFlowValues';
+/** The app setting holding the Flow inputs: `Input[]`, in the builder's order. */
+export const CUSTOM_INPUTS_SETTING = 'customInputs';
+/** The app setting holding their values: `{[inputId]: InputEntry}`. */
+export const CUSTOM_INPUT_VALUES_SETTING = 'customInputValues';
 /** A design was saved or removed: `{id}`; every widget showing it reads again. */
 export const CUSTOM_DESIGN_EVENT = 'custom:design';
-/** A Flow changed a part: `{design, part, values}` (values `null` when they went back to the design's). */
-export const CUSTOM_FLOW_EVENT = 'custom:flow';
+/** A Flow input's values changed: `{input, entry}` (`entry` as `/state`'s `inputs` hold it, null when it has none). */
+export const CUSTOM_INPUT_EVENT = 'custom:input';
 
-export const CUSTOM_SET_TEXT_CARD = 'custom_set_text';
-export const CUSTOM_SET_VALUE_CARD = 'custom_set_value';
-export const CUSTOM_SET_COLOR_CARD = 'custom_set_color';
-export const CUSTOM_SET_CUSTOM_COLOR_CARD = 'custom_set_custom_color';
-export const CUSTOM_SET_ICON_CARD = 'custom_set_icon';
-export const CUSTOM_SHOW_CARD = 'custom_show';
-export const CUSTOM_RESET_CARD = 'custom_reset';
-export const CUSTOM_IS_SHOWN_CARD = 'custom_is_shown';
+export const CUSTOM_INPUT_CARDS = {
+  text: 'custom_input_text', number: 'custom_input_number', yesno: 'custom_input_yesno', color: 'custom_input_color', icon: 'custom_input_icon',
+} as const;
+export const CUSTOM_INPUT_CUSTOM_COLOR_CARD = 'custom_input_custom_color';
+export const CUSTOM_INPUT_RESET_CARD = 'custom_input_reset';
+export const CUSTOM_INPUT_IS_CARD = 'custom_input_is';
 export const CUSTOM_TAPPED_CARD = 'custom_tapped';
 export const CUSTOM_CHOICE_CARD = 'custom_choice';
 
 const SAVE_MS = 2000;
 const HOUR = 3600e3;
 
-/** What Flows set on one part, each only where the part allows it; `at` when, for its reset. */
-export type FlowValues = {
-  text?: string,
-  value?: number | string,
-  units?: string,
-  color?: TileColor,
-  icon?: string,
-  hidden?: boolean,
-  at: number,
-};
-
-/** A Flow card's part argument: `{id: '<designId>/<partId>'}`. */
-export type PartArg = { id?: string, name?: string } | undefined;
+/** A Flow input's value, `at` when it was set (for its reset). */
+export type InputValue = { value: string | number | boolean, units?: string, at: number };
+/** An input's values: the shared one (`all`), and a per-device input's per device. */
+export type InputEntry = { all?: InputValue, devices?: Record<string, InputValue> };
+/** A card's input argument (`{id}`) and device argument (`{id}`, `*` for every device). */
+export type CardArg = { id?: string, name?: string } | undefined;
+/** The device argument's *Every device*. */
+export const EVERY_DEVICE = '*';
 
 /**
- * The Widget Builder: the designs (built on the web dashboards' builder page, placed as the `custom` widget) and what
- * Flows set on their parts. The widget's `/state` gathers a design's values from the services that already read them
+ * The Widget Builder: the designs (built on the web dashboards' builder page, placed as the `custom` widget) and the
+ * Flow inputs Flows set. The widget's `/state` gathers a design's values from the services that already read them
  * (Device Values', Variables', Flow Buttons', Sparklines'), and its controls act through a design's own parts only, so a
  * request can't reach a device, variable or Flow the design doesn't use.
  */
@@ -69,9 +64,10 @@ function usable(device: string | undefined): string {
 export default class CustomWidgetService {
 
   private designs: Design[];
-  private flowValues: Record<string, Record<string, FlowValues>>;
-  private savedFlow: DebouncedSetting;
-  /** Expires Flow values that go back after an hour or at midnight, so open widgets hear of it. */
+  private inputList: Input[];
+  private inputValues: Record<string, InputEntry>;
+  private savedValues: DebouncedSetting;
+  /** Expires input values that go back after an hour or at midnight, so open widgets hear of it. */
   private resetTimer: NodeJS.Timeout | null = null;
 
   constructor(
@@ -84,10 +80,10 @@ export default class CustomWidgetService {
   ) {
     const raw = homey.settings.get(CUSTOM_DESIGNS_SETTING);
     this.designs = (Array.isArray(raw) ? raw : []).map(d => readDesign(d)).filter((d): d is Design => !!d).slice(0, MAX_DESIGNS);
-    const fv = homey.settings.get(CUSTOM_FLOW_SETTING);
-    this.flowValues = fv && typeof fv === 'object' ? CustomWidgetService.readFlowValues(fv) : {};
-    this.savedFlow = new DebouncedSetting({
-      homey, delay: SAVE_MS, setting: CUSTOM_FLOW_SETTING, value: () => this.flowValues, log, what: 'the Widget Builder\'s Flow values',
+    this.inputList = readInputs(homey.settings.get(CUSTOM_INPUTS_SETTING));
+    this.inputValues = CustomWidgetService.readValues(homey.settings.get(CUSTOM_INPUT_VALUES_SETTING), this.inputList);
+    this.savedValues = new DebouncedSetting({
+      homey, delay: SAVE_MS, setting: CUSTOM_INPUT_VALUES_SETTING, value: () => this.inputValues, log, what: 'the Widget Builder\'s Flow input values',
     });
   }
 
@@ -98,17 +94,32 @@ export default class CustomWidgetService {
   stop() {
     if (this.resetTimer) this.homey.clearTimeout(this.resetTimer);
     this.resetTimer = null;
-    this.savedFlow.flush();
+    this.savedValues.flush();
   }
 
-  private static readFlowValues(v: Record<string, any>): Record<string, Record<string, FlowValues>> {
-    const out: Record<string, Record<string, FlowValues>> = {};
-    for (const [d, parts] of Object.entries(v)) {
-      if (isReservedKey(d) || !parts || typeof parts !== 'object') continue;
-      for (const [p, val] of Object.entries<any>(parts)) {
-        if (isReservedKey(p) || !val || typeof val !== 'object' || !Number.isFinite(val.at)) continue;
-        (out[d] ??= {})[p] = val as FlowValues;
+  /** The values as kept: only known inputs', each of its type, `at` a time; a device's only on a per-device input. */
+  private static readValues(v: unknown, inputs: Input[]): Record<string, InputEntry> {
+    const out: Record<string, InputEntry> = {};
+    if (!v || typeof v !== 'object') return out;
+    const one = (type: InputType, x: any): InputValue | undefined => {
+      if (!x || typeof x !== 'object' || !Number.isFinite(x.at)) return undefined;
+      const value = inputValue(type, x.value);
+      if (value === undefined) return undefined;
+      return { value, at: x.at, ...(type === 'number' && typeof x.units === 'string' && x.units ? { units: x.units.slice(0, 12) } : {}) };
+    };
+    for (const input of inputs) {
+      const e = (v as any)[input.id];
+      if (!e || typeof e !== 'object') continue;
+      const entry: InputEntry = {};
+      const all = one(input.type, e.all);
+      if (all) entry.all = all;
+      if (input.perDevice && e.devices && typeof e.devices === 'object') {
+        for (const [d, x] of Object.entries(e.devices)) {
+          const val = isReservedKey(d) ? undefined : one(input.type, x);
+          if (val) (entry.devices ??= {})[d] = val;
+        }
       }
+      if (entry.all || entry.devices) out[input.id] = entry;
     }
     return out;
   }
@@ -152,7 +163,6 @@ export default class CustomWidgetService {
     design.updatedAt = Date.now();
     if (i < 0) this.designs.push(design);
     else this.designs[i] = design;
-    this.dropStaleFlowValues(design);
     this.write();
     this.homey.api.realtime(CUSTOM_DESIGN_EVENT, { id: design.id });
     this.debug(`Widget Builder: saved design ${design.id} (${allParts(design).length} parts)`);
@@ -166,11 +176,6 @@ export default class CustomWidgetService {
     // A ready-made's linked instances become copies of it, so no design loses them.
     const source = gone.ready ? gone.parts[0] : undefined;
     const detached = source ? this.designs.filter(d => detachUses(d, id, source)) : [];
-    for (const d of detached) this.dropStaleFlowValues(d);
-    if (this.flowValues[id]) {
-      delete this.flowValues[id];
-      this.savedFlow.schedule();
-    }
     this.write();
     this.homey.api.realtime(CUSTOM_DESIGN_EVENT, { id });
     for (const d of detached) this.homey.api.realtime(CUSTOM_DESIGN_EVENT, { id: d.id });
@@ -198,34 +203,109 @@ export default class CustomWidgetService {
     this.homey.settings.set(CUSTOM_DESIGNS_SETTING, this.designs);
   }
 
-  /** A part removed or no longer open to a Flow keeps nothing a Flow set on it. */
-  private dropStaleFlowValues(design: Design) {
-    const kept = this.flowValues[design.id];
-    if (!kept) return;
-    let changed = false;
-    for (const [partId, v] of Object.entries(kept)) {
-      const part = findPart(design, partId);
-      const allowed = part ? CustomWidgetService.allowed(part, v) : null;
-      if (!allowed) { delete kept[partId]; changed = true; } else if (allowed !== v) { kept[partId] = allowed; changed = true; }
+  // ---------------------------------------------------------------- Flow inputs
+
+  inputs(): Input[] {
+    return this.inputList;
+  }
+
+  /**
+   * The builder's list: every input with its shared value now, how many devices have one of their own, and the designs
+   * that use it.
+   */
+  inputSummary() {
+    const now = Date.now();
+    return this.inputList.map((input) => {
+      const e = this.liveEntry(input, now);
+      return {
+        ...input,
+        value: e?.all ? { value: e.all.value, ...(e.all.units ? { units: e.all.units } : {}) } : null,
+        devices: Object.keys(e?.devices ?? {}).length,
+        usedBy: this.designs.filter(d => designInputs(d).includes(input.id)).map(d => ({ id: d.id, name: d.name, ready: !!d.ready })),
+      };
+    });
+  }
+
+  /**
+   * Adds an input (no id) or changes one: `{id?, name, type, perDevice, reset}`. A name another input has (case aside)
+   * is refused. A new type drops its values (they can't be read as the new one), as per device switched off drops the
+   * devices'. Answers the input as kept.
+   */
+  saveInput(body: unknown): Input {
+    const b = (body && typeof body === 'object' ? body : {}) as Record<string, unknown>;
+    const old = typeof b.id === 'string' ? this.inputList.find(x => x.id === b.id) : undefined;
+    if (b.id !== undefined && b.id !== '' && !old) throw new Error('No such input');
+    if (!old && this.inputList.length >= MAX_FLOW_INPUTS) throw new Error(`At most ${MAX_FLOW_INPUTS} Flow inputs`);
+    const [input] = readInputs([{ ...old, ...b, id: old?.id ?? newId() }]);
+    if (!input) throw new Error(INPUT_TYPES.includes(b.type as InputType) || old ? 'A Flow input needs a name' : 'Not a Flow input type');
+    if (this.inputList.some(x => x.id !== input.id && x.name.toLowerCase() === input.name.toLowerCase())) {
+      throw Object.assign(new Error(`There's already a Flow input called ${input.name}`), { reason: 'taken' });
     }
-    if (!Object.keys(kept).length) delete this.flowValues[design.id];
-    if (changed) this.savedFlow.schedule();
+    const i = this.inputList.findIndex(x => x.id === input.id);
+    if (i < 0) this.inputList.push(input);
+    else this.inputList[i] = input;
+    const e = this.inputValues[input.id];
+    if (e && old && (old.type !== input.type || (old.perDevice && !input.perDevice))) {
+      if (old.type !== input.type) delete this.inputValues[input.id];
+      else delete e.devices;
+      if (e.all === undefined && !e.devices) delete this.inputValues[input.id];
+      this.savedValues.schedule();
+    }
+    this.writeInputs();
+    // Every widget showing it reads again: a new type or reset changes what its bindings show.
+    if (old) this.designsUsing(input.id);
+    this.scheduleReset();
+    return input;
   }
 
-  /** The values a part still allows, the same object when all are, or null for none. */
-  private static allowed(part: Part, v: FlowValues): FlowValues | null {
-    const out: FlowValues = { at: v.at };
-    const has = (p: FlowProp) => part.flow[p] === true;
-    if (v.text !== undefined && has('text')) out.text = v.text;
-    if (v.value !== undefined && has('value')) { out.value = v.value; if (v.units !== undefined) out.units = v.units; }
-    if (v.color !== undefined && has('color')) out.color = v.color;
-    if (v.icon !== undefined && has('icon')) out.icon = v.icon;
-    if (v.hidden !== undefined && has('hidden')) out.hidden = v.hidden;
-    const n = Object.keys(out).length - 1;
-    if (!n) return null;
-    return n === Object.keys(v).length - 1 ? v : out;
+  /** Deletes an input and its values; a design's settings bound to it go back to their own. */
+  removeInput(id: string): { removed: boolean } {
+    const i = this.inputList.findIndex(x => x.id === id);
+    if (i < 0) return { removed: false };
+    this.inputList.splice(i, 1);
+    if (this.inputValues[id]) { delete this.inputValues[id]; this.savedValues.schedule(); }
+    this.writeInputs();
+    this.designsUsing(id);
+    return { removed: true };
   }
 
+  private writeInputs() {
+    this.homey.settings.set(CUSTOM_INPUTS_SETTING, this.inputList);
+  }
+
+  /** Tells every widget showing a design that uses an input to read again. */
+  private designsUsing(inputId: string) {
+    for (const d of this.designs) if (designInputs(d).includes(inputId)) this.homey.api.realtime(CUSTOM_DESIGN_EVENT, { id: d.id });
+  }
+
+  /** An input's values that haven't gone back yet, each with `expires` where it will. */
+  private liveEntry(input: Input, now = Date.now()): { all?: InputValue & { expires?: number }, devices?: Record<string, InputValue & { expires?: number }> } | null {
+    const e = this.inputValues[input.id];
+    if (!e) return null;
+    const live = (v: InputValue | undefined) => {
+      if (!v) return undefined;
+      const expires = this.expiry(input.reset, v.at);
+      if (expires !== null && expires <= now) return undefined;
+      return expires === null ? { ...v } : { ...v, expires };
+    };
+    const out: { all?: InputValue & { expires?: number }, devices?: Record<string, InputValue & { expires?: number }> } = {};
+    const all = live(e.all);
+    if (all) out.all = all;
+    for (const [d, v] of Object.entries(e.devices ?? {})) {
+      const x = live(v);
+      if (x) (out.devices ??= {})[d] = x;
+    }
+    return out.all || out.devices ? out : null;
+  }
+
+  /** What a widget gets of an input: its type, per device or not, and its live values. */
+  private inputState(id: string, now = Date.now()) {
+    const input = this.inputList.find(x => x.id === id);
+    if (!input) return null;
+    return { type: input.type, ...(input.perDevice ? { perDevice: true } : {}), ...this.liveEntry(input, now) };
+  }
+
+  // ---------------------------------------------------------------- the widget
   // ---------------------------------------------------------------- the widget
 
   /**
@@ -236,17 +316,17 @@ export default class CustomWidgetService {
     const design = this.get(id);
     if (!design) return { missing: true as const, now: Date.now() };
     // A design that works with any device: the one picked where it's placed fills in its `@` values.
-    return this.stateOf(bindDevice(design, device), this.flowState(design.id), device);
+    return this.stateOf(bindDevice(design, device), device);
   }
 
   /**
-   * The builder's preview: a design as it's being built, read as `readDesign()` keeps it, with what Flows set on the
-   * saved one's parts (so a Flow value shows). Nothing is saved.
+   * The builder's preview: a design as it's being built, read as `readDesign()` keeps it, with the Flow inputs' values
+   * now. Nothing is saved.
    */
   async previewState(body: unknown) {
     const design = readDesign(body);
     if (!design) throw new Error('Not a design');
-    return this.stateOf(bindDevice(design, design.sample), this.get(design.id) ? this.flowState(design.id) : {}, design.sample);
+    return this.stateOf(bindDevice(design, design.sample), design.sample);
   }
 
   /**
@@ -295,7 +375,7 @@ export default class CustomWidgetService {
     return this.deps.sparklines.getWindows(slots.map(slot => ({ slot, from: w.from, end: w.end, unit: w.unit, span })));
   }
 
-  private async stateOf(design: Design, flow: Record<string, FlowValues & { expires?: number }>, device?: string) {
+  private async stateOf(design: Design, device?: string) {
     const repeaters = allParts(design).filter(p => p.kind === 'repeat');
     const repeats = Object.fromEntries(await Promise.all(repeaters.map(async p => [p.id, await this.repeatSlots(p).catch((err) => {
       this.log('Widget Builder: a list\'s devices failed:', err);
@@ -339,7 +419,9 @@ export default class CustomWidgetService {
       histories: Object.fromEntries(histories.flat()),
       repeats,
       each,
-      flow,
+      // The Flow inputs it reads, and the widget's device, whose values a per-device input shows.
+      inputs: Object.fromEntries(designInputs(reads).map(id => [id, this.inputState(id)]).filter(([, v]) => v)),
+      ...(device ? { device } : {}),
       // For its Time components and texts with the time: the weekday's and date's language, and the app's time format.
       language: this.homey.i18n.getLanguage(),
       timeFormat: timeFormatOf(this.homey),
@@ -347,24 +429,7 @@ export default class CustomWidgetService {
     };
   }
 
-  /** What Flows set on a design's parts, each with `expires` where it goes back; gone ones dropped. */
-  private flowState(designId: string): Record<string, FlowValues & { expires?: number }> {
-    const kept = this.flowValues[designId];
-    const design = this.get(designId);
-    if (!kept || !design) return {};
-    const now = Date.now();
-    const out: Record<string, FlowValues & { expires?: number }> = {};
-    for (const [partId, v] of Object.entries(kept)) {
-      const part = findPart(design, partId);
-      if (!part) continue;
-      const expires = this.expiry(part.reset, v.at);
-      if (expires !== null && expires <= now) continue;
-      out[partId] = expires === null ? { ...v } : { ...v, expires };
-    }
-    return out;
-  }
-
-  private expiry(reset: FlowReset, at: number): number | null {
+  private expiry(reset: InputReset, at: number): number | null {
     if (reset === 'hour') return at + HOUR;
     if (reset === 'midnight') return nextLocalTime('00:00', this.homey.clock.getTimezone() || 'UTC', at);
     return null;
@@ -475,7 +540,7 @@ export default class CustomWidgetService {
   }
 
   /**
-   * A button's (or a tapped component's) action the app runs (`set`, `variable`, `flow`), the `index`th of its, which must be of the kind
+   * A button's (or a tapped component's) action the app runs (`set`, `variable`, `flow`, `input`), the `index`th of its, which must be of the kind
    * the request says (its API key use is read from that, `routeKeyUse()`). The widget runs them in order and does the
    * others (a dashboard, a widget state) itself.
    */
@@ -486,6 +551,12 @@ export default class CustomWidgetService {
     if (!action || action.do !== kind || !SERVER_ACTIONS.includes(action.do)) throw new Error('No such action');
     if (action.do === 'flow') {
       await this.deps.flows.trigger(action.flowId);
+    } else if (action.do === 'input') {
+      // As a Flow would, for the widget's device where the input is per device.
+      const input = this.inputList.find(x => x.id === action.input);
+      if (!input) throw new Error('No such Flow input');
+      const dev = input.perDevice && typeof device === 'string' && device ? device : undefined;
+      this.setInputValue(input, CustomWidgetService.actionValue(input, action.value, this.current(input, dev)), dev);
     } else if (action.do === 'variable') {
       const current = (await this.deps.variables.getState([action.variable]))[0] as any;
       if (!current || current.missing) throw new Error(`No variable ${action.variable}`);
@@ -591,24 +662,17 @@ export default class CustomWidgetService {
 
   // ---------------------------------------------------------------- Flow cards
 
-  /** A trigger's or condition's part matches the state's (`<design>/<part>`). */
-  static matches(args: { part?: PartArg }, state: { part?: string }): boolean {
+  /** A trigger's part matches the state's (`<design>/<part>`). */
+  static matches(args: { part?: CardArg }, state: { part?: string }): boolean {
     return !!args.part?.id && args.part.id === state.part;
   }
 
-  /**
-   * The parts a card may name: those open to `prop` (`text`, `color` …), or for the triggers every part that can be
-   * tapped (`tap`) or every choice (`choice`), as `Design · Part`, id `<designId>/<partId>`.
-   */
-  listParts(query: string, prop: FlowProp | 'tap' | 'choice' | 'any'): AutocompleteItem[] {
+  /** The triggers' parts: every button without a Flow (`tap`) or every choice, as `Design · Part`, id `<designId>/<partId>`. */
+  listParts(query: string, prop: 'tap' | 'choice'): AutocompleteItem[] {
     const items: AutocompleteItem[] = [];
     for (const d of this.designs) {
       for (const p of allParts(d)) {
-        const ok = prop === 'any' ? Object.keys(p.flow).length > 0
-          : prop === 'tap' ? (p.kind === 'button' && !p.flowId)
-            : prop === 'choice' ? p.kind === 'choice'
-              : prop === 'value' ? p.flow.value === true
-                : p.flow[prop] === true;
+        const ok = prop === 'tap' ? (p.kind === 'button' && !p.flowId) : p.kind === 'choice';
         if (!ok) continue;
         const name = partLabel(d, p);
         if (!matches(query, name)) continue;
@@ -618,91 +682,118 @@ export default class CustomWidgetService {
     return items.sort(byName(this.homey));
   }
 
-  /** A card's part, which must allow `prop`; anything else throws, so the Flow shows why. */
-  private flowPart(arg: PartArg, prop: FlowProp): { design: Design, part: Part } {
-    const [designId, partId] = String(arg?.id ?? '').split('/');
-    const design = this.get(designId);
-    const part = design && findPart(design, partId);
-    if (!design || !part) throw new Error(`No such Widget Builder part: ${arg?.name ?? arg?.id ?? ''}`);
-    if (part.flow[prop] !== true) {
-      throw new Error(`${partLabel(design, part)} isn't open to Flows for this`);
+  /** A card's inputs: those of `types` (every input without), by name, each described by its type. */
+  listInputs(query: string, types?: readonly InputType[]): AutocompleteItem[] {
+    return this.inputList
+      .filter(x => (!types || types.includes(x.type)) && matches(query, x.name))
+      .map(x => ({ id: x.id, name: x.name, description: [this.homey.__(`custom.inputType.${x.type}`) || x.type, x.perDevice ? this.homey.__('custom.perDevice') || 'per device' : ''].filter(Boolean).join(' · ') }))
+      .sort(byName(this.homey));
+  }
+
+  /** A card's device: *Every device* (the shared value), then every device. */
+  async listDevices(query: string): Promise<AutocompleteItem[]> {
+    const every = { id: EVERY_DEVICE, name: this.homey.__('custom.everyDevice') || 'Every device' };
+    const devices = await listDevicesWhere(this.homey, query, () => true);
+    return [...(matches(query, every.name) ? [every] : []), ...devices];
+  }
+
+  /** A card's input, which must be of `types`; anything else throws, so the Flow shows why. */
+  private cardInput(arg: CardArg, types?: readonly InputType[]): Input {
+    const input = this.inputList.find(x => x.id === arg?.id);
+    if (!input) throw new Error(`No such Widget Builder Flow input: ${arg?.name ?? arg?.id ?? ''}`);
+    if (types && !types.includes(input.type)) throw new Error(`${input.name} isn't a ${types.join(' or ')} input`);
+    return input;
+  }
+
+  /** A card's device: none or *Every device* is the shared value; a device only on a per-device input. */
+  private cardDevice(input: Input, arg: CardArg): string | undefined {
+    const id = arg?.id;
+    if (!id || id === EVERY_DEVICE) return undefined;
+    if (!input.perDevice) throw new Error(`${input.name} isn't kept per device: pick Every device, or switch on Per device in the Widget Builder`);
+    if (isReservedKey(id) || /\s/.test(id)) throw new Error('Not a device');
+    return id;
+  }
+
+  /** The value an input shows now for a device (its own, else the shared one), or undefined. */
+  private current(input: Input, device?: string): InputValue | undefined {
+    const e = this.liveEntry(input);
+    return (device && e?.devices?.[device]) || e?.all;
+  }
+
+  /** A typed action value as an input's: `toggle` flips a yes/no, `+2`/`-1` add to a number, else read as its type. */
+  static actionValue(input: Input, text: string, current?: InputValue): string | number | boolean {
+    const s = text.trim();
+    if (input.type === 'yesno' && s.toLowerCase() === 'toggle') return current?.value !== true;
+    if (input.type === 'number' && /^[+-]\s*\d/.test(s)) {
+      const step = Number(s.replace(/\s/g, '').replace(',', '.'));
+      const base = typeof current?.value === 'number' ? current.value : 0;
+      if (Number.isFinite(step)) return Math.round((base + step) * 1e6) / 1e6;
     }
-    return { design, part };
+    const v = inputValue(input.type, s);
+    if (v === undefined) throw new Error(`Not a ${input.type} value: ${s}`);
+    return v;
   }
 
-  private setFlow(arg: PartArg, prop: FlowProp, change: Partial<FlowValues>) {
-    const { design, part } = this.flowPart(arg, prop);
-    const kept = (this.flowValues[design.id] ??= {});
-    const before = kept[part.id];
-    const now = Date.now();
-    const live = before && (this.expiry(part.reset, before.at) ?? Infinity) > now ? before : undefined;
-    const next: FlowValues = { ...live, ...change, at: now };
-    for (const k of Object.keys(next) as (keyof FlowValues)[]) if (next[k] === undefined) delete next[k];
-    kept[part.id] = next;
-    this.savedFlow.schedule();
-    this.send(design.id, part);
+  /** A card's (or an action's) value for an input; read as its type, else the Flow shows why. */
+  setInput(arg: CardArg, type: InputType, raw: unknown, deviceArg?: CardArg, units?: unknown) {
+    const input = this.cardInput(arg, [type]);
+    const value = inputValue(type, raw);
+    if (value === undefined) throw new Error(`Not a ${type} value: ${String(raw ?? '')}`);
+    const u = type === 'number' && typeof units === 'string' && units.trim() ? units.trim().slice(0, 12) : undefined;
+    this.setInputValue(input, value, this.cardDevice(input, deviceArg), u);
+  }
+
+  private setInputValue(input: Input, value: string | number | boolean, device?: string, units?: string) {
+    const e = (this.inputValues[input.id] ??= {});
+    const v: InputValue = { value, at: Date.now(), ...(units ? { units } : {}) };
+    if (device) (e.devices ??= {})[device] = v;
+    else e.all = v;
+    this.savedValues.schedule();
+    this.sendInput(input.id);
     this.scheduleReset();
+    this.debug(`Widget Builder: Flow input ${input.id}${device ? ` for ${device}` : ''} set`);
   }
 
-  setText(arg: PartArg, text: unknown) {
-    this.setFlow(arg, 'text', { text: String(text ?? '').replace(/\s+/g, ' ').trim().slice(0, 200) });
+  /** Back to nothing: one device's value, or (no device, *Every device*) every value it has. */
+  resetInput(arg: CardArg, deviceArg?: CardArg) {
+    const input = this.cardInput(arg);
+    const e = this.inputValues[input.id];
+    if (!e) return;
+    const device = deviceArg?.id && deviceArg.id !== EVERY_DEVICE ? this.cardDevice(input, deviceArg) : undefined;
+    if (device) {
+      if (!e.devices?.[device]) return;
+      delete e.devices[device];
+      if (!Object.keys(e.devices).length) delete e.devices;
+      if (!e.all && !e.devices) delete this.inputValues[input.id];
+    } else {
+      delete this.inputValues[input.id];
+    }
+    this.savedValues.schedule();
+    this.sendInput(input.id);
   }
 
-  setNumber(arg: PartArg, value: unknown, units?: unknown) {
-    const n = typeof value === 'number' ? value : Number(value);
-    const v = Number.isFinite(n) ? n : String(value ?? '').trim().slice(0, 60);
-    this.setFlow(arg, 'value', { value: v, units: typeof units === 'string' && units.trim() ? units.trim().slice(0, 12) : undefined });
+  /** The condition *… is …*: the value it shows now for the device (or the shared one), compared as a rule's *is*. */
+  inputIs(arg: CardArg, value: unknown, deviceArg?: CardArg): boolean {
+    const input = this.cardInput(arg);
+    const device = deviceArg?.id && deviceArg.id !== EVERY_DEVICE ? this.cardDevice(input, deviceArg) : undefined;
+    const now = this.current(input, device);
+    return ruleHolds({ op: 'is', value: String(value ?? '') }, now?.value);
   }
 
-  setColor(arg: PartArg, color: string) {
-    const c = parseTileColor(color);
-    this.setFlow(arg, 'color', { color: c ?? undefined });
+  private sendInput(id: string) {
+    this.homey.api.realtime(CUSTOM_INPUT_EVENT, { input: id, entry: this.inputState(id) });
   }
 
-  setIcon(arg: PartArg, icon: unknown) {
-    const id = typeof icon === 'string' && /^[a-z0-9-]{1,40}$/.test(icon) && icon !== 'none' ? icon : undefined;
-    this.setFlow(arg, 'icon', { icon: id });
-  }
-
-  setShown(arg: PartArg, shown: boolean) {
-    this.setFlow(arg, 'hidden', { hidden: !shown });
-  }
-
-  /** Everything Flows set on the part goes, so it's as designed again. */
-  reset(arg: PartArg) {
-    const [designId, partId] = String(arg?.id ?? '').split('/');
-    const design = this.get(designId);
-    const part = design && findPart(design, partId);
-    if (!design || !part) throw new Error(`No such Widget Builder part: ${arg?.name ?? arg?.id ?? ''}`);
-    if (!this.flowValues[design.id]?.[part.id]) return;
-    delete this.flowValues[design.id][part.id];
-    if (!Object.keys(this.flowValues[design.id]).length) delete this.flowValues[design.id];
-    this.savedFlow.schedule();
-    this.send(design.id, part);
-  }
-
-  /** The condition *… is shown*: not hidden by a Flow (the rules depend on values only the widget weighs). */
-  isShown(arg: PartArg): boolean {
-    const { design, part } = this.flowPart(arg, 'hidden');
-    return this.flowState(design.id)[part.id]?.hidden !== true;
-  }
-
-  private send(designId: string, part: Part) {
-    const values = this.flowState(designId)[part.id] ?? null;
-    this.homey.api.realtime(CUSTOM_FLOW_EVENT, { design: designId, part: part.id, values });
-  }
-
-  /** The next Flow value to go back: tells the widgets then, and drops it. */
+  /** The next input value to go back: tells the widgets then, and drops it. */
   private scheduleReset() {
     if (this.resetTimer) this.homey.clearTimeout(this.resetTimer);
     this.resetTimer = null;
     let next = Infinity;
     const now = Date.now();
-    for (const [designId, parts] of Object.entries(this.flowValues)) {
-      const design = this.get(designId);
-      for (const [partId, v] of Object.entries(parts)) {
-        const part = design && findPart(design, partId);
-        const at = part ? this.expiry(part.reset, v.at) : null;
+    for (const input of this.inputList) {
+      const e = this.inputValues[input.id];
+      for (const v of e ? [e.all, ...Object.values(e.devices ?? {})] : []) {
+        const at = v ? this.expiry(input.reset, v.at) : null;
         if (at !== null && at > now) next = Math.min(next, at);
       }
     }
@@ -715,18 +806,16 @@ export default class CustomWidgetService {
 
   private expire() {
     const now = Date.now();
-    for (const [designId, parts] of Object.entries(this.flowValues)) {
-      const design = this.get(designId);
-      for (const [partId, v] of Object.entries(parts)) {
-        const part = design && findPart(design, partId);
-        const at = part ? this.expiry(part.reset, v.at) : null;
-        if (!part || (at !== null && at <= now)) {
-          delete parts[partId];
-          this.savedFlow.schedule();
-          if (part) this.homey.api.realtime(CUSTOM_FLOW_EVENT, { design: designId, part: partId, values: null });
-        }
-      }
-      if (!Object.keys(parts).length) delete this.flowValues[designId];
+    for (const input of this.inputList) {
+      const e = this.inputValues[input.id];
+      if (!e) continue;
+      const gone = (v: InputValue | undefined) => { const at = v ? this.expiry(input.reset, v.at) : null; return at !== null && at <= now; };
+      let changed = false;
+      if (gone(e.all)) { delete e.all; changed = true; }
+      for (const [d, v] of Object.entries(e.devices ?? {})) if (gone(v)) { delete e.devices![d]; changed = true; }
+      if (e.devices && !Object.keys(e.devices).length) delete e.devices;
+      if (!e.all && !e.devices) delete this.inputValues[input.id];
+      if (changed) { this.savedValues.schedule(); this.sendInput(input.id); }
     }
     this.scheduleReset();
   }
@@ -738,8 +827,10 @@ export default class CustomWidgetService {
       designs: this.designs.length,
       parts: parts.length,
       containers: parts.filter(p => p.kind === 'container').length,
-      openToFlows: parts.filter(p => Object.keys(p.flow).length > 0).length,
-      flowValues: Object.values(this.flowValues).reduce((n, p) => n + Object.keys(p).length, 0),
+      flowInputs: this.inputList.length,
+      perDevice: this.inputList.filter(x => x.perDevice).length,
+      bound: parts.filter(p => p.bind && Object.keys(p.bind).length > 0).length,
+      inputValues: Object.values(this.inputValues).reduce((n, e) => n + (e.all ? 1 : 0) + Object.keys(e.devices ?? {}).length, 0),
     };
   }
 }

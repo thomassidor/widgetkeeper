@@ -172,7 +172,7 @@
     shortcuts: [LIGHT, VIVID, lightVivid, v('one', 'One column', { columns: '1' })],
     custom: [LIGHT, VIVID,
       v('container', 'A container on its fine grid', { scene: 'container' }),
-      v('free', 'Light · Free-form, with a Flow\'s message', { scene: 'free' }, true),
+      v('free', 'Light · Free-form, with a Flow input\'s message', { scene: 'free' }, true),
       v('rules', 'Rules: a door in red, a charger hidden', { scene: 'rules' }),
       v('controls', 'Light · Stepper, choice, variables, gauge', { scene: 'controls' }, true),
       v('blocks', 'Text with values, sums, the time and shapes', { scene: 'blocks' }),

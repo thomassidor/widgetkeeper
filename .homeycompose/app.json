@@ -128,6 +128,18 @@
       "method": "POST",
       "path": "/web/designs/pick"
     },
+    "getWebInputs": {
+      "method": "GET",
+      "path": "/web/inputs"
+    },
+    "putWebInput": {
+      "method": "PUT",
+      "path": "/web/inputs"
+    },
+    "deleteWebInput": {
+      "method": "DELETE",
+      "path": "/web/inputs/:id"
+    },
     "postWebDesignImage": {
       "method": "POST",
       "path": "/web/designs/image"
