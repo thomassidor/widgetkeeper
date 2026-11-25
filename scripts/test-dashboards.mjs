@@ -30,6 +30,7 @@
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { parseArgs } from 'node:util';
+import { testDesigns, TEST_PREFIX } from './test-designs.mjs';
 import { APP_ID, WEB_SETTING as SETTING, WEB_FRONT_SETTING, DASHBOARDS, TILE_NAMES, MAX_WEB_DASHBOARDS, connect, widgetManifests } from './homey-session.mjs';
 
 const EN = JSON.parse(readFileSync(new URL('../locales/en.json', import.meta.url), 'utf8'));
@@ -150,7 +151,23 @@ const RISKY_FLOW = /secur|alarm|siren|lock|fire|smoke|left|came home|restart|rst
 
 // ---------------------------------------------------------------- one builder per widget type
 
+/** What BUILD.custom made: the designs, Flow inputs and values written to the app settings after the dashboards. */
+let customTest = null;
+
 const BUILD = {
+  async custom() {
+    // Every design is placed by its autocomplete item; the app reads the designs when it restarts (`writeDesigns()`).
+    const flows = pick(await autocomplete('flows', 'flow1'), i => !RISKY_FLOW.test(`${i.name} ${i.description ?? ''}`), 1);
+    const variables = pick(await autocomplete('varpresets', 'variable'), () => true, 1000);
+    customTest = testDesigns({ devices, variables, flows });
+    const named = id => customTest.designs.find(d => d.id === id)?.name ?? 'Deleted design';
+    const item = id => ({ id, name: named(id), description: '' });
+    const widgets = customTest.widgets.map(([title, id, settings = {}, device]) => w('custom', title,
+      { ...(id ? { design: item(id) } : {}), ...(device ? { device: { id: device.id, name: device.name } } : {}), ...settings },
+      device ? [device.id] : []));
+    return { cols: 3, widgets: [{ ...w('custom', 'Energy · three columns on the web, one on Homey', { design: item(customTest.wide) }), span: 3 }, ...widgets] };
+  },
+
   async electricity() {
     const meter = where(d => has(d, 'measure_power') && d.class === 'sensor', 1).concat(where(d => has(d, 'measure_power'), 1))[0];
     const m = meter ? [meter] : [];
@@ -1535,6 +1552,29 @@ async function writeNative(built) {
   console.log(`${opts.remove ? 'Removed' : 'Saved'}; ${count} Homey dashboards now.`);
 }
 
+const SETTING_OF = key => `/api/manager/apps/app/${APP_ID}/setting/${key}`;
+/**
+ * The Widget Builder's test designs, Flow inputs and their values (`test-…` ids; the user's own stay), then the app
+ * restarted, as it reads the designs only when it starts.
+ */
+async function writeDesigns() {
+  const isTest = x => x && typeof x.id === 'string' && x.id.startsWith(TEST_PREFIX);
+  const read = async key => { const v = await homeyApi('GET', SETTING_OF(key)).catch(() => null); return v; };
+  const designs = (await read('customDesigns')) ?? [];
+  const inputs = (await read('customInputs')) ?? [];
+  const values = (await read('customInputValues')) ?? {};
+  const mine = Array.isArray(designs) ? designs.filter(d => !isTest(d)) : [];
+  const next = [...mine, ...(customTest?.designs ?? [])];
+  if (next.length > 50) throw new Error(`That would make ${next.length} designs; at most 50`);
+  const keptValues = Object.fromEntries(Object.entries(values && typeof values === 'object' ? values : {}).filter(([k]) => !k.startsWith(TEST_PREFIX)));
+  await homeyApi('PUT', SETTING_OF('customDesigns'), { value: next });
+  await homeyApi('PUT', SETTING_OF('customInputs'), { value: [...(Array.isArray(inputs) ? inputs.filter(x => !isTest(x)) : []), ...(customTest?.inputs ?? [])] });
+  await homeyApi('PUT', SETTING_OF('customInputValues'), { value: { ...keptValues, ...(customTest?.values ?? {}) } });
+  console.log(`Widget Builder: ${customTest?.designs.length ?? 0} test designs, ${customTest?.inputs.length ?? 0} Flow inputs (${mine.length} of your own designs kept); restarting the app.`);
+  await homeyApi('POST', `/api/manager/apps/app/${APP_ID}/restart`);
+}
+
 const built = opts.remove ? [] : opts.apps ? [await buildApps()] : opts.every ? [await buildEvery()] : await buildAll();
 await (opts.native ? writeNative(built) : writeWeb(built));
+if (customTest || (opts.remove && replacing('custom'))) await writeDesigns();
 await close();
