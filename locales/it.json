@@ -1874,6 +1874,12 @@
     "noReady": "Scegli un componente pronto per il ripetitore.",
     "yes": "Sì",
     "no": "No",
+    "open": "Aperto",
+    "closed": "Chiuso",
+    "motion": "Movimento",
+    "noMotion": "Nessun movimento",
+    "alarm": "Allarme",
+    "ok": "OK",
     "inputType": {
       "text": "Testo",
       "number": "Numero",

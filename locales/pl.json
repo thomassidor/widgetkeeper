@@ -1874,6 +1874,12 @@
     "noReady": "Wybierz gotowy komponent dla powielacza.",
     "yes": "Tak",
     "no": "Nie",
+    "open": "Otwarte",
+    "closed": "Zamknięte",
+    "motion": "Ruch",
+    "noMotion": "Brak ruchu",
+    "alarm": "Alarm",
+    "ok": "OK",
     "inputType": {
       "text": "Tekst",
       "number": "Liczba",

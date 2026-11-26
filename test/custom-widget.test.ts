@@ -492,6 +492,18 @@ describe('widget states, pages, actions, images, rings and repeaters', () => {
     expect(at('rp').querySelector('.wb-rep-empty')!.textContent).toBe('All closed');
   });
 
+  it("words a sensor's yes/no as Value Board does: open/closed, motion, alarm/OK; a switch stays on/off (2026-11-26)", () => {
+    const s = state([
+      part('rp', 'repeat', { capability: 'alarm_contact' }),
+      part('m', 'text', { text: '{1} · {2} · {3}', refs: [{ slot: 'm:alarm_motion' }, { slot: 'w:alarm_water' }, { slot: 'l:onoff' }] }),
+    ], [bool('a:alarm_contact', true, 'Back door'), bool('b:alarm_contact', false, 'Shed'), bool('m:alarm_motion', false, 'Hall'),
+      bool('w:alarm_water', true, 'Sink'), bool('l:onoff', true, 'Lamp')],
+    { repeats: { rp: ['a:alarm_contact', 'b:alarm_contact'] } });
+    const { at } = widget(s);
+    expect([...at('rp').querySelectorAll('.wb-rep-value')].map(n => n.textContent)).toEqual(['Open', 'Closed']);
+    expect(at('m').textContent).toBe('No motion · Alarm · On');
+  });
+
   it("shows a picture from the web as it is, and a device's through the app", async () => {
     const { at } = widget(state([
       part('u', 'image', { image: { kind: 'url', url: 'https://x.test/a.jpg' }, fit: 'contain' }),

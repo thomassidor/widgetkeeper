@@ -1874,6 +1874,12 @@
     "noReady": "Elige un componente prediseñado para el repetidor.",
     "yes": "Sí",
     "no": "No",
+    "open": "Abierto",
+    "closed": "Cerrado",
+    "motion": "Movimiento",
+    "noMotion": "Sin movimiento",
+    "alarm": "Alarma",
+    "ok": "OK",
     "inputType": {
       "text": "Texto",
       "number": "Número",

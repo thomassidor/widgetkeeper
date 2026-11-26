@@ -1874,6 +1874,12 @@
     "noReady": "Välj en färdig komponent för upprepning.",
     "yes": "Ja",
     "no": "Nej",
+    "open": "Öppen",
+    "closed": "Stängd",
+    "motion": "Rörelse",
+    "noMotion": "Ingen rörelse",
+    "alarm": "Larm",
+    "ok": "OK",
     "inputType": {
       "text": "Text",
       "number": "Tal",

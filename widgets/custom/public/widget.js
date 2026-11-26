@@ -35,6 +35,12 @@
     page: 'Page __n__',
     yes: 'Yes',
     no: 'No',
+    open: 'Open',
+    closed: 'Closed',
+    motion: 'Motion',
+    noMotion: 'No motion',
+    alarm: 'Alarm',
+    ok: 'OK',
   };
 
   /** lib/customDesigns.ts' `ruleHolds()` (a test checks they agree). */
@@ -498,7 +504,7 @@
         const s = state.values && state.values[src.slot];
         if (!s) return null;
         if (s.missing) return { missing: true };
-        return { value: s.value, cap: s.capability || {}, name: s.name, offline: !!s.offline, updatedAt: s.updatedAt };
+        return { value: s.value, cap: { ...(s.capability || {}), capabilityId: s.capabilityId }, name: s.name, offline: !!s.offline, updatedAt: s.updatedAt };
       }
       if (src.variable) {
         const v = state.variables && state.variables[src.variable];
@@ -702,7 +708,16 @@
       }
       return null;
     }
-    const fmt = (cap, value) => K.formatValue(cap || {}, value, k => t(k));
+    /** A value as text: a sensor's yes/no in its own words (Value Board's: open/closed, motion, alarm), else the kit's. */
+    const fmt = (cap, value) => {
+      if (typeof value === 'boolean' && cap && cap.capabilityId) {
+        const base = String(cap.capabilityId).split('.')[0];
+        if (base === 'alarm_contact') return t(value ? 'open' : 'closed');
+        if (base === 'alarm_motion') return t(value ? 'motion' : 'noMotion');
+        if (base.startsWith('alarm_')) return t(value ? 'alarm' : 'ok');
+      }
+      return K.formatValue(cap || {}, value, k => t(k));
+    };
     const language = () => (state && state.language) || (typeof navigator !== 'undefined' && navigator.language) || 'en';
 
     /** `4 min ago`, `in 2 hr.`, `now` in Homey's language (Intl's own words: no strings of ours). */

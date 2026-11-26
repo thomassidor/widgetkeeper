@@ -1874,6 +1874,12 @@
     "noReady": "반복기에 쓸 기성 구성 요소를 고르세요.",
     "yes": "예",
     "no": "아니요",
+    "open": "열림",
+    "closed": "닫힘",
+    "motion": "움직임",
+    "noMotion": "움직임 없음",
+    "alarm": "경보",
+    "ok": "정상",
     "inputType": {
       "text": "텍스트",
       "number": "숫자",

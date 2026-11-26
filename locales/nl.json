@@ -1874,6 +1874,12 @@
     "noReady": "Kies een kant-en-klaar onderdeel voor de herhaler.",
     "yes": "Ja",
     "no": "Nee",
+    "open": "Open",
+    "closed": "Dicht",
+    "motion": "Beweging",
+    "noMotion": "Geen beweging",
+    "alarm": "Alarm",
+    "ok": "OK",
     "inputType": {
       "text": "Tekst",
       "number": "Getal",

@@ -1874,6 +1874,12 @@
     "noReady": "Wähle ein Fertigteil für den Wiederholer.",
     "yes": "Ja",
     "no": "Nein",
+    "open": "Offen",
+    "closed": "Geschlossen",
+    "motion": "Bewegung",
+    "noMotion": "Keine Bewegung",
+    "alarm": "Alarm",
+    "ok": "OK",
     "inputType": {
       "text": "Text",
       "number": "Zahl",

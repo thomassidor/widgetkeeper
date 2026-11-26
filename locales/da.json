@@ -1874,6 +1874,12 @@
     "noReady": "Vælg en færdig komponent til gentageren.",
     "yes": "Ja",
     "no": "Nej",
+    "open": "Åben",
+    "closed": "Lukket",
+    "motion": "Bevægelse",
+    "noMotion": "Ingen bevægelse",
+    "alarm": "Alarm",
+    "ok": "OK",
     "inputType": {
       "text": "Tekst",
       "number": "Tal",

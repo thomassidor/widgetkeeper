@@ -1874,6 +1874,12 @@
     "noReady": "Pick a ready-made component for the repeater.",
     "yes": "Yes",
     "no": "No",
+    "open": "Open",
+    "closed": "Closed",
+    "motion": "Motion",
+    "noMotion": "No motion",
+    "alarm": "Alarm",
+    "ok": "OK",
     "inputType": {
       "text": "Text",
       "number": "Number",

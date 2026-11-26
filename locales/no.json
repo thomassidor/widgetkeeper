@@ -1874,6 +1874,12 @@
     "noReady": "Velg en ferdig komponent for gjentakeren.",
     "yes": "Ja",
     "no": "Nei",
+    "open": "Åpen",
+    "closed": "Lukket",
+    "motion": "Bevegelse",
+    "noMotion": "Ingen bevegelse",
+    "alarm": "Alarm",
+    "ok": "OK",
     "inputType": {
       "text": "Tekst",
       "number": "Tall",
