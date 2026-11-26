@@ -34,7 +34,7 @@ Hi all,
 
 > :white_check_mark: **Live version (1.2.1):** https://homey.app/a/com.thomassidor.widgetkeeper/
 >
-> :test_tube: **Test version (1.3.0):** https://homey.app/a/com.thomassidor.widgetkeeper/test/
+> :test_tube: **Test version (1.4.0):** https://homey.app/a/com.thomassidor.widgetkeeper/test/
 
 ## The widgets
 
@@ -46,7 +46,7 @@ Tap a widget for what it does and its settings. Every widget follows Homey's lig
 
 ### :test_tube: Test version only
 
-[![Combined Value|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/combined-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/combined.md) [![Flow Tiles|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/flowtiles-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/flowtiles.md) [![Value Board|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/valueboard-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/valueboard.md)
+[![Combined Value|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/combined-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/combined.md) [![Flow Tiles|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/flowtiles-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/flowtiles.md) [![Group Quick Action|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/groupaction-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/groupaction.md) [![Value Board|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/valueboard-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/valueboard.md) [![Widget Builder|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/custom-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/custom.md)
 
 ## :desktop_computer: Web dashboards
 

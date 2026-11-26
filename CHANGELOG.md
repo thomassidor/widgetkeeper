@@ -2,6 +2,34 @@
 
 All notable changes to Widgetkeeper. The version numbers match the Homey app version.
 
+## 1.4.0
+
+### New: Widget Builder
+- **Design a widget of your own** from parts and place it on any Homey dashboard or web dashboard. You build it on the web dashboards: open **Widget Builder** from the side pane or the banner on the front page. The builder shows your design at its real size with its live values; drag components in, move and resize them, and see it stretched over one, two or three columns. Changes are saved as you go, with Undo and Redo.
+- **Components:** ready-made tiles that look like the normal widgets (a value, two values, a chart, a gauge, a level, a status, a slider, a trend, a clock), and the primitives they're made of: texts that hold values (`{1} open`, the time, *8 min. ago*), icons, shapes, pictures, sparklines and charts over any time span, arcs, bars, rings, segmented bars and donuts, lists of devices, calculated values (a sum, an average, a formula, a change over a day), switches, buttons, sliders, steppers, choices and variables. Containers hold components of their own as a tile, a pill or a background, freely placed or on pages switched with tabs.
+- **Buttons do several things in order:** set a device value or a variable, start a Flow, open a web dashboard, or set a widget state, optionally after a second tap or a hold. Any component can do things when tapped.
+- **Rules:** a component changes colour or icon, or hides, by its own value or another one: a dot that turns red while the front door is unlocked, a tile that turns orange over 2,000 W.
+- **Designs for any device** take their device from the widget's settings where they're placed, and a **Repeater** shows a ready-made of your own once for each of several devices. Your own ready-mades stay linked: a change shows wherever they're used.
+- **Flow inputs:** texts, numbers, yes/no, colours and icons your Flows set by name, which any setting with a ⚡ can follow (a text, a colour, an icon, whether something shows, a container's page), per device if you like, cleared after an hour or at midnight. Flow cards to set and clear them, a condition, and triggers for a button tapped and a choice made.
+- On a Homey dashboard, add the **Widget Builder** widget and pick the design. Starting a Flow or setting a variable needs the API key.
+
+### New: Group Quick Action
+- **One tile that switches several devices at once,** such as every light in a room or every lock, with a dot per device and a switch that shows on, off or mixed. A tap while any is on turns them all off; while all are off, all on. Locks, garage doors and speakers are worded as such (*1 of 3 unlocked*). Activate with a single, double or long press; Muted or Vivid in any colour.
+
+### Custom colours from Flows
+- **A colour of your own,** not only the twelve: new Flow cards for Device Values, Flow Buttons, Notes and Flow Tiles take a typed `#F00`, `#FF0000` or `rgb()` (tags work), drawn tinted in Muted and solid in Vivid, with text by contrast. The Widget Builder's colour inputs take them too.
+- **White and Black** on every colour card.
+
+### Smart Stack
+- **Tabs instead of dots:** the page's icon and name, the name only or the icon only, in a strip above or below the pages.
+
+### Web dashboards
+- **Every app setting in Settings:** each card of the app settings page as a tab in the web dashboards' Settings, with a full-access key. What could lock you out (turning web dashboards off, Remote access from away) stays on the app settings page.
+
+### And also
+- **Media:** one of its buttons can sit beside ⋯, one tap away, such as a power button. Thanks to Ray_S for asking.
+- **Decimals:** Device Values (per tile), Sparklines (per tile), Combined Value and Value Matrix (per column) have a Decimals setting: Automatic as before, or 0, 1 or 2, so a sensor no longer shows 56.0 %.
+
 ## 1.3.2
 
 ### Temperature: °C or °F
