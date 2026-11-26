@@ -1416,6 +1416,17 @@ label.wdb-input-opt { cursor: pointer; }
 .wdb-input-segs .wd-seg-option { flex: 1 1 auto; min-width: 0; padding: 0 8px; font-size: 13px; }
 .wdb-input-foot { display: flex; align-items: center; gap: 6px; margin: 0 -14px; padding: 10px 14px; background: var(--wd-raised); color: var(--wd-muted); font-size: 12px; line-height: 16px; }
 .wdb-input-foot svg { flex: none; width: 14px; height: 14px; color: var(--wd-accent); fill: currentColor; }
+.wdb-input-foot { margin-top: auto; }
+/* Cards side by side share their rows (head, value, Type, Per device, Clear, footer), so a Type line with its hint
+   doesn't push one card's lines and footer below its neighbours'. */
+@supports (grid-template-rows: subgrid) {
+  .wdb-input { display: grid; grid-template-columns: minmax(0, 1fr); grid-row: span 6; grid-template-rows: subgrid; row-gap: 0; }
+  .wdb-input-opts { display: contents; }
+  .wdb-input-head, .wdb-input-value { margin-bottom: 12px; }
+  .wdb-input-value { align-self: start; }
+  .wdb-input-opt-wide { margin-bottom: 12px; align-self: start; }
+  .wdb-input-foot { margin-top: 0; }
+}
 .wdb-input-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; padding: 0; list-style: none; }
 .wdb-input-step { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: 14px; background: var(--wd-raised); }
 .wdb-input-step > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 14px; line-height: 20px; }
