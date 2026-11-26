@@ -39,6 +39,12 @@
     slot('heat:target_temperature', 'Bedroom thermostat', cap('Target temperature', 'number', '°C', 1, { min: 5, max: 30 }), 19.5),
     slot('heat:thermostat_mode', 'Bedroom thermostat', cap('Mode', 'enum', null, null,
       { values: [{ id: 'auto', title: 'Auto' }, { id: 'heat', title: 'Heat' }, { id: 'off', title: 'Off' }] }), 'heat'),
+    // The teaser's example designs (DESIGNS.door … hallway).
+    { ...slot('door:locked', 'Front door', cap('Locked', 'boolean', null, null), true), updatedAt: NOW - 8 * 60e3 },
+    slot('bed:measure_temperature', 'Bedroom sensor', cap('Temperature', 'number', '°C', 1), 19.8),
+    slot('bed:measure_humidity', 'Bedroom sensor', cap('Humidity', 'number', '%', 0), 52),
+    slot('bedair:measure_co2', 'Bedroom air', cap('CO₂', 'number', 'ppm', 0), 780),
+    slot('bedlamp:onoff', 'Bedside lamp', cap('Turned on', 'boolean', null, null), true),
   ].map(s => [`${s.deviceId}:${s.capabilityId}`, s]));
   const VARIABLES = {
     v1: { id: 'v1', name: 'House mode', type: 'string', value: 'home' },
@@ -259,13 +265,96 @@
     kid('note', 'text', at(2, 4, 2, 2), { text: 'Milk and bread', style: 'postit', size: 'default', color: 'yellow' }),
     part('ch', 'chart', at(0, 6, 4, 3), { name: 'Living room', series: [{ slot: 'lr:measure_temperature', color: 'orange' }], span: '24h', chartStyle: 'area', header: true, smooth: true, chartLegend: 'hidden' }),
   ];
+  // Example designs for the 1.4.0 teaser (dev/whats-next-1.4.0.html): widgets a user might make, one column wide.
+  // Front door: the lock with when it changed, a Flow's message, the porch light and the doorbell's battery.
+  DESIGNS.door = [
+    part('box', 'container', at(0, 0, 4, 2), { mode: 'free', background: { kind: 'none' }, style: 'tile', parts: [
+      kid('li', 'icon', at(0, 4, 13, 34), { slot: 'door:locked', color: 'green', grow: true, rules: [{ op: 'is', value: 'off', look: 'red', icon: 'unlock' }] }),
+      kid('ln', 'text', at(17, 2, 60, 30), { text: 'Front door', size: 'default' }),
+      kid('ls', 'text', at(17, 30, 70, 24), { text: 'Locked · {1}', refs: [{ since: 'door:locked' }], size: 'small', muted: true }),
+      part('msgbg', 'shape', at(0, 64, 100, 36), { shape: 'rect', radius: 10, background: { kind: 'none' }, color: 'orange', opacity: 30, style: 'none' }),
+      kid('mi', 'icon', at(3, 70, 8, 24), { icon: 'gift', color: 'orange' }),
+      kid('msg', 'text', at(14, 64, 84, 36), { text: '', size: 'small', weight: 'bold', bind: { text: 'door' } }),
+    ] }),
+    part('porch', 'switch', at(0, 2, 2), { slot: 'porch:onoff', name: 'Porch light', icon: 'bulb', color: 'yellow' }),
+    READY.level('bat', at(2, 2, 2), 'bell:measure_battery', { name: 'Doorbell', rules: [{ op: 'below', value: '20', look: 'red', of: { slot: 'bell:measure_battery' } }] }),
+    part('lockall', 'button', at(0, 3, 4), { name: 'Lock up for the night', icon: 'lock', color: 'indigo', press: 'confirm', actions: [{ do: 'set', slot: 'door:locked', value: 'on' }] }),
+  ];
+  // Energy: what the house uses now with its day, where it goes, the solar panels and what comes from the grid.
+  DESIGNS.energy = [
+    part('netc', 'calc', at(3, 0), { name: 'From the grid', op: 'formula', formula: 'a - b', units: 'W', decimals: 0,
+      inputs: [{ slot: 'meter:measure_power' }, { slot: 'solar:measure_power' }] }),
+    box('now', at(0, 0, 4, 2), [
+      kid('ni', 'icon', at(0, 0, 7, 22), { icon: 'bolt', color: 'orange' }),
+      kid('nl', 'text', at(9, 0, 60, 22), { text: 'Using now', size: 'small', weight: 'bold' }),
+      kid('nv', 'text', at(0, 22, 60, 34), { text: '{1}', refs: [{ slot: 'meter:measure_power' }], size: 'display' }),
+      kid('ns', 'sparkline', at(0, 62, 100, 38), { slot: 'meter:measure_power', span: '24h', color: 'orange', smooth: true }),
+    ]),
+    part('bar', 'segments', at(0, 2, 4, 2), { name: 'Where it goes', units: 'W', segments: [
+      { src: { slot: 'heatpump:measure_power' }, color: 'orange', label: 'Heat pump' }, { src: { slot: 'oven:measure_power' }, color: 'red', label: 'Oven' },
+      { src: { slot: 'washer:measure_power' }, color: 'blue', label: 'Laundry' },
+    ] }),
+    READY.value('sol', at(0, 4, 2), 'solar:measure_power', { name: 'Solar', icon: 'sun', color: 'yellow' }),
+    box('grid', at(2, 4, 2), [
+      kid('gi', 'icon', at(0, 0, 14, 42), { icon: 'plug' }),
+      kid('gv', 'text', at(16, 0, 84, 42), { text: '{1}', refs: [{ part: 'netc' }], size: 'small', weight: 'bold', align: 'right' }),
+      kid('gn', 'text', low, { text: 'From the grid', size: 'small', weight: 'bold' }),
+    ], { rules: [{ op: 'above', value: '1000', look: 'orange', of: { part: 'netc' } }] }),
+  ];
+  // Bedroom: the room's climate in rings, the heating's setpoint and mode, the window and the bedside lamp.
+  DESIGNS.bedroom = [
+    box('clim', at(0, 0, 4, 2), [
+      kid('cn', 'text', at(0, 0, 60, 22), { text: 'Bedroom', size: 'small', weight: 'bold' }),
+      kid('cv', 'text', at(0, 22, 60, 36), { text: '{1}', refs: [{ slot: 'bed:measure_temperature' }], size: 'display' }),
+      kid('cs', 'text', at(0, 64, 64, 30), { text: 'Humidity {1} · CO₂ {2}', refs: [{ slot: 'bed:measure_humidity' }, { slot: 'bedair:measure_co2' }], size: 'small', muted: true }),
+      part('ring', 'ring', at(68, 0, 32, 100), { center: 'none', style: 'none', hide: ['name'], rings: [
+        { src: { slot: 'bed:measure_temperature' }, min: 15, max: 25, color: 'orange' },
+        { src: { slot: 'bed:measure_humidity' }, min: 0, max: 100, color: 'teal' },
+        { src: { slot: 'bedair:measure_co2' }, min: 400, max: 1500, color: 'green' },
+      ] }),
+    ]),
+    part('set', 'stepper', at(0, 2, 2), { slot: 'heat:target_temperature', name: 'Heat to', step: 0.5, min: 15, max: 25 }),
+    part('mode', 'choice', at(2, 2, 2), { slot: 'heat:thermostat_mode', name: 'Heating', color: 'orange',
+      choices: [{ label: 'Auto', value: 'auto' }, { label: 'Heat', value: 'heat' }, { label: 'Off', value: 'off' }] }),
+    box('win', at(0, 3, 2), [
+      kid('wi', 'icon', at(0, 0, 14, 42), { icon: 'window' }),
+      kid('wv', 'text', at(16, 0, 84, 42), { text: 'Closed', size: 'small', weight: 'bold', align: 'right',
+        rules: [{ op: 'is', value: 'open', look: 'hide', of: { slot: 'window:alarm_contact' } }] }),
+      kid('wn', 'text', low, { text: 'Window', size: 'small', weight: 'bold' }),
+    ], { rules: [{ op: 'is', value: 'open', look: 'orange', of: { slot: 'window:alarm_contact' } }] }),
+    part('lamp', 'switch', at(2, 3, 2), { slot: 'bedlamp:onoff', name: 'Bedside lamp', icon: 'bed', color: 'yellow' }),
+  ];
+  // The hallway: the time and date, a reminder a Flow sets, what's still open, and two routines.
+  DESIGNS.hallway = [
+    part('top', 'container', at(0, 0, 4, 2), {
+      mode: 'free', background: { kind: 'gradient', from: 'indigo', to: 'purple', angle: 135 }, style: 'tile', parts: [
+        kid('ck', 'text', at(0, 4, 60, 44), { text: '{1}', refs: [{ time: 'clock' }], size: 'display' }),
+        kid('dt', 'text', at(0, 48, 70, 22), { text: '{1}', refs: [{ time: 'date' }], size: 'small', weight: 'bold' }),
+        kid('bi', 'icon', at(0, 74, 8, 22), { icon: 'trash' }),
+        kid('bt', 'text', at(10, 72, 90, 26), { text: '', size: 'small', bind: { text: 'bins' } }),
+      ] }),
+    part('openc', 'calc', at(0, 2), { name: 'Open', op: 'count', test: { op: 'is', value: 'on' },
+      inputs: [{ slot: 'garage:alarm_contact' }, { slot: 'back:alarm_contact' }, { slot: 'shed:alarm_contact' }, { slot: 'window:alarm_contact' }] }),
+    box('open', at(0, 2, 2), [
+      kid('oi', 'icon', at(0, 0, 14, 42), { icon: 'door' }),
+      kid('ov', 'text', at(16, 0, 84, 42), { text: '{1} open', refs: [{ part: 'openc' }], size: 'small', weight: 'bold', align: 'right' }),
+      kid('on', 'text', low, { text: 'Doors', size: 'small', weight: 'bold' }),
+    ], { rules: [{ op: 'above', value: '0', look: 'orange', of: { part: 'openc' } }] }),
+    part('porch', 'switch', at(0, 3, 2), { slot: 'porch:onoff', name: 'Porch light', icon: 'bulb', color: 'yellow' }),
+    part('leave', 'button', at(2, 2, 2), { name: 'Leaving', icon: 'leave', color: 'blue' }),
+    part('night', 'button', at(2, 3, 2), { name: 'Good night', icon: 'moon', color: 'indigo', press: 'confirm' }),
+  ];
   // The repeaters' devices, as the app finds them (every device with the capability, by name).
   const REPEATS = { more: { doors: ['back:alarm_contact', 'window:alarm_contact', 'garage:alarm_contact', 'shed:alarm_contact'] } };
   REPEATS.more.open = REPEATS.more.doors;
-  const NAMES = { living: 'Living room', container: 'Living room card', free: 'Entrance', rules: 'Garage', controls: 'Bedroom', blocks: 'At a glance', more: 'Home', split: 'Energy', bare: 'Bare parts', widgets: 'As the widgets' };
+  const NAMES = { living: 'Living room', container: 'Living room card', free: 'Entrance', rules: 'Garage', controls: 'Bedroom', blocks: 'At a glance', more: 'Home', split: 'Energy', bare: 'Bare parts', widgets: 'As the widgets', door: 'Front door', energy: 'Energy', bedroom: 'Bedroom', hallway: 'Hallway' };
   // What Flows set: the entrance's message.
   /** The Flow inputs each scene reads (lib/CustomWidgetService.ts' `inputs`): the front door's message, set by a Flow. */
-  const INPUTS = { free: { door: { type: 'text', all: { value: 'Parcel by the door', at: NOW - 13 * 60e3 } } } };
+  const INPUTS = {
+    free: { door: { type: 'text', all: { value: 'Parcel by the door', at: NOW - 13 * 60e3 } } },
+    door: { door: { type: 'text', all: { value: 'Parcel by the door', at: NOW - 13 * 60e3 } } },
+    hallway: { bins: { type: 'text', all: { value: 'Paper bin out tomorrow', at: NOW - 3 * HOUR } } },
+  };
 
   window.mockCustomState = function (scene = 'living') {
     const parts = DESIGNS[scene] || DESIGNS.living;

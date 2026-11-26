@@ -6,11 +6,11 @@
   <title>New in 1.4.0</title>
   <!--
     A teaser of 1.4.0 (.homeychangelog.json), in the look of the 1.1.0 to 1.3.0 posters (whats-next-1.3.0.html): the
-    Widget Builder beside the real builder page (docs/web/builder.png, `npm run web-showcase -- builder`), four designs
-    made with it (its Looks, docs/variants/custom-*.webp), Flow inputs (their cards drawn with their real titles, beside
-    the free-form Look with a Flow input's message), then a row of custom colours from Flows (Flow Buttons mounted with
-    typed colours), the Smart Stack's tabs and Media's shortcut (their Looks) and the app settings on the web dashboards
-    (their tabs drawn), and And also. All on made-up data.
+    Widget Builder beside the real builder page (docs/web/builder.png, `npm run web-showcase -- builder`), four example
+    designs made with it (the real widget, dev/mock-custom.js' scenes door, energy, bedroom and hallway), Flow inputs (their
+    cards drawn with their real titles, beside the front door's top tile with a Flow input's message), then a row of Group
+    Quick Action (its README screenshot), custom colours from Flows (Flow Buttons mounted with typed colours), the Smart
+    Stack's tabs and Media's shortcut (their Looks), and And also. All on made-up data. Plain words: say what it does.
     scripts/render-whats-next.mjs (`npm run whats-next`) renders it to docs/whats-next-1.4.0.png at 2x; the clock is fixed
     (fixed-clock.js).
   -->
@@ -18,14 +18,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../widgets/spacer/public/kit.css">
   <link rel="stylesheet" href="../widgets/flows/public/widget.css">
+  <link rel="stylesheet" href="../widgets/custom/public/widget.css">
   <script src="../widgets/spacer/public/kit.js"></script>
   <!-- The renders' times in 24 hours, as the made-up house's. -->
   <script>WidgetkeeperKit.setTimeFormat('24');</script>
   <script src="../widgets/spacer/public/icons.js"></script>
   <script src="../widgets/flows/public/widget.js"></script>
+  <script src="../widgets/custom/public/widget.js"></script>
   <script src="../temp/screenshot-icons.js" onerror="window.ICONS = {}"></script>
   <script src="mock-util.js"></script>
   <script src="showcase-data.js"></script>
+  <script src="mock-custom.js"></script>
   <script src="showcase-mount.js"></script>
   <style>
     html { background: #0C0B12 !important; }
@@ -93,9 +96,14 @@
     .hero ul.more li { font-size: 16px; line-height: 23px; }
     .hero img { flex: none; width: 1160px; height: auto; display: block; margin: -8px -12px -14px 0; }
 
-    /* Designs made with it: four of its Looks (docs/variants/custom-*.webp), tops lined up. */
-    .looks { display: flex; gap: 16px; align-items: flex-start; }
-    .looks img { display: block; flex: 1 1 0; min-width: 0; height: auto; border-radius: 14px; }
+    /* Made with it: four example designs, the real widget on Homey's dark dashboard, tops lined up. */
+    .examples { display: flex; gap: 16px; align-items: flex-start; }
+    .example { flex: 1 1 0; min-width: 0; padding: 14px 14px 16px; border-radius: 20px; background: #0A0B0F; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); }
+    .example .cap { margin: 0 2px 12px; font-size: 15px; line-height: 20px; font-weight: 500; color: #DCDAE8; }
+    .example .cap small { display: block; font-size: 13px; line-height: 18px; font-weight: 400; color: #8E8DA0; }
+    .split > .demo { flex: none; width: 420px; padding: 16px; border-radius: 20px; background: #0A0B0F; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); }
+    .split > .demo .cap { margin: 0 2px 12px; font-size: 13px; line-height: 18px; color: #8E8DA0; }
+    .feat img.shot { display: block; width: 100%; height: auto; }
     .feat.wide { flex: 1 1 0; min-width: 0; }
     .feat.split { display: flex; gap: 28px; align-items: flex-start; }
     .split > .side { flex: 1 1 0; min-width: 0; }
@@ -104,13 +112,10 @@
     .fc .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
     .feat img.look { display: block; width: 100%; height: auto; border-radius: 14px; }
     .feat img.look + img.look { margin-top: 12px; }
-    .feat .tabs { display: flex; flex-wrap: wrap; gap: 8px; }
-    .feat .tabs span { padding: 6px 12px; border-radius: 10px; background: #1F2029; color: #DCDAE8; font-size: 14px; line-height: 20px; font-weight: 500; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); }
-    .feat .tabs span.on { background: #0082FA; color: #FFFFFF; box-shadow: none; }
 
     /* The strip at the bottom: And also, in three columns. */
     .also { padding: 26px 36px 28px; margin-top: 24px; }
-    .also ul.more { margin: 0; display: block; columns: 3; column-gap: 36px; }
+    .also ul.more { margin: 0; display: block; columns: 4; column-gap: 36px; }
     .also ul.more li { break-inside: avoid; margin-bottom: 12px; }
   </style>
 </head>
@@ -120,10 +125,10 @@
     <div>
       <div class="eyebrow">Widgetkeeper 1.4.0 <span>In testing</span></div>
       <h1>New in 1.4.0</h1>
-      <p>Build your own widget from components, fed by your devices, variables and Flows, and place it on any Homey or web dashboard.</p>
+      <p>Make your own widgets, switch a group of devices with one tap, and colour tiles from your Flows in any colour.</p>
     </div>
     <div class="chips">
-      <span>Widget Builder</span><span>Flow inputs</span><span>Rules</span><span>Ready-mades</span><span>Custom colours</span><span>Smart Stack tabs</span><span>Media shortcut</span><span>App settings on the web</span><span>Decimals</span>
+      <span>Widget Builder</span><span>Group Quick Action</span><span>Any colour from Flows</span><span>Smart Stack tabs</span><span>Media shortcut</span><span>Decimals</span>
     </div>
   </header>
 
@@ -132,16 +137,15 @@
       <div class="side">
         <span class="tag new">New widget</span>
         <h2>Widget Builder</h2>
-        <p>Design a widget of your own on the web dashboards: pick components, place them on a grid, point them at a device, a variable or a Flow. Then put it on any Homey or web dashboard, and a change shows on every copy.</p>
+        <p>Make a widget that shows exactly what you want. Build it on the web dashboards, then put it on your Homey dashboards or web dashboards.</p>
         <ul class="more">
-          <li><b>Values, charts, gauges, rings and bars,</b> segmented bars, trends, lists, pictures, times and calculated values.</li>
-          <li><b>Controls:</b> switches, sliders, steppers, choices, variables and buttons that start a Flow, set a value or turn a page.</li>
-          <li><b>Text with values in it,</b> such as <i>Inside 22.4°C · humidity 46%</i>, and shapes to lay it out.</li>
-          <li><b>Containers</b> on a fine grid or free-form, with pages or tabs.</li>
-          <li><b>Rules:</b> turn a component red, or hide it, by its own value or any other.</li>
-          <li><b>Ready-mades</b> to start from, and your own saved to reuse. A Repeater makes one for every device you pick.</li>
-          <li><b>One design for any device:</b> each copy on a dashboard can show its own device.</li>
-          <li><b>See it live</b> while you build, in dark or light, Muted or Vivid, with Undo.</li>
+          <li><b>Pick what goes in it:</b> values, charts, gauges, switches, sliders, buttons, texts, pictures and more.</li>
+          <li><b>Drag things where you want them</b> and make them bigger or smaller. You see your own devices while you build.</li>
+          <li><b>Start from a ready-made tile</b> that looks like the other widgets, or build from scratch.</li>
+          <li><b>Change colour with a value:</b> the tile turns red when the front door is unlocked, or hides when the car isn't charging.</li>
+          <li><b>Buttons that do things:</b> switch a device, set a variable or start a Flow.</li>
+          <li><b>One design for many devices:</b> pick the device where you place the widget.</li>
+          <li><b>Change it once,</b> and every dashboard that has it follows.</li>
         </ul>
       </div>
       <img src="../docs/web/builder.png" alt="" width="1520" height="1035">
@@ -151,13 +155,13 @@
   <div class="columns">
     <section class="feat wide">
       <span class="tag">Widget Builder</span>
-      <h2>Made with it</h2>
-      <p>Four designs from the same components: a card with a container, text with values and the time, a power breakdown, and pages turned by a state.</p>
-      <div class="looks">
-        <img src="../docs/variants/custom-container.webp" alt="" width="780" height="672">
-        <img src="../docs/variants/custom-blocks.webp" alt="" width="780" height="672">
-        <img src="../docs/variants/custom-split.webp" alt="" width="780" height="672">
-        <img src="../docs/variants/custom-more.webp" alt="" width="780" height="816">
+      <h2>Made with the Widget Builder</h2>
+      <p>Four examples, each one column wide, as on a Homey dashboard.</p>
+      <div class="examples">
+        <div class="example"><div class="cap">Front door<small>The lock, a message from a Flow, the porch</small></div><div id="ex-door"></div></div>
+        <div class="example"><div class="cap">Energy<small>Use today, where it goes, solar and grid</small></div><div id="ex-energy"></div></div>
+        <div class="example"><div class="cap">Bedroom<small>Climate in rings, heating, window and lamp</small></div><div id="ex-bedroom"></div></div>
+        <div class="example"><div class="cap">Hallway<small>Time, a reminder from a Flow, doors, routines</small></div><div id="ex-hallway"></div></div>
       </div>
     </section>
   </div>
@@ -166,33 +170,42 @@
     <section class="feat wide split">
       <div class="side">
         <span class="tag">Widget Builder</span>
-        <h2>Flow inputs</h2>
-        <p>Name an input, such as <i>Door message</i>, and tie any setting to it with the ⚡ beside it: a text, a colour, an icon, whether it shows, the page. Your Flows set it, and every design that uses it follows.</p>
+        <h2>Let your Flows fill in a widget</h2>
+        <p>Give a text, a number, a colour or an icon a name, such as <i>Door message</i>, and use it in a widget. A Flow sets it, and the widget shows it.</p>
         <div class="fcs">
           <div class="fc"><div class="icon" style="background:#2A1958"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="4"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div><div><div class="owner">Widgetkeeper</div><div class="text">Set <span class="arg">Door message</span> to <span class="arg">Parcel by the door</span> for <span class="arg">Every device</span></div></div></div>
-          <div class="fc"><div class="icon" style="background:#2A1958"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="4"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div><div><div class="owner">Widgetkeeper</div><div class="text">Set <span class="arg">Bin day</span> to <span class="arg">2</span> <span class="arg">days</span> for <span class="arg">Every device</span></div></div></div>
+          <div class="fc"><div class="icon" style="background:#2A1958"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="4"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div><div><div class="owner">Widgetkeeper</div><div class="text">Set <span class="arg">Bin reminder</span> to <span class="arg">Paper bin out tomorrow</span> for <span class="arg">Every device</span></div></div></div>
           <div class="fc"><div class="icon" style="background:#2A1958"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="4"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div><div><div class="owner">Widgetkeeper</div><div class="text">Set <span class="arg">Room colour</span> to the colour <span class="arg"><span class="swatch" style="background:#FF6B9D"></span>#FF6B9D</span> for <span class="arg">Kids’ room</span></div></div></div>
         </div>
-        <div class="label">And when a button is tapped</div>
+        <div class="label">A Flow can also start when you tap a button</div>
         <div class="fc"><div class="icon" style="background:#2A1958"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="4"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div><div><div class="owner">Widgetkeeper</div><div class="text">Widget Builder button <span class="arg">Ring</span> was tapped</div><div class="tokens"><span class="token">Component</span><span class="token">Design</span><span class="token">Web dashboard</span></div></div></div>
         <ul class="more">
-          <li><b>Text, number, yes/no, colour or icon,</b> per device if you like, so each copy shows its own device's value.</li>
-          <li><b>Back on its own</b> after an hour or at midnight, or when a Flow clears it.</li>
-          <li><b>Rules and calculated values</b> can read an input too, and a button can set one.</li>
+          <li><b>Text, number, yes or no, colour or icon.</b></li>
+          <li><b>A value per device</b> if you like, so each copy of a widget shows its own.</li>
+          <li><b>Clears by itself</b> after an hour or at midnight, if you want it to.</li>
         </ul>
       </div>
-      <img src="../docs/variants/custom-free.webp" alt="" width="460" height="481">
+      <div class="demo"><div class="cap">The Door message on the front door widget</div><div id="ex-doorcard"></div></div>
     </section>
   </div>
 
   <div class="columns">
     <div class="column">
       <section class="feat">
+        <span class="tag new">New widget</span>
+        <h2>Group Quick Action</h2>
+        <p>One tile for several devices. Turn off every light in the living room, or lock every door, with one tap. It shows how many are on.</p>
+        <img class="shot" src="../docs/screenshots/groupaction.png" alt="" width="1074" height="576">
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="feat">
         <span class="tag">Flow cards</span>
-        <h2>Custom colours</h2>
-        <p>Type any colour on a Flow card, as <i>#FF6B9D</i> or <i>rgb(255, 107, 157)</i>, for Device Values, Flow Buttons, Notes and the Widget Builder. White and Black join the colour lists.</p>
+        <h2>Any colour from a Flow</h2>
+        <p>Type a colour, such as <i>#FF6B9D</i>, on a Flow card for Device Values, Flow Buttons, Notes and Flow Tiles.</p>
         <div class="fc"><div class="icon" style="background:#2A1958"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="4"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div><div><div class="owner">Widgetkeeper</div><div class="text">Set the button colour of <span class="arg">Party mode</span> to the custom colour <span class="arg"><span class="swatch" style="background:#FF6B9D"></span>#FF6B9D</span></div></div></div>
-        <div class="label">Flow Buttons in colours of their own</div>
+        <div class="label">Flow Buttons in their own colours</div>
         <div id="w-flows"></div>
       </section>
     </div>
@@ -200,8 +213,8 @@
     <div class="column">
       <section class="feat">
         <span class="tag">Smart Stack</span>
-        <h2>Tabs instead of dots</h2>
-        <p>Name the pages: tabs with an icon and a name, or icons only, above or below.</p>
+        <h2>Tabs in the Smart Stack</h2>
+        <p>Show tabs with each page's name and icon instead of dots, above or below.</p>
         <img class="look" src="../docs/variants/stack-tabs.webp" alt="" width="780" height="332">
         <img class="look" src="../docs/variants/stack-tabs-icons.webp" alt="" width="780" height="332">
       </section>
@@ -210,24 +223,9 @@
     <div class="column">
       <section class="feat">
         <span class="tag">Media</span>
-        <h2>A shortcut beside ⋯</h2>
-        <p>Put one of Media's buttons beside ⋯, such as a power button, so it's one tap away.</p>
+        <h2>A button beside ⋯</h2>
+        <p>Keep one of Media's buttons, such as power, one tap away.</p>
         <img class="look" src="../docs/variants/media-shortcut.webp" alt="" width="780" height="408">
-      </section>
-    </div>
-
-    <div class="column">
-      <section class="feat">
-        <span class="tag">Web dashboards</span>
-        <h2>App settings in Settings</h2>
-        <p>Every setting of the app's settings page, in the web dashboards' Settings, a tab each, with a full-access API key.</p>
-        <div class="tabs">
-          <span class="on">API key</span><span>Names</span><span>Time format</span><span>Temperature</span><span>Appearance</span><span>Keypad codes</span><span>Web dashboards</span><span>Updates</span><span>Diagnostics</span>
-        </div>
-        <ul class="more">
-          <li><b>The same cards</b> as on Homey's app settings page, so nothing differs between the two.</li>
-          <li><b>What could lock you out</b> stays on the Homey: turning web dashboards off and remote access.</li>
-        </ul>
       </section>
     </div>
   </div>
@@ -235,9 +233,10 @@
   <section class="feat also">
     <span class="tag">And also</span>
     <ul class="more">
-      <li><b>Decimals:</b> choose 0, 1 or 2 per tile in Device Values, Sparklines and Combined Value, and per column in Value Matrix.</li>
-      <li><b>White and Black</b> on the Flow cards that colour a Device Values tile, a Flow Button or a Note.</li>
-      <li><b>Web dashboards:</b> the Widget Builder has its own section on the front page, and its designs in Add widget.</li>
+      <li><b>Decimals:</b> show 0, 1 or 2 decimals in Device Values, Sparklines, Combined Value and Value Matrix.</li>
+      <li><b>White and Black</b> on every Flow card that sets a colour.</li>
+      <li><b>App settings on the web:</b> change the app's settings from a web dashboard's Settings.</li>
+      <li><b>Widget Builder</b> in the web dashboards' side pane and in Add widget.</li>
     </ul>
   </section>
 
@@ -254,6 +253,12 @@
         opts: { columns: '2', buttons: buttons.map(([id, , , icon]) => ({ id, icon })) },
         flows: buttons.map(([id, name, color]) => ({ id, name, color, enabled: true, triggerable: true, advanced: false })),
       });
+
+      // The example designs: the real widget, each scene of dev/mock-custom.js; the Flow inputs' panel the front door's top tile.
+      for (const scene of ['door', 'energy', 'bedroom', 'hallway']) MOUNT.custom(el(`ex-${scene}`), { state: mockCustomState(scene) });
+      const card = mockCustomState('door');
+      card.design.parts = card.design.parts.slice(0, 1);
+      MOUNT.custom(el('ex-doorcard'), { state: card });
 
       // The page's size and the columns' heights, for the render script.
       document.fonts.ready.then(() => setTimeout(() => {
