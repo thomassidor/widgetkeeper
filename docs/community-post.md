@@ -7,6 +7,8 @@ Paste everything below this comment into the forum editor.
 - The widgets are only their previews (the README's docs/previews/*-dark.png, shown at 120 × 105), each linking to its
   page on GitHub, in two groups: the Live version (the App Store's) and what's only in the Test version. When a version
   goes live, move its widgets up and update both version numbers.
+- The Widget Builder's section shows docs/forum/builder-examples.jpg (the 1.4.0 teaser's Made with panel, cropped) and
+  docs/forum/web-builder.jpg (docs/web/builder.png on the brand background, as `npm run forum-images` makes it).
 - The post opens with the seven example dashboards as a carousel. They and the web dashboards are docs/forum/*.jpg (`npm run forum-images`), 1380 wide, shown at 690.
 -->
 
@@ -48,6 +50,27 @@ Tap a widget for what it does and its settings. Every widget follows Homey's lig
 
 [![Group Quick Action|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/groupaction-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/groupaction.md) [![Widget Builder|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/custom-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/custom.md)
 
+## :hammer_and_wrench: Widget Builder (test version)
+
+Make a widget that shows exactly what you want, and put it on your Homey dashboards or web dashboards. You build it on the web dashboards: open **Widget Builder** in the side pane.
+
+* **Pick what goes in it:** values, charts, gauges, switches, sliders, buttons, texts with values in them, pictures and more, or start from a ready-made tile that looks like the other widgets.
+* **Drag things where you want them** and make them bigger or smaller. You see your own devices while you build.
+* **Change colour with a value:** a tile turns red when the front door is unlocked, or hides when the car isn't charging.
+* **Buttons that do things:** switch a device, set a variable or start a Flow.
+* **Let your Flows fill it in:** a message, a number, a colour or an icon, set from a Flow card.
+* **One design for many devices:** pick the device where you place the widget. Change a design once, and every dashboard that has it follows.
+
+How it works: https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/custom.md
+
+[grid mode=carousel]
+
+![Four widgets made with the Widget Builder|690x242](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/builder-examples.jpg)
+
+![The Widget Builder on the web dashboards|690x470](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/forum/web-builder.jpg)
+
+[/grid]
+
 ## :desktop_computer: Web dashboards
 
 Build dashboards of your widgets on a page served by your Homey, and open them in any browser, at home or away. Turn them on under **Apps → Widgetkeeper → Configure**. More on GitHub: https://github.com/thomassidor/widgetkeeper#web-dashboards
@@ -72,7 +95,7 @@ Build dashboards of your widgets on a page served by your Homey, and open them i
 
 ## :key: API key
 
-A few widgets need a Homey API key to change things Homey doesn't let apps change on their own: Flow Buttons, Variables, Variable Presets, the Smart Stack, Media's buttons, the Keypad's Flows and the Moods. Which permissions to tick: https://github.com/thomassidor/widgetkeeper#api-key
+A few widgets need a Homey API key to change things Homey doesn't let apps change on their own: Flow Buttons, Variables, Variable Presets, the Smart Stack, Media's buttons, the Keypad's Flows, the Moods, and Widget Builder buttons that start a Flow or set a variable. Which permissions to tick: https://github.com/thomassidor/widgetkeeper#api-key
 
 ## :speech_balloon: Feedback wanted
 
