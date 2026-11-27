@@ -56,6 +56,9 @@ interface Window {
   valueMatrixRange: (text: unknown, column?: { capabilityId?: string, units?: string | null } | null) => { min: number | null, max: number | null } | null;
   valueMatrixLevel: (value: unknown, range: { min: number | null, max: number | null } | null) => 'good' | 'out' | 'far' | 'plain' | 'none';
   valueMatrixRows: (devices: object[], mode?: string) => { key: string, name?: string, missing?: true, devices: object[], values: Record<string, number | null> }[];
+  createBatteryWidget: (root: HTMLElement, opts?: object) => any;
+  batteryLevel: (device: { level?: number | null, low?: boolean | null }, limits?: { red?: number, yellow?: number }) => 'alert' | 'warn' | 'fine' | null;
+  batteryOrder: (devices: object[]) => any[];
   createValueBoardWidget: (root: HTMLElement, opts?: object) => any;
   valueBoardLevel: (value: { capabilityId: string, type?: string, units?: string | null, value: unknown }) => 'alert' | 'warn' | 'fine' | null;
   valueBoardGroups: (devices: object[], groupBy?: string) => { key: string, name?: string, missing?: true, values: any[] }[];
@@ -289,6 +292,7 @@ interface Window {
   mountRoomHealthWidget: MountWidget;
   mountValueMatrixWidget: MountWidget;
   mountValueBoardWidget: MountWidget;
+  mountBatteryWidget: MountWidget;
   mountSparklinesWidget: MountWidget;
   mountChartsWidget: MountWidget;
   mountTotalsWidget: MountWidget;

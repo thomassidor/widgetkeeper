@@ -32,6 +32,18 @@
     { id: 'ec3', name: 'Bedroom blind', kind: 'blind', caps: { windowcoverings_set: { value: 1, setable: true }, windowcoverings_state: { value: 'idle', setable: true } } },
     { id: 'ec4', name: 'Office', kind: 'curtain', caps: { windowcoverings_set: { value: 0.6, setable: true } } }];
 
+  // ---- Batteries' house, as dev/battery-preview.html's.
+  const batteryOf = (id, name, level, low = null) => ({ id, name, level, low });
+  const BATTERY_HOUSE = [
+    batteryOf('motion', 'Hallway motion', 4), batteryOf('garage', 'Garage door', 8), batteryOf('leak', 'Kitchen leak', 14), batteryOf('lock', 'Front door lock', 17),
+    batteryOf('thermo', 'Bedroom thermostat', 23), batteryOf('hum', 'Bathroom humidity', 31), batteryOf('window', 'Office window', 46), batteryOf('weather', 'Weather station', 58),
+    batteryOf('remote', 'Living room remote', 66), batteryOf('bell', 'Doorbell', 72), batteryOf('smoke', 'Attic smoke alarm', 81), batteryOf('button', 'Kids room button', null, false),
+  ];
+  const BATTERY_SCENES = {
+    few: BATTERY_HOUSE.slice(2, 8),
+    offline: BATTERY_HOUSE.slice(0, 9).map(d => (d.id === 'hum' ? { ...d, offline: true } : d)),
+  };
+
   // ---- Value Board's house, as dev/valueboard-preview.html's rooms.
   const n = (capabilityId, title, value, units = null, more = {}) => ({
     capabilityId, title, type: typeof value === 'boolean' ? 'boolean' : 'number', units, decimals: null, min: null, max: null, values: null, value, ...more,
@@ -362,6 +374,8 @@
       const pages = [...w.pages.slice(first), ...w.pages.slice(0, first)];
       MOUNT.stack(el, withOpts({ ...w, pages }, o));
     },
+    // A made-up house's batteries, as dev/battery-preview.html's: Batteries has no README screenshot.
+    battery: (el, { scene, ...o } = {}) => { createBatteryWidget(el, o).setState(BATTERY_SCENES[scene] || BATTERY_HOUSE); },
     // A made-up house's rooms, as dev/valueboard-preview.html's: Value Board has no README screenshot.
     valueboard: (el, { scene, ...o } = {}) => { createValueBoardWidget(el, o).setState(BOARD_SCENES[scene] || BOARD); },
   };

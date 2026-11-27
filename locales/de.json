@@ -157,6 +157,18 @@
     "ok": "OK",
     "renameFailed": "Der Name konnte nicht gespeichert werden."
   },
+  "battery": {
+    "title": "Batterien",
+    "selectDevices": "Wähle Geräte in den Widget-Einstellungen.",
+    "error": "Die Batterien konnten nicht geladen werden.",
+    "unavailable": "Nicht verfügbar",
+    "noBatteries": "Keines dieser Geräte hat eine Batterie.",
+    "low": "Schwach",
+    "ok": "OK",
+    "summary": "__low__ schwach · __fine__ gut",
+    "unavailableCount": "__count__ nicht verfügbar",
+    "renameFailed": "Der Name konnte nicht gespeichert werden."
+  },
   "weather": {
     "now": "Jetzt",
     "error": "Vorhersage nicht geladen.",
@@ -1297,6 +1309,7 @@
       "sensordots": "Bewegung, Türen und Kameras als Punkteraster.",
       "roomhealth": "Temperatur, Feuchte und Luft jedes Raums auf einen Blick, gelb bis rot, wenn etwas nicht passt.",
       "valuematrix": "Geräte oder Räume gegen gewählte Werte, grün, orange oder rot nach ihrem Bereich.",
+      "battery": "Die Batterie jedes Geräts in einer Kachel, die niedrigste zuerst, gelb und rot, wenn sie schwach ist.",
       "valueboard": "Jeder Wert der gewählten Geräte, nach Raum oder Gerät, als Kacheln oder kompakte Zeilen.",
       "weather": "Die nächsten 36 Stunden, Stunde für Stunde.",
       "pollen": "Die heutigen Pollen und die UV-Spitze, für Europa.",

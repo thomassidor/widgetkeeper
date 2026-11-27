@@ -201,6 +201,7 @@ describe('every service', () => {
   // A service that reads capabilities sends no temperature, or turns it into the app's unit. A new one that reads them
   // fails here until it does, or is listed with the reason.
   const NO_TEMPERATURES: Record<string, string> = {
+    'BatteryService.ts': 'battery levels and low-battery alarms only',
     'CurtainService.ts': 'positions and on/off only',
     'ElectricityService.ts': 'power and prices only',
     'LightService.ts': "light_temperature is a colour's warmth (0–1), not degrees",

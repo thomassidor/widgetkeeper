@@ -157,6 +157,18 @@
     "ok": "OK",
     "renameFailed": "Kunde inte spara namnet."
   },
+  "battery": {
+    "title": "Batterier",
+    "selectDevices": "Välj enheter i widgetens inställningar.",
+    "error": "Kunde inte läsa in batterierna.",
+    "unavailable": "Inte tillgänglig",
+    "noBatteries": "Ingen av dessa enheter har ett batteri.",
+    "low": "Lågt",
+    "ok": "OK",
+    "summary": "__low__ låga · __fine__ bra",
+    "unavailableCount": "__count__ inte tillgängliga",
+    "renameFailed": "Kunde inte spara namnet."
+  },
   "weather": {
     "now": "Nu",
     "error": "Kunde inte hämta prognosen.",
@@ -1297,6 +1309,7 @@
       "sensordots": "Rörelse, dörrar och kameror som ett rutnät av prickar.",
       "roomhealth": "Varje rums temperatur, luftfuktighet och luft i en blick, gult till rött när något är fel.",
       "valuematrix": "Enheter eller rum mot valda värden, gröna, orange eller röda efter sitt intervall.",
+      "battery": "Varje enhets batteri i en ruta, lägst först, gult och rött när det är lågt.",
       "valueboard": "Varje värde för de valda enheterna, per rum eller enhet, som rutor eller kompakta rader.",
       "weather": "De kommande 36 timmarna, timme för timme.",
       "pollen": "Dagens pollen och UV-toppen, för Europa.",

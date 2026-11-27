@@ -150,6 +150,8 @@ const ROUTES: Route[] = [
     [['values.getState', [['a:measure_temperature', 'b:measure_power'], ['', 'measure_humidity']]]]],
   setName('values'),
   setName('valueboard'),
+  ['battery', 'GET', '/state', { deviceIds: 'a,b' }, {}, [['battery.getState', [['a', 'b']]]]],
+  setName('battery'),
   setName('sensordots'),
   // Every device with the value when none were picked.
   ['combined', 'GET', '/state', { capabilityId: 'measure_temperature', deviceIds: 'a,b' }, {}, [['combined.getState', ['measure_temperature', ['a', 'b']]]]],

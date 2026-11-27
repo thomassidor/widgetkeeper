@@ -985,6 +985,335 @@
       },
       "id": "sensordots"
     },
+    "battery": {
+      "name": {
+        "en": "Batteries",
+        "nl": "Batterijen",
+        "de": "Batterien",
+        "fr": "Batteries",
+        "it": "Batterie",
+        "sv": "Batterier",
+        "no": "Batterier",
+        "es": "Baterías",
+        "da": "Batterier",
+        "ru": "Батареи",
+        "pl": "Baterie",
+        "ko": "배터리",
+        "ar": "البطاريات"
+      },
+      "height": 300,
+      "transparent": true,
+      "devices": {
+        "type": "global",
+        "singular": false
+      },
+      "settings": [
+        {
+          "id": "renameTiles",
+          "type": "checkbox",
+          "title": {
+            "en": "Rename tiles",
+            "nl": "Tegels hernoemen",
+            "de": "Kacheln umbenennen",
+            "fr": "Renommer les tuiles",
+            "it": "Rinomina riquadri",
+            "sv": "Byt namn på rutor",
+            "no": "Gi nytt navn til fliser",
+            "es": "Renombrar mosaicos",
+            "da": "Omdøb felter",
+            "ru": "Переименовать плитки",
+            "pl": "Zmień nazwy kafelków",
+            "ko": "타일 이름 바꾸기",
+            "ar": "إعادة تسمية المربعات"
+          },
+          "hint": {
+            "en": "To name the devices: turn this on and save the widget, then leave the dashboard's edit mode. The list under the tile shows a text field for each device: type its name, or leave it empty to keep the device's name. Then edit the widget again and turn this off.",
+            "nl": "Apparaten een naam geven: zet dit aan en sla de widget op, en verlaat dan de bewerkmodus van het dashboard. De lijst onder de tegel toont een tekstveld per apparaat: typ de naam, of laat het leeg om de naam van het apparaat te houden. Bewerk daarna de widget opnieuw en zet dit uit.",
+            "de": "Geräte benennen: Schalte dies ein, speichere das Widget und verlasse den Bearbeitungsmodus des Dashboards. Die Liste unter der Kachel zeigt für jedes Gerät ein Textfeld: Gib den Namen ein oder lass es leer, um den Namen des Geräts zu behalten. Bearbeite danach das Widget erneut und schalte dies aus.",
+            "fr": "Pour nommer les appareils : activez ceci, enregistrez le widget, puis quittez le mode édition du tableau de bord. La liste sous la tuile affiche un champ de texte par appareil : tapez son nom, ou laissez-le vide pour garder le nom de l'appareil. Modifiez ensuite le widget à nouveau et désactivez ceci.",
+            "it": "Per dare un nome ai dispositivi: attiva questa opzione e salva il widget, poi esci dalla modalità di modifica della dashboard. L'elenco sotto il riquadro mostra un campo di testo per ogni dispositivo: scrivi il nome, o lascialo vuoto per mantenere il nome del dispositivo. Poi modifica di nuovo il widget e disattiva questa opzione.",
+            "sv": "Så namnger du enheterna: slå på detta och spara widgeten, och lämna sedan instrumentpanelens redigeringsläge. Listan under rutan visar ett textfält för varje enhet: skriv namnet, eller lämna det tomt för att behålla enhetens namn. Redigera sedan widgeten igen och slå av detta.",
+            "no": "Slik gir du enhetene navn: slå på dette og lagre widgeten, og gå så ut av dashbordets redigeringsmodus. Listen under flisen viser et tekstfelt for hver enhet: skriv navnet, eller la det stå tomt for å beholde enhetens navn. Rediger så widgeten igjen og slå av dette.",
+            "es": "Para poner nombre a los dispositivos: activa esto y guarda el widget, luego sal del modo de edición del panel. La lista bajo el mosaico muestra un campo de texto por dispositivo: escribe su nombre, o déjalo vacío para mantener el nombre del dispositivo. Después edita el widget de nuevo y desactiva esto.",
+            "da": "Sådan navngiver du enhederne: slå dette til og gem widgetten, og forlad så dashboardets redigeringstilstand. Listen under feltet viser et tekstfelt for hver enhed: skriv navnet, eller lad det stå tomt for at beholde enhedens navn. Redigér derefter widgetten igen, og slå dette fra.",
+            "ru": "Чтобы назвать устройства: включите это и сохраните виджет, затем выйдите из режима редактирования панели. В списке под плиткой у каждого устройства появится текстовое поле: введите название или оставьте его пустым, чтобы оставить имя устройства. Затем снова откройте настройки виджета и выключите это.",
+            "pl": "Aby nazwać urządzenia: włącz to i zapisz widżet, a potem wyjdź z trybu edycji pulpitu. Lista pod kafelkiem pokaże pole tekstowe dla każdego urządzenia: wpisz nazwę albo zostaw je puste, aby zachować nazwę urządzenia. Potem ponownie edytuj widżet i wyłącz to.",
+            "ko": "기기 이름을 정하려면: 이 옵션을 켜고 위젯을 저장한 뒤 대시보드 편집 모드를 나가세요. 타일 아래 목록에 기기마다 입력란이 나타납니다. 이름을 입력하거나 비워 두면 기기 이름이 그대로 쓰입니다. 그런 다음 위젯을 다시 편집해 이 옵션을 끄세요.",
+            "ar": "لتسمية الأجهزة: شغّل هذا الخيار واحفظ الأداة، ثم اخرج من وضع تحرير لوحة التحكم. تعرض القائمة أسفل المربع حقلًا نصيًا لكل جهاز: اكتب اسمه، أو اتركه فارغًا لإبقاء اسم الجهاز. بعد ذلك حرّر الأداة مجددًا وأوقف هذا الخيار."
+          },
+          "value": false
+        },
+        {
+          "id": "columns",
+          "type": "dropdown",
+          "title": {
+            "en": "Tiles per row",
+            "nl": "Tegels per rij",
+            "de": "Kacheln pro Zeile",
+            "fr": "Tuiles par ligne",
+            "it": "Riquadri per riga",
+            "sv": "Rutor per rad",
+            "no": "Fliser per rad",
+            "es": "Mosaicos por fila",
+            "da": "Felter pr. række",
+            "ru": "Плиток в ряду",
+            "pl": "Kafelków w rzędzie",
+            "ko": "행당 타일",
+            "ar": "البلاطات في كل صف"
+          },
+          "value": "3",
+          "values": [
+            {
+              "id": "2",
+              "title": {
+                "en": "2",
+                "nl": "2",
+                "de": "2",
+                "fr": "2",
+                "it": "2",
+                "sv": "2",
+                "no": "2",
+                "es": "2",
+                "da": "2",
+                "ru": "2",
+                "pl": "2",
+                "ko": "2",
+                "ar": "2"
+              }
+            },
+            {
+              "id": "3",
+              "title": {
+                "en": "3",
+                "nl": "3",
+                "de": "3",
+                "fr": "3",
+                "it": "3",
+                "sv": "3",
+                "no": "3",
+                "es": "3",
+                "da": "3",
+                "ru": "3",
+                "pl": "3",
+                "ko": "3",
+                "ar": "3"
+              }
+            },
+            {
+              "id": "4",
+              "title": {
+                "en": "4",
+                "nl": "4",
+                "de": "4",
+                "fr": "4",
+                "it": "4",
+                "sv": "4",
+                "no": "4",
+                "es": "4",
+                "da": "4",
+                "ru": "4",
+                "pl": "4",
+                "ko": "4",
+                "ar": "4"
+              }
+            }
+          ]
+        },
+        {
+          "id": "yellowBelow",
+          "type": "number",
+          "title": {
+            "en": "Yellow below (%)",
+            "nl": "Geel onder (%)",
+            "de": "Gelb unter (%)",
+            "fr": "Jaune sous (%)",
+            "it": "Giallo sotto (%)",
+            "sv": "Gul under (%)",
+            "no": "Gul under (%)",
+            "es": "Amarillo por debajo de (%)",
+            "da": "Gul under (%)",
+            "ru": "Жёлтый ниже (%)",
+            "pl": "Żółty poniżej (%)",
+            "ko": "노란색 기준 미만 (%)",
+            "ar": "أصفر أقل من (%)"
+          },
+          "hint": {
+            "en": "A battery below this level is yellow.",
+            "nl": "Een batterij onder dit niveau is geel.",
+            "de": "Eine Batterie unter diesem Stand ist gelb.",
+            "fr": "Une batterie sous ce niveau est jaune.",
+            "it": "Una batteria sotto questo livello è gialla.",
+            "sv": "Ett batteri under denna nivå är gult.",
+            "no": "Et batteri under dette nivået er gult.",
+            "es": "Una batería por debajo de este nivel es amarilla.",
+            "da": "Et batteri under dette niveau er gult.",
+            "ru": "Батарея ниже этого уровня — жёлтая.",
+            "pl": "Bateria poniżej tego poziomu jest żółta.",
+            "ko": "이 수준 미만의 배터리는 노란색입니다.",
+            "ar": "البطارية تحت هذا المستوى صفراء."
+          },
+          "value": 20,
+          "min": 0,
+          "max": 100
+        },
+        {
+          "id": "redBelow",
+          "type": "number",
+          "title": {
+            "en": "Red below (%)",
+            "nl": "Rood onder (%)",
+            "de": "Rot unter (%)",
+            "fr": "Rouge sous (%)",
+            "it": "Rosso sotto (%)",
+            "sv": "Röd under (%)",
+            "no": "Rød under (%)",
+            "es": "Rojo por debajo de (%)",
+            "da": "Rød under (%)",
+            "ru": "Красный ниже (%)",
+            "pl": "Czerwony poniżej (%)",
+            "ko": "빨간색 기준 미만 (%)",
+            "ar": "أحمر أقل من (%)"
+          },
+          "hint": {
+            "en": "A battery below this level is red, as is a device that only says its battery is low.",
+            "nl": "Een batterij onder dit niveau is rood, net als een apparaat dat alleen meldt dat de batterij bijna leeg is.",
+            "de": "Eine Batterie unter diesem Stand ist rot, ebenso ein Gerät, das nur meldet, dass die Batterie schwach ist.",
+            "fr": "Une batterie sous ce niveau est rouge, comme un appareil qui indique seulement que sa batterie est faible.",
+            "it": "Una batteria sotto questo livello è rossa, come un dispositivo che segnala solo la batteria scarica.",
+            "sv": "Ett batteri under denna nivå är rött, liksom en enhet som bara säger att batteriet är svagt.",
+            "no": "Et batteri under dette nivået er rødt, det samme er en enhet som bare sier at batteriet er lavt.",
+            "es": "Una batería por debajo de este nivel es roja, igual que un dispositivo que solo indica batería baja.",
+            "da": "Et batteri under dette niveau er rødt, ligesom en enhed, der kun siger, at batteriet er lavt.",
+            "ru": "Батарея ниже этого уровня — красная, как и устройство, которое сообщает только о низком заряде.",
+            "pl": "Bateria poniżej tego poziomu jest czerwona, podobnie jak urządzenie, które zgłasza tylko niski poziom baterii.",
+            "ko": "이 수준 미만의 배터리는 빨간색이며, 배터리 부족만 알려 주는 기기도 마찬가지입니다.",
+            "ar": "البطارية تحت هذا المستوى حمراء، وكذلك الجهاز الذي يبلغ فقط عن انخفاض بطاريته."
+          },
+          "value": 10,
+          "min": 0,
+          "max": 100
+        },
+        {
+          "id": "greenWhenFine",
+          "type": "checkbox",
+          "value": true,
+          "title": {
+            "en": "Green when fine",
+            "nl": "Groen als het goed is",
+            "de": "Grün, wenn in Ordnung",
+            "fr": "Vert si tout va bien",
+            "it": "Verde se va bene",
+            "sv": "Grönt när det är bra",
+            "no": "Grønt når det er bra",
+            "es": "Verde si está bien",
+            "da": "Grøn når det er fint",
+            "ru": "Зелёный, если всё в норме",
+            "pl": "Zielony, gdy w normie",
+            "ko": "정상이면 초록색",
+            "ar": "أخضر عندما يكون جيدًا"
+          },
+          "hint": {
+            "en": "Shows the batteries above the yellow level in green, not grey.",
+            "nl": "Toont de batterijen boven het gele niveau in groen, niet grijs.",
+            "de": "Zeigt die Batterien über dem gelben Stand in Grün statt Grau.",
+            "fr": "Affiche en vert, et non en gris, les batteries au-dessus du niveau jaune.",
+            "it": "Mostra in verde, non in grigio, le batterie sopra il livello giallo.",
+            "sv": "Visar batterierna över den gula nivån i grönt, inte grått.",
+            "no": "Viser batteriene over det gule nivået i grønt, ikke grått.",
+            "es": "Muestra en verde, no en gris, las baterías por encima del nivel amarillo.",
+            "da": "Viser batterierne over det gule niveau i grønt, ikke gråt.",
+            "ru": "Показывает батареи выше жёлтого уровня зелёным, а не серым.",
+            "pl": "Pokazuje baterie powyżej żółtego poziomu na zielono, a nie na szaro.",
+            "ko": "노란색 수준보다 높은 배터리를 회색 대신 녹색으로 표시합니다.",
+            "ar": "يعرض البطاريات فوق المستوى الأصفر باللون الأخضر بدلًا من الرمادي."
+          }
+        },
+        {
+          "id": "colorStyle",
+          "type": "dropdown",
+          "title": {
+            "en": "Colour style",
+            "nl": "Kleurstijl",
+            "de": "Farbstil",
+            "fr": "Style de couleur",
+            "it": "Stile colori",
+            "sv": "Färgstil",
+            "no": "Fargestil",
+            "es": "Estilo de color",
+            "da": "Farvestil",
+            "ru": "Цветовой стиль",
+            "pl": "Styl kolorów",
+            "ko": "색상 스타일",
+            "ar": "نمط الألوان"
+          },
+          "hint": {
+            "en": "Vivid shows the colours bright and at full strength.",
+            "nl": "Levendig toont de kleuren fel en op volle sterkte.",
+            "de": "Kräftig zeigt die Farben kräftig und in voller Stärke.",
+            "fr": "Vives affiche les couleurs vives, à pleine intensité.",
+            "it": "Vivaci mostra i colori vivaci e a piena intensità.",
+            "sv": "Livfulla visar färgerna klara och i full styrka.",
+            "no": "Livlige viser fargene klare og med full styrke.",
+            "es": "Vivos muestra los colores vivos y con toda su intensidad.",
+            "da": "Livlige viser farverne klare og i fuld styrke.",
+            "ru": "«Яркие» показывают цвета ярко и в полную силу.",
+            "pl": "Żywe pokazują kolory jaskrawo i w pełnej mocy.",
+            "ko": "선명하게는 색을 선명하고 진하게 표시합니다.",
+            "ar": "«زاهية» تعرض الألوان زاهية وبكامل قوتها."
+          },
+          "value": "soft",
+          "values": [
+            {
+              "id": "soft",
+              "title": {
+                "en": "Muted",
+                "nl": "Gedempt",
+                "de": "Gedämpft",
+                "fr": "Atténuées",
+                "it": "Smorzati",
+                "sv": "Dämpade",
+                "no": "Dempede",
+                "es": "Suaves",
+                "da": "Dæmpede",
+                "ru": "Приглушённые",
+                "pl": "Stonowane",
+                "ko": "차분하게",
+                "ar": "هادئة"
+              }
+            },
+            {
+              "id": "deep",
+              "title": {
+                "en": "Vivid",
+                "nl": "Levendig",
+                "de": "Kräftig",
+                "fr": "Vives",
+                "it": "Vivaci",
+                "sv": "Livfulla",
+                "no": "Livlige",
+                "es": "Vivos",
+                "da": "Livlige",
+                "ru": "Яркие",
+                "pl": "Żywe",
+                "ko": "선명하게",
+                "ar": "زاهية"
+              }
+            }
+          ]
+        }
+      ],
+      "api": {
+        "getState": {
+          "method": "GET",
+          "path": "/state"
+        },
+        "setName": {
+          "method": "POST",
+          "path": "/names"
+        }
+      },
+      "id": "battery"
+    },
     "cameras": {
       "name": {
         "en": "Cameras",

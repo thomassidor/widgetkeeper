@@ -157,6 +157,18 @@
     "ok": "OK",
     "renameFailed": "Impossibile salvare il nome."
   },
+  "battery": {
+    "title": "Batterie",
+    "selectDevices": "Seleziona i dispositivi nelle impostazioni del widget.",
+    "error": "Impossibile caricare le batterie.",
+    "unavailable": "Non disponibile",
+    "noBatteries": "Nessuno di questi dispositivi ha una batteria.",
+    "low": "Scarica",
+    "ok": "OK",
+    "summary": "__low__ scariche · __fine__ OK",
+    "unavailableCount": "__count__ non disponibili",
+    "renameFailed": "Impossibile salvare il nome."
+  },
   "weather": {
     "now": "Ora",
     "error": "Impossibile caricare le previsioni.",
@@ -1297,6 +1309,7 @@
       "sensordots": "Movimento, porte e telecamere come una griglia di punti.",
       "roomhealth": "Temperatura, umidità e aria di ogni stanza a colpo d'occhio, dal giallo al rosso quando qualcosa non va.",
       "valuematrix": "Dispositivi o stanze per i valori scelti, verdi, arancioni o rossi secondo il loro intervallo.",
+      "battery": "La batteria di ogni dispositivo in un riquadro, la più scarica per prima, gialla e rossa quando è bassa.",
       "valueboard": "Ogni valore dei dispositivi scelti, per stanza o per dispositivo, in riquadri o righe compatte.",
       "weather": "Le prossime 36 ore, ora per ora.",
       "pollen": "I pollini di oggi e il picco UV, per l'Europa.",

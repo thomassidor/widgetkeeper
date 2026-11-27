@@ -157,6 +157,18 @@
     "ok": "OK",
     "renameFailed": "Nie udało się zapisać nazwy."
   },
+  "battery": {
+    "title": "Baterie",
+    "selectDevices": "Wybierz urządzenia w ustawieniach widżetu.",
+    "error": "Nie udało się wczytać baterii.",
+    "unavailable": "Niedostępne",
+    "noBatteries": "Żadne z tych urządzeń nie ma baterii.",
+    "low": "Niski",
+    "ok": "OK",
+    "summary": "niski: __low__ · OK: __fine__",
+    "unavailableCount": "niedostępne: __count__",
+    "renameFailed": "Nie udało się zapisać nazwy."
+  },
   "weather": {
     "now": "Teraz",
     "error": "Nie udało się wczytać prognozy.",
@@ -1297,6 +1309,7 @@
       "sensordots": "Ruch, drzwi i kamery jako siatka kropek.",
       "roomhealth": "Temperatura, wilgotność i powietrze każdego pokoju w jednym spojrzeniu, od żółtego do czerwonego, gdy coś jest nie tak.",
       "valuematrix": "Urządzenia lub pomieszczenia względem wybranych wartości, zielone, pomarańczowe lub czerwone według zakresu.",
+      "battery": "Bateria każdego urządzenia w jednym kafelku, najsłabsze najpierw, żółte i czerwone przy niskim poziomie.",
       "valueboard": "Każda wartość wybranych urządzeń, według pomieszczeń lub urządzeń, jako kafelki lub zwarte wiersze.",
       "weather": "Najbliższe 36 godzin, godzina po godzinie.",
       "pollen": "Dzisiejsze pyłki i szczyt UV, dla Europy.",

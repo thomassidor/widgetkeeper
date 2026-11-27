@@ -157,6 +157,18 @@
     "ok": "OK",
     "renameFailed": "Kon de naam niet opslaan."
   },
+  "battery": {
+    "title": "Batterijen",
+    "selectDevices": "Kies apparaten in de widgetinstellingen.",
+    "error": "Kan de batterijen niet laden.",
+    "unavailable": "Niet beschikbaar",
+    "noBatteries": "Geen van deze apparaten heeft een batterij.",
+    "low": "Laag",
+    "ok": "OK",
+    "summary": "__low__ laag · __fine__ goed",
+    "unavailableCount": "__count__ niet beschikbaar",
+    "renameFailed": "Kan de naam niet opslaan."
+  },
   "weather": {
     "now": "Nu",
     "error": "Kon de verwachting niet laden.",
@@ -1297,6 +1309,7 @@
       "sensordots": "Beweging, deuren en camera's als een raster van stippen.",
       "roomhealth": "Temperatuur, vochtigheid en lucht per ruimte in één oogopslag, geel tot rood als iets niet goed is.",
       "valuematrix": "Apparaten of ruimtes tegen gekozen waarden, groen, oranje of rood naar hun bereik.",
+      "battery": "De batterij van elk apparaat in één tegel, de laagste eerst, geel en rood als ze bijna leeg zijn.",
       "valueboard": "Elke waarde van de gekozen apparaten, per ruimte of per apparaat, als tegels of compacte regels.",
       "weather": "De komende 36 uur, uur voor uur.",
       "pollen": "De pollen van vandaag en de uv-piek, voor Europa.",

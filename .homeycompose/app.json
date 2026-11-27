@@ -323,6 +323,7 @@
   },
   "widgets": {
     "sensordots": {},
+    "battery": {},
     "cameras": {},
     "charts": {},
     "typicalday": {},

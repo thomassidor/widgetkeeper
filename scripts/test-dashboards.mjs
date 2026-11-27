@@ -323,6 +323,27 @@ const BUILD = {
     ] };
   },
 
+  // Batteries: every setting's values, on the devices with a battery level or a low-battery alarm (it only shows them).
+  battery: () => {
+    const levels = where(d => (d.capabilities ?? []).some(c => c.split('.')[0] === 'measure_battery'), 24);
+    const alarms = where(d => !(d.capabilities ?? []).some(c => c.split('.')[0] === 'measure_battery') && (d.capabilities ?? []).some(c => c.split('.')[0] === 'alarm_battery'), 3);
+    const plugs = where(d => has(d, 'measure_power') && cls(d) === 'socket', 1);
+    const all = [...levels, ...alarms];
+    return { cols: 3, widgets: [
+      wide(w('battery', 'Defaults · every battery device', {}, all)),
+      w('battery', 'Low/OK only (alarm_battery)', {}, alarms),
+      w('battery', '2 per row', { columns: '2' }, all.slice(0, 6)),
+      w('battery', '4 per row', { columns: '4' }, all.slice(0, 8)),
+      w('battery', 'Yellow below 50 · red below 25', { yellowBelow: 50, redBelow: 25 }, all.slice(0, 9)),
+      w('battery', 'Not green when fine', { greenWhenFine: false }, all.slice(0, 9)),
+      w('battery', 'Vivid', { colorStyle: 'deep' }, all.slice(0, 9)),
+      w('battery', 'With a deleted device and a plug without a battery', {}, [...all.slice(0, 2), ...plugs, MISSING]),
+      w('battery', 'Only a plug (no battery)', {}, plugs),
+      w('battery', 'Nothing picked'),
+      renaming('battery', 'Rename tiles', {}, all.slice(0, 3), all[0] ? { [all[0]]: 'Typed name' } : {}),
+    ] };
+  },
+
   // Value Board: every setting's values, on the sensors, plugs and alarms (no device is switched: it only shows values).
   valueboard: () => {
     const climate = where(d => d.class === 'sensor' && (has(d, 'measure_temperature') || has(d, 'measure_humidity') || has(d, 'measure_co2')), 8);

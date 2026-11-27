@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Batteries widget preview</title>
+  <link rel="stylesheet" href="../widgets/spacer/public/kit.css">
+  <link rel="stylesheet" href="../widgets/battery/public/widget.css">
+  <script src="../widgets/spacer/public/kit.js"></script>
+  <script>WidgetkeeperKit.setTimeFormat('24');</script>
+  <script src="../widgets/battery/public/widget.js"></script>
+  <script src="i18n.js"></script>
+  <link rel="stylesheet" href="preview.css">
+  <style>
+    /* The widget is transparent: it sits straight on the dashboard background. */
+    .dash { padding: 0; box-sizing: border-box; }
+    .light { background: #F2F3F5; padding: 12px; border-radius: 12px; }
+  </style>
+</head>
+<body>
+  <div class="col"><span>358 px (phone) · dark · defaults</span><div class="dash homey-dark-mode" style="width:358px"><div id="w1"></div></div></div>
+  <div class="col"><span>358 px · light</span><div class="dash light" style="width:358px"><div id="w2"></div></div></div>
+  <div class="col"><span>358 px · dark · Vivid</span><div class="dash homey-dark-mode" style="width:358px"><div id="w3"></div></div></div>
+  <div class="col"><span>358 px · dark · not green when fine</span><div class="dash homey-dark-mode" style="width:358px"><div id="w4"></div></div></div>
+  <div class="col"><span>358 px · dark · yellow below 50, red below 25</span><div class="dash homey-dark-mode" style="width:358px"><div id="w5"></div></div></div>
+  <div class="col"><span>358 px · dark · a device unavailable, one deleted</span><div class="dash homey-dark-mode" style="width:358px"><div id="w6"></div></div></div>
+  <div class="col"><span>300 px · dark · 2 per row</span><div class="dash homey-dark-mode" style="width:300px"><div id="w7"></div></div></div>
+  <div class="col"><span>420 px (a tablet column) · dark · 4 per row</span><div class="dash homey-dark-mode" style="width:420px"><div id="w8"></div></div></div>
+  <div class="col"><span>358 px · dark · rename tiles</span><div class="dash homey-dark-mode" style="width:358px"><div id="w9"></div></div></div>
+  <div class="col"><span>358 px · no devices</span><div class="dash homey-dark-mode" style="width:358px"><div id="w10"></div></div></div>
+
+  <script>
+    // A made-up house's battery devices (Solbakken); `?lang=de` for a language.
+    const d = (id, name, level, low = null, more = {}) => ({ id, name, level, low, ...more });
+    const house = () => [
+      d('motion', 'Hallway motion', 4), d('garage', 'Garage door', 8), d('leak', 'Kitchen leak', 14), d('lock', 'Front door lock', 17),
+      d('thermo', 'Bedroom thermostat', 23), d('hum', 'Bathroom humidity', 31), d('window', 'Office window', 46), d('weather', 'Weather station', 58),
+      d('remote', 'Living room remote', 66), d('bell', 'Doorbell', 72), d('smoke', 'Attic smoke alarm', 81), d('button', 'Kids room button', null, false),
+      d('stairs', 'Stairs motion', 100), d('patio', 'Patio sensor', null, true),
+    ];
+    const make = (id, devices, opts = {}) => {
+      const w = createBatteryWidget(document.getElementById(id), { t: devT, ...opts });
+      if (devices) w.setState(devices);
+      return w;
+    };
+    const widgets = [
+      make('w1', house()),
+      make('w2', house()),
+      make('w3', house(), { colorStyle: 'deep' }),
+      make('w4', house(), { greenWhenFine: false }),
+      make('w5', house(), { yellowBelow: 50, redBelow: 25 }),
+      make('w6', [...house().slice(0, 8).map(x => (x.id === 'leak' ? { ...x, offline: true } : x)), { id: 'gone', missing: true }]),
+      make('w7', house().slice(0, 8), { columns: '2' }),
+      make('w8', house(), { columns: '4' }),
+      make('w9', house().slice(0, 5), { renameTiles: true, onRename: async () => ({ ok: true }) }),
+    ];
+    const empty = make('w10', null);
+    empty.setMessage(empty.t('selectDevices'));
+    // Simulate the weather station's battery running down.
+    let level = 58;
+    setInterval(() => {
+      level = level <= 2 ? 58 : level - 7;
+      for (const w of widgets) w.pushChange({ deviceId: 'weather', capabilityId: 'measure_battery', value: level });
+    }, 2000);
+  </script>
+</body>
+</html>

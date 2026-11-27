@@ -1,0 +1,123 @@
+/*
+ * Colours map to Homey widget tokens (https://apps.developer.homey.app/the-basics/widgets/styling).
+ * The fallbacks are the dark-theme values, used outside Homey (dev/battery-preview.html).
+ */
+.bt {
+  --bt-tile: var(--homey-background-color, #FFFFFF);
+  --bt-text: var(--homey-text-color, #EDEEF0);
+  --bt-muted: var(--homey-text-color-light, #9C9DA5);
+  --bt-line: var(--homey-line-color-light, color-mix(in srgb, var(--bt-text) 8%, transparent)); /* between the cells */
+  --bt-red: var(--homey-color-red, #F25F5C);
+  /* A level's text colour, in pairs that pass 4.5:1 on the tile (Room Health's); green for fine. */
+  --bt-yellow-text: #9A6A00;
+  --bt-red-text: #D93B37;
+  --bt-green-text: #2E7D0F;
+  --bt-fs-small: var(--homey-font-size-small, 14px);
+  --bt-fs-default: var(--homey-font-size-default, 17px);
+  --bt-lh-small: var(--homey-line-height-small, 20px);
+  --bt-medium: var(--homey-font-weight-medium, 500);
+  --bt-bold: var(--homey-font-weight-bold, 700);
+  --bt-radius: 10px; /* Homey's native device tiles, measured from a phone screenshot */
+}
+/* Dark mode: Homey's native device tiles. */
+.homey-dark-mode .bt, .bt.homey-dark-mode {
+  --bt-tile: var(--wk-surface, #181920);
+  --bt-yellow-text: #F5C518; --bt-red-text: #FF7B78; --bt-green-text: #8BE04A;
+}
+
+/* On html, so a font Homey's widget stylesheet sets on body wins; this is the fallback outside Homey. */
+html { font-family: Roboto, -apple-system, system-ui, sans-serif; }
+html, body { margin: 0; }
+/* The widget is transparent, but until the SDK adds .homey-dark-mode (~1 s in) Homey's stylesheet paints body
+   in its light background, which shows as white corners around Homey's rounded loading overlay. */
+html, body { background: transparent !important; }
+
+.bt { display: flex; flex-direction: column; gap: var(--homey-su-2, 8px); min-width: 0; color: var(--bt-text); }
+.bt * { box-sizing: border-box; }
+/* Text is dir="auto" so RTL names get their punctuation right; the layout itself stays LTR. */
+.bt [dir="auto"] { text-align: left; }
+.bt-body { display: flex; flex-direction: column; min-width: 0; }
+.bt-body:empty { display: none; }
+.bt-message { font-size: var(--bt-fs-small); line-height: var(--bt-lh-small); color: var(--bt-muted); }
+.bt-message.error { color: var(--bt-red); }
+
+.bt-tile { position: relative; overflow: hidden; background: var(--bt-tile); border-radius: var(--bt-radius); }
+/* The native tiles' 1px rim, brightest along the top. */
+.homey-dark-mode .bt-tile::after, .bt.homey-dark-mode .bt-tile::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .05), inset 0 0 0 1px rgb(255 255 255 / .03);
+}
+
+/* The heading: the widget's name (14 medium), and how many are low and fine, muted, on the right. */
+.bt-head {
+  display: flex; align-items: baseline; gap: 8px; padding: 12px 14px 8px;
+  font-size: var(--bt-fs-small); line-height: var(--bt-lh-small);
+}
+.bt-title { flex: 0 0 auto; font-weight: var(--bt-medium); }
+.bt-summary { flex: 1 1 auto; min-width: 0; text-align: right !important; color: var(--bt-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/*
+ * The cells in a grid with hairlines between them, 2, 3 or 4 per row (`data-columns`): each cell's right and bottom
+ * line, the grid 1px past the clipping tile so the outer ones go.
+ */
+.bt-grid {
+  display: grid; grid-template-columns: repeat(var(--bt-cols, 3), minmax(0, 1fr));
+  margin: 0 -1px -1px 0; border-top: 1px solid var(--bt-line);
+}
+.bt[data-columns="2"] { --bt-cols: 2; }
+.bt[data-columns="4"] { --bt-cols: 4; }
+.bt-cell { min-width: 0; padding: 10px 12px; box-shadow: inset -1px -1px 0 var(--bt-line); }
+.bt[data-columns="4"] .bt-cell { padding: 10px 8px; }
+/* The level top left, the battery top right. */
+.bt-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-width: 0; }
+.bt-num {
+  min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums;
+  font-size: var(--bt-fs-default); line-height: 24px; font-weight: var(--bt-bold);
+}
+.bt-pct { margin-left: 1px; font-size: 12px; font-weight: var(--bt-medium); }
+.bt-glyph { flex: 0 0 auto; width: 22px; height: 13px; color: var(--bt-glyph, var(--bt-muted)); }
+.bt-glyph-case { fill: none; stroke: currentColor; stroke-width: 1.6; }
+.bt-glyph-tip { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.bt-glyph-fill { fill: currentColor; }
+/* The device's name, 12/16: the label size, which has no token. */
+.bt-label { font-size: 12px; line-height: 16px; color: var(--bt-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bt-cell.missing > * { opacity: .5; }
+/* The unavailable mark bottom right: the top right holds the battery. */
+.bt .wk-offline-badge { top: auto; bottom: 3px; }
+
+/*
+ * Muted: the level and the battery in its colour's text; a low one on a faint wash of it. Vivid: filled solid with
+ * the kit's shades and the colour on them.
+ */
+.bt [data-tone="warn"] { --bt-tone: var(--wk-yellow-bright); --bt-tone-text: var(--bt-yellow-text); --bt-wash: 14%; }
+.bt [data-tone="alert"] { --bt-tone: var(--wk-red-bright); --bt-tone-text: var(--bt-red-text); --bt-wash: 16%; }
+.bt [data-tone="fine"] { --bt-tone: var(--wk-green-bright); --bt-tone-text: var(--bt-green-text); --bt-wash: 0%; }
+.bt:not(.wk-deep) [data-tone] {
+  --bt-glyph: var(--bt-tone-text);
+  background-color: color-mix(in srgb, var(--bt-tone) var(--bt-wash), transparent);
+}
+.bt:not(.wk-deep) [data-tone] .bt-num { color: var(--bt-tone-text); }
+.bt.wk-deep [data-tone="warn"] { --bt-fill: var(--wk-yellow); --bt-on: var(--wk-on-yellow); }
+.bt.wk-deep [data-tone="alert"] { --bt-fill: var(--wk-red); --bt-on: var(--wk-on-red); }
+.bt.wk-deep [data-tone="fine"] { --bt-fill: var(--wk-green); --bt-on: var(--wk-on-green); }
+.bt.wk-deep [data-tone] { --bt-glyph: var(--bt-on); color: var(--bt-on); background-color: var(--bt-fill); }
+.bt.wk-deep [data-tone] .bt-label { color: color-mix(in srgb, var(--bt-on) 80%, transparent); }
+/* Vivid cells: the lines between them in the tile's colour, so the fills sit apart. */
+.bt.wk-deep .bt-cell[data-tone] { box-shadow: inset -1px -1px 0 var(--bt-tile); }
+
+/* Rename tiles: a field per device (Value Board's field). */
+.bt-renaming { display: flex; flex-direction: column; gap: var(--homey-su-1, 4px); padding: 10px 12px; }
+.bt .wk-rename {
+  width: 100%; min-width: 0; height: 24px; margin: 0; padding: 0 6px;
+  font: inherit; font-size: var(--bt-fs-small); color: var(--bt-text);
+  background: color-mix(in srgb, var(--bt-text) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--bt-text) 24%, transparent); border-radius: 8px; outline: none;
+  user-select: text; -webkit-user-select: text;
+}
+.bt .wk-rename::placeholder { color: var(--bt-muted); opacity: 1; }
+.bt .wk-rename:focus { border-color: var(--wk-blue-bright, #2F8DF6); }
+.bt-rename-row.shake { animation: bt-shake .35s; }
+@keyframes bt-shake {
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}

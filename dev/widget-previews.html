@@ -554,6 +554,33 @@ function valueBoard(t, theme) {
   </div>`;
 }
 
+// Batteries: one tile, its name on top, a grid of cells lowest first (a level top left, a battery filled to it top
+// right, a name under both), the low ones washed red and yellow, the fine ones green.
+function batteries(t, theme) {
+  const dark = theme === 'dark';
+  const tileBg = dark ? '#181920' : '#FFFFFF';
+  const rim = dark ? ',inset 0 3px 0 rgba(255,255,255,.05),inset 0 0 0 3px rgba(255,255,255,.03)' : '';
+  const shadow = dark ? '0 12px 40px rgba(0,0,0,.45)' : '0 12px 40px rgba(17,18,23,.12)';
+  const line = dark ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.08)';
+  const tone = {
+    r: ['rgba(242,95,92,.18)', dark ? '#FF7B78' : '#D93B37'],
+    y: ['rgba(245,197,24,.16)', dark ? '#F5C518' : '#9A6A00'],
+    g: ['transparent', dark ? '#8BE04A' : '#2E7D0F'],
+  };
+  const battery = (fill, c) => `<svg width="66" height="40" viewBox="0 0 24 14" style="flex:none"><rect x="1" y="1" width="19" height="12" rx="2.5" fill="none" stroke="${c}" stroke-width="1.6"/><path d="M21.5 5v4" stroke="${c}" stroke-width="2" stroke-linecap="round"/><rect x="3" y="3" width="${Math.max(1, 15 * fill)}" height="8" rx="1" fill="${c}"/></svg>`;
+  const cell = ([v, fill, n, c]) => {
+    const [bg, fg] = tone[c];
+    return `<div style="padding:30px 32px;background:${bg};box-shadow:inset -3px -3px 0 ${line};display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">${pill(v, 36, fg)}${battery(fill, fg)}</div>
+      ${pill(n, 22, t.muted)}</div>`;
+  };
+  const cells = [[70, 0.05, 150, 'r'], [70, 0.12, 120, 'y'], [70, 0.17, 160, 'y'], [86, 0.34, 130, 'g'], [86, 0.52, 150, 'g'], [86, 0.66, 110, 'g'],
+    [86, 0.78, 140, 'g'], [86, 0.9, 120, 'g'], [100, 1, 150, 'g']];
+  return `<div style="width:880px;border-radius:32px;background:${tileBg};box-shadow:${shadow}${rim};overflow:hidden">
+    <div style="padding:34px 40px 26px;display:flex;justify-content:space-between;align-items:center">${pill(200, 30, t.fg, 'opacity:.85')}${pill(220, 26, t.muted)}</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);margin:0 -3px -3px 0;border-top:3px solid ${line}">${cells.map(cell).join('')}</div></div>`;
+}
+
 // Cameras: a 2×2 grid of 16:9 snapshot tiles (flat scenes), each with a name pill; one plays live.
 function cameras(t, theme) {
   const shadow = theme === 'dark' ? '0 12px 40px rgba(0,0,0,.45)' : '0 12px 40px rgba(17,18,23,.12)';
@@ -1392,6 +1419,8 @@ const PREVIEWS = [
   { id: 'vm-light',     label: '3f · Value Matrix — preview-light.png',           theme: 'light', render: valueMatrix },
   { id: 'vb-dark',      label: '3g · Value Board — preview-dark.png',             theme: 'dark',  render: valueBoard },
   { id: 'vb-light',     label: '3h · Value Board — preview-light.png',            theme: 'light', render: valueBoard },
+  { id: 'bt-dark',      label: '3i · Batteries — preview-dark.png',               theme: 'dark',  render: batteries },
+  { id: 'bt-light',     label: '3j · Batteries — preview-light.png',              theme: 'light', render: batteries },
   { id: 'weather-dark',  label: '1g · Weather Forecast — preview-dark.png',      theme: 'dark',  render: weather },
   { id: 'weather-light', label: '1h · Weather Forecast — preview-light.png',     theme: 'light', render: weather },
   { id: 'hm-dark',      label: '1k · Insights Heatmap — preview-dark.png',       theme: 'dark',  render: heatmap },

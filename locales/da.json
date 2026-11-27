@@ -157,6 +157,18 @@
     "ok": "OK",
     "renameFailed": "Kunne ikke gemme navnet."
   },
+  "battery": {
+    "title": "Batterier",
+    "selectDevices": "Vælg enheder i widgettens indstillinger.",
+    "error": "Kunne ikke indlæse batterierne.",
+    "unavailable": "Utilgængelig",
+    "noBatteries": "Ingen af disse enheder har et batteri.",
+    "low": "Lavt",
+    "ok": "OK",
+    "summary": "__low__ lave · __fine__ fine",
+    "unavailableCount": "__count__ utilgængelige",
+    "renameFailed": "Kunne ikke gemme navnet."
+  },
   "weather": {
     "now": "Nu",
     "error": "Kunne ikke hente vejrudsigten.",
@@ -1297,6 +1309,7 @@
       "sensordots": "Bevægelse, døre og kameraer som et gitter af prikker.",
       "roomhealth": "Hvert rums temperatur, luftfugtighed og luft med ét blik, gul til rød, når noget er galt.",
       "valuematrix": "Enheder eller rum mod valgte værdier, grønne, orange eller røde efter deres interval.",
+      "battery": "Hver enheds batteri i ét felt, lavest først, gult og rødt, når det er lavt.",
       "valueboard": "Hver værdi for de valgte enheder, pr. rum eller enhed, som felter eller kompakte linjer.",
       "weather": "De næste 36 timer, time for time.",
       "pollen": "Dagens pollen og UV-toppen, for Europa.",

@@ -121,7 +121,7 @@ describe('widget mount.js: its requests reach its own routes', () => {
  */
 const DEVICE_NAMES: WidgetName[] = [
   'cameras', 'charts', 'curtains', 'flows', 'groupaction', 'heatmap', 'keypad', 'lightrooms', 'lights', 'locks', 'media', 'quickactions', 'roomhealth',
-  'sensoralarms', 'sensordots', 'sparklines', 'thermostat', 'totals', 'scatter', 'typicalday', 'dailyrange', 'compare', 'timeline', 'stacked', 'lines', 'gauge', 'valuematrix', 'valueboard', 'values', 'combined', 'custom',
+  'sensoralarms', 'sensordots', 'sparklines', 'thermostat', 'totals', 'scatter', 'typicalday', 'dailyrange', 'compare', 'timeline', 'stacked', 'lines', 'gauge', 'valuematrix', 'valueboard', 'battery', 'values', 'combined', 'custom',
 ];
 
 describe('widget mount.js: the device names setting', () => {

@@ -15,6 +15,11 @@ Every widget follows Homey's light and dark mode and is translated into all 13 o
 <a href="docs/widgets/sensordots.md"><b>Activity Dots</b></a><br>
 Many motion, contact and vibration sensors at a glance, as dots that change colour when active<br clear="left"></p>
 
+<a name="batteries"></a>
+<p><a href="docs/widgets/battery.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/battery-dark.png"><img src="docs/previews/battery-light.png" alt="" width="120" align="left"></picture></a>
+<a href="docs/widgets/battery.md"><b>Batteries</b></a><br>
+Every picked device's battery in one tile, lowest first, yellow and red when it's time for a new one<br clear="left"></p>
+
 <a name="cameras"></a>
 <p><a href="docs/widgets/cameras.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/previews/cameras-dark.png"><img src="docs/previews/cameras-light.png" alt="" width="120" align="left"></picture></a>
 <a href="docs/widgets/cameras.md"><b>Cameras</b></a><br>

@@ -16,7 +16,7 @@
       ['groupSecurity', ['cameras', 'keypad', 'locks', 'sensoralarms', 'sensordots']],
       ['groupClimate', ['pollen', 'roomhealth', 'thermostat', 'weather']],
       ['groupEnergy', ['electricity', 'price']],
-      ['groupValues', ['combined', 'sparklines', 'valueboard', 'valuematrix', 'values']],
+      ['groupValues', ['battery', 'combined', 'sparklines', 'valueboard', 'valuematrix', 'values']],
       ['groupCharts', ['charts', 'compare', 'dailyrange', 'gauge', 'heatmap', 'lines', 'scatter', 'stacked', 'timeline', 'totals', 'typicalday']],
       ['groupFlows', ['flows', 'flowtiles', 'popups', 'variables', 'varpresets']],
       ['groupTime', ['clock', 'dayssince', 'textline', 'timers']],

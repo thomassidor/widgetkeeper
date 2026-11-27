@@ -17,6 +17,7 @@ This file holds what applies across the app. Each widget's notes, and those of t
 | Group Quick Action (several devices' quick action in one full-width tile; 1.4.0) | `groupaction` | `widgets/groupaction.md` |
 | Sensor Alarms | `sensoralarms` | `widgets/sensoralarms.md` |
 | Activity Dots | `sensordots` | `widgets/sensordots.md` |
+| Batteries (every picked device's battery, lowest first; 1.4.1) | `battery` | `widgets/battery.md` |
 | Room Health | `roomhealth` | `widgets/roomhealth.md` |
 | Value Matrix | `valuematrix` | `widgets/valuematrix.md` |
 | Value Board | `valueboard` | `widgets/valueboard.md` |

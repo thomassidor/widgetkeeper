@@ -157,6 +157,18 @@
     "ok": "OK",
     "renameFailed": "No se pudo guardar el nombre."
   },
+  "battery": {
+    "title": "Baterías",
+    "selectDevices": "Elige dispositivos en los ajustes del widget.",
+    "error": "No se pudieron cargar las baterías.",
+    "unavailable": "No disponible",
+    "noBatteries": "Ninguno de estos dispositivos tiene batería.",
+    "low": "Baja",
+    "ok": "OK",
+    "summary": "__low__ bajas · __fine__ bien",
+    "unavailableCount": "__count__ no disponibles",
+    "renameFailed": "No se pudo guardar el nombre."
+  },
   "weather": {
     "now": "Ahora",
     "error": "No se pudo cargar la previsión.",
@@ -1297,6 +1309,7 @@
       "sensordots": "Movimiento, puertas y cámaras como una cuadrícula de puntos.",
       "roomhealth": "La temperatura, la humedad y el aire de cada habitación de un vistazo, de amarillo a rojo cuando algo falla.",
       "valuematrix": "Dispositivos o habitaciones frente a los valores elegidos, en verde, naranja o rojo según su rango.",
+      "battery": "La batería de cada dispositivo en un mosaico, la más baja primero, amarilla y roja cuando está baja.",
       "valueboard": "Cada valor de los dispositivos elegidos, por habitación o dispositivo, en mosaicos o líneas compactas.",
       "weather": "Las próximas 36 horas, hora a hora.",
       "pollen": "El polen de hoy y el pico de UV, para Europa.",
