@@ -1587,7 +1587,6 @@
     "builderInsert": "Вставить значение",
     "builderRefsHint": "Каждое значение появляется там, где в тексте стоит его {1}, {2}…",
     "builderShowsAs": "Выглядит так: __text__",
-    "builderShape": "Фигура",
     "builderShape_rect": "Прямоугольник",
     "builderShape_circle": "Круг",
     "builderShape_line": "Линия",

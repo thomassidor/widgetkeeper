@@ -1587,7 +1587,6 @@
     "builderInsert": "Waarde invoegen",
     "builderRefsHint": "Elke waarde staat waar zijn {1}, {2}… in de tekst staat.",
     "builderShowsAs": "Wordt getoond als: __text__",
-    "builderShape": "Vorm",
     "builderShape_rect": "Rechthoek",
     "builderShape_circle": "Cirkel",
     "builderShape_line": "Lijn",

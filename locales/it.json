@@ -1587,7 +1587,6 @@
     "builderInsert": "Inserisci valore",
     "builderRefsHint": "Ogni valore compare dove si trova il suo {1}, {2}… nel testo.",
     "builderShowsAs": "Appare così: __text__",
-    "builderShape": "Forma",
     "builderShape_rect": "Rettangolo",
     "builderShape_circle": "Cerchio",
     "builderShape_line": "Linea",

@@ -22,19 +22,25 @@
     const WIDTHS = [300, 440];
     const COLUMN_GAP = 16; // the web dashboards' gap between columns (.wd-grid)
 
-    /** The library: each kind, its group, the kit's icon and the size it gets at the top. */
+    /**
+     * The library: each kind, its group, the kit's icon and the size it gets at the top. A Shape is three components,
+     * Rectangle, Circle and Line (the user, 2026-11-27): one kind (`shape`) in the design, its `shape` set when added.
+     */
     const KINDS = [
       ['sparkline', 'show', 'pulse', 4, 1], ['arc', 'show', 'gauge', 1, 1], ['bar', 'show', 'progress', 4, 1],
       ['switch', 'control', 'power', 2, 1], ['button', 'control', 'play', 2, 1], ['slider', 'control', 'slider', 4, 1],
       ['stepper', 'control', 'stepper', 4, 1], ['choice', 'control', 'radio', 4, 1], ['variable', 'control', 'variable', 4, 1],
       ['container', 'layout', 'group', 4, 3], ['text', 'layout', 'type', 4, 1], ['icon', 'layout', 'star', 1, 1],
-      ['shape', 'layout', 'shapes', 4, 1], ['calc', 'show', 'calculator', 2, 1],
+      ['shape:rect', 'layout', 'square', 4, 1], ['shape:circle', 'layout', 'circle', 1, 1], ['shape:line', 'layout', 'minus', 4, 1],
+      ['calc', 'show', 'calculator', 2, 1],
       ['image', 'layout', 'picture', 2, 2], ['ring', 'show', 'ring', 2, 2], ['repeat', 'show', 'list', 4, 2],
       ['state', 'control', 'bookmark', 2, 1], ['segments', 'show', 'segments', 4, 2], ['chart', 'show', 'chart', 4, 2],
       ['each', 'layout', 'stack', 4, 2],
-    ].map(([kind, group, glyph, w, h]) => ({ kind, group, glyph, w, h }));
-    /** A kind's icon; a linked ready-made (`use`, not in the library) has its own. */
-    const glyphOf = kind => (kind === 'use' ? 'link' : (KINDS.find(k => k.kind === kind) || {}).glyph || 'star');
+    ].map(([key, group, glyph, w, h]) => ({ key, kind: String(key).split(':')[0], shape: String(key).split(':')[1], group, glyph, w, h }));
+    /** A library entry for a part (a shape's by its form). */
+    const entryOf = (kind, shape) => KINDS.find(k => k.kind === kind && (kind !== 'shape' || k.shape === (shape || 'rect')));
+    /** A kind's icon (a shape's by its form); a linked ready-made (`use`, not in the library) has its own. */
+    const glyphOf = (kind, shape) => (kind === 'use' ? 'link' : (entryOf(kind, shape) || {}).glyph || 'star');
     /**
      * The builder's own icons for what the kit's (home and device icons, also every icon setting's list) has none
      * for: drawn here, or from Lucide (ISC, widgets/spacer/public/icons.LICENSE.txt) as one path. Not in the kit, so
@@ -47,7 +53,9 @@
       progress: 'M5 8h14a4 4 0 0 1 0 8H5a4 4 0 0 1 0-8zM6 12h7',
       stepper: 'M2 12h8M14 12h8M18 8v8',
       type: 'M12 4v16M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2M9 20h6',
-      shapes: 'M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1ZM4 14h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1zM14 17.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0z',
+      square: 'M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z',
+      circle: 'M2 12a10 10 0 1 0 20 0a10 10 0 1 0-20 0z',
+      minus: 'M4 12h16',
       calculator: 'M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM8 6h8M16 14v4M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01',
       radio: 'M11 12a1 1 0 1 0 2 0a1 1 0 1 0-2 0zM2 12a10 10 0 1 0 20 0a10 10 0 1 0-20 0z',
       variable: 'M8 21s-4-3-4-9 4-9 4-9M16 3s4 3 4 9-4 9-4 9M15 9l-6 6M9 9l6 6',
@@ -231,6 +239,10 @@
 
     const strings = () => (wd.setup && wd.setup.strings) || {};
     const kindName = kind => (strings().custom && strings().custom.kinds && strings().custom.kinds[kind]) || kind;
+    /** What a part is called: its kind's name, a shape's by its form (Rectangle, Circle, Line). */
+    const partKind = p => (p.kind === 'shape' ? t(`builderShape_${p.shape || 'rect'}`) : kindName(p.kind));
+    /** A library entry's name. */
+    const entryName = k => (k.kind === 'shape' ? t(`builderShape_${k.shape}`) : kindName(k.kind));
     const designs = () => wd.designs || (wd.designs = (wd.setup && wd.setup.designs) || []);
     const clone = x => JSON.parse(JSON.stringify(x));
     const partId = () => Math.random().toString(36).slice(2, 10).padEnd(8, '0');
@@ -559,7 +571,7 @@
               const grid = el('div', 'wdb-comps');
               for (const d of mine) {
                 const c = button('wdb-comp wdb-mine', '', () => { if (!c.dataset.dragged) addMine(d); delete c.dataset.dragged; }, t('builderAdd', { name: d.name }));
-                const glyph = glyphOf(d.parts[0].kind);
+                const glyph = glyphOf(d.parts[0].kind, d.parts[0].shape);
                 c.append(kitIcon(glyph, 'wdb-comp-icon'), el('span', null, d.name || t('untitled')));
                 dragToAdd(c, { glyph, label: d.name, size: sizeOfPart(d.parts[0]), container: d.parts[0].kind === 'container', drop: target => addMine(d, target) });
                 const line = el('div', 'wdb-mine-line');
@@ -582,14 +594,15 @@
             list.append(grid);
             continue;
           }
-          const items = KINDS.filter(k => k.group === group && (!q || wd.matchesWords(q, `${kindName(k.kind)} ${t(`builderGroup_${group}`)}`)));
+          // A shape is found by its form's name and by Shape.
+          const items = KINDS.filter(k => k.group === group && (!q || wd.matchesWords(q, `${entryName(k)} ${k.kind === 'shape' ? kindName('shape') : ''} ${t(`builderGroup_${group}`)}`)));
           if (!items.length) continue;
           list.append(el('h3', 'wdb-h3', t(`builderGroup_${group}`)));
           const grid = el('div', 'wdb-comps');
           for (const k of items) {
-            const c = button('wdb-comp', '', () => { if (!c.dataset.dragged) addPart(k.kind); delete c.dataset.dragged; }, t('builderAdd', { name: kindName(k.kind) }));
-            c.append(kitIcon(k.glyph, 'wdb-comp-icon'), el('span', null, kindName(k.kind)));
-            dragToAdd(c, { glyph: k.glyph, label: kindName(k.kind), size: { w: k.w, h: k.h }, container: k.kind === 'container', drop: target => addPart(k.kind, target) });
+            const c = button('wdb-comp', '', () => { if (!c.dataset.dragged) addPart(k.kind, undefined, k.shape); delete c.dataset.dragged; }, t('builderAdd', { name: entryName(k) }));
+            c.append(kitIcon(k.glyph, 'wdb-comp-icon'), el('span', null, entryName(k)));
+            dragToAdd(c, { glyph: k.glyph, label: entryName(k), size: { w: k.w, h: k.h }, container: k.kind === 'container', drop: target => addPart(k.kind, target, k.shape) });
             grid.append(c);
           }
           list.append(grid);
@@ -757,7 +770,7 @@
       const row = (p, depth, siblings, i) => {
         const r = el('div', `wdb-layer${b.selected === p.id ? ' on' : ''}${depth ? ' in' : ''}`);
         const pick = button('wdb-layer-pick', '', () => select(p.id));
-        pick.append(kitIcon(glyphOf(p.kind), 'wdb-layer-icon'), el('span', null, partTitle(p)));
+        pick.append(kitIcon(glyphOf(p.kind, p.shape), 'wdb-layer-icon'), el('span', null, partTitle(p)));
         if (p.bind && Object.keys(p.bind).length) pick.append(el('span', 'wdb-flowmark', '⚡'));
         const up = button('wd-icon small', '', () => change(() => { siblings.splice(i + 1, 0, siblings.splice(i, 1)[0]); }), t('moveUp'));
         up.append(icon('up'));
@@ -779,7 +792,7 @@
 
     function partTitle(p) {
       const source = p.kind === 'use' && !p.name ? sourceOf(p) : null;
-      return p.name || (p.kind === 'text' && p.text ? textTitle(p) : '') || (source && source.name) || kindName(p.kind);
+      return p.name || (p.kind === 'text' && p.text ? textTitle(p) : '') || (source && source.name) || partKind(p);
     }
 
     /** A text's title: as typed, or with values in it (`{1}`) as the preview shows it now (`22.4 °C`). */
@@ -1703,8 +1716,8 @@
       name.select();
     }
 
-    function addPart(kind, drop) {
-      const def = KINDS.find(k => k.kind === kind);
+    function addPart(kind, drop, shape) {
+      const def = entryOf(kind, shape);
       const into = drop ? drop.into : kind === 'container' ? null : targetContainer();
       const p = {
         id: partId(), kind, name: '', color: null, icon: null, style: ['text', 'icon'].includes(kind) ? 'none' : 'tile', rules: [],
@@ -1716,7 +1729,11 @@
       if (kind === 'sparkline') p.span = '24h';
       if (['sparkline', 'arc', 'bar', 'calc'].includes(kind)) p.style = 'none';
       if (kind === 'icon') p.icon = 'star';
-      if (kind === 'shape') { p.style = 'none'; p.shape = 'rect'; p.background = { kind: 'none' }; p.opacity = 100; p.radius = 10; }
+      if (kind === 'shape') {
+        p.style = 'none'; p.shape = shape || 'rect'; p.background = { kind: 'none' }; p.opacity = 100;
+        if (p.shape === 'rect') p.radius = 10;
+        if (p.shape === 'line') { p.thickness = 2; p.dir = 'horizontal'; }
+      }
       if (kind === 'calc') { p.inputs = []; p.op = 'sum'; p.units = ''; }
       if (kind === 'state') { p.stateType = 'toggle'; p.initial = 'false'; p.name = kindName('state'); }
       if (kind === 'image') { p.fit = 'cover'; p.refresh = 5; }
@@ -1823,15 +1840,15 @@
      */
     function inspectorHead(p, parent) {
       const head = el('div', 'wdb-head');
-      const glyph = glyphOf(p.kind);
+      const glyph = glyphOf(p.kind, p.shape);
       const badge = el('span', 'wdb-head-icon');
       badge.append(kitIcon(glyph, 'wdb-comp-icon'));
       const path = el('span', 'wdb-head-path');
       if (parent) {
         // The container's name as a link inside "<kind> in <name>", in each language's order.
-        const [before, after = ''] = t('builderIn', { kind: kindName(p.kind), name: '\u0000' }).split('\u0000');
+        const [before, after = ''] = t('builderIn', { kind: partKind(p), name: '\u0000' }).split('\u0000');
         path.append(before, button('wdb-head-parent', partTitle(parent), () => select(parent.id)), after);
-      } else path.append(kindName(p.kind));
+      } else path.append(partKind(p));
       const tools = el('span', 'wdb-head-tools');
       if (!parent && p.kind !== 'calc' && p.kind !== 'use' && !b.design.ready) {
         const keep = button('wd-icon small', '', () => saveAsReady(p), t('builderSaveReady'));
@@ -1987,7 +2004,7 @@
           fillShowsAs();
         }
       } else if (p.kind !== 'use') {
-        body.append(bolt(row(t('builderPartName'), textInput(p.name, v => set(() => { p.name = v.trim().slice(0, 40); }, { preview: false }), { placeholder: ownName(p) || (NAMED_KINDS.includes(p.kind) ? t('builderNameHint') : kindName(p.kind)) })), p, 'text'));
+        body.append(bolt(row(t('builderPartName'), textInput(p.name, v => set(() => { p.name = v.trim().slice(0, 40); }, { preview: false }), { placeholder: ownName(p) || (NAMED_KINDS.includes(p.kind) ? t('builderNameHint') : partKind(p)) })), p, 'text'));
       }
       if (SLOT_KINDS.includes(p.kind) || VARIABLE_KINDS.includes(p.kind)) sourceRows(body, p);
       if (p.kind === 'button' && !(p.actions || []).length) body.append(row(t('builderStarts'), listPicker('flow', p.flowId, item => set(() => { if (item) p.flowId = item.id; else delete p.flowId; }), t('builderTapTrigger')), t('builderStartsHint')));
@@ -2812,12 +2829,8 @@
       return x;
     }
 
+    /** A Line's direction. Its form is the component (Rectangle, Circle, Line), not a setting (the user, 2026-11-27). */
     function shapeRows(body, p) {
-      body.append(row(t('builderShape'), segs([['rect', t('builderShape_rect')], ['circle', t('builderShape_circle')], ['line', t('builderShape_line')]], p.shape || 'rect', v => change(() => {
-        p.shape = v;
-        if (v === 'rect' && p.radius == null) p.radius = 10;
-        if (v === 'line') { if (!p.thickness) p.thickness = 2; if (!p.dir) p.dir = 'horizontal'; }
-      }, { preview: false }))));
       if (p.shape === 'line') body.append(row(t('builderDirection'), segs([['horizontal', t('builderHorizontal')], ['vertical', t('builderVertical')]], p.dir || 'horizontal', v => change(() => { p.dir = v; }, { preview: false }))));
     }
 

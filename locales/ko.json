@@ -1587,7 +1587,6 @@
     "builderInsert": "값 넣기",
     "builderRefsHint": "각 값은 텍스트의 {1}, {2}… 자리에 표시됩니다.",
     "builderShowsAs": "표시: __text__",
-    "builderShape": "도형",
     "builderShape_rect": "사각형",
     "builderShape_circle": "원",
     "builderShape_line": "선",

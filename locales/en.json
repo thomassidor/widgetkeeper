@@ -1587,7 +1587,6 @@
     "builderInsert": "Insert value",
     "builderRefsHint": "Each value shows where its {1}, {2}… stands in the text.",
     "builderShowsAs": "Shows as: __text__",
-    "builderShape": "Shape",
     "builderShape_rect": "Rectangle",
     "builderShape_circle": "Circle",
     "builderShape_line": "Line",

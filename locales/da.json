@@ -1587,7 +1587,6 @@
     "builderInsert": "Indsæt værdi",
     "builderRefsHint": "Hver værdi vises, hvor dens {1}, {2}… står i teksten.",
     "builderShowsAs": "Vises som: __text__",
-    "builderShape": "Form",
     "builderShape_rect": "Rektangel",
     "builderShape_circle": "Cirkel",
     "builderShape_line": "Linje",

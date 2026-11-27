@@ -1587,7 +1587,6 @@
     "builderInsert": "Wert einfügen",
     "builderRefsHint": "Jeder Wert erscheint dort, wo sein {1}, {2}… im Text steht.",
     "builderShowsAs": "Wird angezeigt als: __text__",
-    "builderShape": "Form",
     "builderShape_rect": "Rechteck",
     "builderShape_circle": "Kreis",
     "builderShape_line": "Linie",

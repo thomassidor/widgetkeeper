@@ -1587,7 +1587,6 @@
     "builderInsert": "Insertar valor",
     "builderRefsHint": "Cada valor aparece donde está su {1}, {2}… en el texto.",
     "builderShowsAs": "Se muestra así: __text__",
-    "builderShape": "Forma",
     "builderShape_rect": "Rectángulo",
     "builderShape_circle": "Círculo",
     "builderShape_line": "Línea",

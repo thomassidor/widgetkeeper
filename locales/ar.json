@@ -1587,7 +1587,6 @@
     "builderInsert": "إدراج قيمة",
     "builderRefsHint": "تظهر كل قيمة حيث يوجد {1} أو {2}… الخاص بها في النص.",
     "builderShowsAs": "تظهر هكذا: __text__",
-    "builderShape": "الشكل",
     "builderShape_rect": "مستطيل",
     "builderShape_circle": "دائرة",
     "builderShape_line": "خط",

@@ -1587,7 +1587,6 @@
     "builderInsert": "Sett inn verdi",
     "builderRefsHint": "Hver verdi vises der dens {1}, {2}… står i teksten.",
     "builderShowsAs": "Vises som: __text__",
-    "builderShape": "Form",
     "builderShape_rect": "Rektangel",
     "builderShape_circle": "Sirkel",
     "builderShape_line": "Linje",

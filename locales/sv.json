@@ -1587,7 +1587,6 @@
     "builderInsert": "Infoga värde",
     "builderRefsHint": "Varje värde visas där dess {1}, {2}… står i texten.",
     "builderShowsAs": "Visas som: __text__",
-    "builderShape": "Form",
     "builderShape_rect": "Rektangel",
     "builderShape_circle": "Cirkel",
     "builderShape_line": "Linje",
