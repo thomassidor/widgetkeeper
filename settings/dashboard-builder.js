@@ -140,6 +140,8 @@
     const TEXT_KINDS = ['text', 'switch', 'button', 'state', 'stepper', 'choice', 'variable', 'ring', 'segments', 'repeat', 'chart', 'container'];
     /** The kinds whose own colour accents them (an icon, a toggle, a bar, a line); a shape's is its fill. */
     const ACCENT_KINDS = ['switch', 'button', 'state', 'slider', 'stepper', 'choice', 'variable', 'icon', 'sparkline', 'arc', 'bar', 'ring', 'segments', 'repeat', 'chart', 'image'];
+    /** The kinds that may take their colour from a value along a scale (lib/customDesigns.ts' `SCALE_KINDS`). */
+    const SCALE_KINDS = ['shape', 'text', 'icon', 'bar', 'arc'];
     const MAX_SERIES = 3;
     const MAX_EACH = 24;
     const MAX_SPAN = 3;
@@ -2920,6 +2922,7 @@
       } else if (ACCENT_KINDS.includes(p.kind)) {
         body.append(bolt(row(t('builderColour'), colourPicker(p.color, v => quiet(() => { p.color = v; })), t('builderColourHint')), p, 'color'));
       }
+      if (SCALE_KINDS.includes(p.kind) && !p.zones) colorByRows(body, p);
       if (TEXT_KINDS.includes(p.kind)) {
         body.append(bolt(row(t('builderTextColour'), colourPicker(p.textColor, v => quiet(() => { if (v) p.textColor = v; else delete p.textColor; }), { none: t('builderAuto') }), t('builderTextColourHint')), p, 'textColor'));
       }
@@ -3055,6 +3058,40 @@
       add.disabled = (p.rules || []).length >= MAX_RULES;
       body.append(add);
       if (p.kind === 'repeat') itemRulesRows(body, p);
+    }
+
+    /**
+     * A colour scale (`colorBy`): its colour blended along a value's range, from the lowest's colour to the highest's
+     * (a middle one optional); the value its own (an icon's, bar's, arc's) or another (a shape's and text's always).
+     */
+    function colorByRows(body, p) {
+      body.append(el('h4', 'wdb-h4', t('builderColorBy')));
+      const sc = p.colorBy;
+      const valueless = p.kind === 'shape' || p.kind === 'text' || (p.kind === 'icon' && !p.slot);
+      body.append(checkRow(t('builderColorBy'), !!sc, v => change(() => {
+        if (v) p.colorBy = { stops: ['blue', 'red'], ...(valueless ? { src: { slot: '' } } : {}) }; else delete p.colorBy;
+      }), t('builderColorByHint')));
+      if (!sc) return;
+      if (!valueless) {
+        body.append(row(t('builderRulesLead'), selectOf([['self', t('builderRuleOfSelf')], ['other', t('builderRuleOfOther')]], sc.src ? 'other' : 'self', v => change(() => {
+          if (v === 'self') delete sc.src; else sc.src = { slot: '' };
+        }))));
+      }
+      if (sc.src || valueless) body.append(sourcePicker(sc.src, src => change(() => { sc.src = src; }), { self: p.id }));
+      const two = el('div', 'wdb-two');
+      const end = key => textInput(sc[key], v => change(() => {
+        const n = Number(String(v).replace(',', '.'));
+        if (String(v).trim() && Number.isFinite(n)) sc[key] = n; else delete sc[key];
+      }), { type: 'number', placeholder: t('builderAuto') });
+      two.append(row(t('builderMin'), end('min')), row(t('builderMax'), end('max')));
+      body.append(two);
+      const [low, ...rest] = sc.stops;
+      const high = rest[rest.length - 1];
+      const mid = rest.length > 1 ? rest[0] : null;
+      const put = (l, m, h) => change(() => { sc.stops = [l, ...(m ? [m] : []), h]; }, { preview: false });
+      body.append(row(t('builderColorLow'), colourPicker(low, v => put(v || 'blue', mid, high), { none: false })));
+      body.append(row(t('builderColorMid'), colourPicker(mid, v => put(low, v, high), { none: t('builderNone') })));
+      body.append(row(t('builderColorHigh'), colourPicker(high, v => put(low, mid, v || 'red'), { none: false })));
     }
 
     /** A List's item colours: each item's own value checked, the first rule that holds colouring it (no other value, no hide). */

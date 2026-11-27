@@ -98,6 +98,18 @@ describe('readDesign: a design as kept', () => {
     expect(designRooms(d)).toBe(true);
   });
 
+  it('keeps a colour scale on the kinds that take one: 2–3 stops, a source where it has no value of its own, its ends', () => {
+    const scale = (kind: string, colorBy: unknown) => readPart(part('x', kind, { colorBy }))!.colorBy;
+    expect(scale('shape', { src: { slot: 'd:t' }, stops: ['blue', '#FF0000', 'red', 'green'], min: '10', max: 30 })).toEqual({ src: { slot: 'd:t' }, stops: ['blue', '#ff0000', 'red'], min: 10, max: 30 });
+    expect(scale('shape', { stops: ['blue', 'red'] })).toBeUndefined(); // a shape has no value of its own
+    expect(scale('bar', { stops: ['blue', 'red'] })).toEqual({ stops: ['blue', 'red'] });
+    expect(scale('icon', { stops: ['blue'] })).toBeUndefined();
+    expect(scale('switch', { stops: ['blue', 'red'] })).toBeUndefined();
+    const d = readDesign({ parts: [part('t', 'text', { text: 'x', colorBy: { src: { slot: 'd:co2' }, stops: ['green', 'red'] } }), part('a', 'arc', { colorBy: { src: { part: 'a' }, stops: ['green', 'red'] } })] })!;
+    expect(designSlots(d)).toEqual(['d:co2']);
+    expect(d.parts[1].colorBy).toEqual({ stops: ['green', 'red'] }); // itself isn't a source: its own value then
+  });
+
   it("keeps a list's item rules: colours on the item's own value, at most six", () => {
     const list = readPart(part('l', 'repeat', { capability: 'measure_battery', itemRules: [
       { op: 'below', value: '15', look: 'red', of: { slot: 'x:y' }, icon: 'star' }, { op: 'below', value: '30', look: 'hide' }, { op: 'is', value: 'on', look: 'same' },

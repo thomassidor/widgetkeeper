@@ -774,6 +774,28 @@ describe('the settings closing the review\'s gaps (2026-11-22)', () => {
     expect(items[1]).not.toContain(url('A'));
   });
 
+  it("colours a shape, a text, an icon, a bar or an arc along a value's range, a rule's colour over it", () => {
+    const { w, at } = widget(state([
+      part('s', 'shape', { colorBy: { src: { slot: 'a:t' }, min: 10, max: 30, stops: ['blue', 'red'] } }),
+      part('t', 'text', { text: 'Hi', colorBy: { src: { slot: 'a:t' }, min: 0, max: 40, stops: ['blue', 'green', '#ff0000'] } }),
+      part('b', 'bar', { src: { slot: 'b:p' }, colorBy: { stops: ['green', 'red'] } }), // its own value, the capability's range
+      part('r', 'shape', { colorBy: { src: { slot: 'a:t' }, stops: ['blue', 'red'] }, rules: [{ op: 'above', value: '25', look: 'purple', of: { slot: 'a:t' } }] }),
+      part('n', 'shape', { color: 'teal', colorBy: { src: { slot: 'gone:t' }, stops: ['blue', 'red'] } }),
+    ], [value('a:t', 20), value('b:p', 75, { units: '%', min: 50, max: 100 }), { deviceId: 'gone', capabilityId: 't', missing: true }]));
+    const c = (id: string) => at(id).style.getPropertyValue('--wk-c');
+    expect(c('s')).toBe('color-mix(in oklab, var(--wk-blue-bright) 50%, var(--wk-red-bright))');
+    expect(c('t')).toBe('color-mix(in oklab, var(--wk-green-bright) 100%, #ff0000)'); // 20 of 0–40: the middle stop
+    expect(c('b')).toBe('color-mix(in oklab, var(--wk-green-bright) 50%, var(--wk-red-bright))');
+    expect(at('s').classList.contains('wb-has-color')).toBe(true);
+    // No number: its own colour.
+    expect([c('n'), at('n').dataset.wkColor]).toEqual(['', 'teal']);
+    expect(at('r').style.getPropertyValue('--wk-c')).toBe('color-mix(in oklab, var(--wk-blue-bright) 80%, var(--wk-red-bright))'); // 20 of 0–100
+    w.pushValue({ deviceId: 'a', capabilityId: 't', value: 30 });
+    expect(c('s')).toBe('color-mix(in oklab, var(--wk-blue-bright) 0%, var(--wk-red-bright))'); // 30: the top
+    // Above 25 the rule's purple wins, and the blend lets go.
+    expect([at('r').dataset.wkColor, c('r'), at('r').style.getPropertyValue('--wk-c-bright')]).toEqual(['purple', '', '']);
+  });
+
   it("colours each of a list's items by the first item rule that holds on its own value, following it live", () => {
     const bat = (slot: string, v: unknown, name: string) => ({ ...value(slot, v, { units: '%', decimals: 0 }), name });
     const s = state([part('rp', 'repeat', { capability: 'measure_battery', sort: 'up', itemRules: [

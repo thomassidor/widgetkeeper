@@ -184,7 +184,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
     const slots = [];
     // Every value a design reads, as lib/customDesigns.ts' designSlots(): its own, its rules' and texts' and inputs'.
     const walk = parts => (parts || []).forEach((x) => {
-      for (const src of [x, ...(x.rules || []).map(r => r.of), ...(x.refs || []), ...(x.inputs || []), ...(x.rings || []).map(r => r.src), ...(x.segments || []).map(r => r.src), ...(x.series || []), ...(x.actions || [])]) if (src && src.slot) slots.push(src.slot);
+      for (const src of [x, ...(x.rules || []).map(r => r.of), ...(x.refs || []), ...(x.inputs || []), ...(x.rings || []).map(r => r.src), ...(x.segments || []).map(r => r.src), ...(x.series || []), ...(x.actions || []), x.colorBy && x.colorBy.src]) if (src && src.slot) slots.push(src.slot);
       walk(x.parts);
     });
     walk(design.parts);

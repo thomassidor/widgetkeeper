@@ -909,8 +909,14 @@
         node.classList.toggle('wb-hidden', look.hidden);
         node.setAttribute('aria-hidden', look.hidden ? 'true' : 'false');
         applyColor(node, look.color);
+        // A colour scale's colour stands for its own, under a rule's or a Flow's (an Arc or Bar by level has none).
+        const scaled = !look.tint && !(flow && flow.color) && !part.zones ? scaleColor(part, c) : null;
+        if (scaled) {
+          node.removeAttribute('data-wk-color');
+          for (const v of ['--wk-c', '--wk-c-bright', '--wk-c-shade']) node.style.setProperty(v, scaled);
+        }
         node.classList.toggle('wb-colored', look.tint);
-        node.classList.toggle('wb-has-color', !!look.color);
+        node.classList.toggle('wb-has-color', !!(look.color || scaled));
         // A rule's icon, under a Flow's.
         const shownFlow = look.icon && !(flow && flow.icon) ? { ...(flow || {}), icon: look.icon } : flow;
         updatePart(c || {}, shownFlow, look);
@@ -920,7 +926,32 @@
       return node;
     }
 
+    /**
+     * A colour scale's colour now (`colorBy`), as CSS: its value (its own source, else the part's) along `min` … `max`
+     * (else the capability's range, else 0–100), blended in oklab between its stops' bright colours (as the charts
+     * draw the palette in both colour styles). Null without a number, so its own colour shows.
+     */
+    function scaleColor(part, own) {
+      const sc = part.colorBy;
+      if (!sc || !sc.stops || sc.stops.length < 2) return null;
+      const e = sc.src ? sourceEntry(sc.src) : own;
+      const n = inputNumber(e);
+      if (n === null) return null;
+      const cap = (e && e.cap) || {};
+      const lo = sc.min != null ? sc.min : Number.isFinite(cap.min) ? cap.min : 0;
+      const hi = sc.max != null ? sc.max : Number.isFinite(cap.max) ? cap.max : 100;
+      const f = hi === lo ? (n >= hi ? 1 : 0) : Math.min(1, Math.max(0, (n - lo) / (hi - lo)));
+      const at = f * (sc.stops.length - 1);
+      const i = Math.min(sc.stops.length - 2, Math.floor(at));
+      const k = at - i;
+      const css = c => (K.isCustomColor(c) ? c : `var(--wk-${c}-bright)`);
+      return `color-mix(in oklab, ${css(sc.stops[i])} ${Math.round((1 - k) * 1000) / 10}%, ${css(sc.stops[i + 1])})`;
+    }
+
     function applyColor(node, color) {
+      // A colour scale's blend, set below after this: let it go each time.
+      node.style.removeProperty('--wk-c-bright');
+      node.style.removeProperty('--wk-c-shade');
       if (color && K.isCustomColor(color)) {
         node.removeAttribute('data-wk-color');
         node.style.setProperty('--wk-c', color);

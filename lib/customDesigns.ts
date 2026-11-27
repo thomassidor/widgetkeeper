@@ -169,6 +169,9 @@ export type Test = { op: RuleOp, value: string, to?: string };
  */
 export const ICON_KINDS: readonly PartKind[] = ['switch', 'button', 'state', 'ring', 'icon'];
 /** The kinds that may show their device's own icon (`deviceIcon`): a switch's or an icon's value's, a List's items'. */
+/** The kinds that may take their colour from a value along a scale (`colorBy`): a shape's fill, a text's, an icon's, a bar's or arc's. */
+export const SCALE_KINDS: readonly PartKind[] = ['shape', 'text', 'icon', 'bar', 'arc'];
+export type ColorScale = { src?: Source, min?: number, max?: number, stops: TileColor[] };
 export const DEVICE_ICON_KINDS: readonly PartKind[] = ['switch', 'icon', 'repeat'];
 /** The kinds with a press setting (a tap, a second tap to confirm, a hold): a button, a switch, any tapped component. */
 export const PRESS_KINDS: readonly PartKind[] = ['button', 'switch'];
@@ -353,6 +356,12 @@ export type Part = {
    * `redBelow` per cent of its range, yellow below `yellowBelow`, else green.
    */
   fillBy?: Source,
+  /**
+   * A colour scale (`SCALE_KINDS`): its own colour blended along a value's range, from the first stop at `min` to the
+   * last at `max` (2 or 3 stops, palette names or `#rrggbb`); the value is `src`, else its own (an icon's, bar's or
+   * arc's). A rule's or a Flow's colour still wins.
+   */
+  colorBy?: ColorScale,
   redBelow?: number,
   yellowBelow?: number,
   /**
@@ -495,6 +504,22 @@ function rulesOf(v: unknown, valueless = false, icons = true): Rule[] {
     if (look === 'same' && !icon) continue;
     out.push({ op: r.op, value: str(String(r.value ?? ''), 60), ...toOf(r.op, r.to), look, ...(of ? { of } : {}), ...(icon ? { icon } : {}) });
   }
+  return out;
+}
+
+/** A colour scale: 2–3 stops, a source (which `needsSource` kinds must have: they have no value of their own), its ends. */
+function scaleOf(v: unknown, needsSource: boolean): ColorScale | undefined {
+  if (!v || typeof v !== 'object') return undefined;
+  const r = v as Record<string, any>;
+  const stops = (Array.isArray(r.stops) ? r.stops : []).map(color).filter((c: TileColor | null): c is TileColor => !!c).slice(0, 3);
+  if (stops.length < 2) return undefined;
+  const src = sourceOf(r.src);
+  if (needsSource && !src) return undefined;
+  const out: ColorScale = { stops, ...(src ? { src } : {}) };
+  const min = optNum(r.min);
+  const max = optNum(r.max);
+  if (min !== undefined) out.min = min;
+  if (max !== undefined) out.max = max;
   return out;
 }
 
@@ -656,6 +681,10 @@ function checkPartSources(design: Design) {
     if (p.segments) p.segments = p.segments.filter(x => ok(x.src, p.id));
     if (p.src && !ok(p.src, p.id)) delete p.src;
     if (p.fillBy && !ok(p.fillBy, p.id)) { delete p.fillBy; delete p.redBelow; delete p.yellowBelow; }
+    if (p.colorBy?.src && !ok(p.colorBy.src, p.id)) {
+      if (p.kind === 'shape' || p.kind === 'text') delete p.colorBy;
+      else delete p.colorBy.src;
+    }
     // A page is picked by a widget state only.
     if (p.pageBy && !('part' in p.pageBy && kindOf.get(p.pageBy.part) === 'state')) delete p.pageBy;
     if (p.nav === 'state' && !p.pageBy) p.nav = 'tabs';
@@ -725,6 +754,10 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     rules: kind === 'calc' ? [] : rulesOf(r.rules, VALUELESS_KINDS.includes(kind) && !(kind === 'icon' && slotOf(r.slot)), ICON_KINDS.includes(kind)),
   };
   if (DEVICE_ICON_KINDS.includes(kind) && r.deviceIcon === true) p.deviceIcon = true;
+  if (SCALE_KINDS.includes(kind)) {
+    const colorBy = scaleOf(r.colorBy, kind === 'shape' || kind === 'text');
+    if (colorBy) p.colorBy = colorBy;
+  }
   const bind = bindOf(r.bind, bindPropsOf(kind, kind === 'container' ? (r.mode === 'free' ? 'free' : r.mode === 'pages' ? 'pages' : 'grid') : undefined));
   if (bind) p.bind = bind;
   if (Number.isInteger(r.page) && r.page >= 0 && r.page < MAX_PAGES) p.page = r.page;
@@ -1005,6 +1038,7 @@ function designSources(design: Design): Source[] {
     if (p.slot) out.push({ slot: p.slot });
     if (p.src) out.push(p.src);
     if (p.fillBy) out.push(p.fillBy);
+    if (p.colorBy?.src) out.push(p.colorBy.src);
     if (p.variable) out.push({ variable: p.variable });
     for (const r of p.rules) if (r.of) out.push(r.of);
     for (const r of p.refs ?? []) {
