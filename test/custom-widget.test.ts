@@ -88,6 +88,13 @@ describe('drawing', () => {
       .toEqual([[false, false], [true, true], [false, false], [false, false], [true, false]]);
   });
 
+  it("shows a device's room in a text, a dash where it's unknown", () => {
+    const { at } = widget(state([
+      part('t', 'text', { text: '{1}|{2}', refs: [{ slot: 'a:t', show: 'room' }, { slot: 'b:t', show: 'room' }] }),
+    ], [{ ...value('a:t', 21), room: 'Kitchen' }, value('b:t', 20)]));
+    expect(at('t').textContent).toBe('Kitchen|–');
+  });
+
   it("shows a value and its device's name in texts, a Flow input's value or text over them, and a gone device marked", () => {
     const { at, w } = widget(state([
       part('t', 'text', { text: '{1} in {2}', refs: [{ slot: 'a:t' }, { slot: 'a:t', show: 'name' }] }),
@@ -269,12 +276,20 @@ describe('calculated values, shapes, times and texts with values', () => {
     };
     expect(shown({ op: 'sum' })[0]).toBe('43.5°C');
     expect(shown({ op: 'avg', decimals: 2 })[0]).toBe('21.75°C');
+    expect(shown({ op: 'median', decimals: 2 })[0]).toBe('21.75°C'); // an even count: the middle two's average
     expect(shown({ op: 'max' })).toEqual(['23.5°C', 'Office']);
     expect(shown({ op: 'min' })).toEqual(['20°C', 'Kitchen']);
     expect(shown({ op: 'diff', units: 'K' })[0]).toBe('-3.5 K');
     expect(shown({ op: 'formula', formula: 'a * 2 + c' })[0]).toBe('–'); // c is unavailable
     expect(shown({ op: 'formula', formula: 'a * 2 + b' })[0]).toBe('63.5°C');
     expect(shown({ op: 'count', test: { op: 'above', value: '21' } })[0]).toBe('1');
+  });
+
+  it("takes the median of three as the middle one, Combined Value's way", () => {
+    const inputs = [{ slot: 'a:t' }, { slot: 'b:t' }, { slot: 'c:t' }];
+    const values = [num('a:t', 30), num('b:t', 18), num('c:t', 21)];
+    const { at } = widget(state([part('x', 'calc', { inputs, op: 'median' }), part('t', 'text', { text: '{1}', refs: [{ part: 'x' }] })], values));
+    expect(at('t').textContent).toBe('21°C');
   });
 
   it('counts the switches that are on as they change', () => {
@@ -366,6 +381,25 @@ describe('calculated values, shapes, times and texts with values', () => {
     expect(parts()[0]).toBe('21:30:01');
     w.pushValue({ deviceId: 'a', capabilityId: 'alarm_motion', value: true });
     expect(parts()[2]).toBe('now');
+    expect(at('dot').dataset.wkColor).toBeUndefined();
+  });
+
+  it('shows how long since a Flow input was set, a device\'s own where it has one, and counts its minutes for rules', () => {
+    vi.useFakeTimers();
+    const now = new Date(2026, 10, 21, 21, 30).getTime();
+    vi.setSystemTime(now);
+    const inputs = { w: { type: 'text', perDevice: true, all: { value: '', at: now - 3 * 86400e3 }, devices: { d2: { value: '', at: now - 5 * 60e3 } } } };
+    const s = state([
+      part('t', 'text', { text: '{1}|{2}|{3}', refs: [{ since: { input: 'w' } }, { since: { input: 'w', device: 'd2' } }, { since: { input: 'gone' } }] }),
+      part('m', 'calc', { op: 'since', inputs: [{ input: 'w' }] }),
+      part('dot', 'shape', { rules: [{ op: 'above', value: String(2 * 24 * 60), look: 'red', of: { part: 'm' } }] }),
+    ], [], { language: 'en', inputs });
+    const { w, at } = widget(s);
+    expect(at('t').textContent).toBe('3 days ago|5 min. ago|–');
+    expect(at('dot').dataset.wkColor).toBe('red');
+    // Set again (a button's now, or a Flow).
+    w.pushInput({ input: 'w', entry: { ...inputs.w, all: { value: '', at: now } } });
+    expect(at('t').textContent!.split('|')[0]).toBe('now');
     expect(at('dot').dataset.wkColor).toBeUndefined();
   });
 });
@@ -719,6 +753,40 @@ describe('the settings closing the review\'s gaps (2026-11-22)', () => {
       { repeats: { rp: ['a:measure_battery', 'b:measure_battery', 'c:measure_battery', 'd:measure_battery'] } });
     const { at } = widget(s);
     expect([...at('rp').querySelectorAll('.wb-rep-name')].map(n => n.textContent)).toEqual(['Door', 'Shed']);
+  });
+
+  it("shows a device's own icon on a switch, an icon and a List's items where asked, a picked icon over it, the glyph without one", () => {
+    const url = (n: string) => `data:image/svg+xml;base64,${n}`;
+    const sw = (slot: string, v: boolean) => value(slot, v, { type: 'boolean', units: null });
+    const { at } = widget(state([
+      part('a', 'switch', { slot: 'a:onoff', deviceIcon: true }),
+      part('b', 'icon', { slot: 'b:onoff', deviceIcon: true, icon: 'star' }),
+      part('c', 'icon', { slot: 'c:onoff', deviceIcon: true }), // no icon sent: the glyph
+      part('rp', 'repeat', { capability: 'onoff', deviceIcon: true }),
+    ], [sw('a:onoff', true), sw('b:onoff', true), sw('c:onoff', false)], { icons: { a: url('A'), b: url('B') }, repeats: { rp: ['a:onoff', 'c:onoff'] } }));
+    const mask = (n: Element | null) => (n as HTMLElement).style.getPropertyValue('--wb-mask');
+    expect(mask(at('a').querySelector('.wb-icon'))).toContain(url('A'));
+    expect(at('b').querySelector('.wb-svg')).not.toBeNull();
+    const glyph = mask(at('c').querySelector('.wb-icon'));
+    expect([glyph.length > 0, glyph.includes(url('A')), glyph.includes(url('B'))]).toEqual([true, false, false]);
+    const items = [...at('rp').querySelectorAll('.wb-rep-item .wb-icon')].map(mask);
+    expect(items[0]).toContain(url('A'));
+    expect(items[1]).not.toContain(url('A'));
+  });
+
+  it("colours each of a list's items by the first item rule that holds on its own value, following it live", () => {
+    const bat = (slot: string, v: unknown, name: string) => ({ ...value(slot, v, { units: '%', decimals: 0 }), name });
+    const s = state([part('rp', 'repeat', { capability: 'measure_battery', sort: 'up', itemRules: [
+      { op: 'below', value: '15', look: 'red' }, { op: 'below', value: '30', look: 'yellow' }, { op: 'above', value: '90', look: '#123456' },
+    ] })],
+    [bat('a:measure_battery', 9, 'Door'), bat('b:measure_battery', 25, 'Shed'), bat('c:measure_battery', 60, 'Hall'), bat('d:measure_battery', 95, 'Roof')],
+    { repeats: { rp: ['a:measure_battery', 'b:measure_battery', 'c:measure_battery', 'd:measure_battery'] } });
+    const { w, at } = widget(s);
+    const looks = () => [...at('rp').querySelectorAll<HTMLElement>('.wb-rep-item')].map(n => [n.dataset.wkColor ?? n.style.getPropertyValue('--wk-c') ?? '', n.classList.contains('wb-item-colored')]);
+    expect(looks()).toEqual([['red', true], ['yellow', true], ['', false], ['#123456', true]]);
+    w.pushValue({ deviceId: 'c', capabilityId: 'measure_battery', value: 12 });
+    expect(looks()[0]).toEqual(['red', true]); // Hall, now lowest
+    expect([...at('rp').querySelectorAll('.wb-rep-name')].map(n => n.textContent)).toEqual(['Door', 'Hall', 'Shed', 'Roof']);
   });
 
   it("shows a text's value with its own decimals, with or without its unit", () => {

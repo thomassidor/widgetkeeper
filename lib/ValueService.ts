@@ -3,9 +3,9 @@ import { findLog, parseLogSlot } from './appLogs.js';
 import { devicesAndZones, hintRow, listCapabilitySlots, matches, withNone, type AutocompleteItem } from './autocomplete.js';
 import { capabilityReading, describeCapability, type CapabilityDescription } from './capabilities.js';
 import { valueGlyphImage } from './valueGlyphs.js';
-import DeviceTracker, { type TrackedEntry, offlineFlag } from './DeviceTracker.js';
+import DeviceTracker, { readZones, zoneRef, type TrackedEntry, offlineFlag } from './DeviceTracker.js';
 import { fetchSvgIcon } from './deviceIcon.js';
-import { deviceNamer } from './deviceNames.js';
+import { deviceNamer, roomNamer } from './deviceNames.js';
 import { temperatureShower, type TemperatureShower } from './temperatureUnit.js';
 import { FlowColors, parseTileColor, type TileColor } from './tileColors.js';
 import Timings from './Timings.js';
@@ -27,7 +27,7 @@ export type ValueCapability = CapabilityDescription & {
 export type ValueSecond = { capabilityId: string, capability: ValueCapability, value: unknown };
 
 export type ValueSlot =
-  | { deviceId: string, capabilityId: string, name: string, capability: ValueCapability, value: unknown, color?: TileColor, second?: ValueSecond, offline?: true, updatedAt?: number }
+  | { deviceId: string, capabilityId: string, name: string, capability: ValueCapability, value: unknown, color?: TileColor, second?: ValueSecond, offline?: true, updatedAt?: number, room?: string }
   | { deviceId: string, capabilityId: string, missing: true };
 
 type Tracked = TrackedEntry & {
@@ -196,12 +196,15 @@ export default class ValueService {
    * One entry per slot, in the order asked for. A deleted device or capability doesn't fail the others. `seconds[i]`
    * is slot i's second value, a capability id of the same device; one that can't be read is left out of the entry.
    * Temperatures in the app's unit (`showSlot()`); `raw` keeps Homey's, for a caller that converts them with more
-   * (the chart widgets' histories).
+   * (the chart widgets' histories). With `rooms` (the Widget Builder's texts that show a device's room), each device's
+   * room's name as the widgets show rooms; left out where it's unknown.
    */
-  async getState(slots: string[], seconds: (string | undefined)[] = [], { raw = false } = {}): Promise<ValueSlot[]> {
+  async getState(slots: string[], seconds: (string | undefined)[] = [], { raw = false, rooms = false } = {}): Promise<ValueSlot[]> {
     const tm = new Timings();
     const colors = this.colors.all();
+    const zonesP = rooms ? readZones(this.homey, tm, this.log, 'Values') : null;
     const show = await deviceNamer(this.homey, tm, this.log, 'Values');
+    const room = roomNamer(this.homey);
     const out = await Promise.all(slots.map(async (slot, i): Promise<ValueSlot | null> => {
       if (parseLogSlot(slot)) return this.logState(slot);
       const s = parseSlot(slot);
@@ -210,9 +213,11 @@ export default class ValueService {
         const t = await this.tracker.current(`${s.deviceId}:${s.capabilityId}`, tm);
         const color = colors[t.key];
         const second = await this.second(s.deviceId, seconds[i], s.capabilityId, tm);
+        const zone = zonesP ? zoneRef(await zonesP, t.zone, room) : null;
         return {
           deviceId: t.deviceId, capabilityId: t.capabilityId, name: show(t.name, t.zone), capability: { ...t.capability }, value: t.value,
           ...(color ? { color } : {}), ...(second ? { second } : {}), ...offlineFlag(t), ...(t.updatedAt ? { updatedAt: t.updatedAt } : {}),
+          ...(zone ? { room: zone.name } : {}),
         };
       } catch (err) {
         this.log(`Value ${slot} unavailable:`, err);

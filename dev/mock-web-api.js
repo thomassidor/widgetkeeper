@@ -196,7 +196,7 @@ function mockWebApi({ lang = 'en', dashboards = [], front: frontIn = {}, zones =
       const d = devices.find(x => x.id === deviceId);
       const r = readings[capabilityId];
       values[slot] = d && r
-        ? { deviceId, capabilityId, name: d.name, capability: { icon: null, values: null, min: null, max: null, ...r }, value: typeof r.value === 'function' ? r.value(d, 0) : r.value }
+        ? { deviceId, capabilityId, name: d.name, capability: { icon: null, values: null, min: null, max: null, ...r }, value: typeof r.value === 'function' ? r.value(d, 0) : r.value, ...(zoneOf(d) ? { room: zoneOf(d).name } : {}) }
         : { deviceId, capabilityId, missing: true };
     }
     // A repeater's devices: every made-up device with its capability (mock-custom.js' own first), by name.

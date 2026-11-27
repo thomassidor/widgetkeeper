@@ -1,10 +1,10 @@
 import type Homey from 'homey';
 import { getAppApi } from './appApi.js';
 import { byName, devicesAndZones, listDevicesWhere, matches, withNone, type AutocompleteItem } from './autocomplete.js';
-import { deviceImage, fetchImageBase64 } from './deviceIcon.js';
+import { deviceImage, fetchDeviceIcon, fetchImageBase64 } from './deviceIcon.js';
 import {
   INPUT_TYPES, MAX_DESIGNS, MAX_EACH, MAX_FLOW_INPUTS, MAX_REPEAT_CANDIDATES, SERVER_ACTIONS, TAP_KINDS, allParts, bindDevice, designCharts, designFlows, designInputs,
-  designSlots, designVariables, detachUses, findPart, inputValue, newId, partLabel, readDesign, readInputs, ruleHolds,
+  designDeviceIcons, designRooms, designSlots, designVariables, detachUses, findPart, inputValue, newId, partLabel, readDesign, readInputs, ruleHolds,
   type Design, type Input, type InputReset, type InputType, type Part,
 } from './customDesigns.js';
 import { DebouncedSetting, isReservedKey } from './storedSetting.js';
@@ -59,6 +59,12 @@ export const EVERY_DEVICE = '*';
 /** The device a linked ready-made's `@` values take: the widget's, or `@` (left as they are) without one. */
 function usable(device: string | undefined): string {
   return device && !/[\s:]/.test(device) ? device : '@';
+}
+
+/** A value to sort devices by: a number, a yes/no as 1/0, else null (sorted last). */
+function sortKey(v: unknown): number | null {
+  if (typeof v === 'boolean') return v ? 1 : 0;
+  return typeof v === 'number' && Number.isFinite(v) ? v : null;
 }
 
 export default class CustomWidgetService {
@@ -345,8 +351,12 @@ export default class CustomWidgetService {
     return (await this.devicesWith(part, MAX_REPEAT_CANDIDATES)).map(id => `${id}:${part.capability}`);
   }
 
-  /** Every device with a part's capability, in its room and the rooms inside it, by name: ids, at most `max`. */
-  private async devicesWith(part: Part, max: number): Promise<string[]> {
+  /**
+   * Every device with a part's capability, in its room and the rooms inside it, by name: ids, at most `max`. A
+   * Repeater's `sort` (`up`, `down`) orders them by that capability's value now first, as a List's (a yes/no as 1/0,
+   * one without a number last), so the limit keeps the lowest or highest.
+   */
+  private async devicesWith(part: Part, max: number, sort?: Part['sort']): Promise<string[]> {
     if (!part.capability) return [];
     const [devices, zones] = await devicesAndZones(this.homey);
     const inZone = (zoneId: string | undefined): boolean => {
@@ -356,13 +366,15 @@ export default class CustomWidgetService {
     return devices
       .filter(d => d?.capabilitiesObj?.[part.capability!] && d.capabilitiesObj[part.capability!].getable !== false && (!part.zone || inZone(d.zone)))
       .sort(byName(this.homey))
+      .map((d, i) => ({ d, i, k: sort === 'up' || sort === 'down' ? sortKey(d.capabilitiesObj[part.capability!].value) : null }))
+      .sort((a, b) => (a.k === null || b.k === null ? Number(a.k === null) - Number(b.k === null) : sort === 'up' ? a.k - b.k : b.k - a.k) || a.i - b.i)
       .slice(0, max)
-      .map(d => d.id as string);
+      .map(({ d }) => d.id as string);
   }
 
     /** A Repeater's devices: those picked, or every one with its capability (in its room). */
   private async eachDevices(part: Part): Promise<string[]> {
-    const ids = part.capability ? await this.devicesWith(part, MAX_EACH) : part.devices ?? [];
+    const ids = part.capability ? await this.devicesWith(part, MAX_EACH, part.sort) : part.devices ?? [];
     return ids.slice(0, part.limit ?? MAX_EACH);
   }
 
@@ -412,12 +424,18 @@ export default class CustomWidgetService {
     const quiet = <T>(what: string, p: Promise<T>, empty: T) => p.catch(err => { this.log(`Widget Builder: ${what} failed:`, err); return empty; });
     const bySpan = new Map<string, string[]>();
     for (const c of charts) bySpan.set(c.span, [...(bySpan.get(c.span) ?? []), c.slot]);
-    const [values, vars, flowList, histories] = await Promise.all([
-      slots.length ? this.deps.values.getState(slots) : [],
+    // The devices whose own icon it shows: its switches' and icons', and its Lists' items'.
+    const iconIds = [...new Set([
+      ...designDeviceIcons(reads),
+      ...allParts(reads).filter(p => p.kind === 'repeat' && p.deviceIcon).flatMap(p => (repeats[p.id] ?? []).map(s => s.slice(0, s.indexOf(':')))),
+    ])];
+    const [values, vars, flowList, histories, icons] = await Promise.all([
+      slots.length ? this.deps.values.getState(slots, [], { rooms: designRooms(reads) }) : [],
       variables.length ? quiet('variables', this.deps.variables.getState(variables), []) : [],
       flows.length ? quiet('flows', this.deps.flows.getState(flows), []) : [],
       Promise.all([...bySpan].map(([span, list]) => quiet('histories', this.histories(list, span), [])
         .then(res => res.map((r: any) => [`${span}\n${r.deviceId}:${r.capabilityId}`, r.points ?? []] as const)))),
+      iconIds.length ? quiet('device icons', this.deviceIcons(iconIds), {}) : {},
     ]);
     return {
       design,
@@ -425,6 +443,7 @@ export default class CustomWidgetService {
       variables: Object.fromEntries((vars as any[]).map(v => [v.id, v])),
       flows: Object.fromEntries((flowList as any[]).map(f => [f.id, f])),
       histories: Object.fromEntries(histories.flat()),
+      ...(iconIds.length ? { icons } : {}),
       repeats,
       each,
       // The Flow inputs it reads, and the widget's device, whose values a per-device input shows.
@@ -435,6 +454,19 @@ export default class CustomWidgetService {
       timeFormat: timeFormatOf(this.homey),
       now: Date.now(),
     };
+  }
+
+  /**
+   * Devices' own icons as the Homey app shows them (a picked one from Homey's library, else the driver's;
+   * `fetchDeviceIcon()`, cached per address), by id; null for a device that's gone or whose icon can't be read.
+   */
+  private async deviceIcons(ids: string[]): Promise<Record<string, string | null>> {
+    const [[devices], api] = await Promise.all([devicesAndZones(this.homey), getAppApi(this.homey)]);
+    const byId = new Map(devices.map(d => [d.id, d]));
+    return Object.fromEntries(await Promise.all(ids.map(async (id) => {
+      const d = byId.get(id);
+      return [id, d ? await fetchDeviceIcon(api, d, this.log).catch(() => null) : null] as const;
+    })));
   }
 
   private expiry(reset: InputReset, at: number): number | null {
@@ -568,7 +600,10 @@ export default class CustomWidgetService {
       if (!input) throw new Error('No such Flow input');
       // A device id as a card's (`cardDevice()`): never a reserved key, nor `@` (no device) or one with spaces or `:`.
       const dev = input.perDevice && typeof device === 'string' && device && device !== '@' && !isReservedKey(device) && !/[\s:]/.test(device) ? device : undefined;
-      this.setInputValue(input, CustomWidgetService.actionValue(input, action.value, this.current(input, dev)), dev);
+      const current = this.current(input, dev);
+      // `now`: set just now, keeping its value (a counter of the time since, `since: {input}`).
+      if (action.value.trim().toLowerCase() === 'now') this.setInputValue(input, CustomWidgetService.nowValue(input, current), dev, current?.units);
+      else this.setInputValue(input, CustomWidgetService.actionValue(input, action.value, current), dev);
     } else if (action.do === 'variable') {
       const current = (await this.deps.variables.getState([action.variable]))[0] as any;
       if (!current || current.missing) throw new Error(`No variable ${action.variable}`);
@@ -730,6 +765,18 @@ export default class CustomWidgetService {
   private current(input: Input, device?: string): InputValue | undefined {
     const e = this.liveEntry(input);
     return (device && e?.devices?.[device]) || e?.all;
+  }
+
+  /**
+   * An action's `now`: the value it has (so only when it was set changes), else a first one of its type: an empty text,
+   * 0, yes. A colour or icon has no first one.
+   */
+  static nowValue(input: Input, current?: InputValue): string | number | boolean {
+    if (current) return current.value;
+    if (input.type === 'text') return '';
+    if (input.type === 'number') return 0;
+    if (input.type === 'yesno') return true;
+    throw new Error(`Not a ${input.type} value: now`);
   }
 
   /** A typed action value as an input's: `toggle` flips a yes/no, `+2`/`-1` add to a number, else read as its type. */

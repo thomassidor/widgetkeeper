@@ -141,7 +141,7 @@
     /** The kinds whose own colour accents them (an icon, a toggle, a bar, a line); a shape's is its fill. */
     const ACCENT_KINDS = ['switch', 'button', 'state', 'slider', 'stepper', 'choice', 'variable', 'icon', 'sparkline', 'arc', 'bar', 'ring', 'segments', 'repeat', 'chart', 'image'];
     const MAX_SERIES = 3;
-    const MAX_EACH = 12;
+    const MAX_EACH = 24;
     const MAX_SPAN = 3;
     const VARIABLE_KINDS = ['slider', 'stepper', 'choice', 'variable'];
     const RANGE_KINDS = ['arc', 'bar', 'sparkline', 'slider', 'stepper', 'variable'];
@@ -149,7 +149,7 @@
     const SPAN_UNITS = [['minutes', 'm'], ['hours', 'h'], ['days', 'd'], ['weeks', 'w'], ['months', 'mo'], ['years', 'y'], ['calDays', 'd!'], ['calWeeks', 'w!'], ['calMonths', 'mo!'], ['calYears', 'y!']];
     const SPAN_LETTER = { minute: 'm', hour: 'h', day: 'd', week: 'w', month: 'mo', year: 'y' };
     const RULE_OPS = ['above', 'below', 'between', 'is', 'isNot'];
-    const CALC_OPS = ['sum', 'avg', 'min', 'max', 'diff', 'count', 'formula', 'change', 'since'];
+    const CALC_OPS = ['sum', 'avg', 'median', 'min', 'max', 'diff', 'count', 'formula', 'change', 'since'];
     const MAX_INPUTS = 12;
     const MAX_REFS = 6;
     const INPUT_NAMES = 'abcdefghijkl';
@@ -1798,7 +1798,7 @@
       const ids = p.kind === 'calc' || p.kind === 'use' ? ['part'] : p.kind === 'each' ? ['part', 'look'] : ['part', 'look', 'rules'];
       if (!ids.includes(b.tab)) b.tab = 'part';
       // How many rules it has: there's something on that tab.
-      const counts = { rules: (p.rules || []).length };
+      const counts = { rules: (p.rules || []).length + (p.itemRules || []).length };
       for (const id of ids) {
         const tb = button(`wdb-tab${b.tab === id ? ' on' : ''}`, t(`builderTab_${id}`), () => { b.tab = id; redrawInspector(); });
         if (counts[id]) tb.append(el('span', 'wdb-tab-count', String(counts[id])));
@@ -1893,8 +1893,9 @@
     function sourceSummary(src) {
       const kind = sourceKind(src);
       if (kind === 'time') {
-        const which = 'since' in src ? 'since' : 'until' in src ? 'until' : src.time;
-        return { title: t(`builderRef_${which}`), sub: which === 'until' ? src.until : '' };
+        const which = timeRef(src);
+        const input = which === 'sinceInput' && inputById(src.since.input);
+        return { title: t(`builderRef_${which}`), sub: which === 'until' ? src.until : input ? input.name : '' };
       }
       if (kind === 'calc') {
         const x = everyPart().find(c => c.id === src.part);
@@ -2346,7 +2347,9 @@
     /** The components another may read: calculated values, widget states and repeaters (how many they show). */
     const allCalcs = () => everyPart().filter(p => SOURCE_KINDS.includes(p.kind));
     const sourceKind = src => (!src || 'slot' in src ? 'device' : 'time' in src || 'since' in src || 'until' in src ? 'time' : 'part' in src ? 'calc' : 'input' in src ? 'input' : 'variable');
-    const TIME_REFS = ['clock', 'seconds', 'date', 'weekday', 'since', 'until'];
+    const TIME_REFS = ['clock', 'seconds', 'date', 'weekday', 'since', 'sinceInput', 'until'];
+    /** Which of `TIME_REFS` a time ref is: `since` a device value's change, `sinceInput` a Flow input's last set. */
+    const timeRef = src => ('since' in src ? (typeof src.since === 'string' ? 'since' : 'sinceInput') : 'until' in src ? 'until' : src.time);
 
     /** A Flow input to pick (any type), or a new one named in place; `set(id)`. */
     function inputSelect(current, set) {
@@ -2376,15 +2379,16 @@
         if (v === kind) return;
         set(v === 'device' ? { slot: '' } : v === 'variable' ? { variable: '' } : v === 'calc' ? { part: calcs[0].id } : v === 'input' ? { input: '' } : { time: 'clock' });
       }));
-      // A text's value may be the source's name instead (a device's, a variable's).
-      const named = next => (o.time && src && src.show === 'name' ? { ...next, show: 'name' } : next);
+      // A text's value may be the source's name instead (a device's, a variable's), or a device's room.
+      const named = next => (o.time && src && (src.show === 'name' || (src.show === 'room' && 'slot' in next)) ? { ...next, show: src.show } : next);
       if (kind === 'device') wrap.append(slotButton(src && src.slot, item => set(named({ slot: item.id }))));
       else if (kind === 'variable') wrap.append(listPicker('variable', src.variable || '', item => set(named({ variable: item ? item.id : '' }))));
       else if (kind === 'input') wrap.append(inputSelect(src.input, id => set(named({ input: id }))));
       else if (kind === 'time') {
-        const which = 'since' in src ? 'since' : 'until' in src ? 'until' : src.time;
-        wrap.append(selectOf(TIME_REFS.map(x => [x, t(`builderRef_${x}`)]), which, v => set(v === 'since' ? { since: '' } : v === 'until' ? { until: '22:00' } : { time: v })));
+        const which = timeRef(src);
+        wrap.append(selectOf(TIME_REFS.map(x => [x, t(`builderRef_${x}`)]), which, v => set(v === 'since' ? { since: '' } : v === 'sinceInput' ? { since: { input: '' } } : v === 'until' ? { until: '22:00' } : { time: v })));
         if (which === 'since') wrap.append(slotButton(src.since, item => set({ since: item.id })));
+        if (which === 'sinceInput') wrap.append(inputSelect(src.since.input, id => set({ since: { input: id } })));
         if (which === 'until') wrap.append(textInput(src.until || '22:00', v => { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(v)) set({ until: v }); }, { type: 'time' }));
       } else {
         const sel = el('select', 'wd-input');
@@ -2403,6 +2407,13 @@
           if (v) next.show = 'name'; else delete next.show;
           set(next);
         }));
+        if (kind === 'device') {
+          wrap.append(checkLine(t('builderRefRoom'), src.show === 'room', (v) => {
+            const next = { ...src };
+            if (v) next.show = 'room'; else delete next.show;
+            set(next);
+          }));
+        }
       }
       return wrap;
     }
@@ -2438,7 +2449,7 @@
         const src = r || { slot: '' };
         const sum = sourceSummary(src);
         // Its name instead: no reading on its line.
-        if (src.show === 'name') sum.value = null;
+        if (src.show === 'name' || src.show === 'room') sum.value = null;
         body.append(itemLine('refs', i, {
           key: `{${i + 1}}`, ...sum,
           remove: () => change(() => {
@@ -2449,7 +2460,7 @@
           fill: (box) => {
             box.append(sourcePicker(r, next => change(() => { p.refs[i] = next; }), { time: true, self: p.id }));
             // How a value's number shows: its decimals, and with or without its unit.
-            if (r && sourceKind(r) !== 'time' && r.show !== 'name') {
+            if (r && sourceKind(r) !== 'time' && r.show !== 'name' && r.show !== 'room') {
               const put = next => change(() => { p.refs[i] = next; }, { preview: false });
               const fmt = el('div', 'wdb-fmt');
               fmt.append(el('span', 'wdb-label', t('builderDecimals')), selectOf([['', t('builderAuto')], ['0', '0'], ['1', '1'], ['2', '2'], ['3', '3']], r.decimals == null ? '' : String(r.decimals), (v) => {
@@ -2574,7 +2585,7 @@
             if (a.do === 'state') box.append(selectOf(states.map(x => [x.id, partTitle(x)]), a.part, v => set({ part: v })));
             if (a.do === 'input') box.append(inputSelect(a.input, id => set({ input: id })));
             if (a.do === 'set' || a.do === 'variable' || a.do === 'state' || a.do === 'input') {
-              box.append(textInput(a.value, v => change(() => { p.actions[i] = { ...a, value: v.trim().slice(0, 60) }; }, { preview: false }), { placeholder: t('builderActionValue') }));
+              box.append(textInput(a.value, v => change(() => { p.actions[i] = { ...a, value: v.trim().slice(0, 60) }; }, { preview: false }), { placeholder: t(a.do === 'input' ? 'builderActionInputValue' : 'builderActionValue') }));
             }
           },
         }));
@@ -2757,12 +2768,14 @@
       body.append(row(t('builderEachReady'), selectOf([['', t('choose')], ...ready.map(d => [d.id, d.name || t('untitled')])], p.ready || '', v => change(() => { if (v) p.ready = v; else delete p.ready; })), t('builderEachReadyHint')));
       const byCap = !!p.capability;
       body.append(row(t('builderEachDevices'), segs([['pick', t('builderEach_pick')], ['cap', t('builderEach_cap')]], byCap ? 'cap' : 'pick', v => change(() => {
-        if (v === 'cap') { delete p.devices; p.capability = p.capability || 'onoff'; } else { delete p.capability; delete p.zone; p.devices = p.devices || []; }
+        if (v === 'cap') { delete p.devices; p.capability = p.capability || 'onoff'; } else { delete p.capability; delete p.zone; delete p.sort; p.devices = p.devices || []; }
       }))));
       if (byCap) {
         const { caps, zones } = capsAndZones();
         body.append(row(t('builderRepeatCap'), selectOf([['', t('choose')], ...caps], p.capability || '', v => change(() => { if (v) p.capability = v; else delete p.capability; }))));
         body.append(row(t('builderRepeatZone'), selectOf([['', t('builderEverywhere')], ...zones], p.zone || '', v => change(() => { if (v) p.zone = v; else delete p.zone; }))));
+        // By the capability's value, as a List's: the limit then keeps the lowest or highest.
+        body.append(row(t('builderRepeatSort'), segs([['name', t('builderSort_name')], ['up', t('builderSort_up')], ['down', t('builderSort_down')]], p.sort || 'name', v => change(() => { if (v === 'name') delete p.sort; else p.sort = v; }))));
       } else {
         const names = (p.devices || []).map(id => ((b.devices || []).find(d => d.id === id) || {}).name || id);
         const pick = button('wd-btn wd-choice', names.length ? names.join(', ') : t('chooseDevices'), async () => {
@@ -2927,6 +2940,10 @@
         body.append(row(t('builderThickness'), textInput(p.thickness || thick, v => quiet(() => { p.thickness = clampTo(v, 2, 24, thick); }), { type: 'number' })));
       }
       if (drawsIcon(p)) lookIcon(body, p);
+      // The device's own icon, as the Homey app shows it: a switch's or icon's value's device, or each List item's.
+      if (p.kind === 'repeat' || ((p.kind === 'switch' || p.kind === 'icon') && p.slot)) {
+        body.append(checkRow(t('builderDeviceIcon'), p.deviceIcon, v => change(() => { if (v) p.deviceIcon = true; else delete p.deviceIcon; }), t(p.kind === 'repeat' ? 'builderDeviceIconItemsHint' : 'builderDeviceIconHint')));
+      }
       // Under the icon, as it's its size (beside the colours it read as a fill colour; the user, 2026-11-25).
       if (p.kind === 'icon') body.append(checkRow(t('builderIconGrow'), p.grow, v => quiet(() => { if (v) p.grow = true; else delete p.grow; }), t('builderIconGrowHint')));
       if (ELEMENTS[p.kind]) {
@@ -3036,6 +3053,36 @@
         openItem('rules', p.rules.length - 1);
       }, { preview: false }));
       add.disabled = (p.rules || []).length >= MAX_RULES;
+      body.append(add);
+      if (p.kind === 'repeat') itemRulesRows(body, p);
+    }
+
+    /** A List's item colours: each item's own value checked, the first rule that holds colouring it (no other value, no hide). */
+    function itemRulesRows(body, p) {
+      body.append(el('h4', 'wdb-h4', t('builderItemRules')));
+      body.append(el('p', 'wd-hint', t('builderItemRulesHint')));
+      const rules = p.itemRules || [];
+      rules.forEach((r, i) => {
+        const test = `${t(`builderOp_${r.op}`)} ${r.value === '' || r.value == null ? '…' : r.value}${r.op === 'between' ? ` – ${r.to || '…'}` : ''}`;
+        const look = el('span', 'wdb-item-look');
+        look.append(swatchKey(r.look), colourName(r.look) || '');
+        body.append(itemLine('itemRules', i, {
+          key: String(i + 1), title: test, value: look,
+          remove: () => change(() => { p.itemRules.splice(i, 1); if (!p.itemRules.length) delete p.itemRules; }, { preview: false }),
+          fill: (box) => {
+            const line = el('div', 'wdb-rule');
+            line.append(selectOf(RULE_OPS.map(o => [o, t(`builderOp_${o}`)]), r.op, v => change(() => { r.op = v; if (v === 'between') r.to = r.to || ''; else delete r.to; })),
+              ...testValues(r, next => change(() => { r.value = next.value; if (r.op === 'between') r.to = next.to || ''; }, { preview: false })));
+            box.append(line);
+            box.append(colourPicker(r.look, v => change(() => { r.look = v || 'red'; }, { preview: false }), { none: false }));
+          },
+        }));
+      });
+      const add = addButton(t('builderAddRule'), () => change(() => {
+        p.itemRules = [...rules, { op: 'below', value: '', look: 'red' }];
+        openItem('itemRules', rules.length);
+      }, { preview: false }));
+      add.disabled = rules.length >= MAX_RULES;
       body.append(add);
     }
 

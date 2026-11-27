@@ -504,7 +504,7 @@
         const s = state.values && state.values[src.slot];
         if (!s) return null;
         if (s.missing) return { missing: true };
-        return { value: s.value, cap: { ...(s.capability || {}), capabilityId: s.capabilityId }, name: s.name, offline: !!s.offline, updatedAt: s.updatedAt };
+        return { value: s.value, cap: { ...(s.capability || {}), capabilityId: s.capabilityId }, name: s.name, room: s.room, offline: !!s.offline, updatedAt: s.updatedAt };
       }
       if (src.variable) {
         const v = state.variables && state.variables[src.variable];
@@ -517,7 +517,7 @@
         if (!e) return null;
         const v = inputNow(src.input, src.device);
         const cap = e.type === 'number' ? { type: 'number', units: (v && v.units) || null, decimals: 2 } : e.type === 'yesno' ? { type: 'boolean' } : { type: 'string' };
-        return { value: v ? v.value : null, cap, name: e.name };
+        return { value: v ? v.value : null, cap, name: e.name, updatedAt: v ? v.at : undefined };
       }
       if (src.part) {
         const c = calcs.get(src.part);
@@ -541,7 +541,7 @@
     }
 
     /**
-     * A calculated value: its inputs summed, averaged, the lowest or highest (with that input's name), the first less
+     * A calculated value: its inputs summed, averaged, their median, the lowest or highest (with that input's name), the first less
      * the second, counted by a test, or put through a formula. Units are the part's, else its first input's (none for a
      * count). Unknown (`value: null`) when nothing can be counted in, or for a difference or formula, when an input is.
      */
@@ -559,6 +559,11 @@
         value = known.length ? known.reduce((a, n) => a + n, 0) : null;
       } else if (op === 'avg') {
         value = known.length ? known.reduce((a, n) => a + n, 0) / known.length : null;
+      } else if (op === 'median') {
+        // Combined Value's: the middle one, or the two middle ones' average for an even count.
+        const sorted = [...known].sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        value = !sorted.length ? null : sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
       } else if (op === 'min' || op === 'max') {
         let at = -1;
         nums.forEach((n, i) => { if (n !== null && (at < 0 || (op === 'min' ? n < nums[at] : n > nums[at]))) at = i; });
@@ -744,13 +749,15 @@
       if (ref.time === 'seconds') return K.clockTime(Date.now(), { seconds: true });
       if (ref.until) return relative(nextAt(ref.until, Date.now()), Date.now());
       if (ref.since) {
-        const s = sourceEntry({ slot: ref.since });
+        // A device value's last change, or when a Flow input was last set.
+        const s = sourceEntry(typeof ref.since === 'string' ? { slot: ref.since } : ref.since);
         return s && !s.missing && s.updatedAt ? relative(s.updatedAt, Date.now()) : '–';
       }
       if (ref.time === 'date') return dateText(Date.now(), 'long');
       if (ref.time === 'weekday') return dateText(Date.now(), 'weekday');
       const e = sourceEntry(ref);
       if (ref.show === 'name') return (e && e.name) || '–';
+      if (ref.show === 'room') return (e && e.room) || '–';
       if (!e || e.missing || e.value === null || e.value === undefined) return '–';
       // A change (Trend's) shows its sign.
       // Its own decimals, and without its units where it says so.
@@ -932,20 +939,31 @@
       let shown = null;
       return (part, c, flow) => {
         const id = (flow && flow.icon) || part.icon;
-        const key = id ? `i:${id}` : c && c.cap && part.slot ? `g:${part.slot}:${c.value === true}` : '';
+        // Its device's own icon (`deviceIcon`), where the app sent one: under a picked, rule's or Flow's icon, over the glyph.
+        const own = !id && part.deviceIcon && part.slot ? deviceIconOf(part.slot) : null;
+        const key = id ? `i:${id}` : own ? `d:${own}` : c && c.cap && part.slot ? `g:${part.slot}:${c.value === true}` : '';
         if (key === shown) return;
         shown = key;
         box.textContent = '';
         box.classList.remove('wb-glyph');
         box.style.removeProperty('--wb-mask');
         if (id && K.icons[id]) box.appendChild(icon(id, 'wb-svg'));
-        else if (part.slot && c && c.cap) {
+        else if (own) {
+          box.classList.add('wb-glyph');
+          K.setMask(box, own, '--wb-mask');
+        } else if (part.slot && c && c.cap) {
           const glyph = c.cap.icon || K.valueGlyph(part.slot.slice(part.slot.indexOf(':') + 1), c.value);
           box.classList.add('wb-glyph');
           K.setMask(box, glyph, '--wb-mask');
         }
         box.hidden = !box.firstChild && !box.classList.contains('wb-glyph');
       };
+    }
+
+    /** A slot's device's own icon (a data URL), as `/state` sends them, or null. */
+    function deviceIconOf(slot) {
+      const id = String(slot).slice(0, String(slot).indexOf(':'));
+      return (state && state.icons && state.icons[id]) || null;
     }
 
     function textOf(part, c, flow) {
@@ -1287,17 +1305,20 @@
           empty.hidden = items.length > 0;
           empty.textContent = part.text || t('nothing');
           // Rebuilt only when the devices shown or their values change.
-          const key = JSON.stringify(items.map(i => [i.slot, i.value, i.name, i.offline]));
+          const key = JSON.stringify(items.map(i => [i.slot, i.value, i.name, i.offline, part.deviceIcon ? deviceIconOf(i.slot) : null]));
           if (key === shown) return;
           shown = key;
           list.textContent = '';
           for (const item of items) {
             const row = el('div', { class: 'wb-rep-item', 'data-slot': item.slot }, list);
             const glyph = el('span', { class: 'wb-icon wb-glyph', 'aria-hidden': 'true' }, row);
-            K.setMask(glyph, (item.cap && item.cap.icon) || K.valueGlyph(item.slot.slice(item.slot.indexOf(':') + 1), item.value), '--wb-mask');
+            K.setMask(glyph, (part.deviceIcon && deviceIconOf(item.slot)) || (item.cap && item.cap.icon) || K.valueGlyph(item.slot.slice(item.slot.indexOf(':') + 1), item.value), '--wb-mask');
             el('span', { class: 'wb-rep-name', dir: 'auto', text: item.name || '' }, row);
             el('span', { class: 'wb-rep-value', text: fmt(item.cap, item.value) }, row);
             row.classList.toggle('wb-on', item.value === true);
+            // Its own colour by its value: the first item rule that holds.
+            const look = (part.itemRules || []).find(r => ruleHolds(r, item.value));
+            if (look) { row.classList.add('wb-item-colored'); applyColor(row, look.look); }
             K.markOffline(row, item.offline, item.offline ? t('unavailable') : undefined);
             if (part.control && typeof item.value === 'boolean') {
               row.setAttribute('role', 'switch');

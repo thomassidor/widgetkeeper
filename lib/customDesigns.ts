@@ -99,11 +99,12 @@ export const SOURCE_KINDS: readonly PartKind[] = ['calc', 'state', 'repeat'];
  */
 export type Source = { slot: string } | { variable: string } | { part: string } | { input: string };
 /**
- * A text's value: a source (`show: 'name'` its name: a device's, a variable's; `decimals` and `plain`, without its
+ * A text's value: a source (`show: 'name'` its name: a device's, a variable's; `show: 'room'` a device's room; `decimals` and `plain`, without its
  * units, how its number shows), the time (with seconds), date or
- * weekday now, how long since a device value changed (`since`), or until a time of day (`until`, `HH:mm`).
+ * weekday now, how long since a device value changed (`since`, its slot) or a Flow input was last set (`since: {input}`,
+ * a Repeater's copy reading its device's), or until a time of day (`until`, `HH:mm`).
  */
-export type Ref = (Source & { show?: 'name', decimals?: number, plain?: true }) | { time: 'clock' | 'seconds' | 'date' | 'weekday' } | { since: string } | { until: string };
+export type Ref = (Source & { show?: 'name' | 'room', decimals?: number, plain?: true }) | { time: 'clock' | 'seconds' | 'date' | 'weekday' } | { since: string | { input: string } } | { until: string };
 export const REF_TIMES = ['clock', 'seconds', 'date', 'weekday'] as const;
 const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
 
@@ -111,7 +112,7 @@ const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
  * A calculated value's: … and, of its first input, `change` (now less the first point of its history over `span`, or
  * as a `percent`: Trend's) and `since` (minutes since it last changed).
  */
-export const CALC_OPS = ['sum', 'avg', 'min', 'max', 'diff', 'count', 'formula', 'change', 'since'] as const;
+export const CALC_OPS = ['sum', 'avg', 'median', 'min', 'max', 'diff', 'count', 'formula', 'change', 'since'] as const;
 export type CalcOp = typeof CALC_OPS[number];
 export const SHAPES = ['rect', 'circle', 'line'] as const;
 
@@ -167,6 +168,8 @@ export type Test = { op: RuleOp, value: string, to?: string };
  * one that never shows.
  */
 export const ICON_KINDS: readonly PartKind[] = ['switch', 'button', 'state', 'ring', 'icon'];
+/** The kinds that may show their device's own icon (`deviceIcon`): a switch's or an icon's value's, a List's items'. */
+export const DEVICE_ICON_KINDS: readonly PartKind[] = ['switch', 'icon', 'repeat'];
 /** The kinds with a press setting (a tap, a second tap to confirm, a hold): a button, a switch, any tapped component. */
 export const PRESS_KINDS: readonly PartKind[] = ['button', 'switch'];
 /** A repeater's order: by name, or by value, lowest or highest first. */
@@ -181,7 +184,7 @@ export const TEXT_KINDS: readonly PartKind[] = [
 /** A Chart's series (each a device value's history over its span, in its colour). */
 export const MAX_SERIES = 3;
 /** A Repeater's devices (each a ready-made component filled in with one). */
-export const MAX_EACH = 12;
+export const MAX_EACH = 24;
 /**
  * How many of a web dashboard's columns a design is shown over at first (the builder's preview, Add widget): it's made
  * for one column, its grid always 4 columns, which stretch over more as a normal widget's do.
@@ -254,6 +257,11 @@ export type Part = {
   /** An Icon as large as its box (else at most 34 px). */
   grow?: boolean,
   /**
+   * The device's own icon, as the Homey app shows it, for its value's device (a switch's or icon's `slot`) or each of a
+   * List's items, instead of the capability's glyph (`DEVICE_ICON_KINDS`); a picked icon, a rule's or a Flow's wins.
+   */
+  deviceIcon?: true,
+  /**
    * A shape's: its form, corner radius (px, a rectangle), opacity (%), a line's thickness (px) and direction (a line's,
    * and a Bar's).
    */
@@ -311,6 +319,8 @@ export type Part = {
   control?: boolean,
   /** A repeater's order (`REPEAT_SORTS`) and the most it shows (else as many as fit, up to `MAX_REPEAT_ITEMS`). */
   sort?: typeof REPEAT_SORTS[number],
+  /** A List's: each item coloured by the first that holds on its value (no `of`, no hide). */
+  itemRules?: Rule[],
   limit?: number,
   /** The colour of its text (a palette name or `#rrggbb`), on any kind that draws text (`TEXT_KINDS`). */
   textColor?: TileColor,
@@ -449,10 +459,14 @@ function refOf(v: unknown): Ref | null {
   const r = v as Record<string, any>;
   if (REF_TIMES.includes(r.time)) return { time: r.time };
   if (slotOf(r.since)) return { since: slotOf(r.since)! };
+  const sinceInput = r.since && typeof r.since === 'object' ? r.since.input : undefined;
+  if (typeof sinceInput === 'string' && ID.test(sinceInput) && !isReservedKey(sinceInput)) return { since: { input: sinceInput } };
   if (typeof r.until === 'string' && HHMM.test(r.until)) return { until: r.until };
   const src = sourceOf(v);
   if (!src) return null;
   if (r.show === 'name') return { ...src, show: 'name' };
+  // A device's room: only a device value has one.
+  if (r.show === 'room' && 'slot' in src) return { ...src, show: 'room' };
   const out: Ref = { ...src };
   const decimals = optNum(r.decimals);
   if (decimals !== undefined) out.decimals = num(decimals, 0, 3, 1);
@@ -710,6 +724,7 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     // An icon that follows a device value has one of its own.
     rules: kind === 'calc' ? [] : rulesOf(r.rules, VALUELESS_KINDS.includes(kind) && !(kind === 'icon' && slotOf(r.slot)), ICON_KINDS.includes(kind)),
   };
+  if (DEVICE_ICON_KINDS.includes(kind) && r.deviceIcon === true) p.deviceIcon = true;
   const bind = bindOf(r.bind, bindPropsOf(kind, kind === 'container' ? (r.mode === 'free' ? 'free' : r.mode === 'pages' ? 'pages' : 'grid') : undefined));
   if (bind) p.bind = bind;
   if (Number.isInteger(r.page) && r.page >= 0 && r.page < MAX_PAGES) p.page = r.page;
@@ -856,6 +871,9 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
       if (r.control === true) p.control = true;
       p.sort = oneOf(r.sort, REPEAT_SORTS, 'name');
       if (optNum(r.limit) !== undefined) p.limit = num(r.limit, 1, MAX_REPEAT_ITEMS, MAX_REPEAT_ITEMS);
+      // Each item's colour by its own value (a battery's level): colours only, on the item's value.
+      const itemRules = rulesOf(r.itemRules, false, false).filter(x => x.look !== 'hide' && x.look !== 'same').map(({ of, ...x }) => x);
+      if (itemRules.length) p.itemRules = itemRules;
       p.text = str(r.text, MAX_TEXT);
       break;
     }
@@ -937,6 +955,8 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
       }
       const zone = idOf(r.zone, 100);
       if (cap && zone) p.zone = zone;
+      // By its capability's value, lowest or highest first (by name, the default, isn't kept).
+      if (cap && (r.sort === 'up' || r.sort === 'down')) p.sort = r.sort;
       p.columns = num(r.columns, 1, 4, 1);
       if (optNum(r.limit) !== undefined) p.limit = num(r.limit, 1, MAX_EACH, MAX_EACH);
       break;
@@ -989,7 +1009,7 @@ function designSources(design: Design): Source[] {
     for (const r of p.rules) if (r.of) out.push(r.of);
     for (const r of p.refs ?? []) {
       if (!r || 'time' in r || 'until' in r) continue;
-      out.push('since' in r ? { slot: r.since } : r);
+      out.push('since' in r ? (typeof r.since === 'string' ? { slot: r.since } : { input: r.since.input }) : r);
     }
     out.push(...(p.inputs ?? []));
     for (const r of p.rings ?? []) out.push(r.src);
@@ -1004,6 +1024,20 @@ function designSources(design: Design): Source[] {
 /** The device values a design shows, each once. */
 export function designSlots(design: Design): string[] {
   return [...new Set(designSources(design).map(s => ('slot' in s ? s.slot : '')).filter(Boolean))];
+}
+
+/** Whether a design's texts show a device's room (`show: 'room'`), so `/state` reads the rooms. */
+export function designRooms(design: Design): boolean {
+  return allParts(design).some(p => (p.refs ?? []).some(r => !!r && 'show' in r && r.show === 'room'));
+}
+
+/**
+ * The devices whose own icon a design shows (`deviceIcon` on a switch or icon with a device value), each once; a List's
+ * items' are its candidates', known only once they're read. The widget's device (`@`) not yet filled in is left out.
+ */
+export function designDeviceIcons(design: Design): string[] {
+  const ids = allParts(design).filter(p => p.deviceIcon && p.kind !== 'repeat' && p.slot).map(p => p.slot!.slice(0, p.slot!.indexOf(':')));
+  return [...new Set(ids.filter(id => id && id !== '@'))];
 }
 
 export function designVariables(design: Design): string[] {

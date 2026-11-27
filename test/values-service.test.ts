@@ -86,6 +86,13 @@ describe('listSecondValues', () => {
 });
 
 describe('getState', () => {
+  it("adds each device's room only when asked (the Widget Builder's texts showing a room)", async () => {
+    const { service } = setup();
+    expect((await service.getState(['ac:mode']))[0]).not.toHaveProperty('room');
+    expect(await service.getState(['ac:mode', 'sensor:measure_humidity', 'nope:onoff'], [], { rooms: true }))
+      .toMatchObject([{ deviceId: 'ac', room: 'Bedroom' }, { deviceId: 'sensor', room: 'Living room' }, { deviceId: 'nope', missing: true }]);
+  });
+
   it('shows the name as the device names setting says', async () => {
     const { homey, service, devices } = setup();
     devices.find(d => d.id === 'ac')!.name = 'Aircon | Bedroom';

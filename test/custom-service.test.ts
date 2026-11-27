@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeApi, fakeDevice, fakeHomey, homeyApiMock } from './helpers/fakeHomey.js';
-import { MAX_INPUTS, MAX_PARTS, allParts, bindDevice, designCharts, designInputs, detachUses, inputValue, readInputs, renewIds, designFlows as designFlowsOf, designSlots, designVariables, readDesign, readPart, ruleHolds, usesDevice } from '../lib/customDesigns.js';
+import { MAX_INPUTS, MAX_PARTS, allParts, bindDevice, designCharts, designInputs, designRooms, detachUses, inputValue, readInputs, renewIds, designFlows as designFlowsOf, designSlots, designVariables, readDesign, readPart, ruleHolds, usesDevice } from '../lib/customDesigns.js';
 import CustomWidgetService, {
   CUSTOM_CHOICE_CARD, CUSTOM_DESIGN_EVENT, CUSTOM_DESIGNS_SETTING, CUSTOM_INPUT_EVENT, CUSTOM_INPUT_VALUES_SETTING, CUSTOM_INPUTS_SETTING, CUSTOM_TAPPED_CARD, spanWindow,
 } from '../lib/CustomWidgetService.js';
@@ -87,6 +87,34 @@ describe('readDesign: a design as kept', () => {
     expect(designSlots(d)).toEqual(['d1:measure_power', 'd2:measure_humidity', 'd3:alarm_motion']);
     expect(designCharts(d)).toEqual([{ slot: 'd1:measure_power', span: '24h' }, { slot: 'd1:measure_power', span: '6h' }]);
     expect(d.parts[3].refs).toEqual([{ since: 'd3:alarm_motion' }, { until: '22:30' }, { slot: 'd2:measure_humidity', show: 'name' }]);
+    expect(designRooms(d)).toBe(false);
+  });
+
+  it("keeps a text's room of a device value (not of a variable), and then reads the rooms", () => {
+    const d = readDesign({ parts: [
+      part('t', 'text', { text: '{1} {2}', refs: [{ slot: 'd1:onoff', show: 'room' }, { variable: 'v', show: 'room' }] }),
+    ] })!;
+    expect(d.parts[0].refs).toEqual([{ slot: 'd1:onoff', show: 'room' }, { variable: 'v' }]);
+    expect(designRooms(d)).toBe(true);
+  });
+
+  it("keeps a list's item rules: colours on the item's own value, at most six", () => {
+    const list = readPart(part('l', 'repeat', { capability: 'measure_battery', itemRules: [
+      { op: 'below', value: '15', look: 'red', of: { slot: 'x:y' }, icon: 'star' }, { op: 'below', value: '30', look: 'hide' }, { op: 'is', value: 'on', look: 'same' },
+      { op: 'nope', look: 'red' }, ...Array.from({ length: 8 }, () => ({ op: 'above', value: '90', look: 'green' })),
+    ] }))!;
+    expect(list.itemRules![0]).toEqual({ op: 'below', value: '15', look: 'red' });
+    expect(list.itemRules).toHaveLength(3); // six read, three of them kept
+    expect(readPart(part('l', 'repeat', { itemRules: [] }))).not.toHaveProperty('itemRules');
+    expect(readPart(part('t', 'text', { itemRules: [{ op: 'below', value: '1', look: 'red' }] }))).not.toHaveProperty('itemRules');
+  });
+
+  it("keeps a text's time since a Flow input was set, and reads that input", () => {
+    const d = readDesign({ parts: [
+      part('t', 'text', { text: '{1} {2}', refs: [{ since: { input: 'w' } }, { since: { input: '__proto__' } }] }),
+    ] })!;
+    expect(d.parts[0].refs).toEqual([{ since: { input: 'w' } }, null]);
+    expect(designInputs(d)).toEqual(['w']);
   });
 });
 
@@ -282,7 +310,7 @@ describe('CustomWidgetService: the widget', () => {
   it("gathers a design's values, variables, Flows and histories, and says when it's gone", async () => {
     const { service, deps } = setup([DESIGN]);
     const state: any = await service.getState('bed');
-    expect(deps.values.getState).toHaveBeenCalledWith(['heat:onoff', 'heat:target_temperature', 'heat:thermostat_mode']);
+    expect(deps.values.getState).toHaveBeenCalledWith(['heat:onoff', 'heat:target_temperature', 'heat:thermostat_mode'], [], { rooms: false });
     expect(Object.keys(state.values)).toEqual(['heat:onoff', 'heat:target_temperature', 'heat:thermostat_mode']);
     expect(state.variables.v1).toMatchObject({ value: 2 });
     expect(state.flows['flow:f1']).toMatchObject({ name: 'F' });
@@ -480,6 +508,28 @@ describe('CustomWidgetService: Flow inputs', () => {
     expect(state.inputs.away.devices.heat.value).toBe(true);
     expect(state.inputs.away.all).toBeUndefined();
     expect([state.inputs.price.all.value, state.inputs.note.all.value]).toEqual([4, 'Hello']);
+  });
+
+  it('marks an input set just now from a button\'s now, keeping its value, or a first one of its type', async () => {
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(1000);
+      const { service } = setup([{ id: 'b', name: 'B', parts: [
+        part('a', 'button', { actions: [{ do: 'input', input: 'price', value: 'now' }, { do: 'input', input: 'away', value: 'Now' }, { do: 'input', input: 'tint', value: 'now' }] }),
+        part('t', 'text', { text: '{1}', refs: [{ since: { input: 'price' } }] }),
+      ] }]);
+      await service.runAction('b', 'a', 0, 'input');
+      await service.runAction('b', 'a', 1, 'input', 'heat');
+      await expect(service.runAction('b', 'a', 2, 'input')).rejects.toThrow('Not a color value: now');
+      service.setInput({ id: 'price' }, 'number', 7, undefined, 'kr');
+      vi.setSystemTime(5000);
+      await service.runAction('b', 'a', 0, 'input');
+      const state = await service.getState('b', 'heat') as any;
+      expect(state.inputs.price.all).toMatchObject({ value: 7, units: 'kr', at: 5000 });
+      expect(state.inputs.away.devices.heat).toMatchObject({ value: true, at: 1000 });
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
 
@@ -715,7 +765,7 @@ describe('readDesign: styles, colours, width, charts, any device and ready-mades
     expect(readDesign({ ready: true, parts: [part('box', 'container')] })!.ready).toBe(true);
     expect(readDesign({ ready: 'yes', parts: [] })).not.toHaveProperty('ready');
     const each = readPart({ kind: 'each', ready: 'r1', devices: ['a', 'a', 'b', '@', 'has space'], columns: 9, limit: 99 })!;
-    expect(each).toMatchObject({ ready: 'r1', devices: ['a', 'b'], columns: 4, limit: 12, style: 'none' });
+    expect(each).toMatchObject({ ready: 'r1', devices: ['a', 'b'], columns: 4, limit: 24, style: 'none' });
     expect(readPart({ kind: 'each', capability: 'onoff', zone: 'z1', devices: ['a'] })).toMatchObject({ capability: 'onoff', zone: 'z1' });
     expect(readPart({ kind: 'each', capability: 'onoff', devices: ['a'] })).not.toHaveProperty('devices');
   });
@@ -743,6 +793,48 @@ describe('CustomWidgetService: any device, Repeaters and ready-mades (2026-11-24
     expect(deps.values.getState.mock.calls.at(-1)![0]).toEqual(expect.arrayContaining(['l2:onoff', 'l1:onoff', 'heat:onoff']));
     // The ready-mades aren't designs to place.
     expect(service.designItems('').map(i => i.id)).toEqual(['any']);
+  });
+
+  it("sends the devices' own icons a design shows (a switch's, an icon's, a List's items'), and only then", async () => {
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => ({ ok: true, text: async () => `<svg>${url}</svg>` })));
+    try {
+      const own = (id: string, icon: string) => Object.assign(lamp(id, id, true), { iconOverride: icon });
+      const ICONS = { id: 'icons', name: 'Icons', parts: [
+        part('sw', 'switch', { slot: 'l1:onoff', deviceIcon: true }),
+        part('ic', 'icon', { slot: 'l2:onoff', deviceIcon: true }),
+        part('plain', 'switch', { slot: 'l3:onoff' }),
+        part('list', 'repeat', { capability: 'onoff', deviceIcon: true }),
+      ] };
+      const { service } = setup([ICONS, ANY], [own('l1', 'wb-test-a'), own('l2', 'wb-test-b'), own('l3', 'wb-test-c')]);
+      const state: any = await service.getState('icons');
+      const decode = (d: string) => Buffer.from(d.split(',')[1], 'base64').toString();
+      expect(decode(state.icons.l1)).toBe('<svg>https://my.homey.app/img/devices/wb-test-a.svg</svg>');
+      expect(decode(state.icons.l2)).toBe('<svg>https://my.homey.app/img/devices/wb-test-b.svg</svg>');
+      // The List's items: every device with onoff, the thermostat and l3 too.
+      expect(Object.keys(state.icons).sort()).toEqual(['heat', 'l1', 'l2', 'l3']);
+      expect(await service.getState('any', 'l1')).not.toHaveProperty('icons');
+      expect(readPart(part('t', 'text', { deviceIcon: true }))).not.toHaveProperty('deviceIcon');
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('sorts a Repeater of every device with a capability by its value before the limit, and repeats up to 24', async () => {
+    const battery = (id: string, name: string, v: number | null) => fakeDevice({ id, name, zone: 'z', caps: { measure_battery: { type: 'number', value: v, title: 'Battery', units: '%' } } });
+    const many = Array.from({ length: 30 }, (_, i) => battery(`b${i}`, `Sensor ${i}`, 50 + i));
+    const BAT = { id: 'bat', name: 'Batteries', parts: [
+      part('low', 'each', { ready: 'tile', capability: 'measure_battery', sort: 'up', limit: 3 }),
+      part('high', 'each', { ready: 'tile', capability: 'measure_battery', sort: 'down', limit: 2 }),
+      part('all', 'each', { ready: 'tile', capability: 'measure_battery', sort: 'name' }),
+    ] };
+    const { service } = setup([READY, BAT], [battery('x', 'Door', 12), battery('y', 'Bell', null), battery('z', 'Window', 8), ...many]);
+    const state: any = await service.getState('bat');
+    expect(state.each.low.devices).toEqual(['z', 'x', 'b0']);
+    expect(state.each.high.devices).toEqual(['b29', 'b28']);
+    expect(state.each.all.devices).toHaveLength(24);
+    expect(readDesign(BAT)!.parts.map(p => p.sort)).toEqual(['up', 'down', undefined]);
+    // Picked devices keep their order: no sort.
+    expect(readPart(part('p', 'each', { devices: ['a', 'b'], sort: 'up' }))!.sort).toBeUndefined();
   });
 
   it("acts on the widget's device, and on a Repeater's copy only for one of its devices", async () => {

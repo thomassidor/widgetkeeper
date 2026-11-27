@@ -433,6 +433,11 @@ html, body { background: transparent !important; }
 .wb-rep-item[role="switch"] { cursor: pointer; }
 .wb-rep-tiles .wb-rep-item { flex-direction: column; align-items: flex-start; gap: 2px; padding: 6px 8px; border-radius: 8px; background: color-mix(in srgb, var(--wb-text) 6%, transparent); }
 .wb-rep-tiles .wb-rep-item.wb-on { background: color-mix(in srgb, var(--wk-c) 22%, transparent); }
+/* An item rule's colour: the glyph and value in it (mixed with the text, as Activity Dots' active text, so yellow
+   reads in light mode), and a tile tinted as a lit one. */
+.wb-rep-item.wb-item-colored .wb-icon, .wb-rep-item.wb-item-colored .wb-rep-value { color: color-mix(in srgb, var(--wk-c) 75%, var(--wb-text)); }
+.wb-rep-item.wb-item-colored .wb-rep-value { font-weight: var(--wb-medium); }
+.wb-rep-tiles .wb-rep-item.wb-item-colored { background: color-mix(in srgb, var(--wk-c) 22%, transparent); }
 .wb-rep-tiles .wb-rep-name { width: 100%; font-weight: var(--wb-medium); }
 
 /* Segmented bar: each value's share in its colour, as a bar or a donut, the values listed under it. */

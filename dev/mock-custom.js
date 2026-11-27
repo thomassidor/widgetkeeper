@@ -10,9 +10,15 @@
   const NOW = Date.now();
   const HOUR = 3600e3;
   const cap = (title, type, units, decimals, extra = {}) => ({ title, type, units, decimals, min: null, max: null, values: null, icon: null, ...extra });
+  // Each device's room, as `/state` sends it for a text showing the room (`show: 'room'`).
+  const ROOMS = {
+    air: 'Living room', lamp: 'Living room', ceiling: 'Living room', lr: 'Living room', hall: 'Hall', lock: 'Hall', bell: 'Hall',
+    garage: 'Garage', garagelight: 'Garage', charger: 'Garage', window: 'Bedroom', heat: 'Bedroom', bed: 'Bedroom', bedair: 'Bedroom',
+    oven: 'Kitchen', washer: 'Utility room', heatpump: 'Utility room', porch: 'Garden', tank: 'Garden',
+  };
   const slot = (id, name, capability, value) => {
     const [deviceId, capabilityId] = id.split(':');
-    return { deviceId, capabilityId, name, capability, value };
+    return { deviceId, capabilityId, name, capability, value, ...(ROOMS[deviceId] ? { room: ROOMS[deviceId] } : {}) };
   };
   const VALUES = Object.fromEntries([
     slot('lr:measure_temperature', 'Living room sensor', cap('Temperature', 'number', '°C', 1), 22.4),
