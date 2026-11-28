@@ -818,6 +818,7 @@
     builderRg_devices: "Devices",
     builderRg_share: "Share",
     builderRg_help: "Help",
+    builderRg_design: "This design",
     builderRg_arrange: "Arrange",
     builderCut: "Cut",
     builderPaste: "Paste",

@@ -10,7 +10,7 @@
   'use strict';
 
   window.WidgetkeeperWeb.part('builder', (wd) => {
-    const { button, confirmButton, el, failed, icon, request, root, storageGet, storageSet, t, THEME_STORAGE, toast } = wd;
+    const { button, CONFIRM_MS, confirmButton, el, failed, icon, request, root, storageGet, storageSet, t, THEME_STORAGE, toast } = wd;
 
     /**
      * The top grid: 12 columns of 16 px rows (1.4.1, the user's ask: finer than 4 columns of 64 px rows). The canvas still
@@ -486,14 +486,15 @@
       };
       const page = el('div', 'wdb');
       page.append(library(), stage(), inspector());
-      root.append(builderBar(), ribbon(), page);
+      root.append(...ribbon(), page);
       b.node = page;
       loadPreview(true);
       // The device values, for the picked ones' names and readings (shared with the value picker for 30 s).
       wd.valueDevices('values').then((list) => { if (b && b.design.id === id) { b.devices = list; redrawInspector(); } }, () => {});
     }
 
-    function builderBar() {
+    /** The ribbon's head, before its tabs: back and the design's name. */
+    function barStart() {
       const back = el('a', 'wd-icon');
       back.href = '#/builder';
       back.title = t('builderTitle');
@@ -503,10 +504,15 @@
       name.value = b.design.name;
       name.setAttribute('aria-label', t('builderName'));
       name.addEventListener('change', () => change(() => { b.design.name = name.value.trim().slice(0, 40) || t('builderUntitled'); }, { preview: false }));
+      return [back, name];
+    }
+
+    /** The ribbon's head, after its tabs: whether it's saved, Undo and Redo (always at hand, as Office's quick access) and Done. */
+    function barEnd() {
       const status = el('span', 'wdb-status', t('builderSaved'));
       status.setAttribute('role', 'status');
       b.statusNode = status;
-      // Undo and Redo as icons, their names as tooltips (Ctrl or ⌘ with Z, Shift+Z), so the bar fits a phone.
+      // Undo and Redo as icons, their names as tooltips (Ctrl or ⌘ with Z, Shift+Z), so the head fits a phone.
       const undo = button('wd-icon', '', () => undoChange(), t('undo'));
       undo.append(icon('undo'));
       undo.disabled = true;
@@ -515,30 +521,20 @@
       redo.append(icon('redo'));
       redo.disabled = true;
       b.redoNode = redo;
-      const copy = button('wd-icon', '', () => duplicateDesign(), t('duplicate'));
-      copy.append(icon('copy'));
-      const remove = confirmButton('wd-icon wd-bar-delete', icon('trash'), () => deleteDesign(), t('tapAgain'), t('builderDelete'));
-      const place = button('wd-btn', '', () => addToDashboard(), t('builderAddTo'));
-      place.append(icon('plus'), el('span', 'wd-bar-label', t('builderAddTo')));
       const done = el('a', 'wd-btn primary', t('done'));
       done.href = '#/builder';
       done.addEventListener('click', async (e) => { e.preventDefault(); await flush(); wd.leaveEditor('#/builder'); });
       const end = el('span', 'wd-bar-end');
-      // Dark or light: this browser's own choice (as Settings' Dark or light), the page and the preview alike.
-      const mode = button('wd-icon', '', () => {
-        b.dark = !b.dark;
-        storageSet(THEME_STORAGE, b.dark ? 'dark' : 'light');
-        wd.applyTheme('auto');
-        mode.replaceChildren(icon(b.dark ? 'sun' : 'moon'));
-        mode.title = t(b.dark ? 'builderLightMode' : 'builderDarkMode');
-        mode.setAttribute('aria-label', mode.title);
-        mountPreview();
-      }, t(b.dark ? 'builderLightMode' : 'builderDarkMode'));
-      mode.append(icon(b.dark ? 'sun' : 'moon'));
-      end.append(status, mode, undo, redo, copy, remove, place, done);
-      const node = wd.bar(back, name, el('span', 'wd-spacer'), end);
-      node.classList.add('wdb-bar');
-      return node;
+      end.append(status, undo, redo, done);
+      return end;
+    }
+
+    /** Dark or light: this browser's own choice (as Settings' Dark or light), the page and the preview alike. */
+    function toggleTheme() {
+      b.dark = !b.dark;
+      storageSet(THEME_STORAGE, b.dark ? 'dark' : 'light');
+      wd.applyTheme('auto');
+      mountPreview();
     }
 
     // ---- The library: parts to add, and Layers ---------------------------------------------------------------------
@@ -4589,6 +4585,11 @@
       exportDesign: { icon: 'export', label: 'builderExport', run: exportDesign },
       importDesign: { icon: 'import', label: 'builderImport', run: importDesign },
       shortcuts: { icon: 'keyboard', label: 'builderShortcuts', keys: '?', run: shortcutSheet },
+      // What the bar above the ribbon held until it was folded into it (the user's ask, 2026-11-28).
+      theme: { icon: () => (b.dark ? 'sun' : 'moon'), label: () => (b.dark ? 'builderLightMode' : 'builderDarkMode'), run: toggleTheme },
+      duplicateDesign: { icon: 'copy', label: 'duplicate', run: () => duplicateDesign() },
+      addToDashboard: { icon: 'plus', label: 'builderAddTo', run: () => addToDashboard() },
+      deleteDesign: { icon: 'trash', label: 'builderDelete', confirm: true, run: () => deleteDesign() },
     };
     const labelOf = (c) => { const l = typeof c.label === 'function' ? c.label() : c.label; return /\s/.test(l) ? l : t(l); };
     const iconOf = c => (typeof c.icon === 'function' ? c.icon() : c.icon);
@@ -4597,21 +4598,39 @@
     const RIBBON = [
       ['home', [['clipboard', ['paste', 'cut', 'copy', 'copyLook', 'pasteLook']], ['edit', ['duplicate', 'delete', 'selectAll']]]],
       ['arrange', [['align', ['alignLeft', 'alignCenter', 'alignRight', 'alignTop', 'alignMiddle', 'alignBottom']], ['distribute', ['distributeH', 'distributeV', 'sameWidth', 'sameHeight']], ['group', ['group', 'ungroup']], ['order', ['forward', 'backward']], ['layer', ['lock', 'hide']]]],
-      ['view', [['zoom', ['zoomOut', 'zoom100', 'zoomIn', 'zoomFit']], ['canvas', ['outlines', 'guides']]]],
-      ['design', [['devices', ['replaceDevice']], ['share', ['exportDesign', 'importDesign']], ['help', ['shortcuts']]]],
+      ['view', [['zoom', ['zoomOut', 'zoom100', 'zoomIn', 'zoomFit']], ['canvas', ['outlines', 'guides']], ['theme', ['theme']]]],
+      ['design', [['design', ['duplicateDesign', 'addToDashboard', 'deleteDesign']], ['devices', ['replaceDevice']], ['share', ['exportDesign', 'importDesign']], ['help', ['shortcuts']]]],
     ];
 
-    /** A tool's button: its icon and name (`wdb-rbtn`), or only its icon with the name as its tooltip. */
+    /** A group's caption: its own string, or one the page has already (View's Theme). */
+    const captionOf = group => t(group === 'theme' ? 'theme' : `builderRg_${group}`);
+
+    /**
+     * A tool's button: its icon and name (`wdb-rbtn`), or only its icon with the name as its tooltip. A `confirm` tool
+     * (Delete design) takes a second tap within 3 s, its name saying so meanwhile, as the page's `confirmButton()`.
+     */
     function commandButton(id, cls = 'wdb-rbtn') {
       const c = COMMANDS[id];
-      const node = button(cls, '', () => { c.run(); refreshRibbon(); });
+      const node = button(cls, '', () => {
+        if (c.confirm && !(Date.now() - (node.armedAt || 0) < CONFIRM_MS)) {
+          node.armedAt = Date.now();
+          fillCommand(node, c);
+          setTimeout(() => { if (node.isConnected) { node.armedAt = 0; fillCommand(node, c); } }, CONFIRM_MS);
+          return;
+        }
+        node.armedAt = 0;
+        c.run();
+        refreshRibbon();
+      });
       node.dataset.cmd = id;
       fillCommand(node, c);
       (b.cmdButtons || (b.cmdButtons = new Set())).add(node);
       return node;
     }
     function fillCommand(node, c) {
-      const label = labelOf(c);
+      const armed = !!node.armedAt;
+      node.classList.toggle('armed', armed);
+      const label = armed ? t('tapAgain') : labelOf(c);
       const title = `${c.title ? t(c.title) : label}${c.keys ? ` (${c.keys})` : ''}`;
       node.title = title;
       node.setAttribute('aria-label', title);
@@ -4629,15 +4648,22 @@
       }
     }
 
+    /**
+     * The ribbon, the builder's whole bar (the user's ask, 2026-11-28: the bar above it folded into it): its head is back,
+     * the name, the tabs, then the save status, Undo, Redo and Done; under it the open tab's groups of tools. Returns
+     * the two, the head sticky as the page's other bars.
+     */
     function ribbon() {
-      const node = el('div', 'wdb-ribbon');
       const saved = storageGet(RIBBON_STORAGE) || 'home';
       const state = { collapsed: saved === 'collapsed', tab: RIBBON.some(([id]) => id === saved) ? saved : 'home' };
+      const tabs = el('div', 'wdb-rtabs');
+      tabs.setAttribute('role', 'tablist');
+      const head = wd.bar(...barStart(), tabs, el('span', 'wd-spacer'), barEnd());
+      head.classList.add('wdb-bar', 'wdb-rhead');
+      const panel = el('div', 'wdb-rpanel');
+      panel.setAttribute('role', 'tabpanel');
       const draw = () => {
-        node.textContent = '';
-        node.classList.toggle('collapsed', state.collapsed);
-        const tabs = el('div', 'wdb-rtabs');
-        tabs.setAttribute('role', 'tablist');
+        tabs.textContent = '';
         for (const [id] of RIBBON) {
           const on = id === state.tab && !state.collapsed;
           const tb = button(`wdb-rtab${on ? ' on' : ''}`, t(`builderRibbon_${id}`), () => {
@@ -4646,13 +4672,12 @@
             storageSet(RIBBON_STORAGE, id);
             draw();
           });
-          // A second tap on the open tab (or a double click) folds the ribbon away, as Office's.
+          // A double click on a tab folds the ribbon away, as Office's.
           tb.addEventListener('dblclick', () => { state.collapsed = true; storageSet(RIBBON_STORAGE, 'collapsed'); draw(); });
           tb.setAttribute('role', 'tab');
           tb.setAttribute('aria-selected', String(on));
           tabs.append(tb);
         }
-        tabs.append(el('span', 'wd-spacer'));
         const fold = button('wd-icon small wdb-rfold', '', () => {
           state.collapsed = !state.collapsed;
           storageSet(RIBBON_STORAGE, state.collapsed ? 'collapsed' : state.tab);
@@ -4660,21 +4685,19 @@
         }, t(state.collapsed ? 'builderRibbonShow' : 'builderRibbonHide'));
         fold.append(icon(state.collapsed ? 'down' : 'up'));
         tabs.append(fold);
-        node.append(tabs);
+        panel.textContent = '';
+        panel.hidden = state.collapsed;
         if (state.collapsed) return;
-        const panel = el('div', 'wdb-rpanel');
-        panel.setAttribute('role', 'tabpanel');
         for (const [group, ids] of RIBBON.find(([id]) => id === state.tab)[1]) {
           const g = el('div', 'wdb-rgroup');
           const btns = el('div', 'wdb-rbtns');
           for (const id of ids) btns.append(commandButton(id));
-          g.append(btns, el('span', 'wdb-rcap', t(`builderRg_${group}`)));
+          g.append(btns, el('span', 'wdb-rcap', captionOf(group)));
           panel.append(g);
         }
-        node.append(panel);
       };
       draw();
-      return node;
+      return [head, panel];
     }
 
     /** The tools' own icons (24 px, stroked as the page's), beside the page's (`icon()`). */

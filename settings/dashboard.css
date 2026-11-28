@@ -1044,7 +1044,7 @@ textarea.wd-input { width: 100%; resize: vertical; }
 .wdb-bar .wdb-name { max-width: 260px; }
 .wdb-status { font-size: 12px; line-height: 16px; color: var(--wd-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .wdb-status.bad { color: var(--wd-red); }
-/* A phone's bar holds its eight controls a little closer together. */
+/* A phone's ribbon head holds its controls a little closer together. */
 @media (max-width: 480px) { .wdb-bar .wd-bar-end { gap: 4px; } }
 
 .wdb { display: grid; grid-template-columns: 280px minmax(0, 1fr) 340px; min-height: calc(100vh - 64px); border-top: 1px solid var(--wd-line); }
@@ -1438,17 +1438,26 @@ label.wdb-input-opt { cursor: pointer; }
 
 /* ---- The Widget Builder's tools (1.4.1, dashboard-builder.js): the ribbon, the selection of several, lock and hide,
    zoom, outlines, measuring, the right click's menu, sharing and the shortcuts ------------------------------------- */
-/* The ribbon: its tabs, then the open tab's groups of tools, each tool an icon over its name, the group's name under
-   them; folded, only the tabs. A narrow window scrolls it sideways. */
-.wdb-ribbon { border-top: 1px solid var(--wd-line); background: color-mix(in srgb, var(--wd-tile) 55%, var(--wd-bg)); }
-.wdb-rtabs { display: flex; align-items: center; gap: 2px; padding: 4px 12px 0; }
+/* The ribbon, the builder's whole bar: its head (back, the name, the tabs, the save status, Undo, Redo, Done; sticky as
+   the page's bars), then the open tab's groups of tools, each tool an icon over its name, the group's name under them;
+   folded, only the head. A narrow window scrolls the tools sideways and puts the tabs on a row of their own. */
+.wdb-rhead { padding: 6px 16px 0; align-items: flex-end; background: color-mix(in srgb, color-mix(in srgb, var(--wd-tile) 55%, var(--wd-bg)) 92%, transparent); }
+.wdb-rhead > :not(.wdb-rtabs) { margin-bottom: 6px; align-self: center; }
+.wdb-rhead .wd-bar-end { order: 0; }
+.wdb-rtabs { display: flex; align-items: center; gap: 2px; margin-left: 8px; }
+@media (max-width: 600px) {
+  .wdb-rhead .wdb-name { flex: 1 1 0; min-width: 0; }
+  .wdb-rhead > .wd-spacer { display: none; }
+  .wdb-rtabs { order: 1; flex: 1 0 100%; margin-left: 0; overflow-x: auto; scrollbar-width: none; }
+}
 .wdb-rtab {
   -webkit-appearance: none; appearance: none; border: 0; background: none; color: var(--wd-muted); cursor: pointer;
   font-family: inherit; font-size: 13px; font-weight: 500; line-height: 18px; padding: 6px 12px; border-radius: 8px 8px 0 0; white-space: nowrap;
 }
 .wdb-rtab:hover { color: var(--wd-text); }
 .wdb-rtab.on { color: var(--wd-text); background: var(--wd-bg); box-shadow: inset 0 -2px 0 var(--wd-accent); }
-.wdb-rfold { color: var(--wd-muted); }
+.wdb-rfold { color: var(--wd-muted); margin-bottom: 4px; }
+.wdb-rpanel[hidden] { display: none; }
 .wdb-rpanel { display: flex; align-items: stretch; gap: 0; padding: 6px 8px 4px; background: var(--wd-bg); border-top: 1px solid var(--wd-line); overflow-x: auto; scrollbar-width: thin; }
 .wdb-rgroup { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 0 8px; flex: none; }
 .wdb-rgroup + .wdb-rgroup { border-left: 1px solid var(--wd-line); }
@@ -1456,11 +1465,12 @@ label.wdb-input-opt { cursor: pointer; }
 .wdb-rcap { font-size: 12px; line-height: 16px; color: var(--wd-muted); white-space: nowrap; }
 .wdb-rbtn {
   -webkit-appearance: none; appearance: none; border: 0; background: none; color: var(--wd-text); cursor: pointer;
-  display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 52px; max-width: 88px; padding: 5px 4px; border-radius: 8px; font-family: inherit;
+  display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 52px; max-width: 112px; padding: 5px 4px; border-radius: 8px; font-family: inherit;
 }
 .wdb-rbtn:hover:not(:disabled) { background: color-mix(in srgb, var(--wd-accent) 10%, transparent); }
 .wdb-rbtn:focus-visible { outline: 2px solid var(--wd-accent); outline-offset: -2px; }
 .wdb-rbtn:disabled { opacity: .35; cursor: default; }
+.wdb-rbtn.armed, .wdb-rbtn.armed:hover { max-width: none; color: #FFFFFF; background: var(--wd-red); } /* tap again to delete the design */
 .wdb-rbtn[aria-pressed="true"] { background: color-mix(in srgb, var(--wd-accent) 16%, transparent); color: var(--wd-accent); }
 .wdb-rlabel { font-size: 12px; line-height: 16px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
 .wdb-ricon, .wdb-rbtn svg, .wdb-menu-item svg, .wdb-multi-tools svg, .wdb-head-icon .wdb-ricon {
