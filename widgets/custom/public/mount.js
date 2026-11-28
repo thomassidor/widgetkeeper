@@ -35,6 +35,18 @@ window.mountCustomWidget = function (Homey, { root, frame }) {
     return res;
   }
 
+  /**
+   * Opens an http or https address in the web dashboard's own window (this frame is the page's, same origin), so a
+   * home-screen web app stays one. False where it can't: another origin above, or the page's editor (left alone).
+   */
+  function openHere(url) {
+    if (!/^https?:\/\//i.test(url)) return false;
+    let top;
+    try { top = window.top; if (/\/edit$/.test(top.location.hash)) return true; } catch (e) { return false; }
+    top.location.assign(url);
+    return true;
+  }
+
   const widget = window.createCustomWidget(root, {
     t: (key, tokens) => Homey.__(key, tokens),
     colorStyle: settings.colorStyle,
@@ -49,6 +61,14 @@ window.mountCustomWidget = function (Homey, { root, frame }) {
     onOpen: async (id) => {
       const hash = `#/d/${encodeURIComponent(id)}`;
       try { Homey.popup(await web ? hash : new URL(`../../settings/dashboard.html${hash}`, location.href).href); } catch (e) { console.error(e); }
+    },
+    // A web address: on a web dashboard in this window (`same`: the whole page goes there, as a link would; not from the
+    // editor, where a tap shouldn't leave it) or a new tab; in the phone app always its own browser, the only way there.
+    onUrl: async (url, same) => {
+      try {
+        if (same && await web && openHere(url)) return;
+        Homey.popup(url);
+      } catch (e) { console.error(e); }
     },
     onImage: part => Homey.api('GET', `/image?design=${encodeURIComponent(design)}&part=${encodeURIComponent(part.id)}${deviceOf(part) ? `&device=${encodeURIComponent(deviceOf(part))}` : ''}`),
     // Widget states are kept on this screen, per design.

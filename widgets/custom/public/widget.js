@@ -1019,6 +1019,7 @@
           if (a.do === 'state') { const st = states.get(a.part); if (st) setStateValue(st, a.value); continue; }
           if (opts.preview) continue;
           if (a.do === 'dashboard') { if (opts.onOpen) opts.onOpen(a.dashboard); continue; }
+          if (a.do === 'url') { if (opts.onUrl) await opts.onUrl(a.url, a.same === true); continue; }
           if (opts.onAction) await opts.onAction(part, i, a);
         }
         return;

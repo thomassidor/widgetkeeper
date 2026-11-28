@@ -125,16 +125,18 @@ export const SHAPES = ['rect', 'circle', 'line'] as const;
 
 /**
  * What a button does, in order: set a device value or a variable (a typed value, read as its type; `toggle` flips a
- * yes/no), start a Flow, open a web dashboard, or set a widget state of the design.
+ * yes/no), start a Flow, open a web dashboard or a web address (http or https; `same`: on a web dashboard in its window,
+ * else a new tab), or set a widget state of the design.
  */
 export type Action =
   | { do: 'set', slot: string, value: string }
   | { do: 'variable', variable: string, value: string }
   | { do: 'flow', flowId: string }
   | { do: 'dashboard', dashboard: string }
+  | { do: 'url', url: string, same?: true }
   | { do: 'state', part: string, value: string }
   | { do: 'input', input: string, value: string };
-export const ACTION_KINDS = ['set', 'variable', 'flow', 'dashboard', 'state', 'input'] as const;
+export const ACTION_KINDS = ['set', 'variable', 'flow', 'dashboard', 'url', 'state', 'input'] as const;
 /** The actions the app runs (`POST /action`); the others the widget does itself. */
 export const SERVER_ACTIONS: readonly string[] = ['set', 'variable', 'flow', 'input'];
 
@@ -724,16 +726,23 @@ function actionOf(v: unknown): Action | null {
     case 'variable': { const variable = idOf(a.variable, 100); return variable ? { do: 'variable', variable, value } : null; }
     case 'flow': { const flowId = idOf(a.flowId); return flowId && /^(flow|advanced):/.test(flowId) ? { do: 'flow', flowId } : null; }
     case 'dashboard': { const dashboard = idOf(a.dashboard, 100); return dashboard ? { do: 'dashboard', dashboard } : null; }
+    case 'url': { const url = webAddress(a.url); return url ? { do: 'url', url, ...(a.same === true ? { same: true as const } : {}) } : null; }
     case 'state': return typeof a.part === 'string' && ID.test(a.part) && !isReservedKey(a.part) ? { do: 'state', part: a.part, value } : null;
     case 'input': return typeof a.input === 'string' && ID.test(a.input) && !isReservedKey(a.input) ? { do: 'input', input: a.input, value } : null;
     default: return null;
   }
 }
 
+/** An http or https address of at most 500 characters, trimmed, else null (an Image's, an action's). */
+function webAddress(v: unknown): string | null {
+  return typeof v === 'string' && /^https?:\/\/\S+$/i.test(v.trim()) && v.length <= 500 ? v.trim() : null;
+}
+
 function imageOf(v: unknown): ImageSource | undefined {
   if (!v || typeof v !== 'object') return undefined;
   const r = v as Record<string, unknown>;
-  if (r.kind === 'url' && typeof r.url === 'string' && /^https?:\/\/\S+$/i.test(r.url.trim()) && r.url.length <= 500) return { kind: 'url', url: r.url.trim() };
+  const url = r.kind === 'url' ? webAddress(r.url) : null;
+  if (url) return { kind: 'url', url };
   const device = idOf(r.device, 100);
   return r.kind === 'device' && device ? { kind: 'device', device } : undefined;
 }

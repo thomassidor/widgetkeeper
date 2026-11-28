@@ -174,7 +174,7 @@
     const VALUELESS_KINDS = ['shape', 'text', 'icon', 'button', 'container', 'image'];
     /** The kinds another component may read (a `{part}` source): lib/customDesigns.ts' SOURCE_KINDS. */
     const SOURCE_KINDS = ['calc', 'state', 'repeat'];
-    const ACTION_KINDS = ['set', 'variable', 'flow', 'dashboard', 'state', 'input'];
+    const ACTION_KINDS = ['set', 'variable', 'flow', 'dashboard', 'url', 'state', 'input'];
     const MAX_ACTIONS = 6;
     const MAX_PAGES = 6;
     const MAX_RINGS = 3;
@@ -2682,6 +2682,15 @@
             if (a.do === 'variable') box.append(listPicker('variable', a.variable, item => set({ variable: item ? item.id : '' })));
             if (a.do === 'flow') box.append(listPicker('flow', a.flowId, item => set({ flowId: item ? item.id : '' })));
             if (a.do === 'dashboard') box.append(selectOf([['', t('choose')], ...wd.dashboards.map(d => [d.id, d.name || t('untitled')])], a.dashboard || '', v => set({ dashboard: v })));
+            if (a.do === 'url') {
+              box.append(textInput(a.url, v => change(() => { p.actions[i] = { ...p.actions[i], url: v.trim().slice(0, 500) }; }, { preview: false }), { type: 'url', placeholder: 'https://…' }));
+              box.append(segs([['same', t('builderUrl_same')], ['new', t('builderUrl_new')]], a.same ? 'same' : 'new', v => change(() => {
+                const next = { ...p.actions[i] };
+                if (v === 'same') next.same = true; else delete next.same;
+                p.actions[i] = next;
+              }, { preview: false })));
+              box.append(el('p', 'wd-hint', t('builderUrlHint')));
+            }
             if (a.do === 'state') box.append(selectOf(states.map(x => [x.id, partTitle(x)]), a.part, v => set({ part: v })));
             if (a.do === 'input') box.append(inputSelect(a.input, id => set({ input: id })));
             if (a.do === 'set' || a.do === 'variable' || a.do === 'state' || a.do === 'input') {
@@ -2715,6 +2724,7 @@
       if (a.do === 'variable') { const v = a.variable && b.state && b.state.variables && b.state.variables[a.variable]; sub = v ? v.name : ''; }
       if (a.do === 'flow') { const f = a.flowId && b.state && b.state.flows && b.state.flows[a.flowId]; sub = f ? f.name : ''; }
       if (a.do === 'dashboard') { const d = wd.dashboards.find(x => x.id === a.dashboard); sub = d ? d.name || t('untitled') : ''; }
+      if (a.do === 'url') { try { sub = a.url ? new URL(a.url).host : ''; } catch (e) { sub = ''; } }
       if (a.do === 'state') { const x = everyPart().find(c => c.id === a.part); sub = x ? partTitle(x) : ''; }
       if (a.do === 'input') { const x = a.input && inputById(a.input); sub = x ? x.name : ''; }
       return { title: t(`builderAction_${a.do}`), sub, value: a.value ? `→ ${a.value}` : null };

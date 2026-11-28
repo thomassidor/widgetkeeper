@@ -242,6 +242,45 @@ describe('mount', () => {
     expect(Homey.popup).toHaveBeenCalledWith('#/d/home');
   });
 
+  it('opens a web address in a new tab, or on a web dashboard in its own window', async () => {
+    vi.useFakeTimers();
+    const assign = vi.fn();
+    const top = { location: { hash: '#/d/home', assign } };
+    const was = Object.getOwnPropertyDescriptor(window, 'top');
+    Object.defineProperty(window, 'top', { configurable: true, get: () => top });
+    try {
+      const actions = [{ do: 'url', url: 'https://dash.example.test/main', same: true }, { do: 'url', url: 'https://x.test/' }];
+      const mount = async (instance: string) => {
+        const { frame, root } = frameElements();
+        const Homey = fakeFrame({ design: { id: 'd' } }, { instance, api: async (method: string, path: string) => (path.startsWith('/state')
+          ? state([part('b', 'button', { actions })])
+          : { ok: true }) });
+        win.mountCustomWidget(Homey, { root, frame });
+        await vi.advanceTimersByTimeAsync(100);
+        root.querySelector<HTMLElement>('[data-part="b"]')!.click();
+        await vi.advanceTimersByTimeAsync(0);
+        return Homey;
+      };
+      // A web dashboard: this window goes there; the other in a new tab, as any address a widget opens.
+      let Homey = await mount('web-home-w1');
+      expect(assign.mock.calls).toEqual([['https://dash.example.test/main']]);
+      expect(Homey.popup.mock.calls).toEqual([['https://x.test/']]);
+      // The editor stays put.
+      assign.mockClear();
+      top.location.hash = '#/d/home/edit';
+      Homey = await mount('web-home-w2');
+      expect(assign).not.toHaveBeenCalled();
+      expect(Homey.popup.mock.calls).toEqual([['https://x.test/']]);
+      // The phone app: both in its own browser.
+      top.location.hash = '#/d/home';
+      Homey = await mount('w1');
+      expect(assign).not.toHaveBeenCalled();
+      expect(Homey.popup.mock.calls).toEqual([['https://dash.example.test/main'], ['https://x.test/']]);
+    } finally {
+      if (was) Object.defineProperty(window, 'top', was);
+    }
+  });
+
   it('keeps the README in step with the parts', () => {
     const page = readFileSync('docs/widgets/custom.md', 'utf8');
     // Every kind, by its English name, and every ready-made tile.

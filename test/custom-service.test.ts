@@ -600,6 +600,17 @@ describe('readDesign: widget states, pages, actions, images, rings and repeaters
     expect(designVariables(d)).toEqual(['v1']);
   });
 
+  it("keeps a button's web address only from http(s), in this window only when asked", () => {
+    const d = readDesign({ parts: [part('b', 'button', { actions: [
+      { do: 'url', url: ' https://dash.example.test/main ', same: true }, { do: 'url', url: 'http://192.168.1.5/' },
+      { do: 'url', url: 'javascript:alert(1)', same: true }, { do: 'url', url: 'https://x.test/a b' }, { do: 'url', same: 'yes', url: 'https://x.test/' },
+      { do: 'url' },
+    ] })] })!;
+    expect(d.parts[0].actions).toEqual([
+      { do: 'url', url: 'https://dash.example.test/main', same: true }, { do: 'url', url: 'http://192.168.1.5/' }, { do: 'url', url: 'https://x.test/' },
+    ]);
+  });
+
   it('keeps an image from http(s) or a device, a ring\'s rings, and a repeater\'s filter', () => {
     expect(readPart(part('i', 'image', { image: { kind: 'url', url: 'javascript:alert(1)' }, refresh: 7 }))).toMatchObject({ fit: 'cover', refresh: 5 });
     expect(readPart(part('i', 'image', { image: { kind: 'url', url: ' https://x.test/a.jpg ' }, fit: 'contain', refresh: 0 }))).toMatchObject({ image: { kind: 'url', url: 'https://x.test/a.jpg' }, fit: 'contain', refresh: 0 });
