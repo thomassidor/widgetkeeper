@@ -8,7 +8,8 @@
     What's new in 1.4.1 (.homeychangelog.json), in the look of the 1.1.0 to 1.4.0 posters (whats-next-1.4.0.html): the new
     Batteries widget beside three of its Looks (docs/variants/battery-*.webp, `npm run variants -- battery`), the Widget
     Builder's ribbon of editing tools beside the real builder page (docs/web/ribbon.png, `npm run web-showcase -- ribbon`),
-    then the builder's smaller additions. All on made-up data. Plain words: say what it does.
+    then Notes' Markdown (what's typed beside its Look, docs/variants/textline-markdown.webp) and the builder's smaller
+    additions. All on made-up data. Plain words: say what it does.
     scripts/render-whats-next.mjs (`npm run whats-next -- 1.4.1`) renders it to docs/whats-next-1.4.1.png at 2x.
   -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -82,10 +83,20 @@
     .looks { flex: none; display: flex; gap: 16px; align-items: flex-start; }
     .looks img { display: block; width: 390px; height: auto; border-radius: 14px; }
 
-    /* The strip at the bottom: more in the Widget Builder, in four columns. */
-    .also { padding: 26px 36px 28px; margin-top: 24px; }
+    /* Notes: what's typed beside how it shows (its Look). */
+    .feat.notes { flex: none; display: flex; gap: 24px; align-items: flex-start; }
+    .notes .side { width: 400px; }
+    .notes img { flex: none; display: block; width: 390px; height: auto; border-radius: 14px; }
+    pre.typed {
+      margin: 0; padding: 14px 16px; border-radius: 14px; background: #1F2029; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+      font: 14px/22px ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace; color: #E4E4E7; white-space: pre-wrap;
+    }
+    pre.typed b { color: #B9A6FF; font-weight: 400; }
+
+    /* Beside it: more in the Widget Builder, in two columns. */
+    .also { flex: 1 1 0; min-width: 0; padding: 22px 28px 20px; }
     .also h2 { margin: 0 0 16px; }
-    .also ul.more { margin: 0; display: block; columns: 4; column-gap: 36px; }
+    .also ul.more { margin: 0; display: block; columns: 2; column-gap: 32px; }
     .also ul.more li { break-inside: avoid; margin-bottom: 12px; }
   </style>
 </head>
@@ -95,10 +106,10 @@
     <div>
       <div class="eyebrow">Widgetkeeper 1.4.1 <span>Coming soon</span></div>
       <h1>New in 1.4.1</h1>
-      <p>Every battery in one tile, and the editing tools you know from design apps in the Widget Builder.</p>
+      <p>Every battery in one tile, the editing tools you know from design apps in the Widget Builder, and Notes with bold, lists and headings.</p>
     </div>
     <div class="chips">
-      <span>Batteries</span><span>Editing tools</span><span>Finer grid</span><span>Colour by value</span><span>Rectangle, Circle, Line</span>
+      <span>Batteries</span><span>Editing tools</span><span>Markdown in Notes</span><span>Finer grid</span><span>Colour by value</span><span>Rectangle, Circle, Line</span>
     </div>
   </header>
 
@@ -111,14 +122,15 @@
         <ul class="more">
           <li><b>Lowest first,</b> so you see at a glance what to change.</li>
           <li><b>Yellow and red</b> when a battery runs low, at levels you choose.</li>
+          <li><b>Fill to the level:</b> each cell filled as far as its battery, if you like.</li>
           <li><b>Devices that only say <i>low</i></b> show Low or OK.</li>
           <li><b>2, 3 or 4 per row,</b> Muted or Vivid, and your own names.</li>
         </ul>
       </div>
       <div class="looks">
         <img src="../docs/variants/battery-default.webp" alt="" width="780" height="688">
+        <img src="../docs/variants/battery-fill.webp" alt="" width="780" height="688">
         <img src="../docs/variants/battery-vivid.webp" alt="" width="780" height="688">
-        <img src="../docs/variants/battery-light.webp" alt="" width="780" height="688">
       </div>
     </section>
   </div>
@@ -128,7 +140,7 @@
       <div class="side">
         <span class="tag">Widget Builder</span>
         <h2>Editing tools</h2>
-        <p>A ribbon of tools above the canvas, as in Figma or Photoshop. The same tools are on a right click, with a list of shortcuts under <i>?</i>.</p>
+        <p>A ribbon of tools at the top, as in Figma or Photoshop. The same tools are on a right click, with a list of shortcuts under <i>?</i>.</p>
         <ul class="more">
           <li><b>Copy, cut and paste,</b> also into another design. Copy a look and paste it on another component.</li>
           <li><b>Select several</b> with Shift or a box, and move them together.</li>
@@ -143,6 +155,22 @@
       <img class="shot" src="../docs/web/ribbon.png" alt="" width="1520" height="1035">
     </section>
   </div>
+
+  <div class="columns">
+  <section class="feat notes">
+    <div class="side">
+      <span class="tag">Notes</span>
+      <h2>Bold, lists and headings</h2>
+      <p>Format a note with Markdown: bold, italic, struck out, headings, lists and quotes. Also from a Flow.</p>
+      <div class="label">What you type</div>
+<pre class="typed"><b>#</b> Good morning!
+It's <b>**</b>Sunday<b>**</b>, <b>*</b>no school<b>*</b> today.
+<b>-</b> Bins out by <b>`</b>07:00<b>`</b>
+<b>-</b> <b>~~</b>Dentist<b>~~</b> moved to Tuesday
+<b>&gt;</b> Have a nice day</pre>
+    </div>
+    <img src="../docs/variants/textline-markdown.webp" alt="" width="780" height="963">
+  </section>
 
   <section class="feat also">
     <span class="tag">Widget Builder</span>
@@ -159,6 +187,7 @@
       <li><b>Device icons</b> on switches, icons and lists, as in Quick Actions.</li>
     </ul>
   </section>
+  </div>
 
   <script>
     // The page's size and the columns' heights, for the render script, once the pictures and fonts are there.
