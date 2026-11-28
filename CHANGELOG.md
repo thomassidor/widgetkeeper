@@ -2,6 +2,21 @@
 
 All notable changes to Widgetkeeper. The version numbers match the Homey app version.
 
+## 1.4.1
+
+### New: Batteries
+- **Every picked device's battery in one tile,** lowest first: a grid of cells with the level, a battery filled to it and the name. Red below 10 % and yellow below 20 % (both settings), green when fine. A device that only reports a low-battery alarm shows *Low* or *OK*. 2, 3 or 4 per row, Rename tiles, Muted or Vivid, and the unavailable mark. **Fill to the level** (Muted) washes each cell's colour in from the left as far as its battery. Thanks to Drako74 for asking.
+
+### Widget Builder
+- **A ribbon of editing tools,** with Home, Arrange, View and Design tabs, the same commands on a right click and in a **?** sheet: copy, cut and paste (also between designs), copy and paste a look, select several (Shift-tap, a selection box, Ctrl+A) and move them together, align, space evenly, make the same size, group and ungroup, bring forward and send back, lock and hide, Alt-drag a copy, Shift-drag straight, Ctrl-drag without snapping, distances with Alt, zoom from 25 to 300 % with Fit, outlines, **Try a value** in the Rules tab, **Replace device**, and export and import a design as code or a file. The top bar is folded into the ribbon.
+- **A finer grid:** 12 columns of 16 px rows, with the old cells drawn as guides. Designs made before look the same.
+- **Colour by value:** a shape, text, icon, bar or arc can blend its colour along a value's range, from a low colour through an optional middle one to a high one.
+- **Rectangle, Circle and Line** are components of their own.
+- **Also:** a Median calculated value; a text can show its device's room, or how long since a Flow input was set; a Repeater can take every device with a capability, sorted by its value; a List's items coloured by rules on their own values; Switch, Icon and List can show the device's own icon.
+
+### Notes
+- **Format with Markdown:** **bold**, *italic*, ~~struck~~, `code`, headings, lists and quotes. On for Notes placed from now on; one placed before stays plain until you tick it.
+
 ## 1.4.0
 
 ### New: Widget Builder

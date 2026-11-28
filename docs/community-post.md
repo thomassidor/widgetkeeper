@@ -36,7 +36,7 @@ Hi all,
 
 > :white_check_mark: **Live version (1.3.2):** https://homey.app/a/com.thomassidor.widgetkeeper/
 >
-> :test_tube: **Test version (1.4.0):** https://homey.app/a/com.thomassidor.widgetkeeper/test/
+> :test_tube: **Test version (1.4.1):** https://homey.app/a/com.thomassidor.widgetkeeper/test/
 
 ## The widgets
 
@@ -48,7 +48,7 @@ Tap a widget for what it does and its settings. Every widget follows Homey's lig
 
 ### :test_tube: Test version only
 
-[![Group Quick Action|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/groupaction-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/groupaction.md) [![Widget Builder|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/custom-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/custom.md)
+[![Batteries|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/battery-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/battery.md) [![Group Quick Action|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/groupaction-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/groupaction.md) [![Widget Builder|120x105](https://raw.githubusercontent.com/thomassidor/widgetkeeper/main/docs/previews/custom-dark.png)](https://github.com/thomassidor/widgetkeeper/blob/main/docs/widgets/custom.md)
 
 ## :hammer_and_wrench: Widget Builder (test version)
 
