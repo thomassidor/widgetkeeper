@@ -1,6 +1,6 @@
 /*
  * The Widget Builder widget (`custom`): draws a design (lib/customDesigns.ts) built on the web dashboards' builder page.
- * Parts sit on a 4-column grid of 64 px rows; a container holds its own parts on a fine grid (12 columns, 8 px rows) or
+ * Parts sit on a 12-column grid of 16 px rows (8 px apart); a container holds its own parts on a fine grid (12 columns, 8 px rows) or
  * freely (per cent of its box). Each part's colour is, in order: what a Flow set, the first rule that holds, its own.
  * `opts.onSet(part, value)`, `onButton(part)` act; mount.js sends them. The builder page draws its preview with this too.
  */
@@ -860,16 +860,16 @@
     }
 
     /**
-     * Whether a part is tall enough for a big value and wide enough for a name beside its value: two rows of the
-     * widget's grid (in a container 10 fine rows, or 40 %), one of its four columns (3 of 12, or 25 %).
+     * Whether a part is tall enough for a big value and wide enough for a name beside its value: 4 rows of the
+     * widget's grid, 88 px (in a container 10 fine rows, or 40 %), a quarter of its 12 columns (3, or 25 %).
      */
     function sizeOf(part, where) {
       const a = part.at || { w: 1, h: 1 };
-      // `wide`: room for a list beside a donut (three columns, 8 of 12, 60 %).
+      // `wide`: room for a list beside a donut (8 of 12 columns, 60 %).
       if (where === 'free') return { big: a.h >= 40, narrow: a.w <= 25, wide: a.w >= 60 };
       if (where === 'grid') return { big: a.h >= 10, narrow: a.w <= 3, wide: a.w >= 8 };
-      if (where === 'item') return { big: a.h >= 2, narrow: false, wide: a.w >= 3 };
-      return { big: a.h >= 2, narrow: a.w === 1, wide: a.w >= 3 };
+      if (where === 'item') return { big: a.h >= 4, narrow: false, wide: a.w >= 8 };
+      return { big: a.h >= 4, narrow: a.w <= 3, wide: a.w >= 8 };
     }
 
     function build(part, where) {
@@ -1728,7 +1728,7 @@
           views = views.filter(v => !list.contains(v.node));
           list.textContent = '';
           const h = e && e.part && e.part.at ? Math.max(1, e.part.at.h) : 1;
-          list.style.gridAutoRows = single ? '1fr' : `${h * 64 + (h - 1) * 8}px`;
+          list.style.gridAutoRows = single ? '1fr' : `${h * 16 + (h - 1) * 8}px`; // the top grid's rows
           const fresh = [];
           for (const dev of devices) {
             const cell = el('div', { class: 'wb-each-item' }, list);

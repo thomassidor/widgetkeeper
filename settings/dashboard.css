@@ -1024,8 +1024,9 @@ textarea.wd-input { width: 100%; resize: vertical; }
 
 /* ---- The Widget Builder (dashboard-builder.js): the front page's designs, and the builder ---------------------------- */
 .wdb-front { margin-top: 28px; }
-.wdb-art { display: grid !important; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(var(--rows, 3), 1fr); gap: 4px; padding: 10px; }
-.wdb-thumb { border-radius: 4px; background: color-mix(in srgb, var(--wd-text) 18%, transparent); min-height: 0; }
+/* The top grid's 12 columns and 16 px rows (dashboard-builder.js sets them), each block inset 2 px, so 4 px between them. */
+.wdb-art { display: grid !important; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(var(--rows, 9), 1fr); gap: 0; padding: 8px; }
+.wdb-thumb { margin: 2px; border-radius: 4px; background: color-mix(in srgb, var(--wd-text) 18%, transparent); min-height: 0; }
 .wdb-thumb-container { background: color-mix(in srgb, var(--wd-accent) 30%, transparent); }
 .wdb-thumb-text, .wdb-thumb-icon { background: color-mix(in srgb, var(--wd-text) 8%, transparent); }
 /* The live miniature: the design's widget drawn at a column's width in a frame, scaled onto the sketch (which it hides

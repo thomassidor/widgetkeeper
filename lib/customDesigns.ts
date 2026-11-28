@@ -1,5 +1,5 @@
 /*
- * The Widget Builder's designs (`custom`, 1.4.0): a widget drawn from parts on a 4-column grid, saved once and placed on
+ * The Widget Builder's designs (`custom`, 1.4.0): a widget drawn from parts on a 12-column grid, saved once and placed on
  * any web dashboard. This file is the model only: the part kinds, their limits and the lenient reading of a design (an
  * older or hand-edited one mustn't break the widget). `lib/CustomWidgetService.ts` keeps them; the widget
  * (`widgets/custom/public/widget.js`) draws them.
@@ -7,9 +7,16 @@
 import { TILE_COLORS, type TileColor } from './tileColors.js';
 import { isReservedKey } from './storedSetting.js';
 
-/** The widget's own grid: 4 columns of 64 px rows. */
-export const GRID_COLUMNS = 4;
-export const MAX_GRID_ROWS = 24;
+/**
+ * The widget's own grid: 12 columns of 16 px rows, 8 px apart (1.4.1, the user's ask: finer than the 4 columns of
+ * 64 px rows before). Three of its cells, either way, are one of the old ones exactly, which the builder still draws as
+ * guides; a design kept before (no `grid: 12`) is read onto it once (`readDesign()`).
+ */
+export const GRID_COLUMNS = 12;
+export const MAX_GRID_ROWS = 72;
+/** How many cells of the grid an old one (4 columns of 64 px rows, `OLD_COLUMNS`) is, across and down. */
+export const GRID_STEP = 3;
+const OLD_COLUMNS = 4;
 /** A container's fine grid: 12 columns of 8 px rows. */
 export const FINE_COLUMNS = 12;
 export const FINE_ROW_PX = 8;
@@ -390,7 +397,7 @@ export type BackgroundDim = typeof BACKGROUND_DIMS[number];
  * ready-made component (the builder's library, a Repeater's item), not a widget of its own: its first part is the
  * component. `sample`: the device the builder shows the widget's device (`@`) with.
  */
-export type Design = { id: string, name: string, updatedAt: number, parts: Part[], span?: number, ready?: true, sample?: string };
+export type Design = { id: string, name: string, updatedAt: number, grid: typeof GRID_COLUMNS, parts: Part[], span?: number, ready?: true, sample?: string };
 
 const HEX = /^#[0-9a-f]{6}$/;
 const ID = /^[A-Za-z0-9_-]{1,24}$/;
@@ -434,7 +441,7 @@ export function newId(): string {
 }
 
 /**
- * Where a part goes, kept on its grid: top level in the 4 × 64 px cells, in a container on its fine grid (12 columns,
+ * Where a part goes, kept on its grid: top level in the 12 columns of 16 px rows, in a container on its fine grid (12 columns,
  * any row) or, free-form, in per cent of the container (one decimal).
  */
 function placeOf(v: any, where: 'top' | 'grid' | 'free'): Place {
@@ -444,10 +451,10 @@ function placeOf(v: any, where: 'top' | 'grid' | 'free'): Place {
     return { x, y, w: num(v?.w, 1, 100 - x, Math.min(25, 100 - x), 0.1), h: num(v?.h, 1, 100 - y, Math.min(25, 100 - y), 0.1) };
   }
   const cols = where === 'top' ? GRID_COLUMNS : FINE_COLUMNS;
-  const rows = where === 'top' ? MAX_GRID_ROWS : MAX_GRID_ROWS * 9;
+  const rows = where === 'top' ? MAX_GRID_ROWS : 216;
   const x = num(v?.x, 0, cols - 1, 0);
   const y = num(v?.y, 0, rows - 1, 0);
-  return { x, y, w: num(v?.w, 1, cols - x, 1), h: num(v?.h, 1, where === 'top' ? 8 : rows, where === 'top' ? 1 : 8) };
+  return { x, y, w: num(v?.w, 1, cols - x, 1), h: num(v?.h, 1, where === 'top' ? 8 * GRID_STEP : rows, where === 'top' ? GRID_STEP : 8) };
 }
 
 /** A source as kept, or undefined. `parts`: whether a calculated value may be one (checked against the design later). */
@@ -603,7 +610,18 @@ function backgroundOf(v: any): Background {
  * top-level part reaching past the fourth.
  */
 function wideLayout(parts: unknown): boolean {
-  return Array.isArray(parts) && parts.some((p: any) => Number(p?.at?.x) + Number(p?.at?.w) > GRID_COLUMNS);
+  return Array.isArray(parts) && parts.some((p: any) => Number(p?.at?.x) + Number(p?.at?.w) > OLD_COLUMNS);
+}
+
+/** A top-level part of a design kept on the old grid (4 columns of 64 px rows), on the fine one: each cell 3 × 3. */
+function onFineGrid(raw: unknown): unknown {
+  const r = raw as any;
+  if (!r || typeof r !== 'object' || !r.at || typeof r.at !== 'object') return raw;
+  // Kept on the old grid first, as it was read then.
+  const x = num(r.at.x, 0, OLD_COLUMNS - 1, 0);
+  const y = num(r.at.y, 0, MAX_GRID_ROWS / GRID_STEP - 1, 0);
+  const old = { x, y, w: num(r.at.w, 1, OLD_COLUMNS - x, 1), h: num(r.at.h, 1, 8, 1) };
+  return { ...r, at: { x: old.x * GRID_STEP, y: old.y * GRID_STEP, w: old.w * GRID_STEP, h: old.h * GRID_STEP } };
 }
 
 /** A top-level part of such a design, its columns scaled onto the one column's 4 (rows stay). */
@@ -625,7 +643,9 @@ export function readDesign(v: unknown, fallbackId = newId()): Design | null {
   const d = v as Record<string, unknown>;
   const id = typeof d.id === 'string' && ID.test(d.id) && !isReservedKey(d.id) ? d.id : fallbackId;
   const span = num(d.span, 1, MAX_SPAN, 1);
-  const narrow = span > 1 && wideLayout(d.parts) ? span : 1;
+  // Kept before the 12-column grid: narrowed (a design from before one-column designs), then each cell 3 × 3.
+  const old = d.grid !== GRID_COLUMNS;
+  const narrow = old && span > 1 && wideLayout(d.parts) ? span : 1;
   const seen = new Set<string>();
   let count = 0;
   const partsOf = (list: unknown, where: 'top' | 'grid' | 'free'): Part[] => {
@@ -633,7 +653,7 @@ export function readDesign(v: unknown, fallbackId = newId()): Design | null {
     const out: Part[] = [];
     for (const raw of list) {
       if (count >= MAX_PARTS) break;
-      const p = readPart(where === 'top' && narrow > 1 ? narrowed(raw, narrow) : raw, where);
+      const p = readPart(where === 'top' && old ? onFineGrid(narrow > 1 ? narrowed(raw, narrow) : raw) : raw, where);
       if (!p || (p.kind === 'container' && where !== 'top')) continue;
       if (where === 'top') delete p.page;
       while (seen.has(p.id)) p.id = newId();
@@ -655,6 +675,7 @@ export function readDesign(v: unknown, fallbackId = newId()): Design | null {
     id,
     name: str(d.name, MAX_NAME) || 'Widget',
     updatedAt: Number.isFinite(d.updatedAt) ? Number(d.updatedAt) : 0,
+    grid: GRID_COLUMNS,
     parts: partsOf(d.parts, 'top'),
   };
   if (span > 1) design.span = span;

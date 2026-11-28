@@ -14,9 +14,9 @@ const value = (slot: string, v: unknown, c: object = {}) => {
   const [deviceId, capabilityId] = slot.split(':');
   return { deviceId, capabilityId, name: 'Sensor', capability: cap(c), value: v };
 };
-const part = (id: string, kind: string, o: object = {}) => ({ id, kind, name: '', at: { x: 0, y: 0, w: 2, h: 1 }, color: null, icon: null, tile: true, rules: [], ...o });
+const part = (id: string, kind: string, o: object = {}) => ({ id, kind, name: '', at: { x: 0, y: 0, w: 6, h: 3 }, color: null, icon: null, tile: true, rules: [], ...o });
 const state = (parts: object[], values: object[] = [], extra: object = {}) => ({
-  design: { id: 'd', name: 'D', updatedAt: 1, parts },
+  design: { id: 'd', name: 'D', updatedAt: 1, grid: 12, parts },
   values: Object.fromEntries(values.map((v: any) => [`${v.deviceId}:${v.capabilityId}`, v])),
   variables: {}, flows: {}, histories: {}, inputs: {}, now: Date.now(), ...extra,
 });
@@ -66,13 +66,13 @@ describe("the widget's rules", () => {
 describe('drawing', () => {
   it('puts parts on the grid and in containers, on the fine grid or free-form', () => {
     const { at } = widget(state([
-      part('a', 'text', { text: 'Hello', at: { x: 1, y: 2, w: 3, h: 1 } }),
-      part('box', 'container', { mode: 'free', at: { x: 0, y: 0, w: 4, h: 2 }, background: { kind: 'color', from: '#223344' }, parts: [
+      part('a', 'text', { text: 'Hello', at: { x: 3, y: 6, w: 9, h: 3 } }),
+      part('box', 'container', { mode: 'free', at: { x: 0, y: 0, w: 12, h: 6 }, background: { kind: 'color', from: '#223344' }, parts: [
         part('k', 'text', { text: 'In', at: { x: 10, y: 20, w: 30, h: 40 } }),
       ] }),
     ]));
-    expect(at('a').style.gridColumn).toBe('2 / span 3');
-    expect(at('a').style.gridRow).toBe('3 / span 1');
+    expect(at('a').style.gridColumn).toBe('4 / span 9');
+    expect(at('a').style.gridRow).toBe('7 / span 3');
     expect(at('a').textContent).toBe('Hello');
     expect(at('box').classList.contains('wb-box-free')).toBe(true);
     expect(at('k').style.left).toBe('10%');
@@ -859,7 +859,7 @@ describe('styles, colours, width, charts and Repeaters (2026-11-24)', () => {
     const now = Date.now();
     const pts = (f: (i: number) => number) => Array.from({ length: 13 }, (_, i) => [now - (12 - i) * 3600e3, f(i)]);
     const histories = { '24h\na:t': pts(i => 20 + i / 4), '24h\nb:t': pts(i => 18 - i / 6) };
-    const s = state([part('c', 'chart', { series: [{ slot: 'a:t', color: 'red' }, { slot: 'b:t', color: null }], span: '24h', chartStyle: 'line', axis: true, at: { x: 0, y: 0, w: 4, h: 2 } })],
+    const s = state([part('c', 'chart', { series: [{ slot: 'a:t', color: 'red' }, { slot: 'b:t', color: null }], span: '24h', chartStyle: 'line', axis: true, at: { x: 0, y: 0, w: 12, h: 6 } })],
       [{ ...value('a:t', 23), name: 'Living' }, { ...value('b:t', 16), name: 'Bedroom' }], { histories });
     const { at } = widget(s);
     const c = at('c');
@@ -875,12 +875,12 @@ describe('styles, colours, width, charts and Repeaters (2026-11-24)', () => {
   });
 
   it("repeats a ready-made component once per device, each with that device's values, its requests naming the copy and device", async () => {
-    const ready = part('box', 'container', { mode: 'free', style: 'tile', at: { x: 0, y: 0, w: 2, h: 1 }, parts: [
+    const ready = part('box', 'container', { mode: 'free', style: 'tile', at: { x: 0, y: 0, w: 6, h: 3 }, parts: [
       part('sw', 'switch', { slot: '@:onoff', at: { x: 0, y: 0, w: 50, h: 100 } }),
       part('n', 'text', { text: '{1}', refs: [{ slot: '@:onoff', show: 'name' }], at: { x: 50, y: 0, w: 50, h: 100 } }),
     ] });
     const onSet = vi.fn(async () => {});
-    const { root } = widget(state([part('e', 'each', { ready: 'r', columns: 2, at: { x: 0, y: 0, w: 4, h: 2 } })],
+    const { root } = widget(state([part('e', 'each', { ready: 'r', columns: 2, at: { x: 0, y: 0, w: 12, h: 6 } })],
       [{ ...value('l1:onoff', true, { type: 'boolean' }), name: 'Lamp one' }, { ...value('l2:onoff', false, { type: 'boolean' }), name: 'Lamp two' }],
       { each: { e: { part: ready, devices: ['l1', 'l2'] } } }), { onSet });
     const copies = root.querySelectorAll('.wb-each-item');
@@ -893,13 +893,13 @@ describe('styles, colours, width, charts and Repeaters (2026-11-24)', () => {
     await Promise.resolve();
     expect(onSet).toHaveBeenCalledWith(expect.objectContaining({ id: 'e/sw', slot: 'l2:onoff', device: 'l2' }), true);
     // Without a ready-made it says so.
-    const none = widget(state([part('e', 'each', { at: { x: 0, y: 0, w: 4, h: 1 } })], [], { each: { e: { part: null, devices: [] } } }));
+    const none = widget(state([part('e', 'each', { at: { x: 0, y: 0, w: 12, h: 3 } })], [], { each: { e: { part: null, devices: [] } } }));
     expect(none.root.textContent).toContain('ready-made');
   });
 
   it('draws a linked ready-made once, filling its box, with its device (2026-11-24)', () => {
-    const ready = part('sw', 'switch', { slot: '@:onoff', at: { x: 0, y: 0, w: 2, h: 1 } });
-    const { root } = widget(state([part('u', 'use', { ready: 'r', at: { x: 0, y: 0, w: 4, h: 2 } })],
+    const ready = part('sw', 'switch', { slot: '@:onoff', at: { x: 0, y: 0, w: 6, h: 3 } });
+    const { root } = widget(state([part('u', 'use', { ready: 'r', at: { x: 0, y: 0, w: 12, h: 6 } })],
       [{ ...value('l1:onoff', true, { type: 'boolean' }), name: 'Lamp one' }],
       { each: { u: { part: ready, devices: ['l1'] } } }));
     expect(root.querySelector('.wb-use .wb-each-list')!.getAttribute('style')).toContain('grid-auto-rows: 1fr');
@@ -910,7 +910,7 @@ describe('styles, colours, width, charts and Repeaters (2026-11-24)', () => {
 
 describe("the normal widgets' looks and options (2026-11-24, the user's review of the styles and options)", () => {
   it("draws a button as Flow Buttons' round button and name, only the button where it's narrow", () => {
-    const { at } = widget(state([part('b', 'button', { name: 'Night', color: 'green' }), part('n', 'button', { name: 'Go', at: { x: 0, y: 1, w: 1, h: 1 } })]));
+    const { at } = widget(state([part('b', 'button', { name: 'Night', color: 'green' }), part('n', 'button', { name: 'Go', at: { x: 0, y: 3, w: 3, h: 3 } })]));
     expect([!!at('b').querySelector('.wb-fbtn .wb-icon svg'), at('b').querySelector('.wb-name')!.textContent]).toEqual([true, 'Night']);
     expect([at('n').classList.contains('wb-narrow'), at('n').title]).toEqual([true, 'Go']);
   });
@@ -931,7 +931,7 @@ describe("the normal widgets' looks and options (2026-11-24, the user's review o
     const sent: unknown[] = [];
     const s = state([
       part('sw', 'switch', { slot: 'a:onoff', active: 'lighter' }),
-      part('v', 'variable', { variable: 'v1', step: 5, max: 20, at: { x: 0, y: 1, w: 4, h: 1 } }),
+      part('v', 'variable', { variable: 'v1', step: 5, max: 20, at: { x: 0, y: 3, w: 12, h: 3 } }),
     ], [value('a:onoff', true, { type: 'boolean', units: null })], { variables: { v1: { id: 'v1', name: 'Use', type: 'number', value: 10 } } });
     const { at } = widget(s, { onSet: async (_p: unknown, v: unknown) => { sent.push(v); } });
     expect([at('sw').classList.contains('wb-lighter'), at('sw').classList.contains('wb-on')]).toEqual([true, true]);
@@ -984,7 +984,7 @@ describe("the normal widgets' looks and options (2026-11-24, the user's review o
   it("draws Chart · Basic's areas, values at the top, chips below, a zero scale and below zero in yellow", () => {
     const now = Date.now();
     const histories = { '24h\na:t': Array.from({ length: 6 }, (_, i) => [now - (5 - i) * 3600e3, i - 2]) };
-    const s = state([part('c', 'chart', { series: [{ slot: 'a:t', color: null, title: 'Outside' }], span: '24h', chartStyle: 'area', header: true, chartLegend: 'below', negative: true, chartScale: 'zero', smooth: true, at: { x: 0, y: 0, w: 4, h: 3 } })],
+    const s = state([part('c', 'chart', { series: [{ slot: 'a:t', color: null, title: 'Outside' }], span: '24h', chartStyle: 'area', header: true, chartLegend: 'below', negative: true, chartScale: 'zero', smooth: true, at: { x: 0, y: 0, w: 12, h: 9 } })],
       [{ ...value('a:t', -1.5), name: 'Garden' }], { histories });
     const { at } = widget(s);
     const c = at('c');
@@ -1050,7 +1050,7 @@ describe('Flow inputs (2026-11-25)', () => {
 
   it("gives a Repeater's copies their own device's value of an input they read", () => {
     const ready = part('r', 'text', { text: '{1}', refs: [{ input: 'note' }] });
-    const s = state([part('rep', 'each', { at: { x: 0, y: 0, w: 4, h: 2 } })], [], {
+    const s = state([part('rep', 'each', { at: { x: 0, y: 0, w: 12, h: 6 } })], [], {
       each: { rep: { part: ready, devices: ['a', 'b'] } },
       inputs: { note: { type: 'text', perDevice: true, all: { value: 'All', at: 1 }, devices: { b: { value: 'Bee', at: 1 } } } },
     });
@@ -1061,7 +1061,7 @@ describe('Flow inputs (2026-11-25)', () => {
   it("sets a text colour, a container's fill and a pages container's page from inputs, a tap still turning it", () => {
     const s = state([
       part('t', 'text', { text: 'Hi', textColor: 'blue', bind: { textColor: 'ink' } }),
-      part('box', 'container', { mode: 'pages', pages: [{ name: 'Home' }, { name: 'Away' }], nav: 'tabs', at: { x: 0, y: 1, w: 4, h: 2 }, bind: { fill: 'fill', page: 'page' }, parts: [
+      part('box', 'container', { mode: 'pages', pages: [{ name: 'Home' }, { name: 'Away' }], nav: 'tabs', at: { x: 0, y: 3, w: 12, h: 6 }, bind: { fill: 'fill', page: 'page' }, parts: [
         part('p1', 'text', { text: 'One', page: 0 }), part('p2', 'text', { text: 'Two', page: 1 }),
       ] }),
     ], [], { inputs: { ink: { type: 'color' }, fill: { type: 'color' }, page: { type: 'text' } } });

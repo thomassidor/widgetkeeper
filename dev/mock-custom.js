@@ -363,9 +363,11 @@
   };
 
   window.mockCustomState = function (scene = 'living') {
-    const parts = DESIGNS[scene] || DESIGNS.living;
+    // Drawn in the old grid's cells (4 columns of 64 px rows), as lib/customDesigns.ts' readDesign() reads a design kept
+    // before 1.4.1's 12 columns of 16 px rows: each top-level cell 3 × 3.
+    const parts = (DESIGNS[scene] || DESIGNS.living).map(p => ({ ...p, at: { x: p.at.x * 3, y: p.at.y * 3, w: p.at.w * 3, h: p.at.h * 3 } }));
     return JSON.parse(JSON.stringify({
-      design: { id: `d-${scene}`, name: NAMES[scene] || scene, updatedAt: 1, parts },
+      design: { id: `d-${scene}`, name: NAMES[scene] || scene, updatedAt: 1, grid: 12, parts },
       values: VALUES, variables: VARIABLES, flows: FLOWS, histories: HISTORIES, inputs: INPUTS[scene] || {}, repeats: REPEATS[scene] || {}, language: 'en', timeFormat: '24', now: NOW,
     }));
   };

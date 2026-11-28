@@ -12,7 +12,13 @@
   window.WidgetkeeperWeb.part('builder', (wd) => {
     const { button, confirmButton, el, failed, icon, request, root, storageGet, storageSet, t, THEME_STORAGE, toast } = wd;
 
-    const GRID = { cols: 4, row: 64, gap: 8 };
+    /**
+     * The top grid: 12 columns of 16 px rows (1.4.1, the user's ask: finer than 4 columns of 64 px rows). The canvas still
+     * draws those as guides (`GUIDE`), each `STEP` × `STEP` cells (lib/customDesigns.ts' GRID_STEP).
+     */
+    const GRID = { cols: 12, row: 16, gap: 8 };
+    const STEP = 3;
+    const GUIDE = { cols: GRID.cols / STEP, row: STEP * GRID.row + (STEP - 1) * GRID.gap };
     const FINE = { cols: 12, row: 8, gap: 6 };
     const MAX_RULES = 6;
     const MAX_CHOICES = 6;
@@ -36,7 +42,8 @@
       ['image', 'layout', 'picture', 2, 2], ['ring', 'show', 'ring', 2, 2], ['repeat', 'show', 'list', 4, 2],
       ['state', 'control', 'bookmark', 2, 1], ['segments', 'show', 'segments', 4, 2], ['chart', 'show', 'chart', 4, 2],
       ['each', 'layout', 'stack', 4, 2],
-    ].map(([key, group, glyph, w, h]) => ({ key, kind: String(key).split(':')[0], shape: String(key).split(':')[1], group, glyph, w, h }));
+      // The sizes in guide cells, kept in the top grid's.
+    ].map(([key, group, glyph, w, h]) => ({ key, kind: String(key).split(':')[0], shape: String(key).split(':')[1], group, glyph, w: Number(w) * STEP, h: Number(h) * STEP }));
     /** A library entry for a part (a shape's by its form). */
     const entryOf = (kind, shape) => KINDS.find(k => k.kind === kind && (kind !== 'shape' || k.shape === (shape || 'rect')));
     /** A kind's icon (a shape's by its form); a linked ready-made (`use`, not in the library) has its own. */
@@ -87,7 +94,7 @@
       { id: 'trend', glyph: 'trend', w: 2, h: 1, value: true },
       { id: 'clock', glyph: 'clock', w: 2, h: 1 },
       { id: 'flowvalue', glyph: 'bolt', w: 2, h: 1 },
-    ];
+    ].map(r => ({ ...r, w: r.w * STEP, h: r.h * STEP })); // guide cells, as KINDS'
     const at = (x, y, w, h) => ({ x, y, w, h });
     /**
      * A ready-made tile's parts, for `slot` (a device value) where it needs one, with the looks of the normal widgets:
@@ -223,7 +230,7 @@
     let b = null;
     /**
      * The web dashboard columns the design is shown over (the preview's width, and Add to dashboard's), and its grid's
-     * columns: always 4, as a design is made for one column and stretches over more as a normal widget does (the user,
+     * columns: always 12 (4 guides), as a design is made for one column and stretches over more as a normal widget does (the user,
      * 2026-11-24: no widget is wider than one column by design, so it fits a Homey dashboard too).
      */
     const spanOf = () => Math.min(MAX_SPAN, Math.max(1, Number(b.design.span) || 1));
@@ -323,14 +330,15 @@
     /** A sketch of a design's grid (its first six rows): a block per part, a container in its background. */
     function designArt(d, cls = 'wd-dash-art wdb-art') {
       const art = el('div', cls);
-      art.style.gridTemplateColumns = 'repeat(4, 1fr)';
-      const rows = Math.max(2, ...d.parts.map(p => p.at.y + p.at.h));
-      art.style.setProperty('--rows', String(Math.min(rows, 6)));
+      art.style.gridTemplateColumns = `repeat(${GRID.cols}, 1fr)`;
+      const most = 6 * STEP;
+      const rows = Math.max(2 * STEP, ...d.parts.map(p => p.at.y + p.at.h));
+      art.style.setProperty('--rows', String(Math.min(rows, most)));
       for (const p of d.parts) {
-        if (p.at.y >= 6) continue;
+        if (p.at.y >= most) continue;
         const cell = el('span', `wdb-thumb wdb-thumb-${p.kind}`);
         cell.style.gridColumn = `${p.at.x + 1} / span ${p.at.w}`;
-        cell.style.gridRow = `${p.at.y + 1} / span ${Math.min(p.at.h, 6 - p.at.y)}`;
+        cell.style.gridRow = `${p.at.y + 1} / span ${Math.min(p.at.h, most - p.at.y)}`;
         if (p.kind === 'container' && p.background && p.background.kind !== 'none') {
           const css = c => (/^#/.test(c) ? c : `var(--wk-${c}-bright, ${c})`);
           cell.style.background = p.background.kind === 'color' ? css(p.background.from) : `linear-gradient(${p.background.angle}deg, ${css(p.background.from)}, ${css(p.background.to)})`;
@@ -445,7 +453,7 @@
     async function newDesign(node) {
       if (node) node.disabled = true;
       try {
-        const res = await request('PUT', '/web/designs', { name: t('builderUntitled'), parts: [] });
+        const res = await request('PUT', '/web/designs', { name: t('builderUntitled'), grid: GRID.cols, parts: [] });
         wd.designs = res.designs;
         location.hash = `#/builder/${res.design.id}`;
       } catch (err) {
@@ -668,9 +676,12 @@
     /** A size in top-grid cells (`{w, h}`) as it is in a container (`into`): fine-grid cells, or per cent free-form. */
     function sizeIn(size, into) {
       if (!into) return { w: Math.min(size.w, cols()), h: size.h };
-      if (into.mode === 'free') return { w: Math.min(48, size.w * 24), h: 30 };
-      return { w: Math.min(FINE.cols, size.w * 3), h: size.h * 8 };
+      if (into.mode === 'free') return { w: Math.min(48, Math.round(size.w * 8)), h: 30 };
+      return { w: Math.min(FINE.cols, size.w), h: fineRows(size.h) };
     }
+
+    /** Top-grid rows as a container's fine-grid rows: a guide cell (3 rows, 64 px) is 8 of them, as before 1.4.1. */
+    const fineRows = h => Math.max(1, Math.round((h * 8) / STEP));
 
     /** A top-level part's size in top-grid cells, for a ready-made of your own. */
     const sizeOfPart = part => ({ w: Math.max(1, part.at.w), h: Math.max(1, part.at.h) });
@@ -710,7 +721,7 @@
 
     function overCanvas(x, y) {
       const r = b.canvas.getBoundingClientRect();
-      return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom + GRID.row;
+      return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom + GUIDE.row;
     }
 
     /** Where a drop at a point goes: the container under it (not for a container) and the cell or per cent there. */
@@ -916,7 +927,7 @@
 
     function sizeCanvas() {
       b.canvas.style.width = `${b.width * spanOf() + COLUMN_GAP * (spanOf() - 1)}px`;
-      b.guide.style.gridTemplateColumns = `repeat(${cols()}, 1fr)`;
+      b.guide.style.gridTemplateColumns = `repeat(${GUIDE.cols}, 1fr)`;
       drawOverlay();
     }
 
@@ -959,16 +970,18 @@
       return JSON.parse(dev && /^[^\s:"\\]+$/.test(dev) ? json.replace(/"@:/g, `"${dev}:`).replace(/"device":"@"/g, `"device":"${dev}"`) : json);
     }
 
-    const rowsOf = () => Math.max(3, ...b.design.parts.map(p => p.at.y + p.at.h + 1));
+    /** The canvas's rows: the design's and a guide row under it, at least three guide rows, in whole guide rows. */
+    const rowsOf = () => STEP * Math.ceil(Math.max(3 * STEP, ...b.design.parts.map(p => p.at.y + p.at.h + STEP)) / STEP);
 
+    /** The guides: the old grid's cells (4 columns of 64 px rows), under the finer one parts snap to. */
     function drawGuide() {
       const g = b.guide;
       g.textContent = '';
-      const rows = rowsOf();
-      g.style.gridTemplateRows = `repeat(${rows}, ${GRID.row}px)`;
-      g.style.gridTemplateColumns = `repeat(${cols()}, 1fr)`;
-      for (let i = 0; i < rows * cols(); i++) g.append(el('i'));
-      b.canvas.style.minHeight = `${rows * (GRID.row + GRID.gap) - GRID.gap}px`;
+      const rows = rowsOf() / STEP;
+      g.style.gridTemplateRows = `repeat(${rows}, ${GUIDE.row}px)`;
+      g.style.gridTemplateColumns = `repeat(${GUIDE.cols}, 1fr)`;
+      for (let i = 0; i < rows * GUIDE.cols; i++) g.append(el('i'));
+      b.canvas.style.minHeight = `${rows * (GUIDE.row + GRID.gap) - GRID.gap}px`;
     }
 
     // ---- The overlay: select, move, resize -------------------------------------------------------------------
@@ -1179,7 +1192,7 @@
           if (how === 'move') {
             at.x = clamp(from.x + cx, 0, g.cols - from.w);
             at.y = Math.max(0, from.y + cy);
-          } else resizeTo(at, from, dir, cx, cy, { cols: g.cols, min: 1, maxH: g.mode === 'top' ? 8 : 200 });
+          } else resizeTo(at, from, dir, cx, cy, { cols: g.cols, min: 1, maxH: g.mode === 'top' ? 8 * STEP : 200 });
         }
         if (['x', 'y', 'w', 'h'].every(k => at[k] === p.at[k])) return;
         p.at = at;
@@ -1260,11 +1273,11 @@
 
     const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
-    /** A part's size in top-grid cells, wherever it is: from a container's fine grid (3 columns, 8 rows a cell) or per cent. */
+    /** A part's size in top-grid cells, wherever it is: from a container's fine grid (the same columns, 8 rows a guide cell) or per cent. */
     function topSize(p, parent) {
       if (!parent) return { w: p.at.w, h: p.at.h };
-      if (parent.mode === 'free') return { w: Math.max(1, Math.round(p.at.w / 25)), h: 1 };
-      return { w: Math.max(1, Math.round(p.at.w / 3)), h: Math.max(1, Math.round(p.at.h / 8)) };
+      if (parent.mode === 'free') return { w: Math.max(1, Math.round((p.at.w / 100) * GRID.cols)), h: STEP };
+      return { w: Math.max(1, Math.min(GRID.cols, p.at.w)), h: Math.max(1, Math.round((p.at.h * STEP) / 8)) };
     }
 
     /** Moves a part (not a container) into another container, or out to the top, at `to` (`{into, x, y, w, h}`). */
@@ -1627,7 +1640,7 @@
       }
       if (part.kind === 'container') {
         // Its parts in per cent of it, then placed as a built-in ready-made's.
-        const rows = Math.max(1, part.at.h * 8);
+        const rows = fineRows(part.at.h);
         const kids = (part.parts || []).map(k => ({ ...k, at: part.mode === 'free' ? k.at : { x: (k.at.x / FINE.cols) * 100, y: Math.min(95, (k.at.y / rows) * 100), w: (k.at.w / FINE.cols) * 100, h: Math.min(100, (k.at.h / rows) * 100) } }));
         for (const k of kids) delete k.page;
         placeKids({ name: d.name, w: part.at.w, h: part.at.h, kids }, { ...drop, into });
@@ -1666,12 +1679,12 @@
         const page = into.mode === 'pages' ? ((b.editPage && b.editPage[into.id]) || 0) : undefined;
         if (into.mode === 'free') {
           const y = drop ? clamp(drop.y, 0, 70) : Math.min(70, (into.parts || []).reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0));
-          const region = { x: drop ? clamp(drop.x, 0, 50) : 0, y, w: Math.min(100, rw * 25), h: Math.min(100 - y, rh * 30) };
+          const region = { x: drop ? clamp(drop.x, 0, 50) : 0, y, w: Math.min(100, Math.round((rw * 100) / GRID.cols)), h: Math.min(100 - y, rh * 10) };
           region.w = Math.min(region.w, 100 - region.x);
           for (const k of kids) k.at = { x: Math.round((region.x + (k.at.x / 100) * region.w) * 10) / 10, y: Math.round((region.y + (k.at.y / 100) * region.h) * 10) / 10, w: Math.max(1, Math.round((k.at.w / 100) * region.w * 10) / 10), h: Math.max(1, Math.round((k.at.h / 100) * region.h * 10) / 10) };
         } else {
           const y = drop ? Math.max(0, drop.y) : (into.parts || []).filter(q => (q.page || 0) === (page || 0)).reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0);
-          const region = { x: drop ? clamp(drop.x, 0, FINE.cols - 1) : 0, y, w: Math.min(FINE.cols, rw * 3), h: rh * 8 };
+          const region = { x: drop ? clamp(drop.x, 0, FINE.cols - 1) : 0, y, w: Math.min(FINE.cols, rw), h: fineRows(rh) };
           region.w = Math.min(region.w, FINE.cols - region.x);
           for (const k of kids) {
             const x = Math.round((k.at.x / 100) * region.w);
@@ -1700,7 +1713,7 @@
         const part = freshCopy(p);
         part.at = { x: 0, y: 0, w: p.at.w, h: p.at.h };
         try {
-          const res = await request('PUT', '/web/designs', { name: name.value.trim().slice(0, 40) || partTitle(p), ready: true, parts: [part], ...(b.design.sample ? { sample: b.design.sample } : {}) });
+          const res = await request('PUT', '/web/designs', { name: name.value.trim().slice(0, 40) || partTitle(p), ready: true, grid: GRID.cols, parts: [part], ...(b.design.sample ? { sample: b.design.sample } : {}) });
           wd.designs = res.designs;
           redrawLibrary();
           redrawInspector();
@@ -1753,15 +1766,15 @@
           makeRoom(b.design.parts, p);
         } else if (into.mode === 'free') {
           const n = (into.parts || []).length;
-          const pw = Math.min(48, w * 24);
+          const pw = Math.min(48, Math.round(w * 8));
           p.at = drop
             ? { x: Math.round(clamp(drop.x, 0, 100 - pw) * 10) / 10, y: Math.round(clamp(drop.y, 0, 70) * 10) / 10, w: pw, h: 30 }
             : { x: 4 + (n % 3) * 4, y: 4 + (n % 3) * 6, w: pw, h: 30 };
           into.parts.push(p);
         } else {
           const bottom = (into.parts || []).reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0);
-          const pw = Math.min(FINE.cols, w * 3);
-          p.at = drop ? { x: clamp(drop.x, 0, FINE.cols - pw), y: Math.max(0, drop.y), w: pw, h: h * 8 } : { x: 0, y: bottom, w: pw, h: h * 8 };
+          const pw = Math.min(FINE.cols, w);
+          p.at = drop ? { x: clamp(drop.x, 0, FINE.cols - pw), y: Math.max(0, drop.y), w: pw, h: fineRows(h) } : { x: 0, y: bottom, w: pw, h: fineRows(h) };
           into.parts.push(p);
           makeRoom(into.parts, p);
         }

@@ -28,8 +28,10 @@ describe('readDesign: a design as kept', () => {
     expect(d.name).toBe('Living room');
     expect(d.parts.map(p => p.kind)).toEqual(['sparkline', 'stepper', 'button', 'choice', 'bar']);
     const [t, s, b, c, r] = d.parts;
-    // A sparkline's span falls back to 24 hours; what it doesn't use is left out; it stays on the 4-column grid.
-    expect(t).toMatchObject({ slot: 'd1:measure_temperature', span: '24h', at: { x: 3, y: 0, w: 1, h: 2 }, style: 'none' });
+    // A sparkline's span falls back to 24 hours; what it doesn't use is left out; kept before 1.4.1 (no `grid: 12`), it
+    // stays on the old 4 columns and is read onto the 12, each cell 3 × 3.
+    expect(d.grid).toBe(12);
+    expect(t).toMatchObject({ slot: 'd1:measure_temperature', span: '24h', at: { x: 9, y: 0, w: 3, h: 6 }, style: 'none' });
     expect(t).not.toHaveProperty('step');
     expect(t).not.toHaveProperty('flowId');
     // A range typed the wrong way round is swapped.
@@ -738,11 +740,16 @@ describe('readDesign: styles, colours, width, charts, any device and ready-mades
     // Before 2026-11-24 a two-column design had eight grid columns; it's narrowed onto four, rows kept.
     const old = readDesign({ span: 2, parts: [part('a', 'text', { at: { x: 6, y: 1, w: 2, h: 1 } }), part('b', 'text', { at: { x: 0, y: 0, w: 4, h: 2 } })] })!;
     expect(old.span).toBe(2);
-    expect(old.parts.map(p => p.at)).toEqual([{ x: 3, y: 1, w: 1, h: 1 }, { x: 0, y: 0, w: 2, h: 2 }]);
-    // One made since: within four columns, left as it is (the span only shows it stretched).
+    // Then onto 1.4.1's 12 columns of 16 px rows, each cell 3 × 3.
+    expect(old.parts.map(p => p.at)).toEqual([{ x: 9, y: 3, w: 3, h: 3 }, { x: 0, y: 0, w: 6, h: 6 }]);
+    // One made since: within four columns, only made finer (the span only shows it stretched).
     const now = readDesign({ span: 3, parts: [part('a', 'text', { at: { x: 1, y: 0, w: 3, h: 1 } })] })!;
-    expect(now.parts[0].at).toEqual({ x: 1, y: 0, w: 3, h: 1 });
-    expect(readDesign(now)!.parts[0].at).toEqual({ x: 1, y: 0, w: 3, h: 1 });
+    expect(now.parts[0].at).toEqual({ x: 3, y: 0, w: 9, h: 3 });
+    // Read again (as kept, `grid: 12`), it stays: neither narrowed nor made finer twice.
+    expect(readDesign(now)!.parts[0].at).toEqual({ x: 3, y: 0, w: 9, h: 3 });
+    const fine = readDesign({ grid: 12, span: 2, parts: [part('a', 'text', { at: { x: 5, y: 1, w: 7, h: 4 } })] })!;
+    expect(fine.parts[0].at).toEqual({ x: 5, y: 1, w: 7, h: 4 });
+    expect(readDesign({ grid: 12, parts: [part('a', 'text', { at: { x: 11, y: 0, w: 5, h: 30 } })] })!.parts[0].at).toEqual({ x: 11, y: 0, w: 1, h: 24 });
     expect(readDesign({ span: 9, parts: [] })!.span).toBe(3);
     expect(readDesign({ parts: [] })).not.toHaveProperty('span');
   });
@@ -923,7 +930,7 @@ describe('linked ready-mades (2026-11-24, the user: delete your own, and detach 
     expect(service.remove('tile')).toEqual({ removed: true });
     const host = service.get('host')!;
     expect(host.parts.map(p => p.kind)).toEqual(['container', 'container']);
-    expect(host.parts[0]).toMatchObject({ at: { x: 1, y: 2, w: 2, h: 1 } });
+    expect(host.parts[0]).toMatchObject({ at: { x: 3, y: 6, w: 6, h: 3 } });
     expect(host.parts[0].parts!.map(p => p.kind)).toEqual(['calc', 'switch']);
     expect(host.parts[1].parts).toEqual([]);
     const d = readDesign(HOST)!;
