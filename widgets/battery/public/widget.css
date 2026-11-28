@@ -105,6 +105,22 @@ html, body { background: transparent !important; }
 /* Vivid cells: the lines between them in the tile's colour, so the fills sit apart. */
 .bt.wk-deep .bt-cell[data-tone] { box-shadow: inset -1px -1px 0 var(--bt-tile); }
 
+/*
+ * Fill to the level (`fillLevel`, off by default; Muted only, as Vivid's cells are solid already): each cell filled
+ * from the left as far as its battery (`--bt-lvl`, 0–1), in its level's colour (the text's, faint, when it has none),
+ * over a low one's wash, in place of the battery glyph. Behind the cell's content (`isolation`), dimmed with it when
+ * the device is unavailable.
+ */
+.bt.bt-fill:not(.wk-deep) .bt-cell { position: relative; isolation: isolate; }
+.bt.bt-fill:not(.wk-deep) .bt-cell::before {
+  content: ''; position: absolute; z-index: -1; inset: 0 auto 0 0; pointer-events: none;
+  width: calc(var(--bt-lvl, 0) * 100%);
+  background: color-mix(in srgb, var(--bt-tone, var(--bt-text)) var(--bt-fill-mix, 18%), transparent);
+}
+.bt.bt-fill:not(.wk-deep) .bt-cell:not([data-tone]) { --bt-fill-mix: 10%; }
+.bt.bt-fill:not(.wk-deep) .bt-cell.wk-offline::before { opacity: .5; }
+.bt.bt-fill:not(.wk-deep) .bt-glyph { display: none; }
+
 /* Rename tiles: a field per device (Value Board's field). */
 .bt-renaming { display: flex; flex-direction: column; gap: var(--homey-su-1, 4px); padding: 10px 12px; }
 .bt .wk-rename {

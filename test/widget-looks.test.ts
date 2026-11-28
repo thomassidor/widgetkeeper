@@ -33,7 +33,7 @@ const FEW_MODES: Record<string, number> = { shortcuts: 1, custom: 4, webpage: 1,
  * on the widget's Looks. The ones a scene shows (Combined Value's `show`, Pollen's kinds) are made up in dev/variants.js.
  */
 const SHOWN_SETTINGS: Record<string, string[]> = {
-  battery: ['columns', 'yellowBelow', 'redBelow', 'greenWhenFine'],
+  battery: ['columns', 'yellowBelow', 'redBelow', 'greenWhenFine', 'fillLevel'],
   cameras: ['layout'],
   charts: ['overlay', 'sharedScale', 'plotHeight', 'legend', 'showHeader', 'style', 'span', 'smooth'],
   clock: ['showWeather'],

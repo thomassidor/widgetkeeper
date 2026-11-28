@@ -57,6 +57,16 @@ describe('createBatteryWidget', () => {
     expect(cells()[0].getAttribute('aria-label')).toBe('A: 64 %');
   });
 
+  it('fills each cell to its level only with Fill to the level', () => {
+    const plain = widget(devices());
+    expect(plain.root.classList.contains('bt-fill')).toBe(false);
+    document.body.innerHTML = '';
+    const { root, cells } = widget(devices(), { fillLevel: true });
+    expect(root.classList.contains('bt-fill')).toBe(true);
+    // Remote (Low), Back door 8 %, Kitchen leak 14 %, Attic smoke 81 %, Button (OK), the missing one.
+    expect(cells().map(c => c.style.getPropertyValue('--bt-lvl'))).toEqual(['0.1', '0.08', '0.14', '0.81', '1', '']);
+  });
+
   it('tones by the limits, green when fine unless turned off', () => {
     expect(widget(devices()).tones()).toEqual(['alert', 'alert', 'warn', 'fine', 'fine', null]);
     document.body.innerHTML = '';

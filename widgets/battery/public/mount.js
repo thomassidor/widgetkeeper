@@ -19,6 +19,7 @@ window.mountBatteryWidget = function (Homey, { root, frame }) {
     yellowBelow: settings.yellowBelow,
     redBelow: settings.redBelow,
     greenWhenFine: settings.greenWhenFine !== false,
+    fillLevel: settings.fillLevel === true,
     colorStyle: settings.colorStyle,
     t: (key, tokens) => Homey.__(key, tokens),
     onHeight: link.setHeight,

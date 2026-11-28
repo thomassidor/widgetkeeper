@@ -76,7 +76,7 @@
   /**
    * @param {HTMLElement} root
    * @param {{ columns?: number|string, yellowBelow?: number|string, redBelow?: number|string, greenWhenFine?: boolean,
-   *   colorStyle?: string, renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
+   *   fillLevel?: boolean, colorStyle?: string, renameTiles?: boolean, onRename?: (key: string, name: string) => Promise<any>,
    *   t?: (key: string, tokens?: object) => string, onHeight?: (h: number) => void }} opts
    */
   function createBatteryWidget(root, opts = {}) {
@@ -97,6 +97,8 @@
     });
     root.classList.add('bt');
     root.classList.toggle('renaming', typed.renaming);
+    // Fill to the level: each cell filled from the left as far as its battery (the CSS draws it, in Muted only).
+    root.classList.toggle('bt-fill', opts.fillLevel === true);
     root.dataset.columns = ['2', '4'].includes(String(opts.columns)) ? String(opts.columns) : '3';
     applyColors(root, { style: opts.colorStyle });
     const body = el('div', { class: 'bt-body' }, root);
@@ -149,6 +151,7 @@
       const tone = level === 'fine' && !green ? null : level;
       if (tone) node.dataset.tone = tone;
       markOffline(node, d.offline, t('unavailable'));
+      node.style.setProperty('--bt-lvl', String(Math.max(0, Math.min(1, fillOf(d)))));
       const top = el('div', { class: 'bt-top' }, node);
       const { num, pct } = valueText(d);
       const n = el('span', { class: 'bt-num', text: num }, top);

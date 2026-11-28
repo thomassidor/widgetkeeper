@@ -246,6 +246,7 @@
       v('default', 'Lowest first', {}),
       LIGHT, VIVID,
       v('grey', 'Light · Only the low ones coloured', { greenWhenFine: false }, true),
+      v('fill', 'Filled to the level', { fillLevel: true }),
       v('limits', 'Yellow below 50 %, red below 25 %', { yellowBelow: 50, redBelow: 25 }),
       v('two', 'Light · Two per row', { columns: '2', scene: 'few' }, true),
       v('four', 'Four per row', { columns: '4' }),
