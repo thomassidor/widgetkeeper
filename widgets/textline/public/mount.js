@@ -32,6 +32,9 @@ window.mountTextLineWidget = function (Homey, { root, frame }) {
     icon: settings.icon && settings.icon.id,
     color: settings.color,
     message: typeof settings.message === 'string' ? settings.message : '',
+    // Ticked for a widget placed from 1.4.1 on (the manifest's value); one placed before has none and stays plain, as
+    // its text may hold * or _ meant as they are (the user's pick).
+    markdown: settings.markdown === true,
     variableChosen: source !== 'variable' || !!variableId,
     seed: instanceId,
     t: (key, tokens) => Homey.__(key, tokens),
@@ -44,7 +47,8 @@ window.mountTextLineWidget = function (Homey, { root, frame }) {
     return link.ready({
       fonts: true,
       waitFor: () => (style === 'postit' && document.fonts && document.fonts.load
-        ? [document.fonts.load("500 30px 'Widgetkeeper Caveat'").catch(() => {})] : []),
+        ? [document.fonts.load("500 30px 'Widgetkeeper Caveat'").catch(() => {}),
+          ...(settings.markdown === true ? [document.fonts.load("700 30px 'Widgetkeeper Caveat'").catch(() => {})] : [])] : []),
       before: () => widget.render(),
     });
   }

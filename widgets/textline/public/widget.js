@@ -1,7 +1,8 @@
 /*
  * Notes: a short text, typed in the widget's settings, written by a Flow card (a named note) or read from a Logic
  * text variable. As a tile (one line, cut off with … or scrolling, or every line, the tile growing with them) or as a
- * Post-it note stuck on the dashboard, in handwriting, wrapping up to three lines. Plain browser JS (served as-is).
+ * Post-it note stuck on the dashboard, in handwriting, wrapping up to three lines; plain or formatted with Markdown.
+ * Plain browser JS (served as-is).
  */
 (function () {
   const { el, COLORS, applyColors, isCustomColor, paintColor } = window.WidgetkeeperKit; // ../spacer/kit.js, loaded first
@@ -71,10 +72,108 @@
     return text.trim() ? { text, muted: false } : empty();
   }
 
+  /*
+   * Markdown (the `markdown` setting; a user asked, 2026-11-28): the inline styles (**bold**, *italic*, ~~struck~~,
+   * `code`) and, a line each, # headings (to ###), - or 1. lists and > quotes. Built as nodes, never as HTML, so a
+   * text can't put markup on the page. `_` only marks at a word's edge, so snake_case stays as it is.
+   */
+  const WORD = /[\p{L}\p{N}]/u;
+  const SPACE = /\s/;
+  const ESCAPABLE = '\\`*_~#>-+.!()[]';
+
+  /** Where `delim` that opened at `from` closes, or -1. A single * or _ steps over doubled ones (a bold inside). */
+  function closing(src, from, delim) {
+    for (let j = from; j <= src.length - delim.length; j++) {
+      const c = src[j];
+      if (c === '\\') { j++; continue; }
+      if (c === '`') { const end = src.indexOf('`', j + 1); if (end > 0) { j = end; continue; } }
+      if (!src.startsWith(delim, j)) continue;
+      if (delim.length === 1 && src[j + 1] === delim) { j++; continue; }
+      if (j === from || SPACE.test(src[j - 1])) continue;
+      if (delim[0] === '_' && WORD.test(src[j + delim.length] || '')) continue;
+      // A longer run (***both***) closes at its end, so the inner single mark gets the run's first.
+      while (src[j + delim.length] === delim[0]) j++;
+      return j;
+    }
+    return -1;
+  }
+
+  /** A line's inline marks: `[{text} | {tag, kids} | {code}]`. */
+  function parseInline(src) {
+    const out = [];
+    let text = '';
+    const push = (node) => { if (text) out.push({ text }); text = ''; out.push(node); };
+    for (let i = 0; i < src.length; i++) {
+      const c = src[i];
+      if (c === '\\' && ESCAPABLE.includes(src[i + 1] || ' ')) { text += src[++i]; continue; }
+      if (c === '`') {
+        const end = src.indexOf('`', i + 1);
+        if (end > i + 1) { push({ code: src.slice(i + 1, end) }); i = end; continue; }
+      }
+      const delim = ['**', '__', '~~'].find(d => src.startsWith(d, i)) || (c === '*' || c === '_' ? c : '');
+      if (delim && !SPACE.test(src[i + delim.length] || ' ') && !(c === '_' && WORD.test(src[i - 1] || ''))) {
+        const end = closing(src, i + delim.length, delim);
+        if (end > i + delim.length) {
+          const tag = delim === '~~' ? 'del' : delim.length === 2 ? 'strong' : 'em';
+          push({ tag, kids: parseInline(src.slice(i + delim.length, end)) });
+          i = end + delim.length - 1;
+          continue;
+        }
+      }
+      text += c;
+    }
+    if (text) out.push({ text });
+    return out;
+  }
+
+  /** A text's lines: `{kind: 'p'|'h'|'li'|'quote', level?, mark?, depth?, inline}`. */
+  function parseMarkdown(src) {
+    return String(src).split(/\r?\n/).map((line) => {
+      let m = /^ {0,3}(#{1,6})\s+(.*?)(?:\s+#+)?\s*$/.exec(line);
+      if (m) return { kind: 'h', level: Math.min(m[1].length, 3), inline: parseInline(m[2]) };
+      m = /^(\s*)([-*+]|\d{1,3}[.)])\s+(.*)$/.exec(line);
+      if (m) {
+        const depth = Math.min(3, Math.floor(m[1].replace(/\t/g, '  ').length / 2));
+        return { kind: 'li', mark: /\d/.test(m[2]) ? m[2] : '•', depth, inline: parseInline(m[3]) };
+      }
+      m = /^ {0,3}>\s?(.*)$/.exec(line);
+      if (m) return { kind: 'quote', inline: parseInline(m[1]) };
+      return { kind: 'p', inline: parseInline(line.trim() ? line : '') };
+    });
+  }
+
+  /** The inline marks as nodes in `parent`. */
+  function addInline(parent, nodes) {
+    for (const n of nodes) {
+      if (n.text != null) parent.appendChild(document.createTextNode(n.text));
+      else if (n.code != null) el('code', { class: 'tl-code', text: n.code }, parent);
+      else addInline(el(n.tag, {}, parent), n.kids);
+    }
+  }
+
+  /**
+   * The text's Markdown in `textEl`. `blocks` (Show on more lines): a line each, headings bigger, lists indented. Else
+   * in the text's own flow, the lines kept by its white-space (the Post-it's three) or joined (the one-line tile).
+   */
+  function renderMarkdown(textEl, src, blocks) {
+    textEl.textContent = '';
+    parseMarkdown(src).forEach((line, i) => {
+      const cls = line.kind === 'h' ? `tl-h tl-h${line.level}` : line.kind === 'li' ? 'tl-li' : line.kind === 'quote' ? 'tl-q' : 'tl-p';
+      if (!blocks && i) textEl.appendChild(document.createTextNode('\n'));
+      const node = el(blocks ? 'div' : 'span', { class: `tl-line ${cls}` }, textEl);
+      if (line.kind === 'li') {
+        if (blocks) node.style.setProperty('--tl-depth', String(line.depth));
+        el('span', { class: 'tl-mark', text: blocks ? line.mark : `${' '.repeat(line.depth)}${line.mark} ` }, node);
+        addInline(blocks ? el('span', { class: 'tl-item' }, node) : node, line.inline);
+      } else if (blocks && !line.inline.length) node.textContent = '​'; // an empty line keeps its height
+      else addInline(node, line.inline);
+    });
+  }
+
   /**
    * @param {HTMLElement} root
    * @param {{ colorStyle?: string, style?: string, source?: string, align?: string, size?: string, overflow?: string, icon?: string | null,
-   *   color?: string, message?: string, variableChosen?: boolean, seed?: string, reducedMotion?: boolean,
+   *   color?: string, message?: string, markdown?: boolean, variableChosen?: boolean, seed?: string, reducedMotion?: boolean,
    *   t?: (key: string, tokens?: Record<string, unknown>) => string | null, onHeight?: (h: number) => void }} opts
    */
   function createTextLineWidget(root, opts = {}) {
@@ -88,6 +187,7 @@
     const allLines = !postit && opts.overflow === 'wrap';
     const ownColor = COLORS.includes(opts.color) ? opts.color : null;
     const icon = !postit && opts.icon && Object.prototype.hasOwnProperty.call(ICONS, opts.icon) ? ICONS[opts.icon] : null;
+    const markdown = opts.markdown === true;
     const reducedMotion = opts.reducedMotion != null ? opts.reducedMotion
       : !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
@@ -95,6 +195,7 @@
     let variable = null;
     let error = null;
     let loaded = false;
+    let shown = null; // the text and how it was drawn, so an unchanged one isn't rebuilt
 
     root.classList.add('tl');
     applyColors(root, { style: opts.colorStyle });
@@ -102,6 +203,7 @@
     root.dataset.size = size;
     root.dataset.align = align;
     if (allLines) root.dataset.overflow = 'wrap';
+    if (markdown) root.dataset.markdown = '';
 
     const box = el('div', { class: postit ? 'tl-note' : 'tl-tile' }, root);
     if (postit) box.style.setProperty('--tl-tilt', `${noteTilt(opts.seed)}deg`);
@@ -132,7 +234,14 @@
     function render() {
       const content = error ? { text: error, muted: true }
         : textLineContent({ source, board, variable, variableChosen: opts.variableChosen !== false, message: opts.message }, t);
-      if (textEl.textContent !== content.text) textEl.textContent = content.text;
+      // Our own messages (muted) stay plain; only the note's text is Markdown.
+      const formatted = markdown && !content.muted;
+      const key = `${formatted ? 'md' : 'text'}:${content.text}`;
+      if (shown !== key) {
+        shown = key;
+        if (formatted) renderMarkdown(textEl, content.text, allLines);
+        else textEl.textContent = content.text;
+      }
       root.classList.toggle('muted', content.muted);
       const flowColor = source === 'flow' && board && (COLORS.includes(board.color) || isCustomColor(board.color)) ? board.color : null;
       paintColor(box, flowColor || ownColor || (postit ? 'yellow' : null)); // a Flow's custom colour is `custom`
@@ -197,4 +306,5 @@
   window.createTextLineWidget = createTextLineWidget;
   window.textLineBoardKey = boardKey;
   window.textLineTilt = noteTilt;
+  window.textLineMarkdown = parseMarkdown;
 })();

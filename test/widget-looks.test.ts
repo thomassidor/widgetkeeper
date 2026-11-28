@@ -67,7 +67,7 @@ const SHOWN_SETTINGS: Record<string, string[]> = {
   sparklines: ['columns', 'smooth', 'color'],
   stack: ['dotsSize', 'dotsPosition', 'showDots', 'dotsStyle'],
   stacked: ['style', 'plotHeight', 'legend', 'total', 'smooth', 'showHeader'],
-  textline: ['size', 'align', 'overflow'],
+  textline: ['size', 'align', 'overflow', 'markdown'],
   thermostat: ['layout'],
   timeline: ['showHeader', 'thresholds', 'names', 'span'],
   timers: ['color'],

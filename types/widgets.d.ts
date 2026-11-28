@@ -249,6 +249,7 @@ interface Window {
   createPopupsWidget: (root: HTMLElement, opts?: object) => any;
   popupsScreenKey: (name: unknown) => string;
   textLineTilt: (seed: unknown) => number;
+  textLineMarkdown: (src: string) => Array<{ kind: string; level?: number; mark?: string; depth?: number; inline: unknown[] }>;
   createDaysSinceWidget: (root: HTMLElement, opts?: object) => any;
   daysSinceCountersFromSettings: (settings: Record<string, any>) => { key: string, name: string, icon: string | null, amber: number | null, red: number | null }[];
   daysSinceKey: (name: unknown) => string | null;

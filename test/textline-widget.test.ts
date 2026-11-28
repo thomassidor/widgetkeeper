@@ -138,3 +138,81 @@ describe('Post-it', () => {
 it("finds a board by the service's key", () => {
   for (const name of ['Kitchen', ' kitchen ', '', 'Note', 'ÆBLE', '__proto__', 'Constructor']) expect(win.textLineBoardKey(name)).toBe(boardKey(name));
 });
+
+describe('Markdown', () => {
+  const md = (message: string, opts: object = {}) => widget({ source: 'typed', markdown: true, message, ...opts }, null);
+  const html = (w: { root: HTMLElement }) => w.root.querySelector('.tl-text')!.innerHTML;
+
+  it('is off unless the setting is ticked: the marks stay as typed', () => {
+    const plain = widget({ source: 'typed', message: '**Good** morning' }, null);
+    expect(plain.text()).toBe('**Good** morning');
+    expect(plain.root.querySelector('strong')).toBeNull();
+  });
+
+  it('renders bold, italic, struck and code, nested', () => {
+    const w = md('**Good** *morning*, ~~Anna~~ __you__ _all_ `x*y*z` and ***both***');
+    expect(w.text()).toBe('Good morning, Anna you all x*y*z and both');
+    expect(html(w)).toContain('<strong>Good</strong>');
+    expect(html(w)).toContain('<em>morning</em>');
+    expect(html(w)).toContain('<del>Anna</del>');
+    expect(html(w)).toContain('<strong>you</strong>');
+    expect(html(w)).toContain('<em>all</em>');
+    expect(html(w)).toContain('<code class="tl-code">x*y*z</code>');
+    expect(html(w)).toContain('<strong><em>both</em></strong>');
+    expect(html(md('*a **b** c*'))).toContain('<em>a <strong>b</strong> c</em>');
+  });
+
+  it('leaves what only looks like a mark: snake_case, spaced stars, lone marks, escapes', () => {
+    for (const s of ['file_name_here', '2 * 3 * 4', 'a * b', '**open', 'x__y__z']) {
+      const w = md(s);
+      expect([s, w.text(), w.root.querySelector('strong, em')]).toEqual([s, s, null]);
+    }
+    expect(md('\\*not italic\\*').text()).toBe('*not italic*');
+  });
+
+  it('never makes HTML of the text', () => {
+    const w = md('<img src=x onerror=alert(1)> **<b>hi</b>**');
+    expect(w.root.querySelector('img, b')).toBeNull();
+    expect(w.text()).toBe('<img src=x onerror=alert(1)> <b>hi</b>');
+  });
+
+  it('on more lines: headings, lists and quotes a line each, empty lines kept', () => {
+    const w = md('# Good morning\n## Sunday\n- Milk\n  - oat\n2. *Eggs*\n\n> Back at 5', { overflow: 'wrap' });
+    const lines = [...w.root.querySelectorAll('.tl-text > .tl-line')].map(l => [l.tagName, l.className, l.textContent]);
+    expect(lines).toEqual([
+      ['DIV', 'tl-line tl-h tl-h1', 'Good morning'],
+      ['DIV', 'tl-line tl-h tl-h2', 'Sunday'],
+      ['DIV', 'tl-line tl-li', '•Milk'],
+      ['DIV', 'tl-line tl-li', '•oat'],
+      ['DIV', 'tl-line tl-li', '2.Eggs'],
+      ['DIV', 'tl-line tl-p', '​'],
+      ['DIV', 'tl-line tl-q', 'Back at 5'],
+    ]);
+    expect(w.root.querySelectorAll<HTMLElement>('.tl-li')[1].style.getPropertyValue('--tl-depth')).toBe('1');
+    expect(w.root.querySelector('.tl-li em')!.textContent).toBe('Eggs');
+  });
+
+  it('on one line and on the Post-it: in the text, the line breaks between them', () => {
+    const tile = md('# Hi\n- Milk\n**Eggs**');
+    expect(tile.text()).toBe('Hi\n• Milk\nEggs');
+    expect(tile.root.querySelector('.tl-h')!.tagName).toBe('SPAN');
+    const note = md('## Hi\n- Milk', { style: 'postit' });
+    expect(note.text()).toBe('Hi\n• Milk');
+    expect(note.root.querySelector('.tl-h2')).not.toBeNull();
+  });
+
+  it("formats a Flow's text and the fallback message, never the widget's own messages", () => {
+    expect(widget({ markdown: true }, { board: board('**Dinner** at 6') }).root.querySelector('strong')!.textContent).toBe('Dinner');
+    const empty = widget({ markdown: true }, { board: board('') });
+    expect(empty.text()).toBe('No message');
+    expect(empty.root.querySelector('.tl-line')).toBeNull();
+    const { w, text, root } = widget({ markdown: true });
+    w.setState({ board: board('*Pizza*') });
+    expect(text()).toBe('Pizza');
+    expect(root.querySelector('em')).not.toBeNull();
+  });
+
+  it('parses lines for the dev pages', () => {
+    expect(win.textLineMarkdown('### a #\n10) b').map((l: any) => [l.kind, l.level ?? l.mark])).toEqual([['h', 3], ['li', '10)']]);
+  });
+});

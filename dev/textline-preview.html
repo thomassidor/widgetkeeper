@@ -36,6 +36,10 @@
   <div class="col"><span>358 px · dark · tile, long text, more lines, icon</span><div class="dash homey-dark-mode" style="width:358px"><div id="w13"></div></div></div>
   <div class="col"><span>300 px · light · tile, more lines, centred, large, green</span><div class="dash light" style="width:300px"><div id="w14"></div></div></div>
   <div class="col"><span>358 px · dark · tile, one line, more lines, small, icon</span><div class="dash homey-dark-mode" style="width:358px"><div id="w15"></div></div></div>
+  <div class="col"><span>358 px · dark · tile, Markdown, more lines, icon</span><div class="dash homey-dark-mode" style="width:358px"><div id="w16"></div></div></div>
+  <div class="col"><span>358 px · light · tile, Markdown, one line, blue</span><div class="dash light" style="width:358px"><div id="w17"></div></div></div>
+  <div class="col"><span>358 px · light · Post-it, Markdown</span><div class="dash light" style="width:358px"><div id="w18"></div></div></div>
+  <div class="col"><span>300 px · light · tile, Markdown, more lines, centred, large, Vivid green</span><div class="dash light" style="width:300px"><div id="w19"></div></div></div>
 
   <script>
     // `?lang=de` uses locales/de.json (dev/i18n.js).
@@ -64,6 +68,13 @@
       mount('w13', {}, { source: 'typed', overflow: 'wrap', icon: 'home', message: `${LONG}\nThanks!` });
       mount('w14', {}, { source: 'typed', overflow: 'wrap', size: 'large', align: 'center', color: 'green', message: 'Back at 5\nFeed the cat' });
       mount('w15', {}, { source: 'typed', overflow: 'wrap', size: 'small', icon: 'bell', message: 'Dinner at 6' });
+      // Markdown (the `markdown` setting).
+      const MD = '# Good morning!\nIt\'s **Sunday**, *no school* today.\n- Bins out by `07:00`\n- ~~Dentist~~ moved to Tuesday\n> Have a nice day';
+      mount('w16', {}, { source: 'typed', markdown: true, overflow: 'wrap', icon: 'home', message: MD });
+      mount('w17', {}, { source: 'typed', markdown: true, color: 'blue', message: '**Good evening**, *time to relax*' });
+      mount('w18', {}, { source: 'typed', markdown: true, style: 'postit', message: '## Shopping\n- **Milk**\n- *Eggs*' });
+      mount('w19', {}, { source: 'typed', markdown: true, overflow: 'wrap', size: 'large', align: 'center', color: 'green', colorStyle: 'deep',
+        message: '## Welcome home\n**Anna** and *Ben*' });
       let n = 0;
       document.getElementById('post').onclick = () => {
         w1.setState({ board: n++ % 2 ? board('Dinner at 6') : board('Dryer done', 'red') });

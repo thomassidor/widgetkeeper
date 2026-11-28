@@ -281,6 +281,12 @@
         add({ style: 'postit', seed: 'hall', color: 'blue', message: 'Feed the cat', ...o }, {});
         return undefined;
       }
+      if (scene === 'markdown') {
+        add({ source: 'flow', overflow: 'wrap', icon: 'home', ...o }, { board: board("# Good morning!\nIt's **Sunday**, *no school* today.\n- Bins out by `07:00`\n- ~~Dentist~~ moved to Tuesday\n> Have a nice day") });
+        add({ source: 'flow', icon: 'heart', color: 'pink', ...o }, { board: board('**Good evening**, *time to relax*') });
+        add({ style: 'postit', seed: 'kitchen', message: '## Shopping\n- **Rye bread**\n- *Eggs*', ...o }, {});
+        return undefined;
+      }
       if (scene === 'variable') {
         add({ source: 'variable', variableChosen: true, icon: 'home', ...o }, { variable: { id: 'v1', name: 'Today', type: 'string', value: 'Cleaner comes at 10' } });
         return undefined;

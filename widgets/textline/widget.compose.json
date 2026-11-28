@@ -256,6 +256,41 @@
       }
     },
     {
+      "id": "markdown",
+      "type": "checkbox",
+      "title": {
+        "en": "Format with Markdown",
+        "nl": "Opmaken met Markdown",
+        "de": "Mit Markdown formatieren",
+        "fr": "Mettre en forme avec Markdown",
+        "it": "Formatta con Markdown",
+        "sv": "Formatera med Markdown",
+        "no": "Formater med Markdown",
+        "es": "Formato con Markdown",
+        "da": "Formatér med Markdown",
+        "ru": "Оформлять через Markdown",
+        "pl": "Formatuj w Markdown",
+        "ko": "Markdown으로 서식 지정",
+        "ar": "التنسيق بـ Markdown"
+      },
+      "hint": {
+        "en": "**bold**, *italic*, ~~struck~~ and `code`; # headings, - lists and > quotes, each on its own line on more lines.",
+        "nl": "**vet**, *cursief*, ~~doorgehaald~~ en `code`; # koppen, - lijsten en > citaten, elk op een eigen regel bij meer regels.",
+        "de": "**fett**, *kursiv*, ~~durchgestrichen~~ und `Code`; # Überschriften, - Listen und > Zitate, mehrzeilig je in einer eigenen Zeile.",
+        "fr": "**gras**, *italique*, ~~barré~~ et `code` ; # titres, - listes et > citations, chacun sur sa ligne en passant à la ligne.",
+        "it": "**grassetto**, *corsivo*, ~~barrato~~ e `codice`; # titoli, - elenchi e > citazioni, ognuno sulla sua riga andando a capo.",
+        "sv": "**fet**, *kursiv*, ~~genomstruken~~ och `kod`; # rubriker, - listor och > citat, var och en på egen rad när radbruten.",
+        "no": "**fet**, *kursiv*, ~~gjennomstreket~~ og `kode`; # overskrifter, - lister og > sitater, hver på egen linje på flere linjer.",
+        "es": "**negrita**, *cursiva*, ~~tachado~~ y `código`; # títulos, - listas y > citas, cada uno en su línea en varias líneas.",
+        "da": "**fed**, *kursiv*, ~~gennemstreget~~ og `kode`; # overskrifter, - lister og > citater, hver på sin linje på flere linjer.",
+        "ru": "**жирный**, *курсив*, ~~зачёркнутый~~ и `код`; # заголовки, - списки и > цитаты, каждый на своей строке при переносе.",
+        "pl": "**pogrubienie**, *kursywa*, ~~przekreślenie~~ i `kod`; # nagłówki, - listy i > cytaty, każdy w swoim wierszu przy zawijaniu.",
+        "ko": "**굵게**, *기울임*, ~~취소선~~, `코드`; # 제목, - 목록, > 인용은 여러 줄로 표시할 때 각각 한 줄로 표시됩니다.",
+        "ar": "**غامق**، *مائل*، ~~مشطوب~~ و`رمز`؛ # عناوين و- قوائم و> اقتباسات، كلٌّ في سطره عند العرض على عدة أسطر."
+      },
+      "value": true
+    },
+    {
       "id": "align",
       "type": "dropdown",
       "title": {
