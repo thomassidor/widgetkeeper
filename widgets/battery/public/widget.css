@@ -106,20 +106,31 @@ html, body { background: transparent !important; }
 .bt.wk-deep .bt-cell[data-tone] { box-shadow: inset -1px -1px 0 var(--bt-tile); }
 
 /*
- * Fill to the level (`fillLevel`, off by default; Muted only, as Vivid's cells are solid already): each cell filled
- * from the left as far as its battery (`--bt-lvl`, 0–1), in its level's colour (the text's, faint, when it has none),
- * over a low one's wash, in place of the battery glyph. Behind the cell's content (`isolation`), dimmed with it when
- * the device is unavailable.
+ * Fill to the level (`fillLevel`, off by default): each cell filled from the left as far as its battery (`--bt-lvl`,
+ * 0–1), in its level's colour (the text's, faint, when it has none), over a low one's wash, in place of the battery
+ * glyph. Behind the cell's content (`isolation`), dimmed with it when the device is unavailable. In Vivid the cells
+ * aren't solid (text across the fill's edge failed in light mode): the fill is stronger, in the shade (the bright colour
+ * in dark mode), and the text the tile's own, so it reads on both sides of the edge.
  */
-.bt.bt-fill:not(.wk-deep) .bt-cell { position: relative; isolation: isolate; }
-.bt.bt-fill:not(.wk-deep) .bt-cell::before {
+.bt.bt-fill .bt-cell { position: relative; isolation: isolate; }
+.bt.bt-fill .bt-cell::before {
   content: ''; position: absolute; z-index: -1; inset: 0 auto 0 0; pointer-events: none;
   width: calc(var(--bt-lvl, 0) * 100%);
-  background: color-mix(in srgb, var(--bt-tone, var(--bt-text)) var(--bt-fill-mix, 18%), transparent);
+  background: color-mix(in srgb, var(--bt-fill-tone, var(--bt-tone, var(--bt-text))) var(--bt-fill-mix, 18%), transparent);
 }
-.bt.bt-fill:not(.wk-deep) .bt-cell:not([data-tone]) { --bt-fill-mix: 10%; }
-.bt.bt-fill:not(.wk-deep) .bt-cell.wk-offline::before { opacity: .5; }
-.bt.bt-fill:not(.wk-deep) .bt-glyph { display: none; }
+.bt.bt-fill .bt-cell:not([data-tone]) { --bt-fill-mix: 10%; }
+.bt.bt-fill .bt-cell.wk-offline::before { opacity: .5; }
+.bt.bt-fill .bt-glyph { display: none; }
+.bt.bt-fill.wk-deep .bt-cell[data-tone] {
+  --bt-fill-tone: var(--bt-fill); --bt-fill-mix: 45%;
+  color: var(--bt-text); box-shadow: inset -1px -1px 0 var(--bt-line);
+  background-color: color-mix(in srgb, var(--bt-tone) var(--bt-wash), transparent); /* a low one's wash, as Muted */
+}
+.bt.bt-fill.wk-deep .bt-cell[data-tone] .bt-label { color: color-mix(in srgb, var(--bt-text) 75%, transparent); }
+/* Dark mode: the shades are dark, so the bright colours, a little fainter. */
+.homey-dark-mode .bt.bt-fill.wk-deep .bt-cell[data-tone], .bt.bt-fill.wk-deep.homey-dark-mode .bt-cell[data-tone] {
+  --bt-fill-tone: var(--bt-tone); --bt-fill-mix: 38%;
+}
 
 /* Rename tiles: a field per device (Value Board's field). */
 .bt-renaming { display: flex; flex-direction: column; gap: var(--homey-su-1, 4px); padding: 10px 12px; }

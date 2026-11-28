@@ -27,6 +27,9 @@
   <div class="col"><span>300 px · dark · 2 per row</span><div class="dash homey-dark-mode" style="width:300px"><div id="w7"></div></div></div>
   <div class="col"><span>420 px (a tablet column) · dark · 4 per row</span><div class="dash homey-dark-mode" style="width:420px"><div id="w8"></div></div></div>
   <div class="col"><span>358 px · dark · rename tiles</span><div class="dash homey-dark-mode" style="width:358px"><div id="w9"></div></div></div>
+  <div class="col"><span>358 px · dark · Fill to the level</span><div class="dash homey-dark-mode" style="width:358px"><div id="w11"></div></div></div>
+  <div class="col"><span>358 px · dark · Vivid · Fill to the level</span><div class="dash homey-dark-mode" style="width:358px"><div id="w12"></div></div></div>
+  <div class="col"><span>358 px · light · Vivid · Fill to the level</span><div class="dash light" style="width:358px"><div id="w13"></div></div></div>
   <div class="col"><span>358 px · no devices</span><div class="dash homey-dark-mode" style="width:358px"><div id="w10"></div></div></div>
 
   <script>
@@ -53,6 +56,9 @@
       make('w7', house().slice(0, 8), { columns: '2' }),
       make('w8', house(), { columns: '4' }),
       make('w9', house().slice(0, 5), { renameTiles: true, onRename: async () => ({ ok: true }) }),
+      make('w11', house(), { fillLevel: true }),
+      make('w12', house(), { fillLevel: true, colorStyle: 'deep' }),
+      make('w13', house(), { fillLevel: true, colorStyle: 'deep' }),
     ];
     const empty = make('w10', null);
     empty.setMessage(empty.t('selectDevices'));

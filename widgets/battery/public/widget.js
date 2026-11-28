@@ -97,7 +97,7 @@
     });
     root.classList.add('bt');
     root.classList.toggle('renaming', typed.renaming);
-    // Fill to the level: each cell filled from the left as far as its battery (the CSS draws it, in Muted only).
+    // Fill to the level: each cell filled from the left as far as its battery (the CSS draws it).
     root.classList.toggle('bt-fill', opts.fillLevel === true);
     root.dataset.columns = ['2', '4'].includes(String(opts.columns)) ? String(opts.columns) : '3';
     applyColors(root, { style: opts.colorStyle });

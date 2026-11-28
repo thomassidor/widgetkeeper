@@ -261,19 +261,19 @@
         "ar": "التعبئة حتى المستوى"
       },
       "hint": {
-        "en": "Fills each tile from the left as far as its battery's level, in place of the battery icon. With the Muted colour style.",
-        "nl": "Vult elke tegel van links tot het niveau van de batterij, in plaats van het batterijpictogram. Met de kleurstijl Gedempt.",
-        "de": "Füllt jede Kachel von links bis zum Stand ihrer Batterie, statt des Batteriesymbols. Mit dem Farbstil Gedämpft.",
-        "fr": "Remplit chaque tuile depuis la gauche jusqu'au niveau de sa batterie, à la place de l'icône de batterie. Avec le style de couleur Atténuées.",
-        "it": "Riempie ogni riquadro da sinistra fino al livello della batteria, al posto dell'icona della batteria. Con lo stile colore Smorzati.",
-        "sv": "Fyller varje ruta från vänster upp till batteriets nivå, i stället för batteriikonen. Med färgstilen Dämpade.",
-        "no": "Fyller hver flis fra venstre opp til batteriets nivå, i stedet for batteriikonet. Med fargestilen Dempede.",
-        "es": "Rellena cada mosaico desde la izquierda hasta el nivel de su batería, en lugar del icono de batería. Con el estilo de color Suaves.",
-        "da": "Fylder hvert felt fra venstre op til batteriets niveau i stedet for batteriikonet. Med farvestilen Dæmpede.",
-        "ru": "Заливает каждую плитку слева до уровня её батареи вместо значка батареи. Со стилем цвета «Приглушённые».",
-        "pl": "Wypełnia każdy kafelek od lewej do poziomu jego baterii, zamiast ikony baterii. Ze stylem kolorów Stonowane.",
-        "ko": "배터리 아이콘 대신 각 타일을 왼쪽부터 배터리 잔량만큼 채웁니다. 색상 스타일 ‘차분하게’에서 적용됩니다.",
-        "ar": "يملأ كل مربع من اليسار حتى مستوى بطاريته بدلًا من رمز البطارية. مع نمط الألوان «هادئة»."
+        "en": "Fills each tile from the left as far as its battery's level, in place of the battery icon.",
+        "nl": "Vult elke tegel van links tot het niveau van de batterij, in plaats van het batterijpictogram.",
+        "de": "Füllt jede Kachel von links bis zum Stand ihrer Batterie, statt des Batteriesymbols.",
+        "fr": "Remplit chaque tuile depuis la gauche jusqu'au niveau de sa batterie, à la place de l'icône de batterie.",
+        "it": "Riempie ogni riquadro da sinistra fino al livello della batteria, al posto dell'icona della batteria.",
+        "sv": "Fyller varje ruta från vänster upp till batteriets nivå, i stället för batteriikonen.",
+        "no": "Fyller hver flis fra venstre opp til batteriets nivå, i stedet for batteriikonet.",
+        "es": "Rellena cada mosaico desde la izquierda hasta el nivel de su batería, en lugar del icono de batería.",
+        "da": "Fylder hvert felt fra venstre op til batteriets niveau i stedet for batteriikonet.",
+        "ru": "Заливает каждую плитку слева до уровня её батареи вместо значка батареи.",
+        "pl": "Wypełnia każdy kafelek od lewej do poziomu jego baterii, zamiast ikony baterii.",
+        "ko": "배터리 아이콘 대신 각 타일을 왼쪽부터 배터리 잔량만큼 채웁니다.",
+        "ar": "يملأ كل مربع من اليسار حتى مستوى بطاريته بدلًا من رمز البطارية."
       }
     },
     {
