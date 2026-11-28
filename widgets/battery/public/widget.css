@@ -109,8 +109,8 @@ html, body { background: transparent !important; }
  * Fill to the level (`fillLevel`, off by default): each cell filled from the left as far as its battery (`--bt-lvl`,
  * 0–1), in its level's colour (the text's, faint, when it has none), over a low one's wash, in place of the battery
  * glyph. Behind the cell's content (`isolation`), dimmed with it when the device is unavailable. In Vivid the cells
- * aren't solid (text across the fill's edge failed in light mode): the fill is stronger, in the shade (the bright colour
- * in dark mode), and the text the tile's own, so it reads on both sides of the edge.
+ * aren't solid (text across the fill's edge failed in light mode): the fill is the shade, at 70 % in light mode and solid in
+ * dark mode, and the text the tile's own, so it reads on both sides of the edge.
  */
 .bt.bt-fill .bt-cell { position: relative; isolation: isolate; }
 .bt.bt-fill .bt-cell::before {
@@ -122,14 +122,14 @@ html, body { background: transparent !important; }
 .bt.bt-fill .bt-cell.wk-offline::before { opacity: .5; }
 .bt.bt-fill .bt-glyph { display: none; }
 .bt.bt-fill.wk-deep .bt-cell[data-tone] {
-  --bt-fill-tone: var(--bt-fill); --bt-fill-mix: 45%;
+  --bt-fill-tone: var(--bt-fill); --bt-fill-mix: 70%;
   color: var(--bt-text); box-shadow: inset -1px -1px 0 var(--bt-line);
   background-color: color-mix(in srgb, var(--bt-tone) var(--bt-wash), transparent); /* a low one's wash, as Muted */
 }
 .bt.bt-fill.wk-deep .bt-cell[data-tone] .bt-label { color: color-mix(in srgb, var(--bt-text) 75%, transparent); }
-/* Dark mode: the shades are dark, so the bright colours, a little fainter. */
+/* Dark mode: the shade solid up to the level; the tile's light text reads on it and on the dark rest alike. */
 .homey-dark-mode .bt.bt-fill.wk-deep .bt-cell[data-tone], .bt.bt-fill.wk-deep.homey-dark-mode .bt-cell[data-tone] {
-  --bt-fill-tone: var(--bt-tone); --bt-fill-mix: 38%;
+  --bt-fill-mix: 100%;
 }
 
 /* Rename tiles: a field per device (Value Board's field). */
