@@ -307,7 +307,10 @@
         page.append(mine);
       }
       page.append(inputsSection());
-      const node = wd.bar(wd.navButton(), wd.brand(), el('span', 'wd-spacer'));
+      // Import a shared design (its code or file).
+      const imp = button('wd-btn', '', () => importDesign(), t('builderImport'));
+      imp.append(toolIcon('import'), el('span', 'wd-bar-label', t('builderImport')));
+      const node = wd.bar(wd.navButton(), wd.brand(), el('span', 'wd-spacer'), imp);
       node.classList.add('wd-bar-front');
       root.append(node, page);
       wd.showNav();
@@ -466,6 +469,7 @@
 
     function renderBuilder(id) {
       closePopover();
+      closeMenu();
       const found = designs().find(d => d.id === id);
       if (!found) { wd.renderMissing(); return; }
       wd.clearRoot();
@@ -476,10 +480,13 @@
         design: clone(found), selected: keep ? keep.selected : null, libTab: keep ? keep.libTab : 'parts', tab: keep ? keep.tab : 'part',
         width: keep ? keep.width : 440, dark: wd.isDark(), vivid: keep ? keep.vivid : false,
         query: '', undo: [], redo: [], state: null, rev: 1, saveTimer: null, previewTimer: null, status: 'saved', node: null,
+        // The editor's own views (1.4.1): the selection's other components, hidden ones, tried values, zoom, outlines.
+        multi: [], hiddenIds: new Set(keep ? keep.hiddenIds : []), tries: {}, zoom: keep ? keep.zoom : 1,
+        outlines: keep ? keep.outlines : false, guides: keep ? keep.guides : true,
       };
       const page = el('div', 'wdb');
       page.append(library(), stage(), inspector());
-      root.append(builderBar(), page);
+      root.append(builderBar(), ribbon(), page);
       b.node = page;
       loadPreview(true);
       // The device values, for the picked ones' names and readings (shared with the value picker for 30 s).
@@ -727,8 +734,8 @@
     /** Where a drop at a point goes: the container under it (not for a container) and the cell or per cent there. */
     function dropTarget(kind, x, y, boxes = null) {
       const c = b.canvas.getBoundingClientRect();
-      const fx = x - c.left;
-      const fy = y - c.top;
+      const fx = (x - c.left) / zoomOf();
+      const fy = (y - c.top) / zoomOf();
       if (kind !== 'container') {
         // The last drawn (on top) first.
         for (const box of b.design.parts.filter(p => p.kind === 'container').reverse()) {
@@ -779,8 +786,10 @@
       // Shown front first, as design tools list layers: the parts are drawn in their saved order, the last on top,
       // so the list runs backwards through it and ↑ moves a part later (forward).
       const row = (p, depth, siblings, i) => {
-        const r = el('div', `wdb-layer${b.selected === p.id ? ' on' : ''}${depth ? ' in' : ''}`);
-        const pick = button('wdb-layer-pick', '', () => select(p.id));
+        const on = b.selected === p.id || picked().includes(p);
+        const r = el('div', `wdb-layer${on ? ' on' : ''}${depth ? ' in' : ''}${b.hiddenIds.has(p.id) ? ' off' : ''}`);
+        // Shift adds a component beside the selection to it, as on the canvas.
+        const pick = button('wdb-layer-pick', '', (e) => { if (e.shiftKey && b.selected) toggleInSelection(p.id); else select(p.id); });
         pick.append(kitIcon(glyphOf(p.kind, p.shape), 'wdb-layer-icon'), el('span', null, partTitle(p)));
         if (p.bind && Object.keys(p.bind).length) pick.append(el('span', 'wdb-flowmark', '⚡'));
         const up = button('wd-icon small', '', () => change(() => { siblings.splice(i + 1, 0, siblings.splice(i, 1)[0]); }), t('moveUp'));
@@ -789,7 +798,13 @@
         const down = button('wd-icon small', '', () => change(() => { siblings.splice(i - 1, 0, siblings.splice(i, 1)[0]); }), t('moveDown'));
         down.append(icon('down'));
         down.disabled = i === 0;
-        r.append(pick, up, down);
+        // Hidden here only, and locked against the canvas: each shown while on, or on hover.
+        const hidden = b.hiddenIds.has(p.id);
+        const eye = button(`wd-icon small wdb-layer-flag${hidden ? ' set' : ''}`, '', () => toggleHidden([p]), t(hidden ? 'builderShowPart' : 'builderHidePart'));
+        eye.append(icon(hidden ? 'eyeOff' : 'eye'));
+        const lock = button(`wd-icon small wdb-layer-flag${p.locked ? ' set' : ''}`, '', () => toggleLocked([p]), t(p.locked ? 'builderUnlock' : 'builderLock'));
+        lock.append(p.locked ? icon('lock') : toolIcon('unlock'));
+        r.append(pick, eye, lock, up, down);
         list.append(r);
         if (p.kind === 'container') frontFirst(p.parts || [], depth + 1);
       };
@@ -856,7 +871,21 @@
       b.frame = frame;
       b.overlay = overlay;
       overlay.addEventListener('pointerdown', onOverlayDown);
-      node.append(tools, canvas, el('p', 'wd-hint wdb-tip', t('builderTip')));
+      overlay.addEventListener('pointermove', onOverlayHover);
+      overlay.addEventListener('pointerleave', () => setMeasure(null));
+      overlay.addEventListener('contextmenu', onContextMenu);
+      // The zoomed canvas takes its zoomed size in the stage (a transform alone leaves its layout size).
+      const sizer = el('div', 'wdb-zoom');
+      sizer.append(canvas);
+      b.sizer = sizer;
+      if (window.ResizeObserver) new ResizeObserver(() => fitSizer()).observe(canvas);
+      // Ctrl or ⌘ with the wheel (a trackpad's pinch too) zooms the canvas, not the page.
+      node.addEventListener('wheel', (e) => {
+        if (!e.ctrlKey && !e.metaKey) return;
+        e.preventDefault();
+        setZoom(zoomOf() * (e.deltaY < 0 ? 1.1 : 1 / 1.1));
+      }, { passive: false });
+      node.append(tools, sizer, el('p', 'wd-hint wdb-tip', t('builderTip')));
       frame.srcdoc = frameDoc();
       frame.addEventListener('load', () => mountPreview());
       sizeCanvas();
@@ -913,7 +942,7 @@
       const host = doc.getElementById('root');
       host.textContent = '';
       // Keys pressed with the preview focused count as the page's.
-      if (!win.wdbKeys) { win.wdbKeys = true; doc.addEventListener('keydown', onKey); }
+      if (!win.wdbKeys) { win.wdbKeys = true; doc.addEventListener('keydown', onKey); doc.addEventListener('keyup', (e) => { if (e.key === 'Alt' && b && b.measure) setMeasure(null); }); }
       const lookup = key => key.split('.').reduce((o, k) => (o && typeof o === 'object' ? o[k] : undefined), strings());
       b.widget = win.createCustomWidget(host, {
         t: key => lookup(key) || key,
@@ -927,6 +956,9 @@
 
     function sizeCanvas() {
       b.canvas.style.width = `${b.width * spanOf() + COLUMN_GAP * (spanOf() - 1)}px`;
+      b.canvas.classList.toggle('outlines', !!b.outlines);
+      b.guide.hidden = b.guides === false;
+      fitSizer();
       b.guide.style.gridTemplateColumns = `repeat(${GUIDE.cols}, 1fr)`;
       drawOverlay();
     }
@@ -935,12 +967,14 @@
     function showPreview() {
       drawSample();
       if (!b.widget) return;
-      const state = b.state || { values: {}, variables: {}, flows: {}, histories: {}, inputs: {} };
+      const state = tryState(b.state || { values: {}, variables: {}, flows: {}, histories: {}, inputs: {} });
       // The widget's device (`@:`) as the preview's device, as the app fills it in (lib/customDesigns.ts' bindDevice()).
       b.widget.setState({ ...state, design: { ...bindSample(b.design), updatedAt: b.rev } });
       fillShowsAs();
       // The page each pages container is being edited on.
       for (const [id, page] of Object.entries(b.editPage || {})) if (b.widget.showPage) b.widget.showPage(id, page);
+      // Hidden in the editor only (Layers' eye): drawn, so nothing moves, but not seen.
+      for (const n of b.frame.contentDocument.querySelectorAll('[data-part]')) n.style.visibility = b.hiddenIds.has(n.dataset.part) ? 'hidden' : '';
       b.frame.style.height = `${Math.max(rowsOf() * (GRID.row + GRID.gap) - GRID.gap, b.frame.contentDocument.body.scrollHeight)}px`;
       drawGuide();
       drawOverlay();
@@ -996,19 +1030,26 @@
       const o = b.overlay;
       o.textContent = '';
       b.lines = null;
+      const many = picked().length > 1;
       const box = (p, parent) => {
         const n = nodeOf(p.id);
-        if (!n) return;
+        if (!n || b.hiddenIds.has(p.id) || (parent && b.hiddenIds.has(parent.id))) return;
         const r = n.getBoundingClientRect();
         if (!r.width && !r.height) return; // on another page of a pages container
+        const locked = p.locked || (parent && parent.locked);
         // A container's components take the pointer only once it's entered (it or one of them selected): until then a
         // tap anywhere on it is the whole container's, and the hover shows that.
         const sealed = parent && !entered(parent);
-        const node = el('div', `wdb-box${p.kind === 'container' ? ' container' : ''}${parent ? ' kid' : ''}${sealed ? ' sealed' : ''}${b.selected === p.id ? ' on' : ''}${n.classList.contains('wb-hidden') ? ' hidden' : ''}`);
+        const on = b.selected === p.id || (many && b.multi.includes(p.id));
+        const node = el('div', `wdb-box${p.kind === 'container' ? ' container' : ''}${parent ? ' kid' : ''}${sealed ? ' sealed' : ''}${on ? ' on' : ''}${n.classList.contains('wb-hidden') ? ' hidden' : ''}${locked ? ' locked' : ''}`);
         Object.assign(node.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
         node.style.borderRadius = n.ownerDocument.defaultView.getComputedStyle(n).borderRadius; // a pill's outline is round too
         node.title = partTitle(p);
-        if (b.selected === p.id) {
+        node.dataset.id = p.id;
+        if (b.outlines) node.dataset.name = partTitle(p);
+        // While it's dragged, its size in px beside it.
+        if (b.dragging === p.id) node.append(el('span', 'wdb-readout', `${Math.round(r.width)} × ${Math.round(r.height)}`));
+        if (b.selected === p.id && !many && !locked) {
           // Every corner and, where the box is long enough for them, every edge; centred on the outline.
           for (const dir of ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w']) {
             const edge = dir.length === 1;
@@ -1032,6 +1073,7 @@
         if (p.kind === 'container') for (const k of p.parts || []) box(k, p);
       }
       if (b.cell) showCell(b.cell);
+      if (b.measure) drawMeasure(b.measure);
     }
 
     /** A container is entered while it or one of its components is selected: then a tap picks the component under it. */
@@ -1046,7 +1088,8 @@
       const out = [];
       const hit = (p, parent) => {
         const n = nodeOf(p.id);
-        if (!n) return;
+        // Locked and hidden ones (and what's in them) aren't picked on the canvas: Layers still selects them.
+        if (!n || p.locked || (parent && parent.locked) || b.hiddenIds.has(p.id) || (parent && b.hiddenIds.has(parent.id))) return;
         const r = n.getBoundingClientRect();
         if (!r.width && !r.height) return;
         if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) out.push({ p, parent });
@@ -1066,11 +1109,15 @@
      */
     function onOverlayDown(e) {
       if (e.button) return;
-      const o = b.overlay.getBoundingClientRect();
-      const x = e.clientX - o.left;
-      const y = e.clientY - o.top;
+      const { x, y } = toOverlay(e.clientX, e.clientY);
       const stack = partsAt(x, y);
-      if (!stack.length) { if (b.selected) select(null); return; }
+      if (!stack.length) { marquee(e); return; }
+      // Shift: a component beside the selection (in the same place) joins it, or leaves it.
+      if (e.shiftKey && b.selected) {
+        const home = parentOf(b.selected);
+        const beside = stack.find(s => (s.parent ? s.parent.id : null) === (home ? home.id : null));
+        if (beside) { e.preventDefault(); toggleInSelection(beside.p.id); return; }
+      }
       const i = stack.findIndex(s => s.p.id === b.selected);
       const inside = i < 0 && stack.find(s => s.parent && entered(s.parent));
       const pick = i >= 0 ? stack[i] : inside || stack.find(s => !s.parent) || stack[0];
@@ -1091,7 +1138,8 @@
         const btns = [...(nodeOf(p.id) ? nodeOf(p.id).querySelectorAll('.wb-pagebtn') : [])];
         const page = btns.findIndex((btn) => {
           const r = btn.getBoundingClientRect();
-          return cx - o.left >= r.left && cx - o.left <= r.right && cy - o.top >= r.top && cy - o.top <= r.bottom;
+          const z = zoomOf();
+          return (cx - o.left) / z >= r.left && (cx - o.left) / z <= r.right && (cy - o.top) / z >= r.top && (cy - o.top) / z <= r.bottom;
         });
         if (page >= 0) return { box: p, page };
       }
@@ -1112,7 +1160,7 @@
     /** The grid a part moves on: its cell size in px, and where its box starts. */
     function gridOf(parent) {
       if (!parent) {
-        const w = b.canvas.getBoundingClientRect().width || b.width; // narrower than chosen on a phone
+        const w = b.canvas.offsetWidth || b.width; // narrower than chosen on a phone; the layout's, not the zoomed
         return { mode: 'top', cols: cols(), colW: (w - (cols() - 1) * GRID.gap) / cols() + GRID.gap, rowH: GRID.row + GRID.gap };
       }
       const inner = nodeOf(parent.id) && nodeOf(parent.id).querySelector('.wb-inner');
@@ -1129,7 +1177,10 @@
       if (e.button) return;
       e.preventDefault();
       e.stopPropagation();
+      // A component of a selection of several moves them all.
+      if (how === 'move' && picked().length > 1 && picked().includes(p)) { groupDrag(e, picked(), parent, p); return; }
       if (b.selected !== p.id) select(p.id);
+      if (p.locked) { if (onClick) onClick(); return; }
       // The overlay takes the pointer, not the box: the boxes are drawn again as the part moves.
       const node = b.overlay;
       node.setPointerCapture(e.pointerId);
@@ -1143,9 +1194,9 @@
       // under the pointer, so the cells it lands on are the one marker and stay where the box would be.
       const startNode = nodeOf(p.id);
       const startBox = startNode ? startNode.getBoundingClientRect() : null;
-      const o = b.overlay.getBoundingClientRect();
+      const at0 = toOverlay(e.clientX, e.clientY);
       const grab = startBox && startBox.width && startBox.height
-        ? { x: clamp((e.clientX - o.left - startBox.left) / startBox.width, 0, 1), y: clamp((e.clientY - o.top - startBox.top) / startBox.height, 0, 1) }
+        ? { x: clamp((at0.x - startBox.left) / startBox.width, 0, 1), y: clamp((at0.y - startBox.top) / startBox.height, 0, 1) }
         : { x: 0, y: 0 };
       // The containers where they were as the drag started: a top-level part moving onto one's cells pushes it down out
       // from under the pointer, so looking where it is now, nothing could ever be dragged into one.
@@ -1156,11 +1207,23 @@
       /** A move over another container (or out of its own, to the top): where it goes when dropped. */
       let away = null;
       const move = (ev) => {
-        const dx = ev.clientX - start.x;
-        const dy = ev.clientY - start.y;
+        let dx = (ev.clientX - start.x) / zoomOf();
+        let dy = (ev.clientY - start.y) / zoomOf();
         if (!moved && Math.abs(dx) + Math.abs(dy) < 4) return;
-        if (!moved) { moved = true; before = JSON.stringify(b.design); }
-        if (how === 'move' && p.kind !== 'container') {
+        if (!moved) {
+          moved = true;
+          before = JSON.stringify(b.design);
+          b.dragging = p.id;
+          // Alt: a copy stays where it was, and this one moves on.
+          if (how === 'move' && ev.altKey) {
+            const copy = freshCopy(p);
+            siblings.splice(siblings.indexOf(p), 0, copy);
+            places.set(copy, { ...copy.at });
+          }
+        }
+        // Shift: straight across or straight down, whichever it's gone further.
+        if (how === 'move' && ev.shiftKey) { if (Math.abs(dx) > Math.abs(dy)) dy = 0; else dx = 0; }
+        if (how === 'move' && p.kind !== 'container' && !ev.shiftKey) {
           const target = dropTarget('part', ev.clientX, ev.clientY, boxes);
           if ((target.into ? target.into.id : null) !== (parent ? parent.id : null)) {
             // Over another container, or out of this one: only the place it lands on shows until it's dropped.
@@ -1183,7 +1246,8 @@
           if (how === 'move') {
             at.x = clamp(from.x + px, 0, 100 - at.w);
             at.y = clamp(from.y + py, 0, 100 - at.h);
-            snapFree(at, parent, p);
+            // Ctrl or ⌘ held: no snapping.
+            if (ev.ctrlKey || ev.metaKey) b.lines = null; else snapFree(at, parent, p);
           } else resizeTo(at, from, dir, px, py, { cols: 100, min: 4, maxH: 100, free: true });
           for (const k of ['x', 'y', 'w', 'h']) at[k] = Math.round(at[k] * 10) / 10;
         } else {
@@ -1213,6 +1277,7 @@
         node.removeEventListener('pointercancel', up);
         node.removeEventListener('lostpointercapture', up);
         b.lines = null;
+        b.dragging = null;
         showCell(null);
         if (!moved) {
           if (ev.type === 'pointerup' && onClick) onClick();
@@ -1301,16 +1366,20 @@
       b.selected = p.id;
     }
 
-    /** On a grid: the parts `moved` now overlaps go down below it, and those they then overlap, and so on. */
+    const overlaps = (a, c) => a.at.x < c.at.x + c.at.w && c.at.x < a.at.x + a.at.w && a.at.y < c.at.y + c.at.h && c.at.y < a.at.y + a.at.h;
+    /** On a grid: the parts `moved` (one or a list) now overlaps go down below it, and those they then overlap, and so on. */
     function makeRoom(all, moved) {
+      // Several moved at once (a selection, a paste): none of them is pushed.
+      const set = new Set(Array.isArray(moved) ? moved : [moved]);
+      const first = [...set][0];
+      if (!first) return;
       // In a pages container only the parts on the same page make room.
-      const list = all.filter(o => (o.page || 0) === (moved.page || 0));
-      const overlaps = (a, c) => a.at.x < c.at.x + c.at.w && c.at.x < a.at.x + a.at.w && a.at.y < c.at.y + c.at.h && c.at.y < a.at.y + a.at.h;
-      const queue = [moved];
+      const list = all.filter(o => (o.page || 0) === (first.page || 0));
+      const queue = [...set];
       for (let guard = 0; queue.length && guard < 500; guard++) {
         const m = queue.shift();
         for (const o of list) {
-          if (o === m || o === moved || !overlaps(m, o)) continue;
+          if (o === m || set.has(o) || !overlaps(m, o)) continue;
           o.at = { ...o.at, y: m.at.y + m.at.h };
           queue.push(o);
         }
@@ -1785,6 +1854,7 @@
 
     function select(id) {
       b.selected = id;
+      b.multi = id ? [id] : [];
       drawOverlay();
       redrawInspector();
       redrawLibrary();
@@ -1814,9 +1884,11 @@
       b.inspNode.textContent = '';
       drawInspector(b.inspNode);
       b.inspNode.scrollTop = scroll;
+      refreshRibbon();
     }
 
     function drawInspector(node) {
+      if (picked().length > 1) { multiPanel(node); return; }
       const p = b.selected && findPart(b.selected);
       if (!p) {
         node.append(el('p', 'wd-muted wdb-empty', t('builderNothingHint')));
@@ -3084,6 +3156,7 @@
       add.disabled = (p.rules || []).length >= MAX_RULES;
       body.append(add);
       if (p.kind === 'repeat') itemRulesRows(body, p);
+      tryRows(body, p);
     }
 
     /**
@@ -3389,31 +3462,65 @@
     window.addEventListener('pagehide', () => { if (b && b.saveTimer) save(); });
 
     /**
-     * The canvas' keys, not while typing in a field: Delete (or Backspace) removes the selected component, Escape goes
-     * up to its container and then lets go, the arrows move it a cell (1 % free-form) and with Shift resize it; with
-     * Ctrl or ⌘, Z undoes, Shift+Z (or Y) redoes and D duplicates the selected component.
+     * The canvas' keys, not while typing in a field (`SHORTCUTS` lists them for the `?` sheet): Delete (or Backspace)
+     * removes the selection, Escape goes up to its container and then lets go, the arrows move it a cell (1 % free-form)
+     * and with Shift resize it; with Ctrl or ⌘: Z undoes, Shift+Z (or Y) redoes, D duplicates, C, X and V copy, cut and
+     * paste (with Alt the look), A selects all, G groups (Shift ungroups), ] and [ bring forward and back, Shift+L locks,
+     * Shift+H hides, + − 0 zoom; Alt with A D H W S V aligns, Alt+Shift with H or V distributes; Shift+1 fits, Shift+O
+     * outlines, ? the shortcuts.
      */
     function onKey(e) {
-      if (!b || !b.node || !b.node.isConnected || e.defaultPrevented || e.altKey) return;
+      if (!b || !b.node || !b.node.isConnected || e.defaultPrevented) return;
       const target = /** @type {HTMLElement} */ (e.target);
       if (target && target.closest && target.closest('input, textarea, select, [contenteditable="true"], dialog')) return;
       if (document.querySelector('dialog[open]')) return;
+      if (e.key === 'Escape' && closeMenu()) { e.preventDefault(); return; }
       const sel = b.selected && findPart(b.selected);
       const key = e.key.toLowerCase();
+      const code = e.code || '';
+      const run = (id) => { const c = COMMANDS[id]; if (c && (!c.can || c.can())) { e.preventDefault(); c.run(); } else e.preventDefault(); };
       if (e.ctrlKey || e.metaKey) {
-        if (key === 'z' && !e.shiftKey) { e.preventDefault(); undoChange(); }
+        if (e.altKey && code === 'KeyC') run('copyLook');
+        else if (e.altKey && code === 'KeyV') run('pasteLook');
+        else if (e.altKey) return;
+        else if (key === 'z' && !e.shiftKey) { e.preventDefault(); undoChange(); }
         else if ((key === 'z' && e.shiftKey) || key === 'y') { e.preventDefault(); redoChange(); }
-        else if (key === 'd' && sel) { e.preventDefault(); duplicatePart(sel.id); }
+        else if (key === 'd' && sel) run('duplicate');
+        else if (key === 'c' && sel) run('copy');
+        else if (key === 'x' && sel) run('cut');
+        else if (key === 'v') run('paste');
+        else if (key === 'a') run('selectAll');
+        else if (key === 'g') run(e.shiftKey ? 'ungroup' : 'group');
+        else if (key === ']' || code === 'BracketRight') run('forward');
+        else if (key === '[' || code === 'BracketLeft') run('backward');
+        else if (key === 'l' && e.shiftKey) run('lock');
+        else if (key === 'h' && e.shiftKey) run('hide');
+        else if (key === '=' || key === '+') run('zoomIn');
+        else if (key === '-') run('zoomOut');
+        else if (key === '0') run('zoom100');
         return;
       }
-      if ((e.key === 'Delete' || e.key === 'Backspace') && sel) { e.preventDefault(); removePart(sel.id); }
+      if (e.altKey) {
+        const align = { KeyA: 'alignLeft', KeyD: 'alignRight', KeyH: 'alignCenter', KeyW: 'alignTop', KeyS: 'alignBottom', KeyV: 'alignMiddle' };
+        if (e.shiftKey && code === 'KeyH') run('distributeH');
+        else if (e.shiftKey && code === 'KeyV') run('distributeV');
+        else if (!e.shiftKey && align[code]) run(align[code]);
+        return;
+      }
+      if (e.key === '?') { run('shortcuts'); return; }
+      if (e.shiftKey && code === 'Digit1') { run('zoomFit'); return; }
+      if (e.shiftKey && code === 'KeyO') { run('outlines'); return; }
+      if ((e.key === 'Delete' || e.key === 'Backspace') && sel) run('delete');
       else if (e.key === 'Escape' && sel) {
         e.preventDefault();
+        if (picked().length > 1) { select(sel.id); return; }
         const parent = parentOf(sel.id);
         select(parent ? parent.id : null);
       } else if (sel && ARROWS[e.key]) {
         e.preventDefault();
-        nudge(sel, ...ARROWS[e.key], e.shiftKey);
+        const list = picked().filter(x => !x.locked);
+        if (list.length > 1) nudgeMany(list, ...ARROWS[e.key], e.shiftKey);
+        else if (list.length) nudge(list[0], ...ARROWS[e.key], e.shiftKey);
       }
     }
     const ARROWS = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
@@ -3468,6 +3575,1142 @@
         b.selected = copy.id;
       });
     }
+
+    // ---- The editor's tools (1.4.1, the user's pick of Figma's and Photoshop's): the selection of several, the
+    // clipboard, arranging, lock and hide, zoom, the rule tester, devices, sharing, and the ribbon they're all on. -----
+
+    const r1 = v => Math.round(v * 10) / 10;
+    const MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || '');
+    const MOD = MAC ? '⌘' : 'Ctrl';
+    const ALT = MAC ? '⌥' : 'Alt';
+    const CLIP_STORAGE = 'widgetkeeper.web.builderClip';
+    const RIBBON_STORAGE = 'widgetkeeper.web.builderRibbon';
+    /** A component's look, copied and pasted (Ctrl+Alt+C, V): for the page's life, across designs. */
+    let lookClip = null;
+
+    /** The selection: the components picked together (siblings), or the one selected, or none. */
+    function picked() {
+      if (!b || !b.selected) return [];
+      if (b.multi && b.multi.length > 1 && b.multi.includes(b.selected)) return b.multi.map(id => findPart(id)).filter(Boolean);
+      const p = findPart(b.selected);
+      return p ? [p] : [];
+    }
+    const hasSel = () => picked().length > 0;
+    /** The selection in the order they're drawn (the saved order), for copies that keep it. */
+    function inOrder(list) {
+      const parent = list[0] && parentOf(list[0].id);
+      const all = parent ? parent.parts : b.design.parts;
+      return [...list].sort((x, y) => all.indexOf(x) - all.indexOf(y));
+    }
+    /** Where a component sits: the top grid, a container's fine grid, or free-form. */
+    const whereOf = parent => (!parent ? 'top' : parent.mode === 'free' ? 'free' : 'grid');
+
+    function selectMany(ids, primary) {
+      const list = [...new Set(ids)].filter(id => findPart(id));
+      if (!list.length) { select(null); return; }
+      b.multi = list;
+      b.selected = primary && list.includes(primary) ? primary : list[list.length - 1];
+      drawOverlay();
+      redrawInspector();
+      redrawLibrary();
+    }
+
+    /** Shift and a tap: a component beside the selection joins it, or leaves it. */
+    function toggleInSelection(id) {
+      const ids = picked().map(x => x.id);
+      const home = b.selected ? parentOf(b.selected) : null;
+      const there = parentOf(id);
+      // Only beside each other: in the same container, or all at the top.
+      if ((home ? home.id : null) !== (there ? there.id : null)) { select(id); return; }
+      const next = ids.includes(id) ? ids.filter(x => x !== id) : [...ids, id];
+      if (!next.length) select(null);
+      else selectMany(next, ids.includes(id) ? (b.selected === id ? next[next.length - 1] : b.selected) : id);
+    }
+
+    /** Ctrl+A: everything beside the selection (in its container, on the page shown), else every top-level component. */
+    function selectAll() {
+      const home = b.selected ? (findPart(b.selected).kind === 'container' && picked().length === 1 ? null : parentOf(b.selected)) : null;
+      const page = home && home.mode === 'pages' ? ((b.editPage && b.editPage[home.id]) || 0) : null;
+      const list = (home ? home.parts : b.design.parts).filter(x => !x.locked && !b.hiddenIds.has(x.id) && (page === null || (x.page || 0) === page));
+      selectMany(list.map(x => x.id));
+    }
+
+    /** A drag on the canvas where there's nothing: a box that selects the top-level components it touches. */
+    function marquee(e) {
+      if (e.button) return;
+      e.preventDefault();
+      const node = b.overlay;
+      node.setPointerCapture(e.pointerId);
+      const a = toOverlay(e.clientX, e.clientY);
+      const keep = e.shiftKey ? picked().filter(x => !parentOf(x.id)).map(x => x.id) : [];
+      let box = null;
+      let hits = [];
+      const move = (ev) => {
+        const c = toOverlay(ev.clientX, ev.clientY);
+        if (!box && Math.abs(c.x - a.x) + Math.abs(c.y - a.y) < 4) return;
+        if (!box) { box = el('div', 'wdb-marquee'); node.append(box); }
+        const r = { left: Math.min(a.x, c.x), top: Math.min(a.y, c.y), right: Math.max(a.x, c.x), bottom: Math.max(a.y, c.y) };
+        Object.assign(box.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.right - r.left}px`, height: `${r.bottom - r.top}px` });
+        hits = b.design.parts.filter((p) => {
+          const n = nodeOf(p.id);
+          if (!n || p.locked || b.hiddenIds.has(p.id)) return false;
+          const q = n.getBoundingClientRect();
+          return (q.width || q.height) && q.left < r.right && q.right > r.left && q.top < r.bottom && q.bottom > r.top;
+        }).map(p => p.id);
+        for (const x of node.querySelectorAll('.wdb-box')) x.classList.toggle('hit', hits.includes(x.dataset.id));
+      };
+      const up = () => {
+        node.removeEventListener('pointermove', move);
+        node.removeEventListener('pointerup', up);
+        node.removeEventListener('pointercancel', up);
+        node.removeEventListener('lostpointercapture', up);
+        if (box) box.remove();
+        if (!box) { if (!keep.length && b.selected) select(null); return; }
+        if (hits.length || keep.length) selectMany([...keep, ...hits]);
+        else select(null);
+      };
+      node.addEventListener('pointermove', move);
+      node.addEventListener('pointerup', up);
+      node.addEventListener('pointercancel', up);
+      node.addEventListener('lostpointercapture', up);
+    }
+
+    /** A drag of a selection of several: they move together (Alt leaves copies, Shift goes straight), the others make room. */
+    function groupDrag(e, parts, parent, p) {
+      const node = b.overlay;
+      node.setPointerCapture(e.pointerId);
+      const g = gridOf(parent);
+      const siblings = parent ? parent.parts : b.design.parts;
+      const places = new Map(siblings.map(x => [x, { ...x.at }]));
+      const moving = parts.filter(x => !x.locked);
+      const from = new Map(moving.map(x => [x, { ...x.at }]));
+      const bounds = {
+        x: Math.min(...moving.map(x => x.at.x)), y: Math.min(...moving.map(x => x.at.y)),
+        r: Math.max(...moving.map(x => x.at.x + x.at.w)), b: Math.max(...moving.map(x => x.at.y + x.at.h)),
+      };
+      const start = { x: e.clientX, y: e.clientY };
+      let moved = false;
+      let before = null;
+      const move = (ev) => {
+        let dx = (ev.clientX - start.x) / zoomOf();
+        let dy = (ev.clientY - start.y) / zoomOf();
+        if (!moved && Math.abs(dx) + Math.abs(dy) < 4) return;
+        if (!moving.length) return;
+        if (!moved) {
+          moved = true;
+          before = JSON.stringify(b.design);
+          if (ev.altKey) {
+            for (const x of moving) {
+              const copy = freshCopy(x);
+              siblings.splice(siblings.indexOf(x), 0, copy);
+              places.set(copy, { ...copy.at });
+            }
+          }
+        }
+        if (ev.shiftKey) { if (Math.abs(dx) > Math.abs(dy)) dy = 0; else dx = 0; }
+        let mx;
+        let my;
+        if (g.mode === 'free') {
+          mx = clamp((dx / g.w) * 100, -bounds.x, 100 - bounds.r);
+          my = clamp((dy / g.h) * 100, -bounds.y, 100 - bounds.b);
+        } else {
+          mx = clamp(Math.round(dx / g.colW), -bounds.x, g.cols - bounds.r);
+          my = Math.max(Math.round(dy / g.rowH), -bounds.y);
+        }
+        for (const [x, place] of places) if (!from.has(x)) x.at = { ...place };
+        for (const [x, at] of from) x.at = { ...at, x: g.mode === 'free' ? r1(at.x + mx) : at.x + mx, y: g.mode === 'free' ? r1(at.y + my) : at.y + my };
+        if (g.mode !== 'free') makeRoom(siblings, moving);
+        b.rev++;
+        showPreview();
+      };
+      const up = (ev) => {
+        node.removeEventListener('pointermove', move);
+        node.removeEventListener('pointerup', up);
+        node.removeEventListener('pointercancel', up);
+        node.removeEventListener('lostpointercapture', up);
+        // A tap on one of them: that one alone.
+        if (!moved) { if (ev.type === 'pointerup') select(p.id); return; }
+        if (JSON.stringify(b.design) === before) { drawOverlay(); return; }
+        pushUndo(before);
+        saveSoon();
+        drawOverlay();
+        redrawInspector();
+        if (b.libTab === 'layers') redrawLibrary();
+      };
+      node.addEventListener('pointermove', move);
+      node.addEventListener('pointerup', up);
+      node.addEventListener('pointercancel', up);
+      node.addEventListener('lostpointercapture', up);
+    }
+
+    /** The arrows with several selected: all of them a cell (1 % free-form), or each a cell larger or smaller. */
+    function nudgeMany(list, dx, dy, resize) {
+      const parent = parentOf(list[0].id);
+      const free = !!parent && parent.mode === 'free';
+      const n = free ? 100 : parent ? FINE.cols : cols();
+      const now = Date.now();
+      const key = list.map(x => x.id).join();
+      const same = b.nudged && b.nudged.id === key && now - b.nudged.at < 1000;
+      const minX = Math.min(...list.map(x => x.at.x));
+      const maxR = Math.max(...list.map(x => x.at.x + x.at.w));
+      const minY = Math.min(...list.map(x => x.at.y));
+      const maxB = Math.max(...list.map(x => x.at.y + x.at.h));
+      if (!resize && (minX + dx < 0 || maxR + dx > n || minY + dy < 0 || (free && maxB + dy > 100))) return;
+      change(() => {
+        for (const p of list) {
+          const at = { ...p.at };
+          if (resize) {
+            at.w = clamp(at.w + dx, free ? 4 : 1, n - at.x);
+            at.h = clamp(at.h + dy, free ? 4 : 1, free ? 100 - at.y : parent ? 200 : 8 * STEP);
+          } else { at.x += dx; at.y += dy; }
+          if (free) for (const k of ['x', 'y', 'w', 'h']) at[k] = r1(at[k]);
+          p.at = at;
+        }
+        if (!free) settle(parent ? parent.parts : b.design.parts, list);
+      }, { preview: false, undo: !same });
+      b.nudged = { id: key, at: now };
+    }
+
+    /** On a grid: moved components that now overlap each other go under one another, then the rest make room. */
+    function settle(all, moved) {
+      const placed = [];
+      for (const m of [...moved].sort((x, y) => x.at.y - y.at.y || x.at.x - y.at.x)) {
+        for (let guard = 0; guard < 200; guard++) {
+          const hit = placed.find(o => (o.page || 0) === (m.page || 0) && overlaps(m, o));
+          if (!hit) break;
+          m.at = { ...m.at, y: hit.at.y + hit.at.h };
+        }
+        placed.push(m);
+      }
+      makeRoom(all, moved);
+    }
+
+    function deleteParts(list) {
+      if (!list.length) return;
+      change(() => {
+        for (const p of list) {
+          const parent = parentOf(p.id);
+          const all = parent ? parent.parts : b.design.parts;
+          const i = all.indexOf(p);
+          if (i >= 0) all.splice(i, 1);
+        }
+        b.selected = null;
+        b.multi = [];
+      });
+    }
+
+    // ---- The clipboard: components, and a look ---------------------------------------------------------------
+
+    function readClip() {
+      try {
+        const c = JSON.parse(storageGet(CLIP_STORAGE) || 'null');
+        return c && Array.isArray(c.parts) && c.parts.length && ['top', 'grid', 'free'].includes(c.where) ? c : null;
+      } catch (e) { return null; }
+    }
+
+    /** Ctrl+C: the selection, kept in this browser (so it pastes into another design too). */
+    function copyParts() {
+      const list = inOrder(picked());
+      if (!list.length) return;
+      const parts = clone(list);
+      for (const x of parts) delete x.page;
+      storageSet(CLIP_STORAGE, JSON.stringify({ where: whereOf(parentOf(list[0].id)), parts }));
+      toast(t('builderCopied', { n: list.length }));
+      refreshRibbon();
+    }
+
+    function cutParts() {
+      const list = picked();
+      if (!list.length) return;
+      copyParts();
+      deleteParts(list);
+    }
+
+    /** A linked ready-made as a copy of its source, where linking can't be (a ready-made, a container). */
+    function inlineUses(parts, intoContainer) {
+      const out = [];
+      for (const x of parts) {
+        const src = x.kind === 'use' && (b.design.ready || intoContainer) ? sourceOf(x) : null;
+        if (!src) { out.push(x); continue; }
+        // A container's ready-made can't go into a container (one level deep).
+        if (intoContainer && src.parts[0].kind === 'container') continue;
+        const copy = freshCopy(src.parts[0]);
+        copy.at = { ...x.at };
+        out.push(copy);
+      }
+      return out;
+    }
+
+    /** A size as top-grid cells, from where it was copied (as `topSize()`). */
+    function topSizeFrom(where, p) {
+      if (where === 'top') return { w: p.at.w, h: p.at.h };
+      if (where === 'free') return { w: Math.max(1, Math.round((p.at.w / 100) * GRID.cols)), h: STEP };
+      return { w: Math.max(1, Math.min(GRID.cols, p.at.w)), h: Math.max(1, Math.round((p.at.h * STEP) / 8)) };
+    }
+
+    /** Ctrl+V: into the selected container (or the selected component's), else the top; a container always at the top. */
+    function pasteParts() {
+      const clip = readClip();
+      if (!clip) { toast(t('builderNothingToPaste')); return; }
+      let into = targetContainer();
+      if (clip.parts.some(x => x.kind === 'container')) into = null;
+      placeCopies(clip, into);
+    }
+
+    /**
+     * Copies (with new ids) put in a place: where they're of the same kind of place, as they were laid out (under what's
+     * there on a grid, 4 % down and right free-form); elsewhere each at its size there, one under the other. Selected.
+     */
+    function placeCopies(clip, into) {
+      const parts = inlineUses(freshCopy({ id: partId(), parts: clone(clip.parts) }).parts, !!into);
+      if (!parts.length) return;
+      const where = whereOf(into);
+      change(() => {
+        const list = into ? into.parts : b.design.parts;
+        const page = into && into.mode === 'pages' ? ((b.editPage && b.editPage[into.id]) || 0) : undefined;
+        const bottom = list.filter(q => (q.page || 0) === (page || 0)).reduce((m, q) => Math.max(m, q.at.y + q.at.h), 0);
+        if (where !== clip.where) {
+          let y = where === 'free' ? 4 : bottom;
+          for (const x of parts) {
+            const s = sizeIn(topSizeFrom(clip.where, x), into);
+            x.at = where === 'free' ? { x: 4, y: clamp(y, 0, 100 - s.h), ...s } : { x: 0, y, ...s };
+            y += where === 'free' ? 6 : s.h;
+          }
+        } else if (where === 'free') {
+          for (const x of parts) x.at = { ...x.at, x: r1(clamp(x.at.x + 4, 0, 100 - x.at.w)), y: r1(clamp(x.at.y + 4, 0, 100 - x.at.h)) };
+        } else {
+          const n = where === 'top' ? cols() : FINE.cols;
+          const top = Math.min(...parts.map(x => x.at.y));
+          for (const x of parts) {
+            const w = Math.min(x.at.w, n);
+            x.at = { ...x.at, w, x: clamp(x.at.x, 0, n - w), y: x.at.y - top + bottom };
+          }
+        }
+        for (const x of parts) {
+          delete x.page;
+          if (page !== undefined) x.page = page;
+          list.push(x);
+        }
+        if (where !== 'free') makeRoom(list, parts);
+        b.multi = parts.map(x => x.id);
+        b.selected = parts[parts.length - 1].id;
+      });
+    }
+
+    /** Ctrl+D with several: copies of them all, under them on a grid (4 % down and right free-form). */
+    function duplicateSelection() {
+      const list = inOrder(picked());
+      if (list.length === 1) { duplicatePart(list[0].id); return; }
+      const parent = parentOf(list[0].id);
+      placeCopies({ where: whereOf(parent), parts: list }, parent);
+    }
+
+    /** What a look is: its colours, box, text style, fill, rules and the parts it shows. */
+    const LOOK_KEYS = ['color', 'textColor', 'style', 'size', 'weight', 'align', 'muted', 'overflow', 'background', 'opacity', 'radius', 'thickness', 'rules', 'itemRules', 'colorBy', 'active', 'grow', 'hide', 'deviceIcon'];
+
+    function copyLook() {
+      const p = picked()[0];
+      if (!p) return;
+      const look = {};
+      for (const k of LOOK_KEYS) if (p[k] !== undefined) look[k] = clone(p[k]);
+      lookClip = { kind: p.kind, shape: p.shape, look };
+      toast(t('builderLookCopied'));
+      refreshRibbon();
+    }
+
+    /** Ctrl+Alt+V: the copied look on the selection; on another kind only what it has (its colours, box, rules, scale). */
+    function pasteLook() {
+      const list = picked();
+      if (!lookClip || !list.length) return;
+      change(() => {
+        for (const x of list) {
+          const same = x.kind === lookClip.kind && (x.kind !== 'shape' || x.shape === lookClip.shape);
+          for (const k of same ? LOOK_KEYS : ['color', 'textColor', 'style', 'rules', 'colorBy']) {
+            if (!same) {
+              if (k === 'color' && !(ACCENT_KINDS.includes(x.kind) || ['container', 'shape'].includes(x.kind))) continue;
+              if (k === 'textColor' && !TEXT_KINDS.includes(x.kind)) continue;
+              if (k === 'style' && (['shape', 'calc'].includes(x.kind) || (lookClip.look.style === 'postit' && x.kind !== 'text'))) continue;
+              if (k === 'rules' && ['calc', 'use'].includes(x.kind)) continue;
+              if (k === 'colorBy' && !SCALE_KINDS.includes(x.kind)) continue;
+            }
+            if (lookClip.look[k] === undefined) delete x[k];
+            else x[k] = clone(lookClip.look[k]);
+          }
+        }
+      });
+    }
+
+    // ---- Arranging: align, distribute, size, group, order, lock and hide -------------------------------------
+
+    /** The selection's place: its container, whether free-form, how wide its grid is. */
+    function placeInfo(list) {
+      const parent = parentOf(list[0].id);
+      const free = !!parent && parent.mode === 'free';
+      return { parent, free, n: free ? 100 : parent ? FINE.cols : cols(), all: parent ? parent.parts : b.design.parts };
+    }
+    const VERTICAL = ['top', 'middle', 'bottom'];
+    /** Aligning one alone goes by its box (its container's, the widget's width); up and down only free-form, where it has a height. */
+    function canAlign(how) {
+      const list = picked().filter(x => !x.locked);
+      if (list.length > 1) return true;
+      if (!list.length) return false;
+      return !VERTICAL.includes(how) || placeInfo(list).free;
+    }
+    function alignParts(how) {
+      const list = picked().filter(x => !x.locked);
+      if (!list.length || !canAlign(how)) return;
+      const { free, n, all } = placeInfo(list);
+      const round = v => (free ? r1(v) : Math.round(v));
+      const box = list.length > 1
+        ? { x: Math.min(...list.map(p => p.at.x)), y: Math.min(...list.map(p => p.at.y)), r: Math.max(...list.map(p => p.at.x + p.at.w)), b: Math.max(...list.map(p => p.at.y + p.at.h)) }
+        : { x: 0, y: 0, r: n, b: 100 };
+      change(() => {
+        for (const p of list) {
+          const at = { ...p.at };
+          if (how === 'left') at.x = box.x;
+          if (how === 'right') at.x = box.r - at.w;
+          if (how === 'center') at.x = round(box.x + (box.r - box.x - at.w) / 2);
+          if (how === 'top') at.y = box.y;
+          if (how === 'bottom') at.y = box.b - at.h;
+          if (how === 'middle') at.y = round(box.y + (box.b - box.y - at.h) / 2);
+          at.x = clamp(at.x, 0, n - at.w);
+          at.y = Math.max(0, at.y);
+          p.at = at;
+        }
+        if (!free) settle(all, list);
+      }, { preview: false });
+    }
+
+    /** Three or more spread out evenly between the first and the last, across or down. */
+    function distributeParts(axis) {
+      const list = picked().filter(x => !x.locked);
+      if (list.length < 3) return;
+      const { free, all } = placeInfo(list);
+      const [pos, size] = axis === 'x' ? ['x', 'w'] : ['y', 'h'];
+      const sorted = [...list].sort((p, q) => p.at[pos] - q.at[pos]);
+      const span = Math.max(...sorted.map(p => p.at[pos] + p.at[size])) - sorted[0].at[pos];
+      const gap = (span - sorted.reduce((s, p) => s + p.at[size], 0)) / (sorted.length - 1);
+      change(() => {
+        let at = sorted[0].at[pos];
+        for (const p of sorted) {
+          p.at = { ...p.at, [pos]: free ? r1(at) : Math.round(at) };
+          at += p.at[size] + gap;
+        }
+        if (!free) settle(all, list);
+      }, { preview: false });
+    }
+
+    /** The selection as wide (or as tall) as the one selected last. */
+    function sameSize(dim) {
+      const list = picked().filter(x => !x.locked);
+      const main = findPart(b.selected);
+      if (list.length < 2 || !main) return;
+      const { free, n, all } = placeInfo(list);
+      change(() => {
+        for (const p of list) {
+          if (p === main) continue;
+          const at = { ...p.at };
+          if (dim === 'w') { at.w = Math.min(main.at.w, n); at.x = clamp(at.x, 0, n - at.w); }
+          else { at.h = main.at.h; if (free) at.y = clamp(at.y, 0, 100 - at.h); }
+          p.at = at;
+        }
+        if (!free) settle(all, list);
+      }, { preview: false });
+    }
+
+    /** Group: top-level components (not containers) into a new free-form container where they were, the same size. */
+    const canGroup = () => { const list = picked(); return list.length > 0 && list.every(p => !parentOf(p.id) && p.kind !== 'container'); };
+    function groupParts() {
+      if (!canGroup()) { toast(t('builderCantGroup')); return; }
+      const list = inOrder(picked());
+      const bx = Math.min(...list.map(p => p.at.x));
+      const by = Math.min(...list.map(p => p.at.y));
+      const bw = Math.max(...list.map(p => p.at.x + p.at.w)) - bx;
+      const bh = Math.max(...list.map(p => p.at.y + p.at.h)) - by;
+      change(() => {
+        // A linked ready-made of a container can't go inside one: a copy of it, inside.
+        const kids = list.flatMap((p) => {
+          const src = p.kind === 'use' ? sourceOf(p) : null;
+          const k = src && src.parts[0].kind === 'container' ? null : p;
+          return k ? [{ ...k, at: { x: r1(((p.at.x - bx) / bw) * 100), y: r1(((p.at.y - by) / bh) * 100), w: r1((p.at.w / bw) * 100), h: r1((p.at.h / bh) * 100) } }] : [];
+        });
+        const box = {
+          id: partId(), kind: 'container', name: '', color: null, icon: null, style: 'none', rules: [],
+          mode: 'free', background: { kind: 'none' }, parts: kids, at: { x: bx, y: by, w: bw, h: bh },
+        };
+        const i = b.design.parts.indexOf(list[0]);
+        b.design.parts = b.design.parts.filter(p => !list.includes(p));
+        b.design.parts.splice(Math.min(i, b.design.parts.length), 0, box);
+        // Its box may reach over others between them: they go below it, as on any move.
+        makeRoom(b.design.parts, box);
+        b.selected = box.id;
+        b.multi = [box.id];
+      });
+    }
+
+    /** Ungroup: a top-level container's components to the top grid where they were, the container gone. */
+    const canUngroup = () => { const list = picked(); return list.length === 1 && list[0].kind === 'container' && !parentOf(list[0].id); };
+    function ungroupPart() {
+      if (!canUngroup()) return;
+      const box = picked()[0];
+      const { x: bx, y: by, w: bw, h: bh } = box.at;
+      const row = GRID.row + GRID.gap;
+      change(() => {
+        const kids = (box.parts || []).map((k) => {
+          const c = { ...k };
+          delete c.page;
+          const at = box.mode === 'free'
+            ? { x: bx + Math.round((k.at.x / 100) * bw), y: by + Math.round((k.at.y / 100) * bh), w: Math.max(1, Math.round((k.at.w / 100) * bw)), h: Math.max(1, Math.round((k.at.h / 100) * bh)) }
+            : { x: bx + Math.round((k.at.x / FINE.cols) * bw), y: by + Math.round((k.at.y * FINE.row) / row), w: Math.max(1, Math.round((k.at.w / FINE.cols) * bw)), h: Math.max(1, Math.round((k.at.h * FINE.row) / row)) };
+          at.w = Math.min(at.w, cols());
+          at.x = clamp(at.x, 0, cols() - at.w);
+          at.h = Math.min(at.h, 8 * STEP);
+          c.at = at;
+          return c;
+        });
+        b.design.parts.splice(b.design.parts.indexOf(box), 1, ...kids);
+        settle(b.design.parts, kids);
+        b.multi = kids.map(k => k.id);
+        b.selected = kids.length ? kids[kids.length - 1].id : null;
+      });
+    }
+
+    /** Forward (drawn later, on top) or back, a step among its siblings; Layers' ↑ and ↓. */
+    function orderParts(step) {
+      const list = picked();
+      if (!list.length) return;
+      const { all } = placeInfo(list);
+      change(() => {
+        const idx = list.map(p => all.indexOf(p)).sort((x, y) => (step > 0 ? y - x : x - y));
+        for (const i of idx) {
+          const j = i + step;
+          if (j < 0 || j >= all.length || list.includes(all[j])) continue;
+          [all[i], all[j]] = [all[j], all[i]];
+        }
+      }, { preview: false });
+    }
+    const canOrder = (step) => {
+      const list = picked();
+      if (!list.length) return false;
+      const { all } = placeInfo(list);
+      return list.some(p => { const j = all.indexOf(p) + step; return j >= 0 && j < all.length && !list.includes(all[j]); });
+    };
+
+    /** Locked against the canvas (kept with the design): unlocked again when all of them were locked. */
+    function toggleLocked(list) {
+      if (!list.length) return;
+      const all = list.every(p => p.locked);
+      change(() => { for (const p of list) { if (all) delete p.locked; else p.locked = true; } }, { preview: false });
+    }
+
+    /** Hidden in the editor only (not kept, not on the dashboard): shown again when all of them were hidden. */
+    function toggleHidden(list) {
+      if (!list.length) return;
+      const all = list.every(p => b.hiddenIds.has(p.id));
+      for (const p of list) { if (all) b.hiddenIds.delete(p.id); else b.hiddenIds.add(p.id); }
+      showPreview();
+      redrawLibrary();
+      refreshRibbon();
+    }
+
+    // ---- Zoom, outlines and measuring -------------------------------------------------------------------------
+
+    const zoomOf = () => (b && b.zoom) || 1;
+    /** A pointer's place in the overlay (the frame's own px), whatever the zoom. */
+    function toOverlay(cx, cy) {
+      const o = b.overlay.getBoundingClientRect();
+      return { x: (cx - o.left) / zoomOf(), y: (cy - o.top) / zoomOf() };
+    }
+    const ZOOMS = [0.25, 0.33, 0.5, 0.67, 0.75, 0.9, 1, 1.25, 1.5, 2, 3];
+    function setZoom(z) {
+      b.zoom = Math.round(clamp(z, 0.25, 3) * 100) / 100;
+      if (Math.abs(b.zoom - 1) < 0.04) b.zoom = 1;
+      fitSizer();
+      drawOverlay();
+      refreshRibbon();
+    }
+    const zoomStep = up => setZoom(up ? (ZOOMS.find(z => z > zoomOf() + 0.001) || 3) : ([...ZOOMS].reverse().find(z => z < zoomOf() - 0.001) || 0.25));
+    /** Fit: the whole design in the stage's width and the window's height. */
+    function zoomFit() {
+      const stage = b.canvas.closest('.wdb-stage');
+      const w = b.canvas.offsetWidth || 1;
+      const h = b.canvas.offsetHeight || 1;
+      const room = stage ? stage.clientWidth - 36 : w;
+      const tall = Math.max(200, window.innerHeight - (stage ? Math.max(0, stage.getBoundingClientRect().top) : 0) - 140);
+      setZoom(Math.min(room / w, tall / h));
+    }
+    /** The canvas scaled from its top left corner, its holder taking the scaled size so the stage scrolls round it. */
+    function fitSizer() {
+      if (!b || !b.sizer) return;
+      const z = zoomOf();
+      const c = b.canvas;
+      c.style.setProperty('--wdb-z', String(z));
+      if (z === 1) {
+        Object.assign(c.style, { transform: '', position: '', left: '', top: '', maxWidth: '' });
+        Object.assign(b.sizer.style, { width: '', height: '' });
+        return;
+      }
+      Object.assign(c.style, { transform: `scale(${z})`, transformOrigin: '0 0', position: 'absolute', left: '0', top: '0', maxWidth: 'none' });
+      Object.assign(b.sizer.style, { width: `${c.offsetWidth * z}px`, height: `${c.offsetHeight * z}px` });
+    }
+
+    /** Alt held over the canvas: the distances from the selected component to the one under the pointer (or the widget's edges). */
+    function onOverlayHover(e) {
+      if (!e.altKey || b.dragging || !b.selected || e.buttons) { if (b.measure) setMeasure(null); return; }
+      const { x, y } = toOverlay(e.clientX, e.clientY);
+      const other = partsAt(x, y).find(s => s.p.id !== b.selected);
+      setMeasure({ to: other ? other.p.id : null });
+    }
+    function setMeasure(m) {
+      if (!b) return;
+      if (JSON.stringify(m) === JSON.stringify(b.measure || null)) return;
+      b.measure = m;
+      drawOverlay();
+    }
+    function drawMeasure(m) {
+      const sel = b.selected && nodeOf(b.selected);
+      if (!sel) return;
+      const a = sel.getBoundingClientRect();
+      const other = m.to && nodeOf(m.to);
+      const q = other ? other.getBoundingClientRect() : { left: 0, top: 0, right: b.canvas.offsetWidth, bottom: b.frame.offsetHeight };
+      const o = b.overlay;
+      if (other) {
+        const outline = el('div', 'wdb-measure-box');
+        Object.assign(outline.style, { left: `${q.left}px`, top: `${q.top}px`, width: `${q.right - q.left}px`, height: `${q.bottom - q.top}px` });
+        o.append(outline);
+      }
+      const line = (x1, y1, x2, y2) => {
+        const len = Math.round(Math.abs(x2 - x1) + Math.abs(y2 - y1));
+        if (len < 1) return;
+        const across = y1 === y2;
+        const n = el('div', `wdb-mline ${across ? 'x' : 'y'}`);
+        Object.assign(n.style, across
+          ? { left: `${Math.min(x1, x2)}px`, top: `${y1}px`, width: `${Math.abs(x2 - x1)}px` }
+          : { left: `${x1}px`, top: `${Math.min(y1, y2)}px`, height: `${Math.abs(y2 - y1)}px` });
+        n.append(el('span', 'wdb-mlabel', String(len)));
+        o.append(n);
+      };
+      const midY = (Math.max(a.top, q.top) + Math.min(a.bottom, q.bottom)) / 2;
+      const midX = (Math.max(a.left, q.left) + Math.min(a.right, q.right)) / 2;
+      const ay = (a.top + a.bottom) / 2;
+      const ax = (a.left + a.right) / 2;
+      const inside = q.left <= a.left && q.right >= a.right && q.top <= a.top && q.bottom >= a.bottom;
+      if (inside) {
+        line(q.left, ay, a.left, ay); line(a.right, ay, q.right, ay);
+        line(ax, q.top, ax, a.top); line(ax, a.bottom, ax, q.bottom);
+        return;
+      }
+      const yRow = a.bottom > q.top && a.top < q.bottom ? midY : ay;
+      const xCol = a.right > q.left && a.left < q.right ? midX : ax;
+      if (q.right <= a.left) line(q.right, yRow, a.left, yRow);
+      if (q.left >= a.right) line(a.right, yRow, q.left, yRow);
+      if (q.bottom <= a.top) line(xCol, q.bottom, xCol, a.top);
+      if (q.top >= a.bottom) line(xCol, a.bottom, xCol, q.top);
+    }
+
+    // ---- A right click: the commands for what's under it -------------------------------------------------------
+
+    function onContextMenu(e) {
+      e.preventDefault();
+      const { x, y } = toOverlay(e.clientX, e.clientY);
+      const stack = partsAt(x, y);
+      if (stack.length && !stack.some(s => picked().includes(s.p))) {
+        const inside = stack.find(s => s.parent && entered(s.parent));
+        select((inside || stack.find(s => !s.parent) || stack[0]).p.id);
+      }
+      openMenu(e.clientX, e.clientY, ['cut', 'copy', 'paste', '-', 'copyLook', 'pasteLook', '-', 'duplicate', 'delete', '-', 'group', 'ungroup', 'forward', 'backward', '-', 'lock', 'hide', '-', 'selectAll']);
+    }
+
+    function openMenu(cx, cy, ids) {
+      closeMenu();
+      const menu = el('div', 'wdb-menu');
+      menu.setAttribute('role', 'menu');
+      for (const id of ids) {
+        if (id === '-') { if (menu.lastChild && !menu.lastChild.classList.contains('wdb-menu-sep')) menu.append(el('div', 'wdb-menu-sep')); continue; }
+        const c = COMMANDS[id];
+        const item = button('wdb-menu-item', '', () => { closeMenu(); c.run(); });
+        item.setAttribute('role', 'menuitem');
+        item.disabled = !!c.can && !c.can();
+        item.append(toolIcon(iconOf(c)), el('span', null, labelOf(c)), el('span', 'wdb-menu-keys', c.keys || ''));
+        menu.append(item);
+      }
+      document.body.append(menu);
+      const r = menu.getBoundingClientRect();
+      menu.style.left = `${Math.max(4, Math.min(cx, window.innerWidth - r.width - 4))}px`;
+      menu.style.top = `${Math.max(4, Math.min(cy, window.innerHeight - r.height - 4))}px`;
+      const away = (ev) => { if (!menu.contains(ev.target)) closeMenu(); };
+      setTimeout(() => document.addEventListener('pointerdown', away, true), 0);
+      window.addEventListener('blur', closeMenu, { once: true });
+      b.menu = { node: menu, away };
+    }
+    /** Closes the right click's menu; whether one was open. */
+    function closeMenu() {
+      if (!b || !b.menu) return false;
+      document.removeEventListener('pointerdown', b.menu.away, true);
+      b.menu.node.remove();
+      b.menu = null;
+      return true;
+    }
+
+    // ---- The rule tester: a value tried in the preview only ----------------------------------------------------
+
+    /** A tried value's key: a device value, a variable or a Flow input (as the preview's state has them). */
+    function tryKey(src) {
+      if (!src) return null;
+      if (src.slot) return `s:${/^@:/.test(src.slot) && b.design.sample ? b.design.sample + src.slot.slice(1) : src.slot}`;
+      if (src.variable) return `v:${src.variable}`;
+      if (src.input) return `i:${src.input}`;
+      return null;
+    }
+    /** The values a component's look follows: its own, its rules' others, its colour scale's and fill's. */
+    function trySources(p) {
+      const own = p.slot ? { slot: p.slot } : p.variable ? { variable: p.variable } : p.src;
+      const all = [own, ...(p.rules || []).map(r => r.of), p.colorBy && p.colorBy.src, p.fillBy];
+      const seen = new Set();
+      return all.filter((src) => {
+        const k = tryKey(src);
+        if (!k || /^s:[^:]*:$/.test(k) || seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      });
+    }
+    /** A typed value as its kind: a yes/no's words, a number (a decimal comma read), else the text. */
+    function tryValue(raw, type) {
+      const s = String(raw).trim();
+      if (type === 'boolean' || /^(true|false|on|off|yes|no|open|closed)$/i.test(s)) return /^(true|on|yes|open|1)$/i.test(s);
+      if (type !== 'string' && /^-?\d+([.,]\d+)?$/.test(s)) return Number(s.replace(',', '.'));
+      return s;
+    }
+    /** The preview's state with the tried values over the real ones. */
+    function tryState(state) {
+      const tries = Object.entries(b.tries || {});
+      if (!tries.length) return state;
+      const s = { ...state, values: { ...state.values }, variables: { ...state.variables }, inputs: { ...state.inputs } };
+      for (const [key, raw] of tries) {
+        const id = key.slice(2);
+        if (key[0] === 's') {
+          const e = s.values[id];
+          const value = tryValue(raw, e && e.capability && e.capability.type);
+          const type = typeof value === 'boolean' ? 'boolean' : typeof value === 'number' ? 'number' : 'string';
+          s.values[id] = { ...(e && !e.missing ? e : { capability: { type }, capabilityId: id.split(':')[1] }), value, offline: false };
+          delete s.values[id].missing;
+        } else if (key[0] === 'v') {
+          const e = s.variables[id];
+          s.variables[id] = { ...(e && !e.missing ? e : { name: id }), value: tryValue(raw, e && e.type) };
+          delete s.variables[id].missing;
+        } else {
+          const e = s.inputs[id];
+          if (e) s.inputs[id] = { ...e, perDevice: false, all: { value: tryValue(raw, e.type === 'yesno' ? 'boolean' : e.type === 'number' ? 'number' : 'string'), at: Date.now() } };
+        }
+      }
+      return s;
+    }
+    /** The Rules tab's *Try a value*: each value its look follows, a field over its reading; the preview only. */
+    function tryRows(body, p) {
+      const list = trySources(p);
+      if (!list.length) return;
+      body.append(el('h4', 'wdb-h4', t('builderTry')));
+      body.append(el('p', 'wd-hint', t('builderTryHint')));
+      for (const src of list) {
+        const key = tryKey(src);
+        const sum = sourceSummary(src);
+        const field = el('input', 'wd-input');
+        field.value = b.tries[key] != null ? b.tries[key] : '';
+        field.placeholder = sum.value != null && sum.value !== '' ? String(sum.value) : '';
+        field.addEventListener('input', () => {
+          if (field.value.trim()) b.tries[key] = field.value; else delete b.tries[key];
+          showPreview();
+          clearTry.hidden = !Object.keys(b.tries).length;
+        });
+        body.append(row(sum.sub ? `${sum.title} · ${sum.sub}` : sum.title, field));
+      }
+      const clearTry = button('wd-btn quiet small', t('builderTryClear'), () => { b.tries = {}; showPreview(); redrawInspector(); });
+      clearTry.hidden = !Object.keys(b.tries).length;
+      body.append(clearTry);
+    }
+
+    // ---- Several selected: the inspector's panel -------------------------------------------------------------
+
+    function multiPanel(node) {
+      const list = picked();
+      const head = el('div', 'wdb-head');
+      const badge = el('span', 'wdb-head-icon');
+      badge.append(toolIcon('selectAll'));
+      head.append(badge, el('span', 'wdb-head-name', t('builderSelectedN', { n: list.length })));
+      const path = el('span', 'wdb-head-path');
+      const parent = parentOf(list[0].id);
+      if (parent) path.append(t('builderIn', { kind: '', name: partTitle(parent) }).trim());
+      const tools = el('span', 'wdb-head-tools');
+      tools.append(commandButton('duplicate', 'wd-icon small'), commandButton('delete', 'wd-icon small wdb-head-delete'));
+      head.append(path, tools);
+      node.append(head);
+      const body = el('div', 'wdb-form');
+      // Each of them: a tap selects that one alone.
+      const names = el('div', 'wdb-multi-names');
+      for (const p of inOrder(list)) {
+        const chip = button('wdb-multi-name', '', () => select(p.id));
+        chip.append(kitIcon(glyphOf(p.kind, p.shape), 'wdb-layer-icon'), el('span', null, partTitle(p)));
+        names.append(chip);
+      }
+      body.append(names, el('p', 'wd-hint', t('builderMultiHint')));
+      const tools2 = (ids) => { const r = el('div', 'wdb-multi-tools'); for (const id of ids) r.append(commandButton(id, 'wd-icon')); return r; };
+      body.append(el('h4', 'wdb-h4', t('builderRg_align')), tools2(['alignLeft', 'alignCenter', 'alignRight', 'alignTop', 'alignMiddle', 'alignBottom']));
+      body.append(el('h4', 'wdb-h4', t('builderRg_distribute')), tools2(['distributeH', 'distributeV', 'sameWidth', 'sameHeight']));
+      body.append(el('h4', 'wdb-h4', t('builderRg_arrange')), tools2(['group', 'forward', 'backward', 'lock', 'hide', 'copyLook', 'pasteLook']));
+      // One accent colour for all that take one.
+      if (list.some(p => ACCENT_KINDS.includes(p.kind))) {
+        body.append(el('h4', 'wdb-h4', t('builderColour')));
+        body.append(colourPicker(null, v => change(() => { for (const p of list) if (ACCENT_KINDS.includes(p.kind)) p.color = v; }, { preview: false })));
+      }
+      sheets(body);
+      node.append(body);
+    }
+
+    // ---- The design: its devices, and sharing it -----------------------------------------------------------------
+
+    /**
+     * Every device id a design names (a value's `<device>:<capability>`, a time since one, a picture's or a linked
+     * ready-made's `device`, a Repeater's `devices`), each through `f`: counted, or replaced. The widget's own (`@`) stays.
+     */
+    function mapDevices(x, f, key = '') {
+      if (typeof x === 'string') {
+        if ((key === 'slot' || key === 'since') && x.includes(':')) {
+          const i = x.indexOf(':');
+          const dev = x.slice(0, i);
+          return dev && dev !== '@' ? f(dev) + x.slice(i) : x;
+        }
+        if (key === 'device') return x && x !== '@' && x !== '*' ? f(x) : x;
+        return x;
+      }
+      if (Array.isArray(x)) return x.map(y => mapDevices(y, f, key === 'devices' ? 'device' : ''));
+      if (x && typeof x === 'object') return Object.fromEntries(Object.entries(x).map(([k, y]) => [k, mapDevices(y, f, k)]));
+      return x;
+    }
+
+    /** Replace device: each device the design names, how often, and another picked for it, everywhere at once. */
+    function replaceDevice() {
+      const uses = new Map();
+      mapDevices(b.design.parts, (d) => { uses.set(d, (uses.get(d) || 0) + 1); return d; });
+      const { d, body } = wd.dialog(t('builderReplaceDevice'));
+      body.append(el('p', 'wd-hint', t('builderReplaceHint')));
+      if (!uses.size) body.append(el('p', 'wd-muted', t('builderReplaceNone')));
+      const list = el('div', 'wdb-replace');
+      // Its name from the value picker's devices, else from a value of it the preview read.
+      const named = (id) => {
+        const dev = (b.devices || []).find(x => x.id === id);
+        if (dev) return dev.name;
+        const v = Object.entries((b.state && b.state.values) || {}).find(([slot, e]) => slot.startsWith(`${id}:`) && e && !e.missing && e.name);
+        return v ? v[1].name : t('builderUnknownDevice');
+      };
+      for (const [id, n] of [...uses].sort((x, y) => named(x[0]).localeCompare(named(y[0])))) {
+        const line = el('div', 'wdb-replace-line');
+        line.append(el('span', 'wdb-replace-name', named(id)), el('span', 'wd-hint', `× ${n}`));
+        line.append(button('wd-btn small', t('builderReplaceWith'), async () => {
+          try {
+            const items = await request('GET', '/web/devices?type=custom');
+            wd.chooseDevices({ devices: { singular: true } }, items, [], (ids) => {
+              const to = ids[0];
+              if (!to || to === id) return;
+              d.close();
+              change(() => {
+                b.design.parts = mapDevices(b.design.parts, dev => (dev === id ? to : dev));
+                if (b.design.sample === id) b.design.sample = to;
+              });
+              toast(t('builderReplaced', { n }));
+            });
+          } catch (err) { failed(err); }
+        }));
+        list.append(line);
+      }
+      body.append(list);
+      d.showModal();
+    }
+
+    /** A design to share: its components with linked ready-mades as copies, the ready-mades its Repeaters repeat with it. */
+    function exportCode() {
+      const inline = list => list.map((p) => {
+        const src = p.kind === 'use' ? sourceOf(p) : null;
+        const x = src ? Object.assign(freshCopy(src.parts[0]), { at: { ...p.at } }) : clone(p);
+        if (x.kind === 'container') x.parts = inline(x.parts || []);
+        return x;
+      });
+      const parts = inline(b.design.parts);
+      const readies = [];
+      const walk = (list) => {
+        for (const p of list) {
+          if (p.kind === 'each' && p.ready && !readies.some(r => r.id === p.ready)) {
+            const r = designs().find(x => x.id === p.ready);
+            if (r) readies.push({ id: r.id, name: r.name, grid: r.grid, parts: clone(r.parts) });
+          }
+          if (p.parts) walk(p.parts);
+        }
+      };
+      walk(parts);
+      return { widgetkeeper: 'design', version: 1, name: b.design.name, grid: b.design.grid || GRID.cols, ...(b.design.span ? { span: b.design.span } : {}), parts, ...(readies.length ? { readies } : {}) };
+    }
+
+    function exportDesign() {
+      const code = JSON.stringify(exportCode());
+      const { d, body } = wd.dialog(t('builderExport'));
+      body.append(el('p', 'wd-hint', t('builderExportHint')));
+      const area = /** @type {HTMLTextAreaElement} */ (el('textarea', 'wd-input wdb-code'));
+      area.readOnly = true;
+      area.value = code;
+      const actions = el('div', 'wd-row wd-actions');
+      actions.append(
+        button('wd-btn', t('builderExportDownload'), () => {
+          const a = el('a');
+          a.href = URL.createObjectURL(new Blob([code], { type: 'application/json' }));
+          a.download = `${(b.design.name || 'design').replace(/[^\p{L}\p{N} _-]+/gu, '').trim() || 'design'}.widgetkeeper.json`;
+          document.body.append(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        }),
+        button('wd-btn primary', t('builderExportCopy'), async () => {
+          try { await navigator.clipboard.writeText(code); } catch (e) { area.select(); document.execCommand('copy'); }
+          toast(t('builderCodeCopied'));
+        }),
+      );
+      body.append(area, actions);
+      d.showModal();
+      area.select();
+    }
+
+    /** Import: a shared design's code or file as a new design (its ready-mades new ones too), then opened. */
+    function importDesign() {
+      const { d, body } = wd.dialog(t('builderImport'));
+      body.append(el('p', 'wd-hint', t('builderImportHint')));
+      const area = /** @type {HTMLTextAreaElement} */ (el('textarea', 'wd-input wdb-code'));
+      area.setAttribute('aria-label', t('builderImport'));
+      const file = /** @type {HTMLInputElement} */ (el('input'));
+      file.type = 'file';
+      file.accept = '.json,application/json';
+      file.hidden = true;
+      file.addEventListener('change', async () => { if (file.files && file.files[0]) area.value = await file.files[0].text(); });
+      const go = button('wd-btn primary', t('builderImport'), async () => {
+        let code;
+        try { code = JSON.parse(area.value); } catch (e) { code = null; }
+        const design = code && (code.widgetkeeper === 'design' || Array.isArray(code.parts)) && Array.isArray(code.parts) ? code : null;
+        if (!design) { toast(t('builderImportBad')); return; }
+        go.disabled = true;
+        try {
+          if (b) await flush();
+          const ids = {};
+          for (const r of Array.isArray(design.readies) ? design.readies : []) {
+            if (!r || !Array.isArray(r.parts)) continue;
+            const res = await request('PUT', '/web/designs', { name: r.name, ready: true, grid: r.grid, parts: r.parts });
+            wd.designs = res.designs;
+            ids[r.id] = res.design.id;
+          }
+          const remap = x => (Array.isArray(x) ? x.map(remap) : x && typeof x === 'object'
+            ? Object.fromEntries(Object.entries(x).map(([k, y]) => [k, k === 'ready' && typeof y === 'string' && ids[y] ? ids[y] : remap(y)])) : x);
+          const res = await request('PUT', '/web/designs', { name: design.name, grid: design.grid, span: design.span, parts: remap(design.parts) });
+          wd.designs = res.designs;
+          d.close();
+          toast(t('builderImported', { name: res.design.name }));
+          location.hash = `#/builder/${res.design.id}`;
+        } catch (err) { go.disabled = false; failed(err); }
+      });
+      const actions = el('div', 'wd-row wd-actions');
+      actions.append(button('wd-btn', t('builderImportFile'), () => file.click()), go);
+      body.append(area, file, actions);
+      d.showModal();
+      area.focus();
+    }
+
+    /** The shortcuts, each with what it does (`?`). */
+    function shortcutSheet() {
+      const { d, body } = wd.dialog(t('builderShortcuts'));
+      const list = el('div', 'wdb-keys');
+      const keyOf = id => COMMANDS[id].keys;
+      const rows = [
+        [`${MOD}+Z`, t('undo')], [`${MOD}+Shift+Z`, t('redo')],
+        ...['copy', 'cut', 'paste', 'copyLook', 'pasteLook', 'duplicate', 'delete', 'selectAll'].map(id => [keyOf(id), labelOf(COMMANDS[id])]),
+        [`Shift+${t('builderKeyClick')}`, t('builderKeyShiftClick')],
+        [t('builderKeyArrows'), t('builderKeyNudge')], [`Shift+${t('builderKeyArrows')}`, t('builderKeyResize')], ['Esc', t('builderKeyEscape')],
+        ...['group', 'ungroup', 'forward', 'backward', 'lock', 'hide'].map(id => [keyOf(id), labelOf(COMMANDS[id])]),
+        // Aligning's names are short on the ribbon, under Align: here they say so.
+        ...['alignLeft', 'alignCenter', 'alignRight', 'alignTop', 'alignMiddle', 'alignBottom'].map(id => [keyOf(id), `${t('builderRg_align')}: ${labelOf(COMMANDS[id])}`]),
+        ...['distributeH', 'distributeV'].map(id => [keyOf(id), labelOf(COMMANDS[id])]),
+        [`${ALT}+${t('builderKeyDrag')}`, t('builderKeyAltDrag')], [`Shift+${t('builderKeyDrag')}`, t('builderKeyShiftDrag')],
+        [`${MOD}+${t('builderKeyDrag')}`, t('builderKeyCtrlDrag')], [ALT, t('builderKeyAltHover')],
+        [`${MOD}+${t('builderKeyWheel')}`, t('builderRg_zoom')],
+        ...['zoomIn', 'zoomOut', 'zoom100', 'zoomFit', 'outlines', 'shortcuts'].map(id => [keyOf(id), id === 'zoom100' ? t('builderZoomActual') : labelOf(COMMANDS[id])]),
+      ];
+      for (const [keys, what] of rows) list.append(el('kbd', 'wdb-key', keys), el('span', null, what));
+      body.append(list);
+      d.showModal();
+    }
+
+    // ---- The commands, and the ribbon ---------------------------------------------------------------------------
+
+    /** Each tool: its icon, its name (a string's key, or a function), its keys, whether it can now, what it does. */
+    const COMMANDS = {
+      cut: { icon: 'cut', label: 'builderCut', keys: `${MOD}+X`, can: hasSel, run: cutParts },
+      copy: { icon: 'copy', label: 'copy', keys: `${MOD}+C`, can: hasSel, run: copyParts },
+      paste: { icon: 'paste', label: 'builderPaste', keys: `${MOD}+V`, can: () => !!readClip(), run: pasteParts },
+      copyLook: { icon: 'pipette', label: 'builderCopyLook', keys: `${MOD}+${ALT}+C`, can: () => picked().length === 1, run: copyLook },
+      pasteLook: { icon: 'brush', label: 'builderPasteLook', keys: `${MOD}+${ALT}+V`, can: () => !!lookClip && hasSel(), run: pasteLook },
+      duplicate: { icon: 'duplicate', label: 'duplicate', keys: `${MOD}+D`, can: hasSel, run: duplicateSelection },
+      delete: { icon: 'trash', label: 'codeDelete', keys: 'Del', can: hasSel, run: () => deleteParts(picked()) },
+      selectAll: { icon: 'selectAll', label: 'selectAll', keys: `${MOD}+A`, can: () => b.design.parts.length > 0, run: selectAll },
+      alignLeft: { icon: 'alignLeft', label: 'builderAlignLeft', keys: `${ALT}+A`, can: () => canAlign('left'), run: () => alignParts('left') },
+      alignCenter: { icon: 'alignCenter', label: 'builderAlignCenter', keys: `${ALT}+H`, can: () => canAlign('center'), run: () => alignParts('center') },
+      alignRight: { icon: 'alignRight', label: 'builderAlignRight', keys: `${ALT}+D`, can: () => canAlign('right'), run: () => alignParts('right') },
+      alignTop: { icon: 'alignTop', label: 'builderAlignTop', keys: `${ALT}+W`, can: () => canAlign('top'), run: () => alignParts('top') },
+      alignMiddle: { icon: 'alignMiddle', label: 'builderAlignMiddle', keys: `${ALT}+V`, can: () => canAlign('middle'), run: () => alignParts('middle') },
+      alignBottom: { icon: 'alignBottom', label: 'builderAlignBottom', keys: `${ALT}+S`, can: () => canAlign('bottom'), run: () => alignParts('bottom') },
+      distributeH: { icon: 'distributeH', label: 'builderDistributeH', keys: `${ALT}+Shift+H`, can: () => picked().filter(p => !p.locked).length > 2, run: () => distributeParts('x') },
+      distributeV: { icon: 'distributeV', label: 'builderDistributeV', keys: `${ALT}+Shift+V`, can: () => picked().filter(p => !p.locked).length > 2, run: () => distributeParts('y') },
+      sameWidth: { icon: 'sameWidth', label: 'builderSameWidth', can: () => picked().length > 1, run: () => sameSize('w') },
+      sameHeight: { icon: 'sameHeight', label: 'builderSameHeight', can: () => picked().length > 1, run: () => sameSize('h') },
+      group: { icon: 'group', label: 'builderGroup', keys: `${MOD}+G`, can: canGroup, run: groupParts },
+      ungroup: { icon: 'ungroup', label: 'builderUngroup', keys: `${MOD}+Shift+G`, can: canUngroup, run: ungroupPart },
+      forward: { icon: 'forward', label: 'builderForward', keys: `${MOD}+]`, can: () => canOrder(1), run: () => orderParts(1) },
+      backward: { icon: 'backward', label: 'builderBackward', keys: `${MOD}+[`, can: () => canOrder(-1), run: () => orderParts(-1) },
+      lock: {
+        icon: () => (picked().length && picked().every(p => p.locked) ? 'lock' : 'unlock'),
+        label: () => (picked().length && picked().every(p => p.locked) ? 'builderUnlock' : 'builderLock'),
+        keys: `${MOD}+Shift+L`, can: hasSel, pressed: () => picked().length > 0 && picked().every(p => p.locked), run: () => toggleLocked(picked()),
+      },
+      hide: {
+        icon: () => (picked().length && picked().every(p => b.hiddenIds.has(p.id)) ? 'eyeOff' : 'eye'),
+        label: () => (picked().length && picked().every(p => b.hiddenIds.has(p.id)) ? 'builderShowPart' : 'builderHidePart'),
+        keys: `${MOD}+Shift+H`, can: hasSel, pressed: () => picked().length > 0 && picked().every(p => b.hiddenIds.has(p.id)), run: () => toggleHidden(picked()),
+      },
+      zoomOut: { icon: 'zoomOut', label: 'builderZoomOut', keys: `${MOD}+−`, can: () => zoomOf() > 0.25, run: () => zoomStep(false) },
+      zoom100: { icon: 'zoom', label: () => `${Math.round(zoomOf() * 100)} %`, title: 'builderZoomActual', keys: `${MOD}+0`, run: () => setZoom(1) },
+      zoomIn: { icon: 'zoomIn', label: 'builderZoomIn', keys: `${MOD}++`, can: () => zoomOf() < 3, run: () => zoomStep(true) },
+      zoomFit: { icon: 'fullScreen', label: 'builderZoomFit', keys: 'Shift+1', run: zoomFit },
+      outlines: { icon: 'outlines', label: 'builderOutlines', keys: 'Shift+O', pressed: () => !!b.outlines, run: () => { b.outlines = !b.outlines; sizeCanvas(); refreshRibbon(); } },
+      guides: { icon: 'columns', label: 'builderGuides', pressed: () => b.guides !== false, run: () => { b.guides = b.guides === false; sizeCanvas(); refreshRibbon(); } },
+      replaceDevice: { icon: 'swap', label: 'builderReplaceDevice', run: replaceDevice },
+      exportDesign: { icon: 'export', label: 'builderExport', run: exportDesign },
+      importDesign: { icon: 'import', label: 'builderImport', run: importDesign },
+      shortcuts: { icon: 'keyboard', label: 'builderShortcuts', keys: '?', run: shortcutSheet },
+    };
+    const labelOf = (c) => { const l = typeof c.label === 'function' ? c.label() : c.label; return /\s/.test(l) ? l : t(l); };
+    const iconOf = c => (typeof c.icon === 'function' ? c.icon() : c.icon);
+
+    /** The ribbon's tabs, each of groups of tools (Office's way: the tools under the tab, the group's name under them). */
+    const RIBBON = [
+      ['home', [['clipboard', ['paste', 'cut', 'copy', 'copyLook', 'pasteLook']], ['edit', ['duplicate', 'delete', 'selectAll']]]],
+      ['arrange', [['align', ['alignLeft', 'alignCenter', 'alignRight', 'alignTop', 'alignMiddle', 'alignBottom']], ['distribute', ['distributeH', 'distributeV', 'sameWidth', 'sameHeight']], ['group', ['group', 'ungroup']], ['order', ['forward', 'backward']], ['layer', ['lock', 'hide']]]],
+      ['view', [['zoom', ['zoomOut', 'zoom100', 'zoomIn', 'zoomFit']], ['canvas', ['outlines', 'guides']]]],
+      ['design', [['devices', ['replaceDevice']], ['share', ['exportDesign', 'importDesign']], ['help', ['shortcuts']]]],
+    ];
+
+    /** A tool's button: its icon and name (`wdb-rbtn`), or only its icon with the name as its tooltip. */
+    function commandButton(id, cls = 'wdb-rbtn') {
+      const c = COMMANDS[id];
+      const node = button(cls, '', () => { c.run(); refreshRibbon(); });
+      node.dataset.cmd = id;
+      fillCommand(node, c);
+      (b.cmdButtons || (b.cmdButtons = new Set())).add(node);
+      return node;
+    }
+    function fillCommand(node, c) {
+      const label = labelOf(c);
+      const title = `${c.title ? t(c.title) : label}${c.keys ? ` (${c.keys})` : ''}`;
+      node.title = title;
+      node.setAttribute('aria-label', title);
+      node.replaceChildren(toolIcon(iconOf(c)));
+      if (node.classList.contains('wdb-rbtn')) node.append(el('span', 'wdb-rlabel', label));
+      node.disabled = !!c.can && !c.can();
+      if (c.pressed) node.setAttribute('aria-pressed', String(!!c.pressed()));
+    }
+    /** Every tool's button as things are now: what can be done, what's on, the zoom. */
+    function refreshRibbon() {
+      if (!b || !b.cmdButtons) return;
+      for (const node of [...b.cmdButtons]) {
+        if (!node.isConnected) { b.cmdButtons.delete(node); continue; }
+        fillCommand(node, COMMANDS[node.dataset.cmd]);
+      }
+    }
+
+    function ribbon() {
+      const node = el('div', 'wdb-ribbon');
+      const saved = storageGet(RIBBON_STORAGE) || 'home';
+      const state = { collapsed: saved === 'collapsed', tab: RIBBON.some(([id]) => id === saved) ? saved : 'home' };
+      const draw = () => {
+        node.textContent = '';
+        node.classList.toggle('collapsed', state.collapsed);
+        const tabs = el('div', 'wdb-rtabs');
+        tabs.setAttribute('role', 'tablist');
+        for (const [id] of RIBBON) {
+          const on = id === state.tab && !state.collapsed;
+          const tb = button(`wdb-rtab${on ? ' on' : ''}`, t(`builderRibbon_${id}`), () => {
+            state.tab = id;
+            state.collapsed = false;
+            storageSet(RIBBON_STORAGE, id);
+            draw();
+          });
+          // A second tap on the open tab (or a double click) folds the ribbon away, as Office's.
+          tb.addEventListener('dblclick', () => { state.collapsed = true; storageSet(RIBBON_STORAGE, 'collapsed'); draw(); });
+          tb.setAttribute('role', 'tab');
+          tb.setAttribute('aria-selected', String(on));
+          tabs.append(tb);
+        }
+        tabs.append(el('span', 'wd-spacer'));
+        const fold = button('wd-icon small wdb-rfold', '', () => {
+          state.collapsed = !state.collapsed;
+          storageSet(RIBBON_STORAGE, state.collapsed ? 'collapsed' : state.tab);
+          draw();
+        }, t(state.collapsed ? 'builderRibbonShow' : 'builderRibbonHide'));
+        fold.append(icon(state.collapsed ? 'down' : 'up'));
+        tabs.append(fold);
+        node.append(tabs);
+        if (state.collapsed) return;
+        const panel = el('div', 'wdb-rpanel');
+        panel.setAttribute('role', 'tabpanel');
+        for (const [group, ids] of RIBBON.find(([id]) => id === state.tab)[1]) {
+          const g = el('div', 'wdb-rgroup');
+          const btns = el('div', 'wdb-rbtns');
+          for (const id of ids) btns.append(commandButton(id));
+          g.append(btns, el('span', 'wdb-rcap', t(`builderRg_${group}`)));
+          panel.append(g);
+        }
+        node.append(panel);
+      };
+      draw();
+      return node;
+    }
+
+    /** The tools' own icons (24 px, stroked as the page's), beside the page's (`icon()`). */
+    const TOOL_ICONS = {
+      cut: 'M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12',
+      paste: 'M9 3h6v4H9zM9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2',
+      pipette: 'M14 6 5.5 14.5 4.5 19.5 9.5 18.5 18 10M13 5l6 6M16.5 3.5a2.1 2.1 0 0 1 3 0l1 1a2.1 2.1 0 0 1 0 3L18 10l-4-4z',
+      brush: 'M5 3h12v5H5zM17 5.5h2v5h-7v3M11 13.5h2V21h-2z',
+      duplicate: 'M9 9h11v11H9zM15 4H5a1 1 0 0 0-1 1v10M14.5 12v5M12 14.5h5',
+      selectAll: 'M4 7V4h3M10 4h4M17 4h3v3M20 10v4M20 17v3h-3M14 20h-4M7 20H4v-3M4 14v-4',
+      alignLeft: 'M4 3v18M8 6h11v4H8zM8 14h6v4H8z',
+      alignCenter: 'M12 3v18M5 6h14v4H5zM8 14h8v4H8z',
+      alignRight: 'M20 3v18M5 6h11v4H5zM10 14h6v4h-6z',
+      alignTop: 'M3 4h18M6 8h4v11H6zM14 8h4v6h-4z',
+      alignMiddle: 'M3 12h18M6 5h4v14H6zM14 8h4v8h-4z',
+      alignBottom: 'M3 20h18M5 5h4v11H5zM14 10h4v6h-4z',
+      distributeH: 'M4 3v18M20 3v18M9.5 7h5v10h-5z',
+      distributeV: 'M3 4h18M3 20h18M7 9.5h10v5H7z',
+      sameWidth: 'M4 5v14M20 5v14M8 12h8M10.5 9.5 8 12l2.5 2.5M13.5 9.5 16 12l-2.5 2.5',
+      sameHeight: 'M5 4h14M5 20h14M12 8v8M9.5 10.5 12 8l2.5 2.5M9.5 13.5 12 16l2.5-2.5',
+      group: 'M4 7V4h3M17 4h3v3M20 17v3h-3M7 20H4v-3M8 8h5v5H8zM11 11h5v5h-5z',
+      ungroup: 'M4 4h7v7H4zM13 13h7v7h-7z',
+      forward: 'M9 9h11v11H9zM5 15V5a1 1 0 0 1 1-1h10',
+      backward: 'M4 4h11v11H4zM19 9v10a1 1 0 0 1-1 1H8',
+      unlock: 'M6.5 11h11a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19.5v-7A1.5 1.5 0 0 1 6.5 11zM8 11V7.5a4 4 0 0 1 7.7-1.5',
+      zoomIn: 'M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13zM20 20l-4.8-4.8M10.5 7.5v6M7.5 10.5h6',
+      zoomOut: 'M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13zM20 20l-4.8-4.8M7.5 10.5h6',
+      zoom: 'M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13zM20 20l-4.8-4.8',
+      outlines: 'M4 4h7v7H4zM13 4h7v4h-7zM13 11h7v9h-7zM4 14h7v6H4z',
+      swap: 'M4 8h14l-3.5-3.5M20 16H6l3.5 3.5',
+      export: 'M12 15V3M7.5 7.5 12 3l4.5 4.5M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5',
+      import: 'M12 3v12M7.5 10.5 12 15l4.5-4.5M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5',
+      keyboard: 'M4 6h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM7 10h.01M11 10h.01M15 10h.01M7 14h10',
+    };
+    const toolIcon = name => (TOOL_ICONS[name] ? window.WidgetkeeperKit.svgIcon({ d: TOOL_ICONS[name] }, 'wdb-ricon') : icon(name));
+    document.addEventListener('keyup', (e) => { if (e.key === 'Alt' && b && b.measure) setMeasure(null); });
     document.addEventListener('keydown', onKey);
 
     Object.assign(wd, { builderPromo, renderBuilderHome, renderBuilder, flushBuilder: flush, designArt });

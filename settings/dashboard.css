@@ -1435,3 +1435,115 @@ label.wdb-input-opt { cursor: pointer; }
 .wdb-input-step-n { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--wd-accent); color: #FFFFFF; font-size: 13px; font-weight: 700; }
 .wdb-input-add { display: inline-flex; align-items: center; gap: 6px; }
 .wdb-input-add svg { width: 16px; height: 16px; }
+
+/* ---- The Widget Builder's tools (1.4.1, dashboard-builder.js): the ribbon, the selection of several, lock and hide,
+   zoom, outlines, measuring, the right click's menu, sharing and the shortcuts ------------------------------------- */
+/* The ribbon: its tabs, then the open tab's groups of tools, each tool an icon over its name, the group's name under
+   them; folded, only the tabs. A narrow window scrolls it sideways. */
+.wdb-ribbon { border-top: 1px solid var(--wd-line); background: color-mix(in srgb, var(--wd-tile) 55%, var(--wd-bg)); }
+.wdb-rtabs { display: flex; align-items: center; gap: 2px; padding: 4px 12px 0; }
+.wdb-rtab {
+  -webkit-appearance: none; appearance: none; border: 0; background: none; color: var(--wd-muted); cursor: pointer;
+  font-family: inherit; font-size: 13px; font-weight: 500; line-height: 18px; padding: 6px 12px; border-radius: 8px 8px 0 0; white-space: nowrap;
+}
+.wdb-rtab:hover { color: var(--wd-text); }
+.wdb-rtab.on { color: var(--wd-text); background: var(--wd-bg); box-shadow: inset 0 -2px 0 var(--wd-accent); }
+.wdb-rfold { color: var(--wd-muted); }
+.wdb-rpanel { display: flex; align-items: stretch; gap: 0; padding: 6px 8px 4px; background: var(--wd-bg); border-top: 1px solid var(--wd-line); overflow-x: auto; scrollbar-width: thin; }
+.wdb-rgroup { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 0 8px; flex: none; }
+.wdb-rgroup + .wdb-rgroup { border-left: 1px solid var(--wd-line); }
+.wdb-rbtns { display: flex; gap: 2px; }
+.wdb-rcap { font-size: 12px; line-height: 16px; color: var(--wd-muted); white-space: nowrap; }
+.wdb-rbtn {
+  -webkit-appearance: none; appearance: none; border: 0; background: none; color: var(--wd-text); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 52px; max-width: 88px; padding: 5px 4px; border-radius: 8px; font-family: inherit;
+}
+.wdb-rbtn:hover:not(:disabled) { background: color-mix(in srgb, var(--wd-accent) 10%, transparent); }
+.wdb-rbtn:focus-visible { outline: 2px solid var(--wd-accent); outline-offset: -2px; }
+.wdb-rbtn:disabled { opacity: .35; cursor: default; }
+.wdb-rbtn[aria-pressed="true"] { background: color-mix(in srgb, var(--wd-accent) 16%, transparent); color: var(--wd-accent); }
+.wdb-rlabel { font-size: 12px; line-height: 16px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.wdb-ricon, .wdb-rbtn svg, .wdb-menu-item svg, .wdb-multi-tools svg, .wdb-head-icon .wdb-ricon {
+  width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.wd-bar .wdb-ricon { width: 18px; height: 18px; }
+@media (max-width: 600px) { .wdb-rbtn { min-width: 44px; } .wdb-rgroup { padding: 0 4px; } }
+
+/* Several selected: the boxes the selection box touches, and the inspector's list and tools. */
+.wdb-box.hit { box-shadow: 0 0 0 2px color-mix(in srgb, var(--wd-accent) 60%, transparent); }
+.wdb-marquee { position: absolute; z-index: 5; pointer-events: none; border: 1px solid var(--wd-accent); background: color-mix(in srgb, var(--wd-accent) 10%, transparent); }
+.wdb-multi-names { display: flex; flex-direction: column; gap: 2px; }
+.wdb-multi-name {
+  -webkit-appearance: none; appearance: none; border: 0; background: none; color: var(--wd-text); display: flex; align-items: center; gap: 8px;
+  padding: 4px 6px; border-radius: 8px; font-family: inherit; font-size: 14px; line-height: 20px; text-align: left; cursor: pointer;
+}
+.wdb-multi-name:hover { background: color-mix(in srgb, var(--wd-accent) 10%, transparent); }
+.wdb-multi-name > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wdb-multi-tools { display: flex; flex-wrap: wrap; gap: 4px; }
+.wdb-multi-tools .wd-icon:disabled { opacity: .35; cursor: default; }
+
+/* Locked: not picked on the canvas, so no hover; hidden ones are dimmed in Layers. Each row's eye and lock show on
+   hover, or while on; a touch screen always shows them. */
+.wdb-box.locked { cursor: default; }
+.wdb-box.locked:hover { box-shadow: none; }
+.wdb-layer-flag { opacity: 0; color: var(--wd-muted); }
+.wdb-layer:hover .wdb-layer-flag, .wdb-layer-flag:focus-visible, .wdb-layer-flag.set { opacity: 1; }
+@media (hover: none) { .wdb-layer-flag { opacity: .6; } }
+.wdb-layer.off .wdb-layer-pick { opacity: .5; }
+
+/* Zoom: the scaled canvas inside a holder of its scaled size, the stage scrolling round it (still centred when it fits). */
+.wdb-stage { overflow-x: auto; align-items: safe center; }
+.wdb-zoom { position: relative; flex: none; max-width: 100%; }
+.wdb-zoom:has(> .wdb-canvas[style*="scale"]) { max-width: none; }
+/* Outlines: every component's box dashed, with its name. */
+.wdb-canvas.outlines .wdb-box { outline: 1px dashed color-mix(in srgb, var(--wd-accent) 75%, transparent); outline-offset: -1px; }
+.wdb-canvas.outlines .wdb-box[data-name]::after {
+  content: attr(data-name); position: absolute; left: 2px; top: 2px; max-width: calc(100% - 4px); padding: 0 4px; border-radius: 4px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none;
+  background: color-mix(in srgb, var(--wd-accent) 85%, transparent); color: #FFFFFF;
+  font-size: calc(12px / var(--wdb-z, 1)); line-height: calc(16px / var(--wdb-z, 1));
+}
+/* Only the names of what can be picked now: the top level, and an entered container's components. */
+.wdb-canvas.outlines .wdb-box.sealed::after { display: none; }
+/* The labels on the canvas stay their size whatever the zoom. */
+.wdb-readout, .wdb-mlabel { font-size: calc(12px / var(--wdb-z, 1)); line-height: calc(16px / var(--wdb-z, 1)); }
+/* A dragged component's size, under it. */
+.wdb-readout {
+  position: absolute; left: 50%; top: 100%; transform: translate(-50%, 6px); z-index: 6; pointer-events: none; white-space: nowrap;
+  padding: 1px 6px; border-radius: 6px; background: var(--wd-accent); color: #FFFFFF; font-size: 12px; line-height: 16px; font-variant-numeric: tabular-nums;
+}
+/* Alt: the distances, in the snapping lines' pink. */
+.wdb-measure-box { position: absolute; z-index: 4; pointer-events: none; box-shadow: inset 0 0 0 1px #FF4FA3; border-radius: 4px; }
+.wdb-mline { position: absolute; z-index: 5; pointer-events: none; }
+.wdb-mline.x { height: 0; border-top: 1px solid #FF4FA3; }
+.wdb-mline.y { width: 0; border-left: 1px solid #FF4FA3; }
+.wdb-mlabel {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 0 5px; border-radius: 6px; white-space: nowrap;
+  background: #FF4FA3; color: #FFFFFF; font-size: 12px; line-height: 16px; font-variant-numeric: tabular-nums;
+}
+
+/* The right click's menu. */
+.wdb-menu {
+  position: fixed; z-index: 60; min-width: 220px; padding: 4px; border-radius: 10px; border: 1px solid var(--wd-line);
+  background: var(--wd-tile); color: var(--wd-text); box-shadow: 0 10px 30px rgba(0, 0, 0, .28);
+}
+.wdb-menu-item {
+  -webkit-appearance: none; appearance: none; border: 0; background: none; color: inherit; width: 100%; display: flex; align-items: center; gap: 10px;
+  padding: 6px 8px; border-radius: 7px; font-family: inherit; font-size: 14px; line-height: 20px; text-align: left; cursor: pointer;
+}
+.wdb-menu-item > span:nth-child(2) { flex: 1; }
+.wdb-menu-item:hover:not(:disabled) { background: color-mix(in srgb, var(--wd-accent) 14%, transparent); }
+.wdb-menu-item:disabled { opacity: .4; cursor: default; }
+.wdb-menu-keys { font-size: 12px; line-height: 16px; color: var(--wd-muted); }
+.wdb-menu-sep { height: 1px; margin: 4px 6px; background: var(--wd-line); }
+
+/* Replace device, sharing, the shortcuts. */
+.wdb-replace { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.wdb-replace-line { display: flex; align-items: center; gap: 8px; }
+.wdb-replace-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; line-height: 20px; }
+.wdb-code { width: 100%; min-height: 160px; box-sizing: border-box; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; line-height: 16px; resize: vertical; margin: 8px 0; }
+.wdb-keys { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; align-items: center; font-size: 14px; line-height: 20px; }
+.wdb-key {
+  justify-self: start; padding: 1px 6px; border-radius: 6px; border: 1px solid var(--wd-line); background: var(--wd-raised);
+  font-family: inherit; font-size: 12px; line-height: 18px; white-space: nowrap;
+}

@@ -71,6 +71,12 @@ describe('readDesign: a design as kept', () => {
     expect(readPart({ kind: 'chart', slot: 'a:measure_power' })!.series).toEqual([{ slot: 'a:measure_power', color: null }]);
   });
 
+  it("keeps a part's lock from the builder's Layers, and only a true one", () => {
+    expect(readPart({ kind: 'switch', locked: true })!.locked).toBe(true);
+    expect(readPart({ kind: 'switch', locked: 'yes' })!).not.toHaveProperty('locked');
+    expect(readPart({ kind: 'switch' })!).not.toHaveProperty('locked');
+  });
+
   it('refuses what is not a design, and a reserved id', () => {
     expect(readDesign(null)).toBeNull();
     expect(readDesign('x')).toBeNull();

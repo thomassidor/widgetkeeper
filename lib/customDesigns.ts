@@ -271,6 +271,8 @@ export type Part = {
    * List's items, instead of the capability's glyph (`DEVICE_ICON_KINDS`); a picked icon, a rule's or a Flow's wins.
    */
   deviceIcon?: true,
+  /** Locked in the builder (its Layers' lock, 1.4.1): the canvas doesn't pick or move it. The widget ignores it. */
+  locked?: true,
   /**
    * A shape's: its form, corner radius (px, a rectangle), opacity (%), a line's thickness (px) and direction (a line's,
    * and a Bar's).
@@ -775,6 +777,7 @@ export function readPart(v: unknown, where: 'top' | 'grid' | 'free' = 'top'): Pa
     rules: kind === 'calc' ? [] : rulesOf(r.rules, VALUELESS_KINDS.includes(kind) && !(kind === 'icon' && slotOf(r.slot)), ICON_KINDS.includes(kind)),
   };
   if (DEVICE_ICON_KINDS.includes(kind) && r.deviceIcon === true) p.deviceIcon = true;
+  if (r.locked === true) p.locked = true;
   if (SCALE_KINDS.includes(kind)) {
     const colorBy = scaleOf(r.colorBy, kind === 'shape' || kind === 'text');
     if (colorBy) p.colorBy = colorBy;
