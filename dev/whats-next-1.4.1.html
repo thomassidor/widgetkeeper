@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html class="homey-dark-mode">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New in 1.4.1</title>
+  <!--
+    What's new in 1.4.1 (.homeychangelog.json), in the look of the 1.1.0 to 1.4.0 posters (whats-next-1.4.0.html): the new
+    Batteries widget beside three of its Looks (docs/variants/battery-*.webp, `npm run variants -- battery`), the Widget
+    Builder's ribbon of editing tools beside the real builder page (docs/web/ribbon.png, `npm run web-showcase -- ribbon`),
+    then the builder's smaller additions. All on made-up data. Plain words: say what it does.
+    scripts/render-whats-next.mjs (`npm run whats-next -- 1.4.1`) renders it to docs/whats-next-1.4.1.png at 2x.
+  -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    html { background: #0C0B12 !important; }
+    body {
+      margin: 0; padding: 56px 48px 48px; width: 1760px; box-sizing: border-box; font-family: Roboto, sans-serif; color: #FFFFFF;
+      background:
+        radial-gradient(1100px 520px at 18% -4%, rgba(92, 64, 180, 0.55), transparent 70%),
+        radial-gradient(900px 600px at 96% 8%, rgba(42, 25, 88, 0.9), transparent 70%),
+        #0C0B12 !important;
+    }
+
+    header { display: flex; align-items: center; gap: 28px; margin: 0 8px 44px; }
+    .logo {
+      width: 96px; height: 96px; flex: none; border-radius: 26px; background: #2A1958;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 12px 32px rgba(0, 0, 0, 0.4);
+      display: grid; place-items: center;
+    }
+    .logo svg { width: 72px; height: 72px; display: block; }
+    header h1 { margin: 0; font-size: 64px; line-height: 68px; font-weight: 900; letter-spacing: -1.5px; }
+    .eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 6px; font-size: 20px; line-height: 28px; font-weight: 700; color: #B9A6FF; }
+    .eyebrow span { padding: 2px 10px; border-radius: 999px; background: rgba(185, 166, 255, 0.16); font-size: 13px; line-height: 20px; letter-spacing: 0.6px; text-transform: uppercase; }
+    header p { margin: 8px 0 0; font-size: 22px; line-height: 30px; color: #B4B2C6; max-width: 900px; }
+    .chips { margin-left: auto; display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; max-width: 560px; }
+    .chips span { padding: 8px 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.07); color: #DCDAE8; font-size: 15px; font-weight: 500; }
+
+    .columns { display: flex; gap: 24px; align-items: stretch; }
+    .columns + .columns, .columns + .feat { margin-top: 24px; }
+    .column { width: 398px; flex: none; display: flex; flex-direction: column; }
+    .column > .feat { flex: 1 1 auto; }
+
+    .feat {
+      background: #111217; border-radius: 28px; padding: 22px 20px 20px; box-sizing: border-box;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07), 0 16px 40px rgba(0, 0, 0, 0.35);
+    }
+    .tag {
+      display: inline-block; margin: 0 0 10px; padding: 3px 10px; border-radius: 999px; font-size: 12px; line-height: 18px;
+      font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; background: rgba(255, 255, 255, 0.08); color: #C9C7D6;
+    }
+    .tag.new { background: #6C4CE0; color: #FFFFFF; }
+    .feat h2 { margin: 0 0 6px; font-size: 24px; line-height: 30px; font-weight: 700; }
+    .feat p { margin: 0 0 18px; font-size: 15px; line-height: 21px; color: #A9A8B8; }
+    .feat .label { margin: 14px 0 8px; font-size: 13px; line-height: 16px; font-weight: 500; color: #8E8DA0; text-transform: uppercase; letter-spacing: 0.5px; }
+    ul.more { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    ul.more li { font-size: 15px; line-height: 21px; color: #A9A8B8; padding-left: 18px; position: relative; }
+    ul.more li::before { content: ''; position: absolute; left: 2px; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: #8E6CFF; }
+    ul.more b { color: #FFFFFF; font-weight: 500; }
+
+    .fcs { display: flex; flex-direction: column; gap: 8px; }
+    .fc { display: flex; gap: 12px; padding: 12px 14px; border-radius: 14px; background: #1F2029; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); }
+    .fc .icon { flex: none; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; }
+    .fc .icon svg { width: 22px; height: 22px; display: block; }
+    .fc .owner { font-size: 12px; line-height: 16px; color: #8E8DA0; }
+    .fc .text { font-size: 15px; line-height: 24px; color: #E4E4E7; }
+    .fc .arg { display: inline-block; padding: 0 8px; border-radius: 6px; background: #2B2C36; color: #FFFFFF; font-weight: 500; line-height: 22px; }
+    .fc .tokens { display: flex; gap: 6px; margin-top: 8px; }
+    .fc .token { padding: 1px 8px 1px 6px; border-radius: 999px; background: rgba(108, 76, 224, 0.3); color: #D9CFFF; font-size: 12px; line-height: 18px; font-weight: 500; }
+    .fc .token::before { content: '◆ '; font-size: 9px; color: #B9A6FF; }
+
+
+    /* A panel's text beside its pictures. */
+    .feat.hero { flex: 1 1 0; min-width: 0; display: flex; gap: 32px; align-items: flex-start; }
+    .hero .side { flex: 1 1 0; min-width: 0; }
+    .hero h2 { font-size: 34px; line-height: 40px; }
+    .hero p { font-size: 17px; line-height: 25px; }
+    .hero ul.more li { font-size: 16px; line-height: 23px; }
+    .hero img.shot { flex: none; width: 1160px; height: auto; display: block; margin: -8px -12px -14px 0; }
+
+    /* Batteries: three of its Looks (docs/variants/battery-*.webp), each on its own panel with its caption drawn in. */
+    .looks { flex: none; display: flex; gap: 16px; align-items: flex-start; }
+    .looks img { display: block; width: 390px; height: auto; border-radius: 14px; }
+
+    /* The strip at the bottom: more in the Widget Builder, in four columns. */
+    .also { padding: 26px 36px 28px; margin-top: 24px; }
+    .also h2 { margin: 0 0 16px; }
+    .also ul.more { margin: 0; display: block; columns: 4; column-gap: 36px; }
+    .also ul.more li { break-inside: avoid; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><svg viewBox="0 0 64 64"><g fill="none" stroke="#FFFFFF" stroke-width="3"><rect x="11.5" y="11.5" width="17" height="17" rx="5"/><rect x="11.5" y="35.5" width="17" height="17" rx="5"/><rect x="35.5" y="35.5" width="17" height="17" rx="5"/></g><path d="M44 11Q44 20 53 20Q44 20 44 29Q44 20 35 20Q44 20 44 11Z" fill="#FFFFFF"/></svg></div>
+    <div>
+      <div class="eyebrow">Widgetkeeper 1.4.1 <span>Coming soon</span></div>
+      <h1>New in 1.4.1</h1>
+      <p>Every battery in one tile, and the editing tools you know from design apps in the Widget Builder.</p>
+    </div>
+    <div class="chips">
+      <span>Batteries</span><span>Editing tools</span><span>Finer grid</span><span>Colour by value</span><span>Rectangle, Circle, Line</span>
+    </div>
+  </header>
+
+  <div class="columns">
+    <section class="feat hero">
+      <div class="side">
+        <span class="tag new">New widget</span>
+        <h2>Batteries</h2>
+        <p>The battery of every device you pick, in one tile. The ones that need a new battery come first.</p>
+        <ul class="more">
+          <li><b>Lowest first,</b> so you see at a glance what to change.</li>
+          <li><b>Yellow and red</b> when a battery runs low, at levels you choose.</li>
+          <li><b>Devices that only say <i>low</i></b> show Low or OK.</li>
+          <li><b>2, 3 or 4 per row,</b> Muted or Vivid, and your own names.</li>
+        </ul>
+      </div>
+      <div class="looks">
+        <img src="../docs/variants/battery-default.webp" alt="" width="780" height="688">
+        <img src="../docs/variants/battery-vivid.webp" alt="" width="780" height="688">
+        <img src="../docs/variants/battery-light.webp" alt="" width="780" height="688">
+      </div>
+    </section>
+  </div>
+
+  <div class="columns">
+    <section class="feat hero">
+      <div class="side">
+        <span class="tag">Widget Builder</span>
+        <h2>Editing tools</h2>
+        <p>A ribbon of tools above the canvas, as in Figma or Photoshop. The same tools are on a right click, with a list of shortcuts under <i>?</i>.</p>
+        <ul class="more">
+          <li><b>Copy, cut and paste,</b> also into another design. Copy a look and paste it on another component.</li>
+          <li><b>Select several</b> with Shift or a box, and move them together.</li>
+          <li><b>Align, space evenly</b> and make the same size.</li>
+          <li><b>Group</b> components, <b>lock</b> them or <b>hide</b> them while you edit.</li>
+          <li><b>Zoom</b> in and out, and show every component's outline.</li>
+          <li><b>Try a value</b> to see how a rule looks, without changing the device.</li>
+          <li><b>Replace a device</b> everywhere in a design at once.</li>
+          <li><b>Export and import</b> a design, to keep it or share it.</li>
+        </ul>
+      </div>
+      <img class="shot" src="../docs/web/ribbon.png" alt="" width="1520" height="1035">
+    </section>
+  </div>
+
+  <section class="feat also">
+    <span class="tag">Widget Builder</span>
+    <h2>Also in the Widget Builder</h2>
+    <ul class="more">
+      <li><b>A finer grid:</b> 12 columns, so components can be placed more precisely. Your designs look as before.</li>
+      <li><b>Rectangle, Circle and Line</b> as components of their own.</li>
+      <li><b>Colour by value:</b> a colour that blends from low to high, such as blue for cold and red for warm.</li>
+      <li><b>Median</b> in a calculated value.</li>
+      <li><b>A device's room</b> in a text.</li>
+      <li><b>Time since</b> a Flow set a value, such as <i>Fed the cat 2&nbsp;h&nbsp;ago</i>.</li>
+      <li><b>Repeater sorted by value:</b> every device with a battery, lowest first.</li>
+      <li><b>List items coloured</b> by their own value.</li>
+      <li><b>Device icons</b> on switches, icons and lists, as in Quick Actions.</li>
+    </ul>
+  </section>
+
+  <script>
+    // The page's size and the columns' heights, for the render script, once the pictures and fonts are there.
+    Promise.all([document.fonts.ready, ...[...document.images].map(img => img.decode().catch(() => {}))]).then(() => setTimeout(() => {
+      const r = document.body.getBoundingClientRect();
+      document.body.dataset.width = String(Math.ceil(r.width));
+      document.body.dataset.height = String(Math.ceil(r.height));
+      document.body.dataset.columns = [...document.querySelectorAll('.hero, .also')].map(c => Math.round(c.getBoundingClientRect().height)).join(',');
+    }, 800));
+  </script>
+</body>
+</html>
